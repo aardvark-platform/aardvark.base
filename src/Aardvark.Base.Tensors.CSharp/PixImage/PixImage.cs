@@ -323,18 +323,6 @@ namespace Aardvark.Base
                 }
                 catch (Exception) { }
             }
-            
-            #if USE_DEVIL
-            if ((options & PixLoadOptions.UseDevil) != 0)
-            {
-                try
-                {
-                    var img = PixImageDevil.CreateRawDevil(filename, options);
-                    if (img != null) return img;
-                }
-                catch (Exception) { }
-            }
-            #endif
 
             using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
@@ -432,9 +420,9 @@ namespace Aardvark.Base
         public static Volume<T> CreateVolume<T>(long sizeX, long sizeY, long channelCount)
             => new V3l(sizeX, sizeY, channelCount).CreateImageVolume<T>();
 
-#endregion
+        #endregion
 
-#region Conversions
+        #region Conversions
 
         protected static Dictionary<(Type, Type), Func<object, object>> 
             s_copyFunMap =
@@ -483,9 +471,9 @@ namespace Aardvark.Base
             return new PixImage<T>(format, this);
         }
         
-#endregion
+        #endregion
 
-#region Abstract Methods
+        #region Abstract Methods
 
         public abstract PixFormat PixFormat { get; }
 
@@ -515,9 +503,9 @@ namespace Aardvark.Base
 
         public abstract T Visit<T>(IPixImageVisitor<T> visitor);
         
-#endregion
+        #endregion
 
-#region Save as Image
+        #region Save as Image
 
         /// <summary>
         /// Native implementation of PGM image writer, due to dismal
@@ -571,19 +559,6 @@ namespace Aardvark.Base
                 }
                 catch (Exception) { }
             }
-
-#if USE_BITMAP
-            if ((options & PixSaveOptions.UseBitmap) != 0
-                && SaveAsImageBitmap(stream, fileFormat, options, qualityLevel)) return;
-#endif
-
-#if USE_DEVIL
-            if ((options & PixSaveOptions.UseDevil) != 0
-                && this.SaveAsImageDevil(stream, fileFormat, options, qualityLevel)) return;
-#endif
-
-            
-
 
             throw new ImageLoadException("could not save PixImage");
         }
@@ -650,11 +625,6 @@ namespace Aardvark.Base
                 catch (Exception) { }
             }
 
-#if USE_DEVIL
-            if ((options & PixSaveOptions.UseDevil) != 0 && this.SaveAsImageDevil(filename, fileFormat, options, qualityLevel))
-                return;
-#endif
-            
             var stream = new FileStream(filename, FileMode.Create);
             SaveAsImage(stream, fileFormat, options, qualityLevel);
             stream.Close();
@@ -678,9 +648,9 @@ namespace Aardvark.Base
         public MemoryStream ToMemoryStream(int qualityLevel)
             => ToMemoryStream(PixFileFormat.Jpeg, PixSaveOptions.Default, qualityLevel);
 
-#endregion
+        #endregion
 
-#region Image Manipulation (abstract)
+        #region Image Manipulation (abstract)
 
         public abstract PixImage RemappedPixImage(
                 Matrix<float> xMap, Matrix<float> yMap,
@@ -697,9 +667,9 @@ namespace Aardvark.Base
                 V2d scaleFactor,
                 ImageInterpolation ip = ImageInterpolation.Cubic);
 
-#endregion
+        #endregion
 
-#region Static Utility Methods
+        #region Static Utility Methods
 
         /// <summary>
         /// Gets info about a PixImage without loading the entire image into memory.
@@ -717,32 +687,16 @@ namespace Aardvark.Base
                 catch (Exception) { }
             }
 
-#if USE_BITMAP
-            if ((options & PixLoadOptions.UseBitmap) != 0)
-            {
-                var info = InfoFromFileNameBitmap(fileName, options);
-                if (info != null) return info;
-            }
-#endif
-
-#if USE_DEVIL
-            if ((options & PixLoadOptions.UseDevil) != 0)
-            {
-                var info = PixImageDevil.InfoFromFileNameDevil(fileName, options);
-                if (info != null) return info;
-            }
-#endif
-
             throw new ImageLoadException("could not load info of image");
         }
 
-#endregion
+        #endregion
 
-#region IPix
+        #region IPix
 
         public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixImage(this); }
 
-#endregion
+        #endregion
     }
 
     /// <summary>
