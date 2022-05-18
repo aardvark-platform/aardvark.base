@@ -1002,11 +1002,16 @@ module internal Tessellator =
         let mutable positions : V3f[]   = Array.zeroCreate (if idx.Length > 1024 then Fun.NextPowerOfTwo idx.Length else 1024)
         let mutable coords    : V4f[]   = Array.zeroCreate positions.Length
 
-        for i in idx do
-            let pt = V3f(V2f(toGlobal.TransformPos pos.[i]), 0.0f)
-            positions.[cnt] <- pt
-            coords.[cnt] <- V4f.Zero
-            cnt <- cnt + 1
+        for i = 0 to (idx.Length / 3) - 1 do
+            let p0 = pos.[idx.[i * 3]]
+            let p1 = pos.[idx.[i * 3 + 1]]
+            let p2 = pos.[idx.[i * 3 + 2]]
+
+            if abs <| Triangle.WindingOrder(p0, p1, p2) > 1E-16 then
+                positions.[cnt] <- V2f(toGlobal.TransformPos p0).XYO
+                positions.[cnt + 1] <- V2f(toGlobal.TransformPos p1).XYO
+                positions.[cnt + 2] <- V2f(toGlobal.TransformPos p2).XYO
+                cnt <- cnt + 3
 
         let inline add (p0 : V2d) (p1 : V2d) (p2 : V2d) (c0 : V4f) (c1 : V4f) (c2 : V4f) =
             let flip = Triangle.WindingOrder(p0, p1, p2) < 0.0
@@ -1119,7 +1124,6 @@ module internal Tessellator =
 
                 | _ ->
                     ()
-
 
         if cnt < positions.Length then
             System.Array.Resize(&positions, cnt)
