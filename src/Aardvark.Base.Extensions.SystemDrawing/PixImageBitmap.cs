@@ -22,6 +22,7 @@ namespace Aardvark.Base
 
     /// <summary>
     /// </summary>
+    [Obsolete]
     public static class PixImageBitmap
     {
         #region Private
@@ -127,7 +128,7 @@ namespace Aardvark.Base
             }
             return pixImage;
         }
-        
+
         /// <summary>
         /// Load image from stream via System.Drawing.
         /// </summary>

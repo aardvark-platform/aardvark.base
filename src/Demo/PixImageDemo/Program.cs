@@ -13,8 +13,8 @@ namespace PixImageDemo
             if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
 
-            var a = PixImage.Create(@"C:\Users\hs\Desktop\Debug\gah.jpg");
-            a.SaveAsImage(@"C:\Users\hs\Desktop\PixImageDemo\urdar.jpg");
+            var a = PixImage.Load(@"C:\Users\hs\Desktop\Debug\gah.jpg");
+            a.Save(@"C:\Users\hs\Desktop\PixImageDemo\urdar.jpg");
             
 
             PolygonDemo(dir);
@@ -50,7 +50,7 @@ namespace PixImageDemo
             Report.BeginTimed("polygon demo triangles");
             foreach (var t in tris)
                 tMat.SetMonotonePolygonFilledRaw(t.Tri, t.Col);
-            triImg.SaveAsImage(Path.Combine(dir, "polygon-triangles.tiff"));
+            triImg.Save(Path.Combine(dir, "polygon-triangles.tiff"));
             Report.End();
 
             var polyImg = new PixImage<byte>(10, 10, 3);
@@ -68,7 +68,7 @@ namespace PixImageDemo
             };
             Report.BeginTimed("polygon demo polygon");
             pMat.SetMonotonePolygonFilledRaw(poly, C3b.Red);
-            polyImg.SaveAsImage(Path.Combine(dir, "polygon-polygon.tiff"));
+            polyImg.Save(Path.Combine(dir, "polygon-polygon.tiff"));
             Report.End();
         }
 
@@ -123,7 +123,7 @@ namespace PixImageDemo
             {
                 Report.BeginTimed("size: {0}", size);
                 var pixImg = CreateHowManyColorsIllusion(size, parallel);
-                pixImg.SaveAsImage(Path.Combine(dir, "how-many-colors-" + size.ToString() + ".png"));
+                pixImg.Save(Path.Combine(dir, "how-many-colors-" + size.ToString() + ".png"));
                 Report.End();
             }
             Report.End();
@@ -229,10 +229,10 @@ namespace PixImageDemo
                                             //.Map(Col.ByteFromByteInDoubleClamped);
                 });
 
-            outImg0.SaveAsImage(Path.Combine(dir, "resample-36clamped.tif"));
-            outImg1.SaveAsImage(Path.Combine(dir, "resample-16clamped.tif"));
-            outImg2.SaveAsImage(Path.Combine(dir, "resample-d16cyclic.tif"));
-            outImg3.SaveAsImage(Path.Combine(dir, "resample-4clamped.tif"));
+            outImg0.Save(Path.Combine(dir, "resample-36clamped.tif"));
+            outImg1.Save(Path.Combine(dir, "resample-16clamped.tif"));
+            outImg2.Save(Path.Combine(dir, "resample-d16cyclic.tif"));
+            outImg3.Save(Path.Combine(dir, "resample-4clamped.tif"));
             Report.End();
         }
         
@@ -253,34 +253,34 @@ namespace PixImageDemo
             // scaling an image
             var scaledColorImage = new PixImage<byte>(1280, 800, 3);
             scaledColorImage.GetMatrix<C3b>().SetScaledCubic(colorImage.GetMatrix<C3b>());
-            scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-image.png"));
+            scaledColorImage.Save(Path.Combine(dir, "v-scaled-image.png"));
 
             // For shrinking images, interpoation of image values is not the optimal
             // resampling filter. Here BSpline3 or BSpline5 approximation can be used
             // which are 3rd order or 5th order approximations of a Gauss filter.
             var shrunkColorImage = new PixImage<byte>(512, 512, 3);
             shrunkColorImage.GetMatrix<C3b>().SetScaledBSpline5(colorImage.GetMatrix<C3b>());
-            shrunkColorImage.SaveAsImage(Path.Combine(dir, "v-shrunk-image.png"));
+            shrunkColorImage.Save(Path.Combine(dir, "v-shrunk-image.png"));
 
             var largeColorImage = new PixImage<byte>(4096, 4096, 3);
             largeColorImage.GetMatrix<C3b>().SetScaledLanczos(colorImage.GetMatrix<C3b>());
-            largeColorImage.SaveAsImage(Path.Combine(dir, "v-large-lanczos-image.png"));
+            largeColorImage.Save(Path.Combine(dir, "v-large-lanczos-image.png"));
 
 
 
             var scaledColorImage2 = new PixImage<byte>(1280, 800, 3);
             scaledColorImage2.GetMatrix<C3b>().SetScaledLanczos(colorImage.GetMatrix<C3b>());
-            scaledColorImage.SaveAsImage(Path.Combine(dir, "v-scaled-lanczos-image.png"));
+            scaledColorImage.Save(Path.Combine(dir, "v-scaled-lanczos-image.png"));
 
             var smallColorImage = CreateHowManyColorsIllusion(256);
 
             var nearestScaledImage = new PixImage<byte>(1024, 768, 3);
             nearestScaledImage.GetMatrix<C3b>().SetScaledNearest(smallColorImage.GetMatrix<C3b>());
-            nearestScaledImage.SaveAsImage(Path.Combine(dir, "v-scaled-nearest-image.png"));
+            nearestScaledImage.Save(Path.Combine(dir, "v-scaled-nearest-image.png"));
 
 
             // writing a color png image
-            colorImage.SaveAsImage(Path.Combine(dir, "v-color-image.png"));
+            colorImage.Save(Path.Combine(dir, "v-color-image.png"));
 
             var grayImage = colorImage.ToGrayscalePixImage();
 
@@ -289,18 +289,18 @@ namespace PixImageDemo
             var scaledGrayImage = new PixImage<byte>(1280, 800, 1);
             scaledGrayImage.Matrix.SetScaledLanczos(grayImage.Matrix);
 
-            scaledGrayImage.SaveAsImage(Path.Combine(dir, "v-scaled-gray-image.png"));
+            scaledGrayImage.Save(Path.Combine(dir, "v-scaled-gray-image.png"));
 
             // for grayscale and black/white images the Matrix property works
             grayImage.Matrix.SetLineY(16, 0, 100, 0);
 
             // writing a grayscale png image
-            grayImage.SaveAsImage(Path.Combine(dir, "v-gray-image.png"));
+            grayImage.Save(Path.Combine(dir, "v-gray-image.png"));
 
 
             var gray2colorImage = grayImage.ToPixImage<byte>(Col.Format.BGR);
             // writing grayxcal image as a color image
-            gray2colorImage.SaveAsImage(Path.Combine(dir, "v-gray2color-image.png"));
+            gray2colorImage.Save(Path.Combine(dir, "v-gray2color-image.png"));
 
             // loading a 8-bit per channel color image
             var byteImg = new PixImage<byte>(Path.Combine(dir, "v-color-image.png"));
@@ -336,10 +336,7 @@ namespace PixImageDemo
             var newImg = new PixImage<byte>(rc, gc, bc);
 
             // writing an 8-bit per channel png image
-            newImg.SaveAsImage(Path.Combine(dir, "v-recombined-color.png"), PixFileFormat.Png,
-                               options: PixSaveOptions.Default
-                                        | PixSaveOptions.UseStorageService
-                                        | PixSaveOptions.UseChunkedStream);
+            newImg.Save(Path.Combine(dir, "v-recombined-color.png"), PixFileFormat.Png);
 
             //byteImg.Rotated(60.0 * Constant.RadiansPerDegree)
             //        .SaveAsImage(Path.Combine(dir, "v-rotated-60-resized.png"));
@@ -369,13 +366,13 @@ namespace PixImageDemo
             var floatToByteImg = floatImg.ToPixImage<byte>();
 
             // saving the converted image in png format
-            floatToByteImg.SaveAsImage(Path.Combine(dir, "v-byte2float2byte-color.png"));
+            floatToByteImg.Save(Path.Combine(dir, "v-byte2float2byte-color.png"));
 
             // color conversion to linear response
             var linearFloatImg = floatImg.Copy<C3f>(Col.LinearSRGBFromSRGB);
 
             // converting the linear float image to a byte image and saving it in png format
-            linearFloatImg.ToPixImage<byte>().SaveAsImage(Path.Combine(dir, "v-linear-color.png"));
+            linearFloatImg.ToPixImage<byte>().Save(Path.Combine(dir, "v-linear-color.png"));
 
             // loading a byte image
             var bImg = new PixImage<byte>(Path.Combine(dir, "v-color-image.png"));
@@ -439,7 +436,7 @@ namespace PixImageDemo
 
 
             // writing the image with the replicated border as a png
-            bImg.SaveAsImage(Path.Combine(dir, "v-border-drawing.png"));
+            bImg.Save(Path.Combine(dir, "v-border-drawing.png"));
 
             Report.End();
 
@@ -458,7 +455,7 @@ namespace PixImageDemo
 
             var outImg = diffImg.ToPixImage<ushort>();
 
-            outImg.SaveAsImage(Path.Combine(odir, "difference.tiff"));
+            outImg.Save(Path.Combine(odir, "difference.tiff"));
         }
         
         public static void CopyTest(string dir)
@@ -471,7 +468,7 @@ namespace PixImageDemo
             // var copyvol = srcvolume.Copy(); // does not work, creates default volume layout!
             var copyvol = srcvolume.CopyToImage(); // works since it creates default image layout!
             image.Volume = copyvol;
-            image.SaveAsImage(Path.Combine(idir, "rgb8-copied.jpg"));
+            image.Save(Path.Combine(idir, "rgb8-copied.jpg"));
         }
 
         public static void LinearRampDemo(string dir)
@@ -493,7 +490,7 @@ namespace PixImageDemo
             linVol.SubVolume(0, 2 * barHeight, 2, width, barHeight, 1).AsMatrixWindow().SetByCoord((x, y) => line[x]);
             linVol.SubVolume(0, 3 * barHeight, 0, width, barHeight, 3).SetByCoord((x, y, c) => line[x]);
 
-            linearImage.SaveAsImage(Path.Combine(dir, "linear-ramp.tiff"));
+            linearImage.Save(Path.Combine(dir, "linear-ramp.tiff"));
             Report.End();
         }
     }

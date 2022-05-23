@@ -1,6 +1,8 @@
 ﻿namespace Aardvark.Base
 
+open System
 open System.Runtime.CompilerServices
+open System.Runtime.InteropServices
 
 [<AutoOpen>]
 module FSharpPixImageCubeExtensions =
@@ -36,11 +38,16 @@ module FSharpPixImageCubeExtensions =
         static member Create (images : Map<CubeSide, PixImage>) =
             PixImageCube(images |> Map.toArray |> Array.map (fun (_,pi) -> PixImageMipMap [|pi|]))
 
-        static member Create (images : Map<CubeSide, string>) =
-            PixImageCube(images |> Map.toArray |> Array.map (fun (_,file) -> PixImageMipMap [|PixImage.Create file|]))
+        static member Load (images : Map<CubeSide, string>, [<Optional; DefaultParameterValue(null : IPixLoader)>] loader : IPixLoader) =
+            PixImageCube(images |> Map.toArray |> Array.map (fun (_,file) -> PixImageMipMap [|PixImage.Load(file, loader)|]))
 
+        [<Obsolete("Use Load()")>]
+        static member Create (images : Map<CubeSide, string>) =
+            PixImageCube.Load(images)
+
+        [<Obsolete("Use Load()")>]
         static member Create (images : Map<CubeSide, string>, loadOptions : PixLoadOptions) =
-            PixImageCube(images |> Map.toArray |> Array.map (fun (_,file) -> PixImageMipMap [|PixImage.Create(file, loadOptions)|]))
+            PixImageCube.Load(images)
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module PixImageCube =
@@ -246,7 +253,7 @@ module FSharpPixImageCubeExtensions =
         let load (faceFiles : list<CubeSide * string>) =
             let faces =
                 faceFiles
-                    |> List.map (fun (s,file) -> s, PixImageMipMap [| PixImage.Create(file) |])
+                    |> List.map (fun (s,file) -> s, PixImageMipMap [| PixImage.Load(file) |])
                     |> List.sortBy fst
                     |> List.map snd
                     |> List.toArray

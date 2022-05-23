@@ -51,6 +51,7 @@ namespace Aardvark.Base
     }
 
     [Flags]
+    [Obsolete]
     public enum PixLoadOptions
     {
         Default             = UseSystemImage | UseDevil | UseFreeImage,
@@ -63,6 +64,7 @@ namespace Aardvark.Base
     }
 
     [Flags]
+    [Obsolete]
     public enum PixSaveOptions
     {
         Default             = UseSystemImage | UseDevil | UseFreeImage | NormalizeFilename,
@@ -80,38 +82,357 @@ namespace Aardvark.Base
     {
         T Visit<TData>(PixImage<TData> image);
     }
-    
+
     [Serializable]
     public abstract partial class PixImage : IPix, IPixImage2d
     {
         public Col.Format Format;
-        
-        private static List<Func<string, PixLoadOptions, PixImage>> s_fileLoadFunctions = new List<Func<string,PixLoadOptions,PixImage>>();
-        private static List<Func<Stream, PixLoadOptions, PixImage>> s_streamLoadFunctions = new List<Func<Stream,PixLoadOptions,PixImage>>();
-        private static List<Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool>> s_streamSaveFunctions = new List<Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool>>();
-        private static List<Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool>> s_fileSaveFunctions = new List<Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool>>();
-        private static List<Func<string, PixImageInfo>> s_infoFunctions = new List<Func<string, PixImageInfo>>();
 
+        #region Loaders
+
+        #region LegacyPixLoader
+
+        // Obsolete: Loader implementation for legacy API
+        [Obsolete]
+        private class LegacyPixLoader : IPixLoader
+        {
+            private readonly Func<string, PixLoadOptions, PixImage> loadFromFile;
+            private readonly Func<Stream, PixLoadOptions, PixImage> loadFromStream;
+            private readonly Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> saveToFile;
+            private readonly Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> saveToStream;
+            private readonly Func<string, PixImageInfo> getInfo;
+
+            public string Name { get; }
+
+            public LegacyPixLoader(
+                        string name,
+                        Func<string, PixLoadOptions, PixImage> loadFromFile,
+                        Func<Stream, PixLoadOptions, PixImage> loadFromStream,
+                        Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> saveToFile,
+                        Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> saveToStream,
+                        Func<string, PixImageInfo> getInfo)
+            {
+                Name = name;
+                this.loadFromFile = loadFromFile;
+                this.loadFromStream = loadFromStream;
+                this.saveToFile = saveToFile;
+                this.saveToStream = saveToStream;
+                this.getInfo = getInfo;
+            }
+
+            public PixImage LoadFromFile(string filename)
+            {
+                if (loadFromFile != null)
+                    return loadFromFile(filename, PixLoadOptions.Default);
+                else
+                    throw new ImageLoadException($"{Name} loader does not support loading from files.");
+            }
+
+            public PixImage LoadFromStream(Stream stream)
+            {
+                if (loadFromStream != null)
+                    return loadFromStream(stream, PixLoadOptions.Default);
+                else
+                    throw new ImageLoadException($"{Name} loader does not support loading from streams.");
+            }
+
+            public void SaveToFile(string filename, PixImage image, PixSaveParams saveParams)
+            {
+                if (saveToFile != null)
+                {
+                    int quality = (saveParams is PixJpegSaveParams jpg) ? jpg.Quality : PixJpegSaveParams.DefaultQuality;
+                    if (!saveToFile(filename, PixSaveOptions.Default, saveParams.Format, quality, image))
+                        throw new ImageLoadException("Saving method failed.");
+                }
+                else
+                {
+                    throw new NotSupportedException($"{Name} loader does not support saving to files.");
+                }
+            }
+
+            public void SaveToStream(Stream stream, PixImage image, PixSaveParams saveParams)
+            {
+                if (saveToStream != null)
+                {
+                    int quality = (saveParams is PixJpegSaveParams jpg) ? jpg.Quality : PixJpegSaveParams.DefaultQuality;
+                    if (!saveToStream(stream, PixSaveOptions.Default, saveParams.Format, quality, image))
+                        throw new ImageLoadException("Saving method failed.");
+                }
+                else
+                {
+                    throw new NotSupportedException($"{Name} loader does not support saving to streams.");
+                }
+            }
+
+            public PixImageInfo GetInfoFromFile(string filename)
+            {
+                if (getInfo != null)
+                {
+                    var info = getInfo(filename);
+                    if (info != null)
+                        return info;
+                    else
+                        throw new ImageLoadException($"Could not get info from file '{filename}'");
+                }
+                else
+                    throw new ImageLoadException($"{Name} loader does not support retrieving info from files.");
+            }
+
+            public PixImageInfo GetInfoFromStream(Stream stream)
+                => throw new ImageLoadException($"{Name} loader does not support retrieving info from streams.");
+        }
+
+        #endregion
+
+        #region PgmPixLoader
+
+        private class PgmPixLoader : IPixLoader
+        {
+            public string Name { get; }
+
+            public PgmPixLoader()
+            {
+                Name = "Aardvark PGM";
+            }
+
+            public PixImage LoadFromFile(string filename)
+                => throw new ImageLoadException($"{Name} loader does not support loading from files.");
+
+            public PixImage LoadFromStream(Stream stream)
+                => throw new ImageLoadException($"{Name} loader does not support loading from streams.");
+
+            public void SaveToFile(string filename, PixImage image, PixSaveParams saveParams)
+            {
+                using (var stream = File.OpenWrite(filename))
+                {
+                    SaveToStream(stream, image, saveParams);
+                }
+            }
+
+            public void SaveToStream(Stream stream, PixImage image, PixSaveParams saveParams)
+            {
+                if (saveParams.Format != PixFileFormat.Pgm || image.PixFormat != PixFormat.ByteGray)
+                    new NotSupportedException($"{Name} loader only supports PixFormat.ByteGray and PixFileFormat.Pgm");
+
+                var img = image.ToPixImage<byte>().ToImageLayout();
+
+                var sw = new StreamWriter(stream, Encoding.ASCII);
+                sw.NewLine = "\n";
+                sw.WriteLine("P5");
+                sw.WriteLine("# Created by Aardvark");
+                sw.WriteLine("{0} {1}", img.Size.X, img.Size.Y);
+                sw.WriteLine("255");
+                sw.Flush();
+                stream.Write(img.Volume.Data, 0, img.Volume.Data.Length);
+            }
+
+            public PixImageInfo GetInfoFromFile(string filename)
+                => throw new ImageLoadException($"{Name} loader does not support retrieving info from files.");
+
+            public PixImageInfo GetInfoFromStream(Stream stream)
+                => throw new ImageLoadException($"{Name} loader does not support retrieving info from streams.");
+        }
+
+        #endregion
+
+        private static readonly Dictionary<IPixLoader, int> s_loaders = new Dictionary<IPixLoader, int>();
+
+        /// <summary>
+        /// Adds a PixImage loader.
+        /// The priority determines the order in which loaders are invoked to load or save an image.
+        /// Loaders with higher priority are invoked first.
+        /// If the loader already exists, the priority is modified.
+        /// </summary>
+        /// <param name="loader">The loader to add.</param>
+        /// <param name="priority">The priority of the loader.</param>
+        public static void AddLoader(IPixLoader loader, int priority = 0)
+        {
+            lock (s_loaders)
+            {
+                s_loaders[loader] = priority;
+            }
+        }
+
+        /// <summary>
+        /// Adds a PixImage loader.
+        /// Assigns a priority that is greater than the highest priority among existing loaders, resulting in a LIFO order.
+        /// If the loader already exists, the priority is modified.
+        /// </summary>
+        /// <param name="loader">The loader to add.</param>
+        public static void AddLoader(IPixLoader loader)
+        {
+            lock (s_loaders)
+            {
+                var loaders = s_loaders.ToList();
+                loaders.Sort((x, y) => y.Value - x.Value);
+                AddLoader(loader, loaders.Map(x => x.Value).FirstOrDefault(-1) + 1);
+            }
+        }
+
+        /// <summary>
+        /// Removes a PixImage loader.
+        /// </summary>
+        /// <param name="loader">The loader to remove.</param>
+        public static void RemoveLoader(IPixLoader loader)
+        {
+            lock (s_loaders)
+            {
+                s_loaders.Remove(loader);
+            }
+        }
+
+        /// <summary>
+        /// Gets a dictionary of registered loaders with their associated priority.
+        /// </summary>
+        /// <returns>A dictionary of registered loaders.</returns>
+        public static Dictionary<IPixLoader, int> GetLoadersWithPriority()
+        {
+            lock (s_loaders)
+            {
+                return new Dictionary<IPixLoader, int>(s_loaders);
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of registered loaders sorted by priority in descending order.
+        /// </summary>
+        /// <returns>A list of registered loaders.</returns>
+        public static List<IPixLoader> GetLoaders()
+        {
+            lock (s_loaders)
+            {
+                var list =  s_loaders.ToList();
+                list.Sort((x, y) => y.Value - x.Value);
+                return list.Map(x => x.Key);
+            }
+        }
+
+        [Obsolete("Use AddLoader with IPixLoader interface")]
         public static void RegisterLoadingLib(
             Func<string, PixLoadOptions, PixImage> fileLoad = null,
             Func<Stream, PixLoadOptions, PixImage> streamLoad = null,
             Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> fileSave = null,
             Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> streamSave = null,
             Func<string, PixImageInfo> imageInfo = null)
-        { 
-            if (fileLoad != null) s_fileLoadFunctions.Insert(0, fileLoad);
-            if (streamLoad != null) s_streamLoadFunctions.Insert(0, streamLoad);
-            if (fileSave != null) s_fileSaveFunctions.Insert(0, fileSave);
-            if (streamSave != null) s_streamSaveFunctions.Insert(0, streamSave);
-            if (imageInfo != null) s_infoFunctions.Insert(0, imageInfo);
+        {
+            lock (s_loaders)
+            {
+                var names = s_loaders.ToList().Map(x => x.Key.Name);
+                int index = 2;
+                string name = "Unnamed";
+
+                while (names.Contains(name))
+                {
+                    name = $"Unnamed ({index++})";
+                }
+
+                var loader = new LegacyPixLoader(name, fileLoad, streamLoad, fileSave, streamSave, imageInfo);
+                AddLoader(loader);
+            }
         }
+
+        private static Result TryInvokeLoader<Result>(
+                        IPixLoader loader, Func<IPixLoader, Result> invoke,
+                        Func<Result, bool> isValid,
+                        string operationDescription)
+        {
+            Report.BeginTimed(3, $"Trying to {operationDescription} with {loader.Name} loader");
+
+            try
+            {
+                var result = invoke(loader);
+                if (isValid(result))
+                {
+                    Report.EndTimed(3, ": success in");
+                    return result;
+                }
+                else
+                {
+                    Report.EndTimed(3, ": failed in");
+                }
+            }
+            catch (Exception e)
+            {
+                Report.EndTimed(3, ": failed in");
+                Report.Line(3, $"Failed to {operationDescription} with {loader.Name} loader: {e.Message}");
+            }
+
+            return default;
+        }
+
+        private static Result InvokeLoaders<Input, Result>(
+                                IPixLoader primaryLoader, Input input,
+                                Func<IPixLoader, Input, Result> tryInvoke,
+                                Func<Result, bool> isValid,
+                                string errorMessage)
+        {
+            if (primaryLoader != null)
+            {
+                var result = tryInvoke(primaryLoader, input);
+                if (isValid(result)) { return result; }
+            }
+
+            foreach (var loader in GetLoaders())
+            {
+                if (loader == primaryLoader) // already tried this one
+                    continue;
+
+                var result = tryInvoke(loader, input);
+                if (isValid(result)) { return result; }
+            }
+
+            throw new ImageLoadException(errorMessage);
+        }
+
+        private static Result TryInvokeLoaderWithStream<Result>(
+                IPixLoader loader, Stream stream, Func<IPixLoader, Stream, Result> invokeWithStream,
+                Func<Result, bool> isValid,
+                string operationDescription)
+        {
+            Result invoke(IPixLoader l)
+            {
+                long initialPosition = stream.Position;
+
+                try
+                {
+                    return invokeWithStream(l, stream);
+                }
+                finally
+                {
+                    stream.Position = initialPosition;
+                }
+            }
+
+            return TryInvokeLoader(loader, invoke, isValid, operationDescription);
+        }
+
+        private static Result InvokeLoadersWithStream<Result>(
+                                IPixLoader primaryLoader, Stream stream,
+                                Func<IPixLoader, Stream, Result> tryInvoke,
+                                Func<Result, bool> isValid,
+                                string errorMessage)
+        {
+            if (!stream.CanSeek)
+            {
+                using (var temp = new MemoryStream())
+                {
+                    stream.CopyTo(temp);
+                    temp.Position = 0L;
+                    return InvokeLoaders(primaryLoader, temp, tryInvoke, isValid, errorMessage);
+                }
+            }
+
+            return InvokeLoaders(primaryLoader, stream, tryInvoke, isValid, errorMessage);
+        }
+
+        #endregion
 
         #region Constructors
 
-        //static PixImage()
-        //{ 
-        //    PixImageExtensions.Init();
-        //}
+        static PixImage()
+        {
+            AddLoader(new PgmPixLoader());
+        }
 
         public PixImage()
             : this(Col.Format.None)
@@ -144,8 +465,6 @@ namespace Aardvark.Base
         /// </summary>
         public double AspectRatio { get { return Size.X / (double)Size.Y; } }
 
-        // public IEnumerable<INode> SubNodes { get { return Enumerable.Empty<INode>(); } }
-
         #endregion
 
         #region Static Tables and Methods
@@ -174,7 +493,7 @@ namespace Aardvark.Base
                                         group kvp by kvp.Value into g
                                         select new
                                         {
-                                            Key = g.Key,
+                                            g.Key,
                                             Value = g.OrderBy(x => x.Key.Length).Select(x => x.Key).First()
                                         })
                 {
@@ -186,16 +505,19 @@ namespace Aardvark.Base
             );
 
         /// <summary>
-        /// Throws exception if file name has no extension,
-        /// or extension is unknown format.
+        /// Gets the image file format from a file path.
+        /// Throws exception if file name has no extension, or extension is unknown format.
         /// </summary>
         protected static PixFileFormat GetFormatOfExtension(string filename)
         {
             if (!Path.HasExtension(filename))
-                throw new ImageLoadException("File name has no extension: " + filename);
+                throw new ArgumentException("File name has no extension: " + filename);
 
             var ext = Path.GetExtension(filename).ToLowerInvariant();
-            return s_formatOfExtension[ext];
+            if (s_formatOfExtension.TryGetValue(ext, out var format))
+                return format;
+            else
+                throw new ArgumentException("File name has unknown extension: " + ext);
         }
 
         public static string GetPreferredExtensionOfFormat(PixFileFormat format)
@@ -281,7 +603,7 @@ namespace Aardvark.Base
                                     new PixImage<double>(f, ((double[])a).CreateImageVolume(new V3l(x, y, c))) },
             };
 
-            
+
         #endregion
 
         #region Static Creator Functions
@@ -298,121 +620,6 @@ namespace Aardvark.Base
         public static PixImage Create(Array array, Col.Format format, long sx, long sy)
             => s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, format.ChannelCount());
 
-        /// <summary>
-        /// Create a new image from the file. This is the standard way of
-        /// loading images if they do not need to be converted to a specific
-        /// format.
-        /// </summary>
-        public static PixImage Create(string filename, PixLoadOptions options = PixLoadOptions.Default)
-        {
-            var loadImage = CreateRaw(filename, options);
-            return loadImage.ToPixImage(loadImage.Format);
-        }
-
-        public static IEnumerable<PixImage> Create(IEnumerable<string> filenames)
-            => from file in filenames select PixImage.Create(file);
-
-        public static PixImage CreateRaw(string filename, PixLoadOptions options = PixLoadOptions.Default)
-        {
-            foreach (var loader in s_fileLoadFunctions)
-            {
-                try
-                {
-                    var res = loader(filename, options);
-                    if (res != null) return res;
-                }
-                catch (Exception) { }
-            }
-
-            using (var stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
-                var img = CreateRaw(stream, options);
-                if (img != null) return img;
-            }
-
-            throw new ImageLoadException("could not load PixImage");
-        }
-
-        /// <summary>
-        /// Compress BW images from 1 bit per byte to 8 bits per byte.
-        /// </summary>
-        public static void CompressPixels(PixImage<byte> pixImage, PixImage<byte> bitImage)
-        {
-            var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
-            var pixData = pixImage.Volume.Data;
-
-            // compress pixels
-            pixImage.Volume.Info.ForeachYXIndex(
-                () => { if (bit != 0x80) { bit = 0x80; bi++; } },
-                i =>
-                {
-                    if ((pixData[i] & 0x80) != 0) bitData[bi] |= bit;
-                    bit >>= 1; if (bit == 0) { bit = 0x80; bi++; }
-                }
-            );
-        }
-
-        /// <summary>
-        /// Expand BW images from 8 bit per byte to 1 bit per byte.
-        /// </summary>
-        public static void ExpandPixels(PixImage<byte> bitImage, PixImage<byte> pixImage)
-        {
-            var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
-            var pixData = pixImage.Volume.Data;
-
-            // expand pixels
-            pixImage.Volume.Info.ForeachYXIndex(
-                () => { if (bit != 0x80) { bit = 0x80; bi++; } },
-                i =>
-                {
-                    pixData[i] = ((bitData[bi] & bit) != 0) ? (byte)255 : (byte)0;
-                    bit >>= 1; if (bit == 0) { bit = 0x80; bi++; }
-                }
-            );
-        }
-
-        public static PixImage Create(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
-        {
-            var loadImage = CreateRaw(stream, options);
-            return loadImage.ToPixImage(loadImage.Format);
-        }
-
-        public static PixImage CreateRaw(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
-        {
-            // If input is unseekable, copy to memory first.
-            if (!stream.CanSeek)
-            {
-                using (var temp = new MemoryStream())
-                {
-                    stream.CopyTo(temp);
-                    temp.Position = 0L;
-                    return CreateRaw(temp, options);
-                }
-            }
-
-            Exception exception = null;
-
-            var initialPos = stream.Position;
-            foreach (var loader in s_streamLoadFunctions)
-            {
-                try
-                {
-                    var res = loader(stream, options);
-                    if (res != null) return res;
-                }
-                catch (Exception ex) 
-                {
-                    if (exception == null) 
-                        exception = ex; 
-                }
-
-                // reset stream position before trying next loader
-                stream.Position = initialPos;
-            }
-            
-            throw new ImageLoadException("could not load image", exception);
-        }
-        
         public static Volume<T> CreateVolume<T>(V3i size) => size.ToV3l().CreateImageVolume<T>();
 
         public static Volume<T> CreateVolume<T>(V3l size) => size.CreateImageVolume<T>();
@@ -422,146 +629,111 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Conversions
+        #region Load from file
 
-        protected static Dictionary<(Type, Type), Func<object, object>> 
-            s_copyFunMap =
-            new Dictionary<(Type, Type), Func<object, object>>()
-            {
-                { (typeof(byte), typeof(byte)), v => ((Volume<byte>)v).CopyWindow() },
-                { (typeof(byte), typeof(ushort)), v => ((Volume<byte>)v).ToUShortColor() },
-                { (typeof(byte), typeof(uint)), v => ((Volume<byte>)v).ToUIntColor() },
-                { (typeof(byte), typeof(float)), v => ((Volume<byte>)v).ToFloatColor() },
-                { (typeof(byte), typeof(double)), v => ((Volume<byte>)v).ToDoubleColor() },
-
-                { (typeof(ushort), typeof(byte)), v => ((Volume<ushort>)v).ToByteColor() },
-                { (typeof(ushort), typeof(ushort)), v => ((Volume<ushort>)v).CopyWindow() },
-                { (typeof(ushort), typeof(uint)), v => ((Volume<ushort>)v).ToUIntColor() },
-                { (typeof(ushort), typeof(float)), v => ((Volume<ushort>)v).ToFloatColor() },
-                { (typeof(ushort), typeof(double)), v => ((Volume<ushort>)v).ToDoubleColor() },
-            
-                { (typeof(uint), typeof(byte)), v => ((Volume<uint>)v).ToByteColor() },
-                { (typeof(uint), typeof(ushort)), v => ((Volume<uint>)v).ToUShortColor() },
-                { (typeof(uint), typeof(uint)), v => ((Volume<uint>)v).CopyWindow() },
-                { (typeof(uint), typeof(float)), v => ((Volume<uint>)v).ToFloatColor() },
-                { (typeof(uint), typeof(double)), v => ((Volume<uint>)v).ToDoubleColor() },
-
-                { (typeof(float), typeof(byte)), v => ((Volume<float>)v).ToByteColor() },
-                { (typeof(float), typeof(ushort)), v => ((Volume<float>)v).ToUShortColor() },
-                { (typeof(float), typeof(uint)), v => ((Volume<float>)v).ToUIntColor() },
-                { (typeof(float), typeof(float)), v => ((Volume<float>)v).CopyWindow() },
-                { (typeof(float), typeof(double)), v => ((Volume<float>)v).ToDoubleColor() },
-
-                { (typeof(double), typeof(byte)), v => ((Volume<double>)v).ToByteColor() },
-                { (typeof(double), typeof(ushort)), v => ((Volume<double>)v).ToUShortColor() },
-                { (typeof(double), typeof(uint)), v => ((Volume<double>)v).ToUIntColor() },
-                { (typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
-                { (typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
-            };
-
-        public abstract PixImage<T1> ToPixImage<T1>();
-        public abstract PixImage Transformed(ImageTrafo trafo);
-
-        public PixImage<T> AsPixImage<T>() => this as PixImage<T>;
-
-        public PixImage<T> ToPixImage<T>(Col.Format format)
-        {
-            if (this is PixImage<T> castImage && castImage.Format == format && castImage.ChannelCount == format.ChannelCount())
-                return castImage;
-            return new PixImage<T>(format, this);
-        }
-        
-        #endregion
-
-        #region Abstract Methods
-
-        public abstract PixFormat PixFormat { get; }
-
-        public abstract VolumeInfo VolumeInfo { get; }
-        
-        public abstract V2i Size { get; }
-        public abstract V2l SizeL { get; }
-
-        public abstract int ChannelCount { get; }
-        public abstract long ChannelCountL { get; }
-
-        public abstract Array Array { get; }
-
-        public abstract int IntStride { get; }
-
-        public abstract void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target);
-
-        public abstract PixImage ToPixImage(Col.Format format);
-
-        public abstract PixImage CopyToPixImage();
-
-        public abstract PixImage CopyToPixImageWithCanonicalDenseLayout();
-
-        public abstract PixImage ToCanonicalDenseLayout();
-
-        public abstract Array Data { get; }
-
-        public abstract T Visit<T>(IPixImageVisitor<T> visitor);
-        
-        #endregion
-
-        #region Save as Image
+        private static PixImage TryLoadFromFileWithLoader(IPixLoader loader, string filename)
+            => TryInvokeLoader(
+                    loader, l => l.LoadFromFile(filename), pix => pix != null,
+                    $"load image from file '{filename}'"
+            );
 
         /// <summary>
-        /// Native implementation of PGM image writer, due to dismal
-        /// performance of FreeImage version. Currently only 8-bit
-        /// gray images are supported, otherwise we still use FreeImage.
+        /// Loads an image from the given file without doing any conversions.
         /// </summary>
-        private bool SaveAsImagePgm(Stream stream, PixSaveOptions options)
-        {
-            if (PixFormat != PixFormat.ByteGray) return false;
-            var image = ToPixImage<byte>().ToImageLayout();
+        /// <param name="filename">The image file to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>The loaded image.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public static PixImage LoadRaw(string filename, IPixLoader loader = null)
+            => InvokeLoaders(
+                    loader, filename, (l, f) => TryLoadFromFileWithLoader(l, f), pix => pix != null,
+                    $"Could not load image from file '{filename}'"
+            );
 
-            var sw = new StreamWriter(stream, Encoding.ASCII);
-            sw.NewLine = "\n";
-            sw.WriteLine("P5");
-            sw.WriteLine("# Created by Aardvark");
-            sw.WriteLine("{0} {1}", image.Size.X, image.Size.Y);
-            sw.WriteLine("255");
-            sw.Flush();
-            stream.Write(image.Volume.Data, 0, image.Volume.Data.Length);
-            return true;
+        /// <summary>
+        /// Loads an image from the given file.
+        /// </summary>
+        /// <param name="filename">The image file to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>The loaded image.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public static PixImage Load(string filename, IPixLoader loader = null)
+        {
+            var loadImage = LoadRaw(filename, loader);
+            return loadImage.ToPixImage(loadImage.Format);
         }
 
         /// <summary>
-        /// This method handles all saving that can be done natively without
-        /// the use of either System.Drawing or FreeImage. Note, that the bool
-        /// return value indicates if the image was actually saved, so that
-        /// the other libraries can be used as fall backs.
+        /// Loads images from the given files.
         /// </summary>
-        private bool SaveAsImagePixImage(Stream stream, PixFileFormat fileFormat,
-                PixSaveOptions options, int qualityLevel)
+        /// <param name="filenames">The image files to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>The loaded images.</returns>
+        /// <exception cref="ImageLoadException">if an image could not be loaded.</exception>
+        public static IEnumerable<PixImage> Load(IEnumerable<string> filenames, IPixLoader loader = null)
+            => from file in filenames select Load(file, loader);
+
+        [Obsolete("Use LoadRaw()")]
+        public static PixImage CreateRaw(string filename, PixLoadOptions options = PixLoadOptions.Default)
+            => LoadRaw(filename);
+
+        [Obsolete("Use Load()")]
+        public static PixImage Create(string filename, PixLoadOptions options = PixLoadOptions.Default)
+            => Load(filename);
+
+        [Obsolete("Use Load()")]
+        public static IEnumerable<PixImage> Create(IEnumerable<string> filenames)
+            => from file in filenames select Load(file);
+
+        #endregion
+
+        #region Load from stream
+
+        private static PixImage TryLoadFromStreamWithLoader(IPixLoader loader, Stream stream)
+            => TryInvokeLoaderWithStream(
+                    loader, stream,
+                    (l, s) => l.LoadFromStream(s),
+                    pix => pix != null,
+                    "load image from stream"
+            );
+
+        /// <summary>
+        /// Loads an image from the given stream without doing any conversions.
+        /// </summary>
+        /// <param name="stream">The image stream to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>The loaded image.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public static PixImage LoadRaw(Stream stream, IPixLoader loader = null)
+            => InvokeLoadersWithStream(
+                loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), pix => pix != null,
+                "Could not load image from stream"
+            );
+
+        /// <summary>
+        /// Loads an image from the given stream.
+        /// </summary>
+        /// <param name="stream">The image stream to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>The loaded image.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public static PixImage Load(Stream stream, IPixLoader loader = null)
         {
-            switch (fileFormat)
-            {
-                case PixFileFormat.Pgm: return SaveAsImagePgm(stream, options);
-                default: return false;
-            }
+            var loadImage = LoadRaw(stream, loader);
+            return loadImage.ToPixImage(loadImage.Format);
         }
 
-        public void SaveAsImage(
-                Stream stream, PixFileFormat fileFormat,
-                PixSaveOptions options = PixSaveOptions.Default, int qualityLevel = -1)
-        {
-            if (SaveAsImagePixImage(stream, fileFormat, options, qualityLevel)) return;
+        [Obsolete("Use LoadRaw()")]
+        public static PixImage CreateRaw(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
+            => LoadRaw(stream);
 
-            foreach (var saver in s_streamSaveFunctions)
-            {
-                try
-                {
-                    var success = saver(stream, options, fileFormat, qualityLevel, this);
-                    if (success) return;
-                }
-                catch (Exception) { }
-            }
+        [Obsolete("Use Load()")]
+        public static PixImage Create(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
+            => Load(stream);
 
-            throw new ImageLoadException("could not save PixImage");
-        }
+        #endregion
+
+        #region Save to file
 
         /// <summary>
         /// Makes the file name valid for the given format.
@@ -608,46 +780,352 @@ namespace Aardvark.Base
             return fileName;
         }
 
-        public void SaveAsImage(
-                string filename, PixFileFormat fileFormat,
-                PixSaveOptions options = PixSaveOptions.Default, int qualityLevel = -1)
+        private bool TrySaveToFileWithLoader(IPixLoader loader, string filename, PixSaveParams saveParams)
+            => TryInvokeLoader(
+                    loader, l => { l.SaveToFile(filename, this, saveParams); return true; },
+                    ret => ret,
+                    $"save image to file '{filename}'"
+            );
+
+        /// <summary>
+        /// Saves the image to the given file.
+        /// </summary>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="saveParams">The save parameters to use.</param>
+        /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void Save(string filename, PixSaveParams saveParams, bool normalizeFilename = true, IPixLoader loader = null)
         {
-            if ((options & PixSaveOptions.NormalizeFilename) != 0)
-                filename = NormalizedFileName(filename, fileFormat);
+            if (normalizeFilename)
+                filename = NormalizedFileName(filename, saveParams.Format);
 
-            foreach (var saver in s_fileSaveFunctions)
-            {
-                try
-                {
-                    var success = saver(filename, options, fileFormat, qualityLevel, this);
-                    if (success) return;
-                }
-                catch (Exception) { }
-            }
+            InvokeLoaders(
+                loader, filename, (l, f) => TrySaveToFileWithLoader(l, f, saveParams), ret => ret,
+                $"Could not save image to file '{filename}'"
+            );
+        }
 
-            var stream = new FileStream(filename, FileMode.Create);
-            SaveAsImage(stream, fileFormat, options, qualityLevel);
-            stream.Close();
+        /// <summary>
+        /// Saves the image to the given file.
+        /// </summary>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="fileFormat">The image format of the file.</param>
+        /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void Save(string filename, PixFileFormat fileFormat, bool normalizeFilename = true, IPixLoader loader = null)
+            => Save(filename, new PixSaveParams(fileFormat), normalizeFilename, loader);
+
+        /// <summary>
+        /// Saves the image to the given file.
+        /// The image file format is determined by the extension of the filename.
+        /// </summary>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        /// <exception cref="ArgumentException">if the filename extension is missing or unknown.</exception>
+        public void Save(string filename, IPixLoader loader = null)
+            => Save(filename, GetFormatOfExtension(filename), false, loader);
+
+        /// <summary>
+        /// Saves the image to the given JPEG file.
+        /// </summary>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
+        /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void SaveAsJpeg(string filename, int quality = PixJpegSaveParams.DefaultQuality,
+                               bool normalizeFilename = true, IPixLoader loader = null)
+            => Save(filename, new PixJpegSaveParams(quality), normalizeFilename, loader);
+
+        /// <summary>
+        /// Saves the image to the given PNG file.
+        /// </summary>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
+        /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void SaveAsPng(string filename, int compressionLevel = PixPngSaveParams.DefaultCompressionLevel,
+                              bool normalizeFilename = true,  IPixLoader loader = null)
+            => Save(filename, new PixPngSaveParams(compressionLevel), normalizeFilename, loader);
+
+        [Obsolete("Use Save() or SaveAsJpeg()")]
+        public void SaveAsImage(string filename, PixFileFormat fileFormat, PixSaveOptions options = PixSaveOptions.Default, int qualityLevel = PixJpegSaveParams.DefaultQuality)
+        {
+            var normalizeFilename = ((options & PixSaveOptions.NormalizeFilename) != 0);
+
+            if (fileFormat == PixFileFormat.Jpeg)
+                SaveAsJpeg(filename, qualityLevel, normalizeFilename);
+            else
+                Save(filename, fileFormat, normalizeFilename);
         }
 
         /// <summary>
         /// Automatically detects file format from filename extension. 
         /// Throws exception if file name does not end in known format extension.
         /// </summary>
-        public void SaveAsImage(string filename) => SaveAsImage(filename, GetFormatOfExtension(filename));
+        [Obsolete("Use Save() or SaveAsJpeg()")]
+        public void SaveAsImage(string filename)
+            => Save(filename);
 
-        public MemoryStream ToMemoryStream(
-                PixFileFormat fileFormat,
-                PixSaveOptions options = PixSaveOptions.Default, int qualityLevel = -1)
+        #endregion
+
+        #region Save to stream
+
+        private bool TrySaveToStreamWithLoader(IPixLoader loader, Stream stream, PixSaveParams saveParams)
+            => TryInvokeLoaderWithStream(
+                    loader, stream,
+                    (l, s) => { l.SaveToStream(s, this, saveParams); return true; },
+                    ret => ret,
+                    "save image to stream"
+            );
+
+        /// <summary>
+        /// Saves the image to the given stream.
+        /// </summary>
+        /// <param name="stream">The stream to save the image to.</param>
+        /// <param name="saveParams">The save parameters to use.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void Save(Stream stream, PixSaveParams saveParams, IPixLoader loader = null)
+            => InvokeLoadersWithStream(
+                loader, stream, (l, s) => TrySaveToStreamWithLoader(l, s, saveParams),
+                ret => ret,
+                "Could not save image to stream"
+            );
+
+        /// <summary>
+        /// Saves the image to the given stream.
+        /// </summary>
+        /// <param name="stream">The stream to save the image to.</param>
+        /// <param name="fileFormat">The image format of the stream.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void Save(Stream stream, PixFileFormat fileFormat, IPixLoader loader = null)
+            => Save(stream, new PixSaveParams(fileFormat), loader);
+
+        /// <summary>
+        /// Saves the image to the given JPEG stream.
+        /// </summary>
+        /// <param name="stream">The stream to save the image to.</param>
+        /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void SaveAsJpeg(Stream stream, int quality = PixJpegSaveParams.DefaultQuality, IPixLoader loader = null)
+            => Save(stream, new PixJpegSaveParams(quality), loader);
+
+        /// <summary>
+        /// Saves the image to the given PNG stream.
+        /// </summary>
+        /// <param name="stream">The file to save the image to.</param>
+        /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public void SaveAsPng(Stream stream, int compressionLevel = PixPngSaveParams.DefaultCompressionLevel, IPixLoader loader = null)
+            => Save(stream, new PixPngSaveParams(compressionLevel), loader);
+
+        [Obsolete("Use overloads without PixSaveOptions")]
+        public void SaveAsImage(Stream stream, PixFileFormat fileFormat, PixSaveOptions options = PixSaveOptions.Default, int qualityLevel = PixJpegSaveParams.DefaultQuality)
+        {
+            if (fileFormat == PixFileFormat.Jpeg)
+                SaveAsJpeg(stream, qualityLevel);
+            else
+                Save(stream, fileFormat);
+        }
+
+        /// <summary>
+        /// Writes the image to a memory stream.
+        /// </summary>
+        /// <param name="saveParams">The save parameters to use.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>A memory stream containing the image data.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public MemoryStream ToMemoryStream(PixSaveParams saveParams, IPixLoader loader = null)
         {
             var stream = new MemoryStream();
-            SaveAsImage(stream, fileFormat, options, qualityLevel);
+            Save(stream, saveParams, loader);
             return stream;
         }
 
-        public MemoryStream ToMemoryStream(int qualityLevel)
-            => ToMemoryStream(PixFileFormat.Jpeg, PixSaveOptions.Default, qualityLevel);
+        /// <summary>
+        /// Writes the image to a memory stream.
+        /// </summary>
+        /// <param name="fileFormat">The image format of the stream.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>A memory stream containing the image data.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public MemoryStream ToMemoryStream(PixFileFormat fileFormat, IPixLoader loader = null)
+            => ToMemoryStream(new PixSaveParams(fileFormat), loader);
 
+        /// <summary>
+        /// Writes the image to a JPEG memory stream.
+        /// </summary>
+        /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>A memory stream containing the image data.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public MemoryStream ToMemoryStreamAsJpeg(int quality = PixJpegSaveParams.DefaultQuality, IPixLoader loader = null)
+            => ToMemoryStream(new PixJpegSaveParams(quality), loader);
+
+        /// <summary>
+        /// Writes the image to a PNG memory stream.
+        /// </summary>
+        /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>A memory stream containing the image data.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
+        public MemoryStream ToMemoryStreamAsPng(int compressionLevel = PixPngSaveParams.DefaultCompressionLevel, IPixLoader loader = null)
+            => ToMemoryStream(new PixJpegSaveParams(compressionLevel), loader);
+
+        [Obsolete("Use overloads without PixSaveOptions")]
+        public MemoryStream ToMemoryStream(PixFileFormat fileFormat, PixSaveOptions options, int qualityLevel)
+        {
+            if (fileFormat == PixFileFormat.Jpeg)
+                return ToMemoryStreamAsJpeg(qualityLevel);
+            else
+                return ToMemoryStream(fileFormat);
+        }
+
+        [Obsolete("Use ToMemoryStreamAsJpeg")]
+        public MemoryStream ToMemoryStream(int qualityLevel)
+            => ToMemoryStreamAsJpeg(qualityLevel);
+
+        #endregion
+
+        #region Query info from file
+
+        private static PixImageInfo TryGetInfoFromFileWithLoader(IPixLoader loader, string filename)
+            => TryInvokeLoader(
+                    loader, l => l.GetInfoFromFile(filename), info => info != null,
+                    $"get image info from file '{filename}'"
+            );
+
+        /// <summary>
+        /// Loads basic information about an image from a file without loading its content.
+        /// </summary>
+        /// <param name="filename">The image file to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>A PixImageInfo instance containing basic information about the image.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public static PixImageInfo GetInfoFromFile(string filename, IPixLoader loader = null)
+            => InvokeLoaders(
+                    loader, filename, (l, f) => TryGetInfoFromFileWithLoader(l, f), info => info != null,
+                    $"Could not get image info from file '{filename}'"
+            );
+
+        [Obsolete("Use GetInfoFromFile()")]
+        public static PixImageInfo InfoFromFileName(string fileName, PixLoadOptions options = PixLoadOptions.Default)
+            => GetInfoFromFile(fileName);
+
+        #endregion
+
+        #region Query info from stream
+
+        private static PixImageInfo TryGetInfoFromStreamWithLoader(IPixLoader loader, Stream stream)
+            => TryInvokeLoaderWithStream(
+                    loader, stream, (l, s) => l.GetInfoFromStream(s), info => info != null,
+                    "get image info from stream"
+            );
+
+        /// <summary>
+        /// Loads basic information about an image from a stream without loading its content.
+        /// </summary>
+        /// <param name="stream">The image stream to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>A PixImageInfo instance containing basic information about the image.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public static PixImageInfo GetInfoFromStream(Stream stream, IPixLoader loader = null)
+            => InvokeLoadersWithStream(
+                    loader, stream, (l, s) => TryGetInfoFromStreamWithLoader(l, s), info => info != null,
+                    $"Could not get image info from stream"
+            );
+
+        #endregion
+
+        #region Conversions
+
+        protected static Dictionary<(Type, Type), Func<object, object>> 
+            s_copyFunMap =
+            new Dictionary<(Type, Type), Func<object, object>>()
+            {
+                { (typeof(byte), typeof(byte)), v => ((Volume<byte>)v).CopyWindow() },
+                { (typeof(byte), typeof(ushort)), v => ((Volume<byte>)v).ToUShortColor() },
+                { (typeof(byte), typeof(uint)), v => ((Volume<byte>)v).ToUIntColor() },
+                { (typeof(byte), typeof(float)), v => ((Volume<byte>)v).ToFloatColor() },
+                { (typeof(byte), typeof(double)), v => ((Volume<byte>)v).ToDoubleColor() },
+
+                { (typeof(ushort), typeof(byte)), v => ((Volume<ushort>)v).ToByteColor() },
+                { (typeof(ushort), typeof(ushort)), v => ((Volume<ushort>)v).CopyWindow() },
+                { (typeof(ushort), typeof(uint)), v => ((Volume<ushort>)v).ToUIntColor() },
+                { (typeof(ushort), typeof(float)), v => ((Volume<ushort>)v).ToFloatColor() },
+                { (typeof(ushort), typeof(double)), v => ((Volume<ushort>)v).ToDoubleColor() },
+
+                { (typeof(uint), typeof(byte)), v => ((Volume<uint>)v).ToByteColor() },
+                { (typeof(uint), typeof(ushort)), v => ((Volume<uint>)v).ToUShortColor() },
+                { (typeof(uint), typeof(uint)), v => ((Volume<uint>)v).CopyWindow() },
+                { (typeof(uint), typeof(float)), v => ((Volume<uint>)v).ToFloatColor() },
+                { (typeof(uint), typeof(double)), v => ((Volume<uint>)v).ToDoubleColor() },
+
+                { (typeof(float), typeof(byte)), v => ((Volume<float>)v).ToByteColor() },
+                { (typeof(float), typeof(ushort)), v => ((Volume<float>)v).ToUShortColor() },
+                { (typeof(float), typeof(uint)), v => ((Volume<float>)v).ToUIntColor() },
+                { (typeof(float), typeof(float)), v => ((Volume<float>)v).CopyWindow() },
+                { (typeof(float), typeof(double)), v => ((Volume<float>)v).ToDoubleColor() },
+
+                { (typeof(double), typeof(byte)), v => ((Volume<double>)v).ToByteColor() },
+                { (typeof(double), typeof(ushort)), v => ((Volume<double>)v).ToUShortColor() },
+                { (typeof(double), typeof(uint)), v => ((Volume<double>)v).ToUIntColor() },
+                { (typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
+                { (typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
+            };
+
+        public abstract PixImage<T1> ToPixImage<T1>();
+        public abstract PixImage Transformed(ImageTrafo trafo);
+
+        public PixImage<T> AsPixImage<T>() => this as PixImage<T>;
+
+        public PixImage<T> ToPixImage<T>(Col.Format format)
+        {
+            if (this is PixImage<T> castImage && castImage.Format == format && castImage.ChannelCount == format.ChannelCount())
+                return castImage;
+            return new PixImage<T>(format, this);
+        }
+
+        #endregion
+
+        #region Abstract Methods
+
+        public abstract PixFormat PixFormat { get; }
+
+        public abstract VolumeInfo VolumeInfo { get; }
+        
+        public abstract V2i Size { get; }
+        public abstract V2l SizeL { get; }
+
+        public abstract int ChannelCount { get; }
+        public abstract long ChannelCountL { get; }
+
+        public abstract Array Array { get; }
+
+        public abstract int IntStride { get; }
+
+        public abstract void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target);
+
+        public abstract PixImage ToPixImage(Col.Format format);
+
+        public abstract PixImage CopyToPixImage();
+
+        public abstract PixImage CopyToPixImageWithCanonicalDenseLayout();
+
+        public abstract PixImage ToCanonicalDenseLayout();
+
+        public abstract Array Data { get; }
+
+        public abstract T Visit<T>(IPixImageVisitor<T> visitor);
+        
         #endregion
 
         #region Image Manipulation (abstract)
@@ -672,22 +1150,41 @@ namespace Aardvark.Base
         #region Static Utility Methods
 
         /// <summary>
-        /// Gets info about a PixImage without loading the entire image into memory.
+        /// Compress BW images from 8 bits per byte to 1 bit per byte.
         /// </summary>
-        public static PixImageInfo InfoFromFileName(
-                string fileName, PixLoadOptions options = PixLoadOptions.Default)
+        public static void CompressPixels(PixImage<byte> pixImage, PixImage<byte> bitImage)
         {
-            foreach (var readInfo in s_infoFunctions)
-            {
-                try
-                {
-                    var imageInfo = readInfo(fileName);
-                    if (imageInfo != null) return imageInfo;
-                }
-                catch (Exception) { }
-            }
+            var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
+            var pixData = pixImage.Volume.Data;
 
-            throw new ImageLoadException("could not load info of image");
+            // compress pixels
+            pixImage.Volume.Info.ForeachYXIndex(
+                () => { if (bit != 0x80) { bit = 0x80; bi++; } },
+                i =>
+                {
+                    if ((pixData[i] & 0x80) != 0) bitData[bi] |= bit;
+                    bit >>= 1; if (bit == 0) { bit = 0x80; bi++; }
+                }
+            );
+        }
+
+        /// <summary>
+        /// Expand BW images from 1 bit per byte to 8 bits per byte.
+        /// </summary>
+        public static void ExpandPixels(PixImage<byte> bitImage, PixImage<byte> pixImage)
+        {
+            var bitData = bitImage.Volume.Data; int bi = 0; byte bit = 0x80;
+            var pixData = pixImage.Volume.Data;
+
+            // expand pixels
+            pixImage.Volume.Info.ForeachYXIndex(
+                () => { if (bit != 0x80) { bit = 0x80; bi++; } },
+                i =>
+                {
+                    pixData[i] = ((bitData[bi] & bit) != 0) ? (byte)255 : (byte)0;
+                    bit >>= 1; if (bit == 0) { bit = 0x80; bi++; }
+                }
+            );
         }
 
         #endregion
@@ -932,33 +1429,49 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Constructors from File
+        #region Constructors from File / Stream
 
-        public PixImage(string filename, PixLoadOptions options = PixLoadOptions.Default)
+        /// <summary>
+        /// Loads an image from the given file.
+        /// </summary>
+        /// <param name="filename">The image file to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public PixImage(string filename, IPixLoader loader = null)
         {
-            var loadImage = PixImage.CreateRaw(filename, options);
+            var loadImage = LoadRaw(filename, loader);
             var channelCount = loadImage.Format.ChannelCount();
-            var image = loadImage as PixImage<T>;
 
-            if (image == null || image.ChannelCount != channelCount)
+            if (!(loadImage is PixImage<T> image) || image.ChannelCount != channelCount)
                 image = new PixImage<T>(loadImage);
 
             Volume = image.Volume;
             Format = image.Format;
         }
-        
-        public PixImage(Stream stream, PixLoadOptions options = PixLoadOptions.Default)
-        {
-            var loadImage = PixImage.CreateRaw(stream, options);
-            var channelCount = loadImage.Format.ChannelCount();
-            var image = loadImage as PixImage<T>;
 
-            if (image == null || image.ChannelCount != channelCount)
+        /// <summary>
+        /// Loads an image from the given stream.
+        /// </summary>
+        /// <param name="stream">The image stream to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        public PixImage(Stream stream, IPixLoader loader = null)
+        {
+            var loadImage = LoadRaw(stream, loader);
+            var channelCount = loadImage.Format.ChannelCount();
+
+            if (!(loadImage is PixImage<T> image) || image.ChannelCount != channelCount)
                 image = new PixImage<T>(loadImage);
 
             Volume = image.Volume;
             Format = image.Format;
         }
+
+        [Obsolete("Use overload without PixLoadOptions")]
+        public PixImage(string filename, PixLoadOptions options) : this(filename) { }
+
+        [Obsolete("Use overload without PixLoadOptions")]
+        public PixImage(Stream stream, PixLoadOptions options) : this(stream) { }
 
         #endregion
 

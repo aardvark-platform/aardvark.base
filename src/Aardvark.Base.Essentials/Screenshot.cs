@@ -818,7 +818,7 @@ namespace Aardvark.Rendering
         /// </summary>
         public static void SaveToFile(PixImage image, string fileName)
         {
-            image.SaveAsImage(fileName, PixFileFormat.Png);
+            image.Save(fileName, PixFileFormat.Png);
             Report.Line(5, "saved screenshot: {0}", fileName);
         }
 
@@ -864,7 +864,7 @@ namespace Aardvark.Rendering
             {
                 using (var stream = new MemoryStream())
                 {
-                    image.SaveAsImage(stream, PixFileFormat.Png);
+                    image.Save(stream, PixFileFormat.Png);
 
                     tags = tags ?? Environment.UserName + " " + Assembly.GetEntryAssembly().GetName().Name;
                     tags = "aardvark.rendering " + tags;

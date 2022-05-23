@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 using System.Runtime.InteropServices;
@@ -14,7 +12,7 @@ namespace Aardvark.Base
 
     public static class PixImageDevil
     {
-        private static object s_devilLock = new object();
+        private static readonly object s_devilLock = new object();
         private static bool s_initialized = false;
 
         [OnAardvarkInit]
@@ -32,7 +30,7 @@ namespace Aardvark.Base
                 I.Enable(EnableCap.OverwriteExistingFile);
                 I.Enable(EnableCap.ConvertPalette);
 
-                AddLoaders();
+                PixImage.AddLoader(Loader);
             } catch(Exception e)
             {
                 Report.Warn("[PixImageDevil] could not InitDevil: {0}", e.Message);
@@ -55,7 +53,7 @@ namespace Aardvark.Base
             {Devil.ChannelFormat.RGB, Col.Format.RGB},
             {Devil.ChannelFormat.RGBA, Col.Format.RGBA},
         };
-        
+
         private static Dictionary<Devil.ChannelType, Type> s_pixDataTypes = new Dictionary<Devil.ChannelType, Type>()
         {
             {Devil.ChannelType.Byte, typeof(sbyte)},
@@ -67,7 +65,7 @@ namespace Aardvark.Base
             {Devil.ChannelType.Float, typeof(float)},
             {Devil.ChannelType.Double, typeof(double)},
         };
-        
+
         private static Dictionary<Type, Devil.ChannelType> s_devilDataTypes = new Dictionary<Type, Devil.ChannelType>()
         {
             {typeof(sbyte), Devil.ChannelType.Byte},
@@ -79,7 +77,7 @@ namespace Aardvark.Base
             {typeof(float), Devil.ChannelType.Float},
             {typeof(double), Devil.ChannelType.Double},
         };
-        
+
         private static Dictionary<Col.Format, Devil.ChannelFormat> s_devilColorFormats = new Dictionary<Col.Format, Devil.ChannelFormat>()
         {
             { Col.Format.RGB, Devil.ChannelFormat.RGB },
@@ -89,7 +87,7 @@ namespace Aardvark.Base
             { Col.Format.Gray, Devil.ChannelFormat.Luminance },
             { Col.Format.GrayAlpha, Devil.ChannelFormat.LuminanceAlpha },
         };
-        
+
         private static Dictionary<PixFileFormat, Devil.ImageType> s_fileFormats = new Dictionary<PixFileFormat, Devil.ImageType>()
         {
             {PixFileFormat.Bmp,   Devil.ImageType.Bmp},
@@ -117,225 +115,248 @@ namespace Aardvark.Base
             {PixFileFormat.Xpm,   Devil.ImageType.Xpm},
         };
 
+        private class PixLoader : IPixLoader
+        {
+            public string Name => "DevIL";
+
+            private static void Fail(string call)
+            {
+                var status = I.GetError();
+                throw new ImageLoadException($"IL.{call}() failed, error code = {status}");
+            }
+
+            private static T TemporaryImage<T>(Func<int, T> f)
+            {
+                var img = I.GenImage();
+                I.BindImage(img);
+
+                try
+                {
+                    return f(img);
+                }
+                finally
+                {
+                    I.BindImage(0);
+                    I.DeleteImage(img);
+                }
+            }
+
+            private static void TemporaryImage(Action<int> f)
+                => TemporaryImage(img => { f(img); return 0; });
+
+            private static T LoadImage<T>(Action loadData, Func<V2i, Col.Format, Type, int, T> parse)
+            {
+                lock (s_devilLock)
+                {
+                    return TemporaryImage(img =>
+                    {
+                        loadData();
+
+                        var size = new V2i(I.GetInteger(IntName.ImageWidth), I.GetInteger(IntName.ImageHeight));
+                        var dataType = I.GetDataType();
+                        var format = I.GetFormat();
+                        var channels = I.GetInteger(IntName.ImageChannels);
+
+                        // try to get format information
+                        if (!s_pixDataTypes.TryGetValue(dataType, out Type type))
+                            throw new ImageLoadException($"Unsupported channel type {dataType}");
+
+                        if (!s_pixColorFormats.TryGetValue(format, out Col.Format fmt))
+                            throw new ImageLoadException($"Unsupported format {format}");
+
+                        return parse(size, fmt, type, channels);
+                    });
+                }
+            }
+
+            private static PixImage LoadPixImage(Action load)
+                => LoadImage(load, (size, format, type, channels) =>
+                {
+                    // if the image has a lower-left origin flip it
+                    var mode = (OriginMode)I.GetInteger((IntName)0x0603);
+                    if (mode == OriginMode.LowerLeft && !ILU.FlipImage())
+                        return null;
+
+                    // create an appropriate PixImage instance
+                    var imageType = typeof(PixImage<>).MakeGenericType(type);
+                    var pix = (PixImage)Activator.CreateInstance(imageType, format, size, channels);
+
+                    // copy the data to the PixImage
+                    var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
+                    try
+                    {
+                        var ptr = I.GetData();
+                        ptr.CopyTo(pix.Data, 0, pix.Data.Length);
+                        return pix;
+                    }
+                    finally
+                    {
+                        gc.Free();
+                    }
+                });
+
+            private static void IlLoadImage(string filename)
+            {
+                if (!I.LoadImage(filename))
+                    Fail("LoadImage");
+            }
+
+            private static void IlLoadStream(Stream stream)
+            {
+                if (!I.LoadStream(stream))
+                    Fail("LoadStream");
+            }
+
+            public PixImage LoadFromFile(string filename)
+                => LoadPixImage(() => IlLoadImage(filename));
+
+            public PixImage LoadFromStream(Stream stream)
+                => LoadPixImage(() => IlLoadStream(stream));
+
+            private static void SaveImage(PixImage image, PixSaveParams saveParams, Action save)
+                => TemporaryImage(img =>
+                {
+                    if (!s_devilDataTypes.TryGetValue(image.PixFormat.Type, out ChannelType type))
+                        throw new NotSupportedException($"Unsupported PixFormat type {image.PixFormat.Type}");
+
+                    if (!s_devilColorFormats.TryGetValue(image.PixFormat.Format, out ChannelFormat fmt))
+                        throw new NotSupportedException($"Unsupported Col.Format {image.PixFormat.Format}");
+
+                    var gc = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+                    try
+                    {
+                        if (!I.TexImage(image.Size.X, image.Size.Y, 1, (byte)image.ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
+                            Fail("TexImage");
+
+                        I.RegisterOrigin(OriginMode.UpperLeft);
+
+                        if (saveParams is PixJpegSaveParams jpeg)
+                            I.SetInteger(IntName.JpgQuality, jpeg.Quality);
+
+                        if (saveParams is PixPngSaveParams png)
+                        {
+                            if (png.CompressionLevel != PixPngSaveParams.DefaultCompressionLevel)
+                                Report.Warn("DevIL does not support setting PNG compression levels");
+                        }
+
+                        save();
+                    }
+                    finally
+                    {
+                        gc.Free();
+                    }
+                });
+
+            public void SaveToFile(string filename, PixImage image, PixSaveParams saveParams)
+            {
+                if (!s_fileFormats.TryGetValue(saveParams.Format, out ImageType imageType))
+                    throw new NotSupportedException($"Unsupported PixImage file format {saveParams.Format}");
+
+                lock (s_devilLock)
+                {
+                    SaveImage(image, saveParams, () =>
+                    {
+                        if (!I.Save(imageType, filename))
+                            Fail("Save");
+                    });
+                }
+            }
+
+            public void SaveToStream(Stream stream, PixImage image, PixSaveParams saveParams)
+            {
+                if (!s_fileFormats.TryGetValue(saveParams.Format, out ImageType imageType))
+                    throw new NotSupportedException($"Unsupported PixImage file format {saveParams.Format}");
+
+                lock (s_devilLock)
+                {
+                    SaveImage(image, saveParams, () =>
+                    {
+                        if (!I.SaveStream(imageType, stream))
+                            Fail("SaveStream");
+                    });
+                }
+            }
+
+            private static PixImageInfo LoadPixImageInfo(Action load)
+                => LoadImage(load, (size, format, type, _) =>
+                        new PixImageInfo(new PixFormat(type, format), size)
+                );
+
+            public PixImageInfo GetInfoFromFile(string filename)
+                => LoadPixImageInfo(() => IlLoadImage(filename));
+
+            public PixImageInfo GetInfoFromStream(Stream stream)
+                => LoadPixImageInfo(() => IlLoadStream(stream));
+        }
+
+        public static readonly IPixLoader Loader = new PixLoader();
 
         /// <summary>
         /// Load image from stream via devil.
         /// </summary>
         /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
+        [Obsolete("Use PixImage.LoadRaw() with DevIL.Loader")]
         public static PixImage CreateRawDevil(
                 Stream stream,
                 PixLoadOptions loadFlags = PixLoadOptions.Default)
-        {
-            lock (s_devilLock)
-            {
-                var img = I.GenImage();
-
-                I.BindImage(img);
-                if (!I.LoadStream(stream))
-                {
-                    var code = I.GetError();
-                    throw new ImageLoadException(String.Format("CreateRawDevil] could not load image, error code = {0}", code));
-                }
-
-                return LoadImage(img);
-
-            }            
-        }
+            => PixImage.LoadRaw(stream, Loader);
 
         /// <summary>
         /// Load image from stream via devil.
         /// </summary>
         /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
+        [Obsolete("Use PixImage.LoadRaw() with DevIL.Loader")]
         public static PixImage CreateRawDevil(
                 string fileName,
                 PixLoadOptions loadFlags = PixLoadOptions.Default)
-        {
-            lock (s_devilLock)
-            {
-                var img = I.GenImage();
-
-                I.BindImage(img);
-                if (!I.LoadImage(fileName))
-                    throw new ImageLoadException(string.Format("Could not load image: {0}", fileName));
-
-                return LoadImage(img);
-
-            }
-        }
-
-        private static PixImage LoadImage(int img)
-        {
-
-            var size = new V2i(I.GetInteger(IntName.ImageWidth), I.GetInteger(IntName.ImageHeight));
-            var dataType = I.GetDataType();
-            var format = I.GetFormat();
-            var channels = I.GetInteger(IntName.ImageChannels);
-            Type type;
-            Col.Format fmt;
-
-            // try to get format information
-            if (!s_pixDataTypes.TryGetValue(dataType, out type)) return null;
-            if (!s_pixColorFormats.TryGetValue(format, out fmt)) return null;
-
-            // if the image has a lower-left origin flip it
-            var mode = (OriginMode)I.GetInteger((IntName)0x0603);
-            if (mode == OriginMode.LowerLeft && !ILU.FlipImage())
-                return null;
-            
-
-            // create an appropriate PixImage instance
-            var imageType = typeof(PixImage<>).MakeGenericType(type);
-            var pix = (PixImage)Activator.CreateInstance(imageType, fmt, size, channels);
-
-            // copy the data to the PixImage
-            var gc = GCHandle.Alloc(pix.Data, GCHandleType.Pinned);
-            try
-            {
-                var ptr = I.GetData();
-                ptr.CopyTo(pix.Data, 0, pix.Data.Length);
-            }
-            finally
-            {
-                gc.Free();
-            }
-
-            // unbind and delete the DevIL image
-            I.BindImage(0);
-            I.DeleteImage(img);
-
-            return pix;
-        }
-
-        private static bool SaveDevIL(this PixImage image, Func<bool> save, int qualityLevel)
-        {
-            //Devil.ImageType imageType;
-            //if (!s_fileFormats.TryGetValue(format, out imageType))
-            //    return false;
-
-            var img = I.GenImage();
-            I.BindImage(img);
-
-            ChannelType type;
-            ChannelFormat fmt;
-
-            if (!s_devilDataTypes.TryGetValue(image.PixFormat.Type, out type)) return false;
-            if (!s_devilColorFormats.TryGetValue(image.PixFormat.Format, out fmt)) return false;
-
-            var gc = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
-            try
-            {
-                if (!I.TexImage(image.Size.X, image.Size.Y, 1, (byte)image.ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
-                    return false;
-
-                I.RegisterOrigin(OriginMode.UpperLeft);
-
-                if (qualityLevel != -1)
-                    I.SetInteger(IntName.JpgQuality, qualityLevel);
-
-                return save();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-            finally
-            {
-                gc.Free();
-                I.BindImage(0);
-                I.DeleteImage(img);
-            }
-        }
+            => PixImage.LoadRaw(fileName, Loader);
 
         /// <summary>
         /// Save image to stream via devil.
         /// </summary>
         /// <returns>True if the file was successfully saved.</returns>
+        [Obsolete("Use PixImage.Save() or PixImage.SaveAsJpeg() with DevIL.Loader")]
         public static bool SaveAsImageDevil(
                 this PixImage image,
                 Stream stream, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
-            Devil.ImageType imageType;
-            if (!s_fileFormats.TryGetValue(format, out imageType))
-                return false;
+            if (format == PixFileFormat.Jpeg)
+                image.SaveAsJpeg(stream, qualityLevel);
+            else
+                image.Save(stream, format);
 
-            lock (s_devilLock)
-            {
-                return image.SaveDevIL(() => I.SaveStream(imageType, stream), qualityLevel);
-            }
+            return true;
         }
 
+        [Obsolete("Use PixImage.Save() or PixImage.SaveAsJpeg() with DevIL.Loader")]
         public static bool SaveAsImageDevil(
                 this PixImage image,
                 string file, PixFileFormat format,
                 PixSaveOptions options, int qualityLevel)
         {
-            Devil.ImageType imageType;
-            if (!s_fileFormats.TryGetValue(format, out imageType))
-                return false;
+            var normalizeFilename = ((options & PixSaveOptions.NormalizeFilename) != 0);
 
-            lock (s_devilLock)
-            {
-                return image.SaveDevIL(() => I.Save(imageType, file), qualityLevel);
-            }
+            if (format == PixFileFormat.Jpeg)
+                image.SaveAsJpeg(file, qualityLevel, normalizeFilename);
+            else
+                image.Save(file, format, normalizeFilename);
+
+            return true;
         }
-        
+
         /// <summary>
         /// Gets info about a PixImage without loading the entire image into memory.
         /// </summary>
         /// <returns>null if the file info could not be loaded.</returns>
+        [Obsolete("Use PixImage.GetInfoFromFile() with DevIL.Loader")]
         public static PixImageInfo InfoFromFileNameDevil(
                 string fileName, PixLoadOptions options)
-        {
-            lock (s_devilLock)
-            {
-                try
-                {
-                    var img = I.GenImage();
-                    I.BindImage(img);
-
-                    if (!I.LoadImage(fileName))
-                        throw new ArgumentException("fileName");
-
-                    var dataType = I.GetDataType();
-                    var format = I.GetFormat();
-                    var width = I.GetInteger(IntName.ImageWidth);
-                    var height = I.GetInteger(IntName.ImageHeight);
-                    //var channels = I.GetInteger(IntName.ImageChannels);
-
-                    I.BindImage(0);
-                    I.DeleteImage(img);
+            => PixImage.GetInfoFromFile(fileName, Loader);
 
 
-                    Type type;
-                    Col.Format fmt;
-
-                    if (!s_pixDataTypes.TryGetValue(dataType, out type)) return null;
-                    if (!s_pixColorFormats.TryGetValue(format, out fmt)) return null;
-
-                    var size = new V2i(width, height);
-                    return new PixImageInfo(new PixFormat(type, fmt), size);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-            }
-        }
-
-
+        [Obsolete("Use PixImage.AddLoader with DevIL.Loader to modify priority")]
         public static void AddLoaders()
-        {
-            Func<string, PixSaveOptions, PixFileFormat, int, PixImage, bool> fileSave =
-                    (file, o, format, q, pi) => SaveAsImageDevil(pi, file, format, o, q);
-            Func<Stream, PixSaveOptions, PixFileFormat, int, PixImage, bool> streamSave =
-                    (stream, o, format, q, pi) => SaveAsImageDevil(pi, stream, format, o, q);
-            Func<string, PixImageInfo> imageInfo = s => InfoFromFileNameDevil(s, PixLoadOptions.Default);
-
-            PixImage.RegisterLoadingLib(
-                CreateRawDevil,
-                CreateRawDevil,
-                fileSave, streamSave, imageInfo);
-        }
+            => PixImage.AddLoader(Loader);
     }
 }

@@ -446,7 +446,7 @@ namespace Aardvark.Base
 
         public override IPix FileImage(FileImage fi)
         {
-            return Base.PixImage.Create(PathPrefix + fi.Path);
+            return Base.PixImage.Load(PathPrefix + fi.Path);
         }
     }
 
@@ -482,7 +482,7 @@ namespace Aardvark.Base
             {
                 var typedOther = Other as FileImage;
                 if (typedOther == null) throw new ArgumentException();
-                pi.SaveAsImage(PathPrefix + typedOther.Path);
+                pi.Save(PathPrefix + typedOther.Path);
                 return 1;
             };
         }
@@ -493,7 +493,7 @@ namespace Aardvark.Base
             {
                 var typedOther = Other as FileImage;
                 if (typedOther == null) throw new ArgumentException();
-                pimm.ImageArray[0].SaveAsImage(PathPrefix + typedOther.Path);
+                pimm.ImageArray[0].Save(PathPrefix + typedOther.Path);
                 return 1;
             };
         }

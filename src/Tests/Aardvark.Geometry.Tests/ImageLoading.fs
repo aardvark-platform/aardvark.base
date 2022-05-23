@@ -11,23 +11,21 @@ open Aardvark.Base
 module ImageLoadingTests =
     
     type Impl = Devil | PixImageSharp
-    type Config = { impl : Impl; fmt : PixFileFormat; quality : int }
+    type Config = { impl : Impl; saveParams : PixSaveParams }
 
     let getSave (config : Config) (pi : PixImage) (fileName : string) =
         match config.impl with
-        | Devil -> 
-            let r = PixImageDevil.SaveAsImageDevil(pi, fileName, config.fmt, PixSaveOptions.Default, config.quality)
-            if not r then failwith "could not save image"
-        | PixImageSharp -> 
-            use s = File.OpenWrite(fileName)
-            PixImageSharp.SaveImageSharp(pi |> unbox<PixImage<byte>>, s, config.fmt, config.quality) 
+        | Devil ->
+            pi.Save(fileName, config.saveParams, normalizeFilename = false, loader = PixImageDevil.Loader)
+        | PixImageSharp ->
+            pi.Save(fileName, config.saveParams, normalizeFilename = false, loader = PixImageSharp.Loader)
 
     let getLoad (config : Config) : string -> PixImage  =
         match config.impl with
         | Devil -> 
-            fun s -> PixImageDevil.CreateRawDevil(s)
+            fun s -> PixImage.Load(s, PixImageDevil.Loader)
         | PixImageSharp -> 
-            fun s -> PixImageSharp.Create(s)
+            fun s -> PixImage.Load(s, PixImageSharp.Loader)
 
     let fmts = 
         [Col.Format.RGB; Col.Format.BGR; Col.Format.RGBA; Col.Format.BGRA]
@@ -53,13 +51,20 @@ module ImageLoadingTests =
 
         static member Config = 
             gen {
-                let! fmt = Gen.elements fileFormats
                 let! impl = Arb.toGen Arb.from<Impl>
-                let! quality = Gen.choose (100, 100)
-                return { impl = impl; fmt = fmt; quality = quality }
+                let! fmt = Gen.elements fileFormats
+
+                let saveParams =
+                    match fmt with
+                    | PixFileFormat.Jpeg -> PixJpegSaveParams(100) :> PixSaveParams
+                    | _ -> PixSaveParams(fmt)
+
+                return { impl = impl; saveParams = saveParams }
             } |> Arb.fromGen
 
     do Aardvark.Init()
+
+    do Report.Verbosity <- 3
 
     [<Property(Arbitrary = [| typeof<Generators> |])>]
     let saveLoadTest (pi : PixImage<byte>) (saveConfig : Config) (loadConfig : Config) =

@@ -317,9 +317,21 @@ type CameraInfo =
         |> String.concat ", "
         |> sprintf "CameraInfo { %s }"
 
+
+type private PixLoader() =
+    interface IPixLoader with
+        member x.Name = "ImageSharp"
+        member x.LoadFromFile(filename) = PixImageSharp.Create(filename)
+        member x.LoadFromStream(stream) = PixImageSharp.Create(stream)
+        member x.SaveToFile(filename, image, saveParams) = image.SaveImageSharp(filename, saveParams)
+        member x.SaveToStream(stream, image, saveParams) = image.SaveImageSharp(stream, saveParams)
+        member x.GetInfoFromFile(filename) = PixImageSharp.GetPixImageInfo(filename)
+        member x.GetInfoFromStream(stream) = PixImageSharp.GetPixImageInfo(stream)
+
 /// PixImage operations implemented with ImageSharp.
-[<AbstractClass; Sealed; Extension>]
-type PixImageSharp private() =
+and [<AbstractClass; Sealed; Extension>] PixImageSharp private() =
+
+    static let loader = PixLoader() :> IPixLoader
 
     static let toNullable (q : int) =
         if q < 0 then Unchecked.defaultof<Nullable<int>>
@@ -400,38 +412,34 @@ type PixImageSharp private() =
             | _ ->
                 ImageTrafo.Identity
 
+    static let tryGetEncoder (saveParams : PixSaveParams) =
+        match saveParams with
+        | :? PixJpegSaveParams as jpeg ->
+            Some (Jpeg.JpegEncoder(Quality = jpeg.Quality) :> IImageEncoder)
+
+        | :? PixPngSaveParams as png ->
+            Some (Png.PngEncoder(CompressionLevel = unbox png.CompressionLevel) :> IImageEncoder)
+
+        | _ ->
+            match saveParams.Format with
+            | PixFileFormat.Bmp    -> Some (Bmp.BmpEncoder() :> IImageEncoder)
+            | PixFileFormat.Jpeg
+            | PixFileFormat.J2k    -> Some (Jpeg.JpegEncoder() :> IImageEncoder)
+            | PixFileFormat.Pbm
+            | PixFileFormat.PbmRaw -> Some (Pbm.PbmEncoder() :> IImageEncoder)
+            | PixFileFormat.Targa  -> Some (Tga.TgaEncoder() :> IImageEncoder)
+            | PixFileFormat.Tiff   -> Some (Tiff.TiffEncoder() :> IImageEncoder)
+            | PixFileFormat.Gif    -> Some (Gif.GifEncoder() :> IImageEncoder)
+            | PixFileFormat.Png    -> Some (Png.PngEncoder() :> IImageEncoder)
+            | _ -> None
+
+
+    static member Loader = loader
+
     /// Installs ImageSharp loading/saving/etc. in PixImage.
     [<OnAardvarkInit>]
     static member Init() =
-        let loadFile (file : string) (options : PixLoadOptions) =
-            try PixImageSharp.Create(file)
-            with _ -> null
-
-        let loadStream (stream : Stream) (options : PixLoadOptions) =
-            try PixImageSharp.Create(stream)
-            with _ ->
-                try stream.Seek(0L, SeekOrigin.Begin) |> ignore
-                with _ -> ()
-                null
-
-        let saveFile (file : string) (options : PixSaveOptions) (fmt : PixFileFormat) (quality : int) (img : PixImage) =
-            try PixImageSharp.SaveImageSharp(img, file, quality); true
-            with _ -> false
-
-        let saveStream (stream : Stream) (options : PixSaveOptions) (fmt : PixFileFormat) (quality : int) (img : PixImage) =
-            try PixImageSharp.SaveImageSharp(img, stream, fmt); true
-            with _ -> false
-
-        let getInfo (file : string)=
-            PixImageSharp.GetPixImageInfo(file)
-
-        PixImage.RegisterLoadingLib(
-            Func<_,_,_>(loadFile),
-            Func<_,_,_>(loadStream),
-            Func<_,_,_,_,_,_>(saveFile),
-            Func<_,_,_,_,_,_>(saveStream),
-            Func<_,_>(getInfo)
-        )
+        PixImage.AddLoader(loader)
 
     /// Tries to read a PixImage from the given Stream.
     static member TryCreate(stream : Stream) =
@@ -623,6 +631,22 @@ type PixImageSharp private() =
     static member ToPixImage(image : Image) =
         image.ToPixImage(ImageTrafo.Identity)
 
+    [<Extension>]
+    static member SaveImageSharp(image : PixImage<'T>, file : string, saveParams : PixSaveParams) =
+        use img = toImage image.PixFormat image
+
+        match tryGetEncoder saveParams with
+        | Some encoder -> img.Save(file, encoder)
+        | _ -> img.Save(file)
+
+    [<Extension>]
+    static member SaveImageSharp(image : PixImage<'T>, stream : Stream, saveParams : PixSaveParams) =
+        use img = toImage image.PixFormat image
+
+        match tryGetEncoder saveParams with
+        | Some encoder -> img.Save(stream, encoder)
+        | _ -> failwithf "[ImageSharp] format %A not supported" saveParams.Format
+
     /// Saves the Image to a file using ImageSharp.
     [<Extension>]
     static member SaveImageSharp(image : PixImage<'T>, file : string) =
@@ -809,6 +833,20 @@ type PixImageSharp private() =
             ctx.Grayscale().HistogramEqualization()
             |> ignore
         ).CloneAs<L8>()
+
+    [<Extension>]
+    static member SaveImageSharp(image : PixImage, file : string, saveParams : PixSaveParams) =
+        image.Visit {
+            new IPixImageVisitor<obj> with
+                member x.Visit<'T>(image : PixImage<'T>) = image.SaveImageSharp(file, saveParams); null
+        } |> ignore
+
+    [<Extension>]
+    static member SaveImageSharp(image : PixImage, stream : Stream, saveParams : PixSaveParams) =
+        image.Visit {
+            new IPixImageVisitor<obj> with
+                member x.Visit<'T>(image : PixImage<'T>) = image.SaveImageSharp(stream, saveParams); null
+        } |> ignore
 
     /// Saves the Image to a file using ImageSharp.
     [<Extension>]

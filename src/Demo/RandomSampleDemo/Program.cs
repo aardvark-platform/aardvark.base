@@ -31,7 +31,7 @@ namespace RandomSampleDemo
                 var img = new PixImage<byte>(size, size, 4);
                 var samples = GenerateRectSamples(sampleCount, rndSeries.Item2);
                 DrawSamples(samples, img);
-                img.SaveAsImage(String.Format("C:\\Debug\\Samples_{0}.bmp", rndSeries.Item1));
+                img.Save(String.Format("C:\\Debug\\Samples_{0}.bmp", rndSeries.Item1));
                 return img;
             });
 
@@ -42,7 +42,7 @@ namespace RandomSampleDemo
                 var img = new PixImage<byte>(size, size, 4);
                 var samples = GenerateDiskSamples(sampleCount, rndSeries.Item2);
                 DrawSamples(samples, img);
-                img.SaveAsImage(String.Format("C:\\Debug\\DiskSamples_{0}.bmp", rndSeries.Item1));
+                img.Save(String.Format("C:\\Debug\\DiskSamples_{0}.bmp", rndSeries.Item1));
                 return img;
             });
 
@@ -53,7 +53,7 @@ namespace RandomSampleDemo
                 var img = new PixImage<byte>(size, size, 4);
                 var samples = GenerateLambertianSamples(sampleCount, rndSeries.Item2);
                 DrawSamples(samples, img);
-                img.SaveAsImage(String.Format("C:\\Debug\\LambertSamples_{0}.bmp", rndSeries.Item1));
+                img.Save(String.Format("C:\\Debug\\LambertSamples_{0}.bmp", rndSeries.Item1));
                 return img;
             });
 
@@ -62,7 +62,7 @@ namespace RandomSampleDemo
             var triangles = GenerateTriangles(10, rnd);
             var trianglesImage = new PixImage<byte>(size, size, 4);
             DrawTriangles(triangles, trianglesImage);
-            trianglesImage.SaveAsImage("C:\\Debug\\Triangles.bmp");
+            trianglesImage.Save("C:\\Debug\\Triangles.bmp");
 
             var triangleImages = series.Map(rndSeries =>
             {
@@ -70,7 +70,7 @@ namespace RandomSampleDemo
                 DrawTriangles(triangles, img);
                 var samples = GenerateTriangleSamples(triangles, sampleCount / 3, rnd, rndSeries.Item2);
                 DrawSamples(samples, img);
-                img.SaveAsImage(String.Format("C:\\Debug\\TriangleSamples_{0}.bmp", rndSeries.Item1));
+                img.Save(String.Format("C:\\Debug\\TriangleSamples_{0}.bmp", rndSeries.Item1));
                 return img;
             });
 
@@ -98,7 +98,7 @@ namespace RandomSampleDemo
             Report.End();
             var cdfSampling = DrawSampleDistributionCounts(sc, 1024);
             DrawGauss(cdfSampling, gaussStretch);
-            cdfSampling.SaveAsImage("C:\\Debug\\CDFSampling.bmp");
+            cdfSampling.Save("C:\\Debug\\CDFSampling.bmp");
 
             var rndSampleTestCount = 10000000;
             var counts = new int[size];
@@ -115,7 +115,7 @@ namespace RandomSampleDemo
             Report.End();
 
             var rndGaussImg = DrawSampleDistributionCounts(counts, 1024);
-            rndGaussImg.SaveAsImage("C:\\Debug\\RandomGaussian.bmp");
+            rndGaussImg.Save("C:\\Debug\\RandomGaussian.bmp");
 
             counts.Set(0);
             Report.BeginTimed("RandomUniform.Normal");
@@ -128,7 +128,7 @@ namespace RandomSampleDemo
             Report.End();
 
             var rndGaussImg2 = DrawSampleDistributionCounts(counts, 1024);
-            rndGaussImg2.SaveAsImage("C:\\Debug\\RandomUniform.Normal.bmp");
+            rndGaussImg2.Save("C:\\Debug\\RandomUniform.Normal.bmp");
 
             SaveStiched(new [] { rndGaussImg, rndGaussImg2 }, "C:\\Debug\\Compare_RandomGaussian.bmp");
         }
@@ -180,12 +180,12 @@ namespace RandomSampleDemo
             // -> Zip with stitch images + remove last
             var cnt = images.Count();
             var array = Aardvark.Base.EnumerableEx.Zip(images, offsetImage.Repeat(cnt)).Take(cnt * 2 - 1).ToArray().IntoArray();
-            array.Stitch().SaveAsImage(filename);
+            array.Stitch().Save(filename);
         }
 
         static void SaveStichedSquare(PixImage<byte>[] images, string filename)
         {
-            images.StitchSquare().SaveAsImage(filename);
+            images.StitchSquare().Save(filename);
         }
 
         static double Normal(IRandomUniform rnd, double mean, double stdDev)
