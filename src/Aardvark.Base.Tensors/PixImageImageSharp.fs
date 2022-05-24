@@ -318,7 +318,7 @@ type CameraInfo =
         |> sprintf "CameraInfo { %s }"
 
 
-type private PixLoader() =
+type private ImageSharpPixLoader() =
     interface IPixLoader with
         member x.Name = "ImageSharp"
         member x.LoadFromFile(filename) = PixImageSharp.Create(filename)
@@ -331,7 +331,7 @@ type private PixLoader() =
 /// PixImage operations implemented with ImageSharp.
 and [<AbstractClass; Sealed; Extension>] PixImageSharp private() =
 
-    static let loader = PixLoader() :> IPixLoader
+    static let loader = ImageSharpPixLoader() :> IPixLoader
 
     static let toNullable (q : int) =
         if q < 0 then Unchecked.defaultof<Nullable<int>>

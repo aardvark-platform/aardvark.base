@@ -212,7 +212,7 @@ namespace Aardvark.Base
             public void SaveToStream(Stream stream, PixImage image, PixSaveParams saveParams)
             {
                 if (saveParams.Format != PixFileFormat.Pgm || image.PixFormat != PixFormat.ByteGray)
-                    new NotSupportedException($"{Name} loader only supports PixFormat.ByteGray and PixFileFormat.Pgm");
+                    throw new NotSupportedException($"{Name} loader only supports PixFormat.ByteGray and PixFileFormat.Pgm");
 
                 var img = image.ToPixImage<byte>().ToImageLayout();
 
@@ -361,27 +361,25 @@ namespace Aardvark.Base
         }
 
         private static Result InvokeLoaders<Input, Result>(
-                                IPixLoader primaryLoader, Input input,
+                                IPixLoader loader, Input input,
                                 Func<IPixLoader, Input, Result> tryInvoke,
                                 Func<Result, bool> isValid,
                                 string errorMessage)
         {
-            if (primaryLoader != null)
+            if (loader != null)
             {
-                var result = tryInvoke(primaryLoader, input);
-                if (isValid(result)) { return result; }
+                return tryInvoke(loader, input);
             }
-
-            foreach (var loader in GetLoaders())
+            else
             {
-                if (loader == primaryLoader) // already tried this one
-                    continue;
+                foreach (var l in GetLoaders())
+                {
+                    var result = tryInvoke(l, input);
+                    if (isValid(result)) { return result; }
+                }
 
-                var result = tryInvoke(loader, input);
-                if (isValid(result)) { return result; }
+                throw new ImageLoadException(errorMessage);
             }
-
-            throw new ImageLoadException(errorMessage);
         }
 
         private static Result TryInvokeLoaderWithStream<Result>(
@@ -641,7 +639,7 @@ namespace Aardvark.Base
         /// Loads an image from the given file without doing any conversions.
         /// </summary>
         /// <param name="filename">The image file to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImage LoadRaw(string filename, IPixLoader loader = null)
@@ -654,7 +652,7 @@ namespace Aardvark.Base
         /// Loads an image from the given file.
         /// </summary>
         /// <param name="filename">The image file to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImage Load(string filename, IPixLoader loader = null)
@@ -667,7 +665,7 @@ namespace Aardvark.Base
         /// Loads images from the given files.
         /// </summary>
         /// <param name="filenames">The image files to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded images.</returns>
         /// <exception cref="ImageLoadException">if an image could not be loaded.</exception>
         public static IEnumerable<PixImage> Load(IEnumerable<string> filenames, IPixLoader loader = null)
@@ -701,7 +699,7 @@ namespace Aardvark.Base
         /// Loads an image from the given stream without doing any conversions.
         /// </summary>
         /// <param name="stream">The image stream to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImage LoadRaw(Stream stream, IPixLoader loader = null)
@@ -714,7 +712,7 @@ namespace Aardvark.Base
         /// Loads an image from the given stream.
         /// </summary>
         /// <param name="stream">The image stream to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImage Load(Stream stream, IPixLoader loader = null)
@@ -793,7 +791,7 @@ namespace Aardvark.Base
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="saveParams">The save parameters to use.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void Save(string filename, PixSaveParams saveParams, bool normalizeFilename = true, IPixLoader loader = null)
         {
@@ -812,7 +810,7 @@ namespace Aardvark.Base
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="fileFormat">The image format of the file.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void Save(string filename, PixFileFormat fileFormat, bool normalizeFilename = true, IPixLoader loader = null)
             => Save(filename, new PixSaveParams(fileFormat), normalizeFilename, loader);
@@ -822,7 +820,7 @@ namespace Aardvark.Base
         /// The image file format is determined by the extension of the filename.
         /// </summary>
         /// <param name="filename">The file to save the image to.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         /// <exception cref="ArgumentException">if the filename extension is missing or unknown.</exception>
         public void Save(string filename, IPixLoader loader = null)
@@ -834,7 +832,7 @@ namespace Aardvark.Base
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void SaveAsJpeg(string filename, int quality = PixJpegSaveParams.DefaultQuality,
                                bool normalizeFilename = true, IPixLoader loader = null)
@@ -846,7 +844,7 @@ namespace Aardvark.Base
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void SaveAsPng(string filename, int compressionLevel = PixPngSaveParams.DefaultCompressionLevel,
                               bool normalizeFilename = true,  IPixLoader loader = null)
@@ -888,7 +886,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="stream">The stream to save the image to.</param>
         /// <param name="saveParams">The save parameters to use.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void Save(Stream stream, PixSaveParams saveParams, IPixLoader loader = null)
             => InvokeLoadersWithStream(
@@ -902,7 +900,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="stream">The stream to save the image to.</param>
         /// <param name="fileFormat">The image format of the stream.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void Save(Stream stream, PixFileFormat fileFormat, IPixLoader loader = null)
             => Save(stream, new PixSaveParams(fileFormat), loader);
@@ -912,7 +910,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="stream">The stream to save the image to.</param>
         /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void SaveAsJpeg(Stream stream, int quality = PixJpegSaveParams.DefaultQuality, IPixLoader loader = null)
             => Save(stream, new PixJpegSaveParams(quality), loader);
@@ -922,7 +920,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="stream">The file to save the image to.</param>
         /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void SaveAsPng(Stream stream, int compressionLevel = PixPngSaveParams.DefaultCompressionLevel, IPixLoader loader = null)
             => Save(stream, new PixPngSaveParams(compressionLevel), loader);
@@ -940,7 +938,7 @@ namespace Aardvark.Base
         /// Writes the image to a memory stream.
         /// </summary>
         /// <param name="saveParams">The save parameters to use.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public MemoryStream ToMemoryStream(PixSaveParams saveParams, IPixLoader loader = null)
@@ -954,7 +952,7 @@ namespace Aardvark.Base
         /// Writes the image to a memory stream.
         /// </summary>
         /// <param name="fileFormat">The image format of the stream.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public MemoryStream ToMemoryStream(PixFileFormat fileFormat, IPixLoader loader = null)
@@ -964,7 +962,7 @@ namespace Aardvark.Base
         /// Writes the image to a JPEG memory stream.
         /// </summary>
         /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public MemoryStream ToMemoryStreamAsJpeg(int quality = PixJpegSaveParams.DefaultQuality, IPixLoader loader = null)
@@ -974,7 +972,7 @@ namespace Aardvark.Base
         /// Writes the image to a PNG memory stream.
         /// </summary>
         /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public MemoryStream ToMemoryStreamAsPng(int compressionLevel = PixPngSaveParams.DefaultCompressionLevel, IPixLoader loader = null)
@@ -1007,7 +1005,7 @@ namespace Aardvark.Base
         /// Loads basic information about an image from a file without loading its content.
         /// </summary>
         /// <param name="filename">The image file to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A PixImageInfo instance containing basic information about the image.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImageInfo GetInfoFromFile(string filename, IPixLoader loader = null)
@@ -1034,7 +1032,7 @@ namespace Aardvark.Base
         /// Loads basic information about an image from a stream without loading its content.
         /// </summary>
         /// <param name="stream">The image stream to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A PixImageInfo instance containing basic information about the image.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImageInfo GetInfoFromStream(Stream stream, IPixLoader loader = null)
@@ -1435,7 +1433,7 @@ namespace Aardvark.Base
         /// Loads an image from the given file.
         /// </summary>
         /// <param name="filename">The image file to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public PixImage(string filename, IPixLoader loader = null)
         {
@@ -1453,7 +1451,7 @@ namespace Aardvark.Base
         /// Loads an image from the given stream.
         /// </summary>
         /// <param name="stream">The image stream to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public PixImage(Stream stream, IPixLoader loader = null)
         {
