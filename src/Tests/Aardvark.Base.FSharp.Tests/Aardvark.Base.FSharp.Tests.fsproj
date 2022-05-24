@@ -20,6 +20,7 @@
     <EmbeddedResource Include="data\test.jpg" />
     <Compile Include="TensorTests.fs" />
     <Compile Include="ImageSharpTests.fs" />
+    <Compile Include="PixLoaderTests.fs" />
     <Compile Include="SVDTests.fs" />
     <Compile Include="CachesTest.fs" />
     <Compile Include="TimeTests.fs" />
@@ -36,6 +37,7 @@
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
+    <ProjectReference Include="..\..\Aardvark.PixImage.DevIL\Aardvark.PixImage.DevIL.csproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>
