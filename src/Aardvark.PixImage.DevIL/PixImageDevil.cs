@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.IO;
 
@@ -13,15 +14,15 @@ namespace Aardvark.Base
     public static class PixImageDevil
     {
         private static readonly object s_devilLock = new object();
-        private static bool s_initialized = false;
+        private static int s_initialized = 0;
 
         [OnAardvarkInit]
         public static void InitDevil()
         {
             try
             {
-                if (s_initialized) return;
-                s_initialized = true;
+                if (Interlocked.Exchange(ref s_initialized, 1) != 0)
+                    return;
 
                 Bootstrap.Init();
                 I.Init();

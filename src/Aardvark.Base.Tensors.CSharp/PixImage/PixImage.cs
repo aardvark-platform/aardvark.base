@@ -125,7 +125,17 @@ namespace Aardvark.Base
                 if (loadFromFile != null)
                     return loadFromFile(filename, PixLoadOptions.Default);
                 else
-                    throw new ImageLoadException($"{Name} loader does not support loading from files.");
+                {
+                    if (loadFromStream != null)
+                    {
+                        using (var fs = File.OpenRead(filename))
+                        {
+                            return LoadFromStream(fs);
+                        }
+                    }
+                    else
+                        throw new ImageLoadException($"{Name} loader does not support loading from files and streams.");
+                }
             }
 
             public PixImage LoadFromStream(Stream stream)
@@ -142,11 +152,19 @@ namespace Aardvark.Base
                 {
                     int quality = (saveParams is PixJpegSaveParams jpg) ? jpg.Quality : PixJpegSaveParams.DefaultQuality;
                     if (!saveToFile(filename, PixSaveOptions.Default, saveParams.Format, quality, image))
-                        throw new ImageLoadException("Saving method failed.");
+                        throw new ImageLoadException("Internal error.");
                 }
                 else
                 {
-                    throw new NotSupportedException($"{Name} loader does not support saving to files.");
+                    if (saveToStream != null)
+                    {
+                        using (var fs = File.OpenWrite(filename))
+                        {
+                            SaveToStream(fs, image, saveParams);
+                        }
+                    }
+                    else
+                        throw new NotSupportedException($"{Name} loader does not support saving to files and streams.");
                 }
             }
 
@@ -156,7 +174,7 @@ namespace Aardvark.Base
                 {
                     int quality = (saveParams is PixJpegSaveParams jpg) ? jpg.Quality : PixJpegSaveParams.DefaultQuality;
                     if (!saveToStream(stream, PixSaveOptions.Default, saveParams.Format, quality, image))
-                        throw new ImageLoadException("Saving method failed.");
+                        throw new ImageLoadException("Internal error.");
                 }
                 else
                 {
@@ -368,7 +386,8 @@ namespace Aardvark.Base
         {
             if (loader != null)
             {
-                return tryInvoke(loader, input);
+                var result = tryInvoke(loader, input);
+                if (isValid(result)) { return result; }
             }
             else
             {
@@ -377,9 +396,9 @@ namespace Aardvark.Base
                     var result = tryInvoke(l, input);
                     if (isValid(result)) { return result; }
                 }
-
-                throw new ImageLoadException(errorMessage);
             }
+
+            throw new ImageLoadException(errorMessage);
         }
 
         private static Result TryInvokeLoaderWithStream<Result>(
@@ -856,7 +875,7 @@ namespace Aardvark.Base
             var normalizeFilename = ((options & PixSaveOptions.NormalizeFilename) != 0);
 
             if (fileFormat == PixFileFormat.Jpeg)
-                SaveAsJpeg(filename, qualityLevel, normalizeFilename);
+                SaveAsJpeg(filename, (qualityLevel == -1) ? PixJpegSaveParams.DefaultQuality : qualityLevel, normalizeFilename);
             else
                 Save(filename, fileFormat, normalizeFilename);
         }
