@@ -192,7 +192,7 @@ module DynamicCodeTests =
             simpleOut.Clear()
             res
 
-        run() |> should equal []
+        run() |> should be Empty
 
         prog.Add(1) |> ignore
         run() |> should equal [1]
@@ -204,10 +204,10 @@ module DynamicCodeTests =
         run() |> should equal [2]
 
         prog.Remove(2) |> ignore
-        run() |> should equal []
+        run() |> should be Empty
 
         prog.Clear()
-        run() |> should equal []
+        run() |> should be Empty
 
 
         ()
@@ -305,7 +305,7 @@ module DynamicCodeTests =
         prog.NativeCallCount |> should equal 0
         prog.FragmentCount |> should equal 0
 
-        prog.Run() |> should equal []
+        prog.Run() |> should be Empty
         ()
 
     [<Test>]
@@ -391,7 +391,7 @@ module DynamicCodeTests =
 
 
         transact (fun () -> calls.Clear())
-        prog.Run (TestStruct 20) |> should equal []
+        prog.Run (TestStruct 20) |> should be Empty
 
 
         ()

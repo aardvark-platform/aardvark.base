@@ -2,13 +2,14 @@
 #nowarn "44"
 
 open System
-open FsUnit
-open NUnit.Framework
 open System.Runtime.InteropServices
 open System.Diagnostics
 open System.Threading
 open System.Threading.Tasks
 open Aardvark.Base
+
+open FsUnit
+open NUnit.Framework
 
 module MemoryManagerTests =
     
@@ -464,7 +465,7 @@ module MemoryManagerTests =
         for e in !exns do
             Console.WriteLine("{0}", e)
 
-        !exns |> should equal []
+        !exns |> should be Empty
 
     [<Test>]
     let ``[Memory] random operations``() =
@@ -534,5 +535,5 @@ module MemoryManagerTests =
         for e in !exns do
             Console.WriteLine("{0}", e)
 
-        !exns |> should equal []
+        !exns |> should be Empty
 
