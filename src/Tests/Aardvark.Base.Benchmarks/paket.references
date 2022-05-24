@@ -1,3 +1,5 @@
+group Test
+
 BenchmarkDotNet
 NUnit
 NUnit3TestAdapter

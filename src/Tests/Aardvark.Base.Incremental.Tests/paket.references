@@ -1,9 +1,9 @@
+group Test
+
 FsUnit
 FsCheck
 FsCheck.NUnit
 FSharp.Core
 NUnit
-FsPickler
-Aardvark.Base.TypeProviders
 NUnit3TestAdapter
 Microsoft.NET.Test.Sdk

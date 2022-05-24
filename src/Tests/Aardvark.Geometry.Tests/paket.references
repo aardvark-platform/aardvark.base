@@ -1,9 +1,9 @@
+group Test
+
 FsCheck
 FsCheck.NUnit
 FSharp.Core
-Unofficial.LibTessDotNet
 FsUnit
 NUnit
-FsPickler
 NUnit3TestAdapter
 Microsoft.NET.Test.Sdk

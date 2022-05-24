@@ -412,10 +412,7 @@ module DynamicCodeTests =
     let ``[DynamicCode] huge changeset``() =
 
         let cnt = 250000
-        let manyCalls =
-            [
-                for i in 1 .. cnt do yield i,i+1
-            ]
+        let manyCalls = List.init cnt (fun i -> i, i+1)
 
         let calls = cset manyCalls
 
