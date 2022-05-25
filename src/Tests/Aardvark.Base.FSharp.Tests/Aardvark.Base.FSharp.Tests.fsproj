@@ -19,7 +19,6 @@
   <ItemGroup>
     <EmbeddedResource Include="data\test.jpg" />
     <Compile Include="TensorTests.fs" />
-    <Compile Include="ImageSharpTests.fs" />
     <Compile Include="PixLoaderTests.fs" />
     <Compile Include="SVDTests.fs" />
     <Compile Include="CachesTest.fs" />
