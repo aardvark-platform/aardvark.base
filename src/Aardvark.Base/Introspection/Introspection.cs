@@ -1008,7 +1008,14 @@ namespace Aardvark.Base
 
                     try
                     {
+#if NETCOREAPP3_1_OR_GREATER
+                        // In .NET core Assembly.LoadFile uses a separate context, resulting in assemblies being
+                        // potentially loaded multiple times -> leads to problems with static fields in unit tests
+                        // See: https://github.com/dotnet/runtime/issues/39783
+                        var ass = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(p);
+#else
                         var ass = Assembly.LoadFile(p);
+#endif
                         assemblies.Add(ass);
                     }
                     catch (Exception e)
