@@ -14,25 +14,31 @@ namespace Aardvark.Base
     public static class PixImageDevil
     {
         private static readonly object s_devilLock = new object();
-        private static int s_initialized = 0;
+        private static bool s_initialized = false;
 
         [OnAardvarkInit]
         public static void InitDevil()
         {
             try
             {
-                if (Interlocked.Exchange(ref s_initialized, 1) != 0)
-                    return;
+                lock (s_devilLock)
+                {
+                    if (s_initialized)
+                        return;
 
-                Bootstrap.Init();
-                I.Init();
-                I.Enable(EnableCap.AbsoluteOrigin);
-                I.OriginFunc(OriginMode.UpperLeft);
-                I.Enable(EnableCap.OverwriteExistingFile);
-                I.Enable(EnableCap.ConvertPalette);
+                    Bootstrap.Init();
+                    I.Init();
+                    I.Enable(EnableCap.AbsoluteOrigin);
+                    I.OriginFunc(OriginMode.UpperLeft);
+                    I.Enable(EnableCap.OverwriteExistingFile);
+                    I.Enable(EnableCap.ConvertPalette);
 
-                PixImage.AddLoader(Loader);
-            } catch(Exception e)
+                    PixImage.AddLoader(Loader);
+
+                    s_initialized = true;
+                }
+            }
+            catch(Exception e)
             {
                 Report.Warn("[PixImageDevil] could not InitDevil: {0}", e.Message);
             }
@@ -43,7 +49,7 @@ namespace Aardvark.Base
             InitDevil();
         }
 
-        private static Dictionary<Devil.ChannelFormat, Col.Format> s_pixColorFormats = new Dictionary<Devil.ChannelFormat, Col.Format>()
+        private static readonly Dictionary<Devil.ChannelFormat, Col.Format> s_pixColorFormats = new Dictionary<Devil.ChannelFormat, Col.Format>()
         {
             {Devil.ChannelFormat.Alpha, Col.Format.Alpha},
             {Devil.ChannelFormat.BGR, Col.Format.BGR},
@@ -55,7 +61,7 @@ namespace Aardvark.Base
             {Devil.ChannelFormat.RGBA, Col.Format.RGBA},
         };
 
-        private static Dictionary<Devil.ChannelType, Type> s_pixDataTypes = new Dictionary<Devil.ChannelType, Type>()
+        private static readonly Dictionary<Devil.ChannelType, Type> s_pixDataTypes = new Dictionary<Devil.ChannelType, Type>()
         {
             {Devil.ChannelType.Byte, typeof(sbyte)},
             {Devil.ChannelType.Short, typeof(short)},
@@ -67,7 +73,7 @@ namespace Aardvark.Base
             {Devil.ChannelType.Double, typeof(double)},
         };
 
-        private static Dictionary<Type, Devil.ChannelType> s_devilDataTypes = new Dictionary<Type, Devil.ChannelType>()
+        private static readonly Dictionary<Type, Devil.ChannelType> s_devilDataTypes = new Dictionary<Type, Devil.ChannelType>()
         {
             {typeof(sbyte), Devil.ChannelType.Byte},
             {typeof(short), Devil.ChannelType.Short},
@@ -79,7 +85,7 @@ namespace Aardvark.Base
             {typeof(double), Devil.ChannelType.Double},
         };
 
-        private static Dictionary<Col.Format, Devil.ChannelFormat> s_devilColorFormats = new Dictionary<Col.Format, Devil.ChannelFormat>()
+        private static readonly Dictionary<Col.Format, Devil.ChannelFormat> s_devilColorFormats = new Dictionary<Col.Format, Devil.ChannelFormat>()
         {
             { Col.Format.RGB, Devil.ChannelFormat.RGB },
             { Col.Format.RGBA, Devil.ChannelFormat.RGBA },
@@ -89,7 +95,7 @@ namespace Aardvark.Base
             { Col.Format.GrayAlpha, Devil.ChannelFormat.LuminanceAlpha },
         };
 
-        private static Dictionary<PixFileFormat, Devil.ImageType> s_fileFormats = new Dictionary<PixFileFormat, Devil.ImageType>()
+        private static readonly Dictionary<PixFileFormat, Devil.ImageType> s_fileFormats = new Dictionary<PixFileFormat, Devil.ImageType>()
         {
             {PixFileFormat.Bmp,   Devil.ImageType.Bmp},
             {PixFileFormat.Cut,   Devil.ImageType.Cut},
@@ -123,7 +129,7 @@ namespace Aardvark.Base
             private static void Fail(string call)
             {
                 var status = I.GetError();
-                throw new ImageLoadException($"IL.{call}() failed, error code = {status}");
+                throw new ImageLoadException($"IL.{call}() failed, error code = {status}.");
             }
 
             private static T TemporaryImage<T>(Func<int, T> f)
@@ -160,10 +166,10 @@ namespace Aardvark.Base
 
                         // try to get format information
                         if (!s_pixDataTypes.TryGetValue(dataType, out Type type))
-                            throw new ImageLoadException($"Unsupported channel type {dataType}");
+                            throw new ImageLoadException($"Unsupported channel type {dataType}.");
 
                         if (!s_pixColorFormats.TryGetValue(format, out Col.Format fmt))
-                            throw new ImageLoadException($"Unsupported format {format}");
+                            throw new ImageLoadException($"Unsupported format {format}.");
 
                         return parse(size, fmt, type, channels);
                     });
@@ -214,69 +220,61 @@ namespace Aardvark.Base
             public PixImage LoadFromStream(Stream stream)
                 => LoadPixImage(() => IlLoadStream(stream));
 
-            private static void SaveImage(PixImage image, PixSaveParams saveParams, Action save)
-                => TemporaryImage(img =>
+            private static void SaveImage(PixImage image, PixSaveParams saveParams, string saveMethod, Func<ImageType, bool> save)
+            {
+                if (!s_fileFormats.TryGetValue(saveParams.Format, out ImageType imageType))
+                    throw new NotSupportedException($"Unsupported PixImage file format {saveParams.Format}.");
+
+                lock (s_devilLock)
                 {
-                    if (!s_devilDataTypes.TryGetValue(image.PixFormat.Type, out ChannelType type))
-                        throw new NotSupportedException($"Unsupported PixFormat type {image.PixFormat.Type}");
-
-                    if (!s_devilColorFormats.TryGetValue(image.PixFormat.Format, out ChannelFormat fmt))
-                        throw new NotSupportedException($"Unsupported Col.Format {image.PixFormat.Format}");
-
-                    var gc = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
-                    try
+                    TemporaryImage(img =>
                     {
-                        if (!I.TexImage(image.Size.X, image.Size.Y, 1, (byte)image.ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
-                            Fail("TexImage");
+                        if (!s_devilDataTypes.TryGetValue(image.PixFormat.Type, out ChannelType type))
+                            throw new NotSupportedException($"Unsupported PixFormat type {image.PixFormat.Type}.");
 
-                        I.RegisterOrigin(OriginMode.UpperLeft);
+                        if (!s_devilColorFormats.TryGetValue(image.PixFormat.Format, out ChannelFormat fmt))
+                            throw new NotSupportedException($"Unsupported Col.Format {image.PixFormat.Format}.");
 
-                        if (saveParams is PixJpegSaveParams jpeg)
-                            I.SetInteger(IntName.JpgQuality, jpeg.Quality);
-
-                        if (saveParams is PixPngSaveParams png)
+                        var gc = GCHandle.Alloc(image.Data, GCHandleType.Pinned);
+                        try
                         {
-                            if (png.CompressionLevel != PixPngSaveParams.DefaultCompressionLevel)
-                                Report.Warn("DevIL does not support setting PNG compression levels");
-                        }
+                            if (!I.TexImage(image.Size.X, image.Size.Y, 1, (byte)image.ChannelCount, fmt, type, gc.AddrOfPinnedObject()))
+                                Fail("TexImage");
 
-                        save();
-                    }
-                    finally
-                    {
-                        gc.Free();
-                    }
-                });
+                            I.RegisterOrigin(OriginMode.UpperLeft);
+
+                            if (saveParams is PixJpegSaveParams jpeg)
+                                I.SetInteger(IntName.JpgQuality, jpeg.Quality);
+
+                            if (saveParams is PixPngSaveParams png)
+                            {
+                                if (png.CompressionLevel != PixPngSaveParams.DefaultCompressionLevel)
+                                    Report.Warn("DevIL does not support setting PNG compression levels.");
+                            }
+
+                            if (!save(imageType))
+                            {
+                                var status = I.GetError();
+
+                                if (status == ErrorCode.InvalidEnum)
+                                    throw new NotSupportedException($"DevIL does not support saving {imageType} images.");
+                                else
+                                    throw new ImageLoadException($"IL.{saveMethod}() failed, error code = {status}.");
+                            }
+                        }
+                        finally
+                        {
+                            gc.Free();
+                        }
+                    });
+                }
+            }
 
             public void SaveToFile(string filename, PixImage image, PixSaveParams saveParams)
-            {
-                if (!s_fileFormats.TryGetValue(saveParams.Format, out ImageType imageType))
-                    throw new NotSupportedException($"Unsupported PixImage file format {saveParams.Format}");
-
-                lock (s_devilLock)
-                {
-                    SaveImage(image, saveParams, () =>
-                    {
-                        if (!I.Save(imageType, filename))
-                            Fail("Save");
-                    });
-                }
-            }
+                => SaveImage(image, saveParams, "Save", imageType => I.Save(imageType, filename));
 
             public void SaveToStream(Stream stream, PixImage image, PixSaveParams saveParams)
-            {
-                if (!s_fileFormats.TryGetValue(saveParams.Format, out ImageType imageType))
-                    throw new NotSupportedException($"Unsupported PixImage file format {saveParams.Format}");
-
-                lock (s_devilLock)
-                {
-                    SaveImage(image, saveParams, () =>
-                    {
-                        if (!I.SaveStream(imageType, stream))
-                            Fail("SaveStream");
-                    });
-                }
-            }
+                => SaveImage(image, saveParams, "SaveStream", imageType => I.SaveStream(imageType, stream));
 
             private static PixImageInfo LoadPixImageInfo(Action load)
                 => LoadImage(load, (size, format, type, _) =>
