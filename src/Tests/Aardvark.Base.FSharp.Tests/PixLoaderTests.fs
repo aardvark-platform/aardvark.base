@@ -215,7 +215,7 @@ module PixLoaderTests =
                 let psnr = PixImage.peakSignalToNoiseRatio input.Image result
                 let rmse = PixImage.rootMeanSquaredError input.Image result
                 Expect.isGreaterThan psnr 25.0 "Bad peak-signal-to-noise ratio"
-                Expect.isLessThan rmse 13.0 "Bad root-mean-square error"
+                Expect.isLessThan rmse 15.0 "Bad root-mean-square error"
 
             | _ ->
                 PixImage.compare input.Image result
@@ -279,7 +279,7 @@ module PixLoaderTests =
     let ``[PixLoader] Add and remove loaders``() =
         let count = PixImage.GetLoaders() |> Seq.length
 
-        PixImage.AddLoader(PixImageDevil.Loader, 1337)
+        PixImage.SetLoader(PixImageDevil.Loader, 1337)
         PixImage.GetLoaders() |> Seq.head |> should equal PixImageDevil.Loader
 
         let priorities = PixImage.GetLoadersWithPriority()

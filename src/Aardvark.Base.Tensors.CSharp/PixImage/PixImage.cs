@@ -256,14 +256,14 @@ namespace Aardvark.Base
         private static readonly Dictionary<IPixLoader, int> s_loaders = new Dictionary<IPixLoader, int>();
 
         /// <summary>
-        /// Adds a PixImage loader.
+        /// Sets the priority of a PixImage loader.
         /// The priority determines the order in which loaders are invoked to load or save an image.
         /// Loaders with higher priority are invoked first.
-        /// If the loader already exists, the priority is modified.
+        /// If the loader does not exist, it is added with the given priority.
         /// </summary>
-        /// <param name="loader">The loader to add.</param>
-        /// <param name="priority">The priority of the loader.</param>
-        public static void AddLoader(IPixLoader loader, int priority = 0)
+        /// <param name="loader">The loader to modify.</param>
+        /// <param name="priority">The priority to set.</param>
+        public static void SetLoader(IPixLoader loader, int priority)
         {
             lock (s_loaders)
             {
@@ -274,7 +274,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Adds a PixImage loader.
         /// Assigns a priority that is greater than the highest priority among existing loaders, resulting in a LIFO order.
-        /// If the loader already exists, the priority is modified.
+        /// If the loader already exists, the priority is not modified.
         /// </summary>
         /// <param name="loader">The loader to add.</param>
         public static void AddLoader(IPixLoader loader)
@@ -283,7 +283,7 @@ namespace Aardvark.Base
             {
                 var loaders = s_loaders.ToList();
                 loaders.Sort((x, y) => y.Value - x.Value);
-                AddLoader(loader, loaders.Map(x => x.Value).FirstOrDefault(-1) + 1);
+                SetLoader(loader, loaders.Map(x => x.Value).FirstOrDefault(-1) + 1);
             }
         }
 
