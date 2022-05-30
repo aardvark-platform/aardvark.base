@@ -1,6 +1,7 @@
 ﻿namespace Aardvark.Base.FSharp.Tests
 
 open Aardvark.Base
+open System
 open System.IO
 
 open NUnit.Framework
@@ -26,6 +27,14 @@ module PixLoaderTests =
 
     module private PixImage =
 
+        let private desktopPath =
+            Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop)
+
+        let saveToDesktop (fileName : string) (img : #PixImage) =
+            let dir = Path.combine [desktopPath; "UnitTests"]
+            Directory.CreateDirectory(dir) |> ignore
+            img.Save(Path.combine [dir; fileName])
+
         let checkerboard (format : Col.Format) (width : int) (height : int) =
             let mutable colors = HashMap.empty<V2l, C4b>
 
@@ -48,9 +57,11 @@ module PixLoaderTests =
             pi
 
         let compare (input : PixImage<'T>) (output : PixImage<'T>) =
+            let channels = min input.ChannelCount output.ChannelCount
+
             for x in 0 .. output.Size.X - 1 do
                 for y in 0 .. output.Size.Y - 1 do
-                    for c in 0 .. (min input.ChannelCount output.ChannelCount) - 1 do
+                    for c in 0 .. channels - 1 do
                         let inputData = input.GetChannel(int64 c)
                         let outputData = output.GetChannel(int64 c)
 
@@ -68,6 +79,37 @@ module PixLoaderTests =
 
                         Expect.equal outputData.[x, y] ref message
 
+        let inline meanSquaredError (input : PixImage<'T>) (output : PixImage<'T>) =
+            let mutable error = 0.0
+            let channels = min input.ChannelCount output.ChannelCount
+
+            for x in 0 .. output.Size.X - 1 do
+                for y in 0 .. output.Size.Y - 1 do
+                    for c in 0 .. channels - 1 do
+                        let inputData = input.GetChannel(int64 c)
+                        let outputData = output.GetChannel(int64 c)
+
+                        let diff = float inputData.[x, y] - float outputData.[x, y]
+                        error <- error + (diff * diff)
+
+            error / float (output.Size.X * output.Size.Y * channels)
+
+        let maxValues =
+            LookupTable.lookupTable [
+                typeof<uint8>,   255.0
+                typeof<uint16>,  65535.0
+                typeof<uint32>,  4294967295.0
+                typeof<float32>, 1.0
+                typeof<float>,   1.0
+            ]
+
+        let inline rootMeanSquaredError (input : PixImage<'T>) (output : PixImage<'T>) =
+            sqrt (meanSquaredError input output)
+
+        let inline peakSignalToNoiseRatio (input : PixImage<'T>) (output : PixImage<'T>) =
+            let maxValue = maxValues typeof<'T>
+            20.0 * (log10 maxValue) - 10.0 * log10 (meanSquaredError input output)
+
     module private Gen =
 
         let colorFormat =
@@ -84,8 +126,8 @@ module PixLoaderTests =
                 PixFileFormat.Png
                 PixFileFormat.Tiff
                 PixFileFormat.Bmp
-                //PixFileFormat.Jpeg
-                //PixFileFormat.Gif
+                PixFileFormat.Jpeg
+                PixFileFormat.Gif
             ]
             |> Gen.elements
 
@@ -99,6 +141,12 @@ module PixLoaderTests =
         let pixLoader =
             let loaders = PixImage.GetLoaders() |> Seq.filter (fun l -> l.Name <> "Aardvark PGM")
             Gen.elements loaders
+
+        let pixEncoder (format : PixFileFormat) =
+            pixLoader
+            |> Gen.filter (fun loader ->
+                loader.Name <> "DevIL" || format <> PixFileFormat.Gif   // DevIL does not support saving GIFs
+            )
 
         let colorAndImageFileFormat =
             gen {
@@ -114,10 +162,12 @@ module PixLoaderTests =
             |> Gen.map (fun (cf, iff, _) -> cf, iff)
 
 
-    type PixImageWithFormat =
+    type SaveLoadInput =
         {
-            Image  : PixImage<byte>
-            Format : PixFileFormat
+            Image       : PixImage<byte>
+            FileFormat  : PixFileFormat
+            Encoder     : IPixLoader
+            Decoder     : IPixLoader
         }
 
     type Generator private () =
@@ -132,11 +182,13 @@ module PixLoaderTests =
             }
             |> Arb.fromGen
 
-        static member PixImageWithFormat =
+        static member SaveLoadInput =
             gen {
                 let! cf, iff = Gen.colorAndImageFileFormat
                 let! pix = Gen.checkerboardPix cf
-                return { Image = pix; Format = iff }
+                let! encoder = Gen.pixEncoder iff
+                let! decoder = Gen.pixLoader
+                return { Image = pix; FileFormat = iff; Encoder = encoder; Decoder = decoder }
             }
             |> Arb.fromGen
 
@@ -146,14 +198,27 @@ module PixLoaderTests =
         Report.Verbosity <- 3
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
-    let ``[PixLoader] Save and load`` (pi : PixImageWithFormat) (encoder : IPixLoader) (decoder : IPixLoader) =
-        printfn "encoder = %s, decoder = %s, size = %A, format = %A, file = %A" encoder.Name decoder.Name pi.Image.Size pi.Image.Format pi.Format
+    let ``[PixLoader] Save and load`` (input : SaveLoadInput) =
+        printfn "encoder = %s, decoder = %s, size = %A, format = %A, file = %A" input.Encoder.Name input.Decoder.Name input.Image.Size input.Image.Format input.FileFormat
 
         tempFile (fun file ->
-            pi.Image.Save(file, pi.Format, false, encoder)
-            let result = PixImage<byte>(file, decoder)
+            let saveParams =
+                match input.FileFormat with
+                | PixFileFormat.Jpeg -> PixJpegSaveParams(quality = 100) :> PixSaveParams
+                | fmt -> PixSaveParams fmt
 
-            PixImage.compare pi.Image result
+            input.Image.Save(file, saveParams, false, input.Encoder)
+            let result = PixImage<byte>(file, input.Decoder)
+
+            match input.FileFormat with
+            | PixFileFormat.Jpeg | PixFileFormat.Gif ->
+                let psnr = PixImage.peakSignalToNoiseRatio input.Image result
+                let rmse = PixImage.rootMeanSquaredError input.Image result
+                Expect.isGreaterThan psnr 25.0 "Bad peak-signal-to-noise ratio"
+                Expect.isLessThan rmse 13.0 "Bad root-mean-square error"
+
+            | _ ->
+                PixImage.compare input.Image result
         )
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
