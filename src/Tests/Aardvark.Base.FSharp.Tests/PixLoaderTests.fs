@@ -79,37 +79,6 @@ module PixLoaderTests =
 
                         Expect.equal outputData.[x, y] ref message
 
-        let inline meanSquaredError (input : PixImage<'T>) (output : PixImage<'T>) =
-            let mutable error = 0.0
-            let channels = min input.ChannelCount output.ChannelCount
-
-            for x in 0 .. output.Size.X - 1 do
-                for y in 0 .. output.Size.Y - 1 do
-                    for c in 0 .. channels - 1 do
-                        let inputData = input.GetChannel(int64 c)
-                        let outputData = output.GetChannel(int64 c)
-
-                        let diff = float inputData.[x, y] - float outputData.[x, y]
-                        error <- error + (diff * diff)
-
-            error / float (output.Size.X * output.Size.Y * channels)
-
-        let maxValues =
-            LookupTable.lookupTable [
-                typeof<uint8>,   255.0
-                typeof<uint16>,  65535.0
-                typeof<uint32>,  4294967295.0
-                typeof<float32>, 1.0
-                typeof<float>,   1.0
-            ]
-
-        let inline rootMeanSquaredError (input : PixImage<'T>) (output : PixImage<'T>) =
-            sqrt (meanSquaredError input output)
-
-        let inline peakSignalToNoiseRatio (input : PixImage<'T>) (output : PixImage<'T>) =
-            let maxValue = maxValues typeof<'T>
-            20.0 * (log10 maxValue) - 10.0 * log10 (meanSquaredError input output)
-
     module private Gen =
 
         let colorFormat =
