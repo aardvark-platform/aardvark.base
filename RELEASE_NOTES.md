@@ -1,3 +1,8 @@
+### 5.2.4
+- Added new API for PixImage loading and saving
+- Added PixImage.meanSquaredError and PixImage.peakSignalToNoiseRatio
+- Moved System.Drawing primitives extensions to Aardvark.Base.SystemDrawingInterop
+
 ### 5.2.3
 - Added transform methods for Trafo types
 - Added float32 overload for WeightedSum
