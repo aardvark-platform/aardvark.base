@@ -274,7 +274,17 @@ namespace Aardvark.Base
                 => SaveImage(image, saveParams, "Save", imageType => I.Save(imageType, filename));
 
             public void SaveToStream(Stream stream, PixImage image, PixSaveParams saveParams)
-                => SaveImage(image, saveParams, "SaveStream", imageType => I.SaveStream(imageType, stream));
+            {
+                if (saveParams.Format == PixFileFormat.Tiff)
+                {
+                    // Not sure why...
+                    throw new NotSupportedException("DevIL does not support saving TIFF images to streams.");
+                }
+                else
+                {
+                    SaveImage(image, saveParams, "SaveStream", imageType => I.SaveStream(imageType, stream));
+                }
+            }
 
             private static PixImageInfo LoadPixImageInfo(Action load)
                 => LoadImage(load, (size, format, type, _) =>

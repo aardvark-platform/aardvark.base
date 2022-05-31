@@ -142,10 +142,11 @@ module PixLoaderTests =
             let loaders = PixImage.GetLoaders() |> Seq.filter (fun l -> l.Name <> "Aardvark PGM")
             Gen.elements loaders
 
-        let pixEncoder (format : PixFileFormat) =
+        let pixEncoder (useStream : bool) (format : PixFileFormat) =
             pixLoader
             |> Gen.filter (fun loader ->
-                loader.Name <> "DevIL" || format <> PixFileFormat.Gif   // DevIL does not support saving GIFs
+                not (loader.Name = "DevIL" && format = PixFileFormat.Gif) &&            // DevIL does not support saving GIFs
+                not (loader.Name = "DevIL" && format = PixFileFormat.Tiff && useStream) // DevIL does not support saving TIFFs to streams
             )
 
         let colorAndImageFileFormat =
@@ -165,9 +166,10 @@ module PixLoaderTests =
     type SaveLoadInput =
         {
             Image       : PixImage<byte>
-            FileFormat  : PixFileFormat
+            SaveParams  : PixSaveParams
             Encoder     : IPixLoader
             Decoder     : IPixLoader
+            UseStream   : bool
         }
 
     type Generator private () =
@@ -186,9 +188,22 @@ module PixLoaderTests =
             gen {
                 let! cf, iff = Gen.colorAndImageFileFormat
                 let! pix = Gen.checkerboardPix cf
-                let! encoder = Gen.pixEncoder iff
+                let! useStream = Gen.elements [false; true]
+                let! encoder = Gen.pixEncoder useStream iff
                 let! decoder = Gen.pixLoader
-                return { Image = pix; FileFormat = iff; Encoder = encoder; Decoder = decoder }
+
+                let saveParams =
+                    match iff with
+                    | PixFileFormat.Jpeg -> PixJpegSaveParams(quality = 100) :> PixSaveParams
+                    | fmt -> PixSaveParams fmt
+
+                return {
+                    Image = pix
+                    SaveParams = saveParams
+                    Encoder = encoder
+                    Decoder = decoder
+                    UseStream = useStream
+                }
             }
             |> Arb.fromGen
 
@@ -197,29 +212,33 @@ module PixLoaderTests =
         Aardvark.Init()
         Report.Verbosity <- 3
 
+
     [<Property(Arbitrary = [| typeof<Generator> |])>]
     let ``[PixLoader] Save and load`` (input : SaveLoadInput) =
-        printfn "encoder = %s, decoder = %s, size = %A, format = %A, file = %A" input.Encoder.Name input.Decoder.Name input.Image.Size input.Image.Format input.FileFormat
+        printfn "encoder = %s, decoder = %s, size = %A, color format = %A, file format = %A, use stream = %b"
+                input.Encoder.Name input.Decoder.Name input.Image.Size input.Image.Format input.SaveParams.Format input.UseStream
 
         tempFile (fun file ->
-            let saveParams =
-                match input.FileFormat with
-                | PixFileFormat.Jpeg -> PixJpegSaveParams(quality = 100) :> PixSaveParams
-                | fmt -> PixSaveParams fmt
+            let output =
+                if input.UseStream then
+                    use stream = File.Open(file, FileMode.Create, FileAccess.ReadWrite)
+                    input.Image.Save(stream, input.SaveParams, input.Encoder)
 
-            input.Image.Save(file, saveParams, false, input.Encoder)
-            let result = PixImage<byte>(file, input.Decoder)
+                    stream.Position <- 0L
+                    PixImage<byte>(stream, input.Decoder)
+                else
+                    input.Image.Save(file, input.SaveParams, false, input.Encoder)
+                    PixImage<byte>(file, input.Decoder)
 
-            match input.FileFormat with
+            match input.SaveParams.Format with
             | PixFileFormat.Jpeg | PixFileFormat.Gif ->
-                let psnr = PixImage.peakSignalToNoiseRatio input.Image result
-                let rmse = PixImage.rootMeanSquaredError input.Image result
-                Expect.isGreaterThan psnr 25.0 "Bad peak-signal-to-noise ratio"
-                Expect.isLessThan rmse 15.0 "Bad root-mean-square error"
+                let psnr = PixImage.peakSignalToNoiseRatio input.Image output
+                Expect.isGreaterThan psnr 20.0 "Bad peak-signal-to-noise ratio"
 
             | _ ->
-                PixImage.compare input.Image result
+                PixImage.compare input.Image output
         )
+
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
     let ``[PixLoader] Aardvark PGM writer`` (pi : PixImage<byte>) =
@@ -234,6 +253,7 @@ module PixLoaderTests =
 
             PixImage.compare pi out
         )
+
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
     let ``[PixLoader] JPEG quality`` (loader : IPixLoader) (pi : PixImage<byte>) =
@@ -251,6 +271,7 @@ module PixLoaderTests =
                 i50.Length |> should be (lessThan i90.Length)
             )
         )
+
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
     let ``[PixLoader] PNG compression level`` (pi : PixImage<byte>) =
@@ -274,6 +295,7 @@ module PixLoaderTests =
                 i0.Length |> should be (greaterThan i9.Length)
             )
         )
+
 
     [<Test>]
     let ``[PixLoader] Add and remove loaders``() =
