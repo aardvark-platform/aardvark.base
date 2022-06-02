@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net472</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\Debug</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\bin\Release</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
+    <None Include="paket.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

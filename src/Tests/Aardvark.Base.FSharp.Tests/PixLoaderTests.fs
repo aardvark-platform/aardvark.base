@@ -233,6 +233,12 @@ module PixLoaderTests =
                 pi.SaveAsJpeg(file50, 50, false, loader)
                 pi.SaveAsJpeg(file90, 90, false, loader)
 
+                // check equal
+                let pi50 = PixImage<uint8>(file50, loader)
+                let pi90 = PixImage<uint8>(file90, loader)
+                let psnr = PixImage.peakSignalToNoiseRatio pi50 pi90
+                psnr |> should be (greaterThan 20.0)
+
                 // check size
                 let i50 = FileInfo(file50)
                 let i90 = FileInfo(file90)

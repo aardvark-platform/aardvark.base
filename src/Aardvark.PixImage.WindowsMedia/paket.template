@@ -1,0 +1,11 @@
+type project
+id Aardvark.PixImage.SystemImage
+authors VRVis Research Center
+description
+    Aardvark.PixImage.SystemImage
+frameworkAssemblies
+    PresentationCore
+    WindowsBase
+    System.Xaml
+    System.Xml.Linq
+include-pdbs true
