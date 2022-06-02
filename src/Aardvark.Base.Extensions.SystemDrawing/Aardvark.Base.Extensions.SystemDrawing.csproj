@@ -3,7 +3,9 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFrameworks>net472;netcoreapp3.1</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\Debug</OutputPath>

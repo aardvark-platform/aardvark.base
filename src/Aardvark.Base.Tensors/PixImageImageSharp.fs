@@ -319,8 +319,10 @@ type CameraInfo =
 
 
 type private ImageSharpPixLoader() =
+    member x.Name = "ImageSharp"
+
     interface IPixLoader with
-        member x.Name = "ImageSharp"
+        member x.Name = x.Name
         member x.LoadFromFile(filename) = PixImageSharp.Create(filename)
         member x.LoadFromStream(stream) = PixImageSharp.Create(stream)
         member x.SaveToFile(filename, image, saveParams) = image.SaveImageSharp(filename, saveParams)

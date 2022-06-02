@@ -7,29 +7,14 @@ using System.Linq;
 
 namespace Aardvark.Base
 {
-    //public class PixImageBitmap<T> : PixImageBitmap
-    //{
-    //    public PixImageBitmap(System.Drawing.Bitmap bitmap)
-    //    {
-    //        var loadImage = Create(bitmap);
-    //        var loadPixImage = loadImage as PixImage<T>;
-    //        if (loadPixImage == null)
-    //            loadPixImage = new PixImage<T>(loadImage);
-    //        Format = loadPixImage.Format;
-    //        Volume = loadPixImage.Volume;
-    //    }
-    //}
-
     /// <summary>
+    /// Contains Windows-only extensions for converting to and from bitmaps, as well as saving images to files and streams.
     /// </summary>
-    [Obsolete]
     public static class PixImageBitmap
     {
         #region Private
 
-        /// <summary>
-        /// </summary>
-        private static Dictionary<PixelFormat, (PixFormat, int)> s_pixFormatAndCountOfPixelFormatBitmap =
+        private static readonly Dictionary<PixelFormat, (PixFormat, int)> s_pixFormatAndCountOfPixelFormatBitmap =
             new Dictionary<PixelFormat, (PixFormat, int)>()
         {
             { PixelFormat.Format1bppIndexed, (PixFormat.ByteBW, 1) },
@@ -48,17 +33,15 @@ namespace Aardvark.Base
 
         };
 
-        /// <summary></summary>
-        private static Dictionary<PixelFormat, PixelFormat> s_bitmapLockFormats = new Dictionary<PixelFormat, PixelFormat>() 
-        { 
+        private static readonly Dictionary<PixelFormat, PixelFormat> s_bitmapLockFormats = new Dictionary<PixelFormat, PixelFormat>()
+        {
             { PixelFormat.Format16bppArgb1555, PixelFormat.Format32bppArgb },
             { PixelFormat.Format16bppRgb555, PixelFormat.Format24bppRgb },
             { PixelFormat.Format16bppRgb565, PixelFormat.Format24bppRgb },
             { PixelFormat.Format4bppIndexed, PixelFormat.Format8bppIndexed }
         };
 
-        /// <summary></summary>
-        private static Dictionary<PixFormat, PixelFormat> s_pixelFormats =
+        private static readonly Dictionary<PixFormat, PixelFormat> s_pixelFormats =
             new Dictionary<PixFormat, PixelFormat>()
         {
             { PixFormat.ByteRGB, PixelFormat.Format24bppRgb },
@@ -72,8 +55,7 @@ namespace Aardvark.Base
             { PixFormat.UShortBGRP, PixelFormat.Format64bppPArgb },
         };
 
-        /// <summary></summary>
-        private static Dictionary<PixFileFormat, ImageFormat> s_imageFormats =
+        private static readonly Dictionary<PixFileFormat, ImageFormat> s_imageFormats =
             new Dictionary<PixFileFormat, ImageFormat>()
         {
             {PixFileFormat.Bmp, ImageFormat.Bmp},
@@ -84,14 +66,12 @@ namespace Aardvark.Base
             {PixFileFormat.Wmp, ImageFormat.Wmf},
         };
 
-        /// <summary></summary>
-        private static Dictionary<Guid, ImageCodecInfo> s_imageCodecInfos =
+        private static readonly Dictionary<Guid, ImageCodecInfo> s_imageCodecInfos =
             ImageCodecInfo.GetImageEncoders().ToDictionary(c => c.FormatID);
-        
+
         private static PixelFormat GetLockFormat(PixelFormat format)
             => s_pixFormatAndCountOfPixelFormatBitmap.ContainsKey(format) ? format : s_bitmapLockFormats[format];
 
-        /// <summary></summary>
         private static PixImage CreateRawBitmap(Bitmap bitmap)
         {
             var sdipf = GetLockFormat(bitmap.PixelFormat);
@@ -130,28 +110,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Load image from stream via System.Drawing.
-        /// </summary>
-        /// <returns>If file could not be read, returns null, otherwise a Piximage.</returns>
-        private static PixImage CreateRawBitmap(Stream stream,
-            PixLoadOptions loadFlags = PixLoadOptions.Default
-            )
-        {
-            try
-            {
-                using (var bmp = (Bitmap)Bitmap.FromStream(stream))
-                {
-                    var result = CreateRawBitmap(bmp);
-                    return result;
-                }
-            }
-            catch
-            {
-                return null;
-            }
-        }
-        
-        /// <summary>
         /// Creates PixImage from System.Drawing.Bitmap.
         /// </summary>
         private static PixImage Create(Bitmap bitmap)
@@ -176,7 +134,7 @@ namespace Aardvark.Base
         /// Creates PixImage from System.Drawing.Image.
         /// </summary>
         public static PixImage ToPixImage(this Image image) => Create(image);
-        
+
         /// <summary>
         /// Converts image to System.Drawing.Image.
         /// </summary>
@@ -184,13 +142,13 @@ namespace Aardvark.Base
             => new Bitmap(self.ToMemoryStream(PixFileFormat.Png), false);
 
         /// <summary>
-        /// Saves image to stream via System.Drawing and
-        /// return true if the file was successfully saved.
+        /// Saves image to stream via System.Drawing.
         /// </summary>
-        public static bool SaveViaSystemDrawing(this PixImage self,
-            Stream stream, PixFileFormat format,
-            PixSaveOptions options, int qualityLevel
-            )
+        /// <param name="self">The image to save.</param>
+        /// <param name="stream">The stream to save the image to.</param>
+        /// <param name="saveParams">The save parameters to use.</param>
+        /// <returns>true on success, false otherwise.</returns>
+        public static bool SaveViaSystemDrawing(this PixImage self, Stream stream, PixSaveParams saveParams)
         {
             try
             {
@@ -198,7 +156,7 @@ namespace Aardvark.Base
                 if (!s_pixelFormats.TryGetValue(self.PixFormat, out PixelFormat pixelFormat))
                     Report.Error($"Unknown PixelFormat {self.PixFormat.Format}.");
 
-                var imageFormat = s_imageFormats[format];
+                var imageFormat = s_imageFormats[saveParams.Format];
 
                 var size = self.Size;
                 using (var bmp = new Bitmap(size.X, size.Y, pixelFormat))
@@ -207,11 +165,18 @@ namespace Aardvark.Base
                     self.Data.CopyTo(bdata.Scan0);
                     bmp.UnlockBits(bdata);
 
-                    if(qualityLevel >= 0)
+                    int quality =
+                        saveParams switch
+                        {
+                            PixJpegSaveParams jpeg => jpeg.Quality,
+                            _ => -1
+                        };
+
+                    if (quality >= 0)
                     {
                         var codec = s_imageCodecInfos[imageFormat.Guid];
                         var parameters = new EncoderParameters(1);
-                        parameters.Param[0] = new EncoderParameter(Encoder.Quality, qualityLevel);
+                        parameters.Param[0] = new EncoderParameter(Encoder.Quality, quality);
                         bmp.Save(stream, codec, parameters);
                         parameters.Dispose();
                     }
@@ -230,28 +195,76 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Saves image to file via System.Drawing and
-        /// return true if the file was successfully saved.
+        /// Saves image to stream via System.Drawing.
         /// </summary>
-        public static bool SaveViaSystemDrawing(this PixImage self,
-            string filename, PixFileFormat format,
-            PixSaveOptions options, int qualityLevel)
+        /// <param name="self">The image to save.</param>
+        /// <param name="stream">The stream to save the image to.</param>
+        /// <param name="fileFormat">The image format of the stream.</param>
+        /// <returns>true on success, false otherwise.</returns>
+        public static bool SaveViaSystemDrawing(this PixImage self, Stream stream, PixFileFormat fileFormat)
+            => self.SaveViaSystemDrawing(stream, new PixSaveParams(fileFormat));
+
+        /// <summary>
+        ///  Saves image to stream via System.Drawing as JPEG.
+        /// </summary>
+        /// <param name="self">The image to save.</param>
+        /// <param name="stream">The stream to save the image to.</param>
+        /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
+        /// <returns>true on success, false otherwise.</returns>
+        public static bool SaveViaSystemDrawingAsJpeg(this PixImage self, Stream stream, int quality = PixJpegSaveParams.DefaultQuality)
+            => self.SaveViaSystemDrawing(stream, new PixJpegSaveParams(quality));
+
+        /// <summary>
+        /// Saves image to file via System.Drawing.
+        /// </summary>
+        /// <param name="self">The image to save.</param>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="saveParams">The save parameters to use.</param>
+        /// <returns>true on success, false otherwise.</returns>
+        public static bool SaveViaSystemDrawing(this PixImage self, string filename, PixSaveParams saveParams)
         {
-            using (var stream = File.OpenWrite(filename))
-            {
-                return SaveViaSystemDrawing(self, stream, format, options, qualityLevel);
-            }
+            using var stream = File.OpenWrite(filename);
+            return SaveViaSystemDrawing(self, stream, saveParams);
         }
 
         /// <summary>
-        /// Gets info about a PixImage without loading the entire image into memory.
+        /// Saves image to file via System.Drawing.
         /// </summary>
-        /// <returns>null if the file info could not be loaded.</returns>
-        public static PixImageInfo InfoFromFileNameBitmap(
-                string fileName, PixLoadOptions options)
+        /// <param name="self">The image to save.</param>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="fileFormat">The image format of the stream.</param>
+        /// <returns>true on success, false otherwise.</returns>
+        public static bool SaveViaSystemDrawing(this PixImage self, string filename, PixFileFormat fileFormat)
+            => self.SaveViaSystemDrawing(filename, new PixSaveParams(fileFormat));
+
+        /// <summary>
+        ///  Saves image to file via System.Drawing as JPEG.
+        /// </summary>
+        /// <param name="self">The image to save.</param>
+        /// <param name="filename">The file to save the image to.</param>
+        /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
+        /// <returns>true on success, false otherwise.</returns>
+        public static bool SaveViaSystemDrawingAsJpeg(this PixImage self, string filename, int quality = PixJpegSaveParams.DefaultQuality)
+            => self.SaveViaSystemDrawing(filename, new PixJpegSaveParams(quality));
+
+        [Obsolete("Use overloads without PixSaveOptions.")]
+        public static bool SaveViaSystemDrawing(this PixImage self, Stream stream, PixFileFormat format, PixSaveOptions options, int qualityLevel)
         {
-            // TODO: implement
-            return null;
+            if (format == PixFileFormat.Jpeg)
+                return self.SaveViaSystemDrawingAsJpeg(stream, qualityLevel);
+            else
+                return self.SaveViaSystemDrawing(stream, format);
         }
+
+        [Obsolete("Use overloads without PixSaveOptions.")]
+        public static bool SaveViaSystemDrawing(this PixImage self, string filename, PixFileFormat format, PixSaveOptions options, int qualityLevel)
+        {
+            using var stream = File.OpenWrite(filename);
+            return SaveViaSystemDrawing(self, stream, format, options, qualityLevel);
+        }
+
+        [Obsolete("Not implemented anyway")]
+        public static PixImageInfo InfoFromFileNameBitmap(string fileName, PixLoadOptions options)
+            => throw new NotImplementedException();
     }
 }
