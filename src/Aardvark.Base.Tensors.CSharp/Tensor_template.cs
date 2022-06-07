@@ -29,6 +29,7 @@ namespace Aardvark.Base
     //#     v ? "T" + Meta.VecArgs[n-1] + "d, T" + Meta.VecArgs[n-1] : "T" + Meta.VecArgs[n-1];
     //# var itza = new[] { "0L", "V2l.Zero", "V3l.Zero", "V4l.Zero" };
     //# var itoa = new[] { "1L", "V2l.One", "V3l.One", "V4l.One" };
+    //# var deltacomments = new[] { "Element stride", "Element and line stride", "Stride in each dimension", "Stride in each dimension" };
     //# var vectn = Meta.GenericTensorTypes[0].Name;
     //# var mattn = Meta.GenericTensorTypes[2].Name;
     //# var voltn = Meta.GenericTensorTypes[4].Name;
@@ -48,6 +49,7 @@ namespace Aardvark.Base
     //#     var iit = tt.IntIndexType; var iitn = iit.Name;
     //#     var itzero = itza[d-1];
     //#     var itone = itoa[d-1];
+    //#     var deltacomment = deltacomments[d-1];
     //#     var ifa = d > 1 ? ((Meta.VecType)it).Fields : new[] { "X" };
     //#     var dotx = d > 1 ? ".X" : "";
     //#     var ideltas = d == 1 ? new[] { "Delta" } : ifa.Select(s => "Delta." + s).ToArray();
@@ -216,9 +218,24 @@ namespace Aardvark.Base
     [Serializable]
     public struct __ttn__Info : ITensorInfo
     {
+        /// <summary>
+        /// Location of [0,0] element within data array.
+        /// </summary>
         public long Origin;
+
+        /// <summary>
+        /// Size of the __ttnl__.
+        /// </summary>
         public __itn__ Size;
+
+        /// <summary>
+        /// __deltacomment__.
+        /// </summary>
         public __itn__ Delta;
+
+        /// <summary>
+        /// Coordinates of the first element.
+        /// </summary>
         public __itn__ First;
 
         #region Constructors
@@ -226,10 +243,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Construct a __ttn__Info given a complete specification.
         /// </summary>
-        /// <param name="origin">location of [0,0] element within data array</param>
-        /// <param name="size"></param>
-        /// <param name="delta">element and line stride</param>
-        /// <param name="first"></param>
+        /// <param name="origin">Location of [0,0] element within data array.</param>
+        /// <param name="size">Size of the __ttnl__.</param>
+        /// <param name="delta">__deltacomment__.</param>
+        /// <param name="first">Coordinates of the first element.</param>
         public __ttn__Info(long origin, __itn__ size, __itn__ delta, __itn__ first)
         {
             Origin = origin;
@@ -241,21 +258,21 @@ namespace Aardvark.Base
         /// <summary>
         /// Construct a __ttn__Info given a complete specification.
         /// </summary>
-        /// <param name="origin">location of [0,0] element within data array</param>
-        /// <param name="size"></param>
-        /// <param name="delta">element and line stride</param>
+        /// <param name="origin">Location of [0,0] element within data array.</param>
+        /// <param name="size">Size of the __ttnl__.</param>
+        /// <param name="delta">__deltacomment__.</param>
         public __ttn__Info(long origin, __itn__ size, __itn__ delta)
             : this(origin, size, delta, __itzero__)
         { }
 
-        /// <summary>
-        /// Construct matrix info of specified size.
-        /// </summary>
         //# if (d == 1) {
+        /// <summary>
+        /// Construct __ttnl__ info of specified size.
+        /// </summary>
         public __ttn__Info(__itn__ size)
             : this(0L, size, 1L)
         { }
-        
+
         public __ttn__Info(__ttn__Info info)
             : this(0L, info.Size, 1L)
         {
@@ -285,10 +302,16 @@ namespace Aardvark.Base
             return NewDelta(size);
         }
 
+        /// <summary>
+        /// Construct __ttnl__ info of specified size.
+        /// </summary>
         public __ttn__Info(__itn__ size)
             : this(0L, size, NewDelta(size))
         { }
 
+        /// <summary>
+        /// Construct __ttnl__ info of specified size and delta.
+        /// </summary>
         public __ttn__Info(__itn__ size, __itn__ delta)
             : this(0L, size, NewDelta(size, delta))
         { }
@@ -308,6 +331,13 @@ namespace Aardvark.Base
         { }
 
         //# if (d > 1) {
+        /// <summary>
+        /// Construct matrix info of specified size and delta.
+        /// </summary>
+        public __ttn__Info(__iitn__ size, __iitn__ delta)
+            : this((__itn__)size, (__itn__)delta)
+        { }
+
         /// <summary>
         /// Construct matrix info of specified size.
         /// </summary>

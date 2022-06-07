@@ -4,6 +4,8 @@ open System
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 
+#nowarn "44" // F# compiler currently warns if an obsolete method is used from within an obsolete method -_-
+
 [<AutoOpen>]
 module FSharpPixImageCubeExtensions =
 
