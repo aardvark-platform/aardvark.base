@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.FSharp.Tests
+﻿namespace Aardvark.Base.Windows.Tests
 
 open Aardvark.Base
 open System
