@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".NetStandard", ".NetStandar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeGenerator", "CodeGenerator\CodeGenerator.csproj", "{4B4A0898-4429-4E39-A916-50A0DE8E74E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base.Extensions.SystemDrawing", "Aardvark.Base.Extensions.SystemDrawing\Aardvark.Base.Extensions.SystemDrawing.csproj", "{599BA682-70EF-4D1E-A4C1-A36359482F87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.PixImage.SystemDrawing", "Aardvark.PixImage.SystemDrawing\Aardvark.PixImage.SystemDrawing.csproj", "{599BA682-70EF-4D1E-A4C1-A36359482F87}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.Base", "Aardvark.Base\Aardvark.Base.csproj", "{C90C041E-E076-4BBC-BBCD-B29367F649A2}"
 EndProject
@@ -61,7 +61,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.PixImage.DevIL", "
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.FSharp.Benchmarks", "Tests\Aardvark.Base.FSharp.Benchmarks\Aardvark.Base.FSharp.Benchmarks.fsproj", "{F278A2F7-52FF-40CD-B16D-4D82F7DFA8C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.PixImage.WindowsMedia", "Aardvark.PixImage.WindowsMedia\Aardvark.PixImage.WindowsMedia.csproj", "{02533034-24CF-4065-B7D3-A10A4CE0FC81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.PixImage.WindowsMedia", "Aardvark.PixImage.WindowsMedia\Aardvark.PixImage.WindowsMedia.csproj", "{02533034-24CF-4065-B7D3-A10A4CE0FC81}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -192,6 +192,7 @@ Global
 		{CE9B55FF-2D3E-4E13-BA0A-69FD82F0B29B} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{97F4D5BB-9F48-454B-B6A5-536AE172CE50} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{C2C8BA0D-992B-4BA7-8A6A-EA7A3207BBE6} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
+		{599BA682-70EF-4D1E-A4C1-A36359482F87} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{C90C041E-E076-4BBC-BBCD-B29367F649A2} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{C47CFAA4-9867-4FED-AE44-D31ACF7A4A9F} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{2E887670-5BC3-44FA-97A3-389917B27BEB} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}

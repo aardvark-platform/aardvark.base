@@ -10,7 +10,7 @@ namespace Aardvark.Base
     /// <summary>
     /// Contains Windows-only extensions for converting to and from bitmaps, as well as saving images to files and streams.
     /// </summary>
-    public static class PixImageBitmap
+    public static class PixImageSystemDrawing
     {
         #region Private
 
@@ -246,25 +246,5 @@ namespace Aardvark.Base
         /// <returns>true on success, false otherwise.</returns>
         public static bool SaveViaSystemDrawingAsJpeg(this PixImage self, string filename, int quality = PixJpegSaveParams.DefaultQuality)
             => self.SaveViaSystemDrawing(filename, new PixJpegSaveParams(quality));
-
-        [Obsolete("Use overloads without PixSaveOptions.")]
-        public static bool SaveViaSystemDrawing(this PixImage self, Stream stream, PixFileFormat format, PixSaveOptions options, int qualityLevel)
-        {
-            if (format == PixFileFormat.Jpeg)
-                return self.SaveViaSystemDrawingAsJpeg(stream, qualityLevel);
-            else
-                return self.SaveViaSystemDrawing(stream, format);
-        }
-
-        [Obsolete("Use overloads without PixSaveOptions.")]
-        public static bool SaveViaSystemDrawing(this PixImage self, string filename, PixFileFormat format, PixSaveOptions options, int qualityLevel)
-        {
-            using var stream = File.OpenWrite(filename);
-            return SaveViaSystemDrawing(self, stream, format, options, qualityLevel);
-        }
-
-        [Obsolete("Not implemented anyway")]
-        public static PixImageInfo InfoFromFileNameBitmap(string fileName, PixLoadOptions options)
-            => throw new NotImplementedException();
     }
 }
