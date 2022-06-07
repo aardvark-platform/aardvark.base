@@ -399,10 +399,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2f"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f TransformPos(this Trafo2f r, V2f p)
             => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2f"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f TransformPosProj(this Trafo2f r, V2f p)
+            => r.Forward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2f"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f TransformPosProjFull(this Trafo2f r, V2f p)
+            => r.Forward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.Z is presumed 0.0) by a <see cref="Trafo2f"/>
@@ -428,10 +445,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2f"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f InvTransformPos(this Trafo2f r, V2f p)
             => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2f"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f InvTransformPosProj(this Trafo2f r, V2f p)
+            => r.Backward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2f"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransformPosProjFull(this Trafo2f r, V2f p)
+            => r.Backward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.Z is presumed 0.0) by the inverse of a <see cref="Trafo2f"/>
@@ -1231,10 +1265,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3f"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f TransformPos(this Trafo3f r, V3f p)
             => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3f"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f TransformPosProj(this Trafo3f r, V3f p)
+            => r.Forward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3f"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f TransformPosProjFull(this Trafo3f r, V3f p)
+            => r.Forward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.W is presumed 0.0) by a <see cref="Trafo3f"/>
@@ -1260,10 +1311,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3f"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f InvTransformPos(this Trafo3f r, V3f p)
             => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3f"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3f InvTransformPosProj(this Trafo3f r, V3f p)
+            => r.Backward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3f"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4f InvTransformPosProjFull(this Trafo3f r, V3f p)
+            => r.Backward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.W is presumed 0.0) by the inverse of a <see cref="Trafo3f"/>
@@ -1682,10 +1750,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2d"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d TransformPos(this Trafo2d r, V2d p)
             => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2d"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d TransformPosProj(this Trafo2d r, V2d p)
+            => r.Forward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by a <see cref="Trafo2d"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d TransformPosProjFull(this Trafo2d r, V2d p)
+            => r.Forward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.Z is presumed 0.0) by a <see cref="Trafo2d"/>
@@ -1711,10 +1796,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2d"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d InvTransformPos(this Trafo2d r, V2d p)
             => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2d"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d InvTransformPosProj(this Trafo2d r, V2d p)
+            => r.Backward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.Z is presumed 1.0) by the inverse of a <see cref="Trafo2d"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransformPosProjFull(this Trafo2d r, V2d p)
+            => r.Backward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.Z is presumed 0.0) by the inverse of a <see cref="Trafo2d"/>
@@ -2524,10 +2626,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3d"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d TransformPos(this Trafo3d r, V3d p)
             => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3d"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d TransformPosProj(this Trafo3d r, V3d p)
+            => r.Forward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by a <see cref="Trafo3d"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d TransformPosProjFull(this Trafo3d r, V3d p)
+            => r.Forward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.W is presumed 0.0) by a <see cref="Trafo3d"/>
@@ -2553,10 +2672,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3d"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d InvTransformPos(this Trafo3d r, V3d p)
             => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3d"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V3d InvTransformPosProj(this Trafo3d r, V3d p)
+            => r.Backward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.W is presumed 1.0) by the inverse of a <see cref="Trafo3d"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V4d InvTransformPosProjFull(this Trafo3d r, V3d p)
+            => r.Backward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.W is presumed 0.0) by the inverse of a <see cref="Trafo3d"/>

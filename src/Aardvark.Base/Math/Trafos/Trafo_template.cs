@@ -852,10 +852,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.__fn__ is presumed 1.0) by a <see cref="__type__"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vnt__ TransformPos(this __type__ r, __vnt__ p)
             => r.Forward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by a <see cref="__type__"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ TransformPosProj(this __type__ r, __vnt__ p)
+            => r.Forward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by a <see cref="__type__"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmt__ TransformPosProjFull(this __type__ r, __vnt__ p)
+            => r.Forward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.__fn__ is presumed 0.0) by a <see cref="__type__"/>
@@ -881,10 +898,27 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Transforms point p (p.__fn__ is presumed 1.0) by the inverse of a <see cref="__type__"/>.
+        /// No projective transform is performed.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vnt__ InvTransformPos(this __type__ r, __vnt__ p)
             => r.Backward.TransformPos(p);
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by the inverse of a <see cref="__type__"/>.
+        /// Projective transform is performed. Perspective Division is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vnt__ InvTransformPosProj(this __type__ r, __vnt__ p)
+            => r.Backward.TransformPosProj(p);
+
+        /// <summary>
+        /// Transforms point p (p.__fn__ is presumed 1.0) by the inverse of a <see cref="__type__"/>.
+        /// Projective transform is performed.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __vmt__ InvTransformPosProjFull(this __type__ r, __vnt__ p)
+            => r.Backward.TransformPosProjFull(p);
 
         /// <summary>
         /// Transforms normal vector n (n.__fn__ is presumed 0.0) by the inverse of a <see cref="__type__"/>
