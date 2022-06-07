@@ -29,7 +29,7 @@ nuget FsPickler.Json               ~> 5.3.2
 nuget System.Text.Json             >= 4.7.2 lowest_matching: true
 
 group Test
-    framework: netcoreapp3.1, net6.0
+    framework: netcoreapp3.1, net6.0, net6.0-windows
     source https://api.nuget.org/v3/index.json
 
     nuget NUnit                    ~> 3.13.3
