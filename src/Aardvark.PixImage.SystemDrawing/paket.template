@@ -1,5 +1,5 @@
 type project
-id Aardvark.Base.Extensions.SystemDrawing
+id Aardvark.PixImage.SystemDrawing
 authors Aardvark Platform Team
 owners Aardvark Platform Team
 projectUrl http://github.com/aardvark-platform
