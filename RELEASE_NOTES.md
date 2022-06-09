@@ -1,3 +1,9 @@
+### 5.2.5
+- Ported System.Drawing bitmap extensions to new PixLoader API (renamed to Aardvark.PixImage.SystemDrawing)
+- Added Aardvark.PixImage.WindowsMedia
+- Added Trafo.(Inv)TransformPosProj(Full)
+- Added constructors and comments for tensor info structs
+
 ### 5.2.4
 - Added new API for PixImage loading and saving
 - Added PixImage.meanSquaredError and PixImage.peakSignalToNoiseRatio
