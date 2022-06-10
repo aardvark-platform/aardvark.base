@@ -105,7 +105,7 @@ namespace Aardvark.Base.Coder
             return TypeInfo.TryGetOfFullName(name, out ti);
         }
 
-        private void AddRef(object obj)
+        private int AddRef(object obj)
         {
             int count = m_refs.Count;
             m_refs.Add(obj);
@@ -113,6 +113,7 @@ namespace Aardvark.Base.Coder
             {
                 Report.Line("{0,32}   0x{1:x}", count, obj.GetHashCode());
             }
+            return count;
         }
 
         private object UseRef(int refNum)
@@ -138,6 +139,7 @@ namespace Aardvark.Base.Coder
             var typeName = m_reader.ReadString();
             TypeInfo newTypeInfo = null;
             TypeInfo typeInfo;
+            int objRef = -1;
 
             if (TryGetTypeInfo(typeName, out typeInfo))
             {
@@ -223,7 +225,7 @@ namespace Aardvark.Base.Coder
                             Report.Line("{0,-34} 0x{1:x}", typeName, obj.GetHashCode());
                         }
 
-                        if (m_doRefs) AddRef(obj);
+                        if (m_doRefs) objRef = AddRef(obj);
 
                         #region code fields based on supported interface
 
@@ -234,6 +236,7 @@ namespace Aardvark.Base.Coder
                             if (typeInfo.ProxyType != null)
                             {
                                 obj = typeInfo.Proxy2ObjectFun(fcobj);
+                                if (m_doRefs) m_refs[objRef] = obj; // fix reference after proxy conversion -> Issue when sub-object (in CodeFields) codes this object! (see #77)
                             }
                             else
                             {
@@ -290,6 +293,7 @@ namespace Aardvark.Base.Coder
                     var target = new Convertible(newTypeInfo.Name, null);
                     source.ConvertInto(target);
                     obj = target.Data;
+                    if (m_doRefs) m_refs[objRef] = obj; // fix reference after conversion -> Issue when sub-object (in CodeFields) codes this object! (see #77)
                 }
             }
         }
