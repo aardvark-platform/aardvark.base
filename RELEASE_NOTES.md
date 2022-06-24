@@ -1,3 +1,7 @@
+### 5.2.6
+- [PixImage.SystemDrawing] removed System.Drawing.Common upper version constraint
+- [IO] BinaryReadingCoder: patch object reference after converter/proxy conversion (#77)
+
 ### 5.2.5
 - Ported System.Drawing bitmap extensions to new PixLoader API (renamed to Aardvark.PixImage.SystemDrawing)
 - Added Aardvark.PixImage.WindowsMedia
