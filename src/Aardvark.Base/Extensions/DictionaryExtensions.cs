@@ -219,14 +219,17 @@ namespace Aardvark.Base
             }
             return true;
         }
-  
+
+// obsolete in netcore -> replaced by System.Collections.Generic.CollectionExtensions
+#if !NETCOREAPP3_1_OR_GREATER
         /// <summary>
         /// Returns the value stored with the supplied key or the specified default value if not found.
         /// </summary>
         public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue default_value)
         {
-            return self.TryGetValue(key, out TValue result) ? result : default_value;
+            return self.TryGetValue(key, out var result) ? result : default_value;
         }
+#endif
     }
 
     #endregion
