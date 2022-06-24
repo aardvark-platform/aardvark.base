@@ -14,7 +14,7 @@ nuget System.Dynamic.Runtime       ~> 4.3.0
 nuget DevILSharp                   ~> 0.2.9
 nuget SixLabors.ImageSharp         ~> 2.0.0
 nuget System.Reflection.Metadata   >= 5.0.0 lowest_matching: true
-nuget System.Drawing.Common        ~> 4.7.0
+nuget System.Drawing.Common        >= 4.7.0 lowest_matching: true
 
 nuget FSharp.Data.Adaptive         ~> 1.2.0
 nuget CSharp.Data.Adaptive         ~> 1.2.0
