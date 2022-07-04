@@ -493,9 +493,29 @@ type PolyRegion private(polygons : list<Polygon2d>) =
     member x.Triangulate() =
         LibTess.triangulate WindingRule.EvenOdd polygons
 
+    member x.Transformed(m : M22d) =
+        PolyRegion (polygons |> List.map (fun p -> p.Transformed m))
 
     member x.Transformed(m : M33d) =
         PolyRegion (polygons |> List.map (fun p -> p.Transformed m))
+
+    member x.Transformed(e : Euclidean2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.Transformed e))
+
+    member x.Transformed(s : Similarity2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.Transformed s))
+
+    member x.Transformed(a : Affine2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.Transformed a))
+
+    member x.Transformed(s : Shift2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.Transformed s))
+
+    member x.Transformed(r : Rot2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.Transformed r))
+
+    member x.Transformed(s : Scale2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.Transformed s))
 
     member x.BoundingBox =
         Box2d(polygons |> Seq.collect (fun p -> p.Points))
