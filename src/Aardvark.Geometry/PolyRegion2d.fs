@@ -517,6 +517,14 @@ type PolyRegion private(polygons : list<Polygon2d>) =
     member x.Transformed(s : Scale2d) =
         PolyRegion (polygons |> List.map (fun p -> p.Transformed s))
 
+    /// Returns a copy of the PolyRegion with the vertex order of all polygons reversed.
+    member x.Reversed =
+        PolyRegion (polygons |> List.map (fun p -> p.Reversed))
+
+    /// Reverses the vertex order of all polygons in-place.
+    member x.Reverse() =
+        polygons |> List.iter (fun p -> p.Reverse())
+
     member x.BoundingBox =
         Box2d(polygons |> Seq.collect (fun p -> p.Points))
 
