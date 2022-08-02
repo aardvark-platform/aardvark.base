@@ -278,7 +278,13 @@ module AMD64 =
             x.Mov(Register.Rbp, Register.Rsp, true)
             stackOffset <- stackOffset - 8
 
+            for r in localConvention.calleeSaved do
+                x.Push r
+        
         member x.End() =
+            for i in localConvention.calleeSaved.Length - 1 .. -1 .. 0 do
+                x.Pop localConvention.calleeSaved.[i]
+            
             x.Leave()
             stackOffset <- stackOffset - 8
 

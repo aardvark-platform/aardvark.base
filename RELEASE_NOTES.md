@@ -1,3 +1,6 @@
+### 5.2.7
+* fixed AMD64 assembler Begin/End (saving callee saved registers)
+
 ### 5.2.6
 - [PixImage.SystemDrawing] removed System.Drawing.Common upper version constraint
 - [IO] BinaryReadingCoder: patch object reference after converter/proxy conversion (#77)
