@@ -14,6 +14,8 @@ open System.Runtime.InteropServices
 open Microsoft.FSharp.NativeInterop
 open Aardvark.Geometry
 
+#nowarn "44"
+
 module Packer =
   
     let test() =

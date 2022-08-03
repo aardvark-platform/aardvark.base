@@ -11,6 +11,7 @@ open NUnit.Framework
 open FsUnit
 open FSharp.Data.Adaptive
 
+#nowarn "44"
 
 module DynamicCodeTests =
     

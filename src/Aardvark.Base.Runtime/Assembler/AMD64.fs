@@ -9,9 +9,10 @@ open Microsoft.FSharp.NativeInterop
 open FSharp.Data.Adaptive
 
 #nowarn "9"
+#nowarn "44"
 #nowarn "51"
 
-
+[<Obsolete("use Aardvark.Assembler")>]
 module AMD64 =
 
     type Register =

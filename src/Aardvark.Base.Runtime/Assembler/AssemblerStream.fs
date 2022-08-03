@@ -1,7 +1,11 @@
 ﻿namespace Aardvark.Base.Runtime
 
+open System
 open System.IO
 
+#nowarn "44"
+
+[<Obsolete("use Aardvark.Assembler")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module AssemblerStream =
     let ofStream (s : Stream) =

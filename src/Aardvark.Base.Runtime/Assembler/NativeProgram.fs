@@ -10,6 +10,7 @@ open Microsoft.FSharp.NativeInterop
 open FSharp.Data.Adaptive
 
 #nowarn "9"
+#nowarn "44"
 
 [<AutoOpen>]
 module private Helpers = 
@@ -231,6 +232,7 @@ type NativeProgramUpdateStatistics =
         static member Zero = NativeProgramUpdateStatistics()
     end
 
+[<Obsolete("use Aardvark.Assembler AdaptiveFragmentProgram")>]
 type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, compileDelta : Option<'a> -> 'a -> IAssemblerStream -> 'b, zero : 'b, add : 'b -> 'b -> 'b, sub : 'b -> 'b -> 'b) =
     inherit AdaptiveObject()
     let compileDelta = OptimizedClosures.FSharpFunc<_,_,_,_>.Adapt(compileDelta)
@@ -422,6 +424,7 @@ type NativeProgram<'a, 'b> private(data : alist<'a>, isDifferential : bool, comp
     new(data : alist<'a>, compile : Option<'a> -> 'a -> IAssemblerStream -> 'b, zero, add, sub) = new NativeProgram<'a, 'b>(data, true, compile, zero, add, sub)
     new(data : alist<'a>, compile : 'a -> IAssemblerStream -> 'b, zero, add, sub) = new NativeProgram<'a, 'b>(data, false, (fun _ v s -> compile v s), zero, add, sub)
     
+[<Obsolete("use Aardvark.Assembler AdaptiveFragmentProgram")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module NativeProgram =
     let differential (compile : Option<'a> -> 'a -> IAssemblerStream -> 'b, zero, add, sub) (values : alist<'a>) =
@@ -430,6 +433,7 @@ module NativeProgram =
     let simple (compile : 'a -> IAssemblerStream -> 'b, zero, add, sub) (values : alist<'a>) =
         new NativeProgram<'a, 'b>(values, compile, zero, add, sub)
 
+[<Obsolete("use Aardvark.Assembler FragmentProgram")>]
 type ChangeableNativeProgram<'a, 'b>(compile : 'a -> IAssemblerStream -> 'b, zero, add, sub) =
     
     let manager = MemoryManager.createExecutable()
