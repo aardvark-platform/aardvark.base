@@ -1,3 +1,6 @@
+### 5.2.8
+* revert obsolete AMD64 assembler to original behaviour
+
 ### 5.2.7
 * fixed AMD64 assembler Begin/End (saving callee saved registers)
 
