@@ -8,6 +8,8 @@ open System.Collections.Generic
 open Aardvark.Base
 open FSharp.Data.Adaptive
 
+#nowarn "44"
+
 module internal Unchecked =
     let inline isNull<'a when 'a : not struct>(value : 'a) = isNull (value :> obj)
 
@@ -286,6 +288,7 @@ module internal GenericProgram =
                   CallCount = 0; JumpDistance = 0; IsDisposed = false }
         end
 
+    [<Obsolete("use Aardvark.Assembler instead")>]
     type Program<'i, 'k, 'instruction, 'fragment, 'a>
         (input : aset<'k * 'a>,
          keyComparer : IComparer<'k>,
@@ -732,6 +735,7 @@ module internal GenericProgram =
             member x.TotalJumpDistanceInBytes = int64 (!handler.jumpDistance - prolog.JumpDistance - epilog.JumpDistance)
             member x.Disassemble() = x.Disassemble() :> obj
 
+[<Obsolete("use Aardvark.Assembler instead")>]
 module FragmentHandler =
     
 
@@ -982,6 +986,8 @@ module FragmentHandler =
     let managedSimple (compile : 'v -> IAdaptiveCode<'i -> unit>) () =
         { managedDifferential (fun _ v -> compile v) () with compileNeedsPrev = false }
 
+
+[<Obsolete("use Aardvark.Assembler instead")>]
 module AdaptiveProgram =
     
     let nativeDifferential (maxArgs : int) (comparer : IComparer<'k>) (compileDelta : Option<'v> -> 'v -> IAdaptiveCode<NativeCall>) (input : aset<'k * 'v>) =

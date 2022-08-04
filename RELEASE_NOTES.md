@@ -1,3 +1,6 @@
+### 5.2.9
+* Executable memory tools are now obsolete (use Aardvark.Assembler nuget package instead)
+
 ### 5.2.8
 * revert obsolete AMD64 assembler to original behaviour
 
