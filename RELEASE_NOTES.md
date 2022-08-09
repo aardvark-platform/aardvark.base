@@ -1,3 +1,6 @@
+### 5.2.10
+* fixed VRML transformations (missing normalization)
+
 ### 5.2.9
 * Executable memory tools are now obsolete (use Aardvark.Assembler nuget package instead)
 
