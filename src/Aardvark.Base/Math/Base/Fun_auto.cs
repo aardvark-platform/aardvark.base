@@ -5406,7 +5406,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
-        /// the quotient of the two specified number.
+        /// the quotient of the two specified numbers.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5421,7 +5421,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
-        /// the quotient of the two specified number using
+        /// the quotient of the two specified numbers using
         /// a faster algorithm than Math.Atan2.
         /// NOTE: Accuracy untested
         /// </summary>
@@ -5630,7 +5630,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
-        /// the quotient of the two specified number.
+        /// the quotient of the two specified numbers.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5641,7 +5641,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the angle in radians whose tangent is
-        /// the quotient of the two specified number using
+        /// the quotient of the two specified numbers using
         /// a faster algorithm than Math.Atan2.
         /// NOTE: Accuracy untested
         /// </summary>
