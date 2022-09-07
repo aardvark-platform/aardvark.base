@@ -1,3 +1,9 @@
+### 5.2.12
+* Added Fun.PowerOfTwo for int32 vectors
+* [FSharpMath] Added exp2, step, and linearstep
+* [Patterns] Added missing vector and matrix types
+* Added Fun.Step and Fun.Linearstep
+
 ### 5.2.11
 * [Ag] Removed compiler message
 
