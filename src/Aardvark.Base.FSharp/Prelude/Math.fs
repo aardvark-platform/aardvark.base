@@ -153,6 +153,12 @@ module FSharpMath =
         let inline invLerpAux (_ : ^Z) (a : ^T) (b : ^T) (y : ^T) =
             ((^Z or ^T or ^U) : (static member InvLerp : ^T * ^T * ^T -> ^U) (y, a, b))
 
+        let inline stepAux (_ : ^Z) (edge : ^T) (x : ^U) =
+            ((^Z or ^T or ^U) : (static member Step : ^U * ^T -> ^U) (x, edge))
+
+        let inline linearstepAux (_ : ^Z) (edge0 : ^T) (edge1 : ^T) (x : ^U) =
+            ((^Z or ^T or ^U) : (static member Linearstep : ^U * ^T * ^T -> ^U) (x, edge0, edge1))
+
         let inline smoothstepAux (_ : ^Z) (edge0 : ^T) (edge1 : ^T) (x : ^U) =
             ((^Z or ^T or ^U) : (static member Smoothstep : ^U * ^T * ^T -> ^U) (x, edge0, edge1))
 
@@ -265,7 +271,15 @@ module FSharpMath =
     let inline invLerp a b y =
         invLerpAux Unchecked.defaultof<Fun> a b y
 
-    /// Performs Hermite interpolation between a and b.
+    /// Returns 0 if x < edge, and 1 otherwise.
+    let inline step (edge : ^T) (x : ^U) =
+        stepAux Unchecked.defaultof<Fun> edge x
+
+    /// Inverse linear interpolation. Clamped to [0, 1].
+    let inline linearstep (edge0 : ^T) (edge1 : ^T) (x : ^U) : ^U =
+        linearstepAux Unchecked.defaultof<Fun> edge0 edge1 x
+
+    /// Performs smooth Hermite interpolation between 0 and 1 when edge0 < x < edge1.
     let inline smoothstep (edge0 : ^T) (edge1 : ^T) (x : ^U) =
         smoothstepAux Unchecked.defaultof<Fun> edge0 edge1 x
 
@@ -696,6 +710,29 @@ module FSharpMath =
             let a : V4f = V4f.Zero |> invLerp V4f.Zero V4f.One
             let a : V2d = V2d.Zero |> invLerp V2d.Zero V2d.One
             let a : V4d = V4d.Zero |> invLerp V4d.Zero V4d.One
+            ()
+
+        let stepWorking() =
+            let a : float = step 0.0 1.0
+            let a : float32 = step 0.0f 0.5f
+            let a : uint8 = step 32uy 64uy
+            let a : int8 = step 32y 64y
+            let a : int16 = step 32s 64s
+            let a : uint16 = step 32us 64us
+            let a : int32 = step 32 64
+            let a : int64 = step 32L 64L
+            let a : decimal = step 32m 64m
+            let a : V2i = step 0 V2i.One
+            let a : V2l = step 0L V2l.One
+            let a : V2f = step 0.0f V2f.Half
+            let a : V4d = step V4d.Zero V4d.Half
+            ()
+
+        let linearstepWorking() =
+            let a : float = linearstep 0.0 1.0 0.5
+            let a : float32 = linearstep 0.0f 1.0f 0.5f
+            let a : V2f = linearstep 0.0f 1.0f V2f.Half
+            let a : V4d = linearstep V4d.Zero V4d.One V4d.Half
             ()
 
         let smoothstepWorking() =

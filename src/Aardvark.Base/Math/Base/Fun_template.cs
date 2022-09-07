@@ -1611,6 +1611,41 @@ namespace Aardvark.Base
         //# });
         #endregion
 
+        #region Step functions
+
+        //# numdectypes.ForEach(t => {
+        //# var cast = (smalltypes.Contains(t) || unsignedtypes.Contains(t)) ? "(" + t.Name + ")" : "";
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Step(this __t.Name__ x, __t.Name__ edge)
+            => x < edge ? __cast__0 : __cast__1;
+
+        //# if (fddectypes.Contains(t)) {
+        /// <summary>
+        /// Inverse linear interpolation, clamped to [0, 1].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ Linearstep(this __t.Name__ x, __t.Name__ edge0, __t.Name__ edge1)
+            => Saturate(InvLerp(x, edge0, edge1));
+
+        /// <summary>
+        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
+        /// </summary>
+        [Pure]
+        public static __t.Name__ Smoothstep(this __t.Name__ x, __t.Name__ edge0, __t.Name__ edge1)
+        {
+            var t = Linearstep(x, edge0, edge1);
+            return t * t * (3 - 2 * t);
+        }
+
+        //# }
+        //# });
+        #endregion
+
         #region Interpolation
 
         //# numdectypes.ForEach(t => {
@@ -1622,16 +1657,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ Lerp(this __t.Name__ t, __t.Name__ a, __t.Name__ b)
             => a * (1 - t) + b * t;
-
-        /// <summary>
-        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
-        /// </summary>
-        [Pure]
-        public static __t.Name__ Smoothstep(this __t.Name__ x, __t.Name__ edge0, __t.Name__ edge1)
-        {
-            var t = Saturate((x - edge0) / (edge1 - edge0));
-            return t * t * (3 - 2 * t);
-        }
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.

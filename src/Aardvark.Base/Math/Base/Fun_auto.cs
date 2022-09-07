@@ -5740,6 +5740,152 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Step functions
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte Step(this byte x, byte edge)
+            => x < edge ? (byte)0 : (byte)1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static sbyte Step(this sbyte x, sbyte edge)
+            => x < edge ? (sbyte)0 : (sbyte)1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short Step(this short x, short edge)
+            => x < edge ? (short)0 : (short)1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort Step(this ushort x, ushort edge)
+            => x < edge ? (ushort)0 : (ushort)1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int Step(this int x, int edge)
+            => x < edge ? 0 : 1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Step(this uint x, uint edge)
+            => x < edge ? (uint)0 : (uint)1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static long Step(this long x, long edge)
+            => x < edge ? 0 : 1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ulong Step(this ulong x, ulong edge)
+            => x < edge ? (ulong)0 : (ulong)1;
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Step(this float x, float edge)
+            => x < edge ? 0 : 1;
+
+        /// <summary>
+        /// Inverse linear interpolation, clamped to [0, 1].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Linearstep(this float x, float edge0, float edge1)
+            => Saturate(InvLerp(x, edge0, edge1));
+
+        /// <summary>
+        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
+        /// </summary>
+        [Pure]
+        public static float Smoothstep(this float x, float edge0, float edge1)
+        {
+            var t = Linearstep(x, edge0, edge1);
+            return t * t * (3 - 2 * t);
+        }
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Step(this double x, double edge)
+            => x < edge ? 0 : 1;
+
+        /// <summary>
+        /// Inverse linear interpolation, clamped to [0, 1].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Linearstep(this double x, double edge0, double edge1)
+            => Saturate(InvLerp(x, edge0, edge1));
+
+        /// <summary>
+        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
+        /// </summary>
+        [Pure]
+        public static double Smoothstep(this double x, double edge0, double edge1)
+        {
+            var t = Linearstep(x, edge0, edge1);
+            return t * t * (3 - 2 * t);
+        }
+
+        /// <summary>
+        /// Returns 0 if <paramref name="x"/> &lt; <paramref name="edge"/>, and 1 otherwise.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Step(this decimal x, decimal edge)
+            => x < edge ? 0 : 1;
+
+        /// <summary>
+        /// Inverse linear interpolation, clamped to [0, 1].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static decimal Linearstep(this decimal x, decimal edge0, decimal edge1)
+            => Saturate(InvLerp(x, edge0, edge1));
+
+        /// <summary>
+        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
+        /// </summary>
+        [Pure]
+        public static decimal Smoothstep(this decimal x, decimal edge0, decimal edge1)
+        {
+            var t = Linearstep(x, edge0, edge1);
+            return t * t * (3 - 2 * t);
+        }
+
+        #endregion
+
         #region Interpolation
 
         /// <summary>
@@ -5943,16 +6089,6 @@ namespace Aardvark.Base
             => a * (1 - t) + b * t;
 
         /// <summary>
-        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
-        /// </summary>
-        [Pure]
-        public static float Smoothstep(this float x, float edge0, float edge1)
-        {
-            var t = Saturate((x - edge0) / (edge1 - edge0));
-            return t * t * (3 - 2 * t);
-        }
-
-        /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
         /// </summary>
         [Pure]
@@ -5969,16 +6105,6 @@ namespace Aardvark.Base
             => a * (1 - t) + b * t;
 
         /// <summary>
-        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
-        /// </summary>
-        [Pure]
-        public static double Smoothstep(this double x, double edge0, double edge1)
-        {
-            var t = Saturate((x - edge0) / (edge1 - edge0));
-            return t * t * (3 - 2 * t);
-        }
-
-        /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
         /// </summary>
         [Pure]
@@ -5993,16 +6119,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Lerp(this decimal t, decimal a, decimal b)
             => a * (1 - t) + b * t;
-
-        /// <summary>
-        /// Performs smooth Hermite interpolation between 0 and 1 when edge0 &lt; x &lt; edge1.
-        /// </summary>
-        [Pure]
-        public static decimal Smoothstep(this decimal x, decimal edge0, decimal edge1)
-        {
-            var t = Saturate((x - edge0) / (edge1 - edge0));
-            return t * t * (3 - 2 * t);
-        }
 
         /// <summary>
         /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.

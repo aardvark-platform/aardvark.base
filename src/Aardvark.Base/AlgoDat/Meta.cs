@@ -1238,14 +1238,23 @@ namespace Aardvark.Base
             );
             #endregion
 
+            #region Step functions
+            Add("Step functions",
+                Method("Step", Tensor("x"), Tensor("edge")),
+                Method("Step", Tensor("x"), Scalar("edge")),
+                Method("Linearstep", RealTypes, Tensor("x"), Tensor("edge0"), Tensor("edge1")),
+                Method("Linearstep", RealTypes, Tensor("x"), Scalar("edge0"), Scalar("edge1")),
+                Method("Smoothstep", RealTypes, Tensor("x"), Tensor("edge0"), Tensor("edge1")),
+                Method("Smoothstep", RealTypes, Tensor("x"), Scalar("edge0"), Scalar("edge1"))
+            );
+            #endregion
+
             #region Interpolation
             Add("Interpolation",
                 Method("Lerp", AllExcept(DoubleType), Scalar("t", FloatType), Tensor("a"), Tensor("b")),
                 Method("Lerp", AllExcept(DoubleType), Tensor("t", FloatType), Tensor("a"), Tensor("b")),
                 Method("Lerp", AllExcept(FloatType), Scalar("t", DoubleType), Tensor("a"), Tensor("b")),
                 Method("Lerp", AllExcept(FloatType), Tensor("t", DoubleType), Tensor("a"), Tensor("b")),
-                Method("Smoothstep", RealTypes, Tensor("x"), Tensor("edge0"), Tensor("edge1")),
-                Method("Smoothstep", RealTypes, Tensor("x"), Scalar("edge0"), Scalar("edge1")),
                 Method("InvLerp", Domain(FloatType), Tensor("y"), Tensor("a"), Tensor("b")),
                 Method("InvLerp", DoubleType, AllExcept(FloatType), Tensor("y"), Tensor("a"), Tensor("b"))
             );
