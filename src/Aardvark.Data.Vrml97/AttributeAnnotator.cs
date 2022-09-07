@@ -239,13 +239,13 @@ namespace Aardvark.Data.Vrml97
         {
             // create composite trafo (naming taken from vrml97 spec)
             M44d C = M44d.Translation(center), Ci = M44d.Translation(-center);
-            M44d SR = M44d.Rotation(scaleOrientation.XYZ, scaleOrientation.W),
-                                    SRi = M44d.Rotation(scaleOrientation.XYZ, -scaleOrientation.W);
+            var scaleRotAxis = scaleOrientation.XYZ.Normalized; // NOTE: values in the vrml (limited number of digits) are often not normalized
+            M44d SR = M44d.Rotation(scaleRotAxis, scaleOrientation.W), SRi = M44d.Rotation(scaleRotAxis, -scaleOrientation.W);
             M44d T = M44d.Translation(translation), Ti = M44d.Translation(-translation);
 
             //if (m_aveCompatibilityMode) r.W = -r.W;
-            M44d R = M44d.Rotation(rotation.XYZ, rotation.W),
-                                        Ri = M44d.Rotation(rotation.XYZ, -rotation.W);
+            var rotationAxis = rotation.XYZ.Normalized; // NOTE: values in the vrml (limited number of digits) are often not normalized
+            M44d R = M44d.Rotation(rotationAxis, rotation.W), Ri = M44d.Rotation(rotationAxis, -rotation.W);
 
             // in case some axis scales by 0 the best thing for the inverse scale is also 0
             var si = new V3d(scale.X.IsTiny() ? 0 : 1 / scale.X,

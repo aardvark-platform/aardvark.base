@@ -9,9 +9,10 @@ open Microsoft.FSharp.NativeInterop
 open FSharp.Data.Adaptive
 
 #nowarn "9"
+#nowarn "44"
 #nowarn "51"
 
-
+[<Obsolete("use Aardvark.Assembler")>]
 module AMD64 =
 
     type Register =
@@ -277,7 +278,7 @@ module AMD64 =
             x.Push(Register.Rbp)
             x.Mov(Register.Rbp, Register.Rsp, true)
             stackOffset <- stackOffset - 8
-
+        
         member x.End() =
             x.Leave()
             stackOffset <- stackOffset - 8

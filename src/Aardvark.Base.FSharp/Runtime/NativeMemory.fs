@@ -8,6 +8,7 @@ open Aardvark.Base
 open Microsoft.FSharp.NativeInterop
 
 #nowarn "9"
+#nowarn "44"
 
 type FreeList<'k, 'v when 'k : comparison>() =
     static let comparer = { new IComparer<'k * HashSet<'v>> with member x.Compare((l,_), (r,_)) = compare l r }
@@ -646,6 +647,8 @@ and MemoryManager(capacity : nativeint, config : MemoryManagerConfig) as this =
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module MemoryManager =
     let createHGlobal() = new MemoryManager(16n, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
+
+    [<Obsolete>]
     let createExecutable() = new MemoryManager(16n, ExecutableMemory.alloc, ExecutableMemory.free)
 
     let private nopConfig = { malloc = (fun _ -> 0n); mfree = (fun _ _ -> ()); mcopy = (fun _ _ _ -> ()) }

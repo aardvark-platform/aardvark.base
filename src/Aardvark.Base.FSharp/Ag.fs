@@ -700,7 +700,6 @@ module Ag =
 
     let (?<-) (target : 'a) (name : string) (value : 'b) = set target name value
 
-    [<CompilerMessage("internal use only", 1337, IsHidden = true)>]
     type Operators private() =
         static member Get(scope : Scope, name : string) : 'a =
             match runinh scope name with
@@ -777,48 +776,3 @@ type AgScopeExtensions private() =
         match scope.TryGetSynthesized<'a>(name) with
         | Some v -> Some v
         | None -> scope.TryGetInherited<'a>(name)
-
-
-//[<AutoOpen>]
-//module AgOperators =    
-//    open Ag
-    
-//    type System.Object with
-//        member x.AllChildren = anyObj
-
-//    let internal set<'a, 'b when 'a : not struct> (target : 'a) (name : string) (value : 'b) =
-//        let node = 
-//            match target :> obj with
-//            | :? FSharp.Data.Adaptive.IAdaptiveValue as v -> v.GetValueUntyped(FSharp.Data.Adaptive.AdaptiveToken.Top)
-//            | n -> n
-//        match Scope.CurrentScope with
-//        | Some s -> 
-//            // classic aval unpacking here
-//            s.SetInheritedForChild(node, name, Some (value :> obj))
-//        | None ->
-//            Scope.SetGlobalValue(node, name, value :> obj)
-
-//    let (?<-) (target : 'a) (name : string) (value : 'b) = set target name value
-
-//    [<CompilerMessage("internal use only", 1337, IsHidden = true)>]
-//    type Operators private() =
-//        static member Get(scope : Scope, name : string) : 'a =
-//            match Ag.runinh scope name with
-//            | Some (:? 'a as v) -> v
-//            | _ -> failwithf "[Ag] could not get inh attribute %s in scope %A" name scope
-
-//        static member Get(node : 'a, name : string) : Scope -> 'b =
-//            fun s -> 
-//                match syn (node :> obj) s name typeof<'b> with
-//                | Some (:? 'b as v) -> 
-//                    v
-//                | Some v ->
-//                    failwithf "[Ag] invalid result for syn attribute %s on node %A: %A" name node v
-//                | None ->
-//                    failwithf "[Ag] could not get syn attribute %s on node %A" name node
-
-//    let inline private opAux (_d : 'd) (a : 'a) (b : 'b) : 'c =
-//        ((^a or ^b or ^d) : (static member Get : ^a * ^b -> ^c) (a, b))
-
-//    let inline (?) a b = opAux Unchecked.defaultof<Operators> a b
-

@@ -3,6 +3,7 @@
 open Aardvark.Base
 open System
 open System.IO
+open System.IO.Compression
 
 open NUnit.Framework
 open FsUnit
@@ -286,3 +287,46 @@ module PixLoaderTests =
         PixImage.RemoveLoader(PixImageSharp.Loader)
         PixImage.RemoveLoader(PixImageDevil.Loader)
         PixImage.GetLoaders() |> Seq.length |> should equal (count - 2)
+
+    [<Test>]
+    let ``[PixLoader] Unseekable streams``() =
+
+        let pi = PixImage.checkerboard Col.Format.RGBA 256 256
+
+        let brokenLoader =
+            { new IPixLoader with
+                member x.Name = "Broken"
+                member x.GetInfoFromFile(filename) = null
+                member x.GetInfoFromStream(stream) = stream.ReadByte() |> ignore; null
+                member x.LoadFromFile(filename) = null
+                member x.LoadFromStream(stream) = stream.ReadByte() |> ignore; null
+                member x.SaveToFile(filename, image, saveParams) = ()
+                member x.SaveToStream(stream, image, saveParams) = stream.WriteByte(0uy); failwith "Nope" }
+
+        // If we fail with our first loader on an unseekable stream we're in trouble
+        PixImage.SetLoader(brokenLoader, 1337)
+
+        tempFile (fun filename ->
+            File.Delete filename
+
+            use archive = ZipFile.Open(filename, ZipArchiveMode.Create)
+            use stream = archive.CreateEntry("foo.png", CompressionLevel.Fastest).Open()
+
+            stream.CanSeek |> should equal false
+
+            (fun () -> pi.SaveAsPng(stream)) |> should throw typeof<NotSupportedException>
+        )
+
+        // On the other hand, if the first loader succeeds it should not matter
+        PixImage.SetLoader(PixImageSharp.Loader, 1338)
+
+        tempFile (fun filename ->
+            File.Delete filename
+
+            use archive = ZipFile.Open(filename, ZipArchiveMode.Create)
+            use stream = archive.CreateEntry("foo.png", CompressionLevel.Fastest).Open()
+
+            stream.CanSeek |> should equal false
+
+            pi.SaveAsPng(stream)
+        )

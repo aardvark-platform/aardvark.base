@@ -4,6 +4,9 @@
 open Aardvark.Base
 #else
 namespace Aardvark.Base
+
+open System
+
 #endif
 
 
@@ -59,7 +62,7 @@ module private Dl =
 
 
 
-
+[<Obsolete("use Aardvark.Assembler JitMem instead")>]
 module ExecutableMemory =
     open System
     let private os = System.Environment.OSVersion

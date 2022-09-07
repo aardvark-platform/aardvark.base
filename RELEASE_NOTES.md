@@ -1,3 +1,28 @@
+### 5.2.11
+* [Ag] Removed compiler message
+
+### 5.2.10
+* fixed VRML transformations (missing normalization)
+
+### 5.2.9
+* Executable memory tools are now obsolete (use Aardvark.Assembler nuget package instead)
+
+### 5.2.8
+* revert obsolete AMD64 assembler to original behaviour
+
+### 5.2.7
+* fixed AMD64 assembler Begin/End (saving callee saved registers)
+
+### 5.2.6
+- [PixImage.SystemDrawing] removed System.Drawing.Common upper version constraint
+- [IO] BinaryReadingCoder: patch object reference after converter/proxy conversion (#77)
+
+### 5.2.5
+- Ported System.Drawing bitmap extensions to new PixLoader API (renamed to Aardvark.PixImage.SystemDrawing)
+- Added Aardvark.PixImage.WindowsMedia
+- Added Trafo.(Inv)TransformPosProj(Full)
+- Added constructors and comments for tensor info structs
+
 ### 5.2.4
 - Added new API for PixImage loading and saving
 - Added PixImage.meanSquaredError and PixImage.peakSignalToNoiseRatio
