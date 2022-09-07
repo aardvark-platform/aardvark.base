@@ -1725,6 +1725,9 @@ namespace Aardvark.Base
         /// Applies Fun.__fun.Name__ to each element of the given vector(s).
         /// </summary>
         [Pure]
+        //# if (fun.Obsolete) {
+        [Obsolete]
+        //# }
         //# if (!fun.EditorBrowsable) {
         [EditorBrowsable(EditorBrowsableState.Never)]
         //# }
