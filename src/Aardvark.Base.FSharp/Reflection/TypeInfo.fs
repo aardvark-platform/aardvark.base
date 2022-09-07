@@ -88,17 +88,34 @@ module TypeInfo =
     let TV2i = { vectorType = typeof<V2i>; baseType = TInt32; dimension = 2 }
     let TV3i = { vectorType = typeof<V3i>; baseType = TInt32; dimension = 3 }
     let TV4i = { vectorType = typeof<V4i>; baseType = TInt32; dimension = 4 }
+
+    let TV2l = { vectorType = typeof<V2l>; baseType = TInt64; dimension = 2 }
+    let TV3l = { vectorType = typeof<V3l>; baseType = TInt64; dimension = 3 }
+    let TV4l = { vectorType = typeof<V4l>; baseType = TInt64; dimension = 4 }
+
     let TV2f = { vectorType = typeof<V2f>; baseType = TFloat32; dimension = 2 }
     let TV3f = { vectorType = typeof<V3f>; baseType = TFloat32; dimension = 3 }
     let TV4f = { vectorType = typeof<V4f>; baseType = TFloat32; dimension = 4 }
+
     let TV2d = { vectorType = typeof<V2d>; baseType = TFloat64; dimension = 2 }
     let TV3d = { vectorType = typeof<V3d>; baseType = TFloat64; dimension = 3 }
     let TV4d = { vectorType = typeof<V4d>; baseType = TFloat64; dimension = 4 }
+
+    let TM22i = { matrixType = typeof<M22i>; baseType = TInt32; dimension = V2i(2,2) }
+    let TM33i = { matrixType = typeof<M33i>; baseType = TInt32; dimension = V2i(3,3) }
+    let TM34i = { matrixType = typeof<M34i>; baseType = TInt32; dimension = V2i(4,3) }
+    let TM44i = { matrixType = typeof<M44i>; baseType = TInt32; dimension = V2i(4,4) }
+
+    let TM22l = { matrixType = typeof<M22l>; baseType = TInt64; dimension = V2i(2,2) }
+    let TM33l = { matrixType = typeof<M33l>; baseType = TInt64; dimension = V2i(3,3) }
+    let TM34l = { matrixType = typeof<M34l>; baseType = TInt64; dimension = V2i(4,3) }
+    let TM44l = { matrixType = typeof<M44l>; baseType = TInt64; dimension = V2i(4,4) }
 
     let TM22f = { matrixType = typeof<M22f>; baseType = TFloat32; dimension = V2i(2,2) }
     let TM33f = { matrixType = typeof<M33f>; baseType = TFloat32; dimension = V2i(3,3) }
     let TM34f = { matrixType = typeof<M34f>; baseType = TFloat32; dimension = V2i(4,3) }
     let TM44f = { matrixType = typeof<M44f>; baseType = TFloat32; dimension = V2i(4,4) }
+
     let TM22d = { matrixType = typeof<M22d>; baseType = TFloat64; dimension = V2i(2,2) }
     let TM33d = { matrixType = typeof<M33d>; baseType = TFloat64; dimension = V2i(3,3) }
     let TM34d = { matrixType = typeof<M34d>; baseType = TFloat64; dimension = V2i(4,3) }
@@ -107,8 +124,22 @@ module TypeInfo =
     let IntegralTypes : Set<ITypeInfo>  = Set.ofList [TByte; TSByte; TInt16; TUInt16; TInt32; TUInt32; TInt64; TUInt64]
     let FractionalTypes : Set<ITypeInfo>  = Set.ofList [TFloat32; TFloat64; TDecimal]
     let NumTypes : Set<ITypeInfo>  = Set.union IntegralTypes FractionalTypes
-    let VectorTypes  : Set<ITypeInfo> = Set.ofList [TV2i; TV3i; TV4i; TV2f; TV3f; TV4f; TV2d; TV3d; TV4d]
-    let MatrixTypes : Set<ITypeInfo>  = Set.ofList [TM22f; TM33f; TM34f; TM44f; TM22d; TM33d; TM34d; TM44d]
+
+    let VectorTypes  : Set<ITypeInfo> =
+        Set.ofList [
+            TV2i; TV3i; TV4i
+            TV2l; TV3l; TV4l
+            TV2f; TV3f; TV4f
+            TV2d; TV3d; TV4d
+        ]
+
+    let MatrixTypes : Set<ITypeInfo> =
+        Set.ofList [
+            TM22i; TM33i; TM34i; TM44i
+            TM22l; TM33l; TM34l; TM44l
+            TM22f; TM33f; TM34f; TM44f
+            TM22d; TM33d; TM34d; TM44d
+        ]
 
     let TRef = { simpleType = typeof<ref<int>>.GetGenericTypeDefinition() }
     let TList = { simpleType = typeof<list<int>>.GetGenericTypeDefinition() }
