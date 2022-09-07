@@ -9,6 +9,21 @@ open System
 module FSharpMath =
 
     module Helpers =
+
+        // We only support float and float32 based types for exp2, since we have to ensure that the return type matches the input type.
+        // Fun.PowerOfTwo does not have that property for integers generally, e.g. Fun.PowerOfTwo : int64 -> uint64.
+        type Exp2() =
+            static member inline Exp2(x : float)   = Fun.PowerOfTwo x
+            static member inline Exp2(x : float32) = Fun.PowerOfTwo x
+
+            static member inline Exp2(x : V2d) = Fun.PowerOfTwo x
+            static member inline Exp2(x : V3d) = Fun.PowerOfTwo x
+            static member inline Exp2(x : V4d) = Fun.PowerOfTwo x
+
+            static member inline Exp2(x : V2f) = Fun.PowerOfTwo x
+            static member inline Exp2(x : V3f) = Fun.PowerOfTwo x
+            static member inline Exp2(x : V4f) = Fun.PowerOfTwo x
+
         type Comparison() =
             static member inline Min< ^T when ^T : comparison>(a : ^T, b : ^T) = Operators.min a b
 
@@ -102,6 +117,9 @@ module FSharpMath =
         let inline pownAux (_ : ^Z) (x : ^T) (y : ^U) =
             ((^Z or ^T or ^U) : (static member Pown : ^T * ^U -> ^T) (x, y))
 
+        let inline exp2Aux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Exp2 : ^T -> ^T) (x))
+
         let inline log2Aux (_ : ^Z) (x : ^T) =
             ((^Z or ^T) : (static member Log2 : ^T -> ^T) x)
 
@@ -183,20 +201,24 @@ module FSharpMath =
     let inline signumi x =
         signumiAux Unchecked.defaultof<Fun> x
 
-    /// Returns x raised by the power of y (must be float or double).
+    /// Returns x raised to the power of y (must be float or double).
     // F# variant does not support integers!
     let inline pow x y =
         powAux Unchecked.defaultof<Fun> x y
 
-    /// Returns x raised by the power of y.
+    /// Returns x raised to the power of y.
     // F# variant does not support integers!
     let inline ( ** ) x y =
         pow x y
 
-    /// Returns x raised by the integer power of y (must not be negative).
+    /// Returns x raised to the integer power of y (must not be negative).
     // F# variant has signature a' -> int -> 'a, which does not permit for example V2f -> V2i -> V2f
     let inline pown x y =
         pownAux Unchecked.defaultof<Fun> x y
+
+    /// Returns 2 raised to the power of x (must be float or double).
+    let inline exp2 x =
+        exp2Aux Unchecked.defaultof<Helpers.Exp2> x
 
     /// Returns the base 2 logarithm of x.
     let inline log2 x =
@@ -494,6 +516,21 @@ module FSharpMath =
             let a : V2l = pown V2l.One 1L
             let a : V2l = pown V2l.One V2i.One
             let a : V2l = pown V2l.One V2l.One
+
+            ()
+
+        let inline indirectExp2 (x : ^T) =
+            exp2 x
+
+        let exp2Working() =
+            let a : float = exp2 1.0
+            let a : float32 = exp2 1.0f
+
+            let a = 2.0 * (exp2 V3d.III)
+            let a = 2.0 * (indirectExp2 V3d.III)
+
+            let a : V2f = exp2 V2f.One
+            let a : V2d = exp2 V2d.One
 
             ()
 
