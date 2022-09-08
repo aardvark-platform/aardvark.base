@@ -102,21 +102,25 @@ module TypeInfo =
     let TV4d = { vectorType = typeof<V4d>; baseType = TFloat64; dimension = 4 }
 
     let TM22i = { matrixType = typeof<M22i>; baseType = TInt32; dimension = V2i(2,2) }
+    let TM23i = { matrixType = typeof<M23i>; baseType = TInt32; dimension = V2i(3,2) }
     let TM33i = { matrixType = typeof<M33i>; baseType = TInt32; dimension = V2i(3,3) }
     let TM34i = { matrixType = typeof<M34i>; baseType = TInt32; dimension = V2i(4,3) }
     let TM44i = { matrixType = typeof<M44i>; baseType = TInt32; dimension = V2i(4,4) }
 
     let TM22l = { matrixType = typeof<M22l>; baseType = TInt64; dimension = V2i(2,2) }
+    let TM23l = { matrixType = typeof<M23l>; baseType = TInt64; dimension = V2i(3,2) }
     let TM33l = { matrixType = typeof<M33l>; baseType = TInt64; dimension = V2i(3,3) }
     let TM34l = { matrixType = typeof<M34l>; baseType = TInt64; dimension = V2i(4,3) }
     let TM44l = { matrixType = typeof<M44l>; baseType = TInt64; dimension = V2i(4,4) }
 
     let TM22f = { matrixType = typeof<M22f>; baseType = TFloat32; dimension = V2i(2,2) }
+    let TM23f = { matrixType = typeof<M23f>; baseType = TFloat32; dimension = V2i(3,2) }
     let TM33f = { matrixType = typeof<M33f>; baseType = TFloat32; dimension = V2i(3,3) }
     let TM34f = { matrixType = typeof<M34f>; baseType = TFloat32; dimension = V2i(4,3) }
     let TM44f = { matrixType = typeof<M44f>; baseType = TFloat32; dimension = V2i(4,4) }
 
     let TM22d = { matrixType = typeof<M22d>; baseType = TFloat64; dimension = V2i(2,2) }
+    let TM23d = { matrixType = typeof<M23d>; baseType = TFloat64; dimension = V2i(3,2) }
     let TM33d = { matrixType = typeof<M33d>; baseType = TFloat64; dimension = V2i(3,3) }
     let TM34d = { matrixType = typeof<M34d>; baseType = TFloat64; dimension = V2i(4,3) }
     let TM44d = { matrixType = typeof<M44d>; baseType = TFloat64; dimension = V2i(4,4) }
@@ -135,10 +139,10 @@ module TypeInfo =
 
     let MatrixTypes : Set<ITypeInfo> =
         Set.ofList [
-            TM22i; TM33i; TM34i; TM44i
-            TM22l; TM33l; TM34l; TM44l
-            TM22f; TM33f; TM34f; TM44f
-            TM22d; TM33d; TM34d; TM44d
+            TM22i; TM23i; TM33i; TM34i; TM44i
+            TM22l; TM23l; TM33l; TM34l; TM44l
+            TM22f; TM23f; TM33f; TM34f; TM44f
+            TM22d; TM23d; TM33d; TM34d; TM44d
         ]
 
     let TRef = { simpleType = typeof<ref<int>>.GetGenericTypeDefinition() }
