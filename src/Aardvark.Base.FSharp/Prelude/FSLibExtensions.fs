@@ -155,6 +155,8 @@ module Prelude =
     
     module Disposable =
 
+        let empty = { new IDisposable with member x.Dispose() = () }
+
         let inline dispose v = (^a : (member Dispose : unit -> unit) v)
 
     module Option =
