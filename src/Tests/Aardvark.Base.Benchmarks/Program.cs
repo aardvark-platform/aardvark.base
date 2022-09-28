@@ -8,8 +8,7 @@ namespace Aardvark.Base.Benchmarks
     {
         public static void Main(string[] args)
         {
-            var job = Job.ShortRun.WithToolchain(BenchmarkDotNet.Toolchains.InProcess.Emit.InProcessEmitToolchain.Instance);
-            var cfg = ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator).AddJob(job);
+            var cfg = ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator);
             BenchmarkSwitcher.FromAssembly(typeof(IntegerPowerFloat).Assembly).Run(args, cfg);
 
             //BenchmarkRunner.Run<V4fLength>();
