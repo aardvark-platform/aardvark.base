@@ -2,7 +2,7 @@
 {
     // AUTO GENERATED CODE - DO NOT CHANGE!
 
-    //# foreach (var ft in Meta.VecFieldTypes) {
+    //# foreach (var ft in Meta.SignedVecFieldTypes) {
     //#   var ftype = ft.Name;
     //#   var tc = ft.Char;
     /// <summary>

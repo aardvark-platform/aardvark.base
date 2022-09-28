@@ -11,14 +11,17 @@ namespace Aardvark.Base.Coder
         #region Vectors
 
         public void CodeV2i(ref V2i v) { throw new NotImplementedException(); }
+        public void CodeV2ui(ref V2ui v) { throw new NotImplementedException(); }
         public void CodeV2l(ref V2l v) { throw new NotImplementedException(); }
         public void CodeV2f(ref V2f v) { throw new NotImplementedException(); }
         public void CodeV2d(ref V2d v) { throw new NotImplementedException(); }
         public void CodeV3i(ref V3i v) { throw new NotImplementedException(); }
+        public void CodeV3ui(ref V3ui v) { throw new NotImplementedException(); }
         public void CodeV3l(ref V3l v) { throw new NotImplementedException(); }
         public void CodeV3f(ref V3f v) { throw new NotImplementedException(); }
         public void CodeV3d(ref V3d v) { throw new NotImplementedException(); }
         public void CodeV4i(ref V4i v) { throw new NotImplementedException(); }
+        public void CodeV4ui(ref V4ui v) { throw new NotImplementedException(); }
         public void CodeV4l(ref V4l v) { throw new NotImplementedException(); }
         public void CodeV4f(ref V4f v) { throw new NotImplementedException(); }
         public void CodeV4d(ref V4d v) { throw new NotImplementedException(); }
@@ -2490,6 +2493,11 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeV2uiArray(ref V2ui[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeV2lArray(ref V2l[] value)
         {
             throw new NotImplementedException();
@@ -2510,6 +2518,11 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeV3uiArray(ref V3ui[] value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeV3lArray(ref V3l[] value)
         {
             throw new NotImplementedException();
@@ -2526,6 +2539,11 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeV4iArray(ref V4i[] value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeV4uiArray(ref V4ui[] value)
         {
             throw new NotImplementedException();
         }
@@ -3512,6 +3530,11 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_V2ui_(ref List<V2ui> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_V2l_(ref List<V2l> value)
         {
             throw new NotImplementedException();
@@ -3532,6 +3555,11 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        public void CodeList_of_V3ui_(ref List<V3ui> value)
+        {
+            throw new NotImplementedException();
+        }
+
         public void CodeList_of_V3l_(ref List<V3l> value)
         {
             throw new NotImplementedException();
@@ -3548,6 +3576,11 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeList_of_V4i_(ref List<V4i> value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CodeList_of_V4ui_(ref List<V4ui> value)
         {
             throw new NotImplementedException();
         }
@@ -8703,14 +8736,17 @@ namespace Aardvark.Base.Coder
         #region Vectors
 
         public void CodeV2i(ref V2i v) { v = V2i.Parse(CurrentValue()); }
+        public void CodeV2ui(ref V2ui v) { v = V2ui.Parse(CurrentValue()); }
         public void CodeV2l(ref V2l v) { v = V2l.Parse(CurrentValue()); }
         public void CodeV2f(ref V2f v) { v = V2f.Parse(CurrentValue()); }
         public void CodeV2d(ref V2d v) { v = V2d.Parse(CurrentValue()); }
         public void CodeV3i(ref V3i v) { v = V3i.Parse(CurrentValue()); }
+        public void CodeV3ui(ref V3ui v) { v = V3ui.Parse(CurrentValue()); }
         public void CodeV3l(ref V3l v) { v = V3l.Parse(CurrentValue()); }
         public void CodeV3f(ref V3f v) { v = V3f.Parse(CurrentValue()); }
         public void CodeV3d(ref V3d v) { v = V3d.Parse(CurrentValue()); }
         public void CodeV4i(ref V4i v) { v = V4i.Parse(CurrentValue()); }
+        public void CodeV4ui(ref V4ui v) { v = V4ui.Parse(CurrentValue()); }
         public void CodeV4l(ref V4l v) { v = V4l.Parse(CurrentValue()); }
         public void CodeV4f(ref V4f v) { v = V4f.Parse(CurrentValue()); }
         public void CodeV4d(ref V4d v) { v = V4d.Parse(CurrentValue()); }
@@ -28030,6 +28066,11 @@ namespace Aardvark.Base.Coder
             CodeArray(ref value, s_nestedBracketSplitter, s => V2i.Parse(s));
         }
 
+        public void CodeV2uiArray(ref V2ui[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => V2ui.Parse(s));
+        }
+
         public void CodeV2lArray(ref V2l[] value)
         {
             CodeArray(ref value, s_nestedBracketSplitter, s => V2l.Parse(s));
@@ -28050,6 +28091,11 @@ namespace Aardvark.Base.Coder
             CodeArray(ref value, s_nestedBracketSplitter, s => V3i.Parse(s));
         }
 
+        public void CodeV3uiArray(ref V3ui[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => V3ui.Parse(s));
+        }
+
         public void CodeV3lArray(ref V3l[] value)
         {
             CodeArray(ref value, s_nestedBracketSplitter, s => V3l.Parse(s));
@@ -28068,6 +28114,11 @@ namespace Aardvark.Base.Coder
         public void CodeV4iArray(ref V4i[] value)
         {
             CodeArray(ref value, s_nestedBracketSplitter, s => V4i.Parse(s));
+        }
+
+        public void CodeV4uiArray(ref V4ui[] value)
+        {
+            CodeArray(ref value, s_nestedBracketSplitter, s => V4ui.Parse(s));
         }
 
         public void CodeV4lArray(ref V4l[] value)
@@ -29052,6 +29103,11 @@ namespace Aardvark.Base.Coder
             CodeList(ref value, s_nestedBracketSplitter, s => V2i.Parse(s));
         }
 
+        public void CodeList_of_V2ui_(ref List<V2ui> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => V2ui.Parse(s));
+        }
+
         public void CodeList_of_V2l_(ref List<V2l> value)
         {
             CodeList(ref value, s_nestedBracketSplitter, s => V2l.Parse(s));
@@ -29072,6 +29128,11 @@ namespace Aardvark.Base.Coder
             CodeList(ref value, s_nestedBracketSplitter, s => V3i.Parse(s));
         }
 
+        public void CodeList_of_V3ui_(ref List<V3ui> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => V3ui.Parse(s));
+        }
+
         public void CodeList_of_V3l_(ref List<V3l> value)
         {
             CodeList(ref value, s_nestedBracketSplitter, s => V3l.Parse(s));
@@ -29090,6 +29151,11 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_V4i_(ref List<V4i> value)
         {
             CodeList(ref value, s_nestedBracketSplitter, s => V4i.Parse(s));
+        }
+
+        public void CodeList_of_V4ui_(ref List<V4ui> value)
+        {
+            CodeList(ref value, s_nestedBracketSplitter, s => V4ui.Parse(s));
         }
 
         public void CodeList_of_V4l_(ref List<V4l> value)

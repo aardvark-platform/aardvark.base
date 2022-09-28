@@ -1734,6 +1734,7 @@ namespace Aardvark.Base
         #region Variance & Standard Deviation
 
         //# ilfdtypes.ForEach(t => { var type = t.Name;
+        //# if (Meta.UnsignedTypes.Contains(t)) return;
         /// <summary>
         /// Calculates the variance of given elements.
         /// </summary>

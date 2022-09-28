@@ -82,6 +82,73 @@ namespace Aardvark.Base.Benchmarks
     //     <DebugSymbols>true</DebugSymbols>
     // to Aardvark.Base.csproj for Release configuration.
     // [DisassemblyDiagnoser(printAsm: true, printSource: true)]
+    public class IntegerPowerUInt
+    {
+        const int count = 10000000;
+        readonly uint[] numbers = new uint[count];
+        readonly int[] exponents = new int[count];
+
+        public IntegerPowerUInt()
+        {
+            var rnd = new RandomSystem(1);
+            numbers.SetByIndex(i =>
+            {
+                var x = rnd.UniformDouble() - 0.5;
+                x += 0.1 * Fun.Sign(x);
+                return (uint)(x * 10);
+            });
+            exponents.SetByIndex(i => rnd.UniformInt(32));
+        }
+
+        [Benchmark]
+        public double Pow()
+        {
+            double sum = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                sum += numbers[i].Pow((double)exponents[i]);
+            }
+
+            return sum;
+        }
+
+        [Benchmark]
+        public uint Pown()
+        {
+            uint sum = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                sum += numbers[i].Pown(exponents[i]);
+            }
+
+            return sum;
+        }
+
+        [Test]
+        public void IntegerPowerTest()
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var n = numbers[i]; var e = exponents[i];
+                var x = Fun.Pown(n, e);
+                var y = Fun.Pow((double)n, (double)e);
+
+                if (y > uint.MinValue && y < uint.MaxValue)
+                {
+                    if (x != 0 && y != 0)
+                        Assert.IsTrue(Fun.ApproximateEquals(x / y, 1.0, 1e-3), "{0} != {1}", x, y);
+                }
+            }
+        }
+    }
+
+    // Uncomment following lines for assembly output, need to add
+    //     <DebugType>pdbonly</DebugType>
+    //     <DebugSymbols>true</DebugSymbols>
+    // to Aardvark.Base.csproj for Release configuration.
+    // [DisassemblyDiagnoser(printAsm: true, printSource: true)]
     public class IntegerPowerLong
     {
         const int count = 10000000;

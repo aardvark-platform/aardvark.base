@@ -373,6 +373,375 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region V2ui
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V2uis.
+        /// </summary>
+        public static V2ui Sum(this IEnumerable<V2ui> vectors)
+        {
+            V2ui sum = V2ui.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V2uis.
+        /// </summary>
+        public static V2ui Sum(this V2ui[] vectors)
+        {
+            V2ui sum = V2ui.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
+        /// <summary>
+        /// Calculates the centroid for a given set of V2uis.
+        /// </summary>
+        public static V2d ComputeCentroid(this IEnumerable<V2ui> vectors)
+        { 
+            V2d sum = V2d.Zero;
+            int count = 0;
+
+            foreach (var e in vectors)
+            {
+                sum += (V2d)e;
+                count++;
+            }
+
+            return sum / (double)count;
+        }
+
+        /// <summary>
+        /// Calculates the centroid for a given set of V2uis.
+        /// </summary>
+        public static V2d ComputeCentroid(this V2ui[] vectors)
+        {
+            V2d sum = V2d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V2d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
+
+        /// <summary>
+        /// Calculates the centroid for a given set of V2uis.
+        /// </summary>
+        public static V2d ComputeCentroid(this V2ui[] vectors, int[] indices)
+        {
+            V2d sum = V2d.Zero;
+
+            for (var i = 0; i < indices.Length; i++)
+            {
+                sum += (V2d)vectors[indices[i]];
+            }
+
+            return sum / (double)indices.Length;
+        }
+
+        /// <summary>
+        /// Calculates a weighted centroid for a given array of V2uis.
+        /// </summary>
+        public static V2d ComputeCentroid(this V2ui[] vectors, double[] weights)
+        {
+            V2d sum = V2d.Zero;
+            double weightSum = 0;
+
+            for(int i = 0; i < vectors.Length; i++)
+            {
+                sum += weights[i] * (V2d)vectors[i];
+                weightSum += weights[i];
+            }
+
+            return sum / weightSum;
+        }
+
+        /// <summary>
+        /// Calculates a weighted centroid for vectors and weights given by indices.
+        /// Sum(vectors[indices[i]] * weights[indices[i]]) / Sum(weights[indices[i]].
+        /// </summary>
+        public static V2d ComputeCentroid(this V2ui[] vectors, double[] weights, int[] indices)
+        {
+            V2d sum = V2d.Zero;
+            double weightSum = 0;
+
+            for (int i = 0; i < indices.Length; i++)
+            {
+                var w = weights[indices[i]];
+                sum += w * (V2d)vectors[indices[i]];
+                weightSum += w;
+            }
+
+            return sum / weightSum;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region V3ui
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V3uis.
+        /// </summary>
+        public static V3ui Sum(this IEnumerable<V3ui> vectors)
+        {
+            V3ui sum = V3ui.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V3uis.
+        /// </summary>
+        public static V3ui Sum(this V3ui[] vectors)
+        {
+            V3ui sum = V3ui.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
+        /// <summary>
+        /// Calculates the centroid for a given set of V3uis.
+        /// </summary>
+        public static V3d ComputeCentroid(this IEnumerable<V3ui> vectors)
+        { 
+            V3d sum = V3d.Zero;
+            int count = 0;
+
+            foreach (var e in vectors)
+            {
+                sum += (V3d)e;
+                count++;
+            }
+
+            return sum / (double)count;
+        }
+
+        /// <summary>
+        /// Calculates the centroid for a given set of V3uis.
+        /// </summary>
+        public static V3d ComputeCentroid(this V3ui[] vectors)
+        {
+            V3d sum = V3d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V3d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
+
+        /// <summary>
+        /// Calculates the centroid for a given set of V3uis.
+        /// </summary>
+        public static V3d ComputeCentroid(this V3ui[] vectors, int[] indices)
+        {
+            V3d sum = V3d.Zero;
+
+            for (var i = 0; i < indices.Length; i++)
+            {
+                sum += (V3d)vectors[indices[i]];
+            }
+
+            return sum / (double)indices.Length;
+        }
+
+        /// <summary>
+        /// Calculates a weighted centroid for a given array of V3uis.
+        /// </summary>
+        public static V3d ComputeCentroid(this V3ui[] vectors, double[] weights)
+        {
+            V3d sum = V3d.Zero;
+            double weightSum = 0;
+
+            for(int i = 0; i < vectors.Length; i++)
+            {
+                sum += weights[i] * (V3d)vectors[i];
+                weightSum += weights[i];
+            }
+
+            return sum / weightSum;
+        }
+
+        /// <summary>
+        /// Calculates a weighted centroid for vectors and weights given by indices.
+        /// Sum(vectors[indices[i]] * weights[indices[i]]) / Sum(weights[indices[i]].
+        /// </summary>
+        public static V3d ComputeCentroid(this V3ui[] vectors, double[] weights, int[] indices)
+        {
+            V3d sum = V3d.Zero;
+            double weightSum = 0;
+
+            for (int i = 0; i < indices.Length; i++)
+            {
+                var w = weights[indices[i]];
+                sum += w * (V3d)vectors[indices[i]];
+                weightSum += w;
+            }
+
+            return sum / weightSum;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region V4ui
+
+        #region Sum
+        /// <summary>
+        /// Calculates the sum for a given set of V4uis.
+        /// </summary>
+        public static V4ui Sum(this IEnumerable<V4ui> vectors)
+        {
+            V4ui sum = V4ui.Zero;
+
+            foreach (var e in vectors)
+            {
+                sum += e;
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// Calculates the sum for a given set of V4uis.
+        /// </summary>
+        public static V4ui Sum(this V4ui[] vectors)
+        {
+            V4ui sum = V4ui.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += vectors[i];
+            }
+
+            return sum;
+        }
+
+        #endregion
+
+        #region Centroid
+        /// <summary>
+        /// Calculates the centroid for a given set of V4uis.
+        /// </summary>
+        public static V4d ComputeCentroid(this IEnumerable<V4ui> vectors)
+        { 
+            V4d sum = V4d.Zero;
+            int count = 0;
+
+            foreach (var e in vectors)
+            {
+                sum += (V4d)e;
+                count++;
+            }
+
+            return sum / (double)count;
+        }
+
+        /// <summary>
+        /// Calculates the centroid for a given set of V4uis.
+        /// </summary>
+        public static V4d ComputeCentroid(this V4ui[] vectors)
+        {
+            V4d sum = V4d.Zero;
+
+            for (var i = 0; i < vectors.Length; i++)
+            {
+                sum += (V4d)vectors[i];
+            }
+
+            return sum / (double)vectors.Length;
+        }
+
+        /// <summary>
+        /// Calculates the centroid for a given set of V4uis.
+        /// </summary>
+        public static V4d ComputeCentroid(this V4ui[] vectors, int[] indices)
+        {
+            V4d sum = V4d.Zero;
+
+            for (var i = 0; i < indices.Length; i++)
+            {
+                sum += (V4d)vectors[indices[i]];
+            }
+
+            return sum / (double)indices.Length;
+        }
+
+        /// <summary>
+        /// Calculates a weighted centroid for a given array of V4uis.
+        /// </summary>
+        public static V4d ComputeCentroid(this V4ui[] vectors, double[] weights)
+        {
+            V4d sum = V4d.Zero;
+            double weightSum = 0;
+
+            for(int i = 0; i < vectors.Length; i++)
+            {
+                sum += weights[i] * (V4d)vectors[i];
+                weightSum += weights[i];
+            }
+
+            return sum / weightSum;
+        }
+
+        /// <summary>
+        /// Calculates a weighted centroid for vectors and weights given by indices.
+        /// Sum(vectors[indices[i]] * weights[indices[i]]) / Sum(weights[indices[i]].
+        /// </summary>
+        public static V4d ComputeCentroid(this V4ui[] vectors, double[] weights, int[] indices)
+        {
+            V4d sum = V4d.Zero;
+            double weightSum = 0;
+
+            for (int i = 0; i < indices.Length; i++)
+            {
+                var w = weights[indices[i]];
+                sum += w * (V4d)vectors[indices[i]];
+                weightSum += w;
+            }
+
+            return sum / weightSum;
+        }
+
+        #endregion
+
+        #endregion
+
         #region V2l
 
         #region Sum

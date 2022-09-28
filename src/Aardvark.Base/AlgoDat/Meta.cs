@@ -438,10 +438,14 @@ namespace Aardvark.Base
 
         public static readonly SimpleType[] VecFieldTypes = new SimpleType[]
         {
-            IntType, LongType, FloatType, DoubleType,
+            IntType, UIntType, LongType, FloatType, DoubleType,
         };
 
-        public static readonly SimpleType[] MatFieldTypes = VecFieldTypes;
+        public static readonly SimpleType[] SignedVecFieldTypes =
+            VecFieldTypes.Where(t => !UnsignedTypes.Contains(t)).ToArray();
+
+        public static readonly SimpleType[] MatFieldTypes =
+            SignedVecFieldTypes;
 
         public static readonly string[] ColorFields = new string[]
         {
@@ -476,6 +480,7 @@ namespace Aardvark.Base
         public static readonly int[] VecTypeDimensions = new[] { 2, 3, 4 };
         private static readonly Dictionary<SimpleType, VecType>[] VecTypeMapArray;
         public static readonly VecType[] VecTypes;
+        public static readonly VecType[] SignedVecTypes;
 
         public static VecType VecTypeOf(int dimensions, SimpleType fieldType)
         {
@@ -633,6 +638,7 @@ namespace Aardvark.Base
             }
 
             VecTypes = vectorTypes.ToArray();
+            SignedVecTypes = vectorTypes.Where(t => !UnsignedTypes.Contains(t.FieldType)).ToArray();
 
             #endregion
 
@@ -814,7 +820,7 @@ namespace Aardvark.Base
 
             DirectlyCodeableTypes = DirectlyCodeableBuiltinTypes
                             .Concat(FractionType.IntoArray())
-                            .Concat(VecTypes)
+                            .Concat(SignedVecTypes)             // TODO: Also support unsigned (breaking change in interface)
                             .Concat(MatTypes)
                             .Concat(ColorTypes)
                             .Concat(RangeAndBoxTypes)
@@ -830,7 +836,7 @@ namespace Aardvark.Base
 
         private static IEnumerable<RangeType> GenerateBoxTypes()
         {
-            foreach (var vt in VecTypes)
+            foreach (var vt in SignedVecTypes)
                 if (vt.Len < 4)
                     yield return new RangeType("Box" + vt.Len + vt.FieldType.Char)
                     { LimitType = vt };
@@ -1052,6 +1058,9 @@ namespace Aardvark.Base
             SimpleType[] NotReal()
                 => AllExcept(FloatType, DoubleType);
 
+            SimpleType[] OnlySigned()
+                => AllExcept(UIntType, ULongType);
+
             #region Min and Max
             Add(
                 "Min and Max",
@@ -1072,7 +1081,7 @@ namespace Aardvark.Base
 
             #region Abs
             Add("Abs",
-                Method("Abs", Tensor("x"))
+                Method("Abs", OnlySigned(), Tensor("x"))
             );
             #endregion
 
@@ -1119,9 +1128,9 @@ namespace Aardvark.Base
 
             #region Sign
             Add("Sign",
-                Method("Sign", IntType, Tensor("x")),
-                Method("Signumi", IntType, Tensor("x")),
-                Method("Signum", Tensor("x"))
+                Method("Sign", IntType, OnlySigned(), Tensor("x")),
+                Method("Signumi", IntType, OnlySigned(), Tensor("x")),
+                Method("Signum", OnlySigned(), Tensor("x"))
             );
             #endregion
 
@@ -1205,7 +1214,7 @@ namespace Aardvark.Base
             #endregion
 
             #region ModP
-            Add("ModP", Method("ModP", Tensor("a"), Tensor("b")));
+            Add("ModP", Method("ModP", OnlySigned(), Tensor("a"), Tensor("b")));
             #endregion
 
             #region Power of Two

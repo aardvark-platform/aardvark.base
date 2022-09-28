@@ -62,7 +62,7 @@ namespace Aardvark.Base.Sorting
         */
         //# string add = " + ", sub = " - ", inc = "++", dec = "--";
         //# string add1 = " + 1", add2 = " + 2", sub1 = " - 1";
-        //# var mathtypes = Meta.VecFieldTypes.Select(t => t.Name);
+        //# var mathtypes = Meta.SignedVecFieldTypes.Select(t => t.Name);
         //# var generictypes = new [] { "T[]", "List<T>", "TArray" };
         //# foreach (var isGeneric in new[] { false, true }) {
         //#     var types = isGeneric ? generictypes : mathtypes;

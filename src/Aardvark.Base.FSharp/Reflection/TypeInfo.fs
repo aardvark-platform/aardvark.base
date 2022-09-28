@@ -89,6 +89,10 @@ module TypeInfo =
     let TV3i = { vectorType = typeof<V3i>; baseType = TInt32; dimension = 3 }
     let TV4i = { vectorType = typeof<V4i>; baseType = TInt32; dimension = 4 }
 
+    let TV2ui = { vectorType = typeof<V2ui>; baseType = TUInt32; dimension = 2 }
+    let TV3ui = { vectorType = typeof<V3ui>; baseType = TUInt32; dimension = 3 }
+    let TV4ui = { vectorType = typeof<V4ui>; baseType = TUInt32; dimension = 4 }
+
     let TV2l = { vectorType = typeof<V2l>; baseType = TInt64; dimension = 2 }
     let TV3l = { vectorType = typeof<V3l>; baseType = TInt64; dimension = 3 }
     let TV4l = { vectorType = typeof<V4l>; baseType = TInt64; dimension = 4 }
@@ -132,6 +136,7 @@ module TypeInfo =
     let VectorTypes  : Set<ITypeInfo> =
         Set.ofList [
             TV2i; TV3i; TV4i
+            TV2ui; TV3ui; TV4ui
             TV2l; TV3l; TV4l
             TV2f; TV3f; TV4f
             TV2d; TV3d; TV4d

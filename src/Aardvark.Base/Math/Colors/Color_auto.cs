@@ -234,6 +234,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(V3ui vec)
+        {
+            R = (byte)(vec.X);
+            G = (byte)(vec.Y);
+            B = (byte)(vec.Z);
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
@@ -275,6 +287,18 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(V4i vec)
+        {
+            R = (byte)(vec.X);
+            G = (byte)(vec.Y);
+            B = (byte)(vec.Z);
+        }
+
+        /// <summary>
+        /// Creates a color from the given <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3b(V4ui vec)
         {
             R = (byte)(vec.X);
             G = (byte)(vec.Y);
@@ -673,6 +697,28 @@ namespace Aardvark.Base
         public static C3b FromV3i(V3i c) => new C3b(c);
 
         /// <summary>
+        /// Converts the given <see cref="V3ui"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V3ui v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V3ui"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V3ui ToV3ui() => (V3ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C3b"/> color from a <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromV3ui(V3ui c) => new C3b(c);
+
+        /// <summary>
         /// Converts the given <see cref="V3l"/> vector to a <see cref="C3b"/> color.
         /// The values are not mapped to the <see cref="C3b"/> color range.
         /// </summary>
@@ -760,6 +806,29 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromV4i(V4i c) => new C3b(c);
+
+        /// <summary>
+        /// Converts the given <see cref="V4ui"/> vector to a <see cref="C3b"/> color.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3b(V4ui v)
+            => new C3b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3b"/> color to a <see cref="V4ui"/> vector.
+        /// The values are not mapped from the <see cref="C3b"/> color range.
+        /// W is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V4ui ToV4ui() => (V4ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C3b"/> color from a <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C3b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b FromV4ui(V4ui c) => new C3b(c);
 
         /// <summary>
         /// Converts the given <see cref="V4l"/> vector to a <see cref="C3b"/> color.
@@ -2360,6 +2429,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(V3ui vec)
+        {
+            R = (ushort)(vec.X);
+            G = (ushort)(vec.Y);
+            B = (ushort)(vec.Z);
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
@@ -2401,6 +2482,18 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(V4i vec)
+        {
+            R = (ushort)(vec.X);
+            G = (ushort)(vec.Y);
+            B = (ushort)(vec.Z);
+        }
+
+        /// <summary>
+        /// Creates a color from the given <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3us(V4ui vec)
         {
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
@@ -2799,6 +2892,28 @@ namespace Aardvark.Base
         public static C3us FromV3i(V3i c) => new C3us(c);
 
         /// <summary>
+        /// Converts the given <see cref="V3ui"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V3ui v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V3ui"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V3ui ToV3ui() => (V3ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C3us"/> color from a <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromV3ui(V3ui c) => new C3us(c);
+
+        /// <summary>
         /// Converts the given <see cref="V3l"/> vector to a <see cref="C3us"/> color.
         /// The values are not mapped to the <see cref="C3us"/> color range.
         /// </summary>
@@ -2886,6 +3001,29 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromV4i(V4i c) => new C3us(c);
+
+        /// <summary>
+        /// Converts the given <see cref="V4ui"/> vector to a <see cref="C3us"/> color.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3us(V4ui v)
+            => new C3us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3us"/> color to a <see cref="V4ui"/> vector.
+        /// The values are not mapped from the <see cref="C3us"/> color range.
+        /// W is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V4ui ToV4ui() => (V4ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C3us"/> color from a <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C3us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us FromV4ui(V4ui c) => new C3us(c);
 
         /// <summary>
         /// Converts the given <see cref="V4l"/> vector to a <see cref="C3us"/> color.
@@ -4471,6 +4609,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(V3ui vec)
+        {
+            R = (vec.X);
+            G = (vec.Y);
+            B = (vec.Z);
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
@@ -4504,6 +4653,17 @@ namespace Aardvark.Base
             R = (uint)(vec.X);
             G = (uint)(vec.Y);
             B = (uint)(vec.Z);
+        }
+
+        /// <summary>
+        /// Creates a color from the given <see cref="V4ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C3ui(V4ui vec)
+        {
+            R = (vec.X);
+            G = (vec.Y);
+            B = (vec.Z);
         }
 
         /// <summary>
@@ -4876,6 +5036,25 @@ namespace Aardvark.Base
         public static C3ui FromC4d(C4d c) => new C3ui(c);
 
         /// <summary>
+        /// Converts the given <see cref="V3ui"/> vector to a <see cref="C3ui"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V3ui v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V3ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V3ui ToV3ui() => (V3ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V3ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromV3ui(V3ui c) => new C3ui(c);
+
+        /// <summary>
         /// Converts the given <see cref="V3l"/> vector to a <see cref="C3ui"/> color.
         /// The values are not mapped to the <see cref="C3ui"/> color range.
         /// </summary>
@@ -4940,6 +5119,26 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromV3d(V3d c) => new C3ui(c);
+
+        /// <summary>
+        /// Converts the given <see cref="V4ui"/> vector to a <see cref="C3ui"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C3ui(V4ui v)
+            => new C3ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C3ui"/> color to a <see cref="V4ui"/> vector.
+        /// W is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V4ui ToV4ui() => (V4ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C3ui"/> color from a <see cref="V4ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui FromV4ui(V4ui c) => new C3ui(c);
 
         /// <summary>
         /// Converts the given <see cref="V4l"/> vector to a <see cref="C3ui"/> color.
@@ -10718,6 +10917,20 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(V3ui vec)
+        {
+            R = (byte)(vec.X);
+            G = (byte)(vec.Y);
+            B = (byte)(vec.Z);
+            A = 255;
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
@@ -10773,6 +10986,19 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(V4ui vec)
+        {
+            R = (byte)(vec.X);
+            G = (byte)(vec.Y);
+            B = (byte)(vec.Z);
+            A = (byte)(vec.W);
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// </summary>
@@ -10817,6 +11043,19 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(V3i vec, byte alpha)
+        {
+            R = (byte)(vec.X);
+            G = (byte)(vec.Y);
+            B = (byte)(vec.Z);
+            A = alpha;
+        }
+
+        /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector and an alpha value.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4b(V3ui vec, byte alpha)
         {
             R = (byte)(vec.X);
             G = (byte)(vec.Y);
@@ -11243,6 +11482,30 @@ namespace Aardvark.Base
         public static C4b FromV3i(V3i c) => new C4b(c);
 
         /// <summary>
+        /// Converts the given <see cref="V3ui"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V3ui v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V3ui"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V3ui ToV3ui() => (V3ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C4b"/> color from a <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// The alpha channel is set to 255.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromV3ui(V3ui c) => new C4b(c);
+
+        /// <summary>
         /// Converts the given <see cref="V3l"/> vector to a <see cref="C4b"/> color.
         /// The values are not mapped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
@@ -11335,6 +11598,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromV4i(V4i c) => new C4b(c);
+
+        /// <summary>
+        /// Converts the given <see cref="V4ui"/> vector to a <see cref="C4b"/> color.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4b(V4ui v)
+            => new C4b(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4b"/> color to a <see cref="V4ui"/> vector.
+        /// The values are not mapped from the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V4ui ToV4ui() => (V4ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C4b"/> color from a <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C4b"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b FromV4ui(V4ui c) => new C4b(c);
 
         /// <summary>
         /// Converts the given <see cref="V4l"/> vector to a <see cref="C4b"/> color.
@@ -13112,6 +13397,20 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(V3ui vec)
+        {
+            R = (ushort)(vec.X);
+            G = (ushort)(vec.Y);
+            B = (ushort)(vec.Z);
+            A = 2^16 - 1;
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
@@ -13167,6 +13466,19 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(V4ui vec)
+        {
+            R = (ushort)(vec.X);
+            G = (ushort)(vec.Y);
+            B = (ushort)(vec.Z);
+            A = (ushort)(vec.W);
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// </summary>
@@ -13211,6 +13523,19 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(V3i vec, ushort alpha)
+        {
+            R = (ushort)(vec.X);
+            G = (ushort)(vec.Y);
+            B = (ushort)(vec.Z);
+            A = alpha;
+        }
+
+        /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector and an alpha value.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4us(V3ui vec, ushort alpha)
         {
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
@@ -13637,6 +13962,30 @@ namespace Aardvark.Base
         public static C4us FromV3i(V3i c) => new C4us(c);
 
         /// <summary>
+        /// Converts the given <see cref="V3ui"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V3ui v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V3ui"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V3ui ToV3ui() => (V3ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C4us"/> color from a <see cref="V3ui"/> vector.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// The alpha channel is set to 2^16 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromV3ui(V3ui c) => new C4us(c);
+
+        /// <summary>
         /// Converts the given <see cref="V3l"/> vector to a <see cref="C4us"/> color.
         /// The values are not mapped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
@@ -13729,6 +14078,28 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromV4i(V4i c) => new C4us(c);
+
+        /// <summary>
+        /// Converts the given <see cref="V4ui"/> vector to a <see cref="C4us"/> color.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4us(V4ui v)
+            => new C4us(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4us"/> color to a <see cref="V4ui"/> vector.
+        /// The values are not mapped from the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V4ui ToV4ui() => (V4ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C4us"/> color from a <see cref="V4ui"/> vector.
+        /// The values are not mapped to the <see cref="C4us"/> color range.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us FromV4ui(V4ui c) => new C4us(c);
 
         /// <summary>
         /// Converts the given <see cref="V4l"/> vector to a <see cref="C4us"/> color.
@@ -15489,6 +15860,19 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(V3ui vec)
+        {
+            R = (vec.X);
+            G = (vec.Y);
+            B = (vec.Z);
+            A = 2^32 - 1;
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V3l"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
@@ -15531,6 +15915,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a color from the given <see cref="V4ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(V4ui vec)
+        {
+            R = (vec.X);
+            G = (vec.Y);
+            B = (vec.Z);
+            A = (vec.W);
+        }
+
+        /// <summary>
         /// Creates a color from the given <see cref="V4l"/> vector.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// </summary>
@@ -15567,6 +15963,18 @@ namespace Aardvark.Base
             G = (uint)(vec.Y);
             B = (uint)(vec.Z);
             A = (uint)(vec.W);
+        }
+
+        /// <summary>
+        /// Creates a color from the given <see cref="V3ui"/> vector and an alpha value.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public C4ui(V3ui vec, uint alpha)
+        {
+            R = (vec.X);
+            G = (vec.Y);
+            B = (vec.Z);
+            A = alpha;
         }
 
         /// <summary>
@@ -15964,6 +16372,27 @@ namespace Aardvark.Base
         public static C4ui FromC4d(C4d c) => new C4ui(c);
 
         /// <summary>
+        /// Converts the given <see cref="V3ui"/> vector to a <see cref="C4ui"/> color.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V3ui v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V3ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V3ui ToV3ui() => (V3ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V3ui"/> vector.
+        /// The alpha channel is set to 2^32 - 1.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromV3ui(V3ui c) => new C4ui(c);
+
+        /// <summary>
         /// Converts the given <see cref="V3l"/> vector to a <see cref="C4ui"/> color.
         /// The values are not mapped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
@@ -16034,6 +16463,25 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromV3d(V3d c) => new C4ui(c);
+
+        /// <summary>
+        /// Converts the given <see cref="V4ui"/> vector to a <see cref="C4ui"/> color.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator C4ui(V4ui v)
+            => new C4ui(v);
+
+        /// <summary>
+        /// Converts the given <see cref="C4ui"/> color to a <see cref="V4ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public V4ui ToV4ui() => (V4ui)this;
+
+        /// <summary>
+        /// Creates a <see cref="C4ui"/> color from a <see cref="V4ui"/> vector.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui FromV4ui(V4ui c) => new C4ui(c);
 
         /// <summary>
         /// Converts the given <see cref="V4l"/> vector to a <see cref="C4ui"/> color.

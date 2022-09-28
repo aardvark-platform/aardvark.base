@@ -12,6 +12,11 @@ namespace Aardvark.Base.Coder
             Write(x.X); Write(x.Y); 
         }
 
+        public void Write(V2ui x)
+        {
+            Write(x.X); Write(x.Y); 
+        }
+
         public void Write(V2l x)
         {
             Write(x.X); Write(x.Y); 
@@ -32,6 +37,11 @@ namespace Aardvark.Base.Coder
             Write(x.X); Write(x.Y); Write(x.Z); 
         }
 
+        public void Write(V3ui x)
+        {
+            Write(x.X); Write(x.Y); Write(x.Z); 
+        }
+
         public void Write(V3l x)
         {
             Write(x.X); Write(x.Y); Write(x.Z); 
@@ -48,6 +58,11 @@ namespace Aardvark.Base.Coder
         }
 
         public void Write(V4i x)
+        {
+            Write(x.X); Write(x.Y); Write(x.Z); Write(x.W); 
+        }
+
+        public void Write(V4ui x)
         {
             Write(x.X); Write(x.Y); Write(x.Z); Write(x.W); 
         }

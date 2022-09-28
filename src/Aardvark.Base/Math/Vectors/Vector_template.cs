@@ -68,6 +68,7 @@ namespace Aardvark.Base
     //# foreach (var vt in Meta.VecTypes) {
     //#     int d = vt.Len;
     //#     var ft = vt.FieldType;
+    //#     var unsigned = Meta.UnsignedTypes.Contains(ft);
     //#     var ct = Meta.ComputationTypeOf(ft);
     //#     var ht = Meta.HighPrecisionTypeOf(ft);
     //#     var vct = Meta.VecTypeOf(d, ct);
@@ -82,7 +83,7 @@ namespace Aardvark.Base
     //#     var v2type = Meta.VecTypeOf(2, ft).Name;
     //#     var v3type = Meta.VecTypeOf(3, ft).Name;
     //#     var v4type = Meta.VecTypeOf(4, ft).Name;
-    //#     var mtype = Meta.MatTypeOf(d, d, ft).Name;
+    //#     var mtype = unsigned ? "UnknownMatrixType" : Meta.MatTypeOf(d, d, ft).Name;
     //#     var fields = vt.Fields;
     //#     var args = fields.ToLower();
     //#     var getptr = "&" + fields[0];
@@ -887,7 +888,7 @@ namespace Aardvark.Base
         public __ftype__ Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return /*# fields.ForEach(f => { */Fun.Abs(__f__)/*# }, add); */; }
+            get { return /*# fields.ForEach(f => { if (unsigned) {*/__f__/*# } else {*/Fun.Abs(__f__)/*# } }, add); */; }
         }
 
         /// <summary>
@@ -907,7 +908,7 @@ namespace Aardvark.Base
         public __ftype__ NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Fun.Max(/*# fields.ForEach(f => { */Fun.Abs(__f__)/*# }, comma); */); }
+            get { return Fun.Max(/*# fields.ForEach(f => { if (unsigned) {*/__f__/*# } else {*/Fun.Abs(__f__)/*# } }, comma); */); }
         }
 
         /// <summary>
@@ -917,7 +918,7 @@ namespace Aardvark.Base
         public __ftype__ NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Fun.Min(/*# fields.ForEach(f => { */Fun.Abs(__f__)/*# }, comma); */); }
+            get { return Fun.Min(/*# fields.ForEach(f => { if (unsigned) {*/__f__/*# } else {*/Fun.Abs(__f__)/*# } }, comma); */); }
         }
 
         /// <summary>
@@ -934,7 +935,7 @@ namespace Aardvark.Base
             }
         }
 
-        //# if (d == 2) {
+        //# if (d == 2 && !unsigned) {
         /// <summary>
         /// Vector rotated 90° counter clockwise: (-Y, X)
         /// </summary>
@@ -1083,6 +1084,7 @@ namespace Aardvark.Base
 
         #region Static methods for F# core and Aardvark library support
 
+        //# if (!unsigned) {
         /// <summary>
         /// Returns a copy of the given vector with all elements set to their absolute value.
         /// </summary>
@@ -1091,6 +1093,7 @@ namespace Aardvark.Base
         public static __vtype__ Abs(__vtype__ v)
             => v.Abs();
 
+        //# }
         //# if (ft.IsReal) {
         /// <summary>
         /// Returns a copy of the given vector, with each element set to the largest integer
@@ -1280,6 +1283,7 @@ namespace Aardvark.Base
         public static __vtype__ Saturate(__vtype__ v)
             => Fun.Saturate(v);
 
+        //# if (!unsigned) {
         /// <summary>
         /// Returns the given vector, with each element divided by <paramref name="x"/>.
         /// </summary>
@@ -1288,6 +1292,7 @@ namespace Aardvark.Base
         public static __vtype__ DivideByInt(__vtype__ v, int x)
             => v / x;
 
+        //# }
         #endregion
 
         #region Operations
@@ -1307,6 +1312,7 @@ namespace Aardvark.Base
         }
 
         //# }
+        //# if (!unsigned) {
         /// <summary>
         /// Returns a negated copy of the specified vector.
         /// </summary>
@@ -1314,6 +1320,7 @@ namespace Aardvark.Base
         public static __vtype__ operator -(__vtype__ v)
             => new __vtype__(/*# fields.ForEach(f => { */-v.__f__/*# }, comma); */);
 
+        //# }
         //# if (!ft.IsReal) {
         /// <summary>
         /// Returns the component-wise bitwise complement of the specified vector.
@@ -1323,7 +1330,7 @@ namespace Aardvark.Base
             => new __vtype__(/*# fields.ForEach(f => { */~v.__f__/*# }, comma); */);
 
         //# }
-        //# if (d == 2) {
+        //# if (d == 2 && !unsigned) {
         /// <summary>
         /// Returns a vector that is orthogonal to this one (i.e. {x,y} -> {-y,x}).
         /// </summary>
@@ -1542,15 +1549,16 @@ namespace Aardvark.Base
 
         #region Swizzle Methods
 
-        //# var snames  = new string[] { "O", "I", "N", "X", "Y", "Z", "W" };
-        //# var svalues = new string[] { "0", "1", "-1","X", "Y", "Z", "W" };
-        //# var s = d + 3;
+        //# var snames  = unsigned ? new string[] { "O", "I", "X", "Y", "Z", "W" } : new string[] { "O", "I", "N", "X", "Y", "Z", "W" };
+        //# var svalues = unsigned ? new string[] { "0", "1", "X", "Y", "Z", "W" } : new string[] { "0", "1", "-1","X", "Y", "Z", "W" };
+        //# var isConst = new Func<int, bool>(i => i < (unsigned ? 2 : 3));
+        //# var s = d + (unsigned ? 2 : 3);
         //# var getName = new Func<bool, int, string>((anyN, i) => anyN && i == 1 ? "P" : snames[i]);
         //# for (int xi = 0; xi < s; xi++) { var x = svalues[xi];
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
-        //#         var anyN = xi == 2 || yi == 2; // replace I by P if any N
+        //#         var anyN = !unsigned && (xi == 2 || yi == 2); // replace I by P if any N
         //#         var name = getName(anyN, xi) + getName(anyN, yi);
-        //#         if (xi < 3 && yi < 3) { // check for constant -> otherwise property
+        //#         if (isConst(xi) && isConst(yi)) { // check for constant -> otherwise property
         //#             if (d == 2) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1558,7 +1566,7 @@ namespace Aardvark.Base
         //#             }
         //#         }
         //#         else {
-        //#             if (xi == yi || xi < 3 || yi < 3) { // readonly if the same or constants
+        //#             if (xi == yi || isConst(xi) || isConst(yi)) { // readonly if the same or constants
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v2type__ __name__ => new __v2type__(__x__, __y__);
@@ -1578,9 +1586,9 @@ namespace Aardvark.Base
         //# for (int xi = 0; xi < s; xi++) { var x = svalues[xi];
         //#     for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#         for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
-        //#             var anyN = xi == 2 || yi == 2 || zi == 2; // replace I by P if any N
+        //#             var anyN = !unsigned && (xi == 2 || yi == 2 || zi == 2); // replace I by P if any N
         //#             var name = getName(anyN, xi) + getName(anyN, yi) + getName(anyN, zi);
-        //#             if (xi < 3 && yi < 3 && zi < 3) { // check for constant -> otherwise property
+        //#             if (isConst(xi) && isConst(yi) && isConst(zi)) { // check for constant -> otherwise property
         //#                 if (d == 3) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1588,7 +1596,7 @@ namespace Aardvark.Base
         //#                 }
         //#             }
         //#             else {
-        //#                 if (xi == yi || xi == zi || yi == zi || xi < 3 || yi < 3 || zi < 3) { // readonly if the same or constants
+        //#                 if (xi == yi || xi == zi || yi == zi || isConst(xi) || isConst(yi) || isConst(zi)) { // readonly if the same or constants
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v3type__ __name__ => new __v3type__(__x__, __y__, __z__);
@@ -1611,9 +1619,9 @@ namespace Aardvark.Base
         //#         for (int yi = 0; yi < s; yi++) { var y = svalues[yi];
         //#             for (int zi = 0; zi < s; zi++) { var z = svalues[zi];
         //#                 for (int wi = 0; wi < s; wi++) { var w = svalues[wi];
-        //#                     var anyN = xi == 2 || yi == 2 || zi == 2 || wi == 2; // replace I by P if any N
+        //#                     var anyN = !unsigned && (xi == 2 || yi == 2 || zi == 2 || wi == 2); // replace I by P if any N
         //#                     var name = getName(anyN, xi) + getName(anyN, yi) + getName(anyN, zi) + getName(anyN, wi);
-        //#                     if (xi < 3 && yi < 3 && zi < 3 && wi < 3) { // check for constant -> otherwise property
+        //#                     if (isConst(xi) && isConst(yi) && isConst(zi) && isConst(wi)) { // check for constant -> otherwise property
         //#                         if (d == 4) { // only constants of matching size
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -1623,7 +1631,7 @@ namespace Aardvark.Base
         //#                     else {
         //#                         if (xi == yi || xi == zi || xi == wi ||
         //#                             yi == zi || yi == wi || zi == wi ||
-        //#                             xi < 3 || yi < 3 || zi < 3 || wi < 3) { // readonly if the same or constants
+        //#                             isConst(xi) || isConst(yi) || isConst(zi) || isConst(wi)) { // readonly if the same or constants
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public __v4type__ __name__ => new __v4type__(__x__, __y__, __z__, __w__);
@@ -1715,7 +1723,10 @@ namespace Aardvark.Base
         //#        var elemType = p.ElementType ?? ft;
         //#        return (p.IsScalar()) ? elemType : Meta.VecTypeOf(d, elemType);
         //#    };
+        //#
         //# foreach (var group in Meta.ElementwiseFuns.Keys) {
+        //# var isEmpty = Meta.ElementwiseFuns[group].TrueForAll(f => !f.Domain.Contains(ft));
+        //# if (!isEmpty) {
         #region __group__
 
         //# foreach (var fun in Meta.ElementwiseFuns[group]) {
@@ -1748,6 +1759,7 @@ namespace Aardvark.Base
         //# }
         #endregion
 
+        //# } // isEmpty
         //# }
         #region ApproximateEquals
 
@@ -1951,7 +1963,11 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceSquared(this __vtype__ a, __vtype__ b)
+            //# if (unsigned) {
+            => /*# fields.ForEach(f => { */Fun.Square((a.__f__ < b.__f__) ? (b.__f__ - a.__f__) : (a.__f__ - b.__f__))/*# }, add); */;
+            //# } else {
             => /*# fields.ForEach(f => { */Fun.Square(b.__f__ - a.__f__)/*# }, add); */;
+            //# }
 
         /// <summary>
         /// Returns the distance between the given points.
@@ -1965,14 +1981,22 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ Distance1(this __vtype__ a, __vtype__ b)
+            //# if (unsigned) {
+            => /*# fields.ForEach(f => { */((a.__f__ < b.__f__) ? (b.__f__ - a.__f__) : (a.__f__ - b.__f__))/*# }, add); */;
+            //# } else {
             => /*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__)/*# }, add); */;
+            //# }
 
         /// <summary>
         /// Returns the p-distance between two vectors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ Distance(this __vtype__ a, __vtype__ b, __ctype__ p)
+            //# if (unsigned) {
+            => (/*# fields.ForEach(f => { */((a.__f__ < b.__f__) ? (b.__f__ - a.__f__) : (a.__f__ - b.__f__)).Pow(p)/*# }, add); */).Pow(1 / p);
+            //# } else {
             => (/*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__).Pow(p)/*# }, add); */).Pow(1 / p);
+            //# }
 
         /// <summary>
         /// Returns the maximal absolute distance between the components of
@@ -1980,7 +2004,11 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceMax(this __vtype__ a, __vtype__ b)
+            //# if (unsigned) {
+            => Fun.Max(/*# fields.ForEach(f => { */((a.__f__ < b.__f__) ? (b.__f__ - a.__f__) : (a.__f__ - b.__f__))/*# }, comma); */);
+            //# } else {
             => Fun.Max(/*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
+            //# }
 
         /// <summary>
         /// Returns the minimal absolute distance between the components of
@@ -1988,7 +2016,11 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ftype__ DistanceMin(this __vtype__ a, __vtype__ b)
+            //# if (unsigned) {
+            => Fun.Min(/*# fields.ForEach(f => { */((a.__f__ < b.__f__) ? (b.__f__ - a.__f__) : (a.__f__ - b.__f__))/*# }, comma); */);
+            //# } else {
             => Fun.Min(/*# fields.ForEach(f => { */Fun.Abs(b.__f__ - a.__f__)/*# }, comma); */);
+            //# }
 
         //# foreach (var hasT in new[] { false, true }) {
         //# var cast = (ft != ct) ? "(" + vctype + ") " : "";
@@ -2042,7 +2074,7 @@ namespace Aardvark.Base
 
         #region Operations
 
-        //# if (d == 2) {
+        //# if (d == 2 && !unsigned) {
         /// <summary>
         /// Returns a vector that is orthogonal to the given one (i.e. {x,y} -> {-y,x}).
         /// </summary>
@@ -2060,6 +2092,7 @@ namespace Aardvark.Base
             => v.Reciprocal;
 
         //# }
+        //# if (!unsigned) {
         /// <summary>
         /// Negates the vector.
         /// </summary>
@@ -2081,6 +2114,7 @@ namespace Aardvark.Base
                         /*# d.ForEach(j => { var fj = fields[j]; */a.__fi__ * b.__fj__/*# }, comma); }, comma); */);
         }
 
+        //# }
         /// <summary>
         /// Returns the dot product of two vectors.
         /// </summary>
@@ -2090,7 +2124,7 @@ namespace Aardvark.Base
             return /*# fields.ForEach(f => { */a.__f__ * b.__f__/*# }, add); */;
         }
 
-        //# if (d == 3) {
+        //# if (d == 3 && !unsigned) {
         /// <summary>
         /// Returns the skew-symmetric "cross" matrix (A^T = -A) of the vector v.
         /// </summary>
@@ -2147,7 +2181,7 @@ namespace Aardvark.Base
         }
 
         //# } // ft.IsReal
-        //# if (d == 3) {
+        //# if (d == 3 && !unsigned) {
         /// <summary>
         /// Returns the cross product of two vectors.
         /// </summary>
@@ -2162,7 +2196,7 @@ namespace Aardvark.Base
         }
 
         //# }
-        //# if (d == 2) {
+        //# if (d == 2 && !unsigned) {
         /// <summary>
         /// Returns the cross product of vector a.
         /// In 2D the cross product is simply a vector that is normal
@@ -2314,6 +2348,7 @@ namespace Aardvark.Base
         #endregion
 
         //# }
+        //# if (ft.IsReal) {
         #region Angle between two vectors
 
         /// <summary>
@@ -2340,6 +2375,7 @@ namespace Aardvark.Base
 
         #endregion
 
+        //# }
         #region AnyTiny, AllTiny
 
         /// <summary>
@@ -2376,7 +2412,7 @@ namespace Aardvark.Base
         //# }); // condArray
         #endregion
 
-        //# if (d == 2) {
+        //# if (d == 2 && !unsigned) {
         #region 2D Vector Arithmetics
 
         /// <summary>
@@ -2580,8 +2616,10 @@ namespace Aardvark.Base
         //#     variants = new string[] { "", "Closed", "Open" };
         //# } else if (ft == Meta.DoubleType) {
         //#     variants = new string[] { "", "Closed", "Open", "Full", "FullClosed", "FullOpen" };
-        //# } else {
+        //# } else if (!unsigned) {
         //#     variants = new string[] { "", "NonZero" };
+        //# } else {
+        //#     variants = new string[] { "" };
         //# }
         //# foreach (var v in variants) {
         /// <summary>
@@ -2669,7 +2707,7 @@ namespace Aardvark.Base
         //# }
         //# } //d
         //# }
-        //# } else { //ft.Real
+        //# } else if (!unsigned) { //ft.Real
         /// <summary>
         /// Uses Uniform__fcaps__(__ftype__) to generate the elements of a __vtype__ vector.
         /// </summary>

@@ -12,6 +12,11 @@ namespace Aardvark.Base.Coder
             return new V2i(ReadInt32(), ReadInt32());
         }
 
+        public V2ui ReadV2ui()
+        {
+            return new V2ui(ReadUInt32(), ReadUInt32());
+        }
+
         public V2l ReadV2l()
         {
             return new V2l(ReadInt64(), ReadInt64());
@@ -32,6 +37,11 @@ namespace Aardvark.Base.Coder
             return new V3i(ReadInt32(), ReadInt32(), ReadInt32());
         }
 
+        public V3ui ReadV3ui()
+        {
+            return new V3ui(ReadUInt32(), ReadUInt32(), ReadUInt32());
+        }
+
         public V3l ReadV3l()
         {
             return new V3l(ReadInt64(), ReadInt64(), ReadInt64());
@@ -50,6 +60,11 @@ namespace Aardvark.Base.Coder
         public V4i ReadV4i()
         {
             return new V4i(ReadInt32(), ReadInt32(), ReadInt32(), ReadInt32());
+        }
+
+        public V4ui ReadV4ui()
+        {
+            return new V4ui(ReadUInt32(), ReadUInt32(), ReadUInt32(), ReadUInt32());
         }
 
         public V4l ReadV4l()

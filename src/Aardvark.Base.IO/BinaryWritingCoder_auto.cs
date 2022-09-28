@@ -16,6 +16,12 @@ namespace Aardvark.Base.Coder
             m_writer.Write(value.Y);
         }
 
+        public void CodeV2ui(ref V2ui value)
+        {
+            m_writer.Write(value.X);
+            m_writer.Write(value.Y);
+        }
+
         public void CodeV2l(ref V2l value)
         {
             m_writer.Write(value.X);
@@ -35,6 +41,13 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeV3i(ref V3i value)
+        {
+            m_writer.Write(value.X);
+            m_writer.Write(value.Y);
+            m_writer.Write(value.Z);
+        }
+
+        public void CodeV3ui(ref V3ui value)
         {
             m_writer.Write(value.X);
             m_writer.Write(value.Y);
@@ -63,6 +76,14 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeV4i(ref V4i value)
+        {
+            m_writer.Write(value.X);
+            m_writer.Write(value.Y);
+            m_writer.Write(value.Z);
+            m_writer.Write(value.W);
+        }
+
+        public void CodeV4ui(ref V4ui value)
         {
             m_writer.Write(value.X);
             m_writer.Write(value.Y);
@@ -4204,6 +4225,13 @@ namespace Aardvark.Base.Coder
             m_writer.WriteArray(value, 0, count);
         }
 
+        public void CodeV2uiArray(ref V2ui[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            m_writer.WriteArray(value, 0, count);
+        }
+
         public void CodeV2lArray(ref V2l[] value)
         {
             long count = CodeCountLong(ref value);
@@ -4232,6 +4260,13 @@ namespace Aardvark.Base.Coder
             m_writer.WriteArray(value, 0, count);
         }
 
+        public void CodeV3uiArray(ref V3ui[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            m_writer.WriteArray(value, 0, count);
+        }
+
         public void CodeV3lArray(ref V3l[] value)
         {
             long count = CodeCountLong(ref value);
@@ -4254,6 +4289,13 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeV4iArray(ref V4i[] value)
+        {
+            long count = CodeCountLong(ref value);
+            if (count < 1) return;
+            m_writer.WriteArray(value, 0, count);
+        }
+
+        public void CodeV4uiArray(ref V4ui[] value)
         {
             long count = CodeCountLong(ref value);
             if (count < 1) return;
@@ -10827,6 +10869,13 @@ namespace Aardvark.Base.Coder
             m_writer.WriteList(value, 0, count);
         }
 
+        public void CodeList_of_V2ui_(ref List<V2ui> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            m_writer.WriteList(value, 0, count);
+        }
+
         public void CodeList_of_V2l_(ref List<V2l> value)
         {
             int count = CodeCount(ref value);
@@ -10855,6 +10904,13 @@ namespace Aardvark.Base.Coder
             m_writer.WriteList(value, 0, count);
         }
 
+        public void CodeList_of_V3ui_(ref List<V3ui> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            m_writer.WriteList(value, 0, count);
+        }
+
         public void CodeList_of_V3l_(ref List<V3l> value)
         {
             int count = CodeCount(ref value);
@@ -10877,6 +10933,13 @@ namespace Aardvark.Base.Coder
         }
 
         public void CodeList_of_V4i_(ref List<V4i> value)
+        {
+            int count = CodeCount(ref value);
+            if (count < 1) return;
+            m_writer.WriteList(value, 0, count);
+        }
+
+        public void CodeList_of_V4ui_(ref List<V4ui> value)
         {
             int count = CodeCount(ref value);
             if (count < 1) return;

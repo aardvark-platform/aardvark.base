@@ -1611,6 +1611,18 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint Clamp(this uint x, Range1ui range)
+        {
+            if (x < range.Min) return range.Min;
+            if (x > range.Max) return range.Max;
+            return x;
+        }
+
+        /// <summary>
+        /// Clamps value to interval [a,b].
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Clamp(this long x, Range1l range)
         {
             if (x < range.Min) return range.Min;
@@ -1771,6 +1783,18 @@ namespace Aardvark.Base
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ClampExcl(this uint x, Range1ui range)
+        {
+            if (x < range.Min) return range.Min;
+            if (x >= range.Max) return (uint)(range.Max - 1);
+            return x;
+        }
+
+        /// <summary>
+        /// Clamps value to interval [a,b[.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ClampExcl(this long x, Range1l range)
         {
             if (x < range.Min) return range.Min;
@@ -1869,6 +1893,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClampWrap(this int x, Range1i range)
             => (int)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
+
+        /// <summary>
+        /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ClampWrap(this uint x, Range1ui range)
+            => (uint)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.

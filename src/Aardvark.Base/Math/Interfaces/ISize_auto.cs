@@ -31,6 +31,30 @@ namespace Aardvark.Base
     }
 
     /// <summary>
+    /// A Size2ui reprents the size of an object in two dimensions.
+    /// </summary>
+    public interface ISize2ui
+    {
+        V2ui Size2ui { get; }
+    }
+
+    /// <summary>
+    /// A Size3ui reprents the size of an object in three dimensions.
+    /// </summary>
+    public interface ISize3ui
+    {
+        V3ui Size3ui { get; }
+    }
+
+    /// <summary>
+    /// A Size4d reprents the size of an object in four dimensions.
+    /// </summary>
+    public interface ISize4ui
+    {
+        V4ui Size4ui { get; }
+    }
+
+    /// <summary>
     /// A Size2l reprents the size of an object in two dimensions.
     /// </summary>
     public interface ISize2l
