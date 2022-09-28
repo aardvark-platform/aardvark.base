@@ -12,7 +12,7 @@ open System.Runtime.CompilerServices
 
 [<AutoOpen>]
 module ``NativeTensor Pinning`` =
-    [<CompilerMessage("use NativeTensor.using instead", 1337, IsHidden = true)>]
+
     type Pinning private() =
 
         static let pin (a : 'a) (f : nativeint -> 'r) =
@@ -436,7 +436,7 @@ module ``NativeTensor Pinning`` =
             action matrix
     
     module NativeTensor =
-        [<CompilerMessage("use NativeTensor.using instead", 1337, IsHidden = true)>]
+
         let inline us< ^p, ^m, ^n, ^r, ^x when (^m or ^p) : (static member Using : byref< ^m > * (^n -> ^r) -> ^x) > (p : ^p) (m :  byref< ^m >) (action : ^n -> ^r) : ^x =
             ((^m or ^p) : (static member Using : byref< ^m >  * (^n -> ^r) -> ^x) (&m, action))
 
