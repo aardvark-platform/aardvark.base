@@ -1380,8 +1380,9 @@ namespace Aardvark.Base
         //# for (int tpc = 4; tpc < 7; tpc+=2) {
         //# foreach (var rt in new[] { fltt, dblt }) { var rtype = rt.Name; var wtype = rt.FieldType.Name; var rtc = rt.FieldType.Caps[0];
         //#     var convert = ft.IsReal ? ""
-        //#        : "Col." + ft.Caps + "From" + ft.Caps + "In"
-        //#          + (ft.Name == "uint" ? "Double" : rt.FieldType.Caps) + "Clamped";
+        //#        : "Col." + ft.Caps + "In"
+        //#          + (ft.Name == "uint" ? "Double" : rt.FieldType.Caps)
+        //#          + "To" + ft.Caps + "Clamped";
         //# if (!isReal || wtype == ftype) {
         /// <summary>
         /// A function that returns the linear combination fo the supplied parameters

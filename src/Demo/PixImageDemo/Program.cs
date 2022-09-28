@@ -200,7 +200,7 @@ namespace PixImageDemo
                                                Fun.Lanczos3f, Fun.Lanczos3f,
                                                Col.LinComRawF, Col.LinCom,
                                                Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped)
-                                                .Map(Col.ByteFromByteInFloatClamped);
+                                                .Map(Col.ByteInFloatToByteClamped);
 
                     /// Note: LinComRawF in x direction results in a byte color (range 0-255) stored
                     /// in a C3f. The second Col.LinCom for the y direction does not perform any additional
@@ -211,7 +211,7 @@ namespace PixImageDemo
                                                hermiteSpline, hermiteSpline,
                                                Col.LinComRawF, Col.LinCom,
                                                Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped)
-                                                .Map(Col.ByteFromByteInFloatClamped);
+                                                .Map(Col.ByteInFloatToByteClamped);
 
 
                     /// Note here the two Col.LinCom calls perform the clamping immediately. Thus we have

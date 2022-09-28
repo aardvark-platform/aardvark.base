@@ -660,103 +660,248 @@ namespace Aardvark.Base
         #region Special Color Channel Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ByteInIntToFloat(this int i) { return (float)i * c_byteToFloat; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FloatToByteInInt(this float f) { return (int)(f * c_floatToByte); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ByteInIntToDouble(this int i) { return (double)i * c_byteToDouble; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int DoubleToByteInInt(this double d) { return (int)(d * c_doubleToByte); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double UShortInIntToDouble(this int i) { return (double)i * c_uShortToDouble; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int DoubleToUShortInInt(this double d) { return (int)(d * c_doubleToUShort); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte BitInByteToByte(this byte b) { return (byte)(b * 255); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte ByteToBitInByte(this byte b) { return (byte)(b >> 7); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte ByteInFloatToByte(this float f) { return (byte)(f + 0.5f); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte ByteInDoubleToByte(this double d) { return (byte)(d + 0.5); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort UShortInFloatToUShort(this float f) { return (ushort)(f + 0.5f); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort UShortInDoubleToUShort(this double d) { return (ushort)(d + 0.5); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint UIntInDoubleToUInt(this double d) { return (uint)(d + 0.5); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int FloatToByteInIntClamped(this float f) { return (int)(f * c_floatToByte).Clamp(0, 255); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int DoubleToUShortInIntClamped(this double d) { return (int)(d * c_doubleToUShort).Clamp(0, 65535); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte ByteInFloatToByteClamped(this float f) { return (byte)(f.Clamp(0.0f, 255.0f) + 0.5f); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte ByteInDoubleToByteClamped(this double d) { return (byte)(d.Clamp(0.0, 255.0) + 0.5); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort UShortInFloatToUShortClamped(this float f) { return (ushort)(f.Clamp(0.0f, 65535.0f) + 0.5f); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort UShortInDoubleToUShortClamped(this double d) { return (ushort)(d.Clamp(0.0, 65535.0) + 0.5); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint UIntInDoubleToUIntClamped(this double d) { return (uint)(d.Clamp(0.0, (double)uint.MaxValue) + 0.5); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ByteInFloatToFloat(this float f) { return f * c_byteToFloat; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float FloatToByteInFloat(this float f) { return f * c_floatToByte; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ByteInDoubleToDouble(this double d) { return d * c_byteToDouble; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double DoubleToByteInDouble(this double d) { return d * c_doubleToByte; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ByteInFloatToFloatClamped(this float f) { return f.ByteInFloatToFloat().Clamp(0, 1); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float FloatToByteInFloatClamped(this float f) { return f.FloatToByteInFloat().Clamp(0, 255); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ByteInDoubleToDoubleClamped(this double d) { return d.ByteInDoubleToDouble().Clamp(0, 1); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double DoubleToByteInDoubleClamped(this double d) { return d.DoubleToByteInDouble().Clamp(0, 255); }
+
+        #region Obsolete
+
+        [Obsolete("Use Col.Type1ToType2 instead")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColByteInIntToFloat(this int i) { return (float)i * c_byteToFloat; }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColFloatToByteInInt(this float f) { return (int)(f * c_floatToByte); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ColByteInIntToDouble(this int i) { return (double)i * c_byteToDouble; }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColDoubleToByteInInt(this double d) { return (int)(d * c_doubleToByte); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ColUShortInIntToDouble(this int i) { return (double)i * c_uShortToDouble; }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColDoubleToUShortInInt(this double d) { return (int)(d * c_doubleToUShort); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColBitInByteToByte(this byte b) { return (byte)(b * 255); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteToBitInByte(this byte b) { return (byte)(b >> 7); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInFloatToByte(this float f) { return (byte)(f + 0.5f); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInDoubleToByte(this double d) { return (byte)(d + 0.5); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInFloatToUShort(this float f) { return (ushort)(f + 0.5f); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInDoubleToUShort(this double d) { return (ushort)(d + 0.5); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ColUIntInDoubleToUInt(this double d) { return (uint)(d + 0.5); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColFloatToByteInIntClamped(this float f) { return (int)(f * c_floatToByte).Clamp(0, 255); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ColDoubleToUShortInIntClamped(this double d) { return (int)(d * c_doubleToUShort).Clamp(0, 65535); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInFloatToByteClamped(this float f) { return (byte)(f.Clamp(0.0f, 255.0f) + 0.5f); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ColByteInDoubleToByteClamped(this double d) { return (byte)(d.Clamp(0.0, 255.0) + 0.5); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInFloatToUShortClamped(this float f) { return (ushort)(f.Clamp(0.0f, 65535.0f) + 0.5f); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ColUShortInDoubleToUShortClamped(this double d) { return (ushort)(d.Clamp(0.0, 65535.0) + 0.5); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ColUIntInDoubleToUIntClamped(this double d) { return (uint)(d.Clamp(0.0, (double)uint.MaxValue) + 0.5); }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColByteInFloatToFloat(this float f) { return f * c_byteToFloat; }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColFloatToByteInFloat(this float f) { return f * c_floatToByte; }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ColByteInDoubleToDouble(this double d) { return d * c_byteToDouble; }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ColDoubleToByteInDouble(this double d) { return d * c_doubleToByte; }
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColByteInFloatToFloatClamped(this float f) { return f.ColByteInFloatToFloat().Clamp(0, 1); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ColFloatToByteInFloatClamped(this float f) { return f.ColFloatToByteInFloat().Clamp(0, 255); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ColByteInDoubleToDoubleClamped(this double d) { return d.ColByteInDoubleToDouble().Clamp(0, 1); }
+        [Obsolete("Use Col.Type1ToType2 instead")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double ColDoubleToByteInDoubleClamped(this double d) { return d.ColDoubleToByteInDouble().Clamp(0, 255); }
 
         // explicit lambda function versions to aid type infererence
 
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<int, float> FloatFromByteInInt = ColByteInIntToFloat;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, int> ByteInIntFromFloat = ColFloatToByteInInt;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<int, double> DoubleFromByteInInt = ColByteInIntToDouble;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, int> ByteInIntFromDouble = ColDoubleToByteInInt;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<int, double> DoubleFromUShortInInt = ColUShortInIntToDouble;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, int> UShortInIntFromDouble = ColDoubleToUShortInInt;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<byte, byte> ByteFromBitInByte = ColBitInByteToByte;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<byte, byte> BitInByteFromByte = ColByteToBitInByte;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, byte> ByteFromByteInFloat = ColByteInFloatToByte;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, byte> ByteFromByteInDouble = ColByteInDoubleToByte;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, ushort> UShortFromUShortInFloat = ColUShortInFloatToUShort;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, ushort> UShortFromUShortInDouble = ColUShortInDoubleToUShort;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, uint> UIntFromUIntInDouble = ColUIntInDoubleToUInt;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, int> ByteInIntFromFloatClamped = ColFloatToByteInIntClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, int> UShortInIntFromDoubleClamped = ColDoubleToUShortInIntClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, byte> ByteFromByteInFloatClamped = ColByteInFloatToByteClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, byte> ByteFromByteInDoubleClamped = ColByteInDoubleToByteClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, ushort> UShortFromUShortInFloatClamped = ColUShortInFloatToUShortClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, ushort> UShortFromUShortInDoubleClamped = ColUShortInDoubleToUShortClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, uint> UIntFromUIntInDoubleClamped = ColUIntInDoubleToUIntClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, float> FloatFromByteInFloat = ColByteInFloatToFloat;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, float> ByteInFloatFromFloat = ColFloatToByteInFloat;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, float> FloatFromByteInFloatClamped = ColByteInFloatToFloatClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<float, float> ByteInFloatFromFloatClamped = ColFloatToByteInFloatClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, double> DoubleFromByteInDouble = ColByteInDoubleToDouble;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, double> DoubleFromByteInDoubleClamped = ColByteInDoubleToDoubleClamped;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, double> ByteInDoubleFromDouble = ColDoubleToByteInDouble;
+        [Obsolete("Use Col.Type1ToType2 instead")]
         public static readonly Func<double, double> ByteInDoubleFromDoubleClamped = ColDoubleToByteInDoubleClamped;
+
+        #endregion
+
         #endregion
 
         #region Color to Gray Conversion Constants

@@ -79,9 +79,9 @@ namespace Aardvark.Base
                                  interpolator, interpolator, __fun__.LinCom__rfct__, __fun__.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped/*#
                                   if (clampVal) { */,
-                                  Col.__dtn__From__dtn__InFloatClamped/*#
+                                  Col.__dtn__InFloatTo__dtn__Clamped/*#
                                   } else if (clampMap) { */,
-                                  col => col.Map(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
+                                  col => col.Map(Col.__dtn__InFloatTo__dtn__Clamped)/*# } */);
         }
 
         public static void SetScaledBSpline5(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
@@ -105,9 +105,9 @@ namespace Aardvark.Base
                                   interpolator, interpolator, __fun__.LinCom__rfct__, __fun__.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped/*#
                                   if (clampVal) { */,
-                                  Col.__dtn__From__dtn__InFloatClamped/*#
+                                  Col.__dtn__InFloatTo__dtn__Clamped/*#
                                   } else if (clampMap) { */,
-                                  col => col.Map(Col.__dtn__From__dtn__InFloatClamped)/*# } */);
+                                  col => col.Map(Col.__dtn__InFloatTo__dtn__Clamped)/*# } */);
         }
 
         //# }); // configs

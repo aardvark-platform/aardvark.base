@@ -59,7 +59,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, Fun.LinComRawF, Fun.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  Col.ByteFromByteInFloatClamped);
+                                  Col.ByteInFloatToByteClamped);
         }
 
         public static void SetScaledBSpline5(this Matrix<byte> targetMat, Matrix<byte> sourceMat)
@@ -82,7 +82,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   interpolator, interpolator, Fun.LinComRawF, Fun.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  Col.ByteFromByteInFloatClamped);
+                                  Col.ByteInFloatToByteClamped);
         }
 
         public static void SetScaledNearest(this Matrix<ushort> targetMat, Matrix<ushort> sourceMat)
@@ -135,7 +135,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, Fun.LinComRawF, Fun.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  Col.UShortFromUShortInFloatClamped);
+                                  Col.UShortInFloatToUShortClamped);
         }
 
         public static void SetScaledBSpline5(this Matrix<ushort> targetMat, Matrix<ushort> sourceMat)
@@ -158,7 +158,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   interpolator, interpolator, Fun.LinComRawF, Fun.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  Col.UShortFromUShortInFloatClamped);
+                                  Col.UShortInFloatToUShortClamped);
         }
 
         public static void SetScaledNearest(this Matrix<float> targetMat, Matrix<float> sourceMat)
@@ -285,7 +285,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Map(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteInFloatToByteClamped));
         }
 
         public static void SetScaledBSpline5(this Matrix<byte, C3b> targetMat, Matrix<byte, C3b> sourceMat)
@@ -308,7 +308,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Map(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteInFloatToByteClamped));
         }
 
         public static void SetScaledNearest(this Matrix<ushort, C3us> targetMat, Matrix<ushort, C3us> sourceMat)
@@ -361,7 +361,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortInFloatToUShortClamped));
         }
 
         public static void SetScaledBSpline5(this Matrix<ushort, C3us> targetMat, Matrix<ushort, C3us> sourceMat)
@@ -384,7 +384,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortInFloatToUShortClamped));
         }
 
         public static void SetScaledNearest(this Matrix<float, C3f> targetMat, Matrix<float, C3f> sourceMat)
@@ -511,7 +511,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Map(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteInFloatToByteClamped));
         }
 
         public static void SetScaledBSpline5(this Matrix<byte, C4b> targetMat, Matrix<byte, C4b> sourceMat)
@@ -534,7 +534,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Map(Col.ByteFromByteInFloatClamped));
+                                  col => col.Map(Col.ByteInFloatToByteClamped));
         }
 
         public static void SetScaledNearest(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat)
@@ -587,7 +587,7 @@ namespace Aardvark.Base
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped,
-                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortInFloatToUShortClamped));
         }
 
         public static void SetScaledBSpline5(this Matrix<ushort, C4us> targetMat, Matrix<ushort, C4us> sourceMat)
@@ -610,7 +610,7 @@ namespace Aardvark.Base
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   interpolator, interpolator, Col.LinComRawF, Col.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped,
-                                  col => col.Map(Col.UShortFromUShortInFloatClamped));
+                                  col => col.Map(Col.UShortInFloatToUShortClamped));
         }
 
         public static void SetScaledNearest(this Matrix<float, C4f> targetMat, Matrix<float, C4f> sourceMat)
