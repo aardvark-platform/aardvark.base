@@ -529,102 +529,102 @@ namespace Aardvark.Base
 
         public static Matrix<ushort> ToUShortColor(this Matrix<byte> matrix)
         {
-            return matrix.MapWindow(Col.UShortFromByte);
+            return matrix.MapWindow(Col.ByteToUShort);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<byte> matrix)
         {
-            return matrix.MapWindow(Col.UIntFromByte);
+            return matrix.MapWindow(Col.ByteToUInt);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<byte> matrix)
         {
-            return matrix.MapWindow(Col.FloatFromByte);
+            return matrix.MapWindow(Col.ByteToFloat);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<byte> matrix)
         {
-            return matrix.MapWindow(Col.DoubleFromByte);
+            return matrix.MapWindow(Col.ByteToDouble);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<ushort> matrix)
         {
-            return matrix.MapWindow(Col.ByteFromUShort);
+            return matrix.MapWindow(Col.UShortToByte);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<ushort> matrix)
         {
-            return matrix.MapWindow(Col.UIntFromUShort);
+            return matrix.MapWindow(Col.UShortToUInt);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<ushort> matrix)
         {
-            return matrix.MapWindow(Col.FloatFromUShort);
+            return matrix.MapWindow(Col.UShortToFloat);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<ushort> matrix)
         {
-            return matrix.MapWindow(Col.DoubleFromUShort);
+            return matrix.MapWindow(Col.UShortToDouble);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<uint> matrix)
         {
-            return matrix.MapWindow(Col.ByteFromUInt);
+            return matrix.MapWindow(Col.UIntToByte);
         }
 
         public static Matrix<ushort> ToUShortColor(this Matrix<uint> matrix)
         {
-            return matrix.MapWindow(Col.UShortFromUInt);
+            return matrix.MapWindow(Col.UIntToUShort);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<uint> matrix)
         {
-            return matrix.MapWindow(Col.FloatFromUInt);
+            return matrix.MapWindow(Col.UIntToFloat);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<uint> matrix)
         {
-            return matrix.MapWindow(Col.DoubleFromUInt);
+            return matrix.MapWindow(Col.UIntToDouble);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<float> matrix)
         {
-            return matrix.MapWindow(Col.ByteFromFloat);
+            return matrix.MapWindow(Col.FloatToByte);
         }
 
         public static Matrix<ushort> ToUShortColor(this Matrix<float> matrix)
         {
-            return matrix.MapWindow(Col.UShortFromFloat);
+            return matrix.MapWindow(Col.FloatToUShort);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<float> matrix)
         {
-            return matrix.MapWindow(Col.UIntFromFloat);
+            return matrix.MapWindow(Col.FloatToUInt);
         }
 
         public static Matrix<double> ToDoubleColor(this Matrix<float> matrix)
         {
-            return matrix.MapWindow(Col.DoubleFromFloat);
+            return matrix.MapWindow(Col.FloatToDouble);
         }
 
         public static Matrix<byte> ToByteColor(this Matrix<double> matrix)
         {
-            return matrix.MapWindow(Col.ByteFromDouble);
+            return matrix.MapWindow(Col.DoubleToByte);
         }
 
         public static Matrix<ushort> ToUShortColor(this Matrix<double> matrix)
         {
-            return matrix.MapWindow(Col.UShortFromDouble);
+            return matrix.MapWindow(Col.DoubleToUShort);
         }
 
         public static Matrix<uint> ToUIntColor(this Matrix<double> matrix)
         {
-            return matrix.MapWindow(Col.UIntFromDouble);
+            return matrix.MapWindow(Col.DoubleToUInt);
         }
 
         public static Matrix<float> ToFloatColor(this Matrix<double> matrix)
         {
-            return matrix.MapWindow(Col.FloatFromDouble);
+            return matrix.MapWindow(Col.DoubleToFloat);
         }
 
         #endregion

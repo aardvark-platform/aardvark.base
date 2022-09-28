@@ -557,9 +557,9 @@ namespace Aardvark.Base
         /// </summary>
         public static int FromRgbToInt(this C3f self)
         {
-            return Col.ByteFromDouble(self.R) << 16 |
-                     Col.ByteFromDouble(self.G) << 8 |
-                     Col.ByteFromDouble(self.B);
+            return Col.FloatToByte(self.R) << 16 |
+                   Col.FloatToByte(self.G) << 8 |
+                   Col.FloatToByte(self.B);
 
 
         }

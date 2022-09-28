@@ -37,8 +37,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<byte, ushort>()
                         {
-                            Getter = (da, i) => Col.UShortFromByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteFromUShort(v),
+                            Getter = (da, i) => Col.ByteToUShort(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UShortToByte(v),
                         };
                     }
                 },
@@ -53,8 +53,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<byte, uint>()
                         {
-                            Getter = (da, i) => Col.UIntFromByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteFromUInt(v),
+                            Getter = (da, i) => Col.ByteToUInt(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UIntToByte(v),
                         };
                     }
                 },
@@ -69,8 +69,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<byte, float>()
                         {
-                            Getter = (da, i) => Col.FloatFromByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteFromFloat(v),
+                            Getter = (da, i) => Col.ByteToFloat(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.FloatToByte(v),
                         };
                     }
                 },
@@ -85,8 +85,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<byte, double>()
                         {
-                            Getter = (da, i) => Col.DoubleFromByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteFromDouble(v),
+                            Getter = (da, i) => Col.ByteToDouble(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.DoubleToByte(v),
                         };
                     }
                 },
@@ -101,8 +101,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<ushort, byte>()
                         {
-                            Getter = (da, i) => Col.ByteFromUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortFromByte(v),
+                            Getter = (da, i) => Col.UShortToByte(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.ByteToUShort(v),
                         };
                     }
                 },
@@ -133,8 +133,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<ushort, uint>()
                         {
-                            Getter = (da, i) => Col.UIntFromUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortFromUInt(v),
+                            Getter = (da, i) => Col.UShortToUInt(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UIntToUShort(v),
                         };
                     }
                 },
@@ -149,8 +149,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<ushort, float>()
                         {
-                            Getter = (da, i) => Col.FloatFromUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortFromFloat(v),
+                            Getter = (da, i) => Col.UShortToFloat(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.FloatToUShort(v),
                         };
                     }
                 },
@@ -165,8 +165,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<ushort, double>()
                         {
-                            Getter = (da, i) => Col.DoubleFromUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortFromDouble(v),
+                            Getter = (da, i) => Col.UShortToDouble(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.DoubleToUShort(v),
                         };
                     }
                 },
@@ -181,8 +181,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<uint, byte>()
                         {
-                            Getter = (da, i) => Col.ByteFromUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntFromByte(v),
+                            Getter = (da, i) => Col.UIntToByte(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.ByteToUInt(v),
                         };
                     }
                 },
@@ -197,8 +197,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<uint, ushort>()
                         {
-                            Getter = (da, i) => Col.UShortFromUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntFromUShort(v),
+                            Getter = (da, i) => Col.UIntToUShort(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UShortToUInt(v),
                         };
                     }
                 },
@@ -229,8 +229,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<uint, float>()
                         {
-                            Getter = (da, i) => Col.FloatFromUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntFromFloat(v),
+                            Getter = (da, i) => Col.UIntToFloat(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.FloatToUInt(v),
                         };
                     }
                 },
@@ -245,8 +245,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<uint, double>()
                         {
-                            Getter = (da, i) => Col.DoubleFromUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntFromDouble(v),
+                            Getter = (da, i) => Col.UIntToDouble(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.DoubleToUInt(v),
                         };
                     }
                 },
@@ -261,8 +261,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<float, byte>()
                         {
-                            Getter = (da, i) => Col.ByteFromFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatFromByte(v),
+                            Getter = (da, i) => Col.FloatToByte(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.ByteToFloat(v),
                         };
                     }
                 },
@@ -277,8 +277,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<float, ushort>()
                         {
-                            Getter = (da, i) => Col.UShortFromFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatFromUShort(v),
+                            Getter = (da, i) => Col.FloatToUShort(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UShortToFloat(v),
                         };
                     }
                 },
@@ -293,8 +293,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<float, uint>()
                         {
-                            Getter = (da, i) => Col.UIntFromFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatFromUInt(v),
+                            Getter = (da, i) => Col.FloatToUInt(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UIntToFloat(v),
                         };
                     }
                 },
@@ -325,8 +325,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<float, double>()
                         {
-                            Getter = (da, i) => Col.DoubleFromFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatFromDouble(v),
+                            Getter = (da, i) => Col.FloatToDouble(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.DoubleToFloat(v),
                         };
                     }
                 },
@@ -341,8 +341,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<double, byte>()
                         {
-                            Getter = (da, i) => Col.ByteFromDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleFromByte(v),
+                            Getter = (da, i) => Col.DoubleToByte(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.ByteToDouble(v),
                         };
                     }
                 },
@@ -357,8 +357,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<double, ushort>()
                         {
-                            Getter = (da, i) => Col.UShortFromDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleFromUShort(v),
+                            Getter = (da, i) => Col.DoubleToUShort(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UShortToDouble(v),
                         };
                     }
                 },
@@ -373,8 +373,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<double, uint>()
                         {
-                            Getter = (da, i) => Col.UIntFromDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleFromUInt(v),
+                            Getter = (da, i) => Col.DoubleToUInt(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UIntToDouble(v),
                         };
                     }
                 },
@@ -389,8 +389,8 @@ namespace Aardvark.Base
                     {
                         return new TensorAccessors<double, float>()
                         {
-                            Getter = (da, i) => Col.FloatFromDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleFromFloat(v),
+                            Getter = (da, i) => Col.DoubleToFloat(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.FloatToDouble(v),
                         };
                     }
                 },
@@ -619,14 +619,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i+2])),
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.B);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.B);
                                 }
                             };
                         else
@@ -636,14 +636,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i+d2])),
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.B);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.B);
                                 }
                             };
                         }
@@ -666,14 +666,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i+2]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i])),
+                                            Col.ByteToUShort(da[i+2]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.R);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.R);
                                 }
                             };
                         else
@@ -683,14 +683,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i+d2]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i])),
+                                            Col.ByteToUShort(da[i+d2]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.R);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.R);
                                 }
                             };
                         }
@@ -713,14 +713,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i+2])),
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.B);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.B);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -731,14 +731,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i+d2])),
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.B);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.B);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -762,14 +762,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i+2]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i])),
+                                            Col.ByteToUShort(da[i+2]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.R);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.R);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -780,14 +780,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromByte(da[i+d2]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i])),
+                                            Col.ByteToUShort(da[i+d2]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.R);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.R);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -811,14 +811,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i+2])),
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.B);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.B);
                                 }
                             };
                         else
@@ -828,14 +828,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i+d2])),
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.B);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.B);
                                 }
                             };
                         }
@@ -858,14 +858,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i+2]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i])),
+                                            Col.ByteToUInt(da[i+2]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.R);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.R);
                                 }
                             };
                         else
@@ -875,14 +875,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i+d2]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i])),
+                                            Col.ByteToUInt(da[i+d2]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.R);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.R);
                                 }
                             };
                         }
@@ -905,14 +905,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i+2])),
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.B);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.B);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -923,14 +923,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i+d2])),
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.B);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.B);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -954,14 +954,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i+2]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i])),
+                                            Col.ByteToUInt(da[i+2]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.R);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.R);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -972,14 +972,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromByte(da[i+d2]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i])),
+                                            Col.ByteToUInt(da[i+d2]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.R);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.R);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -1003,14 +1003,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i+2])),
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.B);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.B);
                                 }
                             };
                         else
@@ -1020,14 +1020,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i+d2])),
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.B);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.B);
                                 }
                             };
                         }
@@ -1050,14 +1050,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i+2]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i])),
+                                            Col.ByteToFloat(da[i+2]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.R);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.R);
                                 }
                             };
                         else
@@ -1067,14 +1067,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i+d2]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i])),
+                                            Col.ByteToFloat(da[i+d2]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.R);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.R);
                                 }
                             };
                         }
@@ -1097,14 +1097,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i+2])),
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.B);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.B);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -1115,14 +1115,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i+d2])),
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.B);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.B);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -1146,14 +1146,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i+2]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i])),
+                                            Col.ByteToFloat(da[i+2]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.R);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.R);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -1164,14 +1164,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromByte(da[i+d2]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i])),
+                                            Col.ByteToFloat(da[i+d2]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.R);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.R);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -1195,14 +1195,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i+2])),
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.B);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.B);
                                 }
                             };
                         else
@@ -1212,14 +1212,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i+d2])),
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.B);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.B);
                                 }
                             };
                         }
@@ -1242,14 +1242,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i+2]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i])),
+                                            Col.ByteToDouble(da[i+2]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.R);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.R);
                                 }
                             };
                         else
@@ -1259,14 +1259,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i+d2]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i])),
+                                            Col.ByteToDouble(da[i+d2]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.R);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.R);
                                 }
                             };
                         }
@@ -1289,14 +1289,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i+2])),
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.B);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.B);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -1307,14 +1307,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i+d2])),
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.B);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.B);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -1338,14 +1338,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i+2]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i])),
+                                            Col.ByteToDouble(da[i+2]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.R);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.R);
                                     da[i+3] = (byte)255;
                                 }
                             };
@@ -1356,14 +1356,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromByte(da[i+d2]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i])),
+                                            Col.ByteToDouble(da[i+d2]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.R);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.R);
                                     da[i+d3] = (byte)255;
                                 }
                             };
@@ -1587,15 +1587,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i+2]), 
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i+2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.B);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.B);
                                 }
                             };
                         else
@@ -1605,15 +1605,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i+d2]), 
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i+d2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.B);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.B);
                                 }
                             };
                         }
@@ -1636,15 +1636,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i+2]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i]), 
+                                            Col.ByteToUShort(da[i+2]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.R);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.R);
                                 }
                             };
                         else
@@ -1654,15 +1654,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i+d2]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i]), 
+                                            Col.ByteToUShort(da[i+d2]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.R);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.R);
                                 }
                             };
                         }
@@ -1685,16 +1685,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i+2]), 
-                                            Col.UShortFromByte(da[i+3])),
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i+2]), 
+                                            Col.ByteToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.B);
-                                    da[i+3] = Col.ByteFromUShort(v.A);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.B);
+                                    da[i+3] = Col.UShortToByte(v.A);
                                 }
                             };
                         else
@@ -1704,16 +1704,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i+d2]), 
-                                            Col.UShortFromByte(da[i+d3])),
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i+d2]), 
+                                            Col.ByteToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.R);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.B);
-                                    da[i+d3] = Col.ByteFromUShort(v.A);
+                                    da[i] = Col.UShortToByte(v.R);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.B);
+                                    da[i+d3] = Col.UShortToByte(v.A);
                                 }
                             };
                         }
@@ -1736,16 +1736,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i+2]), 
-                                            Col.UShortFromByte(da[i+1]), 
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+3])),
+                                            Col.ByteToUShort(da[i+2]), 
+                                            Col.ByteToUShort(da[i+1]), 
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+1] = Col.ByteFromUShort(v.G);
-                                    da[i+2] = Col.ByteFromUShort(v.R);
-                                    da[i+3] = Col.ByteFromUShort(v.A);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+1] = Col.UShortToByte(v.G);
+                                    da[i+2] = Col.UShortToByte(v.R);
+                                    da[i+3] = Col.UShortToByte(v.A);
                                 }
                             };
                         else
@@ -1755,16 +1755,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromByte(da[i+d2]), 
-                                            Col.UShortFromByte(da[i+d1]), 
-                                            Col.UShortFromByte(da[i]), 
-                                            Col.UShortFromByte(da[i+d3])),
+                                            Col.ByteToUShort(da[i+d2]), 
+                                            Col.ByteToUShort(da[i+d1]), 
+                                            Col.ByteToUShort(da[i]), 
+                                            Col.ByteToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUShort(v.B);
-                                    da[i+d1] = Col.ByteFromUShort(v.G);
-                                    da[i+d2] = Col.ByteFromUShort(v.R);
-                                    da[i+d3] = Col.ByteFromUShort(v.A);
+                                    da[i] = Col.UShortToByte(v.B);
+                                    da[i+d1] = Col.UShortToByte(v.G);
+                                    da[i+d2] = Col.UShortToByte(v.R);
+                                    da[i+d3] = Col.UShortToByte(v.A);
                                 }
                             };
                         }
@@ -1787,15 +1787,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i+2]), 
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i+2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.B);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.B);
                                 }
                             };
                         else
@@ -1805,15 +1805,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i+d2]), 
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i+d2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.B);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.B);
                                 }
                             };
                         }
@@ -1836,15 +1836,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i+2]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i]), 
+                                            Col.ByteToUInt(da[i+2]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.R);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.R);
                                 }
                             };
                         else
@@ -1854,15 +1854,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i+d2]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i]), 
+                                            Col.ByteToUInt(da[i+d2]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.R);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.R);
                                 }
                             };
                         }
@@ -1885,16 +1885,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i+2]), 
-                                            Col.UIntFromByte(da[i+3])),
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i+2]), 
+                                            Col.ByteToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.B);
-                                    da[i+3] = Col.ByteFromUInt(v.A);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.B);
+                                    da[i+3] = Col.UIntToByte(v.A);
                                 }
                             };
                         else
@@ -1904,16 +1904,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i+d2]), 
-                                            Col.UIntFromByte(da[i+d3])),
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i+d2]), 
+                                            Col.ByteToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.R);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.B);
-                                    da[i+d3] = Col.ByteFromUInt(v.A);
+                                    da[i] = Col.UIntToByte(v.R);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.B);
+                                    da[i+d3] = Col.UIntToByte(v.A);
                                 }
                             };
                         }
@@ -1936,16 +1936,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i+2]), 
-                                            Col.UIntFromByte(da[i+1]), 
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+3])),
+                                            Col.ByteToUInt(da[i+2]), 
+                                            Col.ByteToUInt(da[i+1]), 
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+1] = Col.ByteFromUInt(v.G);
-                                    da[i+2] = Col.ByteFromUInt(v.R);
-                                    da[i+3] = Col.ByteFromUInt(v.A);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+1] = Col.UIntToByte(v.G);
+                                    da[i+2] = Col.UIntToByte(v.R);
+                                    da[i+3] = Col.UIntToByte(v.A);
                                 }
                             };
                         else
@@ -1955,16 +1955,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromByte(da[i+d2]), 
-                                            Col.UIntFromByte(da[i+d1]), 
-                                            Col.UIntFromByte(da[i]), 
-                                            Col.UIntFromByte(da[i+d3])),
+                                            Col.ByteToUInt(da[i+d2]), 
+                                            Col.ByteToUInt(da[i+d1]), 
+                                            Col.ByteToUInt(da[i]), 
+                                            Col.ByteToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromUInt(v.B);
-                                    da[i+d1] = Col.ByteFromUInt(v.G);
-                                    da[i+d2] = Col.ByteFromUInt(v.R);
-                                    da[i+d3] = Col.ByteFromUInt(v.A);
+                                    da[i] = Col.UIntToByte(v.B);
+                                    da[i+d1] = Col.UIntToByte(v.G);
+                                    da[i+d2] = Col.UIntToByte(v.R);
+                                    da[i+d3] = Col.UIntToByte(v.A);
                                 }
                             };
                         }
@@ -1987,15 +1987,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i+2]), 
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i+2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.B);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.B);
                                 }
                             };
                         else
@@ -2005,15 +2005,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i+d2]), 
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i+d2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.B);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.B);
                                 }
                             };
                         }
@@ -2036,15 +2036,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i+2]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i]), 
+                                            Col.ByteToFloat(da[i+2]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.R);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.R);
                                 }
                             };
                         else
@@ -2054,15 +2054,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i+d2]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i]), 
+                                            Col.ByteToFloat(da[i+d2]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.R);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.R);
                                 }
                             };
                         }
@@ -2085,16 +2085,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i+2]), 
-                                            Col.FloatFromByte(da[i+3])),
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i+2]), 
+                                            Col.ByteToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.B);
-                                    da[i+3] = Col.ByteFromFloat(v.A);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.B);
+                                    da[i+3] = Col.FloatToByte(v.A);
                                 }
                             };
                         else
@@ -2104,16 +2104,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i+d2]), 
-                                            Col.FloatFromByte(da[i+d3])),
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i+d2]), 
+                                            Col.ByteToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.R);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.B);
-                                    da[i+d3] = Col.ByteFromFloat(v.A);
+                                    da[i] = Col.FloatToByte(v.R);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.B);
+                                    da[i+d3] = Col.FloatToByte(v.A);
                                 }
                             };
                         }
@@ -2136,16 +2136,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i+2]), 
-                                            Col.FloatFromByte(da[i+1]), 
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+3])),
+                                            Col.ByteToFloat(da[i+2]), 
+                                            Col.ByteToFloat(da[i+1]), 
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+1] = Col.ByteFromFloat(v.G);
-                                    da[i+2] = Col.ByteFromFloat(v.R);
-                                    da[i+3] = Col.ByteFromFloat(v.A);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+1] = Col.FloatToByte(v.G);
+                                    da[i+2] = Col.FloatToByte(v.R);
+                                    da[i+3] = Col.FloatToByte(v.A);
                                 }
                             };
                         else
@@ -2155,16 +2155,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromByte(da[i+d2]), 
-                                            Col.FloatFromByte(da[i+d1]), 
-                                            Col.FloatFromByte(da[i]), 
-                                            Col.FloatFromByte(da[i+d3])),
+                                            Col.ByteToFloat(da[i+d2]), 
+                                            Col.ByteToFloat(da[i+d1]), 
+                                            Col.ByteToFloat(da[i]), 
+                                            Col.ByteToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromFloat(v.B);
-                                    da[i+d1] = Col.ByteFromFloat(v.G);
-                                    da[i+d2] = Col.ByteFromFloat(v.R);
-                                    da[i+d3] = Col.ByteFromFloat(v.A);
+                                    da[i] = Col.FloatToByte(v.B);
+                                    da[i+d1] = Col.FloatToByte(v.G);
+                                    da[i+d2] = Col.FloatToByte(v.R);
+                                    da[i+d3] = Col.FloatToByte(v.A);
                                 }
                             };
                         }
@@ -2187,15 +2187,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i+2]), 
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i+2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.B);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.B);
                                 }
                             };
                         else
@@ -2205,15 +2205,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i+d2]), 
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i+d2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.B);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.B);
                                 }
                             };
                         }
@@ -2236,15 +2236,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i+2]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i]), 
+                                            Col.ByteToDouble(da[i+2]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.R);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.R);
                                 }
                             };
                         else
@@ -2254,15 +2254,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i+d2]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i]), 
+                                            Col.ByteToDouble(da[i+d2]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.R);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.R);
                                 }
                             };
                         }
@@ -2285,16 +2285,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i+2]), 
-                                            Col.DoubleFromByte(da[i+3])),
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i+2]), 
+                                            Col.ByteToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.B);
-                                    da[i+3] = Col.ByteFromDouble(v.A);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.B);
+                                    da[i+3] = Col.DoubleToByte(v.A);
                                 }
                             };
                         else
@@ -2304,16 +2304,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i+d2]), 
-                                            Col.DoubleFromByte(da[i+d3])),
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i+d2]), 
+                                            Col.ByteToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.R);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.B);
-                                    da[i+d3] = Col.ByteFromDouble(v.A);
+                                    da[i] = Col.DoubleToByte(v.R);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.B);
+                                    da[i+d3] = Col.DoubleToByte(v.A);
                                 }
                             };
                         }
@@ -2336,16 +2336,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i+2]), 
-                                            Col.DoubleFromByte(da[i+1]), 
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+3])),
+                                            Col.ByteToDouble(da[i+2]), 
+                                            Col.ByteToDouble(da[i+1]), 
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+1] = Col.ByteFromDouble(v.G);
-                                    da[i+2] = Col.ByteFromDouble(v.R);
-                                    da[i+3] = Col.ByteFromDouble(v.A);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+1] = Col.DoubleToByte(v.G);
+                                    da[i+2] = Col.DoubleToByte(v.R);
+                                    da[i+3] = Col.DoubleToByte(v.A);
                                 }
                             };
                         else
@@ -2355,16 +2355,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromByte(da[i+d2]), 
-                                            Col.DoubleFromByte(da[i+d1]), 
-                                            Col.DoubleFromByte(da[i]), 
-                                            Col.DoubleFromByte(da[i+d3])),
+                                            Col.ByteToDouble(da[i+d2]), 
+                                            Col.ByteToDouble(da[i+d1]), 
+                                            Col.ByteToDouble(da[i]), 
+                                            Col.ByteToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.ByteFromDouble(v.B);
-                                    da[i+d1] = Col.ByteFromDouble(v.G);
-                                    da[i+d2] = Col.ByteFromDouble(v.R);
-                                    da[i+d3] = Col.ByteFromDouble(v.A);
+                                    da[i] = Col.DoubleToByte(v.B);
+                                    da[i+d1] = Col.DoubleToByte(v.G);
+                                    da[i+d2] = Col.DoubleToByte(v.R);
+                                    da[i+d3] = Col.DoubleToByte(v.A);
                                 }
                             };
                         }
@@ -2387,14 +2387,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i+2])),
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.B);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.B);
                                 }
                             };
                         else
@@ -2404,14 +2404,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i+d2])),
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.B);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.B);
                                 }
                             };
                         }
@@ -2434,14 +2434,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i+2]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i])),
+                                            Col.UShortToByte(da[i+2]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.R);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.R);
                                 }
                             };
                         else
@@ -2451,14 +2451,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i+d2]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i])),
+                                            Col.UShortToByte(da[i+d2]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.R);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.R);
                                 }
                             };
                         }
@@ -2481,14 +2481,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i+2])),
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.B);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.B);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -2499,14 +2499,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i+d2])),
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.B);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.B);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -2530,14 +2530,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i+2]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i])),
+                                            Col.UShortToByte(da[i+2]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.R);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.R);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -2548,14 +2548,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUShort(da[i+d2]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i])),
+                                            Col.UShortToByte(da[i+d2]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.R);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.R);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -2771,14 +2771,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i+2])),
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.B);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.B);
                                 }
                             };
                         else
@@ -2788,14 +2788,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i+d2])),
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.B);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.B);
                                 }
                             };
                         }
@@ -2818,14 +2818,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i+2]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i])),
+                                            Col.UShortToUInt(da[i+2]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.R);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.R);
                                 }
                             };
                         else
@@ -2835,14 +2835,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i+d2]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i])),
+                                            Col.UShortToUInt(da[i+d2]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.R);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.R);
                                 }
                             };
                         }
@@ -2865,14 +2865,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i+2])),
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.B);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.B);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -2883,14 +2883,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i+d2])),
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.B);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.B);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -2914,14 +2914,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i+2]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i])),
+                                            Col.UShortToUInt(da[i+2]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.R);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.R);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -2932,14 +2932,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromUShort(da[i+d2]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i])),
+                                            Col.UShortToUInt(da[i+d2]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.R);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.R);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -2963,14 +2963,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i+2])),
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.B);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.B);
                                 }
                             };
                         else
@@ -2980,14 +2980,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i+d2])),
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.B);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.B);
                                 }
                             };
                         }
@@ -3010,14 +3010,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i+2]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i])),
+                                            Col.UShortToFloat(da[i+2]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.R);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.R);
                                 }
                             };
                         else
@@ -3027,14 +3027,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i+d2]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i])),
+                                            Col.UShortToFloat(da[i+d2]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.R);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.R);
                                 }
                             };
                         }
@@ -3057,14 +3057,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i+2])),
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.B);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.B);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -3075,14 +3075,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i+d2])),
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.B);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.B);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -3106,14 +3106,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i+2]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i])),
+                                            Col.UShortToFloat(da[i+2]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.R);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.R);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -3124,14 +3124,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUShort(da[i+d2]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i])),
+                                            Col.UShortToFloat(da[i+d2]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.R);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.R);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -3155,14 +3155,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i+2])),
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.B);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.B);
                                 }
                             };
                         else
@@ -3172,14 +3172,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i+d2])),
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.B);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.B);
                                 }
                             };
                         }
@@ -3202,14 +3202,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i+2]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i])),
+                                            Col.UShortToDouble(da[i+2]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.R);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.R);
                                 }
                             };
                         else
@@ -3219,14 +3219,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i+d2]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i])),
+                                            Col.UShortToDouble(da[i+d2]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.R);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.R);
                                 }
                             };
                         }
@@ -3249,14 +3249,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i+2])),
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.B);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.B);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -3267,14 +3267,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i+d2])),
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.B);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.B);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -3298,14 +3298,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i+2]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i])),
+                                            Col.UShortToDouble(da[i+2]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.R);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.R);
                                     da[i+3] = (ushort)65535;
                                 }
                             };
@@ -3316,14 +3316,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUShort(da[i+d2]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i])),
+                                            Col.UShortToDouble(da[i+d2]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.R);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.R);
                                     da[i+d3] = (ushort)65535;
                                 }
                             };
@@ -3347,15 +3347,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i+2]), 
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i+2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.B);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.B);
                                 }
                             };
                         else
@@ -3365,15 +3365,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i+d2]), 
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i+d2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.B);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.B);
                                 }
                             };
                         }
@@ -3396,15 +3396,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i+2]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i]), 
+                                            Col.UShortToByte(da[i+2]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.R);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.R);
                                 }
                             };
                         else
@@ -3414,15 +3414,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i+d2]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i]), 
+                                            Col.UShortToByte(da[i+d2]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.R);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.R);
                                 }
                             };
                         }
@@ -3445,16 +3445,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i+2]), 
-                                            Col.ByteFromUShort(da[i+3])),
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i+2]), 
+                                            Col.UShortToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.B);
-                                    da[i+3] = Col.UShortFromByte(v.A);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.B);
+                                    da[i+3] = Col.ByteToUShort(v.A);
                                 }
                             };
                         else
@@ -3464,16 +3464,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i+d2]), 
-                                            Col.ByteFromUShort(da[i+d3])),
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i+d2]), 
+                                            Col.UShortToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.R);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.B);
-                                    da[i+d3] = Col.UShortFromByte(v.A);
+                                    da[i] = Col.ByteToUShort(v.R);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.B);
+                                    da[i+d3] = Col.ByteToUShort(v.A);
                                 }
                             };
                         }
@@ -3496,16 +3496,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i+2]), 
-                                            Col.ByteFromUShort(da[i+1]), 
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+3])),
+                                            Col.UShortToByte(da[i+2]), 
+                                            Col.UShortToByte(da[i+1]), 
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+1] = Col.UShortFromByte(v.G);
-                                    da[i+2] = Col.UShortFromByte(v.R);
-                                    da[i+3] = Col.UShortFromByte(v.A);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+1] = Col.ByteToUShort(v.G);
+                                    da[i+2] = Col.ByteToUShort(v.R);
+                                    da[i+3] = Col.ByteToUShort(v.A);
                                 }
                             };
                         else
@@ -3515,16 +3515,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUShort(da[i+d2]), 
-                                            Col.ByteFromUShort(da[i+d1]), 
-                                            Col.ByteFromUShort(da[i]), 
-                                            Col.ByteFromUShort(da[i+d3])),
+                                            Col.UShortToByte(da[i+d2]), 
+                                            Col.UShortToByte(da[i+d1]), 
+                                            Col.UShortToByte(da[i]), 
+                                            Col.UShortToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromByte(v.B);
-                                    da[i+d1] = Col.UShortFromByte(v.G);
-                                    da[i+d2] = Col.UShortFromByte(v.R);
-                                    da[i+d3] = Col.UShortFromByte(v.A);
+                                    da[i] = Col.ByteToUShort(v.B);
+                                    da[i+d1] = Col.ByteToUShort(v.G);
+                                    da[i+d2] = Col.ByteToUShort(v.R);
+                                    da[i+d3] = Col.ByteToUShort(v.A);
                                 }
                             };
                         }
@@ -3747,15 +3747,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i+2]), 
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i+2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.B);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.B);
                                 }
                             };
                         else
@@ -3765,15 +3765,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i+d2]), 
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i+d2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.B);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.B);
                                 }
                             };
                         }
@@ -3796,15 +3796,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i+2]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i]), 
+                                            Col.UShortToUInt(da[i+2]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.R);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.R);
                                 }
                             };
                         else
@@ -3814,15 +3814,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i+d2]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i]), 
+                                            Col.UShortToUInt(da[i+d2]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.R);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.R);
                                 }
                             };
                         }
@@ -3845,16 +3845,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i+2]), 
-                                            Col.UIntFromUShort(da[i+3])),
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i+2]), 
+                                            Col.UShortToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.B);
-                                    da[i+3] = Col.UShortFromUInt(v.A);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.B);
+                                    da[i+3] = Col.UIntToUShort(v.A);
                                 }
                             };
                         else
@@ -3864,16 +3864,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i+d2]), 
-                                            Col.UIntFromUShort(da[i+d3])),
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i+d2]), 
+                                            Col.UShortToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.R);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.B);
-                                    da[i+d3] = Col.UShortFromUInt(v.A);
+                                    da[i] = Col.UIntToUShort(v.R);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.B);
+                                    da[i+d3] = Col.UIntToUShort(v.A);
                                 }
                             };
                         }
@@ -3896,16 +3896,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i+2]), 
-                                            Col.UIntFromUShort(da[i+1]), 
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+3])),
+                                            Col.UShortToUInt(da[i+2]), 
+                                            Col.UShortToUInt(da[i+1]), 
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+1] = Col.UShortFromUInt(v.G);
-                                    da[i+2] = Col.UShortFromUInt(v.R);
-                                    da[i+3] = Col.UShortFromUInt(v.A);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+1] = Col.UIntToUShort(v.G);
+                                    da[i+2] = Col.UIntToUShort(v.R);
+                                    da[i+3] = Col.UIntToUShort(v.A);
                                 }
                             };
                         else
@@ -3915,16 +3915,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromUShort(da[i+d2]), 
-                                            Col.UIntFromUShort(da[i+d1]), 
-                                            Col.UIntFromUShort(da[i]), 
-                                            Col.UIntFromUShort(da[i+d3])),
+                                            Col.UShortToUInt(da[i+d2]), 
+                                            Col.UShortToUInt(da[i+d1]), 
+                                            Col.UShortToUInt(da[i]), 
+                                            Col.UShortToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromUInt(v.B);
-                                    da[i+d1] = Col.UShortFromUInt(v.G);
-                                    da[i+d2] = Col.UShortFromUInt(v.R);
-                                    da[i+d3] = Col.UShortFromUInt(v.A);
+                                    da[i] = Col.UIntToUShort(v.B);
+                                    da[i+d1] = Col.UIntToUShort(v.G);
+                                    da[i+d2] = Col.UIntToUShort(v.R);
+                                    da[i+d3] = Col.UIntToUShort(v.A);
                                 }
                             };
                         }
@@ -3947,15 +3947,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i+2]), 
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i+2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.B);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.B);
                                 }
                             };
                         else
@@ -3965,15 +3965,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i+d2]), 
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i+d2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.B);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.B);
                                 }
                             };
                         }
@@ -3996,15 +3996,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i+2]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i]), 
+                                            Col.UShortToFloat(da[i+2]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.R);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.R);
                                 }
                             };
                         else
@@ -4014,15 +4014,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i+d2]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i]), 
+                                            Col.UShortToFloat(da[i+d2]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.R);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.R);
                                 }
                             };
                         }
@@ -4045,16 +4045,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i+2]), 
-                                            Col.FloatFromUShort(da[i+3])),
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i+2]), 
+                                            Col.UShortToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.B);
-                                    da[i+3] = Col.UShortFromFloat(v.A);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.B);
+                                    da[i+3] = Col.FloatToUShort(v.A);
                                 }
                             };
                         else
@@ -4064,16 +4064,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i+d2]), 
-                                            Col.FloatFromUShort(da[i+d3])),
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i+d2]), 
+                                            Col.UShortToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.R);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.B);
-                                    da[i+d3] = Col.UShortFromFloat(v.A);
+                                    da[i] = Col.FloatToUShort(v.R);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.B);
+                                    da[i+d3] = Col.FloatToUShort(v.A);
                                 }
                             };
                         }
@@ -4096,16 +4096,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i+2]), 
-                                            Col.FloatFromUShort(da[i+1]), 
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+3])),
+                                            Col.UShortToFloat(da[i+2]), 
+                                            Col.UShortToFloat(da[i+1]), 
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+1] = Col.UShortFromFloat(v.G);
-                                    da[i+2] = Col.UShortFromFloat(v.R);
-                                    da[i+3] = Col.UShortFromFloat(v.A);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+1] = Col.FloatToUShort(v.G);
+                                    da[i+2] = Col.FloatToUShort(v.R);
+                                    da[i+3] = Col.FloatToUShort(v.A);
                                 }
                             };
                         else
@@ -4115,16 +4115,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUShort(da[i+d2]), 
-                                            Col.FloatFromUShort(da[i+d1]), 
-                                            Col.FloatFromUShort(da[i]), 
-                                            Col.FloatFromUShort(da[i+d3])),
+                                            Col.UShortToFloat(da[i+d2]), 
+                                            Col.UShortToFloat(da[i+d1]), 
+                                            Col.UShortToFloat(da[i]), 
+                                            Col.UShortToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromFloat(v.B);
-                                    da[i+d1] = Col.UShortFromFloat(v.G);
-                                    da[i+d2] = Col.UShortFromFloat(v.R);
-                                    da[i+d3] = Col.UShortFromFloat(v.A);
+                                    da[i] = Col.FloatToUShort(v.B);
+                                    da[i+d1] = Col.FloatToUShort(v.G);
+                                    da[i+d2] = Col.FloatToUShort(v.R);
+                                    da[i+d3] = Col.FloatToUShort(v.A);
                                 }
                             };
                         }
@@ -4147,15 +4147,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i+2]), 
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i+2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.B);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.B);
                                 }
                             };
                         else
@@ -4165,15 +4165,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i+d2]), 
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i+d2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.B);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.B);
                                 }
                             };
                         }
@@ -4196,15 +4196,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i+2]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i]), 
+                                            Col.UShortToDouble(da[i+2]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.R);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.R);
                                 }
                             };
                         else
@@ -4214,15 +4214,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i+d2]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i]), 
+                                            Col.UShortToDouble(da[i+d2]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.R);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.R);
                                 }
                             };
                         }
@@ -4245,16 +4245,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i+2]), 
-                                            Col.DoubleFromUShort(da[i+3])),
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i+2]), 
+                                            Col.UShortToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.B);
-                                    da[i+3] = Col.UShortFromDouble(v.A);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.B);
+                                    da[i+3] = Col.DoubleToUShort(v.A);
                                 }
                             };
                         else
@@ -4264,16 +4264,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i+d2]), 
-                                            Col.DoubleFromUShort(da[i+d3])),
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i+d2]), 
+                                            Col.UShortToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.R);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.B);
-                                    da[i+d3] = Col.UShortFromDouble(v.A);
+                                    da[i] = Col.DoubleToUShort(v.R);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.B);
+                                    da[i+d3] = Col.DoubleToUShort(v.A);
                                 }
                             };
                         }
@@ -4296,16 +4296,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i+2]), 
-                                            Col.DoubleFromUShort(da[i+1]), 
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+3])),
+                                            Col.UShortToDouble(da[i+2]), 
+                                            Col.UShortToDouble(da[i+1]), 
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+1] = Col.UShortFromDouble(v.G);
-                                    da[i+2] = Col.UShortFromDouble(v.R);
-                                    da[i+3] = Col.UShortFromDouble(v.A);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+1] = Col.DoubleToUShort(v.G);
+                                    da[i+2] = Col.DoubleToUShort(v.R);
+                                    da[i+3] = Col.DoubleToUShort(v.A);
                                 }
                             };
                         else
@@ -4315,16 +4315,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUShort(da[i+d2]), 
-                                            Col.DoubleFromUShort(da[i+d1]), 
-                                            Col.DoubleFromUShort(da[i]), 
-                                            Col.DoubleFromUShort(da[i+d3])),
+                                            Col.UShortToDouble(da[i+d2]), 
+                                            Col.UShortToDouble(da[i+d1]), 
+                                            Col.UShortToDouble(da[i]), 
+                                            Col.UShortToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UShortFromDouble(v.B);
-                                    da[i+d1] = Col.UShortFromDouble(v.G);
-                                    da[i+d2] = Col.UShortFromDouble(v.R);
-                                    da[i+d3] = Col.UShortFromDouble(v.A);
+                                    da[i] = Col.DoubleToUShort(v.B);
+                                    da[i+d1] = Col.DoubleToUShort(v.G);
+                                    da[i+d2] = Col.DoubleToUShort(v.R);
+                                    da[i+d3] = Col.DoubleToUShort(v.A);
                                 }
                             };
                         }
@@ -4347,14 +4347,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i+2])),
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.B);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.B);
                                 }
                             };
                         else
@@ -4364,14 +4364,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i+d2])),
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.B);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.B);
                                 }
                             };
                         }
@@ -4394,14 +4394,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i+2]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i])),
+                                            Col.UIntToByte(da[i+2]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.R);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.R);
                                 }
                             };
                         else
@@ -4411,14 +4411,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i+d2]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i])),
+                                            Col.UIntToByte(da[i+d2]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.R);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.R);
                                 }
                             };
                         }
@@ -4441,14 +4441,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i+2])),
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.B);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.B);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4459,14 +4459,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i+d2])),
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.B);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.B);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4490,14 +4490,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i+2]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i])),
+                                            Col.UIntToByte(da[i+2]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.R);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.R);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4508,14 +4508,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromUInt(da[i+d2]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i])),
+                                            Col.UIntToByte(da[i+d2]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.R);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.R);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4539,14 +4539,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i+2])),
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.B);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.B);
                                 }
                             };
                         else
@@ -4556,14 +4556,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i+d2])),
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.B);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.B);
                                 }
                             };
                         }
@@ -4586,14 +4586,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i+2]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i])),
+                                            Col.UIntToUShort(da[i+2]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.R);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.R);
                                 }
                             };
                         else
@@ -4603,14 +4603,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i+d2]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i])),
+                                            Col.UIntToUShort(da[i+d2]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.R);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.R);
                                 }
                             };
                         }
@@ -4633,14 +4633,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i+2])),
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.B);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.B);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4651,14 +4651,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i+d2])),
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.B);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.B);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4682,14 +4682,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i+2]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i])),
+                                            Col.UIntToUShort(da[i+2]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.R);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.R);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4700,14 +4700,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromUInt(da[i+d2]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i])),
+                                            Col.UIntToUShort(da[i+d2]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.R);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.R);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -4923,14 +4923,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i+2])),
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.B);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.B);
                                 }
                             };
                         else
@@ -4940,14 +4940,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i+d2])),
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.B);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.B);
                                 }
                             };
                         }
@@ -4970,14 +4970,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i+2]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i])),
+                                            Col.UIntToFloat(da[i+2]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.R);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.R);
                                 }
                             };
                         else
@@ -4987,14 +4987,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i+d2]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i])),
+                                            Col.UIntToFloat(da[i+d2]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.R);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.R);
                                 }
                             };
                         }
@@ -5017,14 +5017,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i+2])),
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.B);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.B);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5035,14 +5035,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i+d2])),
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.B);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.B);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5066,14 +5066,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i+2]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i])),
+                                            Col.UIntToFloat(da[i+2]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.R);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.R);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5084,14 +5084,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromUInt(da[i+d2]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i])),
+                                            Col.UIntToFloat(da[i+d2]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.R);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.R);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5115,14 +5115,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i+2])),
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.B);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.B);
                                 }
                             };
                         else
@@ -5132,14 +5132,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i+d2])),
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.B);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.B);
                                 }
                             };
                         }
@@ -5162,14 +5162,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i+2]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i])),
+                                            Col.UIntToDouble(da[i+2]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.R);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.R);
                                 }
                             };
                         else
@@ -5179,14 +5179,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i+d2]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i])),
+                                            Col.UIntToDouble(da[i+d2]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.R);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.R);
                                 }
                             };
                         }
@@ -5209,14 +5209,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i+2])),
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.B);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.B);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5227,14 +5227,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i+d2])),
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.B);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.B);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5258,14 +5258,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i+2]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i])),
+                                            Col.UIntToDouble(da[i+2]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.R);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.R);
                                     da[i+3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5276,14 +5276,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromUInt(da[i+d2]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i])),
+                                            Col.UIntToDouble(da[i+d2]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.R);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.R);
                                     da[i+d3] = (uint)UInt32.MaxValue;
                                 }
                             };
@@ -5307,15 +5307,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i+2]), 
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i+2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.B);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.B);
                                 }
                             };
                         else
@@ -5325,15 +5325,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i+d2]), 
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i+d2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.B);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.B);
                                 }
                             };
                         }
@@ -5356,15 +5356,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i+2]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i]), 
+                                            Col.UIntToByte(da[i+2]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.R);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.R);
                                 }
                             };
                         else
@@ -5374,15 +5374,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i+d2]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i]), 
+                                            Col.UIntToByte(da[i+d2]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.R);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.R);
                                 }
                             };
                         }
@@ -5405,16 +5405,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i+2]), 
-                                            Col.ByteFromUInt(da[i+3])),
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i+2]), 
+                                            Col.UIntToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.B);
-                                    da[i+3] = Col.UIntFromByte(v.A);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.B);
+                                    da[i+3] = Col.ByteToUInt(v.A);
                                 }
                             };
                         else
@@ -5424,16 +5424,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i+d2]), 
-                                            Col.ByteFromUInt(da[i+d3])),
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i+d2]), 
+                                            Col.UIntToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.R);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.B);
-                                    da[i+d3] = Col.UIntFromByte(v.A);
+                                    da[i] = Col.ByteToUInt(v.R);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.B);
+                                    da[i+d3] = Col.ByteToUInt(v.A);
                                 }
                             };
                         }
@@ -5456,16 +5456,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i+2]), 
-                                            Col.ByteFromUInt(da[i+1]), 
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+3])),
+                                            Col.UIntToByte(da[i+2]), 
+                                            Col.UIntToByte(da[i+1]), 
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+1] = Col.UIntFromByte(v.G);
-                                    da[i+2] = Col.UIntFromByte(v.R);
-                                    da[i+3] = Col.UIntFromByte(v.A);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+1] = Col.ByteToUInt(v.G);
+                                    da[i+2] = Col.ByteToUInt(v.R);
+                                    da[i+3] = Col.ByteToUInt(v.A);
                                 }
                             };
                         else
@@ -5475,16 +5475,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromUInt(da[i+d2]), 
-                                            Col.ByteFromUInt(da[i+d1]), 
-                                            Col.ByteFromUInt(da[i]), 
-                                            Col.ByteFromUInt(da[i+d3])),
+                                            Col.UIntToByte(da[i+d2]), 
+                                            Col.UIntToByte(da[i+d1]), 
+                                            Col.UIntToByte(da[i]), 
+                                            Col.UIntToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromByte(v.B);
-                                    da[i+d1] = Col.UIntFromByte(v.G);
-                                    da[i+d2] = Col.UIntFromByte(v.R);
-                                    da[i+d3] = Col.UIntFromByte(v.A);
+                                    da[i] = Col.ByteToUInt(v.B);
+                                    da[i+d1] = Col.ByteToUInt(v.G);
+                                    da[i+d2] = Col.ByteToUInt(v.R);
+                                    da[i+d3] = Col.ByteToUInt(v.A);
                                 }
                             };
                         }
@@ -5507,15 +5507,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i+2]), 
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i+2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.B);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.B);
                                 }
                             };
                         else
@@ -5525,15 +5525,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i+d2]), 
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i+d2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.B);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.B);
                                 }
                             };
                         }
@@ -5556,15 +5556,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i+2]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i]), 
+                                            Col.UIntToUShort(da[i+2]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.R);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.R);
                                 }
                             };
                         else
@@ -5574,15 +5574,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i+d2]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i]), 
+                                            Col.UIntToUShort(da[i+d2]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.R);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.R);
                                 }
                             };
                         }
@@ -5605,16 +5605,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i+2]), 
-                                            Col.UShortFromUInt(da[i+3])),
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i+2]), 
+                                            Col.UIntToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.B);
-                                    da[i+3] = Col.UIntFromUShort(v.A);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.B);
+                                    da[i+3] = Col.UShortToUInt(v.A);
                                 }
                             };
                         else
@@ -5624,16 +5624,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i+d2]), 
-                                            Col.UShortFromUInt(da[i+d3])),
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i+d2]), 
+                                            Col.UIntToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.R);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.B);
-                                    da[i+d3] = Col.UIntFromUShort(v.A);
+                                    da[i] = Col.UShortToUInt(v.R);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.B);
+                                    da[i+d3] = Col.UShortToUInt(v.A);
                                 }
                             };
                         }
@@ -5656,16 +5656,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i+2]), 
-                                            Col.UShortFromUInt(da[i+1]), 
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+3])),
+                                            Col.UIntToUShort(da[i+2]), 
+                                            Col.UIntToUShort(da[i+1]), 
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+1] = Col.UIntFromUShort(v.G);
-                                    da[i+2] = Col.UIntFromUShort(v.R);
-                                    da[i+3] = Col.UIntFromUShort(v.A);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+1] = Col.UShortToUInt(v.G);
+                                    da[i+2] = Col.UShortToUInt(v.R);
+                                    da[i+3] = Col.UShortToUInt(v.A);
                                 }
                             };
                         else
@@ -5675,16 +5675,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromUInt(da[i+d2]), 
-                                            Col.UShortFromUInt(da[i+d1]), 
-                                            Col.UShortFromUInt(da[i]), 
-                                            Col.UShortFromUInt(da[i+d3])),
+                                            Col.UIntToUShort(da[i+d2]), 
+                                            Col.UIntToUShort(da[i+d1]), 
+                                            Col.UIntToUShort(da[i]), 
+                                            Col.UIntToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromUShort(v.B);
-                                    da[i+d1] = Col.UIntFromUShort(v.G);
-                                    da[i+d2] = Col.UIntFromUShort(v.R);
-                                    da[i+d3] = Col.UIntFromUShort(v.A);
+                                    da[i] = Col.UShortToUInt(v.B);
+                                    da[i+d1] = Col.UShortToUInt(v.G);
+                                    da[i+d2] = Col.UShortToUInt(v.R);
+                                    da[i+d3] = Col.UShortToUInt(v.A);
                                 }
                             };
                         }
@@ -5907,15 +5907,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i+2]), 
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i+2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.B);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.B);
                                 }
                             };
                         else
@@ -5925,15 +5925,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i+d2]), 
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i+d2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.B);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.B);
                                 }
                             };
                         }
@@ -5956,15 +5956,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i+2]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i]), 
+                                            Col.UIntToFloat(da[i+2]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.R);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.R);
                                 }
                             };
                         else
@@ -5974,15 +5974,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i+d2]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i]), 
+                                            Col.UIntToFloat(da[i+d2]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.R);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.R);
                                 }
                             };
                         }
@@ -6005,16 +6005,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i+2]), 
-                                            Col.FloatFromUInt(da[i+3])),
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i+2]), 
+                                            Col.UIntToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.B);
-                                    da[i+3] = Col.UIntFromFloat(v.A);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.B);
+                                    da[i+3] = Col.FloatToUInt(v.A);
                                 }
                             };
                         else
@@ -6024,16 +6024,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i+d2]), 
-                                            Col.FloatFromUInt(da[i+d3])),
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i+d2]), 
+                                            Col.UIntToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.R);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.B);
-                                    da[i+d3] = Col.UIntFromFloat(v.A);
+                                    da[i] = Col.FloatToUInt(v.R);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.B);
+                                    da[i+d3] = Col.FloatToUInt(v.A);
                                 }
                             };
                         }
@@ -6056,16 +6056,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i+2]), 
-                                            Col.FloatFromUInt(da[i+1]), 
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+3])),
+                                            Col.UIntToFloat(da[i+2]), 
+                                            Col.UIntToFloat(da[i+1]), 
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+1] = Col.UIntFromFloat(v.G);
-                                    da[i+2] = Col.UIntFromFloat(v.R);
-                                    da[i+3] = Col.UIntFromFloat(v.A);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+1] = Col.FloatToUInt(v.G);
+                                    da[i+2] = Col.FloatToUInt(v.R);
+                                    da[i+3] = Col.FloatToUInt(v.A);
                                 }
                             };
                         else
@@ -6075,16 +6075,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromUInt(da[i+d2]), 
-                                            Col.FloatFromUInt(da[i+d1]), 
-                                            Col.FloatFromUInt(da[i]), 
-                                            Col.FloatFromUInt(da[i+d3])),
+                                            Col.UIntToFloat(da[i+d2]), 
+                                            Col.UIntToFloat(da[i+d1]), 
+                                            Col.UIntToFloat(da[i]), 
+                                            Col.UIntToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromFloat(v.B);
-                                    da[i+d1] = Col.UIntFromFloat(v.G);
-                                    da[i+d2] = Col.UIntFromFloat(v.R);
-                                    da[i+d3] = Col.UIntFromFloat(v.A);
+                                    da[i] = Col.FloatToUInt(v.B);
+                                    da[i+d1] = Col.FloatToUInt(v.G);
+                                    da[i+d2] = Col.FloatToUInt(v.R);
+                                    da[i+d3] = Col.FloatToUInt(v.A);
                                 }
                             };
                         }
@@ -6107,15 +6107,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i+2]), 
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i+2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.B);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.B);
                                 }
                             };
                         else
@@ -6125,15 +6125,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i+d2]), 
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i+d2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.B);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.B);
                                 }
                             };
                         }
@@ -6156,15 +6156,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i+2]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i]), 
+                                            Col.UIntToDouble(da[i+2]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.R);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.R);
                                 }
                             };
                         else
@@ -6174,15 +6174,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i+d2]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i]), 
+                                            Col.UIntToDouble(da[i+d2]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.R);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.R);
                                 }
                             };
                         }
@@ -6205,16 +6205,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i+2]), 
-                                            Col.DoubleFromUInt(da[i+3])),
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i+2]), 
+                                            Col.UIntToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.B);
-                                    da[i+3] = Col.UIntFromDouble(v.A);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.B);
+                                    da[i+3] = Col.DoubleToUInt(v.A);
                                 }
                             };
                         else
@@ -6224,16 +6224,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i+d2]), 
-                                            Col.DoubleFromUInt(da[i+d3])),
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i+d2]), 
+                                            Col.UIntToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.R);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.B);
-                                    da[i+d3] = Col.UIntFromDouble(v.A);
+                                    da[i] = Col.DoubleToUInt(v.R);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.B);
+                                    da[i+d3] = Col.DoubleToUInt(v.A);
                                 }
                             };
                         }
@@ -6256,16 +6256,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i+2]), 
-                                            Col.DoubleFromUInt(da[i+1]), 
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+3])),
+                                            Col.UIntToDouble(da[i+2]), 
+                                            Col.UIntToDouble(da[i+1]), 
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+1] = Col.UIntFromDouble(v.G);
-                                    da[i+2] = Col.UIntFromDouble(v.R);
-                                    da[i+3] = Col.UIntFromDouble(v.A);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+1] = Col.DoubleToUInt(v.G);
+                                    da[i+2] = Col.DoubleToUInt(v.R);
+                                    da[i+3] = Col.DoubleToUInt(v.A);
                                 }
                             };
                         else
@@ -6275,16 +6275,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromUInt(da[i+d2]), 
-                                            Col.DoubleFromUInt(da[i+d1]), 
-                                            Col.DoubleFromUInt(da[i]), 
-                                            Col.DoubleFromUInt(da[i+d3])),
+                                            Col.UIntToDouble(da[i+d2]), 
+                                            Col.UIntToDouble(da[i+d1]), 
+                                            Col.UIntToDouble(da[i]), 
+                                            Col.UIntToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.UIntFromDouble(v.B);
-                                    da[i+d1] = Col.UIntFromDouble(v.G);
-                                    da[i+d2] = Col.UIntFromDouble(v.R);
-                                    da[i+d3] = Col.UIntFromDouble(v.A);
+                                    da[i] = Col.DoubleToUInt(v.B);
+                                    da[i+d1] = Col.DoubleToUInt(v.G);
+                                    da[i+d2] = Col.DoubleToUInt(v.R);
+                                    da[i+d3] = Col.DoubleToUInt(v.A);
                                 }
                             };
                         }
@@ -6307,14 +6307,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i+2])),
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.B);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.B);
                                 }
                             };
                         else
@@ -6324,14 +6324,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i+d2])),
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.B);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.B);
                                 }
                             };
                         }
@@ -6354,14 +6354,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i+2]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i])),
+                                            Col.FloatToByte(da[i+2]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.R);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.R);
                                 }
                             };
                         else
@@ -6371,14 +6371,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i+d2]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i])),
+                                            Col.FloatToByte(da[i+d2]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.R);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.R);
                                 }
                             };
                         }
@@ -6401,14 +6401,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i+2])),
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.B);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.B);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -6419,14 +6419,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i+d2])),
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.B);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.B);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -6450,14 +6450,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i+2]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i])),
+                                            Col.FloatToByte(da[i+2]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.R);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.R);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -6468,14 +6468,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromFloat(da[i+d2]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i])),
+                                            Col.FloatToByte(da[i+d2]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.R);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.R);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -6499,14 +6499,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i+2])),
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.B);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.B);
                                 }
                             };
                         else
@@ -6516,14 +6516,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i+d2])),
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.B);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.B);
                                 }
                             };
                         }
@@ -6546,14 +6546,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i+2]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i])),
+                                            Col.FloatToUShort(da[i+2]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.R);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.R);
                                 }
                             };
                         else
@@ -6563,14 +6563,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i+d2]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i])),
+                                            Col.FloatToUShort(da[i+d2]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.R);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.R);
                                 }
                             };
                         }
@@ -6593,14 +6593,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i+2])),
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.B);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.B);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -6611,14 +6611,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i+d2])),
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.B);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.B);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -6642,14 +6642,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i+2]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i])),
+                                            Col.FloatToUShort(da[i+2]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.R);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.R);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -6660,14 +6660,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromFloat(da[i+d2]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i])),
+                                            Col.FloatToUShort(da[i+d2]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.R);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.R);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -6691,14 +6691,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i+2])),
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.B);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.B);
                                 }
                             };
                         else
@@ -6708,14 +6708,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i+d2])),
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.B);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.B);
                                 }
                             };
                         }
@@ -6738,14 +6738,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i+2]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i])),
+                                            Col.FloatToUInt(da[i+2]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.R);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.R);
                                 }
                             };
                         else
@@ -6755,14 +6755,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i+d2]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i])),
+                                            Col.FloatToUInt(da[i+d2]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.R);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.R);
                                 }
                             };
                         }
@@ -6785,14 +6785,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i+2])),
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.B);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.B);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -6803,14 +6803,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i+d2])),
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.B);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.B);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -6834,14 +6834,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i+2]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i])),
+                                            Col.FloatToUInt(da[i+2]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.R);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.R);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -6852,14 +6852,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromFloat(da[i+d2]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i])),
+                                            Col.FloatToUInt(da[i+d2]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.R);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.R);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -7075,14 +7075,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i+2])),
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.B);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.B);
                                 }
                             };
                         else
@@ -7092,14 +7092,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i+d2])),
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.B);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.B);
                                 }
                             };
                         }
@@ -7122,14 +7122,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i+2]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i])),
+                                            Col.FloatToDouble(da[i+2]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.R);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.R);
                                 }
                             };
                         else
@@ -7139,14 +7139,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i+d2]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i])),
+                                            Col.FloatToDouble(da[i+d2]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.R);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.R);
                                 }
                             };
                         }
@@ -7169,14 +7169,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i+2])),
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.B);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.B);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -7187,14 +7187,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i+d2])),
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.B);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.B);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -7218,14 +7218,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i+2]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i])),
+                                            Col.FloatToDouble(da[i+2]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.R);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.R);
                                     da[i+3] = (float)1.0f;
                                 }
                             };
@@ -7236,14 +7236,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3d(
-                                            Col.DoubleFromFloat(da[i+d2]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i])),
+                                            Col.FloatToDouble(da[i+d2]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.R);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.R);
                                     da[i+d3] = (float)1.0f;
                                 }
                             };
@@ -7267,15 +7267,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i+2]), 
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i+2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.B);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.B);
                                 }
                             };
                         else
@@ -7285,15 +7285,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i+d2]), 
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i+d2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.B);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.B);
                                 }
                             };
                         }
@@ -7316,15 +7316,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i+2]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i]), 
+                                            Col.FloatToByte(da[i+2]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.R);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.R);
                                 }
                             };
                         else
@@ -7334,15 +7334,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i+d2]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i]), 
+                                            Col.FloatToByte(da[i+d2]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.R);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.R);
                                 }
                             };
                         }
@@ -7365,16 +7365,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i+2]), 
-                                            Col.ByteFromFloat(da[i+3])),
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i+2]), 
+                                            Col.FloatToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.B);
-                                    da[i+3] = Col.FloatFromByte(v.A);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.B);
+                                    da[i+3] = Col.ByteToFloat(v.A);
                                 }
                             };
                         else
@@ -7384,16 +7384,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i+d2]), 
-                                            Col.ByteFromFloat(da[i+d3])),
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i+d2]), 
+                                            Col.FloatToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.R);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.B);
-                                    da[i+d3] = Col.FloatFromByte(v.A);
+                                    da[i] = Col.ByteToFloat(v.R);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.B);
+                                    da[i+d3] = Col.ByteToFloat(v.A);
                                 }
                             };
                         }
@@ -7416,16 +7416,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i+2]), 
-                                            Col.ByteFromFloat(da[i+1]), 
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+3])),
+                                            Col.FloatToByte(da[i+2]), 
+                                            Col.FloatToByte(da[i+1]), 
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+1] = Col.FloatFromByte(v.G);
-                                    da[i+2] = Col.FloatFromByte(v.R);
-                                    da[i+3] = Col.FloatFromByte(v.A);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+1] = Col.ByteToFloat(v.G);
+                                    da[i+2] = Col.ByteToFloat(v.R);
+                                    da[i+3] = Col.ByteToFloat(v.A);
                                 }
                             };
                         else
@@ -7435,16 +7435,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromFloat(da[i+d2]), 
-                                            Col.ByteFromFloat(da[i+d1]), 
-                                            Col.ByteFromFloat(da[i]), 
-                                            Col.ByteFromFloat(da[i+d3])),
+                                            Col.FloatToByte(da[i+d2]), 
+                                            Col.FloatToByte(da[i+d1]), 
+                                            Col.FloatToByte(da[i]), 
+                                            Col.FloatToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromByte(v.B);
-                                    da[i+d1] = Col.FloatFromByte(v.G);
-                                    da[i+d2] = Col.FloatFromByte(v.R);
-                                    da[i+d3] = Col.FloatFromByte(v.A);
+                                    da[i] = Col.ByteToFloat(v.B);
+                                    da[i+d1] = Col.ByteToFloat(v.G);
+                                    da[i+d2] = Col.ByteToFloat(v.R);
+                                    da[i+d3] = Col.ByteToFloat(v.A);
                                 }
                             };
                         }
@@ -7467,15 +7467,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i+2]), 
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i+2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.B);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.B);
                                 }
                             };
                         else
@@ -7485,15 +7485,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i+d2]), 
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i+d2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.B);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.B);
                                 }
                             };
                         }
@@ -7516,15 +7516,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i+2]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i]), 
+                                            Col.FloatToUShort(da[i+2]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.R);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.R);
                                 }
                             };
                         else
@@ -7534,15 +7534,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i+d2]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i]), 
+                                            Col.FloatToUShort(da[i+d2]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.R);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.R);
                                 }
                             };
                         }
@@ -7565,16 +7565,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i+2]), 
-                                            Col.UShortFromFloat(da[i+3])),
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i+2]), 
+                                            Col.FloatToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.B);
-                                    da[i+3] = Col.FloatFromUShort(v.A);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.B);
+                                    da[i+3] = Col.UShortToFloat(v.A);
                                 }
                             };
                         else
@@ -7584,16 +7584,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i+d2]), 
-                                            Col.UShortFromFloat(da[i+d3])),
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i+d2]), 
+                                            Col.FloatToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.R);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.B);
-                                    da[i+d3] = Col.FloatFromUShort(v.A);
+                                    da[i] = Col.UShortToFloat(v.R);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.B);
+                                    da[i+d3] = Col.UShortToFloat(v.A);
                                 }
                             };
                         }
@@ -7616,16 +7616,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i+2]), 
-                                            Col.UShortFromFloat(da[i+1]), 
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+3])),
+                                            Col.FloatToUShort(da[i+2]), 
+                                            Col.FloatToUShort(da[i+1]), 
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+1] = Col.FloatFromUShort(v.G);
-                                    da[i+2] = Col.FloatFromUShort(v.R);
-                                    da[i+3] = Col.FloatFromUShort(v.A);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+1] = Col.UShortToFloat(v.G);
+                                    da[i+2] = Col.UShortToFloat(v.R);
+                                    da[i+3] = Col.UShortToFloat(v.A);
                                 }
                             };
                         else
@@ -7635,16 +7635,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromFloat(da[i+d2]), 
-                                            Col.UShortFromFloat(da[i+d1]), 
-                                            Col.UShortFromFloat(da[i]), 
-                                            Col.UShortFromFloat(da[i+d3])),
+                                            Col.FloatToUShort(da[i+d2]), 
+                                            Col.FloatToUShort(da[i+d1]), 
+                                            Col.FloatToUShort(da[i]), 
+                                            Col.FloatToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUShort(v.B);
-                                    da[i+d1] = Col.FloatFromUShort(v.G);
-                                    da[i+d2] = Col.FloatFromUShort(v.R);
-                                    da[i+d3] = Col.FloatFromUShort(v.A);
+                                    da[i] = Col.UShortToFloat(v.B);
+                                    da[i+d1] = Col.UShortToFloat(v.G);
+                                    da[i+d2] = Col.UShortToFloat(v.R);
+                                    da[i+d3] = Col.UShortToFloat(v.A);
                                 }
                             };
                         }
@@ -7667,15 +7667,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i+2]), 
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i+2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.B);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.B);
                                 }
                             };
                         else
@@ -7685,15 +7685,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i+d2]), 
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i+d2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.B);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.B);
                                 }
                             };
                         }
@@ -7716,15 +7716,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i+2]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i]), 
+                                            Col.FloatToUInt(da[i+2]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.R);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.R);
                                 }
                             };
                         else
@@ -7734,15 +7734,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i+d2]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i]), 
+                                            Col.FloatToUInt(da[i+d2]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.R);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.R);
                                 }
                             };
                         }
@@ -7765,16 +7765,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i+2]), 
-                                            Col.UIntFromFloat(da[i+3])),
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i+2]), 
+                                            Col.FloatToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.B);
-                                    da[i+3] = Col.FloatFromUInt(v.A);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.B);
+                                    da[i+3] = Col.UIntToFloat(v.A);
                                 }
                             };
                         else
@@ -7784,16 +7784,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i+d2]), 
-                                            Col.UIntFromFloat(da[i+d3])),
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i+d2]), 
+                                            Col.FloatToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.R);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.B);
-                                    da[i+d3] = Col.FloatFromUInt(v.A);
+                                    da[i] = Col.UIntToFloat(v.R);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.B);
+                                    da[i+d3] = Col.UIntToFloat(v.A);
                                 }
                             };
                         }
@@ -7816,16 +7816,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i+2]), 
-                                            Col.UIntFromFloat(da[i+1]), 
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+3])),
+                                            Col.FloatToUInt(da[i+2]), 
+                                            Col.FloatToUInt(da[i+1]), 
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+1] = Col.FloatFromUInt(v.G);
-                                    da[i+2] = Col.FloatFromUInt(v.R);
-                                    da[i+3] = Col.FloatFromUInt(v.A);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+1] = Col.UIntToFloat(v.G);
+                                    da[i+2] = Col.UIntToFloat(v.R);
+                                    da[i+3] = Col.UIntToFloat(v.A);
                                 }
                             };
                         else
@@ -7835,16 +7835,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromFloat(da[i+d2]), 
-                                            Col.UIntFromFloat(da[i+d1]), 
-                                            Col.UIntFromFloat(da[i]), 
-                                            Col.UIntFromFloat(da[i+d3])),
+                                            Col.FloatToUInt(da[i+d2]), 
+                                            Col.FloatToUInt(da[i+d1]), 
+                                            Col.FloatToUInt(da[i]), 
+                                            Col.FloatToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromUInt(v.B);
-                                    da[i+d1] = Col.FloatFromUInt(v.G);
-                                    da[i+d2] = Col.FloatFromUInt(v.R);
-                                    da[i+d3] = Col.FloatFromUInt(v.A);
+                                    da[i] = Col.UIntToFloat(v.B);
+                                    da[i+d1] = Col.UIntToFloat(v.G);
+                                    da[i+d2] = Col.UIntToFloat(v.R);
+                                    da[i+d3] = Col.UIntToFloat(v.A);
                                 }
                             };
                         }
@@ -8067,15 +8067,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i+2]), 
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i+2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.B);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.B);
                                 }
                             };
                         else
@@ -8085,15 +8085,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i+d2]), 
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i+d2]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.B);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.B);
                                 }
                             };
                         }
@@ -8116,15 +8116,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i+2]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i]), 
+                                            Col.FloatToDouble(da[i+2]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.R);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.R);
                                 }
                             };
                         else
@@ -8134,15 +8134,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i+d2]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i]), 
+                                            Col.FloatToDouble(da[i+d2]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i]), 
                                             (double)1.0),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.R);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.R);
                                 }
                             };
                         }
@@ -8165,16 +8165,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i+2]), 
-                                            Col.DoubleFromFloat(da[i+3])),
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i+2]), 
+                                            Col.FloatToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.B);
-                                    da[i+3] = Col.FloatFromDouble(v.A);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.B);
+                                    da[i+3] = Col.DoubleToFloat(v.A);
                                 }
                             };
                         else
@@ -8184,16 +8184,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i+d2]), 
-                                            Col.DoubleFromFloat(da[i+d3])),
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i+d2]), 
+                                            Col.FloatToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.R);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.B);
-                                    da[i+d3] = Col.FloatFromDouble(v.A);
+                                    da[i] = Col.DoubleToFloat(v.R);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.B);
+                                    da[i+d3] = Col.DoubleToFloat(v.A);
                                 }
                             };
                         }
@@ -8216,16 +8216,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i+2]), 
-                                            Col.DoubleFromFloat(da[i+1]), 
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+3])),
+                                            Col.FloatToDouble(da[i+2]), 
+                                            Col.FloatToDouble(da[i+1]), 
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+1] = Col.FloatFromDouble(v.G);
-                                    da[i+2] = Col.FloatFromDouble(v.R);
-                                    da[i+3] = Col.FloatFromDouble(v.A);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+1] = Col.DoubleToFloat(v.G);
+                                    da[i+2] = Col.DoubleToFloat(v.R);
+                                    da[i+3] = Col.DoubleToFloat(v.A);
                                 }
                             };
                         else
@@ -8235,16 +8235,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4d(
-                                            Col.DoubleFromFloat(da[i+d2]), 
-                                            Col.DoubleFromFloat(da[i+d1]), 
-                                            Col.DoubleFromFloat(da[i]), 
-                                            Col.DoubleFromFloat(da[i+d3])),
+                                            Col.FloatToDouble(da[i+d2]), 
+                                            Col.FloatToDouble(da[i+d1]), 
+                                            Col.FloatToDouble(da[i]), 
+                                            Col.FloatToDouble(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.FloatFromDouble(v.B);
-                                    da[i+d1] = Col.FloatFromDouble(v.G);
-                                    da[i+d2] = Col.FloatFromDouble(v.R);
-                                    da[i+d3] = Col.FloatFromDouble(v.A);
+                                    da[i] = Col.DoubleToFloat(v.B);
+                                    da[i+d1] = Col.DoubleToFloat(v.G);
+                                    da[i+d2] = Col.DoubleToFloat(v.R);
+                                    da[i+d3] = Col.DoubleToFloat(v.A);
                                 }
                             };
                         }
@@ -8267,14 +8267,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i+2])),
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.B);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.B);
                                 }
                             };
                         else
@@ -8284,14 +8284,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i+d2])),
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.B);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.B);
                                 }
                             };
                         }
@@ -8314,14 +8314,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i+2]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i])),
+                                            Col.DoubleToByte(da[i+2]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.R);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.R);
                                 }
                             };
                         else
@@ -8331,14 +8331,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i+d2]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i])),
+                                            Col.DoubleToByte(da[i+d2]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.R);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.R);
                                 }
                             };
                         }
@@ -8361,14 +8361,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i+2])),
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.B);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.B);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -8379,14 +8379,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i+d2])),
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.B);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.B);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -8410,14 +8410,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i+2]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i])),
+                                            Col.DoubleToByte(da[i+2]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.R);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.R);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -8428,14 +8428,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3b(
-                                            Col.ByteFromDouble(da[i+d2]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i])),
+                                            Col.DoubleToByte(da[i+d2]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.R);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.R);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -8459,14 +8459,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i+2])),
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.B);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.B);
                                 }
                             };
                         else
@@ -8476,14 +8476,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i+d2])),
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.B);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.B);
                                 }
                             };
                         }
@@ -8506,14 +8506,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i+2]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i])),
+                                            Col.DoubleToUShort(da[i+2]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.R);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.R);
                                 }
                             };
                         else
@@ -8523,14 +8523,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i+d2]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i])),
+                                            Col.DoubleToUShort(da[i+d2]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.R);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.R);
                                 }
                             };
                         }
@@ -8553,14 +8553,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i+2])),
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.B);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.B);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -8571,14 +8571,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i+d2])),
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.B);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.B);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -8602,14 +8602,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i+2]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i])),
+                                            Col.DoubleToUShort(da[i+2]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.R);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.R);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -8620,14 +8620,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3us(
-                                            Col.UShortFromDouble(da[i+d2]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i])),
+                                            Col.DoubleToUShort(da[i+d2]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.R);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.R);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -8651,14 +8651,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i+2])),
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.B);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.B);
                                 }
                             };
                         else
@@ -8668,14 +8668,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i+d2])),
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.B);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.B);
                                 }
                             };
                         }
@@ -8698,14 +8698,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i+2]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i])),
+                                            Col.DoubleToUInt(da[i+2]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.R);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.R);
                                 }
                             };
                         else
@@ -8715,14 +8715,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i+d2]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i])),
+                                            Col.DoubleToUInt(da[i+d2]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.R);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.R);
                                 }
                             };
                         }
@@ -8745,14 +8745,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i+2])),
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.B);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.B);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -8763,14 +8763,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i+d2])),
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.B);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.B);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -8794,14 +8794,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i+2]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i])),
+                                            Col.DoubleToUInt(da[i+2]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.R);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.R);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -8812,14 +8812,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3ui(
-                                            Col.UIntFromDouble(da[i+d2]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i])),
+                                            Col.DoubleToUInt(da[i+d2]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.R);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.R);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -8843,14 +8843,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i+2])),
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.B);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.B);
                                 }
                             };
                         else
@@ -8860,14 +8860,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i+d2])),
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.B);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.B);
                                 }
                             };
                         }
@@ -8890,14 +8890,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i+2]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i])),
+                                            Col.DoubleToFloat(da[i+2]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.R);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.R);
                                 }
                             };
                         else
@@ -8907,14 +8907,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i+d2]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i])),
+                                            Col.DoubleToFloat(da[i+d2]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.R);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.R);
                                 }
                             };
                         }
@@ -8937,14 +8937,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i+2])),
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i+2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.B);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.B);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -8955,14 +8955,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i+d2])),
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i+d2])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.B);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.B);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -8986,14 +8986,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i+2]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i])),
+                                            Col.DoubleToFloat(da[i+2]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.R);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.R);
                                     da[i+3] = (double)1.0;
                                 }
                             };
@@ -9004,14 +9004,14 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C3f(
-                                            Col.FloatFromDouble(da[i+d2]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i])),
+                                            Col.DoubleToFloat(da[i+d2]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.R);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.R);
                                     da[i+d3] = (double)1.0;
                                 }
                             };
@@ -9227,15 +9227,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i+2]), 
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i+2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.B);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.B);
                                 }
                             };
                         else
@@ -9245,15 +9245,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i+d2]), 
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i+d2]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.B);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.B);
                                 }
                             };
                         }
@@ -9276,15 +9276,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i+2]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i]), 
+                                            Col.DoubleToByte(da[i+2]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.R);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.R);
                                 }
                             };
                         else
@@ -9294,15 +9294,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i+d2]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i]), 
+                                            Col.DoubleToByte(da[i+d2]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i]), 
                                             (byte)255),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.R);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.R);
                                 }
                             };
                         }
@@ -9325,16 +9325,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i+2]), 
-                                            Col.ByteFromDouble(da[i+3])),
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i+2]), 
+                                            Col.DoubleToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.B);
-                                    da[i+3] = Col.DoubleFromByte(v.A);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.B);
+                                    da[i+3] = Col.ByteToDouble(v.A);
                                 }
                             };
                         else
@@ -9344,16 +9344,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i+d2]), 
-                                            Col.ByteFromDouble(da[i+d3])),
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i+d2]), 
+                                            Col.DoubleToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.R);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.B);
-                                    da[i+d3] = Col.DoubleFromByte(v.A);
+                                    da[i] = Col.ByteToDouble(v.R);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.B);
+                                    da[i+d3] = Col.ByteToDouble(v.A);
                                 }
                             };
                         }
@@ -9376,16 +9376,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i+2]), 
-                                            Col.ByteFromDouble(da[i+1]), 
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+3])),
+                                            Col.DoubleToByte(da[i+2]), 
+                                            Col.DoubleToByte(da[i+1]), 
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+1] = Col.DoubleFromByte(v.G);
-                                    da[i+2] = Col.DoubleFromByte(v.R);
-                                    da[i+3] = Col.DoubleFromByte(v.A);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+1] = Col.ByteToDouble(v.G);
+                                    da[i+2] = Col.ByteToDouble(v.R);
+                                    da[i+3] = Col.ByteToDouble(v.A);
                                 }
                             };
                         else
@@ -9395,16 +9395,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4b(
-                                            Col.ByteFromDouble(da[i+d2]), 
-                                            Col.ByteFromDouble(da[i+d1]), 
-                                            Col.ByteFromDouble(da[i]), 
-                                            Col.ByteFromDouble(da[i+d3])),
+                                            Col.DoubleToByte(da[i+d2]), 
+                                            Col.DoubleToByte(da[i+d1]), 
+                                            Col.DoubleToByte(da[i]), 
+                                            Col.DoubleToByte(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromByte(v.B);
-                                    da[i+d1] = Col.DoubleFromByte(v.G);
-                                    da[i+d2] = Col.DoubleFromByte(v.R);
-                                    da[i+d3] = Col.DoubleFromByte(v.A);
+                                    da[i] = Col.ByteToDouble(v.B);
+                                    da[i+d1] = Col.ByteToDouble(v.G);
+                                    da[i+d2] = Col.ByteToDouble(v.R);
+                                    da[i+d3] = Col.ByteToDouble(v.A);
                                 }
                             };
                         }
@@ -9427,15 +9427,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i+2]), 
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i+2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.B);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.B);
                                 }
                             };
                         else
@@ -9445,15 +9445,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i+d2]), 
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i+d2]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.B);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.B);
                                 }
                             };
                         }
@@ -9476,15 +9476,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i+2]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i]), 
+                                            Col.DoubleToUShort(da[i+2]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.R);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.R);
                                 }
                             };
                         else
@@ -9494,15 +9494,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i+d2]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i]), 
+                                            Col.DoubleToUShort(da[i+d2]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i]), 
                                             (ushort)65535),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.R);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.R);
                                 }
                             };
                         }
@@ -9525,16 +9525,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i+2]), 
-                                            Col.UShortFromDouble(da[i+3])),
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i+2]), 
+                                            Col.DoubleToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.B);
-                                    da[i+3] = Col.DoubleFromUShort(v.A);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.B);
+                                    da[i+3] = Col.UShortToDouble(v.A);
                                 }
                             };
                         else
@@ -9544,16 +9544,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i+d2]), 
-                                            Col.UShortFromDouble(da[i+d3])),
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i+d2]), 
+                                            Col.DoubleToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.R);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.B);
-                                    da[i+d3] = Col.DoubleFromUShort(v.A);
+                                    da[i] = Col.UShortToDouble(v.R);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.B);
+                                    da[i+d3] = Col.UShortToDouble(v.A);
                                 }
                             };
                         }
@@ -9576,16 +9576,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i+2]), 
-                                            Col.UShortFromDouble(da[i+1]), 
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+3])),
+                                            Col.DoubleToUShort(da[i+2]), 
+                                            Col.DoubleToUShort(da[i+1]), 
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+1] = Col.DoubleFromUShort(v.G);
-                                    da[i+2] = Col.DoubleFromUShort(v.R);
-                                    da[i+3] = Col.DoubleFromUShort(v.A);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+1] = Col.UShortToDouble(v.G);
+                                    da[i+2] = Col.UShortToDouble(v.R);
+                                    da[i+3] = Col.UShortToDouble(v.A);
                                 }
                             };
                         else
@@ -9595,16 +9595,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4us(
-                                            Col.UShortFromDouble(da[i+d2]), 
-                                            Col.UShortFromDouble(da[i+d1]), 
-                                            Col.UShortFromDouble(da[i]), 
-                                            Col.UShortFromDouble(da[i+d3])),
+                                            Col.DoubleToUShort(da[i+d2]), 
+                                            Col.DoubleToUShort(da[i+d1]), 
+                                            Col.DoubleToUShort(da[i]), 
+                                            Col.DoubleToUShort(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUShort(v.B);
-                                    da[i+d1] = Col.DoubleFromUShort(v.G);
-                                    da[i+d2] = Col.DoubleFromUShort(v.R);
-                                    da[i+d3] = Col.DoubleFromUShort(v.A);
+                                    da[i] = Col.UShortToDouble(v.B);
+                                    da[i+d1] = Col.UShortToDouble(v.G);
+                                    da[i+d2] = Col.UShortToDouble(v.R);
+                                    da[i+d3] = Col.UShortToDouble(v.A);
                                 }
                             };
                         }
@@ -9627,15 +9627,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i+2]), 
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i+2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.B);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.B);
                                 }
                             };
                         else
@@ -9645,15 +9645,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i+d2]), 
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i+d2]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.B);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.B);
                                 }
                             };
                         }
@@ -9676,15 +9676,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i+2]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i]), 
+                                            Col.DoubleToUInt(da[i+2]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.R);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.R);
                                 }
                             };
                         else
@@ -9694,15 +9694,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i+d2]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i]), 
+                                            Col.DoubleToUInt(da[i+d2]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i]), 
                                             (uint)UInt32.MaxValue),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.R);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.R);
                                 }
                             };
                         }
@@ -9725,16 +9725,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i+2]), 
-                                            Col.UIntFromDouble(da[i+3])),
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i+2]), 
+                                            Col.DoubleToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.B);
-                                    da[i+3] = Col.DoubleFromUInt(v.A);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.B);
+                                    da[i+3] = Col.UIntToDouble(v.A);
                                 }
                             };
                         else
@@ -9744,16 +9744,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i+d2]), 
-                                            Col.UIntFromDouble(da[i+d3])),
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i+d2]), 
+                                            Col.DoubleToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.R);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.B);
-                                    da[i+d3] = Col.DoubleFromUInt(v.A);
+                                    da[i] = Col.UIntToDouble(v.R);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.B);
+                                    da[i+d3] = Col.UIntToDouble(v.A);
                                 }
                             };
                         }
@@ -9776,16 +9776,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i+2]), 
-                                            Col.UIntFromDouble(da[i+1]), 
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+3])),
+                                            Col.DoubleToUInt(da[i+2]), 
+                                            Col.DoubleToUInt(da[i+1]), 
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+1] = Col.DoubleFromUInt(v.G);
-                                    da[i+2] = Col.DoubleFromUInt(v.R);
-                                    da[i+3] = Col.DoubleFromUInt(v.A);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+1] = Col.UIntToDouble(v.G);
+                                    da[i+2] = Col.UIntToDouble(v.R);
+                                    da[i+3] = Col.UIntToDouble(v.A);
                                 }
                             };
                         else
@@ -9795,16 +9795,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4ui(
-                                            Col.UIntFromDouble(da[i+d2]), 
-                                            Col.UIntFromDouble(da[i+d1]), 
-                                            Col.UIntFromDouble(da[i]), 
-                                            Col.UIntFromDouble(da[i+d3])),
+                                            Col.DoubleToUInt(da[i+d2]), 
+                                            Col.DoubleToUInt(da[i+d1]), 
+                                            Col.DoubleToUInt(da[i]), 
+                                            Col.DoubleToUInt(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromUInt(v.B);
-                                    da[i+d1] = Col.DoubleFromUInt(v.G);
-                                    da[i+d2] = Col.DoubleFromUInt(v.R);
-                                    da[i+d3] = Col.DoubleFromUInt(v.A);
+                                    da[i] = Col.UIntToDouble(v.B);
+                                    da[i+d1] = Col.UIntToDouble(v.G);
+                                    da[i+d2] = Col.UIntToDouble(v.R);
+                                    da[i+d3] = Col.UIntToDouble(v.A);
                                 }
                             };
                         }
@@ -9827,15 +9827,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i+2]), 
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i+2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.B);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.B);
                                 }
                             };
                         else
@@ -9845,15 +9845,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i+d2]), 
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i+d2]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.B);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.B);
                                 }
                             };
                         }
@@ -9876,15 +9876,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i+2]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i]), 
+                                            Col.DoubleToFloat(da[i+2]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.R);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.R);
                                 }
                             };
                         else
@@ -9894,15 +9894,15 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i+d2]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i]), 
+                                            Col.DoubleToFloat(da[i+d2]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i]), 
                                             (float)1.0f),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.R);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.R);
                                 }
                             };
                         }
@@ -9925,16 +9925,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i+2]), 
-                                            Col.FloatFromDouble(da[i+3])),
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i+2]), 
+                                            Col.DoubleToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.B);
-                                    da[i+3] = Col.DoubleFromFloat(v.A);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.B);
+                                    da[i+3] = Col.FloatToDouble(v.A);
                                 }
                             };
                         else
@@ -9944,16 +9944,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i+d2]), 
-                                            Col.FloatFromDouble(da[i+d3])),
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i+d2]), 
+                                            Col.DoubleToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.R);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.B);
-                                    da[i+d3] = Col.DoubleFromFloat(v.A);
+                                    da[i] = Col.FloatToDouble(v.R);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.B);
+                                    da[i+d3] = Col.FloatToDouble(v.A);
                                 }
                             };
                         }
@@ -9976,16 +9976,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i+2]), 
-                                            Col.FloatFromDouble(da[i+1]), 
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+3])),
+                                            Col.DoubleToFloat(da[i+2]), 
+                                            Col.DoubleToFloat(da[i+1]), 
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+1] = Col.DoubleFromFloat(v.G);
-                                    da[i+2] = Col.DoubleFromFloat(v.R);
-                                    da[i+3] = Col.DoubleFromFloat(v.A);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+1] = Col.FloatToDouble(v.G);
+                                    da[i+2] = Col.FloatToDouble(v.R);
+                                    da[i+3] = Col.FloatToDouble(v.A);
                                 }
                             };
                         else
@@ -9995,16 +9995,16 @@ namespace Aardvark.Base
                             {
                                 Getter = (da, i) =>
                                     new C4f(
-                                            Col.FloatFromDouble(da[i+d2]), 
-                                            Col.FloatFromDouble(da[i+d1]), 
-                                            Col.FloatFromDouble(da[i]), 
-                                            Col.FloatFromDouble(da[i+d3])),
+                                            Col.DoubleToFloat(da[i+d2]), 
+                                            Col.DoubleToFloat(da[i+d1]), 
+                                            Col.DoubleToFloat(da[i]), 
+                                            Col.DoubleToFloat(da[i+d3])),
                                 Setter = (da, i, v) =>
                                 {
-                                    da[i] = Col.DoubleFromFloat(v.B);
-                                    da[i+d1] = Col.DoubleFromFloat(v.G);
-                                    da[i+d2] = Col.DoubleFromFloat(v.R);
-                                    da[i+d3] = Col.DoubleFromFloat(v.A);
+                                    da[i] = Col.FloatToDouble(v.B);
+                                    da[i+d1] = Col.FloatToDouble(v.G);
+                                    da[i+d2] = Col.FloatToDouble(v.R);
+                                    da[i+d3] = Col.FloatToDouble(v.A);
                                 }
                             };
                         }

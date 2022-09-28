@@ -479,7 +479,7 @@ namespace PixImageDemo
             var barHeight = height/4;
 
             var line = new byte[width].SetByIndex(
-                        i => Col.ByteFromDouble((double)i / (double)(width - 1)));
+                        i => Col.DoubleToByte((double)i / (double)(width - 1)));
 
             // write an image with linear red, green, blue, and gray ramps
             var linearImage = new PixImage<byte>(Col.Format.RGB, new V2i(width, height));

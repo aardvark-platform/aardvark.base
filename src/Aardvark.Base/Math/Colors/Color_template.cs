@@ -178,43 +178,43 @@ namespace Aardvark.Base
     //#
     //# var ftoftmap = new Dictionary<Meta.SimpleType, string>
     //#     {
-    //#         { Meta.ByteType, "Col.ByteFromFloatClamped" },
-    //#         { Meta.UShortType, "Col.UShortFromFloatClamped" },
-    //#         { Meta.UIntType, "Col.UIntFromFloatClamped" },
+    //#         { Meta.ByteType, "Col.FloatToByteClamped" },
+    //#         { Meta.UShortType, "Col.FloatToUShortClamped" },
+    //#         { Meta.UIntType, "Col.FloatToUIntClamped" },
     //#         { Meta.FloatType, "" },
     //#         { Meta.DoubleType, "(double)" },
     //#     };
     //# var dtoftmap = new Dictionary<Meta.SimpleType, string>
     //#     {
-    //#         { Meta.ByteType, "Col.ByteFromDoubleClamped" },
-    //#         { Meta.UShortType, "Col.UShortFromDoubleClamped" },
-    //#         { Meta.UIntType, "Col.UIntFromDoubleClamped" },
+    //#         { Meta.ByteType, "Col.DoubleToByteClamped" },
+    //#         { Meta.UShortType, "Col.DoubleToUShortClamped" },
+    //#         { Meta.UIntType, "Col.DoubleToUIntClamped" },
     //#         { Meta.FloatType, "(float)" },
     //#         { Meta.DoubleType, "" },
     //#     };
     //# var fttodmap = new Dictionary<Meta.SimpleType, string>
     //#     {
-    //#         { Meta.ByteType, "Col.DoubleFromByte" },
-    //#         { Meta.UShortType, "Col.DoubleFromUShort" },
-    //#         { Meta.UIntType, "Col.DoubleFromUInt" },
+    //#         { Meta.ByteType, "Col.ByteToDouble" },
+    //#         { Meta.UShortType, "Col.UShortToDouble" },
+    //#         { Meta.UIntType, "Col.UIntToDouble" },
     //#         { Meta.FloatType, "(double)" },
     //#         { Meta.DoubleType, "" },
     //#     };
     //# var btoftmap = new Dictionary<Meta.SimpleType, string>
     //#     {
     //#         { Meta.ByteType, "" },
-    //#         { Meta.UShortType, "Col.UShortFromByte" },
-    //#         { Meta.UIntType, "Col.UIntFromByte" },
-    //#         { Meta.FloatType, "Col.FloatFromByte" },
-    //#         { Meta.DoubleType, "Col.DoubleFromByte" },
+    //#         { Meta.UShortType, "Col.ByteToUShort" },
+    //#         { Meta.UIntType, "Col.ByteToUInt" },
+    //#         { Meta.FloatType, "Col.ByteToFloat" },
+    //#         { Meta.DoubleType, "Col.ByteToDouble" },
     //#     };
     //# var fttobmap = new Dictionary<Meta.SimpleType, string>
     //#     {
     //#         { Meta.ByteType, "" },
-    //#         { Meta.UShortType, "Col.ByteFromUShort" },
-    //#         { Meta.UIntType, "Col.ByteFromUInt" },
-    //#         { Meta.FloatType, "Col.ByteFromFloatClamped" },
-    //#         { Meta.DoubleType, "Col.ByteFromDoubleClamped" },
+    //#         { Meta.UShortType, "Col.UShortToByte" },
+    //#         { Meta.UIntType, "Col.UIntToByte" },
+    //#         { Meta.FloatType, "Col.FloatToByteClamped" },
+    //#         { Meta.DoubleType, "Col.DoubleToByteClamped" },
     //#     };
     //# var maxvalmap = new Dictionary<Meta.SimpleType, string>
     //#     {
@@ -447,7 +447,7 @@ namespace Aardvark.Base
         //# } }
         //# foreach (var t1 in Meta.ColorTypes) {
         //#     var convert = t.FieldType != t1.FieldType
-        //#         ? "Col." + t.FieldType.Caps + "From" + t1.FieldType.Caps
+        //#         ? "Col." + t1.FieldType.Caps + "To" + t.FieldType.Caps
         //#         : "";
         /// <summary>
         /// Creates a color from the given <see cref="__t1.Name__"/> color.
@@ -551,7 +551,7 @@ namespace Aardvark.Base
         //# foreach (var ft1 in Meta.ColorFieldTypes) {
         //#     var ftype1 = ft1.Name;
         //#     var convert = ft != ft1
-        //#         ? "Col." + ft.Caps + "From" + ft1.Caps
+        //#         ? "Col." + ft1.Caps + "To" + ft.Caps
         //#         : "";
         /// <summary>
         /// Creates a new color from the given <see cref="__ftype1__"/> array.
@@ -737,7 +737,7 @@ namespace Aardvark.Base
         //# foreach (var ft1 in Meta.ColorFieldTypes) {
         //#     var ftype1 = ft1.Name;
         //#     var convert = ft != ft1
-        //#         ? "Col." + ft1.Caps + "From" + ft.Caps
+        //#         ? "Col." + ft.Caps + "To" + ft1.Caps
         //#         : "";
         /// <summary>
         /// Creates a new color from the given <see cref="__ftype1__"/> array.
@@ -914,7 +914,7 @@ namespace Aardvark.Base
         //#
         //#     var type1 = t1.Name; var ft1 = t1.FieldType;
         //#     var ft1_from_ft = t1 != t
-        //#         ? (ft.IsReal && ft1.IsReal ? "(" + ftype + ")" : "Col." + ft.Caps + "From" + ft1.Caps)
+        //#         ? (ft.IsReal && ft1.IsReal ? "(" + ftype + ")" : "Col." + ft1.Caps + "To" + ft.Caps)
         //#         : "";
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__type__ c0, __type1__ c1)

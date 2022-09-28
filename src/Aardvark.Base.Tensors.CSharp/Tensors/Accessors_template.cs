@@ -17,8 +17,8 @@ namespace Aardvark.Base
             {
                 //# foreach (var tt in Meta.ColorFieldTypes) { var ttype = tt.Name;
                 //# foreach (var ct in Meta.ColorFieldTypes) { var ctype = ct.Name;
-                //#     var tt_from_ct = ct == tt ? "" : "Col." + tt.Caps + "From" + ct.Caps;
-                //#     var ct_from_tt = ct == tt ? "" : "Col." + ct.Caps + "From" + tt.Caps; 
+                //#     var tt_from_ct = ct == tt ? "" : "Col." + ct.Caps + "To" + tt.Caps;
+                //#     var ct_from_tt = ct == tt ? "" : "Col." + tt.Caps + "To" + ct.Caps; 
                 #region ColorChannel __ttype__ as __ctype__
 
                 {
@@ -45,8 +45,8 @@ namespace Aardvark.Base
                 //#     var cmax = "(" + cft.Name + ")" + ct.MaxValue;
                 //#     string t_from_cf = "", cf_from_t = "";
                 //#     if (tt != cft) {
-                //#         t_from_cf = "Col." + tt.Caps + "From" + cft.Caps;
-                //#         cf_from_t = "Col." + cft.Caps + "From" + tt.Caps;
+                //#         t_from_cf = "Col." + cft.Caps + "To" + tt.Caps;
+                //#         cf_from_t = "Col." + tt.Caps + "To" + cft.Caps;
                 //#     }
                 //# foreach (var intent in intentArray) {
                 //#     var indices = (from f in ct.Fields select intent.IndexOf(f)).ToArray();

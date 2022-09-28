@@ -55,9 +55,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(float r, float g, float b)
         {
-            R = Col.ByteFromFloatClamped(r);
-            G = Col.ByteFromFloatClamped(g);
-            B = Col.ByteFromFloatClamped(b);
+            R = Col.FloatToByteClamped(r);
+            G = Col.FloatToByteClamped(g);
+            B = Col.FloatToByteClamped(b);
         }
 
         /// <summary>
@@ -67,9 +67,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double r, double g, double b)
         {
-            R = Col.ByteFromDoubleClamped(r);
-            G = Col.ByteFromDoubleClamped(g);
-            B = Col.ByteFromDoubleClamped(b);
+            R = Col.DoubleToByteClamped(r);
+            G = Col.DoubleToByteClamped(g);
+            B = Col.DoubleToByteClamped(b);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(float gray)
         {
-            var value = Col.ByteFromFloatClamped(gray);
+            var value = Col.FloatToByteClamped(gray);
             R = value; G = value; B = value;
         }
 
@@ -99,7 +99,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double gray)
         {
-            var value = Col.ByteFromDoubleClamped(gray);
+            var value = Col.DoubleToByteClamped(gray);
             R = value; G = value; B = value;
         }
 
@@ -121,9 +121,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3us color)
         {
-            R = Col.ByteFromUShort(color.R);
-            G = Col.ByteFromUShort(color.G);
-            B = Col.ByteFromUShort(color.B);
+            R = Col.UShortToByte(color.R);
+            G = Col.UShortToByte(color.G);
+            B = Col.UShortToByte(color.B);
         }
 
         /// <summary>
@@ -133,9 +133,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3ui color)
         {
-            R = Col.ByteFromUInt(color.R);
-            G = Col.ByteFromUInt(color.G);
-            B = Col.ByteFromUInt(color.B);
+            R = Col.UIntToByte(color.R);
+            G = Col.UIntToByte(color.G);
+            B = Col.UIntToByte(color.B);
         }
 
         /// <summary>
@@ -145,9 +145,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3f color)
         {
-            R = Col.ByteFromFloat(color.R);
-            G = Col.ByteFromFloat(color.G);
-            B = Col.ByteFromFloat(color.B);
+            R = Col.FloatToByte(color.R);
+            G = Col.FloatToByte(color.G);
+            B = Col.FloatToByte(color.B);
         }
 
         /// <summary>
@@ -157,9 +157,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3d color)
         {
-            R = Col.ByteFromDouble(color.R);
-            G = Col.ByteFromDouble(color.G);
-            B = Col.ByteFromDouble(color.B);
+            R = Col.DoubleToByte(color.R);
+            G = Col.DoubleToByte(color.G);
+            B = Col.DoubleToByte(color.B);
         }
 
         /// <summary>
@@ -180,9 +180,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4us color)
         {
-            R = Col.ByteFromUShort(color.R);
-            G = Col.ByteFromUShort(color.G);
-            B = Col.ByteFromUShort(color.B);
+            R = Col.UShortToByte(color.R);
+            G = Col.UShortToByte(color.G);
+            B = Col.UShortToByte(color.B);
         }
 
         /// <summary>
@@ -192,9 +192,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4ui color)
         {
-            R = Col.ByteFromUInt(color.R);
-            G = Col.ByteFromUInt(color.G);
-            B = Col.ByteFromUInt(color.B);
+            R = Col.UIntToByte(color.R);
+            G = Col.UIntToByte(color.G);
+            B = Col.UIntToByte(color.B);
         }
 
         /// <summary>
@@ -204,9 +204,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4f color)
         {
-            R = Col.ByteFromFloat(color.R);
-            G = Col.ByteFromFloat(color.G);
-            B = Col.ByteFromFloat(color.B);
+            R = Col.FloatToByte(color.R);
+            G = Col.FloatToByte(color.G);
+            B = Col.FloatToByte(color.B);
         }
 
         /// <summary>
@@ -216,9 +216,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4d color)
         {
-            R = Col.ByteFromDouble(color.R);
-            G = Col.ByteFromDouble(color.G);
-            B = Col.ByteFromDouble(color.B);
+            R = Col.DoubleToByte(color.R);
+            G = Col.DoubleToByte(color.G);
+            B = Col.DoubleToByte(color.B);
         }
 
         /// <summary>
@@ -381,9 +381,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(ushort[] values)
         {
-            R = Col.ByteFromUShort(values[0]);
-            G = Col.ByteFromUShort(values[1]);
-            B = Col.ByteFromUShort(values[2]);
+            R = Col.UShortToByte(values[0]);
+            G = Col.UShortToByte(values[1]);
+            B = Col.UShortToByte(values[2]);
         }
 
         /// <summary>
@@ -393,9 +393,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(ushort[] values, int start)
         {
-            R = Col.ByteFromUShort(values[start + 0]);
-            G = Col.ByteFromUShort(values[start + 1]);
-            B = Col.ByteFromUShort(values[start + 2]);
+            R = Col.UShortToByte(values[start + 0]);
+            G = Col.UShortToByte(values[start + 1]);
+            B = Col.UShortToByte(values[start + 2]);
         }
 
         /// <summary>
@@ -405,9 +405,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(uint[] values)
         {
-            R = Col.ByteFromUInt(values[0]);
-            G = Col.ByteFromUInt(values[1]);
-            B = Col.ByteFromUInt(values[2]);
+            R = Col.UIntToByte(values[0]);
+            G = Col.UIntToByte(values[1]);
+            B = Col.UIntToByte(values[2]);
         }
 
         /// <summary>
@@ -417,9 +417,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(uint[] values, int start)
         {
-            R = Col.ByteFromUInt(values[start + 0]);
-            G = Col.ByteFromUInt(values[start + 1]);
-            B = Col.ByteFromUInt(values[start + 2]);
+            R = Col.UIntToByte(values[start + 0]);
+            G = Col.UIntToByte(values[start + 1]);
+            B = Col.UIntToByte(values[start + 2]);
         }
 
         /// <summary>
@@ -429,9 +429,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(float[] values)
         {
-            R = Col.ByteFromFloat(values[0]);
-            G = Col.ByteFromFloat(values[1]);
-            B = Col.ByteFromFloat(values[2]);
+            R = Col.FloatToByte(values[0]);
+            G = Col.FloatToByte(values[1]);
+            B = Col.FloatToByte(values[2]);
         }
 
         /// <summary>
@@ -441,9 +441,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(float[] values, int start)
         {
-            R = Col.ByteFromFloat(values[start + 0]);
-            G = Col.ByteFromFloat(values[start + 1]);
-            B = Col.ByteFromFloat(values[start + 2]);
+            R = Col.FloatToByte(values[start + 0]);
+            G = Col.FloatToByte(values[start + 1]);
+            B = Col.FloatToByte(values[start + 2]);
         }
 
         /// <summary>
@@ -453,9 +453,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double[] values)
         {
-            R = Col.ByteFromDouble(values[0]);
-            G = Col.ByteFromDouble(values[1]);
-            B = Col.ByteFromDouble(values[2]);
+            R = Col.DoubleToByte(values[0]);
+            G = Col.DoubleToByte(values[1]);
+            B = Col.DoubleToByte(values[2]);
         }
 
         /// <summary>
@@ -465,9 +465,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double[] values, int start)
         {
-            R = Col.ByteFromDouble(values[start + 0]);
-            G = Col.ByteFromDouble(values[start + 1]);
-            B = Col.ByteFromDouble(values[start + 2]);
+            R = Col.DoubleToByte(values[start + 0]);
+            G = Col.DoubleToByte(values[start + 1]);
+            B = Col.DoubleToByte(values[start + 2]);
         }
 
         #endregion
@@ -927,7 +927,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C3b color)
-            => new ushort[] { Col.UShortFromByte(color.R), Col.UShortFromByte(color.G), Col.UShortFromByte(color.B) };
+            => new ushort[] { Col.ByteToUShort(color.R), Col.ByteToUShort(color.G), Col.ByteToUShort(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -943,7 +943,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C3b color)
-            => new uint[] { Col.UIntFromByte(color.R), Col.UIntFromByte(color.G), Col.UIntFromByte(color.B) };
+            => new uint[] { Col.ByteToUInt(color.R), Col.ByteToUInt(color.G), Col.ByteToUInt(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -959,7 +959,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C3b color)
-            => new float[] { Col.FloatFromByte(color.R), Col.FloatFromByte(color.G), Col.FloatFromByte(color.B) };
+            => new float[] { Col.ByteToFloat(color.R), Col.ByteToFloat(color.G), Col.ByteToFloat(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -975,7 +975,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C3b color)
-            => new double[] { Col.DoubleFromByte(color.R), Col.DoubleFromByte(color.G), Col.DoubleFromByte(color.B) };
+            => new double[] { Col.ByteToDouble(color.R), Col.ByteToDouble(color.G), Col.ByteToDouble(color.B) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -1076,167 +1076,167 @@ namespace Aardvark.Base
         public static C3b Zero => new C3b(0, 0, 0);
 
         // Web colors
-        public static C3b AliceBlue => new C3b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(1));
-        public static C3b AntiqueWhite => new C3b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.921569), Col.ByteFromDoubleClamped(0.843137));
-        public static C3b Aqua => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C3b Aquamarine => new C3b(Col.ByteFromDoubleClamped(0.498039), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.831373));
-        public static C3b Azure => new C3b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C3b Beige => new C3b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.862745));
-        public static C3b Bisque => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.894118), Col.ByteFromDoubleClamped(0.768627));
-        public static C3b Black => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C3b BlanchedAlmond => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.921569), Col.ByteFromDoubleClamped(0.803922));
-        public static C3b Blue => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1));
-        public static C3b BlueViolet => new C3b(Col.ByteFromDoubleClamped(0.541176), Col.ByteFromDoubleClamped(0.168627), Col.ByteFromDoubleClamped(0.886275));
-        public static C3b Brown => new C3b(Col.ByteFromDoubleClamped(0.647059), Col.ByteFromDoubleClamped(0.164706), Col.ByteFromDoubleClamped(0.164706));
-        public static C3b BurlyWood => new C3b(Col.ByteFromDoubleClamped(0.870588), Col.ByteFromDoubleClamped(0.721569), Col.ByteFromDoubleClamped(0.529412));
-        public static C3b CadetBlue => new C3b(Col.ByteFromDoubleClamped(0.372549), Col.ByteFromDoubleClamped(0.619608), Col.ByteFromDoubleClamped(0.627451));
-        public static C3b Chartreuse => new C3b(Col.ByteFromDoubleClamped(0.498039), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0));
-        public static C3b Chocolate => new C3b(Col.ByteFromDoubleClamped(0.823529), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.117647));
-        public static C3b Coral => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.498039), Col.ByteFromDoubleClamped(0.313725));
-        public static C3b CornflowerBlue => new C3b(Col.ByteFromDoubleClamped(0.392157), Col.ByteFromDoubleClamped(0.584314), Col.ByteFromDoubleClamped(0.929412));
-        public static C3b Cornsilk => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(0.862745));
-        public static C3b Crimson => new C3b(Col.ByteFromDoubleClamped(0.862745), Col.ByteFromDoubleClamped(0.078431), Col.ByteFromDoubleClamped(0.235294));
-        public static C3b Cyan => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C3b DarkBlue => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.545098));
-        public static C3b DarkCyan => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.545098));
-        public static C3b DarkGoldenRod => new C3b(Col.ByteFromDoubleClamped(0.721569), Col.ByteFromDoubleClamped(0.52549), Col.ByteFromDoubleClamped(0.043137));
-        public static C3b DarkGray => new C3b(Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745));
-        public static C3b DarkGrey => new C3b(Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745));
-        public static C3b DarkGreen => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.392157), Col.ByteFromDoubleClamped(0));
-        public static C3b DarkKhaki => new C3b(Col.ByteFromDoubleClamped(0.741176), Col.ByteFromDoubleClamped(0.717647), Col.ByteFromDoubleClamped(0.419608));
-        public static C3b DarkMagenta => new C3b(Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.545098));
-        public static C3b DarkOliveGreen => new C3b(Col.ByteFromDoubleClamped(0.333333), Col.ByteFromDoubleClamped(0.419608), Col.ByteFromDoubleClamped(0.184314));
-        public static C3b DarkOrange => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.54902), Col.ByteFromDoubleClamped(0));
-        public static C3b DarkOrchid => new C3b(Col.ByteFromDoubleClamped(0.6), Col.ByteFromDoubleClamped(0.196078), Col.ByteFromDoubleClamped(0.8));
-        public static C3b DarkRed => new C3b(Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C3b DarkSalmon => new C3b(Col.ByteFromDoubleClamped(0.913725), Col.ByteFromDoubleClamped(0.588235), Col.ByteFromDoubleClamped(0.478431));
-        public static C3b DarkSeaGreen => new C3b(Col.ByteFromDoubleClamped(0.560784), Col.ByteFromDoubleClamped(0.737255), Col.ByteFromDoubleClamped(0.560784));
-        public static C3b DarkSlateBlue => new C3b(Col.ByteFromDoubleClamped(0.282353), Col.ByteFromDoubleClamped(0.239216), Col.ByteFromDoubleClamped(0.545098));
-        public static C3b DarkSlateGray => new C3b(Col.ByteFromDoubleClamped(0.184314), Col.ByteFromDoubleClamped(0.309804), Col.ByteFromDoubleClamped(0.309804));
-        public static C3b DarkSlateGrey => new C3b(Col.ByteFromDoubleClamped(0.184314), Col.ByteFromDoubleClamped(0.309804), Col.ByteFromDoubleClamped(0.309804));
-        public static C3b DarkTurquoise => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.807843), Col.ByteFromDoubleClamped(0.819608));
-        public static C3b DarkViolet => new C3b(Col.ByteFromDoubleClamped(0.580392), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.827451));
-        public static C3b DeepPink => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.078431), Col.ByteFromDoubleClamped(0.576471));
-        public static C3b DeepSkyBlue => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.74902), Col.ByteFromDoubleClamped(1));
-        public static C3b DimGray => new C3b(Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765));
-        public static C3b DimGrey => new C3b(Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765));
-        public static C3b DodgerBlue => new C3b(Col.ByteFromDoubleClamped(0.117647), Col.ByteFromDoubleClamped(0.564706), Col.ByteFromDoubleClamped(1));
-        public static C3b FireBrick => new C3b(Col.ByteFromDoubleClamped(0.698039), Col.ByteFromDoubleClamped(0.133333), Col.ByteFromDoubleClamped(0.133333));
-        public static C3b FloralWhite => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.941176));
-        public static C3b ForestGreen => new C3b(Col.ByteFromDoubleClamped(0.133333), Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.133333));
-        public static C3b Fuchsia => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1));
-        public static C3b Gainsboro => new C3b(Col.ByteFromDoubleClamped(0.862745), Col.ByteFromDoubleClamped(0.862745), Col.ByteFromDoubleClamped(0.862745));
-        public static C3b GhostWhite => new C3b(Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(1));
-        public static C3b Gold => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.843137), Col.ByteFromDoubleClamped(0));
-        public static C3b GoldenRod => new C3b(Col.ByteFromDoubleClamped(0.854902), Col.ByteFromDoubleClamped(0.647059), Col.ByteFromDoubleClamped(0.12549));
-        public static C3b Gray => new C3b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C3b Grey => new C3b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C3b Green => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0));
-        public static C3b GreenYellow => new C3b(Col.ByteFromDoubleClamped(0.678431), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.184314));
-        public static C3b HoneyDew => new C3b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.941176));
-        public static C3b HotPink => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.705882));
-        public static C3b IndianRed  => new C3b(Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.360784), Col.ByteFromDoubleClamped(0.360784));
-        public static C3b Indigo  => new C3b(Col.ByteFromDoubleClamped(0.294118), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.509804));
-        public static C3b Ivory => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.941176));
-        public static C3b Khaki => new C3b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.901961), Col.ByteFromDoubleClamped(0.54902));
-        public static C3b Lavender => new C3b(Col.ByteFromDoubleClamped(0.901961), Col.ByteFromDoubleClamped(0.901961), Col.ByteFromDoubleClamped(0.980392));
-        public static C3b LavenderBlush => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.960784));
-        public static C3b LawnGreen => new C3b(Col.ByteFromDoubleClamped(0.486275), Col.ByteFromDoubleClamped(0.988235), Col.ByteFromDoubleClamped(0));
-        public static C3b LemonChiffon => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.803922));
-        public static C3b LightBlue => new C3b(Col.ByteFromDoubleClamped(0.678431), Col.ByteFromDoubleClamped(0.847059), Col.ByteFromDoubleClamped(0.901961));
-        public static C3b LightCoral => new C3b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C3b LightCyan => new C3b(Col.ByteFromDoubleClamped(0.878431), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C3b LightGoldenRodYellow => new C3b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.823529));
-        public static C3b LightGray => new C3b(Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451));
-        public static C3b LightGrey => new C3b(Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451));
-        public static C3b LightGreen => new C3b(Col.ByteFromDoubleClamped(0.564706), Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.564706));
-        public static C3b LightPink => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.713725), Col.ByteFromDoubleClamped(0.756863));
-        public static C3b LightSalmon => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.627451), Col.ByteFromDoubleClamped(0.478431));
-        public static C3b LightSeaGreen => new C3b(Col.ByteFromDoubleClamped(0.12549), Col.ByteFromDoubleClamped(0.698039), Col.ByteFromDoubleClamped(0.666667));
-        public static C3b LightSkyBlue => new C3b(Col.ByteFromDoubleClamped(0.529412), Col.ByteFromDoubleClamped(0.807843), Col.ByteFromDoubleClamped(0.980392));
-        public static C3b LightSlateGray => new C3b(Col.ByteFromDoubleClamped(0.466667), Col.ByteFromDoubleClamped(0.533333), Col.ByteFromDoubleClamped(0.6));
-        public static C3b LightSlateGrey => new C3b(Col.ByteFromDoubleClamped(0.466667), Col.ByteFromDoubleClamped(0.533333), Col.ByteFromDoubleClamped(0.6));
-        public static C3b LightSteelBlue => new C3b(Col.ByteFromDoubleClamped(0.690196), Col.ByteFromDoubleClamped(0.768627), Col.ByteFromDoubleClamped(0.870588));
-        public static C3b LightYellow => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.878431));
-        public static C3b Lime => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0));
-        public static C3b LimeGreen => new C3b(Col.ByteFromDoubleClamped(0.196078), Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.196078));
-        public static C3b Linen => new C3b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.901961));
-        public static C3b Magenta => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1));
-        public static C3b Maroon => new C3b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C3b MediumAquaMarine => new C3b(Col.ByteFromDoubleClamped(0.4), Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.666667));
-        public static C3b MediumBlue => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.803922));
-        public static C3b MediumOrchid => new C3b(Col.ByteFromDoubleClamped(0.729412), Col.ByteFromDoubleClamped(0.333333), Col.ByteFromDoubleClamped(0.827451));
-        public static C3b MediumPurple => new C3b(Col.ByteFromDoubleClamped(0.576471), Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.847059));
-        public static C3b MediumSeaGreen => new C3b(Col.ByteFromDoubleClamped(0.235294), Col.ByteFromDoubleClamped(0.701961), Col.ByteFromDoubleClamped(0.443137));
-        public static C3b MediumSlateBlue => new C3b(Col.ByteFromDoubleClamped(0.482353), Col.ByteFromDoubleClamped(0.407843), Col.ByteFromDoubleClamped(0.933333));
-        public static C3b MediumSpringGreen => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.603922));
-        public static C3b MediumTurquoise => new C3b(Col.ByteFromDoubleClamped(0.282353), Col.ByteFromDoubleClamped(0.819608), Col.ByteFromDoubleClamped(0.8));
-        public static C3b MediumVioletRed => new C3b(Col.ByteFromDoubleClamped(0.780392), Col.ByteFromDoubleClamped(0.082353), Col.ByteFromDoubleClamped(0.521569));
-        public static C3b MidnightBlue => new C3b(Col.ByteFromDoubleClamped(0.098039), Col.ByteFromDoubleClamped(0.098039), Col.ByteFromDoubleClamped(0.439216));
-        public static C3b MintCream => new C3b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392));
-        public static C3b MistyRose => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.894118), Col.ByteFromDoubleClamped(0.882353));
-        public static C3b Moccasin => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.894118), Col.ByteFromDoubleClamped(0.709804));
-        public static C3b NavajoWhite => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.870588), Col.ByteFromDoubleClamped(0.678431));
-        public static C3b Navy => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961));
-        public static C3b OldLace => new C3b(Col.ByteFromDoubleClamped(0.992157), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.901961));
-        public static C3b Olive => new C3b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0));
-        public static C3b OliveDrab => new C3b(Col.ByteFromDoubleClamped(0.419608), Col.ByteFromDoubleClamped(0.556863), Col.ByteFromDoubleClamped(0.137255));
-        public static C3b Orange => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.647059), Col.ByteFromDoubleClamped(0));
-        public static C3b OrangeRed => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.270588), Col.ByteFromDoubleClamped(0));
-        public static C3b Orchid => new C3b(Col.ByteFromDoubleClamped(0.854902), Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.839216));
-        public static C3b PaleGoldenRod => new C3b(Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.909804), Col.ByteFromDoubleClamped(0.666667));
-        public static C3b PaleGreen => new C3b(Col.ByteFromDoubleClamped(0.596078), Col.ByteFromDoubleClamped(0.984314), Col.ByteFromDoubleClamped(0.596078));
-        public static C3b PaleTurquoise => new C3b(Col.ByteFromDoubleClamped(0.686275), Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.933333));
-        public static C3b PaleVioletRed => new C3b(Col.ByteFromDoubleClamped(0.847059), Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.576471));
-        public static C3b PapayaWhip => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.937255), Col.ByteFromDoubleClamped(0.835294));
-        public static C3b PeachPuff => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.854902), Col.ByteFromDoubleClamped(0.72549));
-        public static C3b Peru => new C3b(Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.521569), Col.ByteFromDoubleClamped(0.247059));
-        public static C3b Pink => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.752941), Col.ByteFromDoubleClamped(0.796078));
-        public static C3b Plum => new C3b(Col.ByteFromDoubleClamped(0.866667), Col.ByteFromDoubleClamped(0.627451), Col.ByteFromDoubleClamped(0.866667));
-        public static C3b PowderBlue => new C3b(Col.ByteFromDoubleClamped(0.690196), Col.ByteFromDoubleClamped(0.878431), Col.ByteFromDoubleClamped(0.901961));
-        public static C3b Purple => new C3b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961));
-        public static C3b Red => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C3b RosyBrown => new C3b(Col.ByteFromDoubleClamped(0.737255), Col.ByteFromDoubleClamped(0.560784), Col.ByteFromDoubleClamped(0.560784));
-        public static C3b RoyalBlue => new C3b(Col.ByteFromDoubleClamped(0.254902), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.882353));
-        public static C3b SaddleBrown => new C3b(Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.270588), Col.ByteFromDoubleClamped(0.07451));
-        public static C3b Salmon => new C3b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.447059));
-        public static C3b SandyBrown => new C3b(Col.ByteFromDoubleClamped(0.956863), Col.ByteFromDoubleClamped(0.643137), Col.ByteFromDoubleClamped(0.376471));
-        public static C3b SeaGreen => new C3b(Col.ByteFromDoubleClamped(0.180392), Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.341176));
-        public static C3b SeaShell => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.933333));
-        public static C3b Sienna => new C3b(Col.ByteFromDoubleClamped(0.627451), Col.ByteFromDoubleClamped(0.321569), Col.ByteFromDoubleClamped(0.176471));
-        public static C3b Silver => new C3b(Col.ByteFromDoubleClamped(0.752941), Col.ByteFromDoubleClamped(0.752941), Col.ByteFromDoubleClamped(0.752941));
-        public static C3b SkyBlue => new C3b(Col.ByteFromDoubleClamped(0.529412), Col.ByteFromDoubleClamped(0.807843), Col.ByteFromDoubleClamped(0.921569));
-        public static C3b SlateBlue => new C3b(Col.ByteFromDoubleClamped(0.415686), Col.ByteFromDoubleClamped(0.352941), Col.ByteFromDoubleClamped(0.803922));
-        public static C3b SlateGray => new C3b(Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.564706));
-        public static C3b SlateGrey => new C3b(Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.564706));
-        public static C3b Snow => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.980392));
-        public static C3b SpringGreen => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.498039));
-        public static C3b SteelBlue => new C3b(Col.ByteFromDoubleClamped(0.27451), Col.ByteFromDoubleClamped(0.509804), Col.ByteFromDoubleClamped(0.705882));
-        public static C3b Tan => new C3b(Col.ByteFromDoubleClamped(0.823529), Col.ByteFromDoubleClamped(0.705882), Col.ByteFromDoubleClamped(0.54902));
-        public static C3b Teal => new C3b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C3b Thistle => new C3b(Col.ByteFromDoubleClamped(0.847059), Col.ByteFromDoubleClamped(0.74902), Col.ByteFromDoubleClamped(0.847059));
-        public static C3b Tomato => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.388235), Col.ByteFromDoubleClamped(0.278431));
-        public static C3b Turquoise => new C3b(Col.ByteFromDoubleClamped(0.25098), Col.ByteFromDoubleClamped(0.878431), Col.ByteFromDoubleClamped(0.815686));
-        public static C3b Violet => new C3b(Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.509804), Col.ByteFromDoubleClamped(0.933333));
-        public static C3b Wheat => new C3b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.870588), Col.ByteFromDoubleClamped(0.701961));
-        public static C3b White => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C3b WhiteSmoke => new C3b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.960784));
-        public static C3b Yellow => new C3b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0));
-        public static C3b YellowGreen => new C3b(Col.ByteFromDoubleClamped(0.603922), Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.196078));
+        public static C3b AliceBlue => new C3b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(1));
+        public static C3b AntiqueWhite => new C3b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.921569), Col.DoubleToByteClamped(0.843137));
+        public static C3b Aqua => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C3b Aquamarine => new C3b(Col.DoubleToByteClamped(0.498039), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.831373));
+        public static C3b Azure => new C3b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C3b Beige => new C3b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.862745));
+        public static C3b Bisque => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.894118), Col.DoubleToByteClamped(0.768627));
+        public static C3b Black => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C3b BlanchedAlmond => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.921569), Col.DoubleToByteClamped(0.803922));
+        public static C3b Blue => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1));
+        public static C3b BlueViolet => new C3b(Col.DoubleToByteClamped(0.541176), Col.DoubleToByteClamped(0.168627), Col.DoubleToByteClamped(0.886275));
+        public static C3b Brown => new C3b(Col.DoubleToByteClamped(0.647059), Col.DoubleToByteClamped(0.164706), Col.DoubleToByteClamped(0.164706));
+        public static C3b BurlyWood => new C3b(Col.DoubleToByteClamped(0.870588), Col.DoubleToByteClamped(0.721569), Col.DoubleToByteClamped(0.529412));
+        public static C3b CadetBlue => new C3b(Col.DoubleToByteClamped(0.372549), Col.DoubleToByteClamped(0.619608), Col.DoubleToByteClamped(0.627451));
+        public static C3b Chartreuse => new C3b(Col.DoubleToByteClamped(0.498039), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0));
+        public static C3b Chocolate => new C3b(Col.DoubleToByteClamped(0.823529), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.117647));
+        public static C3b Coral => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.498039), Col.DoubleToByteClamped(0.313725));
+        public static C3b CornflowerBlue => new C3b(Col.DoubleToByteClamped(0.392157), Col.DoubleToByteClamped(0.584314), Col.DoubleToByteClamped(0.929412));
+        public static C3b Cornsilk => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(0.862745));
+        public static C3b Crimson => new C3b(Col.DoubleToByteClamped(0.862745), Col.DoubleToByteClamped(0.078431), Col.DoubleToByteClamped(0.235294));
+        public static C3b Cyan => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C3b DarkBlue => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.545098));
+        public static C3b DarkCyan => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.545098));
+        public static C3b DarkGoldenRod => new C3b(Col.DoubleToByteClamped(0.721569), Col.DoubleToByteClamped(0.52549), Col.DoubleToByteClamped(0.043137));
+        public static C3b DarkGray => new C3b(Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745));
+        public static C3b DarkGrey => new C3b(Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745));
+        public static C3b DarkGreen => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.392157), Col.DoubleToByteClamped(0));
+        public static C3b DarkKhaki => new C3b(Col.DoubleToByteClamped(0.741176), Col.DoubleToByteClamped(0.717647), Col.DoubleToByteClamped(0.419608));
+        public static C3b DarkMagenta => new C3b(Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.545098));
+        public static C3b DarkOliveGreen => new C3b(Col.DoubleToByteClamped(0.333333), Col.DoubleToByteClamped(0.419608), Col.DoubleToByteClamped(0.184314));
+        public static C3b DarkOrange => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.54902), Col.DoubleToByteClamped(0));
+        public static C3b DarkOrchid => new C3b(Col.DoubleToByteClamped(0.6), Col.DoubleToByteClamped(0.196078), Col.DoubleToByteClamped(0.8));
+        public static C3b DarkRed => new C3b(Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C3b DarkSalmon => new C3b(Col.DoubleToByteClamped(0.913725), Col.DoubleToByteClamped(0.588235), Col.DoubleToByteClamped(0.478431));
+        public static C3b DarkSeaGreen => new C3b(Col.DoubleToByteClamped(0.560784), Col.DoubleToByteClamped(0.737255), Col.DoubleToByteClamped(0.560784));
+        public static C3b DarkSlateBlue => new C3b(Col.DoubleToByteClamped(0.282353), Col.DoubleToByteClamped(0.239216), Col.DoubleToByteClamped(0.545098));
+        public static C3b DarkSlateGray => new C3b(Col.DoubleToByteClamped(0.184314), Col.DoubleToByteClamped(0.309804), Col.DoubleToByteClamped(0.309804));
+        public static C3b DarkSlateGrey => new C3b(Col.DoubleToByteClamped(0.184314), Col.DoubleToByteClamped(0.309804), Col.DoubleToByteClamped(0.309804));
+        public static C3b DarkTurquoise => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.807843), Col.DoubleToByteClamped(0.819608));
+        public static C3b DarkViolet => new C3b(Col.DoubleToByteClamped(0.580392), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.827451));
+        public static C3b DeepPink => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.078431), Col.DoubleToByteClamped(0.576471));
+        public static C3b DeepSkyBlue => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.74902), Col.DoubleToByteClamped(1));
+        public static C3b DimGray => new C3b(Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765));
+        public static C3b DimGrey => new C3b(Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765));
+        public static C3b DodgerBlue => new C3b(Col.DoubleToByteClamped(0.117647), Col.DoubleToByteClamped(0.564706), Col.DoubleToByteClamped(1));
+        public static C3b FireBrick => new C3b(Col.DoubleToByteClamped(0.698039), Col.DoubleToByteClamped(0.133333), Col.DoubleToByteClamped(0.133333));
+        public static C3b FloralWhite => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.941176));
+        public static C3b ForestGreen => new C3b(Col.DoubleToByteClamped(0.133333), Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.133333));
+        public static C3b Fuchsia => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1));
+        public static C3b Gainsboro => new C3b(Col.DoubleToByteClamped(0.862745), Col.DoubleToByteClamped(0.862745), Col.DoubleToByteClamped(0.862745));
+        public static C3b GhostWhite => new C3b(Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(1));
+        public static C3b Gold => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.843137), Col.DoubleToByteClamped(0));
+        public static C3b GoldenRod => new C3b(Col.DoubleToByteClamped(0.854902), Col.DoubleToByteClamped(0.647059), Col.DoubleToByteClamped(0.12549));
+        public static C3b Gray => new C3b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C3b Grey => new C3b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C3b Green => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0));
+        public static C3b GreenYellow => new C3b(Col.DoubleToByteClamped(0.678431), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.184314));
+        public static C3b HoneyDew => new C3b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.941176));
+        public static C3b HotPink => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.705882));
+        public static C3b IndianRed  => new C3b(Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.360784), Col.DoubleToByteClamped(0.360784));
+        public static C3b Indigo  => new C3b(Col.DoubleToByteClamped(0.294118), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.509804));
+        public static C3b Ivory => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.941176));
+        public static C3b Khaki => new C3b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.901961), Col.DoubleToByteClamped(0.54902));
+        public static C3b Lavender => new C3b(Col.DoubleToByteClamped(0.901961), Col.DoubleToByteClamped(0.901961), Col.DoubleToByteClamped(0.980392));
+        public static C3b LavenderBlush => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.960784));
+        public static C3b LawnGreen => new C3b(Col.DoubleToByteClamped(0.486275), Col.DoubleToByteClamped(0.988235), Col.DoubleToByteClamped(0));
+        public static C3b LemonChiffon => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.803922));
+        public static C3b LightBlue => new C3b(Col.DoubleToByteClamped(0.678431), Col.DoubleToByteClamped(0.847059), Col.DoubleToByteClamped(0.901961));
+        public static C3b LightCoral => new C3b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C3b LightCyan => new C3b(Col.DoubleToByteClamped(0.878431), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C3b LightGoldenRodYellow => new C3b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.823529));
+        public static C3b LightGray => new C3b(Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451));
+        public static C3b LightGrey => new C3b(Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451));
+        public static C3b LightGreen => new C3b(Col.DoubleToByteClamped(0.564706), Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.564706));
+        public static C3b LightPink => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.713725), Col.DoubleToByteClamped(0.756863));
+        public static C3b LightSalmon => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.627451), Col.DoubleToByteClamped(0.478431));
+        public static C3b LightSeaGreen => new C3b(Col.DoubleToByteClamped(0.12549), Col.DoubleToByteClamped(0.698039), Col.DoubleToByteClamped(0.666667));
+        public static C3b LightSkyBlue => new C3b(Col.DoubleToByteClamped(0.529412), Col.DoubleToByteClamped(0.807843), Col.DoubleToByteClamped(0.980392));
+        public static C3b LightSlateGray => new C3b(Col.DoubleToByteClamped(0.466667), Col.DoubleToByteClamped(0.533333), Col.DoubleToByteClamped(0.6));
+        public static C3b LightSlateGrey => new C3b(Col.DoubleToByteClamped(0.466667), Col.DoubleToByteClamped(0.533333), Col.DoubleToByteClamped(0.6));
+        public static C3b LightSteelBlue => new C3b(Col.DoubleToByteClamped(0.690196), Col.DoubleToByteClamped(0.768627), Col.DoubleToByteClamped(0.870588));
+        public static C3b LightYellow => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.878431));
+        public static C3b Lime => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0));
+        public static C3b LimeGreen => new C3b(Col.DoubleToByteClamped(0.196078), Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.196078));
+        public static C3b Linen => new C3b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.901961));
+        public static C3b Magenta => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1));
+        public static C3b Maroon => new C3b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C3b MediumAquaMarine => new C3b(Col.DoubleToByteClamped(0.4), Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.666667));
+        public static C3b MediumBlue => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.803922));
+        public static C3b MediumOrchid => new C3b(Col.DoubleToByteClamped(0.729412), Col.DoubleToByteClamped(0.333333), Col.DoubleToByteClamped(0.827451));
+        public static C3b MediumPurple => new C3b(Col.DoubleToByteClamped(0.576471), Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.847059));
+        public static C3b MediumSeaGreen => new C3b(Col.DoubleToByteClamped(0.235294), Col.DoubleToByteClamped(0.701961), Col.DoubleToByteClamped(0.443137));
+        public static C3b MediumSlateBlue => new C3b(Col.DoubleToByteClamped(0.482353), Col.DoubleToByteClamped(0.407843), Col.DoubleToByteClamped(0.933333));
+        public static C3b MediumSpringGreen => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.603922));
+        public static C3b MediumTurquoise => new C3b(Col.DoubleToByteClamped(0.282353), Col.DoubleToByteClamped(0.819608), Col.DoubleToByteClamped(0.8));
+        public static C3b MediumVioletRed => new C3b(Col.DoubleToByteClamped(0.780392), Col.DoubleToByteClamped(0.082353), Col.DoubleToByteClamped(0.521569));
+        public static C3b MidnightBlue => new C3b(Col.DoubleToByteClamped(0.098039), Col.DoubleToByteClamped(0.098039), Col.DoubleToByteClamped(0.439216));
+        public static C3b MintCream => new C3b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392));
+        public static C3b MistyRose => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.894118), Col.DoubleToByteClamped(0.882353));
+        public static C3b Moccasin => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.894118), Col.DoubleToByteClamped(0.709804));
+        public static C3b NavajoWhite => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.870588), Col.DoubleToByteClamped(0.678431));
+        public static C3b Navy => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961));
+        public static C3b OldLace => new C3b(Col.DoubleToByteClamped(0.992157), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.901961));
+        public static C3b Olive => new C3b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0));
+        public static C3b OliveDrab => new C3b(Col.DoubleToByteClamped(0.419608), Col.DoubleToByteClamped(0.556863), Col.DoubleToByteClamped(0.137255));
+        public static C3b Orange => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.647059), Col.DoubleToByteClamped(0));
+        public static C3b OrangeRed => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.270588), Col.DoubleToByteClamped(0));
+        public static C3b Orchid => new C3b(Col.DoubleToByteClamped(0.854902), Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.839216));
+        public static C3b PaleGoldenRod => new C3b(Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.909804), Col.DoubleToByteClamped(0.666667));
+        public static C3b PaleGreen => new C3b(Col.DoubleToByteClamped(0.596078), Col.DoubleToByteClamped(0.984314), Col.DoubleToByteClamped(0.596078));
+        public static C3b PaleTurquoise => new C3b(Col.DoubleToByteClamped(0.686275), Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.933333));
+        public static C3b PaleVioletRed => new C3b(Col.DoubleToByteClamped(0.847059), Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.576471));
+        public static C3b PapayaWhip => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.937255), Col.DoubleToByteClamped(0.835294));
+        public static C3b PeachPuff => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.854902), Col.DoubleToByteClamped(0.72549));
+        public static C3b Peru => new C3b(Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.521569), Col.DoubleToByteClamped(0.247059));
+        public static C3b Pink => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.752941), Col.DoubleToByteClamped(0.796078));
+        public static C3b Plum => new C3b(Col.DoubleToByteClamped(0.866667), Col.DoubleToByteClamped(0.627451), Col.DoubleToByteClamped(0.866667));
+        public static C3b PowderBlue => new C3b(Col.DoubleToByteClamped(0.690196), Col.DoubleToByteClamped(0.878431), Col.DoubleToByteClamped(0.901961));
+        public static C3b Purple => new C3b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961));
+        public static C3b Red => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C3b RosyBrown => new C3b(Col.DoubleToByteClamped(0.737255), Col.DoubleToByteClamped(0.560784), Col.DoubleToByteClamped(0.560784));
+        public static C3b RoyalBlue => new C3b(Col.DoubleToByteClamped(0.254902), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.882353));
+        public static C3b SaddleBrown => new C3b(Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.270588), Col.DoubleToByteClamped(0.07451));
+        public static C3b Salmon => new C3b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.447059));
+        public static C3b SandyBrown => new C3b(Col.DoubleToByteClamped(0.956863), Col.DoubleToByteClamped(0.643137), Col.DoubleToByteClamped(0.376471));
+        public static C3b SeaGreen => new C3b(Col.DoubleToByteClamped(0.180392), Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.341176));
+        public static C3b SeaShell => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.933333));
+        public static C3b Sienna => new C3b(Col.DoubleToByteClamped(0.627451), Col.DoubleToByteClamped(0.321569), Col.DoubleToByteClamped(0.176471));
+        public static C3b Silver => new C3b(Col.DoubleToByteClamped(0.752941), Col.DoubleToByteClamped(0.752941), Col.DoubleToByteClamped(0.752941));
+        public static C3b SkyBlue => new C3b(Col.DoubleToByteClamped(0.529412), Col.DoubleToByteClamped(0.807843), Col.DoubleToByteClamped(0.921569));
+        public static C3b SlateBlue => new C3b(Col.DoubleToByteClamped(0.415686), Col.DoubleToByteClamped(0.352941), Col.DoubleToByteClamped(0.803922));
+        public static C3b SlateGray => new C3b(Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.564706));
+        public static C3b SlateGrey => new C3b(Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.564706));
+        public static C3b Snow => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.980392));
+        public static C3b SpringGreen => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.498039));
+        public static C3b SteelBlue => new C3b(Col.DoubleToByteClamped(0.27451), Col.DoubleToByteClamped(0.509804), Col.DoubleToByteClamped(0.705882));
+        public static C3b Tan => new C3b(Col.DoubleToByteClamped(0.823529), Col.DoubleToByteClamped(0.705882), Col.DoubleToByteClamped(0.54902));
+        public static C3b Teal => new C3b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C3b Thistle => new C3b(Col.DoubleToByteClamped(0.847059), Col.DoubleToByteClamped(0.74902), Col.DoubleToByteClamped(0.847059));
+        public static C3b Tomato => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.388235), Col.DoubleToByteClamped(0.278431));
+        public static C3b Turquoise => new C3b(Col.DoubleToByteClamped(0.25098), Col.DoubleToByteClamped(0.878431), Col.DoubleToByteClamped(0.815686));
+        public static C3b Violet => new C3b(Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.509804), Col.DoubleToByteClamped(0.933333));
+        public static C3b Wheat => new C3b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.870588), Col.DoubleToByteClamped(0.701961));
+        public static C3b White => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C3b WhiteSmoke => new C3b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.960784));
+        public static C3b Yellow => new C3b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0));
+        public static C3b YellowGreen => new C3b(Col.DoubleToByteClamped(0.603922), Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.196078));
 
         public static C3b DarkYellow => Olive;
 
-        public static C3b VRVisGreen => new C3b(Col.ByteFromDoubleClamped(0.698), Col.ByteFromDoubleClamped(0.851), Col.ByteFromDoubleClamped(0.008));
+        public static C3b VRVisGreen => new C3b(Col.DoubleToByteClamped(0.698), Col.DoubleToByteClamped(0.851), Col.DoubleToByteClamped(0.008));
 
-        public static C3b Gray10 => new C3b(Col.ByteFromDoubleClamped(0.1));
-        public static C3b Gray20 => new C3b(Col.ByteFromDoubleClamped(0.2));
-        public static C3b Gray30 => new C3b(Col.ByteFromDoubleClamped(0.3));
-        public static C3b Gray40 => new C3b(Col.ByteFromDoubleClamped(0.4));
-        public static C3b Gray50 => new C3b(Col.ByteFromDoubleClamped(0.5));
-        public static C3b Gray60 => new C3b(Col.ByteFromDoubleClamped(0.6));
-        public static C3b Gray70 => new C3b(Col.ByteFromDoubleClamped(0.7));
-        public static C3b Gray80 => new C3b(Col.ByteFromDoubleClamped(0.8));
-        public static C3b Gray90 => new C3b(Col.ByteFromDoubleClamped(0.9));
+        public static C3b Gray10 => new C3b(Col.DoubleToByteClamped(0.1));
+        public static C3b Gray20 => new C3b(Col.DoubleToByteClamped(0.2));
+        public static C3b Gray30 => new C3b(Col.DoubleToByteClamped(0.3));
+        public static C3b Gray40 => new C3b(Col.DoubleToByteClamped(0.4));
+        public static C3b Gray50 => new C3b(Col.DoubleToByteClamped(0.5));
+        public static C3b Gray60 => new C3b(Col.DoubleToByteClamped(0.6));
+        public static C3b Gray70 => new C3b(Col.DoubleToByteClamped(0.7));
+        public static C3b Gray80 => new C3b(Col.DoubleToByteClamped(0.8));
+        public static C3b Gray90 => new C3b(Col.DoubleToByteClamped(0.9));
 
         #endregion
 
@@ -1344,72 +1344,72 @@ namespace Aardvark.Base
         public static C3b operator +(C3b c0, C3us c1)
         {
             return new C3b(
-                (byte)(c0.R + Col.ByteFromUShort(c1.R)), 
-                (byte)(c0.G + Col.ByteFromUShort(c1.G)), 
-                (byte)(c0.B + Col.ByteFromUShort(c1.B)));
+                (byte)(c0.R + Col.UShortToByte(c1.R)), 
+                (byte)(c0.G + Col.UShortToByte(c1.G)), 
+                (byte)(c0.B + Col.UShortToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3us c1)
         {
             return new C3b(
-                (byte)(c0.R - Col.ByteFromUShort(c1.R)), 
-                (byte)(c0.G - Col.ByteFromUShort(c1.G)), 
-                (byte)(c0.B - Col.ByteFromUShort(c1.B)));
+                (byte)(c0.R - Col.UShortToByte(c1.R)), 
+                (byte)(c0.G - Col.UShortToByte(c1.G)), 
+                (byte)(c0.B - Col.UShortToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator +(C3b c0, C3ui c1)
         {
             return new C3b(
-                (byte)(c0.R + Col.ByteFromUInt(c1.R)), 
-                (byte)(c0.G + Col.ByteFromUInt(c1.G)), 
-                (byte)(c0.B + Col.ByteFromUInt(c1.B)));
+                (byte)(c0.R + Col.UIntToByte(c1.R)), 
+                (byte)(c0.G + Col.UIntToByte(c1.G)), 
+                (byte)(c0.B + Col.UIntToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3ui c1)
         {
             return new C3b(
-                (byte)(c0.R - Col.ByteFromUInt(c1.R)), 
-                (byte)(c0.G - Col.ByteFromUInt(c1.G)), 
-                (byte)(c0.B - Col.ByteFromUInt(c1.B)));
+                (byte)(c0.R - Col.UIntToByte(c1.R)), 
+                (byte)(c0.G - Col.UIntToByte(c1.G)), 
+                (byte)(c0.B - Col.UIntToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator +(C3b c0, C3f c1)
         {
             return new C3b(
-                (byte)(c0.R + Col.ByteFromFloat(c1.R)), 
-                (byte)(c0.G + Col.ByteFromFloat(c1.G)), 
-                (byte)(c0.B + Col.ByteFromFloat(c1.B)));
+                (byte)(c0.R + Col.FloatToByte(c1.R)), 
+                (byte)(c0.G + Col.FloatToByte(c1.G)), 
+                (byte)(c0.B + Col.FloatToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3f c1)
         {
             return new C3b(
-                (byte)(c0.R - Col.ByteFromFloat(c1.R)), 
-                (byte)(c0.G - Col.ByteFromFloat(c1.G)), 
-                (byte)(c0.B - Col.ByteFromFloat(c1.B)));
+                (byte)(c0.R - Col.FloatToByte(c1.R)), 
+                (byte)(c0.G - Col.FloatToByte(c1.G)), 
+                (byte)(c0.B - Col.FloatToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator +(C3b c0, C3d c1)
         {
             return new C3b(
-                (byte)(c0.R + Col.ByteFromDouble(c1.R)), 
-                (byte)(c0.G + Col.ByteFromDouble(c1.G)), 
-                (byte)(c0.B + Col.ByteFromDouble(c1.B)));
+                (byte)(c0.R + Col.DoubleToByte(c1.R)), 
+                (byte)(c0.G + Col.DoubleToByte(c1.G)), 
+                (byte)(c0.B + Col.DoubleToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3d c1)
         {
             return new C3b(
-                (byte)(c0.R - Col.ByteFromDouble(c1.R)), 
-                (byte)(c0.G - Col.ByteFromDouble(c1.G)), 
-                (byte)(c0.B - Col.ByteFromDouble(c1.B)));
+                (byte)(c0.R - Col.DoubleToByte(c1.R)), 
+                (byte)(c0.G - Col.DoubleToByte(c1.G)), 
+                (byte)(c0.B - Col.DoubleToByte(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1658,20 +1658,20 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.DoubleFromByte(R); }
-            set { R = Col.ByteFromDoubleClamped(value); }
+            get { return Col.ByteToDouble(R); }
+            set { R = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.DoubleFromByte(G); }
-            set { G = Col.ByteFromDoubleClamped(value); }
+            get { return Col.ByteToDouble(G); }
+            set { G = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.DoubleFromByte(B); }
-            set { B = Col.ByteFromDoubleClamped(value); }
+            get { return Col.ByteToDouble(B); }
+            set { B = Col.DoubleToByteClamped(value); }
         }
 
         #endregion
@@ -2250,9 +2250,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(float r, float g, float b)
         {
-            R = Col.UShortFromFloatClamped(r);
-            G = Col.UShortFromFloatClamped(g);
-            B = Col.UShortFromFloatClamped(b);
+            R = Col.FloatToUShortClamped(r);
+            G = Col.FloatToUShortClamped(g);
+            B = Col.FloatToUShortClamped(b);
         }
 
         /// <summary>
@@ -2262,9 +2262,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double r, double g, double b)
         {
-            R = Col.UShortFromDoubleClamped(r);
-            G = Col.UShortFromDoubleClamped(g);
-            B = Col.UShortFromDoubleClamped(b);
+            R = Col.DoubleToUShortClamped(r);
+            G = Col.DoubleToUShortClamped(g);
+            B = Col.DoubleToUShortClamped(b);
         }
 
         /// <summary>
@@ -2283,7 +2283,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(float gray)
         {
-            var value = Col.UShortFromFloatClamped(gray);
+            var value = Col.FloatToUShortClamped(gray);
             R = value; G = value; B = value;
         }
 
@@ -2294,7 +2294,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double gray)
         {
-            var value = Col.UShortFromDoubleClamped(gray);
+            var value = Col.DoubleToUShortClamped(gray);
             R = value; G = value; B = value;
         }
 
@@ -2305,9 +2305,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3b color)
         {
-            R = Col.UShortFromByte(color.R);
-            G = Col.UShortFromByte(color.G);
-            B = Col.UShortFromByte(color.B);
+            R = Col.ByteToUShort(color.R);
+            G = Col.ByteToUShort(color.G);
+            B = Col.ByteToUShort(color.B);
         }
 
         /// <summary>
@@ -2328,9 +2328,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3ui color)
         {
-            R = Col.UShortFromUInt(color.R);
-            G = Col.UShortFromUInt(color.G);
-            B = Col.UShortFromUInt(color.B);
+            R = Col.UIntToUShort(color.R);
+            G = Col.UIntToUShort(color.G);
+            B = Col.UIntToUShort(color.B);
         }
 
         /// <summary>
@@ -2340,9 +2340,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3f color)
         {
-            R = Col.UShortFromFloat(color.R);
-            G = Col.UShortFromFloat(color.G);
-            B = Col.UShortFromFloat(color.B);
+            R = Col.FloatToUShort(color.R);
+            G = Col.FloatToUShort(color.G);
+            B = Col.FloatToUShort(color.B);
         }
 
         /// <summary>
@@ -2352,9 +2352,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3d color)
         {
-            R = Col.UShortFromDouble(color.R);
-            G = Col.UShortFromDouble(color.G);
-            B = Col.UShortFromDouble(color.B);
+            R = Col.DoubleToUShort(color.R);
+            G = Col.DoubleToUShort(color.G);
+            B = Col.DoubleToUShort(color.B);
         }
 
         /// <summary>
@@ -2364,9 +2364,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4b color)
         {
-            R = Col.UShortFromByte(color.R);
-            G = Col.UShortFromByte(color.G);
-            B = Col.UShortFromByte(color.B);
+            R = Col.ByteToUShort(color.R);
+            G = Col.ByteToUShort(color.G);
+            B = Col.ByteToUShort(color.B);
         }
 
         /// <summary>
@@ -2387,9 +2387,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4ui color)
         {
-            R = Col.UShortFromUInt(color.R);
-            G = Col.UShortFromUInt(color.G);
-            B = Col.UShortFromUInt(color.B);
+            R = Col.UIntToUShort(color.R);
+            G = Col.UIntToUShort(color.G);
+            B = Col.UIntToUShort(color.B);
         }
 
         /// <summary>
@@ -2399,9 +2399,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4f color)
         {
-            R = Col.UShortFromFloat(color.R);
-            G = Col.UShortFromFloat(color.G);
-            B = Col.UShortFromFloat(color.B);
+            R = Col.FloatToUShort(color.R);
+            G = Col.FloatToUShort(color.G);
+            B = Col.FloatToUShort(color.B);
         }
 
         /// <summary>
@@ -2411,9 +2411,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4d color)
         {
-            R = Col.UShortFromDouble(color.R);
-            G = Col.UShortFromDouble(color.G);
-            B = Col.UShortFromDouble(color.B);
+            R = Col.DoubleToUShort(color.R);
+            G = Col.DoubleToUShort(color.G);
+            B = Col.DoubleToUShort(color.B);
         }
 
         /// <summary>
@@ -2554,9 +2554,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(byte[] values)
         {
-            R = Col.UShortFromByte(values[0]);
-            G = Col.UShortFromByte(values[1]);
-            B = Col.UShortFromByte(values[2]);
+            R = Col.ByteToUShort(values[0]);
+            G = Col.ByteToUShort(values[1]);
+            B = Col.ByteToUShort(values[2]);
         }
 
         /// <summary>
@@ -2566,9 +2566,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(byte[] values, int start)
         {
-            R = Col.UShortFromByte(values[start + 0]);
-            G = Col.UShortFromByte(values[start + 1]);
-            B = Col.UShortFromByte(values[start + 2]);
+            R = Col.ByteToUShort(values[start + 0]);
+            G = Col.ByteToUShort(values[start + 1]);
+            B = Col.ByteToUShort(values[start + 2]);
         }
 
         /// <summary>
@@ -2600,9 +2600,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(uint[] values)
         {
-            R = Col.UShortFromUInt(values[0]);
-            G = Col.UShortFromUInt(values[1]);
-            B = Col.UShortFromUInt(values[2]);
+            R = Col.UIntToUShort(values[0]);
+            G = Col.UIntToUShort(values[1]);
+            B = Col.UIntToUShort(values[2]);
         }
 
         /// <summary>
@@ -2612,9 +2612,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(uint[] values, int start)
         {
-            R = Col.UShortFromUInt(values[start + 0]);
-            G = Col.UShortFromUInt(values[start + 1]);
-            B = Col.UShortFromUInt(values[start + 2]);
+            R = Col.UIntToUShort(values[start + 0]);
+            G = Col.UIntToUShort(values[start + 1]);
+            B = Col.UIntToUShort(values[start + 2]);
         }
 
         /// <summary>
@@ -2624,9 +2624,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(float[] values)
         {
-            R = Col.UShortFromFloat(values[0]);
-            G = Col.UShortFromFloat(values[1]);
-            B = Col.UShortFromFloat(values[2]);
+            R = Col.FloatToUShort(values[0]);
+            G = Col.FloatToUShort(values[1]);
+            B = Col.FloatToUShort(values[2]);
         }
 
         /// <summary>
@@ -2636,9 +2636,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(float[] values, int start)
         {
-            R = Col.UShortFromFloat(values[start + 0]);
-            G = Col.UShortFromFloat(values[start + 1]);
-            B = Col.UShortFromFloat(values[start + 2]);
+            R = Col.FloatToUShort(values[start + 0]);
+            G = Col.FloatToUShort(values[start + 1]);
+            B = Col.FloatToUShort(values[start + 2]);
         }
 
         /// <summary>
@@ -2648,9 +2648,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double[] values)
         {
-            R = Col.UShortFromDouble(values[0]);
-            G = Col.UShortFromDouble(values[1]);
-            B = Col.UShortFromDouble(values[2]);
+            R = Col.DoubleToUShort(values[0]);
+            G = Col.DoubleToUShort(values[1]);
+            B = Col.DoubleToUShort(values[2]);
         }
 
         /// <summary>
@@ -2660,9 +2660,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double[] values, int start)
         {
-            R = Col.UShortFromDouble(values[start + 0]);
-            G = Col.UShortFromDouble(values[start + 1]);
-            B = Col.UShortFromDouble(values[start + 2]);
+            R = Col.DoubleToUShort(values[start + 0]);
+            G = Col.DoubleToUShort(values[start + 1]);
+            B = Col.DoubleToUShort(values[start + 2]);
         }
 
         #endregion
@@ -3108,7 +3108,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C3us color)
-            => new byte[] { Col.ByteFromUShort(color.R), Col.ByteFromUShort(color.G), Col.ByteFromUShort(color.B) };
+            => new byte[] { Col.UShortToByte(color.R), Col.UShortToByte(color.G), Col.UShortToByte(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -3138,7 +3138,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C3us color)
-            => new uint[] { Col.UIntFromUShort(color.R), Col.UIntFromUShort(color.G), Col.UIntFromUShort(color.B) };
+            => new uint[] { Col.UShortToUInt(color.R), Col.UShortToUInt(color.G), Col.UShortToUInt(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -3154,7 +3154,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C3us color)
-            => new float[] { Col.FloatFromUShort(color.R), Col.FloatFromUShort(color.G), Col.FloatFromUShort(color.B) };
+            => new float[] { Col.UShortToFloat(color.R), Col.UShortToFloat(color.G), Col.UShortToFloat(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -3170,7 +3170,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C3us color)
-            => new double[] { Col.DoubleFromUShort(color.R), Col.DoubleFromUShort(color.G), Col.DoubleFromUShort(color.B) };
+            => new double[] { Col.UShortToDouble(color.R), Col.UShortToDouble(color.G), Col.UShortToDouble(color.B) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -3268,167 +3268,167 @@ namespace Aardvark.Base
         public static C3us Zero => new C3us(0, 0, 0);
 
         // Web colors
-        public static C3us AliceBlue => new C3us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(1));
-        public static C3us AntiqueWhite => new C3us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.921569), Col.UShortFromDoubleClamped(0.843137));
-        public static C3us Aqua => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C3us Aquamarine => new C3us(Col.UShortFromDoubleClamped(0.498039), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.831373));
-        public static C3us Azure => new C3us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C3us Beige => new C3us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.862745));
-        public static C3us Bisque => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.894118), Col.UShortFromDoubleClamped(0.768627));
-        public static C3us Black => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C3us BlanchedAlmond => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.921569), Col.UShortFromDoubleClamped(0.803922));
-        public static C3us Blue => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1));
-        public static C3us BlueViolet => new C3us(Col.UShortFromDoubleClamped(0.541176), Col.UShortFromDoubleClamped(0.168627), Col.UShortFromDoubleClamped(0.886275));
-        public static C3us Brown => new C3us(Col.UShortFromDoubleClamped(0.647059), Col.UShortFromDoubleClamped(0.164706), Col.UShortFromDoubleClamped(0.164706));
-        public static C3us BurlyWood => new C3us(Col.UShortFromDoubleClamped(0.870588), Col.UShortFromDoubleClamped(0.721569), Col.UShortFromDoubleClamped(0.529412));
-        public static C3us CadetBlue => new C3us(Col.UShortFromDoubleClamped(0.372549), Col.UShortFromDoubleClamped(0.619608), Col.UShortFromDoubleClamped(0.627451));
-        public static C3us Chartreuse => new C3us(Col.UShortFromDoubleClamped(0.498039), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0));
-        public static C3us Chocolate => new C3us(Col.UShortFromDoubleClamped(0.823529), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.117647));
-        public static C3us Coral => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.498039), Col.UShortFromDoubleClamped(0.313725));
-        public static C3us CornflowerBlue => new C3us(Col.UShortFromDoubleClamped(0.392157), Col.UShortFromDoubleClamped(0.584314), Col.UShortFromDoubleClamped(0.929412));
-        public static C3us Cornsilk => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(0.862745));
-        public static C3us Crimson => new C3us(Col.UShortFromDoubleClamped(0.862745), Col.UShortFromDoubleClamped(0.078431), Col.UShortFromDoubleClamped(0.235294));
-        public static C3us Cyan => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C3us DarkBlue => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.545098));
-        public static C3us DarkCyan => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.545098));
-        public static C3us DarkGoldenRod => new C3us(Col.UShortFromDoubleClamped(0.721569), Col.UShortFromDoubleClamped(0.52549), Col.UShortFromDoubleClamped(0.043137));
-        public static C3us DarkGray => new C3us(Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745));
-        public static C3us DarkGrey => new C3us(Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745));
-        public static C3us DarkGreen => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.392157), Col.UShortFromDoubleClamped(0));
-        public static C3us DarkKhaki => new C3us(Col.UShortFromDoubleClamped(0.741176), Col.UShortFromDoubleClamped(0.717647), Col.UShortFromDoubleClamped(0.419608));
-        public static C3us DarkMagenta => new C3us(Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.545098));
-        public static C3us DarkOliveGreen => new C3us(Col.UShortFromDoubleClamped(0.333333), Col.UShortFromDoubleClamped(0.419608), Col.UShortFromDoubleClamped(0.184314));
-        public static C3us DarkOrange => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.54902), Col.UShortFromDoubleClamped(0));
-        public static C3us DarkOrchid => new C3us(Col.UShortFromDoubleClamped(0.6), Col.UShortFromDoubleClamped(0.196078), Col.UShortFromDoubleClamped(0.8));
-        public static C3us DarkRed => new C3us(Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C3us DarkSalmon => new C3us(Col.UShortFromDoubleClamped(0.913725), Col.UShortFromDoubleClamped(0.588235), Col.UShortFromDoubleClamped(0.478431));
-        public static C3us DarkSeaGreen => new C3us(Col.UShortFromDoubleClamped(0.560784), Col.UShortFromDoubleClamped(0.737255), Col.UShortFromDoubleClamped(0.560784));
-        public static C3us DarkSlateBlue => new C3us(Col.UShortFromDoubleClamped(0.282353), Col.UShortFromDoubleClamped(0.239216), Col.UShortFromDoubleClamped(0.545098));
-        public static C3us DarkSlateGray => new C3us(Col.UShortFromDoubleClamped(0.184314), Col.UShortFromDoubleClamped(0.309804), Col.UShortFromDoubleClamped(0.309804));
-        public static C3us DarkSlateGrey => new C3us(Col.UShortFromDoubleClamped(0.184314), Col.UShortFromDoubleClamped(0.309804), Col.UShortFromDoubleClamped(0.309804));
-        public static C3us DarkTurquoise => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.807843), Col.UShortFromDoubleClamped(0.819608));
-        public static C3us DarkViolet => new C3us(Col.UShortFromDoubleClamped(0.580392), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.827451));
-        public static C3us DeepPink => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.078431), Col.UShortFromDoubleClamped(0.576471));
-        public static C3us DeepSkyBlue => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.74902), Col.UShortFromDoubleClamped(1));
-        public static C3us DimGray => new C3us(Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765));
-        public static C3us DimGrey => new C3us(Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765));
-        public static C3us DodgerBlue => new C3us(Col.UShortFromDoubleClamped(0.117647), Col.UShortFromDoubleClamped(0.564706), Col.UShortFromDoubleClamped(1));
-        public static C3us FireBrick => new C3us(Col.UShortFromDoubleClamped(0.698039), Col.UShortFromDoubleClamped(0.133333), Col.UShortFromDoubleClamped(0.133333));
-        public static C3us FloralWhite => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.941176));
-        public static C3us ForestGreen => new C3us(Col.UShortFromDoubleClamped(0.133333), Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.133333));
-        public static C3us Fuchsia => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1));
-        public static C3us Gainsboro => new C3us(Col.UShortFromDoubleClamped(0.862745), Col.UShortFromDoubleClamped(0.862745), Col.UShortFromDoubleClamped(0.862745));
-        public static C3us GhostWhite => new C3us(Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(1));
-        public static C3us Gold => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.843137), Col.UShortFromDoubleClamped(0));
-        public static C3us GoldenRod => new C3us(Col.UShortFromDoubleClamped(0.854902), Col.UShortFromDoubleClamped(0.647059), Col.UShortFromDoubleClamped(0.12549));
-        public static C3us Gray => new C3us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C3us Grey => new C3us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C3us Green => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0));
-        public static C3us GreenYellow => new C3us(Col.UShortFromDoubleClamped(0.678431), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.184314));
-        public static C3us HoneyDew => new C3us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.941176));
-        public static C3us HotPink => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.705882));
-        public static C3us IndianRed  => new C3us(Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.360784), Col.UShortFromDoubleClamped(0.360784));
-        public static C3us Indigo  => new C3us(Col.UShortFromDoubleClamped(0.294118), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.509804));
-        public static C3us Ivory => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.941176));
-        public static C3us Khaki => new C3us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.901961), Col.UShortFromDoubleClamped(0.54902));
-        public static C3us Lavender => new C3us(Col.UShortFromDoubleClamped(0.901961), Col.UShortFromDoubleClamped(0.901961), Col.UShortFromDoubleClamped(0.980392));
-        public static C3us LavenderBlush => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.960784));
-        public static C3us LawnGreen => new C3us(Col.UShortFromDoubleClamped(0.486275), Col.UShortFromDoubleClamped(0.988235), Col.UShortFromDoubleClamped(0));
-        public static C3us LemonChiffon => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.803922));
-        public static C3us LightBlue => new C3us(Col.UShortFromDoubleClamped(0.678431), Col.UShortFromDoubleClamped(0.847059), Col.UShortFromDoubleClamped(0.901961));
-        public static C3us LightCoral => new C3us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C3us LightCyan => new C3us(Col.UShortFromDoubleClamped(0.878431), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C3us LightGoldenRodYellow => new C3us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.823529));
-        public static C3us LightGray => new C3us(Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451));
-        public static C3us LightGrey => new C3us(Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451));
-        public static C3us LightGreen => new C3us(Col.UShortFromDoubleClamped(0.564706), Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.564706));
-        public static C3us LightPink => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.713725), Col.UShortFromDoubleClamped(0.756863));
-        public static C3us LightSalmon => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.627451), Col.UShortFromDoubleClamped(0.478431));
-        public static C3us LightSeaGreen => new C3us(Col.UShortFromDoubleClamped(0.12549), Col.UShortFromDoubleClamped(0.698039), Col.UShortFromDoubleClamped(0.666667));
-        public static C3us LightSkyBlue => new C3us(Col.UShortFromDoubleClamped(0.529412), Col.UShortFromDoubleClamped(0.807843), Col.UShortFromDoubleClamped(0.980392));
-        public static C3us LightSlateGray => new C3us(Col.UShortFromDoubleClamped(0.466667), Col.UShortFromDoubleClamped(0.533333), Col.UShortFromDoubleClamped(0.6));
-        public static C3us LightSlateGrey => new C3us(Col.UShortFromDoubleClamped(0.466667), Col.UShortFromDoubleClamped(0.533333), Col.UShortFromDoubleClamped(0.6));
-        public static C3us LightSteelBlue => new C3us(Col.UShortFromDoubleClamped(0.690196), Col.UShortFromDoubleClamped(0.768627), Col.UShortFromDoubleClamped(0.870588));
-        public static C3us LightYellow => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.878431));
-        public static C3us Lime => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0));
-        public static C3us LimeGreen => new C3us(Col.UShortFromDoubleClamped(0.196078), Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.196078));
-        public static C3us Linen => new C3us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.901961));
-        public static C3us Magenta => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1));
-        public static C3us Maroon => new C3us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C3us MediumAquaMarine => new C3us(Col.UShortFromDoubleClamped(0.4), Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.666667));
-        public static C3us MediumBlue => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.803922));
-        public static C3us MediumOrchid => new C3us(Col.UShortFromDoubleClamped(0.729412), Col.UShortFromDoubleClamped(0.333333), Col.UShortFromDoubleClamped(0.827451));
-        public static C3us MediumPurple => new C3us(Col.UShortFromDoubleClamped(0.576471), Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.847059));
-        public static C3us MediumSeaGreen => new C3us(Col.UShortFromDoubleClamped(0.235294), Col.UShortFromDoubleClamped(0.701961), Col.UShortFromDoubleClamped(0.443137));
-        public static C3us MediumSlateBlue => new C3us(Col.UShortFromDoubleClamped(0.482353), Col.UShortFromDoubleClamped(0.407843), Col.UShortFromDoubleClamped(0.933333));
-        public static C3us MediumSpringGreen => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.603922));
-        public static C3us MediumTurquoise => new C3us(Col.UShortFromDoubleClamped(0.282353), Col.UShortFromDoubleClamped(0.819608), Col.UShortFromDoubleClamped(0.8));
-        public static C3us MediumVioletRed => new C3us(Col.UShortFromDoubleClamped(0.780392), Col.UShortFromDoubleClamped(0.082353), Col.UShortFromDoubleClamped(0.521569));
-        public static C3us MidnightBlue => new C3us(Col.UShortFromDoubleClamped(0.098039), Col.UShortFromDoubleClamped(0.098039), Col.UShortFromDoubleClamped(0.439216));
-        public static C3us MintCream => new C3us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392));
-        public static C3us MistyRose => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.894118), Col.UShortFromDoubleClamped(0.882353));
-        public static C3us Moccasin => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.894118), Col.UShortFromDoubleClamped(0.709804));
-        public static C3us NavajoWhite => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.870588), Col.UShortFromDoubleClamped(0.678431));
-        public static C3us Navy => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961));
-        public static C3us OldLace => new C3us(Col.UShortFromDoubleClamped(0.992157), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.901961));
-        public static C3us Olive => new C3us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0));
-        public static C3us OliveDrab => new C3us(Col.UShortFromDoubleClamped(0.419608), Col.UShortFromDoubleClamped(0.556863), Col.UShortFromDoubleClamped(0.137255));
-        public static C3us Orange => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.647059), Col.UShortFromDoubleClamped(0));
-        public static C3us OrangeRed => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.270588), Col.UShortFromDoubleClamped(0));
-        public static C3us Orchid => new C3us(Col.UShortFromDoubleClamped(0.854902), Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.839216));
-        public static C3us PaleGoldenRod => new C3us(Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.909804), Col.UShortFromDoubleClamped(0.666667));
-        public static C3us PaleGreen => new C3us(Col.UShortFromDoubleClamped(0.596078), Col.UShortFromDoubleClamped(0.984314), Col.UShortFromDoubleClamped(0.596078));
-        public static C3us PaleTurquoise => new C3us(Col.UShortFromDoubleClamped(0.686275), Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.933333));
-        public static C3us PaleVioletRed => new C3us(Col.UShortFromDoubleClamped(0.847059), Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.576471));
-        public static C3us PapayaWhip => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.937255), Col.UShortFromDoubleClamped(0.835294));
-        public static C3us PeachPuff => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.854902), Col.UShortFromDoubleClamped(0.72549));
-        public static C3us Peru => new C3us(Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.521569), Col.UShortFromDoubleClamped(0.247059));
-        public static C3us Pink => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.752941), Col.UShortFromDoubleClamped(0.796078));
-        public static C3us Plum => new C3us(Col.UShortFromDoubleClamped(0.866667), Col.UShortFromDoubleClamped(0.627451), Col.UShortFromDoubleClamped(0.866667));
-        public static C3us PowderBlue => new C3us(Col.UShortFromDoubleClamped(0.690196), Col.UShortFromDoubleClamped(0.878431), Col.UShortFromDoubleClamped(0.901961));
-        public static C3us Purple => new C3us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961));
-        public static C3us Red => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C3us RosyBrown => new C3us(Col.UShortFromDoubleClamped(0.737255), Col.UShortFromDoubleClamped(0.560784), Col.UShortFromDoubleClamped(0.560784));
-        public static C3us RoyalBlue => new C3us(Col.UShortFromDoubleClamped(0.254902), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.882353));
-        public static C3us SaddleBrown => new C3us(Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.270588), Col.UShortFromDoubleClamped(0.07451));
-        public static C3us Salmon => new C3us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.447059));
-        public static C3us SandyBrown => new C3us(Col.UShortFromDoubleClamped(0.956863), Col.UShortFromDoubleClamped(0.643137), Col.UShortFromDoubleClamped(0.376471));
-        public static C3us SeaGreen => new C3us(Col.UShortFromDoubleClamped(0.180392), Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.341176));
-        public static C3us SeaShell => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.933333));
-        public static C3us Sienna => new C3us(Col.UShortFromDoubleClamped(0.627451), Col.UShortFromDoubleClamped(0.321569), Col.UShortFromDoubleClamped(0.176471));
-        public static C3us Silver => new C3us(Col.UShortFromDoubleClamped(0.752941), Col.UShortFromDoubleClamped(0.752941), Col.UShortFromDoubleClamped(0.752941));
-        public static C3us SkyBlue => new C3us(Col.UShortFromDoubleClamped(0.529412), Col.UShortFromDoubleClamped(0.807843), Col.UShortFromDoubleClamped(0.921569));
-        public static C3us SlateBlue => new C3us(Col.UShortFromDoubleClamped(0.415686), Col.UShortFromDoubleClamped(0.352941), Col.UShortFromDoubleClamped(0.803922));
-        public static C3us SlateGray => new C3us(Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.564706));
-        public static C3us SlateGrey => new C3us(Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.564706));
-        public static C3us Snow => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.980392));
-        public static C3us SpringGreen => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.498039));
-        public static C3us SteelBlue => new C3us(Col.UShortFromDoubleClamped(0.27451), Col.UShortFromDoubleClamped(0.509804), Col.UShortFromDoubleClamped(0.705882));
-        public static C3us Tan => new C3us(Col.UShortFromDoubleClamped(0.823529), Col.UShortFromDoubleClamped(0.705882), Col.UShortFromDoubleClamped(0.54902));
-        public static C3us Teal => new C3us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C3us Thistle => new C3us(Col.UShortFromDoubleClamped(0.847059), Col.UShortFromDoubleClamped(0.74902), Col.UShortFromDoubleClamped(0.847059));
-        public static C3us Tomato => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.388235), Col.UShortFromDoubleClamped(0.278431));
-        public static C3us Turquoise => new C3us(Col.UShortFromDoubleClamped(0.25098), Col.UShortFromDoubleClamped(0.878431), Col.UShortFromDoubleClamped(0.815686));
-        public static C3us Violet => new C3us(Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.509804), Col.UShortFromDoubleClamped(0.933333));
-        public static C3us Wheat => new C3us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.870588), Col.UShortFromDoubleClamped(0.701961));
-        public static C3us White => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C3us WhiteSmoke => new C3us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.960784));
-        public static C3us Yellow => new C3us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0));
-        public static C3us YellowGreen => new C3us(Col.UShortFromDoubleClamped(0.603922), Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.196078));
+        public static C3us AliceBlue => new C3us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(1));
+        public static C3us AntiqueWhite => new C3us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.921569), Col.DoubleToUShortClamped(0.843137));
+        public static C3us Aqua => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C3us Aquamarine => new C3us(Col.DoubleToUShortClamped(0.498039), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.831373));
+        public static C3us Azure => new C3us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C3us Beige => new C3us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.862745));
+        public static C3us Bisque => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.894118), Col.DoubleToUShortClamped(0.768627));
+        public static C3us Black => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C3us BlanchedAlmond => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.921569), Col.DoubleToUShortClamped(0.803922));
+        public static C3us Blue => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1));
+        public static C3us BlueViolet => new C3us(Col.DoubleToUShortClamped(0.541176), Col.DoubleToUShortClamped(0.168627), Col.DoubleToUShortClamped(0.886275));
+        public static C3us Brown => new C3us(Col.DoubleToUShortClamped(0.647059), Col.DoubleToUShortClamped(0.164706), Col.DoubleToUShortClamped(0.164706));
+        public static C3us BurlyWood => new C3us(Col.DoubleToUShortClamped(0.870588), Col.DoubleToUShortClamped(0.721569), Col.DoubleToUShortClamped(0.529412));
+        public static C3us CadetBlue => new C3us(Col.DoubleToUShortClamped(0.372549), Col.DoubleToUShortClamped(0.619608), Col.DoubleToUShortClamped(0.627451));
+        public static C3us Chartreuse => new C3us(Col.DoubleToUShortClamped(0.498039), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0));
+        public static C3us Chocolate => new C3us(Col.DoubleToUShortClamped(0.823529), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.117647));
+        public static C3us Coral => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.498039), Col.DoubleToUShortClamped(0.313725));
+        public static C3us CornflowerBlue => new C3us(Col.DoubleToUShortClamped(0.392157), Col.DoubleToUShortClamped(0.584314), Col.DoubleToUShortClamped(0.929412));
+        public static C3us Cornsilk => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(0.862745));
+        public static C3us Crimson => new C3us(Col.DoubleToUShortClamped(0.862745), Col.DoubleToUShortClamped(0.078431), Col.DoubleToUShortClamped(0.235294));
+        public static C3us Cyan => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C3us DarkBlue => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.545098));
+        public static C3us DarkCyan => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.545098));
+        public static C3us DarkGoldenRod => new C3us(Col.DoubleToUShortClamped(0.721569), Col.DoubleToUShortClamped(0.52549), Col.DoubleToUShortClamped(0.043137));
+        public static C3us DarkGray => new C3us(Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745));
+        public static C3us DarkGrey => new C3us(Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745));
+        public static C3us DarkGreen => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.392157), Col.DoubleToUShortClamped(0));
+        public static C3us DarkKhaki => new C3us(Col.DoubleToUShortClamped(0.741176), Col.DoubleToUShortClamped(0.717647), Col.DoubleToUShortClamped(0.419608));
+        public static C3us DarkMagenta => new C3us(Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.545098));
+        public static C3us DarkOliveGreen => new C3us(Col.DoubleToUShortClamped(0.333333), Col.DoubleToUShortClamped(0.419608), Col.DoubleToUShortClamped(0.184314));
+        public static C3us DarkOrange => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.54902), Col.DoubleToUShortClamped(0));
+        public static C3us DarkOrchid => new C3us(Col.DoubleToUShortClamped(0.6), Col.DoubleToUShortClamped(0.196078), Col.DoubleToUShortClamped(0.8));
+        public static C3us DarkRed => new C3us(Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C3us DarkSalmon => new C3us(Col.DoubleToUShortClamped(0.913725), Col.DoubleToUShortClamped(0.588235), Col.DoubleToUShortClamped(0.478431));
+        public static C3us DarkSeaGreen => new C3us(Col.DoubleToUShortClamped(0.560784), Col.DoubleToUShortClamped(0.737255), Col.DoubleToUShortClamped(0.560784));
+        public static C3us DarkSlateBlue => new C3us(Col.DoubleToUShortClamped(0.282353), Col.DoubleToUShortClamped(0.239216), Col.DoubleToUShortClamped(0.545098));
+        public static C3us DarkSlateGray => new C3us(Col.DoubleToUShortClamped(0.184314), Col.DoubleToUShortClamped(0.309804), Col.DoubleToUShortClamped(0.309804));
+        public static C3us DarkSlateGrey => new C3us(Col.DoubleToUShortClamped(0.184314), Col.DoubleToUShortClamped(0.309804), Col.DoubleToUShortClamped(0.309804));
+        public static C3us DarkTurquoise => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.807843), Col.DoubleToUShortClamped(0.819608));
+        public static C3us DarkViolet => new C3us(Col.DoubleToUShortClamped(0.580392), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.827451));
+        public static C3us DeepPink => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.078431), Col.DoubleToUShortClamped(0.576471));
+        public static C3us DeepSkyBlue => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.74902), Col.DoubleToUShortClamped(1));
+        public static C3us DimGray => new C3us(Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765));
+        public static C3us DimGrey => new C3us(Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765));
+        public static C3us DodgerBlue => new C3us(Col.DoubleToUShortClamped(0.117647), Col.DoubleToUShortClamped(0.564706), Col.DoubleToUShortClamped(1));
+        public static C3us FireBrick => new C3us(Col.DoubleToUShortClamped(0.698039), Col.DoubleToUShortClamped(0.133333), Col.DoubleToUShortClamped(0.133333));
+        public static C3us FloralWhite => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.941176));
+        public static C3us ForestGreen => new C3us(Col.DoubleToUShortClamped(0.133333), Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.133333));
+        public static C3us Fuchsia => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1));
+        public static C3us Gainsboro => new C3us(Col.DoubleToUShortClamped(0.862745), Col.DoubleToUShortClamped(0.862745), Col.DoubleToUShortClamped(0.862745));
+        public static C3us GhostWhite => new C3us(Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(1));
+        public static C3us Gold => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.843137), Col.DoubleToUShortClamped(0));
+        public static C3us GoldenRod => new C3us(Col.DoubleToUShortClamped(0.854902), Col.DoubleToUShortClamped(0.647059), Col.DoubleToUShortClamped(0.12549));
+        public static C3us Gray => new C3us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C3us Grey => new C3us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C3us Green => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0));
+        public static C3us GreenYellow => new C3us(Col.DoubleToUShortClamped(0.678431), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.184314));
+        public static C3us HoneyDew => new C3us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.941176));
+        public static C3us HotPink => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.705882));
+        public static C3us IndianRed  => new C3us(Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.360784), Col.DoubleToUShortClamped(0.360784));
+        public static C3us Indigo  => new C3us(Col.DoubleToUShortClamped(0.294118), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.509804));
+        public static C3us Ivory => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.941176));
+        public static C3us Khaki => new C3us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.901961), Col.DoubleToUShortClamped(0.54902));
+        public static C3us Lavender => new C3us(Col.DoubleToUShortClamped(0.901961), Col.DoubleToUShortClamped(0.901961), Col.DoubleToUShortClamped(0.980392));
+        public static C3us LavenderBlush => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.960784));
+        public static C3us LawnGreen => new C3us(Col.DoubleToUShortClamped(0.486275), Col.DoubleToUShortClamped(0.988235), Col.DoubleToUShortClamped(0));
+        public static C3us LemonChiffon => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.803922));
+        public static C3us LightBlue => new C3us(Col.DoubleToUShortClamped(0.678431), Col.DoubleToUShortClamped(0.847059), Col.DoubleToUShortClamped(0.901961));
+        public static C3us LightCoral => new C3us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C3us LightCyan => new C3us(Col.DoubleToUShortClamped(0.878431), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C3us LightGoldenRodYellow => new C3us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.823529));
+        public static C3us LightGray => new C3us(Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451));
+        public static C3us LightGrey => new C3us(Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451));
+        public static C3us LightGreen => new C3us(Col.DoubleToUShortClamped(0.564706), Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.564706));
+        public static C3us LightPink => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.713725), Col.DoubleToUShortClamped(0.756863));
+        public static C3us LightSalmon => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.627451), Col.DoubleToUShortClamped(0.478431));
+        public static C3us LightSeaGreen => new C3us(Col.DoubleToUShortClamped(0.12549), Col.DoubleToUShortClamped(0.698039), Col.DoubleToUShortClamped(0.666667));
+        public static C3us LightSkyBlue => new C3us(Col.DoubleToUShortClamped(0.529412), Col.DoubleToUShortClamped(0.807843), Col.DoubleToUShortClamped(0.980392));
+        public static C3us LightSlateGray => new C3us(Col.DoubleToUShortClamped(0.466667), Col.DoubleToUShortClamped(0.533333), Col.DoubleToUShortClamped(0.6));
+        public static C3us LightSlateGrey => new C3us(Col.DoubleToUShortClamped(0.466667), Col.DoubleToUShortClamped(0.533333), Col.DoubleToUShortClamped(0.6));
+        public static C3us LightSteelBlue => new C3us(Col.DoubleToUShortClamped(0.690196), Col.DoubleToUShortClamped(0.768627), Col.DoubleToUShortClamped(0.870588));
+        public static C3us LightYellow => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.878431));
+        public static C3us Lime => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0));
+        public static C3us LimeGreen => new C3us(Col.DoubleToUShortClamped(0.196078), Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.196078));
+        public static C3us Linen => new C3us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.901961));
+        public static C3us Magenta => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1));
+        public static C3us Maroon => new C3us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C3us MediumAquaMarine => new C3us(Col.DoubleToUShortClamped(0.4), Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.666667));
+        public static C3us MediumBlue => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.803922));
+        public static C3us MediumOrchid => new C3us(Col.DoubleToUShortClamped(0.729412), Col.DoubleToUShortClamped(0.333333), Col.DoubleToUShortClamped(0.827451));
+        public static C3us MediumPurple => new C3us(Col.DoubleToUShortClamped(0.576471), Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.847059));
+        public static C3us MediumSeaGreen => new C3us(Col.DoubleToUShortClamped(0.235294), Col.DoubleToUShortClamped(0.701961), Col.DoubleToUShortClamped(0.443137));
+        public static C3us MediumSlateBlue => new C3us(Col.DoubleToUShortClamped(0.482353), Col.DoubleToUShortClamped(0.407843), Col.DoubleToUShortClamped(0.933333));
+        public static C3us MediumSpringGreen => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.603922));
+        public static C3us MediumTurquoise => new C3us(Col.DoubleToUShortClamped(0.282353), Col.DoubleToUShortClamped(0.819608), Col.DoubleToUShortClamped(0.8));
+        public static C3us MediumVioletRed => new C3us(Col.DoubleToUShortClamped(0.780392), Col.DoubleToUShortClamped(0.082353), Col.DoubleToUShortClamped(0.521569));
+        public static C3us MidnightBlue => new C3us(Col.DoubleToUShortClamped(0.098039), Col.DoubleToUShortClamped(0.098039), Col.DoubleToUShortClamped(0.439216));
+        public static C3us MintCream => new C3us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392));
+        public static C3us MistyRose => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.894118), Col.DoubleToUShortClamped(0.882353));
+        public static C3us Moccasin => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.894118), Col.DoubleToUShortClamped(0.709804));
+        public static C3us NavajoWhite => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.870588), Col.DoubleToUShortClamped(0.678431));
+        public static C3us Navy => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961));
+        public static C3us OldLace => new C3us(Col.DoubleToUShortClamped(0.992157), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.901961));
+        public static C3us Olive => new C3us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0));
+        public static C3us OliveDrab => new C3us(Col.DoubleToUShortClamped(0.419608), Col.DoubleToUShortClamped(0.556863), Col.DoubleToUShortClamped(0.137255));
+        public static C3us Orange => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.647059), Col.DoubleToUShortClamped(0));
+        public static C3us OrangeRed => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.270588), Col.DoubleToUShortClamped(0));
+        public static C3us Orchid => new C3us(Col.DoubleToUShortClamped(0.854902), Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.839216));
+        public static C3us PaleGoldenRod => new C3us(Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.909804), Col.DoubleToUShortClamped(0.666667));
+        public static C3us PaleGreen => new C3us(Col.DoubleToUShortClamped(0.596078), Col.DoubleToUShortClamped(0.984314), Col.DoubleToUShortClamped(0.596078));
+        public static C3us PaleTurquoise => new C3us(Col.DoubleToUShortClamped(0.686275), Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.933333));
+        public static C3us PaleVioletRed => new C3us(Col.DoubleToUShortClamped(0.847059), Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.576471));
+        public static C3us PapayaWhip => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.937255), Col.DoubleToUShortClamped(0.835294));
+        public static C3us PeachPuff => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.854902), Col.DoubleToUShortClamped(0.72549));
+        public static C3us Peru => new C3us(Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.521569), Col.DoubleToUShortClamped(0.247059));
+        public static C3us Pink => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.752941), Col.DoubleToUShortClamped(0.796078));
+        public static C3us Plum => new C3us(Col.DoubleToUShortClamped(0.866667), Col.DoubleToUShortClamped(0.627451), Col.DoubleToUShortClamped(0.866667));
+        public static C3us PowderBlue => new C3us(Col.DoubleToUShortClamped(0.690196), Col.DoubleToUShortClamped(0.878431), Col.DoubleToUShortClamped(0.901961));
+        public static C3us Purple => new C3us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961));
+        public static C3us Red => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C3us RosyBrown => new C3us(Col.DoubleToUShortClamped(0.737255), Col.DoubleToUShortClamped(0.560784), Col.DoubleToUShortClamped(0.560784));
+        public static C3us RoyalBlue => new C3us(Col.DoubleToUShortClamped(0.254902), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.882353));
+        public static C3us SaddleBrown => new C3us(Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.270588), Col.DoubleToUShortClamped(0.07451));
+        public static C3us Salmon => new C3us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.447059));
+        public static C3us SandyBrown => new C3us(Col.DoubleToUShortClamped(0.956863), Col.DoubleToUShortClamped(0.643137), Col.DoubleToUShortClamped(0.376471));
+        public static C3us SeaGreen => new C3us(Col.DoubleToUShortClamped(0.180392), Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.341176));
+        public static C3us SeaShell => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.933333));
+        public static C3us Sienna => new C3us(Col.DoubleToUShortClamped(0.627451), Col.DoubleToUShortClamped(0.321569), Col.DoubleToUShortClamped(0.176471));
+        public static C3us Silver => new C3us(Col.DoubleToUShortClamped(0.752941), Col.DoubleToUShortClamped(0.752941), Col.DoubleToUShortClamped(0.752941));
+        public static C3us SkyBlue => new C3us(Col.DoubleToUShortClamped(0.529412), Col.DoubleToUShortClamped(0.807843), Col.DoubleToUShortClamped(0.921569));
+        public static C3us SlateBlue => new C3us(Col.DoubleToUShortClamped(0.415686), Col.DoubleToUShortClamped(0.352941), Col.DoubleToUShortClamped(0.803922));
+        public static C3us SlateGray => new C3us(Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.564706));
+        public static C3us SlateGrey => new C3us(Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.564706));
+        public static C3us Snow => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.980392));
+        public static C3us SpringGreen => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.498039));
+        public static C3us SteelBlue => new C3us(Col.DoubleToUShortClamped(0.27451), Col.DoubleToUShortClamped(0.509804), Col.DoubleToUShortClamped(0.705882));
+        public static C3us Tan => new C3us(Col.DoubleToUShortClamped(0.823529), Col.DoubleToUShortClamped(0.705882), Col.DoubleToUShortClamped(0.54902));
+        public static C3us Teal => new C3us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C3us Thistle => new C3us(Col.DoubleToUShortClamped(0.847059), Col.DoubleToUShortClamped(0.74902), Col.DoubleToUShortClamped(0.847059));
+        public static C3us Tomato => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.388235), Col.DoubleToUShortClamped(0.278431));
+        public static C3us Turquoise => new C3us(Col.DoubleToUShortClamped(0.25098), Col.DoubleToUShortClamped(0.878431), Col.DoubleToUShortClamped(0.815686));
+        public static C3us Violet => new C3us(Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.509804), Col.DoubleToUShortClamped(0.933333));
+        public static C3us Wheat => new C3us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.870588), Col.DoubleToUShortClamped(0.701961));
+        public static C3us White => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C3us WhiteSmoke => new C3us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.960784));
+        public static C3us Yellow => new C3us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0));
+        public static C3us YellowGreen => new C3us(Col.DoubleToUShortClamped(0.603922), Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.196078));
 
         public static C3us DarkYellow => Olive;
 
-        public static C3us VRVisGreen => new C3us(Col.UShortFromDoubleClamped(0.698), Col.UShortFromDoubleClamped(0.851), Col.UShortFromDoubleClamped(0.008));
+        public static C3us VRVisGreen => new C3us(Col.DoubleToUShortClamped(0.698), Col.DoubleToUShortClamped(0.851), Col.DoubleToUShortClamped(0.008));
 
-        public static C3us Gray10 => new C3us(Col.UShortFromDoubleClamped(0.1));
-        public static C3us Gray20 => new C3us(Col.UShortFromDoubleClamped(0.2));
-        public static C3us Gray30 => new C3us(Col.UShortFromDoubleClamped(0.3));
-        public static C3us Gray40 => new C3us(Col.UShortFromDoubleClamped(0.4));
-        public static C3us Gray50 => new C3us(Col.UShortFromDoubleClamped(0.5));
-        public static C3us Gray60 => new C3us(Col.UShortFromDoubleClamped(0.6));
-        public static C3us Gray70 => new C3us(Col.UShortFromDoubleClamped(0.7));
-        public static C3us Gray80 => new C3us(Col.UShortFromDoubleClamped(0.8));
-        public static C3us Gray90 => new C3us(Col.UShortFromDoubleClamped(0.9));
+        public static C3us Gray10 => new C3us(Col.DoubleToUShortClamped(0.1));
+        public static C3us Gray20 => new C3us(Col.DoubleToUShortClamped(0.2));
+        public static C3us Gray30 => new C3us(Col.DoubleToUShortClamped(0.3));
+        public static C3us Gray40 => new C3us(Col.DoubleToUShortClamped(0.4));
+        public static C3us Gray50 => new C3us(Col.DoubleToUShortClamped(0.5));
+        public static C3us Gray60 => new C3us(Col.DoubleToUShortClamped(0.6));
+        public static C3us Gray70 => new C3us(Col.DoubleToUShortClamped(0.7));
+        public static C3us Gray80 => new C3us(Col.DoubleToUShortClamped(0.8));
+        public static C3us Gray90 => new C3us(Col.DoubleToUShortClamped(0.9));
 
         #endregion
 
@@ -3518,18 +3518,18 @@ namespace Aardvark.Base
         public static C3us operator +(C3us c0, C3b c1)
         {
             return new C3us(
-                (ushort)(c0.R + Col.UShortFromByte(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromByte(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromByte(c1.B)));
+                (ushort)(c0.R + Col.ByteToUShort(c1.R)), 
+                (ushort)(c0.G + Col.ByteToUShort(c1.G)), 
+                (ushort)(c0.B + Col.ByteToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3b c1)
         {
             return new C3us(
-                (ushort)(c0.R - Col.UShortFromByte(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromByte(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromByte(c1.B)));
+                (ushort)(c0.R - Col.ByteToUShort(c1.R)), 
+                (ushort)(c0.G - Col.ByteToUShort(c1.G)), 
+                (ushort)(c0.B - Col.ByteToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3554,54 +3554,54 @@ namespace Aardvark.Base
         public static C3us operator +(C3us c0, C3ui c1)
         {
             return new C3us(
-                (ushort)(c0.R + Col.UShortFromUInt(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromUInt(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromUInt(c1.B)));
+                (ushort)(c0.R + Col.UIntToUShort(c1.R)), 
+                (ushort)(c0.G + Col.UIntToUShort(c1.G)), 
+                (ushort)(c0.B + Col.UIntToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3ui c1)
         {
             return new C3us(
-                (ushort)(c0.R - Col.UShortFromUInt(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromUInt(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromUInt(c1.B)));
+                (ushort)(c0.R - Col.UIntToUShort(c1.R)), 
+                (ushort)(c0.G - Col.UIntToUShort(c1.G)), 
+                (ushort)(c0.B - Col.UIntToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator +(C3us c0, C3f c1)
         {
             return new C3us(
-                (ushort)(c0.R + Col.UShortFromFloat(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromFloat(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromFloat(c1.B)));
+                (ushort)(c0.R + Col.FloatToUShort(c1.R)), 
+                (ushort)(c0.G + Col.FloatToUShort(c1.G)), 
+                (ushort)(c0.B + Col.FloatToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3f c1)
         {
             return new C3us(
-                (ushort)(c0.R - Col.UShortFromFloat(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromFloat(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromFloat(c1.B)));
+                (ushort)(c0.R - Col.FloatToUShort(c1.R)), 
+                (ushort)(c0.G - Col.FloatToUShort(c1.G)), 
+                (ushort)(c0.B - Col.FloatToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator +(C3us c0, C3d c1)
         {
             return new C3us(
-                (ushort)(c0.R + Col.UShortFromDouble(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromDouble(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromDouble(c1.B)));
+                (ushort)(c0.R + Col.DoubleToUShort(c1.R)), 
+                (ushort)(c0.G + Col.DoubleToUShort(c1.G)), 
+                (ushort)(c0.B + Col.DoubleToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3d c1)
         {
             return new C3us(
-                (ushort)(c0.R - Col.UShortFromDouble(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromDouble(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromDouble(c1.B)));
+                (ushort)(c0.R - Col.DoubleToUShort(c1.R)), 
+                (ushort)(c0.G - Col.DoubleToUShort(c1.G)), 
+                (ushort)(c0.B - Col.DoubleToUShort(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -3850,20 +3850,20 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.DoubleFromUShort(R); }
-            set { R = Col.UShortFromDoubleClamped(value); }
+            get { return Col.UShortToDouble(R); }
+            set { R = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.DoubleFromUShort(G); }
-            set { G = Col.UShortFromDoubleClamped(value); }
+            get { return Col.UShortToDouble(G); }
+            set { G = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.DoubleFromUShort(B); }
-            set { B = Col.UShortFromDoubleClamped(value); }
+            get { return Col.UShortToDouble(B); }
+            set { B = Col.DoubleToUShortClamped(value); }
         }
 
         #endregion
@@ -4442,9 +4442,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(float r, float g, float b)
         {
-            R = Col.UIntFromFloatClamped(r);
-            G = Col.UIntFromFloatClamped(g);
-            B = Col.UIntFromFloatClamped(b);
+            R = Col.FloatToUIntClamped(r);
+            G = Col.FloatToUIntClamped(g);
+            B = Col.FloatToUIntClamped(b);
         }
 
         /// <summary>
@@ -4454,9 +4454,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double r, double g, double b)
         {
-            R = Col.UIntFromDoubleClamped(r);
-            G = Col.UIntFromDoubleClamped(g);
-            B = Col.UIntFromDoubleClamped(b);
+            R = Col.DoubleToUIntClamped(r);
+            G = Col.DoubleToUIntClamped(g);
+            B = Col.DoubleToUIntClamped(b);
         }
 
         /// <summary>
@@ -4475,7 +4475,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(float gray)
         {
-            var value = Col.UIntFromFloatClamped(gray);
+            var value = Col.FloatToUIntClamped(gray);
             R = value; G = value; B = value;
         }
 
@@ -4486,7 +4486,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double gray)
         {
-            var value = Col.UIntFromDoubleClamped(gray);
+            var value = Col.DoubleToUIntClamped(gray);
             R = value; G = value; B = value;
         }
 
@@ -4497,9 +4497,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3b color)
         {
-            R = Col.UIntFromByte(color.R);
-            G = Col.UIntFromByte(color.G);
-            B = Col.UIntFromByte(color.B);
+            R = Col.ByteToUInt(color.R);
+            G = Col.ByteToUInt(color.G);
+            B = Col.ByteToUInt(color.B);
         }
 
         /// <summary>
@@ -4509,9 +4509,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3us color)
         {
-            R = Col.UIntFromUShort(color.R);
-            G = Col.UIntFromUShort(color.G);
-            B = Col.UIntFromUShort(color.B);
+            R = Col.UShortToUInt(color.R);
+            G = Col.UShortToUInt(color.G);
+            B = Col.UShortToUInt(color.B);
         }
 
         /// <summary>
@@ -4532,9 +4532,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3f color)
         {
-            R = Col.UIntFromFloat(color.R);
-            G = Col.UIntFromFloat(color.G);
-            B = Col.UIntFromFloat(color.B);
+            R = Col.FloatToUInt(color.R);
+            G = Col.FloatToUInt(color.G);
+            B = Col.FloatToUInt(color.B);
         }
 
         /// <summary>
@@ -4544,9 +4544,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3d color)
         {
-            R = Col.UIntFromDouble(color.R);
-            G = Col.UIntFromDouble(color.G);
-            B = Col.UIntFromDouble(color.B);
+            R = Col.DoubleToUInt(color.R);
+            G = Col.DoubleToUInt(color.G);
+            B = Col.DoubleToUInt(color.B);
         }
 
         /// <summary>
@@ -4556,9 +4556,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4b color)
         {
-            R = Col.UIntFromByte(color.R);
-            G = Col.UIntFromByte(color.G);
-            B = Col.UIntFromByte(color.B);
+            R = Col.ByteToUInt(color.R);
+            G = Col.ByteToUInt(color.G);
+            B = Col.ByteToUInt(color.B);
         }
 
         /// <summary>
@@ -4568,9 +4568,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4us color)
         {
-            R = Col.UIntFromUShort(color.R);
-            G = Col.UIntFromUShort(color.G);
-            B = Col.UIntFromUShort(color.B);
+            R = Col.UShortToUInt(color.R);
+            G = Col.UShortToUInt(color.G);
+            B = Col.UShortToUInt(color.B);
         }
 
         /// <summary>
@@ -4591,9 +4591,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4f color)
         {
-            R = Col.UIntFromFloat(color.R);
-            G = Col.UIntFromFloat(color.G);
-            B = Col.UIntFromFloat(color.B);
+            R = Col.FloatToUInt(color.R);
+            G = Col.FloatToUInt(color.G);
+            B = Col.FloatToUInt(color.B);
         }
 
         /// <summary>
@@ -4603,9 +4603,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4d color)
         {
-            R = Col.UIntFromDouble(color.R);
-            G = Col.UIntFromDouble(color.G);
-            B = Col.UIntFromDouble(color.B);
+            R = Col.DoubleToUInt(color.R);
+            G = Col.DoubleToUInt(color.G);
+            B = Col.DoubleToUInt(color.B);
         }
 
         /// <summary>
@@ -4720,9 +4720,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(byte[] values)
         {
-            R = Col.UIntFromByte(values[0]);
-            G = Col.UIntFromByte(values[1]);
-            B = Col.UIntFromByte(values[2]);
+            R = Col.ByteToUInt(values[0]);
+            G = Col.ByteToUInt(values[1]);
+            B = Col.ByteToUInt(values[2]);
         }
 
         /// <summary>
@@ -4732,9 +4732,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(byte[] values, int start)
         {
-            R = Col.UIntFromByte(values[start + 0]);
-            G = Col.UIntFromByte(values[start + 1]);
-            B = Col.UIntFromByte(values[start + 2]);
+            R = Col.ByteToUInt(values[start + 0]);
+            G = Col.ByteToUInt(values[start + 1]);
+            B = Col.ByteToUInt(values[start + 2]);
         }
 
         /// <summary>
@@ -4744,9 +4744,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(ushort[] values)
         {
-            R = Col.UIntFromUShort(values[0]);
-            G = Col.UIntFromUShort(values[1]);
-            B = Col.UIntFromUShort(values[2]);
+            R = Col.UShortToUInt(values[0]);
+            G = Col.UShortToUInt(values[1]);
+            B = Col.UShortToUInt(values[2]);
         }
 
         /// <summary>
@@ -4756,9 +4756,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(ushort[] values, int start)
         {
-            R = Col.UIntFromUShort(values[start + 0]);
-            G = Col.UIntFromUShort(values[start + 1]);
-            B = Col.UIntFromUShort(values[start + 2]);
+            R = Col.UShortToUInt(values[start + 0]);
+            G = Col.UShortToUInt(values[start + 1]);
+            B = Col.UShortToUInt(values[start + 2]);
         }
 
         /// <summary>
@@ -4790,9 +4790,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(float[] values)
         {
-            R = Col.UIntFromFloat(values[0]);
-            G = Col.UIntFromFloat(values[1]);
-            B = Col.UIntFromFloat(values[2]);
+            R = Col.FloatToUInt(values[0]);
+            G = Col.FloatToUInt(values[1]);
+            B = Col.FloatToUInt(values[2]);
         }
 
         /// <summary>
@@ -4802,9 +4802,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(float[] values, int start)
         {
-            R = Col.UIntFromFloat(values[start + 0]);
-            G = Col.UIntFromFloat(values[start + 1]);
-            B = Col.UIntFromFloat(values[start + 2]);
+            R = Col.FloatToUInt(values[start + 0]);
+            G = Col.FloatToUInt(values[start + 1]);
+            B = Col.FloatToUInt(values[start + 2]);
         }
 
         /// <summary>
@@ -4814,9 +4814,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double[] values)
         {
-            R = Col.UIntFromDouble(values[0]);
-            G = Col.UIntFromDouble(values[1]);
-            B = Col.UIntFromDouble(values[2]);
+            R = Col.DoubleToUInt(values[0]);
+            G = Col.DoubleToUInt(values[1]);
+            B = Col.DoubleToUInt(values[2]);
         }
 
         /// <summary>
@@ -4826,9 +4826,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double[] values, int start)
         {
-            R = Col.UIntFromDouble(values[start + 0]);
-            G = Col.UIntFromDouble(values[start + 1]);
-            B = Col.UIntFromDouble(values[start + 2]);
+            R = Col.DoubleToUInt(values[start + 0]);
+            G = Col.DoubleToUInt(values[start + 1]);
+            B = Col.DoubleToUInt(values[start + 2]);
         }
 
         #endregion
@@ -5223,7 +5223,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C3ui color)
-            => new byte[] { Col.ByteFromUInt(color.R), Col.ByteFromUInt(color.G), Col.ByteFromUInt(color.B) };
+            => new byte[] { Col.UIntToByte(color.R), Col.UIntToByte(color.G), Col.UIntToByte(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -5239,7 +5239,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C3ui color)
-            => new ushort[] { Col.UShortFromUInt(color.R), Col.UShortFromUInt(color.G), Col.UShortFromUInt(color.B) };
+            => new ushort[] { Col.UIntToUShort(color.R), Col.UIntToUShort(color.G), Col.UIntToUShort(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -5269,7 +5269,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C3ui color)
-            => new float[] { Col.FloatFromUInt(color.R), Col.FloatFromUInt(color.G), Col.FloatFromUInt(color.B) };
+            => new float[] { Col.UIntToFloat(color.R), Col.UIntToFloat(color.G), Col.UIntToFloat(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -5285,7 +5285,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C3ui color)
-            => new double[] { Col.DoubleFromUInt(color.R), Col.DoubleFromUInt(color.G), Col.DoubleFromUInt(color.B) };
+            => new double[] { Col.UIntToDouble(color.R), Col.UIntToDouble(color.G), Col.UIntToDouble(color.B) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -5383,167 +5383,167 @@ namespace Aardvark.Base
         public static C3ui Zero => new C3ui(0, 0, 0);
 
         // Web colors
-        public static C3ui AliceBlue => new C3ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(1));
-        public static C3ui AntiqueWhite => new C3ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.921569), Col.UIntFromDoubleClamped(0.843137));
-        public static C3ui Aqua => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C3ui Aquamarine => new C3ui(Col.UIntFromDoubleClamped(0.498039), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.831373));
-        public static C3ui Azure => new C3ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C3ui Beige => new C3ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.862745));
-        public static C3ui Bisque => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.894118), Col.UIntFromDoubleClamped(0.768627));
-        public static C3ui Black => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C3ui BlanchedAlmond => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.921569), Col.UIntFromDoubleClamped(0.803922));
-        public static C3ui Blue => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1));
-        public static C3ui BlueViolet => new C3ui(Col.UIntFromDoubleClamped(0.541176), Col.UIntFromDoubleClamped(0.168627), Col.UIntFromDoubleClamped(0.886275));
-        public static C3ui Brown => new C3ui(Col.UIntFromDoubleClamped(0.647059), Col.UIntFromDoubleClamped(0.164706), Col.UIntFromDoubleClamped(0.164706));
-        public static C3ui BurlyWood => new C3ui(Col.UIntFromDoubleClamped(0.870588), Col.UIntFromDoubleClamped(0.721569), Col.UIntFromDoubleClamped(0.529412));
-        public static C3ui CadetBlue => new C3ui(Col.UIntFromDoubleClamped(0.372549), Col.UIntFromDoubleClamped(0.619608), Col.UIntFromDoubleClamped(0.627451));
-        public static C3ui Chartreuse => new C3ui(Col.UIntFromDoubleClamped(0.498039), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0));
-        public static C3ui Chocolate => new C3ui(Col.UIntFromDoubleClamped(0.823529), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.117647));
-        public static C3ui Coral => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.498039), Col.UIntFromDoubleClamped(0.313725));
-        public static C3ui CornflowerBlue => new C3ui(Col.UIntFromDoubleClamped(0.392157), Col.UIntFromDoubleClamped(0.584314), Col.UIntFromDoubleClamped(0.929412));
-        public static C3ui Cornsilk => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(0.862745));
-        public static C3ui Crimson => new C3ui(Col.UIntFromDoubleClamped(0.862745), Col.UIntFromDoubleClamped(0.078431), Col.UIntFromDoubleClamped(0.235294));
-        public static C3ui Cyan => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C3ui DarkBlue => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.545098));
-        public static C3ui DarkCyan => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.545098));
-        public static C3ui DarkGoldenRod => new C3ui(Col.UIntFromDoubleClamped(0.721569), Col.UIntFromDoubleClamped(0.52549), Col.UIntFromDoubleClamped(0.043137));
-        public static C3ui DarkGray => new C3ui(Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745));
-        public static C3ui DarkGrey => new C3ui(Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745));
-        public static C3ui DarkGreen => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.392157), Col.UIntFromDoubleClamped(0));
-        public static C3ui DarkKhaki => new C3ui(Col.UIntFromDoubleClamped(0.741176), Col.UIntFromDoubleClamped(0.717647), Col.UIntFromDoubleClamped(0.419608));
-        public static C3ui DarkMagenta => new C3ui(Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.545098));
-        public static C3ui DarkOliveGreen => new C3ui(Col.UIntFromDoubleClamped(0.333333), Col.UIntFromDoubleClamped(0.419608), Col.UIntFromDoubleClamped(0.184314));
-        public static C3ui DarkOrange => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.54902), Col.UIntFromDoubleClamped(0));
-        public static C3ui DarkOrchid => new C3ui(Col.UIntFromDoubleClamped(0.6), Col.UIntFromDoubleClamped(0.196078), Col.UIntFromDoubleClamped(0.8));
-        public static C3ui DarkRed => new C3ui(Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C3ui DarkSalmon => new C3ui(Col.UIntFromDoubleClamped(0.913725), Col.UIntFromDoubleClamped(0.588235), Col.UIntFromDoubleClamped(0.478431));
-        public static C3ui DarkSeaGreen => new C3ui(Col.UIntFromDoubleClamped(0.560784), Col.UIntFromDoubleClamped(0.737255), Col.UIntFromDoubleClamped(0.560784));
-        public static C3ui DarkSlateBlue => new C3ui(Col.UIntFromDoubleClamped(0.282353), Col.UIntFromDoubleClamped(0.239216), Col.UIntFromDoubleClamped(0.545098));
-        public static C3ui DarkSlateGray => new C3ui(Col.UIntFromDoubleClamped(0.184314), Col.UIntFromDoubleClamped(0.309804), Col.UIntFromDoubleClamped(0.309804));
-        public static C3ui DarkSlateGrey => new C3ui(Col.UIntFromDoubleClamped(0.184314), Col.UIntFromDoubleClamped(0.309804), Col.UIntFromDoubleClamped(0.309804));
-        public static C3ui DarkTurquoise => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.807843), Col.UIntFromDoubleClamped(0.819608));
-        public static C3ui DarkViolet => new C3ui(Col.UIntFromDoubleClamped(0.580392), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.827451));
-        public static C3ui DeepPink => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.078431), Col.UIntFromDoubleClamped(0.576471));
-        public static C3ui DeepSkyBlue => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.74902), Col.UIntFromDoubleClamped(1));
-        public static C3ui DimGray => new C3ui(Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765));
-        public static C3ui DimGrey => new C3ui(Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765));
-        public static C3ui DodgerBlue => new C3ui(Col.UIntFromDoubleClamped(0.117647), Col.UIntFromDoubleClamped(0.564706), Col.UIntFromDoubleClamped(1));
-        public static C3ui FireBrick => new C3ui(Col.UIntFromDoubleClamped(0.698039), Col.UIntFromDoubleClamped(0.133333), Col.UIntFromDoubleClamped(0.133333));
-        public static C3ui FloralWhite => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.941176));
-        public static C3ui ForestGreen => new C3ui(Col.UIntFromDoubleClamped(0.133333), Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.133333));
-        public static C3ui Fuchsia => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1));
-        public static C3ui Gainsboro => new C3ui(Col.UIntFromDoubleClamped(0.862745), Col.UIntFromDoubleClamped(0.862745), Col.UIntFromDoubleClamped(0.862745));
-        public static C3ui GhostWhite => new C3ui(Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(1));
-        public static C3ui Gold => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.843137), Col.UIntFromDoubleClamped(0));
-        public static C3ui GoldenRod => new C3ui(Col.UIntFromDoubleClamped(0.854902), Col.UIntFromDoubleClamped(0.647059), Col.UIntFromDoubleClamped(0.12549));
-        public static C3ui Gray => new C3ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C3ui Grey => new C3ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C3ui Green => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0));
-        public static C3ui GreenYellow => new C3ui(Col.UIntFromDoubleClamped(0.678431), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.184314));
-        public static C3ui HoneyDew => new C3ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.941176));
-        public static C3ui HotPink => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.705882));
-        public static C3ui IndianRed  => new C3ui(Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.360784), Col.UIntFromDoubleClamped(0.360784));
-        public static C3ui Indigo  => new C3ui(Col.UIntFromDoubleClamped(0.294118), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.509804));
-        public static C3ui Ivory => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.941176));
-        public static C3ui Khaki => new C3ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.901961), Col.UIntFromDoubleClamped(0.54902));
-        public static C3ui Lavender => new C3ui(Col.UIntFromDoubleClamped(0.901961), Col.UIntFromDoubleClamped(0.901961), Col.UIntFromDoubleClamped(0.980392));
-        public static C3ui LavenderBlush => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.960784));
-        public static C3ui LawnGreen => new C3ui(Col.UIntFromDoubleClamped(0.486275), Col.UIntFromDoubleClamped(0.988235), Col.UIntFromDoubleClamped(0));
-        public static C3ui LemonChiffon => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.803922));
-        public static C3ui LightBlue => new C3ui(Col.UIntFromDoubleClamped(0.678431), Col.UIntFromDoubleClamped(0.847059), Col.UIntFromDoubleClamped(0.901961));
-        public static C3ui LightCoral => new C3ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C3ui LightCyan => new C3ui(Col.UIntFromDoubleClamped(0.878431), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C3ui LightGoldenRodYellow => new C3ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.823529));
-        public static C3ui LightGray => new C3ui(Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451));
-        public static C3ui LightGrey => new C3ui(Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451));
-        public static C3ui LightGreen => new C3ui(Col.UIntFromDoubleClamped(0.564706), Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.564706));
-        public static C3ui LightPink => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.713725), Col.UIntFromDoubleClamped(0.756863));
-        public static C3ui LightSalmon => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.627451), Col.UIntFromDoubleClamped(0.478431));
-        public static C3ui LightSeaGreen => new C3ui(Col.UIntFromDoubleClamped(0.12549), Col.UIntFromDoubleClamped(0.698039), Col.UIntFromDoubleClamped(0.666667));
-        public static C3ui LightSkyBlue => new C3ui(Col.UIntFromDoubleClamped(0.529412), Col.UIntFromDoubleClamped(0.807843), Col.UIntFromDoubleClamped(0.980392));
-        public static C3ui LightSlateGray => new C3ui(Col.UIntFromDoubleClamped(0.466667), Col.UIntFromDoubleClamped(0.533333), Col.UIntFromDoubleClamped(0.6));
-        public static C3ui LightSlateGrey => new C3ui(Col.UIntFromDoubleClamped(0.466667), Col.UIntFromDoubleClamped(0.533333), Col.UIntFromDoubleClamped(0.6));
-        public static C3ui LightSteelBlue => new C3ui(Col.UIntFromDoubleClamped(0.690196), Col.UIntFromDoubleClamped(0.768627), Col.UIntFromDoubleClamped(0.870588));
-        public static C3ui LightYellow => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.878431));
-        public static C3ui Lime => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0));
-        public static C3ui LimeGreen => new C3ui(Col.UIntFromDoubleClamped(0.196078), Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.196078));
-        public static C3ui Linen => new C3ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.901961));
-        public static C3ui Magenta => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1));
-        public static C3ui Maroon => new C3ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C3ui MediumAquaMarine => new C3ui(Col.UIntFromDoubleClamped(0.4), Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.666667));
-        public static C3ui MediumBlue => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.803922));
-        public static C3ui MediumOrchid => new C3ui(Col.UIntFromDoubleClamped(0.729412), Col.UIntFromDoubleClamped(0.333333), Col.UIntFromDoubleClamped(0.827451));
-        public static C3ui MediumPurple => new C3ui(Col.UIntFromDoubleClamped(0.576471), Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.847059));
-        public static C3ui MediumSeaGreen => new C3ui(Col.UIntFromDoubleClamped(0.235294), Col.UIntFromDoubleClamped(0.701961), Col.UIntFromDoubleClamped(0.443137));
-        public static C3ui MediumSlateBlue => new C3ui(Col.UIntFromDoubleClamped(0.482353), Col.UIntFromDoubleClamped(0.407843), Col.UIntFromDoubleClamped(0.933333));
-        public static C3ui MediumSpringGreen => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.603922));
-        public static C3ui MediumTurquoise => new C3ui(Col.UIntFromDoubleClamped(0.282353), Col.UIntFromDoubleClamped(0.819608), Col.UIntFromDoubleClamped(0.8));
-        public static C3ui MediumVioletRed => new C3ui(Col.UIntFromDoubleClamped(0.780392), Col.UIntFromDoubleClamped(0.082353), Col.UIntFromDoubleClamped(0.521569));
-        public static C3ui MidnightBlue => new C3ui(Col.UIntFromDoubleClamped(0.098039), Col.UIntFromDoubleClamped(0.098039), Col.UIntFromDoubleClamped(0.439216));
-        public static C3ui MintCream => new C3ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392));
-        public static C3ui MistyRose => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.894118), Col.UIntFromDoubleClamped(0.882353));
-        public static C3ui Moccasin => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.894118), Col.UIntFromDoubleClamped(0.709804));
-        public static C3ui NavajoWhite => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.870588), Col.UIntFromDoubleClamped(0.678431));
-        public static C3ui Navy => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961));
-        public static C3ui OldLace => new C3ui(Col.UIntFromDoubleClamped(0.992157), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.901961));
-        public static C3ui Olive => new C3ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0));
-        public static C3ui OliveDrab => new C3ui(Col.UIntFromDoubleClamped(0.419608), Col.UIntFromDoubleClamped(0.556863), Col.UIntFromDoubleClamped(0.137255));
-        public static C3ui Orange => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.647059), Col.UIntFromDoubleClamped(0));
-        public static C3ui OrangeRed => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.270588), Col.UIntFromDoubleClamped(0));
-        public static C3ui Orchid => new C3ui(Col.UIntFromDoubleClamped(0.854902), Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.839216));
-        public static C3ui PaleGoldenRod => new C3ui(Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.909804), Col.UIntFromDoubleClamped(0.666667));
-        public static C3ui PaleGreen => new C3ui(Col.UIntFromDoubleClamped(0.596078), Col.UIntFromDoubleClamped(0.984314), Col.UIntFromDoubleClamped(0.596078));
-        public static C3ui PaleTurquoise => new C3ui(Col.UIntFromDoubleClamped(0.686275), Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.933333));
-        public static C3ui PaleVioletRed => new C3ui(Col.UIntFromDoubleClamped(0.847059), Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.576471));
-        public static C3ui PapayaWhip => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.937255), Col.UIntFromDoubleClamped(0.835294));
-        public static C3ui PeachPuff => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.854902), Col.UIntFromDoubleClamped(0.72549));
-        public static C3ui Peru => new C3ui(Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.521569), Col.UIntFromDoubleClamped(0.247059));
-        public static C3ui Pink => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.752941), Col.UIntFromDoubleClamped(0.796078));
-        public static C3ui Plum => new C3ui(Col.UIntFromDoubleClamped(0.866667), Col.UIntFromDoubleClamped(0.627451), Col.UIntFromDoubleClamped(0.866667));
-        public static C3ui PowderBlue => new C3ui(Col.UIntFromDoubleClamped(0.690196), Col.UIntFromDoubleClamped(0.878431), Col.UIntFromDoubleClamped(0.901961));
-        public static C3ui Purple => new C3ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961));
-        public static C3ui Red => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C3ui RosyBrown => new C3ui(Col.UIntFromDoubleClamped(0.737255), Col.UIntFromDoubleClamped(0.560784), Col.UIntFromDoubleClamped(0.560784));
-        public static C3ui RoyalBlue => new C3ui(Col.UIntFromDoubleClamped(0.254902), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.882353));
-        public static C3ui SaddleBrown => new C3ui(Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.270588), Col.UIntFromDoubleClamped(0.07451));
-        public static C3ui Salmon => new C3ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.447059));
-        public static C3ui SandyBrown => new C3ui(Col.UIntFromDoubleClamped(0.956863), Col.UIntFromDoubleClamped(0.643137), Col.UIntFromDoubleClamped(0.376471));
-        public static C3ui SeaGreen => new C3ui(Col.UIntFromDoubleClamped(0.180392), Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.341176));
-        public static C3ui SeaShell => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.933333));
-        public static C3ui Sienna => new C3ui(Col.UIntFromDoubleClamped(0.627451), Col.UIntFromDoubleClamped(0.321569), Col.UIntFromDoubleClamped(0.176471));
-        public static C3ui Silver => new C3ui(Col.UIntFromDoubleClamped(0.752941), Col.UIntFromDoubleClamped(0.752941), Col.UIntFromDoubleClamped(0.752941));
-        public static C3ui SkyBlue => new C3ui(Col.UIntFromDoubleClamped(0.529412), Col.UIntFromDoubleClamped(0.807843), Col.UIntFromDoubleClamped(0.921569));
-        public static C3ui SlateBlue => new C3ui(Col.UIntFromDoubleClamped(0.415686), Col.UIntFromDoubleClamped(0.352941), Col.UIntFromDoubleClamped(0.803922));
-        public static C3ui SlateGray => new C3ui(Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.564706));
-        public static C3ui SlateGrey => new C3ui(Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.564706));
-        public static C3ui Snow => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.980392));
-        public static C3ui SpringGreen => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.498039));
-        public static C3ui SteelBlue => new C3ui(Col.UIntFromDoubleClamped(0.27451), Col.UIntFromDoubleClamped(0.509804), Col.UIntFromDoubleClamped(0.705882));
-        public static C3ui Tan => new C3ui(Col.UIntFromDoubleClamped(0.823529), Col.UIntFromDoubleClamped(0.705882), Col.UIntFromDoubleClamped(0.54902));
-        public static C3ui Teal => new C3ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C3ui Thistle => new C3ui(Col.UIntFromDoubleClamped(0.847059), Col.UIntFromDoubleClamped(0.74902), Col.UIntFromDoubleClamped(0.847059));
-        public static C3ui Tomato => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.388235), Col.UIntFromDoubleClamped(0.278431));
-        public static C3ui Turquoise => new C3ui(Col.UIntFromDoubleClamped(0.25098), Col.UIntFromDoubleClamped(0.878431), Col.UIntFromDoubleClamped(0.815686));
-        public static C3ui Violet => new C3ui(Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.509804), Col.UIntFromDoubleClamped(0.933333));
-        public static C3ui Wheat => new C3ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.870588), Col.UIntFromDoubleClamped(0.701961));
-        public static C3ui White => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C3ui WhiteSmoke => new C3ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.960784));
-        public static C3ui Yellow => new C3ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0));
-        public static C3ui YellowGreen => new C3ui(Col.UIntFromDoubleClamped(0.603922), Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.196078));
+        public static C3ui AliceBlue => new C3ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(1));
+        public static C3ui AntiqueWhite => new C3ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.921569), Col.DoubleToUIntClamped(0.843137));
+        public static C3ui Aqua => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C3ui Aquamarine => new C3ui(Col.DoubleToUIntClamped(0.498039), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.831373));
+        public static C3ui Azure => new C3ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C3ui Beige => new C3ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.862745));
+        public static C3ui Bisque => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.894118), Col.DoubleToUIntClamped(0.768627));
+        public static C3ui Black => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C3ui BlanchedAlmond => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.921569), Col.DoubleToUIntClamped(0.803922));
+        public static C3ui Blue => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1));
+        public static C3ui BlueViolet => new C3ui(Col.DoubleToUIntClamped(0.541176), Col.DoubleToUIntClamped(0.168627), Col.DoubleToUIntClamped(0.886275));
+        public static C3ui Brown => new C3ui(Col.DoubleToUIntClamped(0.647059), Col.DoubleToUIntClamped(0.164706), Col.DoubleToUIntClamped(0.164706));
+        public static C3ui BurlyWood => new C3ui(Col.DoubleToUIntClamped(0.870588), Col.DoubleToUIntClamped(0.721569), Col.DoubleToUIntClamped(0.529412));
+        public static C3ui CadetBlue => new C3ui(Col.DoubleToUIntClamped(0.372549), Col.DoubleToUIntClamped(0.619608), Col.DoubleToUIntClamped(0.627451));
+        public static C3ui Chartreuse => new C3ui(Col.DoubleToUIntClamped(0.498039), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0));
+        public static C3ui Chocolate => new C3ui(Col.DoubleToUIntClamped(0.823529), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.117647));
+        public static C3ui Coral => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.498039), Col.DoubleToUIntClamped(0.313725));
+        public static C3ui CornflowerBlue => new C3ui(Col.DoubleToUIntClamped(0.392157), Col.DoubleToUIntClamped(0.584314), Col.DoubleToUIntClamped(0.929412));
+        public static C3ui Cornsilk => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(0.862745));
+        public static C3ui Crimson => new C3ui(Col.DoubleToUIntClamped(0.862745), Col.DoubleToUIntClamped(0.078431), Col.DoubleToUIntClamped(0.235294));
+        public static C3ui Cyan => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C3ui DarkBlue => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.545098));
+        public static C3ui DarkCyan => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.545098));
+        public static C3ui DarkGoldenRod => new C3ui(Col.DoubleToUIntClamped(0.721569), Col.DoubleToUIntClamped(0.52549), Col.DoubleToUIntClamped(0.043137));
+        public static C3ui DarkGray => new C3ui(Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745));
+        public static C3ui DarkGrey => new C3ui(Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745));
+        public static C3ui DarkGreen => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.392157), Col.DoubleToUIntClamped(0));
+        public static C3ui DarkKhaki => new C3ui(Col.DoubleToUIntClamped(0.741176), Col.DoubleToUIntClamped(0.717647), Col.DoubleToUIntClamped(0.419608));
+        public static C3ui DarkMagenta => new C3ui(Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.545098));
+        public static C3ui DarkOliveGreen => new C3ui(Col.DoubleToUIntClamped(0.333333), Col.DoubleToUIntClamped(0.419608), Col.DoubleToUIntClamped(0.184314));
+        public static C3ui DarkOrange => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.54902), Col.DoubleToUIntClamped(0));
+        public static C3ui DarkOrchid => new C3ui(Col.DoubleToUIntClamped(0.6), Col.DoubleToUIntClamped(0.196078), Col.DoubleToUIntClamped(0.8));
+        public static C3ui DarkRed => new C3ui(Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C3ui DarkSalmon => new C3ui(Col.DoubleToUIntClamped(0.913725), Col.DoubleToUIntClamped(0.588235), Col.DoubleToUIntClamped(0.478431));
+        public static C3ui DarkSeaGreen => new C3ui(Col.DoubleToUIntClamped(0.560784), Col.DoubleToUIntClamped(0.737255), Col.DoubleToUIntClamped(0.560784));
+        public static C3ui DarkSlateBlue => new C3ui(Col.DoubleToUIntClamped(0.282353), Col.DoubleToUIntClamped(0.239216), Col.DoubleToUIntClamped(0.545098));
+        public static C3ui DarkSlateGray => new C3ui(Col.DoubleToUIntClamped(0.184314), Col.DoubleToUIntClamped(0.309804), Col.DoubleToUIntClamped(0.309804));
+        public static C3ui DarkSlateGrey => new C3ui(Col.DoubleToUIntClamped(0.184314), Col.DoubleToUIntClamped(0.309804), Col.DoubleToUIntClamped(0.309804));
+        public static C3ui DarkTurquoise => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.807843), Col.DoubleToUIntClamped(0.819608));
+        public static C3ui DarkViolet => new C3ui(Col.DoubleToUIntClamped(0.580392), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.827451));
+        public static C3ui DeepPink => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.078431), Col.DoubleToUIntClamped(0.576471));
+        public static C3ui DeepSkyBlue => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.74902), Col.DoubleToUIntClamped(1));
+        public static C3ui DimGray => new C3ui(Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765));
+        public static C3ui DimGrey => new C3ui(Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765));
+        public static C3ui DodgerBlue => new C3ui(Col.DoubleToUIntClamped(0.117647), Col.DoubleToUIntClamped(0.564706), Col.DoubleToUIntClamped(1));
+        public static C3ui FireBrick => new C3ui(Col.DoubleToUIntClamped(0.698039), Col.DoubleToUIntClamped(0.133333), Col.DoubleToUIntClamped(0.133333));
+        public static C3ui FloralWhite => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.941176));
+        public static C3ui ForestGreen => new C3ui(Col.DoubleToUIntClamped(0.133333), Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.133333));
+        public static C3ui Fuchsia => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1));
+        public static C3ui Gainsboro => new C3ui(Col.DoubleToUIntClamped(0.862745), Col.DoubleToUIntClamped(0.862745), Col.DoubleToUIntClamped(0.862745));
+        public static C3ui GhostWhite => new C3ui(Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(1));
+        public static C3ui Gold => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.843137), Col.DoubleToUIntClamped(0));
+        public static C3ui GoldenRod => new C3ui(Col.DoubleToUIntClamped(0.854902), Col.DoubleToUIntClamped(0.647059), Col.DoubleToUIntClamped(0.12549));
+        public static C3ui Gray => new C3ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C3ui Grey => new C3ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C3ui Green => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0));
+        public static C3ui GreenYellow => new C3ui(Col.DoubleToUIntClamped(0.678431), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.184314));
+        public static C3ui HoneyDew => new C3ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.941176));
+        public static C3ui HotPink => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.705882));
+        public static C3ui IndianRed  => new C3ui(Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.360784), Col.DoubleToUIntClamped(0.360784));
+        public static C3ui Indigo  => new C3ui(Col.DoubleToUIntClamped(0.294118), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.509804));
+        public static C3ui Ivory => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.941176));
+        public static C3ui Khaki => new C3ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.901961), Col.DoubleToUIntClamped(0.54902));
+        public static C3ui Lavender => new C3ui(Col.DoubleToUIntClamped(0.901961), Col.DoubleToUIntClamped(0.901961), Col.DoubleToUIntClamped(0.980392));
+        public static C3ui LavenderBlush => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.960784));
+        public static C3ui LawnGreen => new C3ui(Col.DoubleToUIntClamped(0.486275), Col.DoubleToUIntClamped(0.988235), Col.DoubleToUIntClamped(0));
+        public static C3ui LemonChiffon => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.803922));
+        public static C3ui LightBlue => new C3ui(Col.DoubleToUIntClamped(0.678431), Col.DoubleToUIntClamped(0.847059), Col.DoubleToUIntClamped(0.901961));
+        public static C3ui LightCoral => new C3ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C3ui LightCyan => new C3ui(Col.DoubleToUIntClamped(0.878431), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C3ui LightGoldenRodYellow => new C3ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.823529));
+        public static C3ui LightGray => new C3ui(Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451));
+        public static C3ui LightGrey => new C3ui(Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451));
+        public static C3ui LightGreen => new C3ui(Col.DoubleToUIntClamped(0.564706), Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.564706));
+        public static C3ui LightPink => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.713725), Col.DoubleToUIntClamped(0.756863));
+        public static C3ui LightSalmon => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.627451), Col.DoubleToUIntClamped(0.478431));
+        public static C3ui LightSeaGreen => new C3ui(Col.DoubleToUIntClamped(0.12549), Col.DoubleToUIntClamped(0.698039), Col.DoubleToUIntClamped(0.666667));
+        public static C3ui LightSkyBlue => new C3ui(Col.DoubleToUIntClamped(0.529412), Col.DoubleToUIntClamped(0.807843), Col.DoubleToUIntClamped(0.980392));
+        public static C3ui LightSlateGray => new C3ui(Col.DoubleToUIntClamped(0.466667), Col.DoubleToUIntClamped(0.533333), Col.DoubleToUIntClamped(0.6));
+        public static C3ui LightSlateGrey => new C3ui(Col.DoubleToUIntClamped(0.466667), Col.DoubleToUIntClamped(0.533333), Col.DoubleToUIntClamped(0.6));
+        public static C3ui LightSteelBlue => new C3ui(Col.DoubleToUIntClamped(0.690196), Col.DoubleToUIntClamped(0.768627), Col.DoubleToUIntClamped(0.870588));
+        public static C3ui LightYellow => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.878431));
+        public static C3ui Lime => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0));
+        public static C3ui LimeGreen => new C3ui(Col.DoubleToUIntClamped(0.196078), Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.196078));
+        public static C3ui Linen => new C3ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.901961));
+        public static C3ui Magenta => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1));
+        public static C3ui Maroon => new C3ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C3ui MediumAquaMarine => new C3ui(Col.DoubleToUIntClamped(0.4), Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.666667));
+        public static C3ui MediumBlue => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.803922));
+        public static C3ui MediumOrchid => new C3ui(Col.DoubleToUIntClamped(0.729412), Col.DoubleToUIntClamped(0.333333), Col.DoubleToUIntClamped(0.827451));
+        public static C3ui MediumPurple => new C3ui(Col.DoubleToUIntClamped(0.576471), Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.847059));
+        public static C3ui MediumSeaGreen => new C3ui(Col.DoubleToUIntClamped(0.235294), Col.DoubleToUIntClamped(0.701961), Col.DoubleToUIntClamped(0.443137));
+        public static C3ui MediumSlateBlue => new C3ui(Col.DoubleToUIntClamped(0.482353), Col.DoubleToUIntClamped(0.407843), Col.DoubleToUIntClamped(0.933333));
+        public static C3ui MediumSpringGreen => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.603922));
+        public static C3ui MediumTurquoise => new C3ui(Col.DoubleToUIntClamped(0.282353), Col.DoubleToUIntClamped(0.819608), Col.DoubleToUIntClamped(0.8));
+        public static C3ui MediumVioletRed => new C3ui(Col.DoubleToUIntClamped(0.780392), Col.DoubleToUIntClamped(0.082353), Col.DoubleToUIntClamped(0.521569));
+        public static C3ui MidnightBlue => new C3ui(Col.DoubleToUIntClamped(0.098039), Col.DoubleToUIntClamped(0.098039), Col.DoubleToUIntClamped(0.439216));
+        public static C3ui MintCream => new C3ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392));
+        public static C3ui MistyRose => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.894118), Col.DoubleToUIntClamped(0.882353));
+        public static C3ui Moccasin => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.894118), Col.DoubleToUIntClamped(0.709804));
+        public static C3ui NavajoWhite => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.870588), Col.DoubleToUIntClamped(0.678431));
+        public static C3ui Navy => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961));
+        public static C3ui OldLace => new C3ui(Col.DoubleToUIntClamped(0.992157), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.901961));
+        public static C3ui Olive => new C3ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0));
+        public static C3ui OliveDrab => new C3ui(Col.DoubleToUIntClamped(0.419608), Col.DoubleToUIntClamped(0.556863), Col.DoubleToUIntClamped(0.137255));
+        public static C3ui Orange => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.647059), Col.DoubleToUIntClamped(0));
+        public static C3ui OrangeRed => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.270588), Col.DoubleToUIntClamped(0));
+        public static C3ui Orchid => new C3ui(Col.DoubleToUIntClamped(0.854902), Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.839216));
+        public static C3ui PaleGoldenRod => new C3ui(Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.909804), Col.DoubleToUIntClamped(0.666667));
+        public static C3ui PaleGreen => new C3ui(Col.DoubleToUIntClamped(0.596078), Col.DoubleToUIntClamped(0.984314), Col.DoubleToUIntClamped(0.596078));
+        public static C3ui PaleTurquoise => new C3ui(Col.DoubleToUIntClamped(0.686275), Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.933333));
+        public static C3ui PaleVioletRed => new C3ui(Col.DoubleToUIntClamped(0.847059), Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.576471));
+        public static C3ui PapayaWhip => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.937255), Col.DoubleToUIntClamped(0.835294));
+        public static C3ui PeachPuff => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.854902), Col.DoubleToUIntClamped(0.72549));
+        public static C3ui Peru => new C3ui(Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.521569), Col.DoubleToUIntClamped(0.247059));
+        public static C3ui Pink => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.752941), Col.DoubleToUIntClamped(0.796078));
+        public static C3ui Plum => new C3ui(Col.DoubleToUIntClamped(0.866667), Col.DoubleToUIntClamped(0.627451), Col.DoubleToUIntClamped(0.866667));
+        public static C3ui PowderBlue => new C3ui(Col.DoubleToUIntClamped(0.690196), Col.DoubleToUIntClamped(0.878431), Col.DoubleToUIntClamped(0.901961));
+        public static C3ui Purple => new C3ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961));
+        public static C3ui Red => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C3ui RosyBrown => new C3ui(Col.DoubleToUIntClamped(0.737255), Col.DoubleToUIntClamped(0.560784), Col.DoubleToUIntClamped(0.560784));
+        public static C3ui RoyalBlue => new C3ui(Col.DoubleToUIntClamped(0.254902), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.882353));
+        public static C3ui SaddleBrown => new C3ui(Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.270588), Col.DoubleToUIntClamped(0.07451));
+        public static C3ui Salmon => new C3ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.447059));
+        public static C3ui SandyBrown => new C3ui(Col.DoubleToUIntClamped(0.956863), Col.DoubleToUIntClamped(0.643137), Col.DoubleToUIntClamped(0.376471));
+        public static C3ui SeaGreen => new C3ui(Col.DoubleToUIntClamped(0.180392), Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.341176));
+        public static C3ui SeaShell => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.933333));
+        public static C3ui Sienna => new C3ui(Col.DoubleToUIntClamped(0.627451), Col.DoubleToUIntClamped(0.321569), Col.DoubleToUIntClamped(0.176471));
+        public static C3ui Silver => new C3ui(Col.DoubleToUIntClamped(0.752941), Col.DoubleToUIntClamped(0.752941), Col.DoubleToUIntClamped(0.752941));
+        public static C3ui SkyBlue => new C3ui(Col.DoubleToUIntClamped(0.529412), Col.DoubleToUIntClamped(0.807843), Col.DoubleToUIntClamped(0.921569));
+        public static C3ui SlateBlue => new C3ui(Col.DoubleToUIntClamped(0.415686), Col.DoubleToUIntClamped(0.352941), Col.DoubleToUIntClamped(0.803922));
+        public static C3ui SlateGray => new C3ui(Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.564706));
+        public static C3ui SlateGrey => new C3ui(Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.564706));
+        public static C3ui Snow => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.980392));
+        public static C3ui SpringGreen => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.498039));
+        public static C3ui SteelBlue => new C3ui(Col.DoubleToUIntClamped(0.27451), Col.DoubleToUIntClamped(0.509804), Col.DoubleToUIntClamped(0.705882));
+        public static C3ui Tan => new C3ui(Col.DoubleToUIntClamped(0.823529), Col.DoubleToUIntClamped(0.705882), Col.DoubleToUIntClamped(0.54902));
+        public static C3ui Teal => new C3ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C3ui Thistle => new C3ui(Col.DoubleToUIntClamped(0.847059), Col.DoubleToUIntClamped(0.74902), Col.DoubleToUIntClamped(0.847059));
+        public static C3ui Tomato => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.388235), Col.DoubleToUIntClamped(0.278431));
+        public static C3ui Turquoise => new C3ui(Col.DoubleToUIntClamped(0.25098), Col.DoubleToUIntClamped(0.878431), Col.DoubleToUIntClamped(0.815686));
+        public static C3ui Violet => new C3ui(Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.509804), Col.DoubleToUIntClamped(0.933333));
+        public static C3ui Wheat => new C3ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.870588), Col.DoubleToUIntClamped(0.701961));
+        public static C3ui White => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C3ui WhiteSmoke => new C3ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.960784));
+        public static C3ui Yellow => new C3ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0));
+        public static C3ui YellowGreen => new C3ui(Col.DoubleToUIntClamped(0.603922), Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.196078));
 
         public static C3ui DarkYellow => Olive;
 
-        public static C3ui VRVisGreen => new C3ui(Col.UIntFromDoubleClamped(0.698), Col.UIntFromDoubleClamped(0.851), Col.UIntFromDoubleClamped(0.008));
+        public static C3ui VRVisGreen => new C3ui(Col.DoubleToUIntClamped(0.698), Col.DoubleToUIntClamped(0.851), Col.DoubleToUIntClamped(0.008));
 
-        public static C3ui Gray10 => new C3ui(Col.UIntFromDoubleClamped(0.1));
-        public static C3ui Gray20 => new C3ui(Col.UIntFromDoubleClamped(0.2));
-        public static C3ui Gray30 => new C3ui(Col.UIntFromDoubleClamped(0.3));
-        public static C3ui Gray40 => new C3ui(Col.UIntFromDoubleClamped(0.4));
-        public static C3ui Gray50 => new C3ui(Col.UIntFromDoubleClamped(0.5));
-        public static C3ui Gray60 => new C3ui(Col.UIntFromDoubleClamped(0.6));
-        public static C3ui Gray70 => new C3ui(Col.UIntFromDoubleClamped(0.7));
-        public static C3ui Gray80 => new C3ui(Col.UIntFromDoubleClamped(0.8));
-        public static C3ui Gray90 => new C3ui(Col.UIntFromDoubleClamped(0.9));
+        public static C3ui Gray10 => new C3ui(Col.DoubleToUIntClamped(0.1));
+        public static C3ui Gray20 => new C3ui(Col.DoubleToUIntClamped(0.2));
+        public static C3ui Gray30 => new C3ui(Col.DoubleToUIntClamped(0.3));
+        public static C3ui Gray40 => new C3ui(Col.DoubleToUIntClamped(0.4));
+        public static C3ui Gray50 => new C3ui(Col.DoubleToUIntClamped(0.5));
+        public static C3ui Gray60 => new C3ui(Col.DoubleToUIntClamped(0.6));
+        public static C3ui Gray70 => new C3ui(Col.DoubleToUIntClamped(0.7));
+        public static C3ui Gray80 => new C3ui(Col.DoubleToUIntClamped(0.8));
+        public static C3ui Gray90 => new C3ui(Col.DoubleToUIntClamped(0.9));
 
         #endregion
 
@@ -5633,36 +5633,36 @@ namespace Aardvark.Base
         public static C3ui operator +(C3ui c0, C3b c1)
         {
             return new C3ui(
-                (uint)(c0.R + Col.UIntFromByte(c1.R)), 
-                (uint)(c0.G + Col.UIntFromByte(c1.G)), 
-                (uint)(c0.B + Col.UIntFromByte(c1.B)));
+                (uint)(c0.R + Col.ByteToUInt(c1.R)), 
+                (uint)(c0.G + Col.ByteToUInt(c1.G)), 
+                (uint)(c0.B + Col.ByteToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3b c1)
         {
             return new C3ui(
-                (uint)(c0.R - Col.UIntFromByte(c1.R)), 
-                (uint)(c0.G - Col.UIntFromByte(c1.G)), 
-                (uint)(c0.B - Col.UIntFromByte(c1.B)));
+                (uint)(c0.R - Col.ByteToUInt(c1.R)), 
+                (uint)(c0.G - Col.ByteToUInt(c1.G)), 
+                (uint)(c0.B - Col.ByteToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator +(C3ui c0, C3us c1)
         {
             return new C3ui(
-                (uint)(c0.R + Col.UIntFromUShort(c1.R)), 
-                (uint)(c0.G + Col.UIntFromUShort(c1.G)), 
-                (uint)(c0.B + Col.UIntFromUShort(c1.B)));
+                (uint)(c0.R + Col.UShortToUInt(c1.R)), 
+                (uint)(c0.G + Col.UShortToUInt(c1.G)), 
+                (uint)(c0.B + Col.UShortToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3us c1)
         {
             return new C3ui(
-                (uint)(c0.R - Col.UIntFromUShort(c1.R)), 
-                (uint)(c0.G - Col.UIntFromUShort(c1.G)), 
-                (uint)(c0.B - Col.UIntFromUShort(c1.B)));
+                (uint)(c0.R - Col.UShortToUInt(c1.R)), 
+                (uint)(c0.G - Col.UShortToUInt(c1.G)), 
+                (uint)(c0.B - Col.UShortToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5687,36 +5687,36 @@ namespace Aardvark.Base
         public static C3ui operator +(C3ui c0, C3f c1)
         {
             return new C3ui(
-                (uint)(c0.R + Col.UIntFromFloat(c1.R)), 
-                (uint)(c0.G + Col.UIntFromFloat(c1.G)), 
-                (uint)(c0.B + Col.UIntFromFloat(c1.B)));
+                (uint)(c0.R + Col.FloatToUInt(c1.R)), 
+                (uint)(c0.G + Col.FloatToUInt(c1.G)), 
+                (uint)(c0.B + Col.FloatToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3f c1)
         {
             return new C3ui(
-                (uint)(c0.R - Col.UIntFromFloat(c1.R)), 
-                (uint)(c0.G - Col.UIntFromFloat(c1.G)), 
-                (uint)(c0.B - Col.UIntFromFloat(c1.B)));
+                (uint)(c0.R - Col.FloatToUInt(c1.R)), 
+                (uint)(c0.G - Col.FloatToUInt(c1.G)), 
+                (uint)(c0.B - Col.FloatToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator +(C3ui c0, C3d c1)
         {
             return new C3ui(
-                (uint)(c0.R + Col.UIntFromDouble(c1.R)), 
-                (uint)(c0.G + Col.UIntFromDouble(c1.G)), 
-                (uint)(c0.B + Col.UIntFromDouble(c1.B)));
+                (uint)(c0.R + Col.DoubleToUInt(c1.R)), 
+                (uint)(c0.G + Col.DoubleToUInt(c1.G)), 
+                (uint)(c0.B + Col.DoubleToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3d c1)
         {
             return new C3ui(
-                (uint)(c0.R - Col.UIntFromDouble(c1.R)), 
-                (uint)(c0.G - Col.UIntFromDouble(c1.G)), 
-                (uint)(c0.B - Col.UIntFromDouble(c1.B)));
+                (uint)(c0.R - Col.DoubleToUInt(c1.R)), 
+                (uint)(c0.G - Col.DoubleToUInt(c1.G)), 
+                (uint)(c0.B - Col.DoubleToUInt(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5965,20 +5965,20 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.DoubleFromUInt(R); }
-            set { R = Col.UIntFromDoubleClamped(value); }
+            get { return Col.UIntToDouble(R); }
+            set { R = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.DoubleFromUInt(G); }
-            set { G = Col.UIntFromDoubleClamped(value); }
+            get { return Col.UIntToDouble(G); }
+            set { G = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.DoubleFromUInt(B); }
-            set { B = Col.UIntFromDoubleClamped(value); }
+            get { return Col.UIntToDouble(B); }
+            set { B = Col.DoubleToUIntClamped(value); }
         }
 
         #endregion
@@ -6583,9 +6583,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3b color)
         {
-            R = Col.FloatFromByte(color.R);
-            G = Col.FloatFromByte(color.G);
-            B = Col.FloatFromByte(color.B);
+            R = Col.ByteToFloat(color.R);
+            G = Col.ByteToFloat(color.G);
+            B = Col.ByteToFloat(color.B);
         }
 
         /// <summary>
@@ -6595,9 +6595,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3us color)
         {
-            R = Col.FloatFromUShort(color.R);
-            G = Col.FloatFromUShort(color.G);
-            B = Col.FloatFromUShort(color.B);
+            R = Col.UShortToFloat(color.R);
+            G = Col.UShortToFloat(color.G);
+            B = Col.UShortToFloat(color.B);
         }
 
         /// <summary>
@@ -6607,9 +6607,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3ui color)
         {
-            R = Col.FloatFromUInt(color.R);
-            G = Col.FloatFromUInt(color.G);
-            B = Col.FloatFromUInt(color.B);
+            R = Col.UIntToFloat(color.R);
+            G = Col.UIntToFloat(color.G);
+            B = Col.UIntToFloat(color.B);
         }
 
         /// <summary>
@@ -6629,9 +6629,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C3d color)
         {
-            R = Col.FloatFromDouble(color.R);
-            G = Col.FloatFromDouble(color.G);
-            B = Col.FloatFromDouble(color.B);
+            R = Col.DoubleToFloat(color.R);
+            G = Col.DoubleToFloat(color.G);
+            B = Col.DoubleToFloat(color.B);
         }
 
         /// <summary>
@@ -6641,9 +6641,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4b color)
         {
-            R = Col.FloatFromByte(color.R);
-            G = Col.FloatFromByte(color.G);
-            B = Col.FloatFromByte(color.B);
+            R = Col.ByteToFloat(color.R);
+            G = Col.ByteToFloat(color.G);
+            B = Col.ByteToFloat(color.B);
         }
 
         /// <summary>
@@ -6653,9 +6653,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4us color)
         {
-            R = Col.FloatFromUShort(color.R);
-            G = Col.FloatFromUShort(color.G);
-            B = Col.FloatFromUShort(color.B);
+            R = Col.UShortToFloat(color.R);
+            G = Col.UShortToFloat(color.G);
+            B = Col.UShortToFloat(color.B);
         }
 
         /// <summary>
@@ -6665,9 +6665,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4ui color)
         {
-            R = Col.FloatFromUInt(color.R);
-            G = Col.FloatFromUInt(color.G);
-            B = Col.FloatFromUInt(color.B);
+            R = Col.UIntToFloat(color.R);
+            G = Col.UIntToFloat(color.G);
+            B = Col.UIntToFloat(color.B);
         }
 
         /// <summary>
@@ -6687,9 +6687,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(C4d color)
         {
-            R = Col.FloatFromDouble(color.R);
-            G = Col.FloatFromDouble(color.G);
-            B = Col.FloatFromDouble(color.B);
+            R = Col.DoubleToFloat(color.R);
+            G = Col.DoubleToFloat(color.G);
+            B = Col.DoubleToFloat(color.B);
         }
 
         /// <summary>
@@ -6754,9 +6754,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(byte[] values)
         {
-            R = Col.FloatFromByte(values[0]);
-            G = Col.FloatFromByte(values[1]);
-            B = Col.FloatFromByte(values[2]);
+            R = Col.ByteToFloat(values[0]);
+            G = Col.ByteToFloat(values[1]);
+            B = Col.ByteToFloat(values[2]);
         }
 
         /// <summary>
@@ -6766,9 +6766,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(byte[] values, int start)
         {
-            R = Col.FloatFromByte(values[start + 0]);
-            G = Col.FloatFromByte(values[start + 1]);
-            B = Col.FloatFromByte(values[start + 2]);
+            R = Col.ByteToFloat(values[start + 0]);
+            G = Col.ByteToFloat(values[start + 1]);
+            B = Col.ByteToFloat(values[start + 2]);
         }
 
         /// <summary>
@@ -6778,9 +6778,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(ushort[] values)
         {
-            R = Col.FloatFromUShort(values[0]);
-            G = Col.FloatFromUShort(values[1]);
-            B = Col.FloatFromUShort(values[2]);
+            R = Col.UShortToFloat(values[0]);
+            G = Col.UShortToFloat(values[1]);
+            B = Col.UShortToFloat(values[2]);
         }
 
         /// <summary>
@@ -6790,9 +6790,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(ushort[] values, int start)
         {
-            R = Col.FloatFromUShort(values[start + 0]);
-            G = Col.FloatFromUShort(values[start + 1]);
-            B = Col.FloatFromUShort(values[start + 2]);
+            R = Col.UShortToFloat(values[start + 0]);
+            G = Col.UShortToFloat(values[start + 1]);
+            B = Col.UShortToFloat(values[start + 2]);
         }
 
         /// <summary>
@@ -6802,9 +6802,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(uint[] values)
         {
-            R = Col.FloatFromUInt(values[0]);
-            G = Col.FloatFromUInt(values[1]);
-            B = Col.FloatFromUInt(values[2]);
+            R = Col.UIntToFloat(values[0]);
+            G = Col.UIntToFloat(values[1]);
+            B = Col.UIntToFloat(values[2]);
         }
 
         /// <summary>
@@ -6814,9 +6814,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(uint[] values, int start)
         {
-            R = Col.FloatFromUInt(values[start + 0]);
-            G = Col.FloatFromUInt(values[start + 1]);
-            B = Col.FloatFromUInt(values[start + 2]);
+            R = Col.UIntToFloat(values[start + 0]);
+            G = Col.UIntToFloat(values[start + 1]);
+            B = Col.UIntToFloat(values[start + 2]);
         }
 
         /// <summary>
@@ -6847,9 +6847,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(double[] values)
         {
-            R = Col.FloatFromDouble(values[0]);
-            G = Col.FloatFromDouble(values[1]);
-            B = Col.FloatFromDouble(values[2]);
+            R = Col.DoubleToFloat(values[0]);
+            G = Col.DoubleToFloat(values[1]);
+            B = Col.DoubleToFloat(values[2]);
         }
 
         /// <summary>
@@ -6858,9 +6858,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3f(double[] values, int start)
         {
-            R = Col.FloatFromDouble(values[start + 0]);
-            G = Col.FloatFromDouble(values[start + 1]);
-            B = Col.FloatFromDouble(values[start + 2]);
+            R = Col.DoubleToFloat(values[start + 0]);
+            G = Col.DoubleToFloat(values[start + 1]);
+            B = Col.DoubleToFloat(values[start + 2]);
         }
 
         #endregion
@@ -7253,7 +7253,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C3f color)
-            => new byte[] { Col.ByteFromFloat(color.R), Col.ByteFromFloat(color.G), Col.ByteFromFloat(color.B) };
+            => new byte[] { Col.FloatToByte(color.R), Col.FloatToByte(color.G), Col.FloatToByte(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -7269,7 +7269,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C3f color)
-            => new ushort[] { Col.UShortFromFloat(color.R), Col.UShortFromFloat(color.G), Col.UShortFromFloat(color.B) };
+            => new ushort[] { Col.FloatToUShort(color.R), Col.FloatToUShort(color.G), Col.FloatToUShort(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -7285,7 +7285,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C3f color)
-            => new uint[] { Col.UIntFromFloat(color.R), Col.UIntFromFloat(color.G), Col.UIntFromFloat(color.B) };
+            => new uint[] { Col.FloatToUInt(color.R), Col.FloatToUInt(color.G), Col.FloatToUInt(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -7313,7 +7313,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C3f color)
-            => new double[] { Col.DoubleFromFloat(color.R), Col.DoubleFromFloat(color.G), Col.DoubleFromFloat(color.B) };
+            => new double[] { Col.FloatToDouble(color.R), Col.FloatToDouble(color.G), Col.FloatToDouble(color.B) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -7629,54 +7629,54 @@ namespace Aardvark.Base
         public static C3f operator +(C3f c0, C3b c1)
         {
             return new C3f(
-                (float)(c0.R + Col.FloatFromByte(c1.R)), 
-                (float)(c0.G + Col.FloatFromByte(c1.G)), 
-                (float)(c0.B + Col.FloatFromByte(c1.B)));
+                (float)(c0.R + Col.ByteToFloat(c1.R)), 
+                (float)(c0.G + Col.ByteToFloat(c1.G)), 
+                (float)(c0.B + Col.ByteToFloat(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator -(C3f c0, C3b c1)
         {
             return new C3f(
-                (float)(c0.R - Col.FloatFromByte(c1.R)), 
-                (float)(c0.G - Col.FloatFromByte(c1.G)), 
-                (float)(c0.B - Col.FloatFromByte(c1.B)));
+                (float)(c0.R - Col.ByteToFloat(c1.R)), 
+                (float)(c0.G - Col.ByteToFloat(c1.G)), 
+                (float)(c0.B - Col.ByteToFloat(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator +(C3f c0, C3us c1)
         {
             return new C3f(
-                (float)(c0.R + Col.FloatFromUShort(c1.R)), 
-                (float)(c0.G + Col.FloatFromUShort(c1.G)), 
-                (float)(c0.B + Col.FloatFromUShort(c1.B)));
+                (float)(c0.R + Col.UShortToFloat(c1.R)), 
+                (float)(c0.G + Col.UShortToFloat(c1.G)), 
+                (float)(c0.B + Col.UShortToFloat(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator -(C3f c0, C3us c1)
         {
             return new C3f(
-                (float)(c0.R - Col.FloatFromUShort(c1.R)), 
-                (float)(c0.G - Col.FloatFromUShort(c1.G)), 
-                (float)(c0.B - Col.FloatFromUShort(c1.B)));
+                (float)(c0.R - Col.UShortToFloat(c1.R)), 
+                (float)(c0.G - Col.UShortToFloat(c1.G)), 
+                (float)(c0.B - Col.UShortToFloat(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator +(C3f c0, C3ui c1)
         {
             return new C3f(
-                (float)(c0.R + Col.FloatFromUInt(c1.R)), 
-                (float)(c0.G + Col.FloatFromUInt(c1.G)), 
-                (float)(c0.B + Col.FloatFromUInt(c1.B)));
+                (float)(c0.R + Col.UIntToFloat(c1.R)), 
+                (float)(c0.G + Col.UIntToFloat(c1.G)), 
+                (float)(c0.B + Col.UIntToFloat(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator -(C3f c0, C3ui c1)
         {
             return new C3f(
-                (float)(c0.R - Col.FloatFromUInt(c1.R)), 
-                (float)(c0.G - Col.FloatFromUInt(c1.G)), 
-                (float)(c0.B - Col.FloatFromUInt(c1.B)));
+                (float)(c0.R - Col.UIntToFloat(c1.R)), 
+                (float)(c0.G - Col.UIntToFloat(c1.G)), 
+                (float)(c0.B - Col.UIntToFloat(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -8578,9 +8578,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3b color)
         {
-            R = Col.DoubleFromByte(color.R);
-            G = Col.DoubleFromByte(color.G);
-            B = Col.DoubleFromByte(color.B);
+            R = Col.ByteToDouble(color.R);
+            G = Col.ByteToDouble(color.G);
+            B = Col.ByteToDouble(color.B);
         }
 
         /// <summary>
@@ -8590,9 +8590,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3us color)
         {
-            R = Col.DoubleFromUShort(color.R);
-            G = Col.DoubleFromUShort(color.G);
-            B = Col.DoubleFromUShort(color.B);
+            R = Col.UShortToDouble(color.R);
+            G = Col.UShortToDouble(color.G);
+            B = Col.UShortToDouble(color.B);
         }
 
         /// <summary>
@@ -8602,9 +8602,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3ui color)
         {
-            R = Col.DoubleFromUInt(color.R);
-            G = Col.DoubleFromUInt(color.G);
-            B = Col.DoubleFromUInt(color.B);
+            R = Col.UIntToDouble(color.R);
+            G = Col.UIntToDouble(color.G);
+            B = Col.UIntToDouble(color.B);
         }
 
         /// <summary>
@@ -8613,9 +8613,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C3f color)
         {
-            R = Col.DoubleFromFloat(color.R);
-            G = Col.DoubleFromFloat(color.G);
-            B = Col.DoubleFromFloat(color.B);
+            R = Col.FloatToDouble(color.R);
+            G = Col.FloatToDouble(color.G);
+            B = Col.FloatToDouble(color.B);
         }
 
         /// <summary>
@@ -8636,9 +8636,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4b color)
         {
-            R = Col.DoubleFromByte(color.R);
-            G = Col.DoubleFromByte(color.G);
-            B = Col.DoubleFromByte(color.B);
+            R = Col.ByteToDouble(color.R);
+            G = Col.ByteToDouble(color.G);
+            B = Col.ByteToDouble(color.B);
         }
 
         /// <summary>
@@ -8648,9 +8648,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4us color)
         {
-            R = Col.DoubleFromUShort(color.R);
-            G = Col.DoubleFromUShort(color.G);
-            B = Col.DoubleFromUShort(color.B);
+            R = Col.UShortToDouble(color.R);
+            G = Col.UShortToDouble(color.G);
+            B = Col.UShortToDouble(color.B);
         }
 
         /// <summary>
@@ -8660,9 +8660,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4ui color)
         {
-            R = Col.DoubleFromUInt(color.R);
-            G = Col.DoubleFromUInt(color.G);
-            B = Col.DoubleFromUInt(color.B);
+            R = Col.UIntToDouble(color.R);
+            G = Col.UIntToDouble(color.G);
+            B = Col.UIntToDouble(color.B);
         }
 
         /// <summary>
@@ -8671,9 +8671,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(C4f color)
         {
-            R = Col.DoubleFromFloat(color.R);
-            G = Col.DoubleFromFloat(color.G);
-            B = Col.DoubleFromFloat(color.B);
+            R = Col.FloatToDouble(color.R);
+            G = Col.FloatToDouble(color.G);
+            B = Col.FloatToDouble(color.B);
         }
 
         /// <summary>
@@ -8749,9 +8749,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(byte[] values)
         {
-            R = Col.DoubleFromByte(values[0]);
-            G = Col.DoubleFromByte(values[1]);
-            B = Col.DoubleFromByte(values[2]);
+            R = Col.ByteToDouble(values[0]);
+            G = Col.ByteToDouble(values[1]);
+            B = Col.ByteToDouble(values[2]);
         }
 
         /// <summary>
@@ -8761,9 +8761,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(byte[] values, int start)
         {
-            R = Col.DoubleFromByte(values[start + 0]);
-            G = Col.DoubleFromByte(values[start + 1]);
-            B = Col.DoubleFromByte(values[start + 2]);
+            R = Col.ByteToDouble(values[start + 0]);
+            G = Col.ByteToDouble(values[start + 1]);
+            B = Col.ByteToDouble(values[start + 2]);
         }
 
         /// <summary>
@@ -8773,9 +8773,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(ushort[] values)
         {
-            R = Col.DoubleFromUShort(values[0]);
-            G = Col.DoubleFromUShort(values[1]);
-            B = Col.DoubleFromUShort(values[2]);
+            R = Col.UShortToDouble(values[0]);
+            G = Col.UShortToDouble(values[1]);
+            B = Col.UShortToDouble(values[2]);
         }
 
         /// <summary>
@@ -8785,9 +8785,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(ushort[] values, int start)
         {
-            R = Col.DoubleFromUShort(values[start + 0]);
-            G = Col.DoubleFromUShort(values[start + 1]);
-            B = Col.DoubleFromUShort(values[start + 2]);
+            R = Col.UShortToDouble(values[start + 0]);
+            G = Col.UShortToDouble(values[start + 1]);
+            B = Col.UShortToDouble(values[start + 2]);
         }
 
         /// <summary>
@@ -8797,9 +8797,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(uint[] values)
         {
-            R = Col.DoubleFromUInt(values[0]);
-            G = Col.DoubleFromUInt(values[1]);
-            B = Col.DoubleFromUInt(values[2]);
+            R = Col.UIntToDouble(values[0]);
+            G = Col.UIntToDouble(values[1]);
+            B = Col.UIntToDouble(values[2]);
         }
 
         /// <summary>
@@ -8809,9 +8809,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(uint[] values, int start)
         {
-            R = Col.DoubleFromUInt(values[start + 0]);
-            G = Col.DoubleFromUInt(values[start + 1]);
-            B = Col.DoubleFromUInt(values[start + 2]);
+            R = Col.UIntToDouble(values[start + 0]);
+            G = Col.UIntToDouble(values[start + 1]);
+            B = Col.UIntToDouble(values[start + 2]);
         }
 
         /// <summary>
@@ -8820,9 +8820,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(float[] values)
         {
-            R = Col.DoubleFromFloat(values[0]);
-            G = Col.DoubleFromFloat(values[1]);
-            B = Col.DoubleFromFloat(values[2]);
+            R = Col.FloatToDouble(values[0]);
+            G = Col.FloatToDouble(values[1]);
+            B = Col.FloatToDouble(values[2]);
         }
 
         /// <summary>
@@ -8831,9 +8831,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3d(float[] values, int start)
         {
-            R = Col.DoubleFromFloat(values[start + 0]);
-            G = Col.DoubleFromFloat(values[start + 1]);
-            B = Col.DoubleFromFloat(values[start + 2]);
+            R = Col.FloatToDouble(values[start + 0]);
+            G = Col.FloatToDouble(values[start + 1]);
+            B = Col.FloatToDouble(values[start + 2]);
         }
 
         /// <summary>
@@ -9248,7 +9248,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C3d color)
-            => new byte[] { Col.ByteFromDouble(color.R), Col.ByteFromDouble(color.G), Col.ByteFromDouble(color.B) };
+            => new byte[] { Col.DoubleToByte(color.R), Col.DoubleToByte(color.G), Col.DoubleToByte(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -9264,7 +9264,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C3d color)
-            => new ushort[] { Col.UShortFromDouble(color.R), Col.UShortFromDouble(color.G), Col.UShortFromDouble(color.B) };
+            => new ushort[] { Col.DoubleToUShort(color.R), Col.DoubleToUShort(color.G), Col.DoubleToUShort(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -9280,7 +9280,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C3d color)
-            => new uint[] { Col.UIntFromDouble(color.R), Col.UIntFromDouble(color.G), Col.UIntFromDouble(color.B) };
+            => new uint[] { Col.DoubleToUInt(color.R), Col.DoubleToUInt(color.G), Col.DoubleToUInt(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -9294,7 +9294,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C3d color)
-            => new float[] { Col.FloatFromDouble(color.R), Col.FloatFromDouble(color.G), Col.FloatFromDouble(color.B) };
+            => new float[] { Col.DoubleToFloat(color.R), Col.DoubleToFloat(color.G), Col.DoubleToFloat(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -9624,54 +9624,54 @@ namespace Aardvark.Base
         public static C3d operator +(C3d c0, C3b c1)
         {
             return new C3d(
-                (double)(c0.R + Col.DoubleFromByte(c1.R)), 
-                (double)(c0.G + Col.DoubleFromByte(c1.G)), 
-                (double)(c0.B + Col.DoubleFromByte(c1.B)));
+                (double)(c0.R + Col.ByteToDouble(c1.R)), 
+                (double)(c0.G + Col.ByteToDouble(c1.G)), 
+                (double)(c0.B + Col.ByteToDouble(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator -(C3d c0, C3b c1)
         {
             return new C3d(
-                (double)(c0.R - Col.DoubleFromByte(c1.R)), 
-                (double)(c0.G - Col.DoubleFromByte(c1.G)), 
-                (double)(c0.B - Col.DoubleFromByte(c1.B)));
+                (double)(c0.R - Col.ByteToDouble(c1.R)), 
+                (double)(c0.G - Col.ByteToDouble(c1.G)), 
+                (double)(c0.B - Col.ByteToDouble(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator +(C3d c0, C3us c1)
         {
             return new C3d(
-                (double)(c0.R + Col.DoubleFromUShort(c1.R)), 
-                (double)(c0.G + Col.DoubleFromUShort(c1.G)), 
-                (double)(c0.B + Col.DoubleFromUShort(c1.B)));
+                (double)(c0.R + Col.UShortToDouble(c1.R)), 
+                (double)(c0.G + Col.UShortToDouble(c1.G)), 
+                (double)(c0.B + Col.UShortToDouble(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator -(C3d c0, C3us c1)
         {
             return new C3d(
-                (double)(c0.R - Col.DoubleFromUShort(c1.R)), 
-                (double)(c0.G - Col.DoubleFromUShort(c1.G)), 
-                (double)(c0.B - Col.DoubleFromUShort(c1.B)));
+                (double)(c0.R - Col.UShortToDouble(c1.R)), 
+                (double)(c0.G - Col.UShortToDouble(c1.G)), 
+                (double)(c0.B - Col.UShortToDouble(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator +(C3d c0, C3ui c1)
         {
             return new C3d(
-                (double)(c0.R + Col.DoubleFromUInt(c1.R)), 
-                (double)(c0.G + Col.DoubleFromUInt(c1.G)), 
-                (double)(c0.B + Col.DoubleFromUInt(c1.B)));
+                (double)(c0.R + Col.UIntToDouble(c1.R)), 
+                (double)(c0.G + Col.UIntToDouble(c1.G)), 
+                (double)(c0.B + Col.UIntToDouble(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator -(C3d c0, C3ui c1)
         {
             return new C3d(
-                (double)(c0.R - Col.DoubleFromUInt(c1.R)), 
-                (double)(c0.G - Col.DoubleFromUInt(c1.G)), 
-                (double)(c0.B - Col.DoubleFromUInt(c1.B)));
+                (double)(c0.R - Col.UIntToDouble(c1.R)), 
+                (double)(c0.G - Col.UIntToDouble(c1.G)), 
+                (double)(c0.B - Col.UIntToDouble(c1.B)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10590,10 +10590,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(float r, float g, float b, float a)
         {
-            R = Col.ByteFromFloatClamped(r);
-            G = Col.ByteFromFloatClamped(g);
-            B = Col.ByteFromFloatClamped(b);
-            A = Col.ByteFromFloatClamped(a);
+            R = Col.FloatToByteClamped(r);
+            G = Col.FloatToByteClamped(g);
+            B = Col.FloatToByteClamped(b);
+            A = Col.FloatToByteClamped(a);
         }
 
         /// <summary>
@@ -10603,10 +10603,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double r, double g, double b, double a)
         {
-            R = Col.ByteFromDoubleClamped(r);
-            G = Col.ByteFromDoubleClamped(g);
-            B = Col.ByteFromDoubleClamped(b);
-            A = Col.ByteFromDoubleClamped(a);
+            R = Col.DoubleToByteClamped(r);
+            G = Col.DoubleToByteClamped(g);
+            B = Col.DoubleToByteClamped(b);
+            A = Col.DoubleToByteClamped(a);
         }
 
         /// <summary>
@@ -10653,9 +10653,9 @@ namespace Aardvark.Base
         public C4b(float r, float g, float b)
         {
             
-            R = Col.ByteFromFloatClamped(r); 
-            G = Col.ByteFromFloatClamped(g); 
-            B = Col.ByteFromFloatClamped(b);
+            R = Col.FloatToByteClamped(r); 
+            G = Col.FloatToByteClamped(g); 
+            B = Col.FloatToByteClamped(b);
             A = 255;
         }
 
@@ -10667,7 +10667,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double r, double g, double b)
         {
-            R = Col.ByteFromDoubleClamped(r); G = Col.ByteFromDoubleClamped(g); B = Col.ByteFromDoubleClamped(b);
+            R = Col.DoubleToByteClamped(r); G = Col.DoubleToByteClamped(g); B = Col.DoubleToByteClamped(b);
             A = 255;
         }
 
@@ -10689,7 +10689,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(float gray)
         {
-            var value = Col.ByteFromFloatClamped(gray);
+            var value = Col.FloatToByteClamped(gray);
             R = value; G = value; B = value; A = 255;
         }
 
@@ -10701,7 +10701,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double gray)
         {
-            var value = Col.ByteFromDoubleClamped(gray);
+            var value = Col.DoubleToByteClamped(gray);
             R = value; G = value; B = value; A = 255;
         }
 
@@ -10738,9 +10738,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3us color)
         {
-            R = Col.ByteFromUShort(color.R);
-            G = Col.ByteFromUShort(color.G);
-            B = Col.ByteFromUShort(color.B);
+            R = Col.UShortToByte(color.R);
+            G = Col.UShortToByte(color.G);
+            B = Col.UShortToByte(color.B);
             A = 255;
         }
 
@@ -10751,9 +10751,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3us color, byte alpha)
         {
-            R = Col.ByteFromUShort(color.R);
-            G = Col.ByteFromUShort(color.G);
-            B = Col.ByteFromUShort(color.B);
+            R = Col.UShortToByte(color.R);
+            G = Col.UShortToByte(color.G);
+            B = Col.UShortToByte(color.B);
             A = alpha;
         }
 
@@ -10765,9 +10765,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3ui color)
         {
-            R = Col.ByteFromUInt(color.R);
-            G = Col.ByteFromUInt(color.G);
-            B = Col.ByteFromUInt(color.B);
+            R = Col.UIntToByte(color.R);
+            G = Col.UIntToByte(color.G);
+            B = Col.UIntToByte(color.B);
             A = 255;
         }
 
@@ -10778,9 +10778,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3ui color, byte alpha)
         {
-            R = Col.ByteFromUInt(color.R);
-            G = Col.ByteFromUInt(color.G);
-            B = Col.ByteFromUInt(color.B);
+            R = Col.UIntToByte(color.R);
+            G = Col.UIntToByte(color.G);
+            B = Col.UIntToByte(color.B);
             A = alpha;
         }
 
@@ -10792,9 +10792,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3f color)
         {
-            R = Col.ByteFromFloat(color.R);
-            G = Col.ByteFromFloat(color.G);
-            B = Col.ByteFromFloat(color.B);
+            R = Col.FloatToByte(color.R);
+            G = Col.FloatToByte(color.G);
+            B = Col.FloatToByte(color.B);
             A = 255;
         }
 
@@ -10805,9 +10805,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3f color, byte alpha)
         {
-            R = Col.ByteFromFloat(color.R);
-            G = Col.ByteFromFloat(color.G);
-            B = Col.ByteFromFloat(color.B);
+            R = Col.FloatToByte(color.R);
+            G = Col.FloatToByte(color.G);
+            B = Col.FloatToByte(color.B);
             A = alpha;
         }
 
@@ -10819,9 +10819,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3d color)
         {
-            R = Col.ByteFromDouble(color.R);
-            G = Col.ByteFromDouble(color.G);
-            B = Col.ByteFromDouble(color.B);
+            R = Col.DoubleToByte(color.R);
+            G = Col.DoubleToByte(color.G);
+            B = Col.DoubleToByte(color.B);
             A = 255;
         }
 
@@ -10832,9 +10832,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3d color, byte alpha)
         {
-            R = Col.ByteFromDouble(color.R);
-            G = Col.ByteFromDouble(color.G);
-            B = Col.ByteFromDouble(color.B);
+            R = Col.DoubleToByte(color.R);
+            G = Col.DoubleToByte(color.G);
+            B = Col.DoubleToByte(color.B);
             A = alpha;
         }
 
@@ -10857,10 +10857,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4us color)
         {
-            R = Col.ByteFromUShort(color.R);
-            G = Col.ByteFromUShort(color.G);
-            B = Col.ByteFromUShort(color.B);
-            A = Col.ByteFromUShort(color.A);
+            R = Col.UShortToByte(color.R);
+            G = Col.UShortToByte(color.G);
+            B = Col.UShortToByte(color.B);
+            A = Col.UShortToByte(color.A);
         }
 
         /// <summary>
@@ -10870,10 +10870,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4ui color)
         {
-            R = Col.ByteFromUInt(color.R);
-            G = Col.ByteFromUInt(color.G);
-            B = Col.ByteFromUInt(color.B);
-            A = Col.ByteFromUInt(color.A);
+            R = Col.UIntToByte(color.R);
+            G = Col.UIntToByte(color.G);
+            B = Col.UIntToByte(color.B);
+            A = Col.UIntToByte(color.A);
         }
 
         /// <summary>
@@ -10883,10 +10883,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4f color)
         {
-            R = Col.ByteFromFloat(color.R);
-            G = Col.ByteFromFloat(color.G);
-            B = Col.ByteFromFloat(color.B);
-            A = Col.ByteFromFloat(color.A);
+            R = Col.FloatToByte(color.R);
+            G = Col.FloatToByte(color.G);
+            B = Col.FloatToByte(color.B);
+            A = Col.FloatToByte(color.A);
         }
 
         /// <summary>
@@ -10896,10 +10896,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4d color)
         {
-            R = Col.ByteFromDouble(color.R);
-            G = Col.ByteFromDouble(color.G);
-            B = Col.ByteFromDouble(color.B);
-            A = Col.ByteFromDouble(color.A);
+            R = Col.DoubleToByte(color.R);
+            G = Col.DoubleToByte(color.G);
+            B = Col.DoubleToByte(color.B);
+            A = Col.DoubleToByte(color.A);
         }
 
         /// <summary>
@@ -11145,10 +11145,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(ushort[] values)
         {
-            R = Col.ByteFromUShort(values[0]);
-            G = Col.ByteFromUShort(values[1]);
-            B = Col.ByteFromUShort(values[2]);
-            A = Col.ByteFromUShort(values[3]);
+            R = Col.UShortToByte(values[0]);
+            G = Col.UShortToByte(values[1]);
+            B = Col.UShortToByte(values[2]);
+            A = Col.UShortToByte(values[3]);
         }
 
         /// <summary>
@@ -11158,10 +11158,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(ushort[] values, int start)
         {
-            R = Col.ByteFromUShort(values[start + 0]);
-            G = Col.ByteFromUShort(values[start + 1]);
-            B = Col.ByteFromUShort(values[start + 2]);
-            A = Col.ByteFromUShort(values[start + 3]);
+            R = Col.UShortToByte(values[start + 0]);
+            G = Col.UShortToByte(values[start + 1]);
+            B = Col.UShortToByte(values[start + 2]);
+            A = Col.UShortToByte(values[start + 3]);
         }
 
         /// <summary>
@@ -11171,10 +11171,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(uint[] values)
         {
-            R = Col.ByteFromUInt(values[0]);
-            G = Col.ByteFromUInt(values[1]);
-            B = Col.ByteFromUInt(values[2]);
-            A = Col.ByteFromUInt(values[3]);
+            R = Col.UIntToByte(values[0]);
+            G = Col.UIntToByte(values[1]);
+            B = Col.UIntToByte(values[2]);
+            A = Col.UIntToByte(values[3]);
         }
 
         /// <summary>
@@ -11184,10 +11184,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(uint[] values, int start)
         {
-            R = Col.ByteFromUInt(values[start + 0]);
-            G = Col.ByteFromUInt(values[start + 1]);
-            B = Col.ByteFromUInt(values[start + 2]);
-            A = Col.ByteFromUInt(values[start + 3]);
+            R = Col.UIntToByte(values[start + 0]);
+            G = Col.UIntToByte(values[start + 1]);
+            B = Col.UIntToByte(values[start + 2]);
+            A = Col.UIntToByte(values[start + 3]);
         }
 
         /// <summary>
@@ -11197,10 +11197,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(float[] values)
         {
-            R = Col.ByteFromFloat(values[0]);
-            G = Col.ByteFromFloat(values[1]);
-            B = Col.ByteFromFloat(values[2]);
-            A = Col.ByteFromFloat(values[3]);
+            R = Col.FloatToByte(values[0]);
+            G = Col.FloatToByte(values[1]);
+            B = Col.FloatToByte(values[2]);
+            A = Col.FloatToByte(values[3]);
         }
 
         /// <summary>
@@ -11210,10 +11210,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(float[] values, int start)
         {
-            R = Col.ByteFromFloat(values[start + 0]);
-            G = Col.ByteFromFloat(values[start + 1]);
-            B = Col.ByteFromFloat(values[start + 2]);
-            A = Col.ByteFromFloat(values[start + 3]);
+            R = Col.FloatToByte(values[start + 0]);
+            G = Col.FloatToByte(values[start + 1]);
+            B = Col.FloatToByte(values[start + 2]);
+            A = Col.FloatToByte(values[start + 3]);
         }
 
         /// <summary>
@@ -11223,10 +11223,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double[] values)
         {
-            R = Col.ByteFromDouble(values[0]);
-            G = Col.ByteFromDouble(values[1]);
-            B = Col.ByteFromDouble(values[2]);
-            A = Col.ByteFromDouble(values[3]);
+            R = Col.DoubleToByte(values[0]);
+            G = Col.DoubleToByte(values[1]);
+            B = Col.DoubleToByte(values[2]);
+            A = Col.DoubleToByte(values[3]);
         }
 
         /// <summary>
@@ -11236,10 +11236,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double[] values, int start)
         {
-            R = Col.ByteFromDouble(values[start + 0]);
-            G = Col.ByteFromDouble(values[start + 1]);
-            B = Col.ByteFromDouble(values[start + 2]);
-            A = Col.ByteFromDouble(values[start + 3]);
+            R = Col.DoubleToByte(values[start + 0]);
+            G = Col.DoubleToByte(values[start + 1]);
+            B = Col.DoubleToByte(values[start + 2]);
+            A = Col.DoubleToByte(values[start + 3]);
         }
 
         #endregion
@@ -11715,7 +11715,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C4b color)
-            => new ushort[] { Col.UShortFromByte(color.R), Col.UShortFromByte(color.G), Col.UShortFromByte(color.B), Col.UShortFromByte(color.A) };
+            => new ushort[] { Col.ByteToUShort(color.R), Col.ByteToUShort(color.G), Col.ByteToUShort(color.B), Col.ByteToUShort(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -11731,7 +11731,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C4b color)
-            => new uint[] { Col.UIntFromByte(color.R), Col.UIntFromByte(color.G), Col.UIntFromByte(color.B), Col.UIntFromByte(color.A) };
+            => new uint[] { Col.ByteToUInt(color.R), Col.ByteToUInt(color.G), Col.ByteToUInt(color.B), Col.ByteToUInt(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -11747,7 +11747,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C4b color)
-            => new float[] { Col.FloatFromByte(color.R), Col.FloatFromByte(color.G), Col.FloatFromByte(color.B), Col.FloatFromByte(color.A) };
+            => new float[] { Col.ByteToFloat(color.R), Col.ByteToFloat(color.G), Col.ByteToFloat(color.B), Col.ByteToFloat(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -11763,7 +11763,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C4b color)
-            => new double[] { Col.DoubleFromByte(color.R), Col.DoubleFromByte(color.G), Col.DoubleFromByte(color.B), Col.DoubleFromByte(color.A) };
+            => new double[] { Col.ByteToDouble(color.R), Col.ByteToDouble(color.G), Col.ByteToDouble(color.B), Col.ByteToDouble(color.A) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -11866,167 +11866,167 @@ namespace Aardvark.Base
         public static C4b Zero => new C4b(0, 0, 0, 0);
 
         // Web colors
-        public static C4b AliceBlue => new C4b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(1));
-        public static C4b AntiqueWhite => new C4b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.921569), Col.ByteFromDoubleClamped(0.843137));
-        public static C4b Aqua => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C4b Aquamarine => new C4b(Col.ByteFromDoubleClamped(0.498039), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.831373));
-        public static C4b Azure => new C4b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C4b Beige => new C4b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.862745));
-        public static C4b Bisque => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.894118), Col.ByteFromDoubleClamped(0.768627));
-        public static C4b Black => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C4b BlanchedAlmond => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.921569), Col.ByteFromDoubleClamped(0.803922));
-        public static C4b Blue => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1));
-        public static C4b BlueViolet => new C4b(Col.ByteFromDoubleClamped(0.541176), Col.ByteFromDoubleClamped(0.168627), Col.ByteFromDoubleClamped(0.886275));
-        public static C4b Brown => new C4b(Col.ByteFromDoubleClamped(0.647059), Col.ByteFromDoubleClamped(0.164706), Col.ByteFromDoubleClamped(0.164706));
-        public static C4b BurlyWood => new C4b(Col.ByteFromDoubleClamped(0.870588), Col.ByteFromDoubleClamped(0.721569), Col.ByteFromDoubleClamped(0.529412));
-        public static C4b CadetBlue => new C4b(Col.ByteFromDoubleClamped(0.372549), Col.ByteFromDoubleClamped(0.619608), Col.ByteFromDoubleClamped(0.627451));
-        public static C4b Chartreuse => new C4b(Col.ByteFromDoubleClamped(0.498039), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0));
-        public static C4b Chocolate => new C4b(Col.ByteFromDoubleClamped(0.823529), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.117647));
-        public static C4b Coral => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.498039), Col.ByteFromDoubleClamped(0.313725));
-        public static C4b CornflowerBlue => new C4b(Col.ByteFromDoubleClamped(0.392157), Col.ByteFromDoubleClamped(0.584314), Col.ByteFromDoubleClamped(0.929412));
-        public static C4b Cornsilk => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(0.862745));
-        public static C4b Crimson => new C4b(Col.ByteFromDoubleClamped(0.862745), Col.ByteFromDoubleClamped(0.078431), Col.ByteFromDoubleClamped(0.235294));
-        public static C4b Cyan => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C4b DarkBlue => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.545098));
-        public static C4b DarkCyan => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.545098));
-        public static C4b DarkGoldenRod => new C4b(Col.ByteFromDoubleClamped(0.721569), Col.ByteFromDoubleClamped(0.52549), Col.ByteFromDoubleClamped(0.043137));
-        public static C4b DarkGray => new C4b(Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745));
-        public static C4b DarkGrey => new C4b(Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745), Col.ByteFromDoubleClamped(0.662745));
-        public static C4b DarkGreen => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.392157), Col.ByteFromDoubleClamped(0));
-        public static C4b DarkKhaki => new C4b(Col.ByteFromDoubleClamped(0.741176), Col.ByteFromDoubleClamped(0.717647), Col.ByteFromDoubleClamped(0.419608));
-        public static C4b DarkMagenta => new C4b(Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.545098));
-        public static C4b DarkOliveGreen => new C4b(Col.ByteFromDoubleClamped(0.333333), Col.ByteFromDoubleClamped(0.419608), Col.ByteFromDoubleClamped(0.184314));
-        public static C4b DarkOrange => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.54902), Col.ByteFromDoubleClamped(0));
-        public static C4b DarkOrchid => new C4b(Col.ByteFromDoubleClamped(0.6), Col.ByteFromDoubleClamped(0.196078), Col.ByteFromDoubleClamped(0.8));
-        public static C4b DarkRed => new C4b(Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C4b DarkSalmon => new C4b(Col.ByteFromDoubleClamped(0.913725), Col.ByteFromDoubleClamped(0.588235), Col.ByteFromDoubleClamped(0.478431));
-        public static C4b DarkSeaGreen => new C4b(Col.ByteFromDoubleClamped(0.560784), Col.ByteFromDoubleClamped(0.737255), Col.ByteFromDoubleClamped(0.560784));
-        public static C4b DarkSlateBlue => new C4b(Col.ByteFromDoubleClamped(0.282353), Col.ByteFromDoubleClamped(0.239216), Col.ByteFromDoubleClamped(0.545098));
-        public static C4b DarkSlateGray => new C4b(Col.ByteFromDoubleClamped(0.184314), Col.ByteFromDoubleClamped(0.309804), Col.ByteFromDoubleClamped(0.309804));
-        public static C4b DarkSlateGrey => new C4b(Col.ByteFromDoubleClamped(0.184314), Col.ByteFromDoubleClamped(0.309804), Col.ByteFromDoubleClamped(0.309804));
-        public static C4b DarkTurquoise => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.807843), Col.ByteFromDoubleClamped(0.819608));
-        public static C4b DarkViolet => new C4b(Col.ByteFromDoubleClamped(0.580392), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.827451));
-        public static C4b DeepPink => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.078431), Col.ByteFromDoubleClamped(0.576471));
-        public static C4b DeepSkyBlue => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.74902), Col.ByteFromDoubleClamped(1));
-        public static C4b DimGray => new C4b(Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765));
-        public static C4b DimGrey => new C4b(Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.411765));
-        public static C4b DodgerBlue => new C4b(Col.ByteFromDoubleClamped(0.117647), Col.ByteFromDoubleClamped(0.564706), Col.ByteFromDoubleClamped(1));
-        public static C4b FireBrick => new C4b(Col.ByteFromDoubleClamped(0.698039), Col.ByteFromDoubleClamped(0.133333), Col.ByteFromDoubleClamped(0.133333));
-        public static C4b FloralWhite => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.941176));
-        public static C4b ForestGreen => new C4b(Col.ByteFromDoubleClamped(0.133333), Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.133333));
-        public static C4b Fuchsia => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1));
-        public static C4b Gainsboro => new C4b(Col.ByteFromDoubleClamped(0.862745), Col.ByteFromDoubleClamped(0.862745), Col.ByteFromDoubleClamped(0.862745));
-        public static C4b GhostWhite => new C4b(Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(0.972549), Col.ByteFromDoubleClamped(1));
-        public static C4b Gold => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.843137), Col.ByteFromDoubleClamped(0));
-        public static C4b GoldenRod => new C4b(Col.ByteFromDoubleClamped(0.854902), Col.ByteFromDoubleClamped(0.647059), Col.ByteFromDoubleClamped(0.12549));
-        public static C4b Gray => new C4b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C4b Grey => new C4b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C4b Green => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0));
-        public static C4b GreenYellow => new C4b(Col.ByteFromDoubleClamped(0.678431), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.184314));
-        public static C4b HoneyDew => new C4b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.941176));
-        public static C4b HotPink => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.705882));
-        public static C4b IndianRed  => new C4b(Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.360784), Col.ByteFromDoubleClamped(0.360784));
-        public static C4b Indigo  => new C4b(Col.ByteFromDoubleClamped(0.294118), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.509804));
-        public static C4b Ivory => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.941176));
-        public static C4b Khaki => new C4b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.901961), Col.ByteFromDoubleClamped(0.54902));
-        public static C4b Lavender => new C4b(Col.ByteFromDoubleClamped(0.901961), Col.ByteFromDoubleClamped(0.901961), Col.ByteFromDoubleClamped(0.980392));
-        public static C4b LavenderBlush => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.960784));
-        public static C4b LawnGreen => new C4b(Col.ByteFromDoubleClamped(0.486275), Col.ByteFromDoubleClamped(0.988235), Col.ByteFromDoubleClamped(0));
-        public static C4b LemonChiffon => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.803922));
-        public static C4b LightBlue => new C4b(Col.ByteFromDoubleClamped(0.678431), Col.ByteFromDoubleClamped(0.847059), Col.ByteFromDoubleClamped(0.901961));
-        public static C4b LightCoral => new C4b(Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C4b LightCyan => new C4b(Col.ByteFromDoubleClamped(0.878431), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C4b LightGoldenRodYellow => new C4b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.823529));
-        public static C4b LightGray => new C4b(Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451));
-        public static C4b LightGrey => new C4b(Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451), Col.ByteFromDoubleClamped(0.827451));
-        public static C4b LightGreen => new C4b(Col.ByteFromDoubleClamped(0.564706), Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.564706));
-        public static C4b LightPink => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.713725), Col.ByteFromDoubleClamped(0.756863));
-        public static C4b LightSalmon => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.627451), Col.ByteFromDoubleClamped(0.478431));
-        public static C4b LightSeaGreen => new C4b(Col.ByteFromDoubleClamped(0.12549), Col.ByteFromDoubleClamped(0.698039), Col.ByteFromDoubleClamped(0.666667));
-        public static C4b LightSkyBlue => new C4b(Col.ByteFromDoubleClamped(0.529412), Col.ByteFromDoubleClamped(0.807843), Col.ByteFromDoubleClamped(0.980392));
-        public static C4b LightSlateGray => new C4b(Col.ByteFromDoubleClamped(0.466667), Col.ByteFromDoubleClamped(0.533333), Col.ByteFromDoubleClamped(0.6));
-        public static C4b LightSlateGrey => new C4b(Col.ByteFromDoubleClamped(0.466667), Col.ByteFromDoubleClamped(0.533333), Col.ByteFromDoubleClamped(0.6));
-        public static C4b LightSteelBlue => new C4b(Col.ByteFromDoubleClamped(0.690196), Col.ByteFromDoubleClamped(0.768627), Col.ByteFromDoubleClamped(0.870588));
-        public static C4b LightYellow => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.878431));
-        public static C4b Lime => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0));
-        public static C4b LimeGreen => new C4b(Col.ByteFromDoubleClamped(0.196078), Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.196078));
-        public static C4b Linen => new C4b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.941176), Col.ByteFromDoubleClamped(0.901961));
-        public static C4b Magenta => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1));
-        public static C4b Maroon => new C4b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C4b MediumAquaMarine => new C4b(Col.ByteFromDoubleClamped(0.4), Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.666667));
-        public static C4b MediumBlue => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.803922));
-        public static C4b MediumOrchid => new C4b(Col.ByteFromDoubleClamped(0.729412), Col.ByteFromDoubleClamped(0.333333), Col.ByteFromDoubleClamped(0.827451));
-        public static C4b MediumPurple => new C4b(Col.ByteFromDoubleClamped(0.576471), Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.847059));
-        public static C4b MediumSeaGreen => new C4b(Col.ByteFromDoubleClamped(0.235294), Col.ByteFromDoubleClamped(0.701961), Col.ByteFromDoubleClamped(0.443137));
-        public static C4b MediumSlateBlue => new C4b(Col.ByteFromDoubleClamped(0.482353), Col.ByteFromDoubleClamped(0.407843), Col.ByteFromDoubleClamped(0.933333));
-        public static C4b MediumSpringGreen => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.603922));
-        public static C4b MediumTurquoise => new C4b(Col.ByteFromDoubleClamped(0.282353), Col.ByteFromDoubleClamped(0.819608), Col.ByteFromDoubleClamped(0.8));
-        public static C4b MediumVioletRed => new C4b(Col.ByteFromDoubleClamped(0.780392), Col.ByteFromDoubleClamped(0.082353), Col.ByteFromDoubleClamped(0.521569));
-        public static C4b MidnightBlue => new C4b(Col.ByteFromDoubleClamped(0.098039), Col.ByteFromDoubleClamped(0.098039), Col.ByteFromDoubleClamped(0.439216));
-        public static C4b MintCream => new C4b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392));
-        public static C4b MistyRose => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.894118), Col.ByteFromDoubleClamped(0.882353));
-        public static C4b Moccasin => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.894118), Col.ByteFromDoubleClamped(0.709804));
-        public static C4b NavajoWhite => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.870588), Col.ByteFromDoubleClamped(0.678431));
-        public static C4b Navy => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961));
-        public static C4b OldLace => new C4b(Col.ByteFromDoubleClamped(0.992157), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.901961));
-        public static C4b Olive => new C4b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0));
-        public static C4b OliveDrab => new C4b(Col.ByteFromDoubleClamped(0.419608), Col.ByteFromDoubleClamped(0.556863), Col.ByteFromDoubleClamped(0.137255));
-        public static C4b Orange => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.647059), Col.ByteFromDoubleClamped(0));
-        public static C4b OrangeRed => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.270588), Col.ByteFromDoubleClamped(0));
-        public static C4b Orchid => new C4b(Col.ByteFromDoubleClamped(0.854902), Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.839216));
-        public static C4b PaleGoldenRod => new C4b(Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.909804), Col.ByteFromDoubleClamped(0.666667));
-        public static C4b PaleGreen => new C4b(Col.ByteFromDoubleClamped(0.596078), Col.ByteFromDoubleClamped(0.984314), Col.ByteFromDoubleClamped(0.596078));
-        public static C4b PaleTurquoise => new C4b(Col.ByteFromDoubleClamped(0.686275), Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.933333));
-        public static C4b PaleVioletRed => new C4b(Col.ByteFromDoubleClamped(0.847059), Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.576471));
-        public static C4b PapayaWhip => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.937255), Col.ByteFromDoubleClamped(0.835294));
-        public static C4b PeachPuff => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.854902), Col.ByteFromDoubleClamped(0.72549));
-        public static C4b Peru => new C4b(Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.521569), Col.ByteFromDoubleClamped(0.247059));
-        public static C4b Pink => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.752941), Col.ByteFromDoubleClamped(0.796078));
-        public static C4b Plum => new C4b(Col.ByteFromDoubleClamped(0.866667), Col.ByteFromDoubleClamped(0.627451), Col.ByteFromDoubleClamped(0.866667));
-        public static C4b PowderBlue => new C4b(Col.ByteFromDoubleClamped(0.690196), Col.ByteFromDoubleClamped(0.878431), Col.ByteFromDoubleClamped(0.901961));
-        public static C4b Purple => new C4b(Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961));
-        public static C4b Red => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0));
-        public static C4b RosyBrown => new C4b(Col.ByteFromDoubleClamped(0.737255), Col.ByteFromDoubleClamped(0.560784), Col.ByteFromDoubleClamped(0.560784));
-        public static C4b RoyalBlue => new C4b(Col.ByteFromDoubleClamped(0.254902), Col.ByteFromDoubleClamped(0.411765), Col.ByteFromDoubleClamped(0.882353));
-        public static C4b SaddleBrown => new C4b(Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.270588), Col.ByteFromDoubleClamped(0.07451));
-        public static C4b Salmon => new C4b(Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.447059));
-        public static C4b SandyBrown => new C4b(Col.ByteFromDoubleClamped(0.956863), Col.ByteFromDoubleClamped(0.643137), Col.ByteFromDoubleClamped(0.376471));
-        public static C4b SeaGreen => new C4b(Col.ByteFromDoubleClamped(0.180392), Col.ByteFromDoubleClamped(0.545098), Col.ByteFromDoubleClamped(0.341176));
-        public static C4b SeaShell => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.933333));
-        public static C4b Sienna => new C4b(Col.ByteFromDoubleClamped(0.627451), Col.ByteFromDoubleClamped(0.321569), Col.ByteFromDoubleClamped(0.176471));
-        public static C4b Silver => new C4b(Col.ByteFromDoubleClamped(0.752941), Col.ByteFromDoubleClamped(0.752941), Col.ByteFromDoubleClamped(0.752941));
-        public static C4b SkyBlue => new C4b(Col.ByteFromDoubleClamped(0.529412), Col.ByteFromDoubleClamped(0.807843), Col.ByteFromDoubleClamped(0.921569));
-        public static C4b SlateBlue => new C4b(Col.ByteFromDoubleClamped(0.415686), Col.ByteFromDoubleClamped(0.352941), Col.ByteFromDoubleClamped(0.803922));
-        public static C4b SlateGray => new C4b(Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.564706));
-        public static C4b SlateGrey => new C4b(Col.ByteFromDoubleClamped(0.439216), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.564706));
-        public static C4b Snow => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.980392), Col.ByteFromDoubleClamped(0.980392));
-        public static C4b SpringGreen => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.498039));
-        public static C4b SteelBlue => new C4b(Col.ByteFromDoubleClamped(0.27451), Col.ByteFromDoubleClamped(0.509804), Col.ByteFromDoubleClamped(0.705882));
-        public static C4b Tan => new C4b(Col.ByteFromDoubleClamped(0.823529), Col.ByteFromDoubleClamped(0.705882), Col.ByteFromDoubleClamped(0.54902));
-        public static C4b Teal => new C4b(Col.ByteFromDoubleClamped(0), Col.ByteFromDoubleClamped(0.501961), Col.ByteFromDoubleClamped(0.501961));
-        public static C4b Thistle => new C4b(Col.ByteFromDoubleClamped(0.847059), Col.ByteFromDoubleClamped(0.74902), Col.ByteFromDoubleClamped(0.847059));
-        public static C4b Tomato => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0.388235), Col.ByteFromDoubleClamped(0.278431));
-        public static C4b Turquoise => new C4b(Col.ByteFromDoubleClamped(0.25098), Col.ByteFromDoubleClamped(0.878431), Col.ByteFromDoubleClamped(0.815686));
-        public static C4b Violet => new C4b(Col.ByteFromDoubleClamped(0.933333), Col.ByteFromDoubleClamped(0.509804), Col.ByteFromDoubleClamped(0.933333));
-        public static C4b Wheat => new C4b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.870588), Col.ByteFromDoubleClamped(0.701961));
-        public static C4b White => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1));
-        public static C4b WhiteSmoke => new C4b(Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.960784), Col.ByteFromDoubleClamped(0.960784));
-        public static C4b Yellow => new C4b(Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(1), Col.ByteFromDoubleClamped(0));
-        public static C4b YellowGreen => new C4b(Col.ByteFromDoubleClamped(0.603922), Col.ByteFromDoubleClamped(0.803922), Col.ByteFromDoubleClamped(0.196078));
+        public static C4b AliceBlue => new C4b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(1));
+        public static C4b AntiqueWhite => new C4b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.921569), Col.DoubleToByteClamped(0.843137));
+        public static C4b Aqua => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C4b Aquamarine => new C4b(Col.DoubleToByteClamped(0.498039), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.831373));
+        public static C4b Azure => new C4b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C4b Beige => new C4b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.862745));
+        public static C4b Bisque => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.894118), Col.DoubleToByteClamped(0.768627));
+        public static C4b Black => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C4b BlanchedAlmond => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.921569), Col.DoubleToByteClamped(0.803922));
+        public static C4b Blue => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1));
+        public static C4b BlueViolet => new C4b(Col.DoubleToByteClamped(0.541176), Col.DoubleToByteClamped(0.168627), Col.DoubleToByteClamped(0.886275));
+        public static C4b Brown => new C4b(Col.DoubleToByteClamped(0.647059), Col.DoubleToByteClamped(0.164706), Col.DoubleToByteClamped(0.164706));
+        public static C4b BurlyWood => new C4b(Col.DoubleToByteClamped(0.870588), Col.DoubleToByteClamped(0.721569), Col.DoubleToByteClamped(0.529412));
+        public static C4b CadetBlue => new C4b(Col.DoubleToByteClamped(0.372549), Col.DoubleToByteClamped(0.619608), Col.DoubleToByteClamped(0.627451));
+        public static C4b Chartreuse => new C4b(Col.DoubleToByteClamped(0.498039), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0));
+        public static C4b Chocolate => new C4b(Col.DoubleToByteClamped(0.823529), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.117647));
+        public static C4b Coral => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.498039), Col.DoubleToByteClamped(0.313725));
+        public static C4b CornflowerBlue => new C4b(Col.DoubleToByteClamped(0.392157), Col.DoubleToByteClamped(0.584314), Col.DoubleToByteClamped(0.929412));
+        public static C4b Cornsilk => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(0.862745));
+        public static C4b Crimson => new C4b(Col.DoubleToByteClamped(0.862745), Col.DoubleToByteClamped(0.078431), Col.DoubleToByteClamped(0.235294));
+        public static C4b Cyan => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C4b DarkBlue => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.545098));
+        public static C4b DarkCyan => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.545098));
+        public static C4b DarkGoldenRod => new C4b(Col.DoubleToByteClamped(0.721569), Col.DoubleToByteClamped(0.52549), Col.DoubleToByteClamped(0.043137));
+        public static C4b DarkGray => new C4b(Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745));
+        public static C4b DarkGrey => new C4b(Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745), Col.DoubleToByteClamped(0.662745));
+        public static C4b DarkGreen => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.392157), Col.DoubleToByteClamped(0));
+        public static C4b DarkKhaki => new C4b(Col.DoubleToByteClamped(0.741176), Col.DoubleToByteClamped(0.717647), Col.DoubleToByteClamped(0.419608));
+        public static C4b DarkMagenta => new C4b(Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.545098));
+        public static C4b DarkOliveGreen => new C4b(Col.DoubleToByteClamped(0.333333), Col.DoubleToByteClamped(0.419608), Col.DoubleToByteClamped(0.184314));
+        public static C4b DarkOrange => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.54902), Col.DoubleToByteClamped(0));
+        public static C4b DarkOrchid => new C4b(Col.DoubleToByteClamped(0.6), Col.DoubleToByteClamped(0.196078), Col.DoubleToByteClamped(0.8));
+        public static C4b DarkRed => new C4b(Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C4b DarkSalmon => new C4b(Col.DoubleToByteClamped(0.913725), Col.DoubleToByteClamped(0.588235), Col.DoubleToByteClamped(0.478431));
+        public static C4b DarkSeaGreen => new C4b(Col.DoubleToByteClamped(0.560784), Col.DoubleToByteClamped(0.737255), Col.DoubleToByteClamped(0.560784));
+        public static C4b DarkSlateBlue => new C4b(Col.DoubleToByteClamped(0.282353), Col.DoubleToByteClamped(0.239216), Col.DoubleToByteClamped(0.545098));
+        public static C4b DarkSlateGray => new C4b(Col.DoubleToByteClamped(0.184314), Col.DoubleToByteClamped(0.309804), Col.DoubleToByteClamped(0.309804));
+        public static C4b DarkSlateGrey => new C4b(Col.DoubleToByteClamped(0.184314), Col.DoubleToByteClamped(0.309804), Col.DoubleToByteClamped(0.309804));
+        public static C4b DarkTurquoise => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.807843), Col.DoubleToByteClamped(0.819608));
+        public static C4b DarkViolet => new C4b(Col.DoubleToByteClamped(0.580392), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.827451));
+        public static C4b DeepPink => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.078431), Col.DoubleToByteClamped(0.576471));
+        public static C4b DeepSkyBlue => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.74902), Col.DoubleToByteClamped(1));
+        public static C4b DimGray => new C4b(Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765));
+        public static C4b DimGrey => new C4b(Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.411765));
+        public static C4b DodgerBlue => new C4b(Col.DoubleToByteClamped(0.117647), Col.DoubleToByteClamped(0.564706), Col.DoubleToByteClamped(1));
+        public static C4b FireBrick => new C4b(Col.DoubleToByteClamped(0.698039), Col.DoubleToByteClamped(0.133333), Col.DoubleToByteClamped(0.133333));
+        public static C4b FloralWhite => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.941176));
+        public static C4b ForestGreen => new C4b(Col.DoubleToByteClamped(0.133333), Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.133333));
+        public static C4b Fuchsia => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1));
+        public static C4b Gainsboro => new C4b(Col.DoubleToByteClamped(0.862745), Col.DoubleToByteClamped(0.862745), Col.DoubleToByteClamped(0.862745));
+        public static C4b GhostWhite => new C4b(Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(0.972549), Col.DoubleToByteClamped(1));
+        public static C4b Gold => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.843137), Col.DoubleToByteClamped(0));
+        public static C4b GoldenRod => new C4b(Col.DoubleToByteClamped(0.854902), Col.DoubleToByteClamped(0.647059), Col.DoubleToByteClamped(0.12549));
+        public static C4b Gray => new C4b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C4b Grey => new C4b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C4b Green => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0));
+        public static C4b GreenYellow => new C4b(Col.DoubleToByteClamped(0.678431), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.184314));
+        public static C4b HoneyDew => new C4b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.941176));
+        public static C4b HotPink => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.705882));
+        public static C4b IndianRed  => new C4b(Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.360784), Col.DoubleToByteClamped(0.360784));
+        public static C4b Indigo  => new C4b(Col.DoubleToByteClamped(0.294118), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.509804));
+        public static C4b Ivory => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.941176));
+        public static C4b Khaki => new C4b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.901961), Col.DoubleToByteClamped(0.54902));
+        public static C4b Lavender => new C4b(Col.DoubleToByteClamped(0.901961), Col.DoubleToByteClamped(0.901961), Col.DoubleToByteClamped(0.980392));
+        public static C4b LavenderBlush => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.960784));
+        public static C4b LawnGreen => new C4b(Col.DoubleToByteClamped(0.486275), Col.DoubleToByteClamped(0.988235), Col.DoubleToByteClamped(0));
+        public static C4b LemonChiffon => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.803922));
+        public static C4b LightBlue => new C4b(Col.DoubleToByteClamped(0.678431), Col.DoubleToByteClamped(0.847059), Col.DoubleToByteClamped(0.901961));
+        public static C4b LightCoral => new C4b(Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C4b LightCyan => new C4b(Col.DoubleToByteClamped(0.878431), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C4b LightGoldenRodYellow => new C4b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.823529));
+        public static C4b LightGray => new C4b(Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451));
+        public static C4b LightGrey => new C4b(Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451), Col.DoubleToByteClamped(0.827451));
+        public static C4b LightGreen => new C4b(Col.DoubleToByteClamped(0.564706), Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.564706));
+        public static C4b LightPink => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.713725), Col.DoubleToByteClamped(0.756863));
+        public static C4b LightSalmon => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.627451), Col.DoubleToByteClamped(0.478431));
+        public static C4b LightSeaGreen => new C4b(Col.DoubleToByteClamped(0.12549), Col.DoubleToByteClamped(0.698039), Col.DoubleToByteClamped(0.666667));
+        public static C4b LightSkyBlue => new C4b(Col.DoubleToByteClamped(0.529412), Col.DoubleToByteClamped(0.807843), Col.DoubleToByteClamped(0.980392));
+        public static C4b LightSlateGray => new C4b(Col.DoubleToByteClamped(0.466667), Col.DoubleToByteClamped(0.533333), Col.DoubleToByteClamped(0.6));
+        public static C4b LightSlateGrey => new C4b(Col.DoubleToByteClamped(0.466667), Col.DoubleToByteClamped(0.533333), Col.DoubleToByteClamped(0.6));
+        public static C4b LightSteelBlue => new C4b(Col.DoubleToByteClamped(0.690196), Col.DoubleToByteClamped(0.768627), Col.DoubleToByteClamped(0.870588));
+        public static C4b LightYellow => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.878431));
+        public static C4b Lime => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0));
+        public static C4b LimeGreen => new C4b(Col.DoubleToByteClamped(0.196078), Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.196078));
+        public static C4b Linen => new C4b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.941176), Col.DoubleToByteClamped(0.901961));
+        public static C4b Magenta => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1));
+        public static C4b Maroon => new C4b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C4b MediumAquaMarine => new C4b(Col.DoubleToByteClamped(0.4), Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.666667));
+        public static C4b MediumBlue => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.803922));
+        public static C4b MediumOrchid => new C4b(Col.DoubleToByteClamped(0.729412), Col.DoubleToByteClamped(0.333333), Col.DoubleToByteClamped(0.827451));
+        public static C4b MediumPurple => new C4b(Col.DoubleToByteClamped(0.576471), Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.847059));
+        public static C4b MediumSeaGreen => new C4b(Col.DoubleToByteClamped(0.235294), Col.DoubleToByteClamped(0.701961), Col.DoubleToByteClamped(0.443137));
+        public static C4b MediumSlateBlue => new C4b(Col.DoubleToByteClamped(0.482353), Col.DoubleToByteClamped(0.407843), Col.DoubleToByteClamped(0.933333));
+        public static C4b MediumSpringGreen => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.603922));
+        public static C4b MediumTurquoise => new C4b(Col.DoubleToByteClamped(0.282353), Col.DoubleToByteClamped(0.819608), Col.DoubleToByteClamped(0.8));
+        public static C4b MediumVioletRed => new C4b(Col.DoubleToByteClamped(0.780392), Col.DoubleToByteClamped(0.082353), Col.DoubleToByteClamped(0.521569));
+        public static C4b MidnightBlue => new C4b(Col.DoubleToByteClamped(0.098039), Col.DoubleToByteClamped(0.098039), Col.DoubleToByteClamped(0.439216));
+        public static C4b MintCream => new C4b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392));
+        public static C4b MistyRose => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.894118), Col.DoubleToByteClamped(0.882353));
+        public static C4b Moccasin => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.894118), Col.DoubleToByteClamped(0.709804));
+        public static C4b NavajoWhite => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.870588), Col.DoubleToByteClamped(0.678431));
+        public static C4b Navy => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961));
+        public static C4b OldLace => new C4b(Col.DoubleToByteClamped(0.992157), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.901961));
+        public static C4b Olive => new C4b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0));
+        public static C4b OliveDrab => new C4b(Col.DoubleToByteClamped(0.419608), Col.DoubleToByteClamped(0.556863), Col.DoubleToByteClamped(0.137255));
+        public static C4b Orange => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.647059), Col.DoubleToByteClamped(0));
+        public static C4b OrangeRed => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.270588), Col.DoubleToByteClamped(0));
+        public static C4b Orchid => new C4b(Col.DoubleToByteClamped(0.854902), Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.839216));
+        public static C4b PaleGoldenRod => new C4b(Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.909804), Col.DoubleToByteClamped(0.666667));
+        public static C4b PaleGreen => new C4b(Col.DoubleToByteClamped(0.596078), Col.DoubleToByteClamped(0.984314), Col.DoubleToByteClamped(0.596078));
+        public static C4b PaleTurquoise => new C4b(Col.DoubleToByteClamped(0.686275), Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.933333));
+        public static C4b PaleVioletRed => new C4b(Col.DoubleToByteClamped(0.847059), Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.576471));
+        public static C4b PapayaWhip => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.937255), Col.DoubleToByteClamped(0.835294));
+        public static C4b PeachPuff => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.854902), Col.DoubleToByteClamped(0.72549));
+        public static C4b Peru => new C4b(Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.521569), Col.DoubleToByteClamped(0.247059));
+        public static C4b Pink => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.752941), Col.DoubleToByteClamped(0.796078));
+        public static C4b Plum => new C4b(Col.DoubleToByteClamped(0.866667), Col.DoubleToByteClamped(0.627451), Col.DoubleToByteClamped(0.866667));
+        public static C4b PowderBlue => new C4b(Col.DoubleToByteClamped(0.690196), Col.DoubleToByteClamped(0.878431), Col.DoubleToByteClamped(0.901961));
+        public static C4b Purple => new C4b(Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961));
+        public static C4b Red => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0));
+        public static C4b RosyBrown => new C4b(Col.DoubleToByteClamped(0.737255), Col.DoubleToByteClamped(0.560784), Col.DoubleToByteClamped(0.560784));
+        public static C4b RoyalBlue => new C4b(Col.DoubleToByteClamped(0.254902), Col.DoubleToByteClamped(0.411765), Col.DoubleToByteClamped(0.882353));
+        public static C4b SaddleBrown => new C4b(Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.270588), Col.DoubleToByteClamped(0.07451));
+        public static C4b Salmon => new C4b(Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.447059));
+        public static C4b SandyBrown => new C4b(Col.DoubleToByteClamped(0.956863), Col.DoubleToByteClamped(0.643137), Col.DoubleToByteClamped(0.376471));
+        public static C4b SeaGreen => new C4b(Col.DoubleToByteClamped(0.180392), Col.DoubleToByteClamped(0.545098), Col.DoubleToByteClamped(0.341176));
+        public static C4b SeaShell => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.933333));
+        public static C4b Sienna => new C4b(Col.DoubleToByteClamped(0.627451), Col.DoubleToByteClamped(0.321569), Col.DoubleToByteClamped(0.176471));
+        public static C4b Silver => new C4b(Col.DoubleToByteClamped(0.752941), Col.DoubleToByteClamped(0.752941), Col.DoubleToByteClamped(0.752941));
+        public static C4b SkyBlue => new C4b(Col.DoubleToByteClamped(0.529412), Col.DoubleToByteClamped(0.807843), Col.DoubleToByteClamped(0.921569));
+        public static C4b SlateBlue => new C4b(Col.DoubleToByteClamped(0.415686), Col.DoubleToByteClamped(0.352941), Col.DoubleToByteClamped(0.803922));
+        public static C4b SlateGray => new C4b(Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.564706));
+        public static C4b SlateGrey => new C4b(Col.DoubleToByteClamped(0.439216), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.564706));
+        public static C4b Snow => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.980392), Col.DoubleToByteClamped(0.980392));
+        public static C4b SpringGreen => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.498039));
+        public static C4b SteelBlue => new C4b(Col.DoubleToByteClamped(0.27451), Col.DoubleToByteClamped(0.509804), Col.DoubleToByteClamped(0.705882));
+        public static C4b Tan => new C4b(Col.DoubleToByteClamped(0.823529), Col.DoubleToByteClamped(0.705882), Col.DoubleToByteClamped(0.54902));
+        public static C4b Teal => new C4b(Col.DoubleToByteClamped(0), Col.DoubleToByteClamped(0.501961), Col.DoubleToByteClamped(0.501961));
+        public static C4b Thistle => new C4b(Col.DoubleToByteClamped(0.847059), Col.DoubleToByteClamped(0.74902), Col.DoubleToByteClamped(0.847059));
+        public static C4b Tomato => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0.388235), Col.DoubleToByteClamped(0.278431));
+        public static C4b Turquoise => new C4b(Col.DoubleToByteClamped(0.25098), Col.DoubleToByteClamped(0.878431), Col.DoubleToByteClamped(0.815686));
+        public static C4b Violet => new C4b(Col.DoubleToByteClamped(0.933333), Col.DoubleToByteClamped(0.509804), Col.DoubleToByteClamped(0.933333));
+        public static C4b Wheat => new C4b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.870588), Col.DoubleToByteClamped(0.701961));
+        public static C4b White => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1));
+        public static C4b WhiteSmoke => new C4b(Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.960784), Col.DoubleToByteClamped(0.960784));
+        public static C4b Yellow => new C4b(Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(1), Col.DoubleToByteClamped(0));
+        public static C4b YellowGreen => new C4b(Col.DoubleToByteClamped(0.603922), Col.DoubleToByteClamped(0.803922), Col.DoubleToByteClamped(0.196078));
 
         public static C4b DarkYellow => Olive;
 
-        public static C4b VRVisGreen => new C4b(Col.ByteFromDoubleClamped(0.698), Col.ByteFromDoubleClamped(0.851), Col.ByteFromDoubleClamped(0.008));
+        public static C4b VRVisGreen => new C4b(Col.DoubleToByteClamped(0.698), Col.DoubleToByteClamped(0.851), Col.DoubleToByteClamped(0.008));
 
-        public static C4b Gray10 => new C4b(Col.ByteFromDoubleClamped(0.1));
-        public static C4b Gray20 => new C4b(Col.ByteFromDoubleClamped(0.2));
-        public static C4b Gray30 => new C4b(Col.ByteFromDoubleClamped(0.3));
-        public static C4b Gray40 => new C4b(Col.ByteFromDoubleClamped(0.4));
-        public static C4b Gray50 => new C4b(Col.ByteFromDoubleClamped(0.5));
-        public static C4b Gray60 => new C4b(Col.ByteFromDoubleClamped(0.6));
-        public static C4b Gray70 => new C4b(Col.ByteFromDoubleClamped(0.7));
-        public static C4b Gray80 => new C4b(Col.ByteFromDoubleClamped(0.8));
-        public static C4b Gray90 => new C4b(Col.ByteFromDoubleClamped(0.9));
+        public static C4b Gray10 => new C4b(Col.DoubleToByteClamped(0.1));
+        public static C4b Gray20 => new C4b(Col.DoubleToByteClamped(0.2));
+        public static C4b Gray30 => new C4b(Col.DoubleToByteClamped(0.3));
+        public static C4b Gray40 => new C4b(Col.DoubleToByteClamped(0.4));
+        public static C4b Gray50 => new C4b(Col.DoubleToByteClamped(0.5));
+        public static C4b Gray60 => new C4b(Col.DoubleToByteClamped(0.6));
+        public static C4b Gray70 => new C4b(Col.DoubleToByteClamped(0.7));
+        public static C4b Gray80 => new C4b(Col.DoubleToByteClamped(0.8));
+        public static C4b Gray90 => new C4b(Col.DoubleToByteClamped(0.9));
 
         #endregion
 
@@ -12142,80 +12142,80 @@ namespace Aardvark.Base
         public static C4b operator +(C4b c0, C4us c1)
         {
             return new C4b(
-                (byte)(c0.R + Col.ByteFromUShort(c1.R)), 
-                (byte)(c0.G + Col.ByteFromUShort(c1.G)), 
-                (byte)(c0.B + Col.ByteFromUShort(c1.B)), 
-                (byte)(c0.A + Col.ByteFromUShort(c1.A)));
+                (byte)(c0.R + Col.UShortToByte(c1.R)), 
+                (byte)(c0.G + Col.UShortToByte(c1.G)), 
+                (byte)(c0.B + Col.UShortToByte(c1.B)), 
+                (byte)(c0.A + Col.UShortToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4us c1)
         {
             return new C4b(
-                (byte)(c0.R - Col.ByteFromUShort(c1.R)), 
-                (byte)(c0.G - Col.ByteFromUShort(c1.G)), 
-                (byte)(c0.B - Col.ByteFromUShort(c1.B)), 
-                (byte)(c0.A - Col.ByteFromUShort(c1.A)));
+                (byte)(c0.R - Col.UShortToByte(c1.R)), 
+                (byte)(c0.G - Col.UShortToByte(c1.G)), 
+                (byte)(c0.B - Col.UShortToByte(c1.B)), 
+                (byte)(c0.A - Col.UShortToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator +(C4b c0, C4ui c1)
         {
             return new C4b(
-                (byte)(c0.R + Col.ByteFromUInt(c1.R)), 
-                (byte)(c0.G + Col.ByteFromUInt(c1.G)), 
-                (byte)(c0.B + Col.ByteFromUInt(c1.B)), 
-                (byte)(c0.A + Col.ByteFromUInt(c1.A)));
+                (byte)(c0.R + Col.UIntToByte(c1.R)), 
+                (byte)(c0.G + Col.UIntToByte(c1.G)), 
+                (byte)(c0.B + Col.UIntToByte(c1.B)), 
+                (byte)(c0.A + Col.UIntToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4ui c1)
         {
             return new C4b(
-                (byte)(c0.R - Col.ByteFromUInt(c1.R)), 
-                (byte)(c0.G - Col.ByteFromUInt(c1.G)), 
-                (byte)(c0.B - Col.ByteFromUInt(c1.B)), 
-                (byte)(c0.A - Col.ByteFromUInt(c1.A)));
+                (byte)(c0.R - Col.UIntToByte(c1.R)), 
+                (byte)(c0.G - Col.UIntToByte(c1.G)), 
+                (byte)(c0.B - Col.UIntToByte(c1.B)), 
+                (byte)(c0.A - Col.UIntToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator +(C4b c0, C4f c1)
         {
             return new C4b(
-                (byte)(c0.R + Col.ByteFromFloat(c1.R)), 
-                (byte)(c0.G + Col.ByteFromFloat(c1.G)), 
-                (byte)(c0.B + Col.ByteFromFloat(c1.B)), 
-                (byte)(c0.A + Col.ByteFromFloat(c1.A)));
+                (byte)(c0.R + Col.FloatToByte(c1.R)), 
+                (byte)(c0.G + Col.FloatToByte(c1.G)), 
+                (byte)(c0.B + Col.FloatToByte(c1.B)), 
+                (byte)(c0.A + Col.FloatToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4f c1)
         {
             return new C4b(
-                (byte)(c0.R - Col.ByteFromFloat(c1.R)), 
-                (byte)(c0.G - Col.ByteFromFloat(c1.G)), 
-                (byte)(c0.B - Col.ByteFromFloat(c1.B)), 
-                (byte)(c0.A - Col.ByteFromFloat(c1.A)));
+                (byte)(c0.R - Col.FloatToByte(c1.R)), 
+                (byte)(c0.G - Col.FloatToByte(c1.G)), 
+                (byte)(c0.B - Col.FloatToByte(c1.B)), 
+                (byte)(c0.A - Col.FloatToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator +(C4b c0, C4d c1)
         {
             return new C4b(
-                (byte)(c0.R + Col.ByteFromDouble(c1.R)), 
-                (byte)(c0.G + Col.ByteFromDouble(c1.G)), 
-                (byte)(c0.B + Col.ByteFromDouble(c1.B)), 
-                (byte)(c0.A + Col.ByteFromDouble(c1.A)));
+                (byte)(c0.R + Col.DoubleToByte(c1.R)), 
+                (byte)(c0.G + Col.DoubleToByte(c1.G)), 
+                (byte)(c0.B + Col.DoubleToByte(c1.B)), 
+                (byte)(c0.A + Col.DoubleToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4d c1)
         {
             return new C4b(
-                (byte)(c0.R - Col.ByteFromDouble(c1.R)), 
-                (byte)(c0.G - Col.ByteFromDouble(c1.G)), 
-                (byte)(c0.B - Col.ByteFromDouble(c1.B)), 
-                (byte)(c0.A - Col.ByteFromDouble(c1.A)));
+                (byte)(c0.R - Col.DoubleToByte(c1.R)), 
+                (byte)(c0.G - Col.DoubleToByte(c1.G)), 
+                (byte)(c0.B - Col.DoubleToByte(c1.B)), 
+                (byte)(c0.A - Col.DoubleToByte(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -12467,20 +12467,20 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.DoubleFromByte(R); }
-            set { R = Col.ByteFromDoubleClamped(value); }
+            get { return Col.ByteToDouble(R); }
+            set { R = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.DoubleFromByte(G); }
-            set { G = Col.ByteFromDoubleClamped(value); }
+            get { return Col.ByteToDouble(G); }
+            set { G = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.DoubleFromByte(B); }
-            set { B = Col.ByteFromDoubleClamped(value); }
+            get { return Col.ByteToDouble(B); }
+            set { B = Col.DoubleToByteClamped(value); }
         }
 
         #endregion
@@ -12490,8 +12490,8 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return Col.DoubleFromByte(A); }
-            set { A = Col.ByteFromDoubleClamped(value); }
+            get { return Col.ByteToDouble(A); }
+            set { A = Col.DoubleToByteClamped(value); }
         }
 
         #endregion
@@ -13070,10 +13070,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(float r, float g, float b, float a)
         {
-            R = Col.UShortFromFloatClamped(r);
-            G = Col.UShortFromFloatClamped(g);
-            B = Col.UShortFromFloatClamped(b);
-            A = Col.UShortFromFloatClamped(a);
+            R = Col.FloatToUShortClamped(r);
+            G = Col.FloatToUShortClamped(g);
+            B = Col.FloatToUShortClamped(b);
+            A = Col.FloatToUShortClamped(a);
         }
 
         /// <summary>
@@ -13083,10 +13083,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double r, double g, double b, double a)
         {
-            R = Col.UShortFromDoubleClamped(r);
-            G = Col.UShortFromDoubleClamped(g);
-            B = Col.UShortFromDoubleClamped(b);
-            A = Col.UShortFromDoubleClamped(a);
+            R = Col.DoubleToUShortClamped(r);
+            G = Col.DoubleToUShortClamped(g);
+            B = Col.DoubleToUShortClamped(b);
+            A = Col.DoubleToUShortClamped(a);
         }
 
         /// <summary>
@@ -13133,9 +13133,9 @@ namespace Aardvark.Base
         public C4us(float r, float g, float b)
         {
             
-            R = Col.UShortFromFloatClamped(r); 
-            G = Col.UShortFromFloatClamped(g); 
-            B = Col.UShortFromFloatClamped(b);
+            R = Col.FloatToUShortClamped(r); 
+            G = Col.FloatToUShortClamped(g); 
+            B = Col.FloatToUShortClamped(b);
             A = 65535;
         }
 
@@ -13147,7 +13147,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double r, double g, double b)
         {
-            R = Col.UShortFromDoubleClamped(r); G = Col.UShortFromDoubleClamped(g); B = Col.UShortFromDoubleClamped(b);
+            R = Col.DoubleToUShortClamped(r); G = Col.DoubleToUShortClamped(g); B = Col.DoubleToUShortClamped(b);
             A = 65535;
         }
 
@@ -13169,7 +13169,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(float gray)
         {
-            var value = Col.UShortFromFloatClamped(gray);
+            var value = Col.FloatToUShortClamped(gray);
             R = value; G = value; B = value; A = 65535;
         }
 
@@ -13181,7 +13181,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double gray)
         {
-            var value = Col.UShortFromDoubleClamped(gray);
+            var value = Col.DoubleToUShortClamped(gray);
             R = value; G = value; B = value; A = 65535;
         }
 
@@ -13193,9 +13193,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3b color)
         {
-            R = Col.UShortFromByte(color.R);
-            G = Col.UShortFromByte(color.G);
-            B = Col.UShortFromByte(color.B);
+            R = Col.ByteToUShort(color.R);
+            G = Col.ByteToUShort(color.G);
+            B = Col.ByteToUShort(color.B);
             A = 65535;
         }
 
@@ -13206,9 +13206,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3b color, ushort alpha)
         {
-            R = Col.UShortFromByte(color.R);
-            G = Col.UShortFromByte(color.G);
-            B = Col.UShortFromByte(color.B);
+            R = Col.ByteToUShort(color.R);
+            G = Col.ByteToUShort(color.G);
+            B = Col.ByteToUShort(color.B);
             A = alpha;
         }
 
@@ -13245,9 +13245,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3ui color)
         {
-            R = Col.UShortFromUInt(color.R);
-            G = Col.UShortFromUInt(color.G);
-            B = Col.UShortFromUInt(color.B);
+            R = Col.UIntToUShort(color.R);
+            G = Col.UIntToUShort(color.G);
+            B = Col.UIntToUShort(color.B);
             A = 65535;
         }
 
@@ -13258,9 +13258,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3ui color, ushort alpha)
         {
-            R = Col.UShortFromUInt(color.R);
-            G = Col.UShortFromUInt(color.G);
-            B = Col.UShortFromUInt(color.B);
+            R = Col.UIntToUShort(color.R);
+            G = Col.UIntToUShort(color.G);
+            B = Col.UIntToUShort(color.B);
             A = alpha;
         }
 
@@ -13272,9 +13272,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3f color)
         {
-            R = Col.UShortFromFloat(color.R);
-            G = Col.UShortFromFloat(color.G);
-            B = Col.UShortFromFloat(color.B);
+            R = Col.FloatToUShort(color.R);
+            G = Col.FloatToUShort(color.G);
+            B = Col.FloatToUShort(color.B);
             A = 65535;
         }
 
@@ -13285,9 +13285,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3f color, ushort alpha)
         {
-            R = Col.UShortFromFloat(color.R);
-            G = Col.UShortFromFloat(color.G);
-            B = Col.UShortFromFloat(color.B);
+            R = Col.FloatToUShort(color.R);
+            G = Col.FloatToUShort(color.G);
+            B = Col.FloatToUShort(color.B);
             A = alpha;
         }
 
@@ -13299,9 +13299,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3d color)
         {
-            R = Col.UShortFromDouble(color.R);
-            G = Col.UShortFromDouble(color.G);
-            B = Col.UShortFromDouble(color.B);
+            R = Col.DoubleToUShort(color.R);
+            G = Col.DoubleToUShort(color.G);
+            B = Col.DoubleToUShort(color.B);
             A = 65535;
         }
 
@@ -13312,9 +13312,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3d color, ushort alpha)
         {
-            R = Col.UShortFromDouble(color.R);
-            G = Col.UShortFromDouble(color.G);
-            B = Col.UShortFromDouble(color.B);
+            R = Col.DoubleToUShort(color.R);
+            G = Col.DoubleToUShort(color.G);
+            B = Col.DoubleToUShort(color.B);
             A = alpha;
         }
 
@@ -13325,10 +13325,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4b color)
         {
-            R = Col.UShortFromByte(color.R);
-            G = Col.UShortFromByte(color.G);
-            B = Col.UShortFromByte(color.B);
-            A = Col.UShortFromByte(color.A);
+            R = Col.ByteToUShort(color.R);
+            G = Col.ByteToUShort(color.G);
+            B = Col.ByteToUShort(color.B);
+            A = Col.ByteToUShort(color.A);
         }
 
         /// <summary>
@@ -13350,10 +13350,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4ui color)
         {
-            R = Col.UShortFromUInt(color.R);
-            G = Col.UShortFromUInt(color.G);
-            B = Col.UShortFromUInt(color.B);
-            A = Col.UShortFromUInt(color.A);
+            R = Col.UIntToUShort(color.R);
+            G = Col.UIntToUShort(color.G);
+            B = Col.UIntToUShort(color.B);
+            A = Col.UIntToUShort(color.A);
         }
 
         /// <summary>
@@ -13363,10 +13363,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4f color)
         {
-            R = Col.UShortFromFloat(color.R);
-            G = Col.UShortFromFloat(color.G);
-            B = Col.UShortFromFloat(color.B);
-            A = Col.UShortFromFloat(color.A);
+            R = Col.FloatToUShort(color.R);
+            G = Col.FloatToUShort(color.G);
+            B = Col.FloatToUShort(color.B);
+            A = Col.FloatToUShort(color.A);
         }
 
         /// <summary>
@@ -13376,10 +13376,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4d color)
         {
-            R = Col.UShortFromDouble(color.R);
-            G = Col.UShortFromDouble(color.G);
-            B = Col.UShortFromDouble(color.B);
-            A = Col.UShortFromDouble(color.A);
+            R = Col.DoubleToUShort(color.R);
+            G = Col.DoubleToUShort(color.G);
+            B = Col.DoubleToUShort(color.B);
+            A = Col.DoubleToUShort(color.A);
         }
 
         /// <summary>
@@ -13601,10 +13601,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(byte[] values)
         {
-            R = Col.UShortFromByte(values[0]);
-            G = Col.UShortFromByte(values[1]);
-            B = Col.UShortFromByte(values[2]);
-            A = Col.UShortFromByte(values[3]);
+            R = Col.ByteToUShort(values[0]);
+            G = Col.ByteToUShort(values[1]);
+            B = Col.ByteToUShort(values[2]);
+            A = Col.ByteToUShort(values[3]);
         }
 
         /// <summary>
@@ -13614,10 +13614,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(byte[] values, int start)
         {
-            R = Col.UShortFromByte(values[start + 0]);
-            G = Col.UShortFromByte(values[start + 1]);
-            B = Col.UShortFromByte(values[start + 2]);
-            A = Col.UShortFromByte(values[start + 3]);
+            R = Col.ByteToUShort(values[start + 0]);
+            G = Col.ByteToUShort(values[start + 1]);
+            B = Col.ByteToUShort(values[start + 2]);
+            A = Col.ByteToUShort(values[start + 3]);
         }
 
         /// <summary>
@@ -13651,10 +13651,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(uint[] values)
         {
-            R = Col.UShortFromUInt(values[0]);
-            G = Col.UShortFromUInt(values[1]);
-            B = Col.UShortFromUInt(values[2]);
-            A = Col.UShortFromUInt(values[3]);
+            R = Col.UIntToUShort(values[0]);
+            G = Col.UIntToUShort(values[1]);
+            B = Col.UIntToUShort(values[2]);
+            A = Col.UIntToUShort(values[3]);
         }
 
         /// <summary>
@@ -13664,10 +13664,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(uint[] values, int start)
         {
-            R = Col.UShortFromUInt(values[start + 0]);
-            G = Col.UShortFromUInt(values[start + 1]);
-            B = Col.UShortFromUInt(values[start + 2]);
-            A = Col.UShortFromUInt(values[start + 3]);
+            R = Col.UIntToUShort(values[start + 0]);
+            G = Col.UIntToUShort(values[start + 1]);
+            B = Col.UIntToUShort(values[start + 2]);
+            A = Col.UIntToUShort(values[start + 3]);
         }
 
         /// <summary>
@@ -13677,10 +13677,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(float[] values)
         {
-            R = Col.UShortFromFloat(values[0]);
-            G = Col.UShortFromFloat(values[1]);
-            B = Col.UShortFromFloat(values[2]);
-            A = Col.UShortFromFloat(values[3]);
+            R = Col.FloatToUShort(values[0]);
+            G = Col.FloatToUShort(values[1]);
+            B = Col.FloatToUShort(values[2]);
+            A = Col.FloatToUShort(values[3]);
         }
 
         /// <summary>
@@ -13690,10 +13690,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(float[] values, int start)
         {
-            R = Col.UShortFromFloat(values[start + 0]);
-            G = Col.UShortFromFloat(values[start + 1]);
-            B = Col.UShortFromFloat(values[start + 2]);
-            A = Col.UShortFromFloat(values[start + 3]);
+            R = Col.FloatToUShort(values[start + 0]);
+            G = Col.FloatToUShort(values[start + 1]);
+            B = Col.FloatToUShort(values[start + 2]);
+            A = Col.FloatToUShort(values[start + 3]);
         }
 
         /// <summary>
@@ -13703,10 +13703,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double[] values)
         {
-            R = Col.UShortFromDouble(values[0]);
-            G = Col.UShortFromDouble(values[1]);
-            B = Col.UShortFromDouble(values[2]);
-            A = Col.UShortFromDouble(values[3]);
+            R = Col.DoubleToUShort(values[0]);
+            G = Col.DoubleToUShort(values[1]);
+            B = Col.DoubleToUShort(values[2]);
+            A = Col.DoubleToUShort(values[3]);
         }
 
         /// <summary>
@@ -13716,10 +13716,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double[] values, int start)
         {
-            R = Col.UShortFromDouble(values[start + 0]);
-            G = Col.UShortFromDouble(values[start + 1]);
-            B = Col.UShortFromDouble(values[start + 2]);
-            A = Col.UShortFromDouble(values[start + 3]);
+            R = Col.DoubleToUShort(values[start + 0]);
+            G = Col.DoubleToUShort(values[start + 1]);
+            B = Col.DoubleToUShort(values[start + 2]);
+            A = Col.DoubleToUShort(values[start + 3]);
         }
 
         #endregion
@@ -14181,7 +14181,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C4us color)
-            => new byte[] { Col.ByteFromUShort(color.R), Col.ByteFromUShort(color.G), Col.ByteFromUShort(color.B), Col.ByteFromUShort(color.A) };
+            => new byte[] { Col.UShortToByte(color.R), Col.UShortToByte(color.G), Col.UShortToByte(color.B), Col.UShortToByte(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -14211,7 +14211,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C4us color)
-            => new uint[] { Col.UIntFromUShort(color.R), Col.UIntFromUShort(color.G), Col.UIntFromUShort(color.B), Col.UIntFromUShort(color.A) };
+            => new uint[] { Col.UShortToUInt(color.R), Col.UShortToUInt(color.G), Col.UShortToUInt(color.B), Col.UShortToUInt(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -14227,7 +14227,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C4us color)
-            => new float[] { Col.FloatFromUShort(color.R), Col.FloatFromUShort(color.G), Col.FloatFromUShort(color.B), Col.FloatFromUShort(color.A) };
+            => new float[] { Col.UShortToFloat(color.R), Col.UShortToFloat(color.G), Col.UShortToFloat(color.B), Col.UShortToFloat(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -14243,7 +14243,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C4us color)
-            => new double[] { Col.DoubleFromUShort(color.R), Col.DoubleFromUShort(color.G), Col.DoubleFromUShort(color.B), Col.DoubleFromUShort(color.A) };
+            => new double[] { Col.UShortToDouble(color.R), Col.UShortToDouble(color.G), Col.UShortToDouble(color.B), Col.UShortToDouble(color.A) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -14343,167 +14343,167 @@ namespace Aardvark.Base
         public static C4us Zero => new C4us(0, 0, 0, 0);
 
         // Web colors
-        public static C4us AliceBlue => new C4us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(1));
-        public static C4us AntiqueWhite => new C4us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.921569), Col.UShortFromDoubleClamped(0.843137));
-        public static C4us Aqua => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C4us Aquamarine => new C4us(Col.UShortFromDoubleClamped(0.498039), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.831373));
-        public static C4us Azure => new C4us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C4us Beige => new C4us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.862745));
-        public static C4us Bisque => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.894118), Col.UShortFromDoubleClamped(0.768627));
-        public static C4us Black => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C4us BlanchedAlmond => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.921569), Col.UShortFromDoubleClamped(0.803922));
-        public static C4us Blue => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1));
-        public static C4us BlueViolet => new C4us(Col.UShortFromDoubleClamped(0.541176), Col.UShortFromDoubleClamped(0.168627), Col.UShortFromDoubleClamped(0.886275));
-        public static C4us Brown => new C4us(Col.UShortFromDoubleClamped(0.647059), Col.UShortFromDoubleClamped(0.164706), Col.UShortFromDoubleClamped(0.164706));
-        public static C4us BurlyWood => new C4us(Col.UShortFromDoubleClamped(0.870588), Col.UShortFromDoubleClamped(0.721569), Col.UShortFromDoubleClamped(0.529412));
-        public static C4us CadetBlue => new C4us(Col.UShortFromDoubleClamped(0.372549), Col.UShortFromDoubleClamped(0.619608), Col.UShortFromDoubleClamped(0.627451));
-        public static C4us Chartreuse => new C4us(Col.UShortFromDoubleClamped(0.498039), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0));
-        public static C4us Chocolate => new C4us(Col.UShortFromDoubleClamped(0.823529), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.117647));
-        public static C4us Coral => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.498039), Col.UShortFromDoubleClamped(0.313725));
-        public static C4us CornflowerBlue => new C4us(Col.UShortFromDoubleClamped(0.392157), Col.UShortFromDoubleClamped(0.584314), Col.UShortFromDoubleClamped(0.929412));
-        public static C4us Cornsilk => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(0.862745));
-        public static C4us Crimson => new C4us(Col.UShortFromDoubleClamped(0.862745), Col.UShortFromDoubleClamped(0.078431), Col.UShortFromDoubleClamped(0.235294));
-        public static C4us Cyan => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C4us DarkBlue => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.545098));
-        public static C4us DarkCyan => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.545098));
-        public static C4us DarkGoldenRod => new C4us(Col.UShortFromDoubleClamped(0.721569), Col.UShortFromDoubleClamped(0.52549), Col.UShortFromDoubleClamped(0.043137));
-        public static C4us DarkGray => new C4us(Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745));
-        public static C4us DarkGrey => new C4us(Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745), Col.UShortFromDoubleClamped(0.662745));
-        public static C4us DarkGreen => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.392157), Col.UShortFromDoubleClamped(0));
-        public static C4us DarkKhaki => new C4us(Col.UShortFromDoubleClamped(0.741176), Col.UShortFromDoubleClamped(0.717647), Col.UShortFromDoubleClamped(0.419608));
-        public static C4us DarkMagenta => new C4us(Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.545098));
-        public static C4us DarkOliveGreen => new C4us(Col.UShortFromDoubleClamped(0.333333), Col.UShortFromDoubleClamped(0.419608), Col.UShortFromDoubleClamped(0.184314));
-        public static C4us DarkOrange => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.54902), Col.UShortFromDoubleClamped(0));
-        public static C4us DarkOrchid => new C4us(Col.UShortFromDoubleClamped(0.6), Col.UShortFromDoubleClamped(0.196078), Col.UShortFromDoubleClamped(0.8));
-        public static C4us DarkRed => new C4us(Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C4us DarkSalmon => new C4us(Col.UShortFromDoubleClamped(0.913725), Col.UShortFromDoubleClamped(0.588235), Col.UShortFromDoubleClamped(0.478431));
-        public static C4us DarkSeaGreen => new C4us(Col.UShortFromDoubleClamped(0.560784), Col.UShortFromDoubleClamped(0.737255), Col.UShortFromDoubleClamped(0.560784));
-        public static C4us DarkSlateBlue => new C4us(Col.UShortFromDoubleClamped(0.282353), Col.UShortFromDoubleClamped(0.239216), Col.UShortFromDoubleClamped(0.545098));
-        public static C4us DarkSlateGray => new C4us(Col.UShortFromDoubleClamped(0.184314), Col.UShortFromDoubleClamped(0.309804), Col.UShortFromDoubleClamped(0.309804));
-        public static C4us DarkSlateGrey => new C4us(Col.UShortFromDoubleClamped(0.184314), Col.UShortFromDoubleClamped(0.309804), Col.UShortFromDoubleClamped(0.309804));
-        public static C4us DarkTurquoise => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.807843), Col.UShortFromDoubleClamped(0.819608));
-        public static C4us DarkViolet => new C4us(Col.UShortFromDoubleClamped(0.580392), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.827451));
-        public static C4us DeepPink => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.078431), Col.UShortFromDoubleClamped(0.576471));
-        public static C4us DeepSkyBlue => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.74902), Col.UShortFromDoubleClamped(1));
-        public static C4us DimGray => new C4us(Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765));
-        public static C4us DimGrey => new C4us(Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.411765));
-        public static C4us DodgerBlue => new C4us(Col.UShortFromDoubleClamped(0.117647), Col.UShortFromDoubleClamped(0.564706), Col.UShortFromDoubleClamped(1));
-        public static C4us FireBrick => new C4us(Col.UShortFromDoubleClamped(0.698039), Col.UShortFromDoubleClamped(0.133333), Col.UShortFromDoubleClamped(0.133333));
-        public static C4us FloralWhite => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.941176));
-        public static C4us ForestGreen => new C4us(Col.UShortFromDoubleClamped(0.133333), Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.133333));
-        public static C4us Fuchsia => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1));
-        public static C4us Gainsboro => new C4us(Col.UShortFromDoubleClamped(0.862745), Col.UShortFromDoubleClamped(0.862745), Col.UShortFromDoubleClamped(0.862745));
-        public static C4us GhostWhite => new C4us(Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(0.972549), Col.UShortFromDoubleClamped(1));
-        public static C4us Gold => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.843137), Col.UShortFromDoubleClamped(0));
-        public static C4us GoldenRod => new C4us(Col.UShortFromDoubleClamped(0.854902), Col.UShortFromDoubleClamped(0.647059), Col.UShortFromDoubleClamped(0.12549));
-        public static C4us Gray => new C4us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C4us Grey => new C4us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C4us Green => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0));
-        public static C4us GreenYellow => new C4us(Col.UShortFromDoubleClamped(0.678431), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.184314));
-        public static C4us HoneyDew => new C4us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.941176));
-        public static C4us HotPink => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.705882));
-        public static C4us IndianRed  => new C4us(Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.360784), Col.UShortFromDoubleClamped(0.360784));
-        public static C4us Indigo  => new C4us(Col.UShortFromDoubleClamped(0.294118), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.509804));
-        public static C4us Ivory => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.941176));
-        public static C4us Khaki => new C4us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.901961), Col.UShortFromDoubleClamped(0.54902));
-        public static C4us Lavender => new C4us(Col.UShortFromDoubleClamped(0.901961), Col.UShortFromDoubleClamped(0.901961), Col.UShortFromDoubleClamped(0.980392));
-        public static C4us LavenderBlush => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.960784));
-        public static C4us LawnGreen => new C4us(Col.UShortFromDoubleClamped(0.486275), Col.UShortFromDoubleClamped(0.988235), Col.UShortFromDoubleClamped(0));
-        public static C4us LemonChiffon => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.803922));
-        public static C4us LightBlue => new C4us(Col.UShortFromDoubleClamped(0.678431), Col.UShortFromDoubleClamped(0.847059), Col.UShortFromDoubleClamped(0.901961));
-        public static C4us LightCoral => new C4us(Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C4us LightCyan => new C4us(Col.UShortFromDoubleClamped(0.878431), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C4us LightGoldenRodYellow => new C4us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.823529));
-        public static C4us LightGray => new C4us(Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451));
-        public static C4us LightGrey => new C4us(Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451), Col.UShortFromDoubleClamped(0.827451));
-        public static C4us LightGreen => new C4us(Col.UShortFromDoubleClamped(0.564706), Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.564706));
-        public static C4us LightPink => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.713725), Col.UShortFromDoubleClamped(0.756863));
-        public static C4us LightSalmon => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.627451), Col.UShortFromDoubleClamped(0.478431));
-        public static C4us LightSeaGreen => new C4us(Col.UShortFromDoubleClamped(0.12549), Col.UShortFromDoubleClamped(0.698039), Col.UShortFromDoubleClamped(0.666667));
-        public static C4us LightSkyBlue => new C4us(Col.UShortFromDoubleClamped(0.529412), Col.UShortFromDoubleClamped(0.807843), Col.UShortFromDoubleClamped(0.980392));
-        public static C4us LightSlateGray => new C4us(Col.UShortFromDoubleClamped(0.466667), Col.UShortFromDoubleClamped(0.533333), Col.UShortFromDoubleClamped(0.6));
-        public static C4us LightSlateGrey => new C4us(Col.UShortFromDoubleClamped(0.466667), Col.UShortFromDoubleClamped(0.533333), Col.UShortFromDoubleClamped(0.6));
-        public static C4us LightSteelBlue => new C4us(Col.UShortFromDoubleClamped(0.690196), Col.UShortFromDoubleClamped(0.768627), Col.UShortFromDoubleClamped(0.870588));
-        public static C4us LightYellow => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.878431));
-        public static C4us Lime => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0));
-        public static C4us LimeGreen => new C4us(Col.UShortFromDoubleClamped(0.196078), Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.196078));
-        public static C4us Linen => new C4us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.941176), Col.UShortFromDoubleClamped(0.901961));
-        public static C4us Magenta => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1));
-        public static C4us Maroon => new C4us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C4us MediumAquaMarine => new C4us(Col.UShortFromDoubleClamped(0.4), Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.666667));
-        public static C4us MediumBlue => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.803922));
-        public static C4us MediumOrchid => new C4us(Col.UShortFromDoubleClamped(0.729412), Col.UShortFromDoubleClamped(0.333333), Col.UShortFromDoubleClamped(0.827451));
-        public static C4us MediumPurple => new C4us(Col.UShortFromDoubleClamped(0.576471), Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.847059));
-        public static C4us MediumSeaGreen => new C4us(Col.UShortFromDoubleClamped(0.235294), Col.UShortFromDoubleClamped(0.701961), Col.UShortFromDoubleClamped(0.443137));
-        public static C4us MediumSlateBlue => new C4us(Col.UShortFromDoubleClamped(0.482353), Col.UShortFromDoubleClamped(0.407843), Col.UShortFromDoubleClamped(0.933333));
-        public static C4us MediumSpringGreen => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.603922));
-        public static C4us MediumTurquoise => new C4us(Col.UShortFromDoubleClamped(0.282353), Col.UShortFromDoubleClamped(0.819608), Col.UShortFromDoubleClamped(0.8));
-        public static C4us MediumVioletRed => new C4us(Col.UShortFromDoubleClamped(0.780392), Col.UShortFromDoubleClamped(0.082353), Col.UShortFromDoubleClamped(0.521569));
-        public static C4us MidnightBlue => new C4us(Col.UShortFromDoubleClamped(0.098039), Col.UShortFromDoubleClamped(0.098039), Col.UShortFromDoubleClamped(0.439216));
-        public static C4us MintCream => new C4us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392));
-        public static C4us MistyRose => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.894118), Col.UShortFromDoubleClamped(0.882353));
-        public static C4us Moccasin => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.894118), Col.UShortFromDoubleClamped(0.709804));
-        public static C4us NavajoWhite => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.870588), Col.UShortFromDoubleClamped(0.678431));
-        public static C4us Navy => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961));
-        public static C4us OldLace => new C4us(Col.UShortFromDoubleClamped(0.992157), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.901961));
-        public static C4us Olive => new C4us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0));
-        public static C4us OliveDrab => new C4us(Col.UShortFromDoubleClamped(0.419608), Col.UShortFromDoubleClamped(0.556863), Col.UShortFromDoubleClamped(0.137255));
-        public static C4us Orange => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.647059), Col.UShortFromDoubleClamped(0));
-        public static C4us OrangeRed => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.270588), Col.UShortFromDoubleClamped(0));
-        public static C4us Orchid => new C4us(Col.UShortFromDoubleClamped(0.854902), Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.839216));
-        public static C4us PaleGoldenRod => new C4us(Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.909804), Col.UShortFromDoubleClamped(0.666667));
-        public static C4us PaleGreen => new C4us(Col.UShortFromDoubleClamped(0.596078), Col.UShortFromDoubleClamped(0.984314), Col.UShortFromDoubleClamped(0.596078));
-        public static C4us PaleTurquoise => new C4us(Col.UShortFromDoubleClamped(0.686275), Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.933333));
-        public static C4us PaleVioletRed => new C4us(Col.UShortFromDoubleClamped(0.847059), Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.576471));
-        public static C4us PapayaWhip => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.937255), Col.UShortFromDoubleClamped(0.835294));
-        public static C4us PeachPuff => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.854902), Col.UShortFromDoubleClamped(0.72549));
-        public static C4us Peru => new C4us(Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.521569), Col.UShortFromDoubleClamped(0.247059));
-        public static C4us Pink => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.752941), Col.UShortFromDoubleClamped(0.796078));
-        public static C4us Plum => new C4us(Col.UShortFromDoubleClamped(0.866667), Col.UShortFromDoubleClamped(0.627451), Col.UShortFromDoubleClamped(0.866667));
-        public static C4us PowderBlue => new C4us(Col.UShortFromDoubleClamped(0.690196), Col.UShortFromDoubleClamped(0.878431), Col.UShortFromDoubleClamped(0.901961));
-        public static C4us Purple => new C4us(Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961));
-        public static C4us Red => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0));
-        public static C4us RosyBrown => new C4us(Col.UShortFromDoubleClamped(0.737255), Col.UShortFromDoubleClamped(0.560784), Col.UShortFromDoubleClamped(0.560784));
-        public static C4us RoyalBlue => new C4us(Col.UShortFromDoubleClamped(0.254902), Col.UShortFromDoubleClamped(0.411765), Col.UShortFromDoubleClamped(0.882353));
-        public static C4us SaddleBrown => new C4us(Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.270588), Col.UShortFromDoubleClamped(0.07451));
-        public static C4us Salmon => new C4us(Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.447059));
-        public static C4us SandyBrown => new C4us(Col.UShortFromDoubleClamped(0.956863), Col.UShortFromDoubleClamped(0.643137), Col.UShortFromDoubleClamped(0.376471));
-        public static C4us SeaGreen => new C4us(Col.UShortFromDoubleClamped(0.180392), Col.UShortFromDoubleClamped(0.545098), Col.UShortFromDoubleClamped(0.341176));
-        public static C4us SeaShell => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.933333));
-        public static C4us Sienna => new C4us(Col.UShortFromDoubleClamped(0.627451), Col.UShortFromDoubleClamped(0.321569), Col.UShortFromDoubleClamped(0.176471));
-        public static C4us Silver => new C4us(Col.UShortFromDoubleClamped(0.752941), Col.UShortFromDoubleClamped(0.752941), Col.UShortFromDoubleClamped(0.752941));
-        public static C4us SkyBlue => new C4us(Col.UShortFromDoubleClamped(0.529412), Col.UShortFromDoubleClamped(0.807843), Col.UShortFromDoubleClamped(0.921569));
-        public static C4us SlateBlue => new C4us(Col.UShortFromDoubleClamped(0.415686), Col.UShortFromDoubleClamped(0.352941), Col.UShortFromDoubleClamped(0.803922));
-        public static C4us SlateGray => new C4us(Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.564706));
-        public static C4us SlateGrey => new C4us(Col.UShortFromDoubleClamped(0.439216), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.564706));
-        public static C4us Snow => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.980392), Col.UShortFromDoubleClamped(0.980392));
-        public static C4us SpringGreen => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.498039));
-        public static C4us SteelBlue => new C4us(Col.UShortFromDoubleClamped(0.27451), Col.UShortFromDoubleClamped(0.509804), Col.UShortFromDoubleClamped(0.705882));
-        public static C4us Tan => new C4us(Col.UShortFromDoubleClamped(0.823529), Col.UShortFromDoubleClamped(0.705882), Col.UShortFromDoubleClamped(0.54902));
-        public static C4us Teal => new C4us(Col.UShortFromDoubleClamped(0), Col.UShortFromDoubleClamped(0.501961), Col.UShortFromDoubleClamped(0.501961));
-        public static C4us Thistle => new C4us(Col.UShortFromDoubleClamped(0.847059), Col.UShortFromDoubleClamped(0.74902), Col.UShortFromDoubleClamped(0.847059));
-        public static C4us Tomato => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0.388235), Col.UShortFromDoubleClamped(0.278431));
-        public static C4us Turquoise => new C4us(Col.UShortFromDoubleClamped(0.25098), Col.UShortFromDoubleClamped(0.878431), Col.UShortFromDoubleClamped(0.815686));
-        public static C4us Violet => new C4us(Col.UShortFromDoubleClamped(0.933333), Col.UShortFromDoubleClamped(0.509804), Col.UShortFromDoubleClamped(0.933333));
-        public static C4us Wheat => new C4us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.870588), Col.UShortFromDoubleClamped(0.701961));
-        public static C4us White => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1));
-        public static C4us WhiteSmoke => new C4us(Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.960784), Col.UShortFromDoubleClamped(0.960784));
-        public static C4us Yellow => new C4us(Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(1), Col.UShortFromDoubleClamped(0));
-        public static C4us YellowGreen => new C4us(Col.UShortFromDoubleClamped(0.603922), Col.UShortFromDoubleClamped(0.803922), Col.UShortFromDoubleClamped(0.196078));
+        public static C4us AliceBlue => new C4us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(1));
+        public static C4us AntiqueWhite => new C4us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.921569), Col.DoubleToUShortClamped(0.843137));
+        public static C4us Aqua => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C4us Aquamarine => new C4us(Col.DoubleToUShortClamped(0.498039), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.831373));
+        public static C4us Azure => new C4us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C4us Beige => new C4us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.862745));
+        public static C4us Bisque => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.894118), Col.DoubleToUShortClamped(0.768627));
+        public static C4us Black => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C4us BlanchedAlmond => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.921569), Col.DoubleToUShortClamped(0.803922));
+        public static C4us Blue => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1));
+        public static C4us BlueViolet => new C4us(Col.DoubleToUShortClamped(0.541176), Col.DoubleToUShortClamped(0.168627), Col.DoubleToUShortClamped(0.886275));
+        public static C4us Brown => new C4us(Col.DoubleToUShortClamped(0.647059), Col.DoubleToUShortClamped(0.164706), Col.DoubleToUShortClamped(0.164706));
+        public static C4us BurlyWood => new C4us(Col.DoubleToUShortClamped(0.870588), Col.DoubleToUShortClamped(0.721569), Col.DoubleToUShortClamped(0.529412));
+        public static C4us CadetBlue => new C4us(Col.DoubleToUShortClamped(0.372549), Col.DoubleToUShortClamped(0.619608), Col.DoubleToUShortClamped(0.627451));
+        public static C4us Chartreuse => new C4us(Col.DoubleToUShortClamped(0.498039), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0));
+        public static C4us Chocolate => new C4us(Col.DoubleToUShortClamped(0.823529), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.117647));
+        public static C4us Coral => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.498039), Col.DoubleToUShortClamped(0.313725));
+        public static C4us CornflowerBlue => new C4us(Col.DoubleToUShortClamped(0.392157), Col.DoubleToUShortClamped(0.584314), Col.DoubleToUShortClamped(0.929412));
+        public static C4us Cornsilk => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(0.862745));
+        public static C4us Crimson => new C4us(Col.DoubleToUShortClamped(0.862745), Col.DoubleToUShortClamped(0.078431), Col.DoubleToUShortClamped(0.235294));
+        public static C4us Cyan => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C4us DarkBlue => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.545098));
+        public static C4us DarkCyan => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.545098));
+        public static C4us DarkGoldenRod => new C4us(Col.DoubleToUShortClamped(0.721569), Col.DoubleToUShortClamped(0.52549), Col.DoubleToUShortClamped(0.043137));
+        public static C4us DarkGray => new C4us(Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745));
+        public static C4us DarkGrey => new C4us(Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745), Col.DoubleToUShortClamped(0.662745));
+        public static C4us DarkGreen => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.392157), Col.DoubleToUShortClamped(0));
+        public static C4us DarkKhaki => new C4us(Col.DoubleToUShortClamped(0.741176), Col.DoubleToUShortClamped(0.717647), Col.DoubleToUShortClamped(0.419608));
+        public static C4us DarkMagenta => new C4us(Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.545098));
+        public static C4us DarkOliveGreen => new C4us(Col.DoubleToUShortClamped(0.333333), Col.DoubleToUShortClamped(0.419608), Col.DoubleToUShortClamped(0.184314));
+        public static C4us DarkOrange => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.54902), Col.DoubleToUShortClamped(0));
+        public static C4us DarkOrchid => new C4us(Col.DoubleToUShortClamped(0.6), Col.DoubleToUShortClamped(0.196078), Col.DoubleToUShortClamped(0.8));
+        public static C4us DarkRed => new C4us(Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C4us DarkSalmon => new C4us(Col.DoubleToUShortClamped(0.913725), Col.DoubleToUShortClamped(0.588235), Col.DoubleToUShortClamped(0.478431));
+        public static C4us DarkSeaGreen => new C4us(Col.DoubleToUShortClamped(0.560784), Col.DoubleToUShortClamped(0.737255), Col.DoubleToUShortClamped(0.560784));
+        public static C4us DarkSlateBlue => new C4us(Col.DoubleToUShortClamped(0.282353), Col.DoubleToUShortClamped(0.239216), Col.DoubleToUShortClamped(0.545098));
+        public static C4us DarkSlateGray => new C4us(Col.DoubleToUShortClamped(0.184314), Col.DoubleToUShortClamped(0.309804), Col.DoubleToUShortClamped(0.309804));
+        public static C4us DarkSlateGrey => new C4us(Col.DoubleToUShortClamped(0.184314), Col.DoubleToUShortClamped(0.309804), Col.DoubleToUShortClamped(0.309804));
+        public static C4us DarkTurquoise => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.807843), Col.DoubleToUShortClamped(0.819608));
+        public static C4us DarkViolet => new C4us(Col.DoubleToUShortClamped(0.580392), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.827451));
+        public static C4us DeepPink => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.078431), Col.DoubleToUShortClamped(0.576471));
+        public static C4us DeepSkyBlue => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.74902), Col.DoubleToUShortClamped(1));
+        public static C4us DimGray => new C4us(Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765));
+        public static C4us DimGrey => new C4us(Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.411765));
+        public static C4us DodgerBlue => new C4us(Col.DoubleToUShortClamped(0.117647), Col.DoubleToUShortClamped(0.564706), Col.DoubleToUShortClamped(1));
+        public static C4us FireBrick => new C4us(Col.DoubleToUShortClamped(0.698039), Col.DoubleToUShortClamped(0.133333), Col.DoubleToUShortClamped(0.133333));
+        public static C4us FloralWhite => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.941176));
+        public static C4us ForestGreen => new C4us(Col.DoubleToUShortClamped(0.133333), Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.133333));
+        public static C4us Fuchsia => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1));
+        public static C4us Gainsboro => new C4us(Col.DoubleToUShortClamped(0.862745), Col.DoubleToUShortClamped(0.862745), Col.DoubleToUShortClamped(0.862745));
+        public static C4us GhostWhite => new C4us(Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(0.972549), Col.DoubleToUShortClamped(1));
+        public static C4us Gold => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.843137), Col.DoubleToUShortClamped(0));
+        public static C4us GoldenRod => new C4us(Col.DoubleToUShortClamped(0.854902), Col.DoubleToUShortClamped(0.647059), Col.DoubleToUShortClamped(0.12549));
+        public static C4us Gray => new C4us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C4us Grey => new C4us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C4us Green => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0));
+        public static C4us GreenYellow => new C4us(Col.DoubleToUShortClamped(0.678431), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.184314));
+        public static C4us HoneyDew => new C4us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.941176));
+        public static C4us HotPink => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.705882));
+        public static C4us IndianRed  => new C4us(Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.360784), Col.DoubleToUShortClamped(0.360784));
+        public static C4us Indigo  => new C4us(Col.DoubleToUShortClamped(0.294118), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.509804));
+        public static C4us Ivory => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.941176));
+        public static C4us Khaki => new C4us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.901961), Col.DoubleToUShortClamped(0.54902));
+        public static C4us Lavender => new C4us(Col.DoubleToUShortClamped(0.901961), Col.DoubleToUShortClamped(0.901961), Col.DoubleToUShortClamped(0.980392));
+        public static C4us LavenderBlush => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.960784));
+        public static C4us LawnGreen => new C4us(Col.DoubleToUShortClamped(0.486275), Col.DoubleToUShortClamped(0.988235), Col.DoubleToUShortClamped(0));
+        public static C4us LemonChiffon => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.803922));
+        public static C4us LightBlue => new C4us(Col.DoubleToUShortClamped(0.678431), Col.DoubleToUShortClamped(0.847059), Col.DoubleToUShortClamped(0.901961));
+        public static C4us LightCoral => new C4us(Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C4us LightCyan => new C4us(Col.DoubleToUShortClamped(0.878431), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C4us LightGoldenRodYellow => new C4us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.823529));
+        public static C4us LightGray => new C4us(Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451));
+        public static C4us LightGrey => new C4us(Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451), Col.DoubleToUShortClamped(0.827451));
+        public static C4us LightGreen => new C4us(Col.DoubleToUShortClamped(0.564706), Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.564706));
+        public static C4us LightPink => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.713725), Col.DoubleToUShortClamped(0.756863));
+        public static C4us LightSalmon => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.627451), Col.DoubleToUShortClamped(0.478431));
+        public static C4us LightSeaGreen => new C4us(Col.DoubleToUShortClamped(0.12549), Col.DoubleToUShortClamped(0.698039), Col.DoubleToUShortClamped(0.666667));
+        public static C4us LightSkyBlue => new C4us(Col.DoubleToUShortClamped(0.529412), Col.DoubleToUShortClamped(0.807843), Col.DoubleToUShortClamped(0.980392));
+        public static C4us LightSlateGray => new C4us(Col.DoubleToUShortClamped(0.466667), Col.DoubleToUShortClamped(0.533333), Col.DoubleToUShortClamped(0.6));
+        public static C4us LightSlateGrey => new C4us(Col.DoubleToUShortClamped(0.466667), Col.DoubleToUShortClamped(0.533333), Col.DoubleToUShortClamped(0.6));
+        public static C4us LightSteelBlue => new C4us(Col.DoubleToUShortClamped(0.690196), Col.DoubleToUShortClamped(0.768627), Col.DoubleToUShortClamped(0.870588));
+        public static C4us LightYellow => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.878431));
+        public static C4us Lime => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0));
+        public static C4us LimeGreen => new C4us(Col.DoubleToUShortClamped(0.196078), Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.196078));
+        public static C4us Linen => new C4us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.941176), Col.DoubleToUShortClamped(0.901961));
+        public static C4us Magenta => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1));
+        public static C4us Maroon => new C4us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C4us MediumAquaMarine => new C4us(Col.DoubleToUShortClamped(0.4), Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.666667));
+        public static C4us MediumBlue => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.803922));
+        public static C4us MediumOrchid => new C4us(Col.DoubleToUShortClamped(0.729412), Col.DoubleToUShortClamped(0.333333), Col.DoubleToUShortClamped(0.827451));
+        public static C4us MediumPurple => new C4us(Col.DoubleToUShortClamped(0.576471), Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.847059));
+        public static C4us MediumSeaGreen => new C4us(Col.DoubleToUShortClamped(0.235294), Col.DoubleToUShortClamped(0.701961), Col.DoubleToUShortClamped(0.443137));
+        public static C4us MediumSlateBlue => new C4us(Col.DoubleToUShortClamped(0.482353), Col.DoubleToUShortClamped(0.407843), Col.DoubleToUShortClamped(0.933333));
+        public static C4us MediumSpringGreen => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.603922));
+        public static C4us MediumTurquoise => new C4us(Col.DoubleToUShortClamped(0.282353), Col.DoubleToUShortClamped(0.819608), Col.DoubleToUShortClamped(0.8));
+        public static C4us MediumVioletRed => new C4us(Col.DoubleToUShortClamped(0.780392), Col.DoubleToUShortClamped(0.082353), Col.DoubleToUShortClamped(0.521569));
+        public static C4us MidnightBlue => new C4us(Col.DoubleToUShortClamped(0.098039), Col.DoubleToUShortClamped(0.098039), Col.DoubleToUShortClamped(0.439216));
+        public static C4us MintCream => new C4us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392));
+        public static C4us MistyRose => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.894118), Col.DoubleToUShortClamped(0.882353));
+        public static C4us Moccasin => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.894118), Col.DoubleToUShortClamped(0.709804));
+        public static C4us NavajoWhite => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.870588), Col.DoubleToUShortClamped(0.678431));
+        public static C4us Navy => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961));
+        public static C4us OldLace => new C4us(Col.DoubleToUShortClamped(0.992157), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.901961));
+        public static C4us Olive => new C4us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0));
+        public static C4us OliveDrab => new C4us(Col.DoubleToUShortClamped(0.419608), Col.DoubleToUShortClamped(0.556863), Col.DoubleToUShortClamped(0.137255));
+        public static C4us Orange => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.647059), Col.DoubleToUShortClamped(0));
+        public static C4us OrangeRed => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.270588), Col.DoubleToUShortClamped(0));
+        public static C4us Orchid => new C4us(Col.DoubleToUShortClamped(0.854902), Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.839216));
+        public static C4us PaleGoldenRod => new C4us(Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.909804), Col.DoubleToUShortClamped(0.666667));
+        public static C4us PaleGreen => new C4us(Col.DoubleToUShortClamped(0.596078), Col.DoubleToUShortClamped(0.984314), Col.DoubleToUShortClamped(0.596078));
+        public static C4us PaleTurquoise => new C4us(Col.DoubleToUShortClamped(0.686275), Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.933333));
+        public static C4us PaleVioletRed => new C4us(Col.DoubleToUShortClamped(0.847059), Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.576471));
+        public static C4us PapayaWhip => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.937255), Col.DoubleToUShortClamped(0.835294));
+        public static C4us PeachPuff => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.854902), Col.DoubleToUShortClamped(0.72549));
+        public static C4us Peru => new C4us(Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.521569), Col.DoubleToUShortClamped(0.247059));
+        public static C4us Pink => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.752941), Col.DoubleToUShortClamped(0.796078));
+        public static C4us Plum => new C4us(Col.DoubleToUShortClamped(0.866667), Col.DoubleToUShortClamped(0.627451), Col.DoubleToUShortClamped(0.866667));
+        public static C4us PowderBlue => new C4us(Col.DoubleToUShortClamped(0.690196), Col.DoubleToUShortClamped(0.878431), Col.DoubleToUShortClamped(0.901961));
+        public static C4us Purple => new C4us(Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961));
+        public static C4us Red => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0));
+        public static C4us RosyBrown => new C4us(Col.DoubleToUShortClamped(0.737255), Col.DoubleToUShortClamped(0.560784), Col.DoubleToUShortClamped(0.560784));
+        public static C4us RoyalBlue => new C4us(Col.DoubleToUShortClamped(0.254902), Col.DoubleToUShortClamped(0.411765), Col.DoubleToUShortClamped(0.882353));
+        public static C4us SaddleBrown => new C4us(Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.270588), Col.DoubleToUShortClamped(0.07451));
+        public static C4us Salmon => new C4us(Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.447059));
+        public static C4us SandyBrown => new C4us(Col.DoubleToUShortClamped(0.956863), Col.DoubleToUShortClamped(0.643137), Col.DoubleToUShortClamped(0.376471));
+        public static C4us SeaGreen => new C4us(Col.DoubleToUShortClamped(0.180392), Col.DoubleToUShortClamped(0.545098), Col.DoubleToUShortClamped(0.341176));
+        public static C4us SeaShell => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.933333));
+        public static C4us Sienna => new C4us(Col.DoubleToUShortClamped(0.627451), Col.DoubleToUShortClamped(0.321569), Col.DoubleToUShortClamped(0.176471));
+        public static C4us Silver => new C4us(Col.DoubleToUShortClamped(0.752941), Col.DoubleToUShortClamped(0.752941), Col.DoubleToUShortClamped(0.752941));
+        public static C4us SkyBlue => new C4us(Col.DoubleToUShortClamped(0.529412), Col.DoubleToUShortClamped(0.807843), Col.DoubleToUShortClamped(0.921569));
+        public static C4us SlateBlue => new C4us(Col.DoubleToUShortClamped(0.415686), Col.DoubleToUShortClamped(0.352941), Col.DoubleToUShortClamped(0.803922));
+        public static C4us SlateGray => new C4us(Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.564706));
+        public static C4us SlateGrey => new C4us(Col.DoubleToUShortClamped(0.439216), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.564706));
+        public static C4us Snow => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.980392), Col.DoubleToUShortClamped(0.980392));
+        public static C4us SpringGreen => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.498039));
+        public static C4us SteelBlue => new C4us(Col.DoubleToUShortClamped(0.27451), Col.DoubleToUShortClamped(0.509804), Col.DoubleToUShortClamped(0.705882));
+        public static C4us Tan => new C4us(Col.DoubleToUShortClamped(0.823529), Col.DoubleToUShortClamped(0.705882), Col.DoubleToUShortClamped(0.54902));
+        public static C4us Teal => new C4us(Col.DoubleToUShortClamped(0), Col.DoubleToUShortClamped(0.501961), Col.DoubleToUShortClamped(0.501961));
+        public static C4us Thistle => new C4us(Col.DoubleToUShortClamped(0.847059), Col.DoubleToUShortClamped(0.74902), Col.DoubleToUShortClamped(0.847059));
+        public static C4us Tomato => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0.388235), Col.DoubleToUShortClamped(0.278431));
+        public static C4us Turquoise => new C4us(Col.DoubleToUShortClamped(0.25098), Col.DoubleToUShortClamped(0.878431), Col.DoubleToUShortClamped(0.815686));
+        public static C4us Violet => new C4us(Col.DoubleToUShortClamped(0.933333), Col.DoubleToUShortClamped(0.509804), Col.DoubleToUShortClamped(0.933333));
+        public static C4us Wheat => new C4us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.870588), Col.DoubleToUShortClamped(0.701961));
+        public static C4us White => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1));
+        public static C4us WhiteSmoke => new C4us(Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.960784), Col.DoubleToUShortClamped(0.960784));
+        public static C4us Yellow => new C4us(Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(1), Col.DoubleToUShortClamped(0));
+        public static C4us YellowGreen => new C4us(Col.DoubleToUShortClamped(0.603922), Col.DoubleToUShortClamped(0.803922), Col.DoubleToUShortClamped(0.196078));
 
         public static C4us DarkYellow => Olive;
 
-        public static C4us VRVisGreen => new C4us(Col.UShortFromDoubleClamped(0.698), Col.UShortFromDoubleClamped(0.851), Col.UShortFromDoubleClamped(0.008));
+        public static C4us VRVisGreen => new C4us(Col.DoubleToUShortClamped(0.698), Col.DoubleToUShortClamped(0.851), Col.DoubleToUShortClamped(0.008));
 
-        public static C4us Gray10 => new C4us(Col.UShortFromDoubleClamped(0.1));
-        public static C4us Gray20 => new C4us(Col.UShortFromDoubleClamped(0.2));
-        public static C4us Gray30 => new C4us(Col.UShortFromDoubleClamped(0.3));
-        public static C4us Gray40 => new C4us(Col.UShortFromDoubleClamped(0.4));
-        public static C4us Gray50 => new C4us(Col.UShortFromDoubleClamped(0.5));
-        public static C4us Gray60 => new C4us(Col.UShortFromDoubleClamped(0.6));
-        public static C4us Gray70 => new C4us(Col.UShortFromDoubleClamped(0.7));
-        public static C4us Gray80 => new C4us(Col.UShortFromDoubleClamped(0.8));
-        public static C4us Gray90 => new C4us(Col.UShortFromDoubleClamped(0.9));
+        public static C4us Gray10 => new C4us(Col.DoubleToUShortClamped(0.1));
+        public static C4us Gray20 => new C4us(Col.DoubleToUShortClamped(0.2));
+        public static C4us Gray30 => new C4us(Col.DoubleToUShortClamped(0.3));
+        public static C4us Gray40 => new C4us(Col.DoubleToUShortClamped(0.4));
+        public static C4us Gray50 => new C4us(Col.DoubleToUShortClamped(0.5));
+        public static C4us Gray60 => new C4us(Col.DoubleToUShortClamped(0.6));
+        public static C4us Gray70 => new C4us(Col.DoubleToUShortClamped(0.7));
+        public static C4us Gray80 => new C4us(Col.DoubleToUShortClamped(0.8));
+        public static C4us Gray90 => new C4us(Col.DoubleToUShortClamped(0.9));
 
         #endregion
 
@@ -14599,20 +14599,20 @@ namespace Aardvark.Base
         public static C4us operator +(C4us c0, C4b c1)
         {
             return new C4us(
-                (ushort)(c0.R + Col.UShortFromByte(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromByte(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromByte(c1.B)), 
-                (ushort)(c0.A + Col.UShortFromByte(c1.A)));
+                (ushort)(c0.R + Col.ByteToUShort(c1.R)), 
+                (ushort)(c0.G + Col.ByteToUShort(c1.G)), 
+                (ushort)(c0.B + Col.ByteToUShort(c1.B)), 
+                (ushort)(c0.A + Col.ByteToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4b c1)
         {
             return new C4us(
-                (ushort)(c0.R - Col.UShortFromByte(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromByte(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromByte(c1.B)), 
-                (ushort)(c0.A - Col.UShortFromByte(c1.A)));
+                (ushort)(c0.R - Col.ByteToUShort(c1.R)), 
+                (ushort)(c0.G - Col.ByteToUShort(c1.G)), 
+                (ushort)(c0.B - Col.ByteToUShort(c1.B)), 
+                (ushort)(c0.A - Col.ByteToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14639,60 +14639,60 @@ namespace Aardvark.Base
         public static C4us operator +(C4us c0, C4ui c1)
         {
             return new C4us(
-                (ushort)(c0.R + Col.UShortFromUInt(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromUInt(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromUInt(c1.B)), 
-                (ushort)(c0.A + Col.UShortFromUInt(c1.A)));
+                (ushort)(c0.R + Col.UIntToUShort(c1.R)), 
+                (ushort)(c0.G + Col.UIntToUShort(c1.G)), 
+                (ushort)(c0.B + Col.UIntToUShort(c1.B)), 
+                (ushort)(c0.A + Col.UIntToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4ui c1)
         {
             return new C4us(
-                (ushort)(c0.R - Col.UShortFromUInt(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromUInt(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromUInt(c1.B)), 
-                (ushort)(c0.A - Col.UShortFromUInt(c1.A)));
+                (ushort)(c0.R - Col.UIntToUShort(c1.R)), 
+                (ushort)(c0.G - Col.UIntToUShort(c1.G)), 
+                (ushort)(c0.B - Col.UIntToUShort(c1.B)), 
+                (ushort)(c0.A - Col.UIntToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator +(C4us c0, C4f c1)
         {
             return new C4us(
-                (ushort)(c0.R + Col.UShortFromFloat(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromFloat(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromFloat(c1.B)), 
-                (ushort)(c0.A + Col.UShortFromFloat(c1.A)));
+                (ushort)(c0.R + Col.FloatToUShort(c1.R)), 
+                (ushort)(c0.G + Col.FloatToUShort(c1.G)), 
+                (ushort)(c0.B + Col.FloatToUShort(c1.B)), 
+                (ushort)(c0.A + Col.FloatToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4f c1)
         {
             return new C4us(
-                (ushort)(c0.R - Col.UShortFromFloat(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromFloat(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromFloat(c1.B)), 
-                (ushort)(c0.A - Col.UShortFromFloat(c1.A)));
+                (ushort)(c0.R - Col.FloatToUShort(c1.R)), 
+                (ushort)(c0.G - Col.FloatToUShort(c1.G)), 
+                (ushort)(c0.B - Col.FloatToUShort(c1.B)), 
+                (ushort)(c0.A - Col.FloatToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator +(C4us c0, C4d c1)
         {
             return new C4us(
-                (ushort)(c0.R + Col.UShortFromDouble(c1.R)), 
-                (ushort)(c0.G + Col.UShortFromDouble(c1.G)), 
-                (ushort)(c0.B + Col.UShortFromDouble(c1.B)), 
-                (ushort)(c0.A + Col.UShortFromDouble(c1.A)));
+                (ushort)(c0.R + Col.DoubleToUShort(c1.R)), 
+                (ushort)(c0.G + Col.DoubleToUShort(c1.G)), 
+                (ushort)(c0.B + Col.DoubleToUShort(c1.B)), 
+                (ushort)(c0.A + Col.DoubleToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4d c1)
         {
             return new C4us(
-                (ushort)(c0.R - Col.UShortFromDouble(c1.R)), 
-                (ushort)(c0.G - Col.UShortFromDouble(c1.G)), 
-                (ushort)(c0.B - Col.UShortFromDouble(c1.B)), 
-                (ushort)(c0.A - Col.UShortFromDouble(c1.A)));
+                (ushort)(c0.R - Col.DoubleToUShort(c1.R)), 
+                (ushort)(c0.G - Col.DoubleToUShort(c1.G)), 
+                (ushort)(c0.B - Col.DoubleToUShort(c1.B)), 
+                (ushort)(c0.A - Col.DoubleToUShort(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14944,20 +14944,20 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.DoubleFromUShort(R); }
-            set { R = Col.UShortFromDoubleClamped(value); }
+            get { return Col.UShortToDouble(R); }
+            set { R = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.DoubleFromUShort(G); }
-            set { G = Col.UShortFromDoubleClamped(value); }
+            get { return Col.UShortToDouble(G); }
+            set { G = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.DoubleFromUShort(B); }
-            set { B = Col.UShortFromDoubleClamped(value); }
+            get { return Col.UShortToDouble(B); }
+            set { B = Col.DoubleToUShortClamped(value); }
         }
 
         #endregion
@@ -14967,8 +14967,8 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return Col.DoubleFromUShort(A); }
-            set { A = Col.UShortFromDoubleClamped(value); }
+            get { return Col.UShortToDouble(A); }
+            set { A = Col.DoubleToUShortClamped(value); }
         }
 
         #endregion
@@ -15547,10 +15547,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(float r, float g, float b, float a)
         {
-            R = Col.UIntFromFloatClamped(r);
-            G = Col.UIntFromFloatClamped(g);
-            B = Col.UIntFromFloatClamped(b);
-            A = Col.UIntFromFloatClamped(a);
+            R = Col.FloatToUIntClamped(r);
+            G = Col.FloatToUIntClamped(g);
+            B = Col.FloatToUIntClamped(b);
+            A = Col.FloatToUIntClamped(a);
         }
 
         /// <summary>
@@ -15560,10 +15560,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double r, double g, double b, double a)
         {
-            R = Col.UIntFromDoubleClamped(r);
-            G = Col.UIntFromDoubleClamped(g);
-            B = Col.UIntFromDoubleClamped(b);
-            A = Col.UIntFromDoubleClamped(a);
+            R = Col.DoubleToUIntClamped(r);
+            G = Col.DoubleToUIntClamped(g);
+            B = Col.DoubleToUIntClamped(b);
+            A = Col.DoubleToUIntClamped(a);
         }
 
         /// <summary>
@@ -15610,9 +15610,9 @@ namespace Aardvark.Base
         public C4ui(float r, float g, float b)
         {
             
-            R = Col.UIntFromFloatClamped(r); 
-            G = Col.UIntFromFloatClamped(g); 
-            B = Col.UIntFromFloatClamped(b);
+            R = Col.FloatToUIntClamped(r); 
+            G = Col.FloatToUIntClamped(g); 
+            B = Col.FloatToUIntClamped(b);
             A = UInt32.MaxValue;
         }
 
@@ -15624,7 +15624,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double r, double g, double b)
         {
-            R = Col.UIntFromDoubleClamped(r); G = Col.UIntFromDoubleClamped(g); B = Col.UIntFromDoubleClamped(b);
+            R = Col.DoubleToUIntClamped(r); G = Col.DoubleToUIntClamped(g); B = Col.DoubleToUIntClamped(b);
             A = UInt32.MaxValue;
         }
 
@@ -15646,7 +15646,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(float gray)
         {
-            var value = Col.UIntFromFloatClamped(gray);
+            var value = Col.FloatToUIntClamped(gray);
             R = value; G = value; B = value; A = UInt32.MaxValue;
         }
 
@@ -15658,7 +15658,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double gray)
         {
-            var value = Col.UIntFromDoubleClamped(gray);
+            var value = Col.DoubleToUIntClamped(gray);
             R = value; G = value; B = value; A = UInt32.MaxValue;
         }
 
@@ -15670,9 +15670,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3b color)
         {
-            R = Col.UIntFromByte(color.R);
-            G = Col.UIntFromByte(color.G);
-            B = Col.UIntFromByte(color.B);
+            R = Col.ByteToUInt(color.R);
+            G = Col.ByteToUInt(color.G);
+            B = Col.ByteToUInt(color.B);
             A = UInt32.MaxValue;
         }
 
@@ -15683,9 +15683,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3b color, uint alpha)
         {
-            R = Col.UIntFromByte(color.R);
-            G = Col.UIntFromByte(color.G);
-            B = Col.UIntFromByte(color.B);
+            R = Col.ByteToUInt(color.R);
+            G = Col.ByteToUInt(color.G);
+            B = Col.ByteToUInt(color.B);
             A = alpha;
         }
 
@@ -15697,9 +15697,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3us color)
         {
-            R = Col.UIntFromUShort(color.R);
-            G = Col.UIntFromUShort(color.G);
-            B = Col.UIntFromUShort(color.B);
+            R = Col.UShortToUInt(color.R);
+            G = Col.UShortToUInt(color.G);
+            B = Col.UShortToUInt(color.B);
             A = UInt32.MaxValue;
         }
 
@@ -15710,9 +15710,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3us color, uint alpha)
         {
-            R = Col.UIntFromUShort(color.R);
-            G = Col.UIntFromUShort(color.G);
-            B = Col.UIntFromUShort(color.B);
+            R = Col.UShortToUInt(color.R);
+            G = Col.UShortToUInt(color.G);
+            B = Col.UShortToUInt(color.B);
             A = alpha;
         }
 
@@ -15749,9 +15749,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3f color)
         {
-            R = Col.UIntFromFloat(color.R);
-            G = Col.UIntFromFloat(color.G);
-            B = Col.UIntFromFloat(color.B);
+            R = Col.FloatToUInt(color.R);
+            G = Col.FloatToUInt(color.G);
+            B = Col.FloatToUInt(color.B);
             A = UInt32.MaxValue;
         }
 
@@ -15762,9 +15762,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3f color, uint alpha)
         {
-            R = Col.UIntFromFloat(color.R);
-            G = Col.UIntFromFloat(color.G);
-            B = Col.UIntFromFloat(color.B);
+            R = Col.FloatToUInt(color.R);
+            G = Col.FloatToUInt(color.G);
+            B = Col.FloatToUInt(color.B);
             A = alpha;
         }
 
@@ -15776,9 +15776,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3d color)
         {
-            R = Col.UIntFromDouble(color.R);
-            G = Col.UIntFromDouble(color.G);
-            B = Col.UIntFromDouble(color.B);
+            R = Col.DoubleToUInt(color.R);
+            G = Col.DoubleToUInt(color.G);
+            B = Col.DoubleToUInt(color.B);
             A = UInt32.MaxValue;
         }
 
@@ -15789,9 +15789,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3d color, uint alpha)
         {
-            R = Col.UIntFromDouble(color.R);
-            G = Col.UIntFromDouble(color.G);
-            B = Col.UIntFromDouble(color.B);
+            R = Col.DoubleToUInt(color.R);
+            G = Col.DoubleToUInt(color.G);
+            B = Col.DoubleToUInt(color.B);
             A = alpha;
         }
 
@@ -15802,10 +15802,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4b color)
         {
-            R = Col.UIntFromByte(color.R);
-            G = Col.UIntFromByte(color.G);
-            B = Col.UIntFromByte(color.B);
-            A = Col.UIntFromByte(color.A);
+            R = Col.ByteToUInt(color.R);
+            G = Col.ByteToUInt(color.G);
+            B = Col.ByteToUInt(color.B);
+            A = Col.ByteToUInt(color.A);
         }
 
         /// <summary>
@@ -15815,10 +15815,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4us color)
         {
-            R = Col.UIntFromUShort(color.R);
-            G = Col.UIntFromUShort(color.G);
-            B = Col.UIntFromUShort(color.B);
-            A = Col.UIntFromUShort(color.A);
+            R = Col.UShortToUInt(color.R);
+            G = Col.UShortToUInt(color.G);
+            B = Col.UShortToUInt(color.B);
+            A = Col.UShortToUInt(color.A);
         }
 
         /// <summary>
@@ -15840,10 +15840,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4f color)
         {
-            R = Col.UIntFromFloat(color.R);
-            G = Col.UIntFromFloat(color.G);
-            B = Col.UIntFromFloat(color.B);
-            A = Col.UIntFromFloat(color.A);
+            R = Col.FloatToUInt(color.R);
+            G = Col.FloatToUInt(color.G);
+            B = Col.FloatToUInt(color.B);
+            A = Col.FloatToUInt(color.A);
         }
 
         /// <summary>
@@ -15853,10 +15853,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4d color)
         {
-            R = Col.UIntFromDouble(color.R);
-            G = Col.UIntFromDouble(color.G);
-            B = Col.UIntFromDouble(color.B);
-            A = Col.UIntFromDouble(color.A);
+            R = Col.DoubleToUInt(color.R);
+            G = Col.DoubleToUInt(color.G);
+            B = Col.DoubleToUInt(color.B);
+            A = Col.DoubleToUInt(color.A);
         }
 
         /// <summary>
@@ -16035,10 +16035,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(byte[] values)
         {
-            R = Col.UIntFromByte(values[0]);
-            G = Col.UIntFromByte(values[1]);
-            B = Col.UIntFromByte(values[2]);
-            A = Col.UIntFromByte(values[3]);
+            R = Col.ByteToUInt(values[0]);
+            G = Col.ByteToUInt(values[1]);
+            B = Col.ByteToUInt(values[2]);
+            A = Col.ByteToUInt(values[3]);
         }
 
         /// <summary>
@@ -16048,10 +16048,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(byte[] values, int start)
         {
-            R = Col.UIntFromByte(values[start + 0]);
-            G = Col.UIntFromByte(values[start + 1]);
-            B = Col.UIntFromByte(values[start + 2]);
-            A = Col.UIntFromByte(values[start + 3]);
+            R = Col.ByteToUInt(values[start + 0]);
+            G = Col.ByteToUInt(values[start + 1]);
+            B = Col.ByteToUInt(values[start + 2]);
+            A = Col.ByteToUInt(values[start + 3]);
         }
 
         /// <summary>
@@ -16061,10 +16061,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(ushort[] values)
         {
-            R = Col.UIntFromUShort(values[0]);
-            G = Col.UIntFromUShort(values[1]);
-            B = Col.UIntFromUShort(values[2]);
-            A = Col.UIntFromUShort(values[3]);
+            R = Col.UShortToUInt(values[0]);
+            G = Col.UShortToUInt(values[1]);
+            B = Col.UShortToUInt(values[2]);
+            A = Col.UShortToUInt(values[3]);
         }
 
         /// <summary>
@@ -16074,10 +16074,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(ushort[] values, int start)
         {
-            R = Col.UIntFromUShort(values[start + 0]);
-            G = Col.UIntFromUShort(values[start + 1]);
-            B = Col.UIntFromUShort(values[start + 2]);
-            A = Col.UIntFromUShort(values[start + 3]);
+            R = Col.UShortToUInt(values[start + 0]);
+            G = Col.UShortToUInt(values[start + 1]);
+            B = Col.UShortToUInt(values[start + 2]);
+            A = Col.UShortToUInt(values[start + 3]);
         }
 
         /// <summary>
@@ -16111,10 +16111,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(float[] values)
         {
-            R = Col.UIntFromFloat(values[0]);
-            G = Col.UIntFromFloat(values[1]);
-            B = Col.UIntFromFloat(values[2]);
-            A = Col.UIntFromFloat(values[3]);
+            R = Col.FloatToUInt(values[0]);
+            G = Col.FloatToUInt(values[1]);
+            B = Col.FloatToUInt(values[2]);
+            A = Col.FloatToUInt(values[3]);
         }
 
         /// <summary>
@@ -16124,10 +16124,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(float[] values, int start)
         {
-            R = Col.UIntFromFloat(values[start + 0]);
-            G = Col.UIntFromFloat(values[start + 1]);
-            B = Col.UIntFromFloat(values[start + 2]);
-            A = Col.UIntFromFloat(values[start + 3]);
+            R = Col.FloatToUInt(values[start + 0]);
+            G = Col.FloatToUInt(values[start + 1]);
+            B = Col.FloatToUInt(values[start + 2]);
+            A = Col.FloatToUInt(values[start + 3]);
         }
 
         /// <summary>
@@ -16137,10 +16137,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double[] values)
         {
-            R = Col.UIntFromDouble(values[0]);
-            G = Col.UIntFromDouble(values[1]);
-            B = Col.UIntFromDouble(values[2]);
-            A = Col.UIntFromDouble(values[3]);
+            R = Col.DoubleToUInt(values[0]);
+            G = Col.DoubleToUInt(values[1]);
+            B = Col.DoubleToUInt(values[2]);
+            A = Col.DoubleToUInt(values[3]);
         }
 
         /// <summary>
@@ -16150,10 +16150,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double[] values, int start)
         {
-            R = Col.UIntFromDouble(values[start + 0]);
-            G = Col.UIntFromDouble(values[start + 1]);
-            B = Col.UIntFromDouble(values[start + 2]);
-            A = Col.UIntFromDouble(values[start + 3]);
+            R = Col.DoubleToUInt(values[start + 0]);
+            G = Col.DoubleToUInt(values[start + 1]);
+            B = Col.DoubleToUInt(values[start + 2]);
+            A = Col.DoubleToUInt(values[start + 3]);
         }
 
         #endregion
@@ -16563,7 +16563,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C4ui color)
-            => new byte[] { Col.ByteFromUInt(color.R), Col.ByteFromUInt(color.G), Col.ByteFromUInt(color.B), Col.ByteFromUInt(color.A) };
+            => new byte[] { Col.UIntToByte(color.R), Col.UIntToByte(color.G), Col.UIntToByte(color.B), Col.UIntToByte(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -16579,7 +16579,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C4ui color)
-            => new ushort[] { Col.UShortFromUInt(color.R), Col.UShortFromUInt(color.G), Col.UShortFromUInt(color.B), Col.UShortFromUInt(color.A) };
+            => new ushort[] { Col.UIntToUShort(color.R), Col.UIntToUShort(color.G), Col.UIntToUShort(color.B), Col.UIntToUShort(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -16609,7 +16609,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C4ui color)
-            => new float[] { Col.FloatFromUInt(color.R), Col.FloatFromUInt(color.G), Col.FloatFromUInt(color.B), Col.FloatFromUInt(color.A) };
+            => new float[] { Col.UIntToFloat(color.R), Col.UIntToFloat(color.G), Col.UIntToFloat(color.B), Col.UIntToFloat(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -16625,7 +16625,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C4ui color)
-            => new double[] { Col.DoubleFromUInt(color.R), Col.DoubleFromUInt(color.G), Col.DoubleFromUInt(color.B), Col.DoubleFromUInt(color.A) };
+            => new double[] { Col.UIntToDouble(color.R), Col.UIntToDouble(color.G), Col.UIntToDouble(color.B), Col.UIntToDouble(color.A) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -16725,167 +16725,167 @@ namespace Aardvark.Base
         public static C4ui Zero => new C4ui(0, 0, 0, 0);
 
         // Web colors
-        public static C4ui AliceBlue => new C4ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(1));
-        public static C4ui AntiqueWhite => new C4ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.921569), Col.UIntFromDoubleClamped(0.843137));
-        public static C4ui Aqua => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C4ui Aquamarine => new C4ui(Col.UIntFromDoubleClamped(0.498039), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.831373));
-        public static C4ui Azure => new C4ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C4ui Beige => new C4ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.862745));
-        public static C4ui Bisque => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.894118), Col.UIntFromDoubleClamped(0.768627));
-        public static C4ui Black => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C4ui BlanchedAlmond => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.921569), Col.UIntFromDoubleClamped(0.803922));
-        public static C4ui Blue => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1));
-        public static C4ui BlueViolet => new C4ui(Col.UIntFromDoubleClamped(0.541176), Col.UIntFromDoubleClamped(0.168627), Col.UIntFromDoubleClamped(0.886275));
-        public static C4ui Brown => new C4ui(Col.UIntFromDoubleClamped(0.647059), Col.UIntFromDoubleClamped(0.164706), Col.UIntFromDoubleClamped(0.164706));
-        public static C4ui BurlyWood => new C4ui(Col.UIntFromDoubleClamped(0.870588), Col.UIntFromDoubleClamped(0.721569), Col.UIntFromDoubleClamped(0.529412));
-        public static C4ui CadetBlue => new C4ui(Col.UIntFromDoubleClamped(0.372549), Col.UIntFromDoubleClamped(0.619608), Col.UIntFromDoubleClamped(0.627451));
-        public static C4ui Chartreuse => new C4ui(Col.UIntFromDoubleClamped(0.498039), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0));
-        public static C4ui Chocolate => new C4ui(Col.UIntFromDoubleClamped(0.823529), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.117647));
-        public static C4ui Coral => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.498039), Col.UIntFromDoubleClamped(0.313725));
-        public static C4ui CornflowerBlue => new C4ui(Col.UIntFromDoubleClamped(0.392157), Col.UIntFromDoubleClamped(0.584314), Col.UIntFromDoubleClamped(0.929412));
-        public static C4ui Cornsilk => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(0.862745));
-        public static C4ui Crimson => new C4ui(Col.UIntFromDoubleClamped(0.862745), Col.UIntFromDoubleClamped(0.078431), Col.UIntFromDoubleClamped(0.235294));
-        public static C4ui Cyan => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C4ui DarkBlue => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.545098));
-        public static C4ui DarkCyan => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.545098));
-        public static C4ui DarkGoldenRod => new C4ui(Col.UIntFromDoubleClamped(0.721569), Col.UIntFromDoubleClamped(0.52549), Col.UIntFromDoubleClamped(0.043137));
-        public static C4ui DarkGray => new C4ui(Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745));
-        public static C4ui DarkGrey => new C4ui(Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745), Col.UIntFromDoubleClamped(0.662745));
-        public static C4ui DarkGreen => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.392157), Col.UIntFromDoubleClamped(0));
-        public static C4ui DarkKhaki => new C4ui(Col.UIntFromDoubleClamped(0.741176), Col.UIntFromDoubleClamped(0.717647), Col.UIntFromDoubleClamped(0.419608));
-        public static C4ui DarkMagenta => new C4ui(Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.545098));
-        public static C4ui DarkOliveGreen => new C4ui(Col.UIntFromDoubleClamped(0.333333), Col.UIntFromDoubleClamped(0.419608), Col.UIntFromDoubleClamped(0.184314));
-        public static C4ui DarkOrange => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.54902), Col.UIntFromDoubleClamped(0));
-        public static C4ui DarkOrchid => new C4ui(Col.UIntFromDoubleClamped(0.6), Col.UIntFromDoubleClamped(0.196078), Col.UIntFromDoubleClamped(0.8));
-        public static C4ui DarkRed => new C4ui(Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C4ui DarkSalmon => new C4ui(Col.UIntFromDoubleClamped(0.913725), Col.UIntFromDoubleClamped(0.588235), Col.UIntFromDoubleClamped(0.478431));
-        public static C4ui DarkSeaGreen => new C4ui(Col.UIntFromDoubleClamped(0.560784), Col.UIntFromDoubleClamped(0.737255), Col.UIntFromDoubleClamped(0.560784));
-        public static C4ui DarkSlateBlue => new C4ui(Col.UIntFromDoubleClamped(0.282353), Col.UIntFromDoubleClamped(0.239216), Col.UIntFromDoubleClamped(0.545098));
-        public static C4ui DarkSlateGray => new C4ui(Col.UIntFromDoubleClamped(0.184314), Col.UIntFromDoubleClamped(0.309804), Col.UIntFromDoubleClamped(0.309804));
-        public static C4ui DarkSlateGrey => new C4ui(Col.UIntFromDoubleClamped(0.184314), Col.UIntFromDoubleClamped(0.309804), Col.UIntFromDoubleClamped(0.309804));
-        public static C4ui DarkTurquoise => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.807843), Col.UIntFromDoubleClamped(0.819608));
-        public static C4ui DarkViolet => new C4ui(Col.UIntFromDoubleClamped(0.580392), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.827451));
-        public static C4ui DeepPink => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.078431), Col.UIntFromDoubleClamped(0.576471));
-        public static C4ui DeepSkyBlue => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.74902), Col.UIntFromDoubleClamped(1));
-        public static C4ui DimGray => new C4ui(Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765));
-        public static C4ui DimGrey => new C4ui(Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.411765));
-        public static C4ui DodgerBlue => new C4ui(Col.UIntFromDoubleClamped(0.117647), Col.UIntFromDoubleClamped(0.564706), Col.UIntFromDoubleClamped(1));
-        public static C4ui FireBrick => new C4ui(Col.UIntFromDoubleClamped(0.698039), Col.UIntFromDoubleClamped(0.133333), Col.UIntFromDoubleClamped(0.133333));
-        public static C4ui FloralWhite => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.941176));
-        public static C4ui ForestGreen => new C4ui(Col.UIntFromDoubleClamped(0.133333), Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.133333));
-        public static C4ui Fuchsia => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1));
-        public static C4ui Gainsboro => new C4ui(Col.UIntFromDoubleClamped(0.862745), Col.UIntFromDoubleClamped(0.862745), Col.UIntFromDoubleClamped(0.862745));
-        public static C4ui GhostWhite => new C4ui(Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(0.972549), Col.UIntFromDoubleClamped(1));
-        public static C4ui Gold => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.843137), Col.UIntFromDoubleClamped(0));
-        public static C4ui GoldenRod => new C4ui(Col.UIntFromDoubleClamped(0.854902), Col.UIntFromDoubleClamped(0.647059), Col.UIntFromDoubleClamped(0.12549));
-        public static C4ui Gray => new C4ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C4ui Grey => new C4ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C4ui Green => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0));
-        public static C4ui GreenYellow => new C4ui(Col.UIntFromDoubleClamped(0.678431), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.184314));
-        public static C4ui HoneyDew => new C4ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.941176));
-        public static C4ui HotPink => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.705882));
-        public static C4ui IndianRed  => new C4ui(Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.360784), Col.UIntFromDoubleClamped(0.360784));
-        public static C4ui Indigo  => new C4ui(Col.UIntFromDoubleClamped(0.294118), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.509804));
-        public static C4ui Ivory => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.941176));
-        public static C4ui Khaki => new C4ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.901961), Col.UIntFromDoubleClamped(0.54902));
-        public static C4ui Lavender => new C4ui(Col.UIntFromDoubleClamped(0.901961), Col.UIntFromDoubleClamped(0.901961), Col.UIntFromDoubleClamped(0.980392));
-        public static C4ui LavenderBlush => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.960784));
-        public static C4ui LawnGreen => new C4ui(Col.UIntFromDoubleClamped(0.486275), Col.UIntFromDoubleClamped(0.988235), Col.UIntFromDoubleClamped(0));
-        public static C4ui LemonChiffon => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.803922));
-        public static C4ui LightBlue => new C4ui(Col.UIntFromDoubleClamped(0.678431), Col.UIntFromDoubleClamped(0.847059), Col.UIntFromDoubleClamped(0.901961));
-        public static C4ui LightCoral => new C4ui(Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C4ui LightCyan => new C4ui(Col.UIntFromDoubleClamped(0.878431), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C4ui LightGoldenRodYellow => new C4ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.823529));
-        public static C4ui LightGray => new C4ui(Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451));
-        public static C4ui LightGrey => new C4ui(Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451), Col.UIntFromDoubleClamped(0.827451));
-        public static C4ui LightGreen => new C4ui(Col.UIntFromDoubleClamped(0.564706), Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.564706));
-        public static C4ui LightPink => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.713725), Col.UIntFromDoubleClamped(0.756863));
-        public static C4ui LightSalmon => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.627451), Col.UIntFromDoubleClamped(0.478431));
-        public static C4ui LightSeaGreen => new C4ui(Col.UIntFromDoubleClamped(0.12549), Col.UIntFromDoubleClamped(0.698039), Col.UIntFromDoubleClamped(0.666667));
-        public static C4ui LightSkyBlue => new C4ui(Col.UIntFromDoubleClamped(0.529412), Col.UIntFromDoubleClamped(0.807843), Col.UIntFromDoubleClamped(0.980392));
-        public static C4ui LightSlateGray => new C4ui(Col.UIntFromDoubleClamped(0.466667), Col.UIntFromDoubleClamped(0.533333), Col.UIntFromDoubleClamped(0.6));
-        public static C4ui LightSlateGrey => new C4ui(Col.UIntFromDoubleClamped(0.466667), Col.UIntFromDoubleClamped(0.533333), Col.UIntFromDoubleClamped(0.6));
-        public static C4ui LightSteelBlue => new C4ui(Col.UIntFromDoubleClamped(0.690196), Col.UIntFromDoubleClamped(0.768627), Col.UIntFromDoubleClamped(0.870588));
-        public static C4ui LightYellow => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.878431));
-        public static C4ui Lime => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0));
-        public static C4ui LimeGreen => new C4ui(Col.UIntFromDoubleClamped(0.196078), Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.196078));
-        public static C4ui Linen => new C4ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.941176), Col.UIntFromDoubleClamped(0.901961));
-        public static C4ui Magenta => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1));
-        public static C4ui Maroon => new C4ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C4ui MediumAquaMarine => new C4ui(Col.UIntFromDoubleClamped(0.4), Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.666667));
-        public static C4ui MediumBlue => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.803922));
-        public static C4ui MediumOrchid => new C4ui(Col.UIntFromDoubleClamped(0.729412), Col.UIntFromDoubleClamped(0.333333), Col.UIntFromDoubleClamped(0.827451));
-        public static C4ui MediumPurple => new C4ui(Col.UIntFromDoubleClamped(0.576471), Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.847059));
-        public static C4ui MediumSeaGreen => new C4ui(Col.UIntFromDoubleClamped(0.235294), Col.UIntFromDoubleClamped(0.701961), Col.UIntFromDoubleClamped(0.443137));
-        public static C4ui MediumSlateBlue => new C4ui(Col.UIntFromDoubleClamped(0.482353), Col.UIntFromDoubleClamped(0.407843), Col.UIntFromDoubleClamped(0.933333));
-        public static C4ui MediumSpringGreen => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.603922));
-        public static C4ui MediumTurquoise => new C4ui(Col.UIntFromDoubleClamped(0.282353), Col.UIntFromDoubleClamped(0.819608), Col.UIntFromDoubleClamped(0.8));
-        public static C4ui MediumVioletRed => new C4ui(Col.UIntFromDoubleClamped(0.780392), Col.UIntFromDoubleClamped(0.082353), Col.UIntFromDoubleClamped(0.521569));
-        public static C4ui MidnightBlue => new C4ui(Col.UIntFromDoubleClamped(0.098039), Col.UIntFromDoubleClamped(0.098039), Col.UIntFromDoubleClamped(0.439216));
-        public static C4ui MintCream => new C4ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392));
-        public static C4ui MistyRose => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.894118), Col.UIntFromDoubleClamped(0.882353));
-        public static C4ui Moccasin => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.894118), Col.UIntFromDoubleClamped(0.709804));
-        public static C4ui NavajoWhite => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.870588), Col.UIntFromDoubleClamped(0.678431));
-        public static C4ui Navy => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961));
-        public static C4ui OldLace => new C4ui(Col.UIntFromDoubleClamped(0.992157), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.901961));
-        public static C4ui Olive => new C4ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0));
-        public static C4ui OliveDrab => new C4ui(Col.UIntFromDoubleClamped(0.419608), Col.UIntFromDoubleClamped(0.556863), Col.UIntFromDoubleClamped(0.137255));
-        public static C4ui Orange => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.647059), Col.UIntFromDoubleClamped(0));
-        public static C4ui OrangeRed => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.270588), Col.UIntFromDoubleClamped(0));
-        public static C4ui Orchid => new C4ui(Col.UIntFromDoubleClamped(0.854902), Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.839216));
-        public static C4ui PaleGoldenRod => new C4ui(Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.909804), Col.UIntFromDoubleClamped(0.666667));
-        public static C4ui PaleGreen => new C4ui(Col.UIntFromDoubleClamped(0.596078), Col.UIntFromDoubleClamped(0.984314), Col.UIntFromDoubleClamped(0.596078));
-        public static C4ui PaleTurquoise => new C4ui(Col.UIntFromDoubleClamped(0.686275), Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.933333));
-        public static C4ui PaleVioletRed => new C4ui(Col.UIntFromDoubleClamped(0.847059), Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.576471));
-        public static C4ui PapayaWhip => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.937255), Col.UIntFromDoubleClamped(0.835294));
-        public static C4ui PeachPuff => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.854902), Col.UIntFromDoubleClamped(0.72549));
-        public static C4ui Peru => new C4ui(Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.521569), Col.UIntFromDoubleClamped(0.247059));
-        public static C4ui Pink => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.752941), Col.UIntFromDoubleClamped(0.796078));
-        public static C4ui Plum => new C4ui(Col.UIntFromDoubleClamped(0.866667), Col.UIntFromDoubleClamped(0.627451), Col.UIntFromDoubleClamped(0.866667));
-        public static C4ui PowderBlue => new C4ui(Col.UIntFromDoubleClamped(0.690196), Col.UIntFromDoubleClamped(0.878431), Col.UIntFromDoubleClamped(0.901961));
-        public static C4ui Purple => new C4ui(Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961));
-        public static C4ui Red => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0));
-        public static C4ui RosyBrown => new C4ui(Col.UIntFromDoubleClamped(0.737255), Col.UIntFromDoubleClamped(0.560784), Col.UIntFromDoubleClamped(0.560784));
-        public static C4ui RoyalBlue => new C4ui(Col.UIntFromDoubleClamped(0.254902), Col.UIntFromDoubleClamped(0.411765), Col.UIntFromDoubleClamped(0.882353));
-        public static C4ui SaddleBrown => new C4ui(Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.270588), Col.UIntFromDoubleClamped(0.07451));
-        public static C4ui Salmon => new C4ui(Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.447059));
-        public static C4ui SandyBrown => new C4ui(Col.UIntFromDoubleClamped(0.956863), Col.UIntFromDoubleClamped(0.643137), Col.UIntFromDoubleClamped(0.376471));
-        public static C4ui SeaGreen => new C4ui(Col.UIntFromDoubleClamped(0.180392), Col.UIntFromDoubleClamped(0.545098), Col.UIntFromDoubleClamped(0.341176));
-        public static C4ui SeaShell => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.933333));
-        public static C4ui Sienna => new C4ui(Col.UIntFromDoubleClamped(0.627451), Col.UIntFromDoubleClamped(0.321569), Col.UIntFromDoubleClamped(0.176471));
-        public static C4ui Silver => new C4ui(Col.UIntFromDoubleClamped(0.752941), Col.UIntFromDoubleClamped(0.752941), Col.UIntFromDoubleClamped(0.752941));
-        public static C4ui SkyBlue => new C4ui(Col.UIntFromDoubleClamped(0.529412), Col.UIntFromDoubleClamped(0.807843), Col.UIntFromDoubleClamped(0.921569));
-        public static C4ui SlateBlue => new C4ui(Col.UIntFromDoubleClamped(0.415686), Col.UIntFromDoubleClamped(0.352941), Col.UIntFromDoubleClamped(0.803922));
-        public static C4ui SlateGray => new C4ui(Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.564706));
-        public static C4ui SlateGrey => new C4ui(Col.UIntFromDoubleClamped(0.439216), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.564706));
-        public static C4ui Snow => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.980392), Col.UIntFromDoubleClamped(0.980392));
-        public static C4ui SpringGreen => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.498039));
-        public static C4ui SteelBlue => new C4ui(Col.UIntFromDoubleClamped(0.27451), Col.UIntFromDoubleClamped(0.509804), Col.UIntFromDoubleClamped(0.705882));
-        public static C4ui Tan => new C4ui(Col.UIntFromDoubleClamped(0.823529), Col.UIntFromDoubleClamped(0.705882), Col.UIntFromDoubleClamped(0.54902));
-        public static C4ui Teal => new C4ui(Col.UIntFromDoubleClamped(0), Col.UIntFromDoubleClamped(0.501961), Col.UIntFromDoubleClamped(0.501961));
-        public static C4ui Thistle => new C4ui(Col.UIntFromDoubleClamped(0.847059), Col.UIntFromDoubleClamped(0.74902), Col.UIntFromDoubleClamped(0.847059));
-        public static C4ui Tomato => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0.388235), Col.UIntFromDoubleClamped(0.278431));
-        public static C4ui Turquoise => new C4ui(Col.UIntFromDoubleClamped(0.25098), Col.UIntFromDoubleClamped(0.878431), Col.UIntFromDoubleClamped(0.815686));
-        public static C4ui Violet => new C4ui(Col.UIntFromDoubleClamped(0.933333), Col.UIntFromDoubleClamped(0.509804), Col.UIntFromDoubleClamped(0.933333));
-        public static C4ui Wheat => new C4ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.870588), Col.UIntFromDoubleClamped(0.701961));
-        public static C4ui White => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1));
-        public static C4ui WhiteSmoke => new C4ui(Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.960784), Col.UIntFromDoubleClamped(0.960784));
-        public static C4ui Yellow => new C4ui(Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(1), Col.UIntFromDoubleClamped(0));
-        public static C4ui YellowGreen => new C4ui(Col.UIntFromDoubleClamped(0.603922), Col.UIntFromDoubleClamped(0.803922), Col.UIntFromDoubleClamped(0.196078));
+        public static C4ui AliceBlue => new C4ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(1));
+        public static C4ui AntiqueWhite => new C4ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.921569), Col.DoubleToUIntClamped(0.843137));
+        public static C4ui Aqua => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C4ui Aquamarine => new C4ui(Col.DoubleToUIntClamped(0.498039), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.831373));
+        public static C4ui Azure => new C4ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C4ui Beige => new C4ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.862745));
+        public static C4ui Bisque => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.894118), Col.DoubleToUIntClamped(0.768627));
+        public static C4ui Black => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C4ui BlanchedAlmond => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.921569), Col.DoubleToUIntClamped(0.803922));
+        public static C4ui Blue => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1));
+        public static C4ui BlueViolet => new C4ui(Col.DoubleToUIntClamped(0.541176), Col.DoubleToUIntClamped(0.168627), Col.DoubleToUIntClamped(0.886275));
+        public static C4ui Brown => new C4ui(Col.DoubleToUIntClamped(0.647059), Col.DoubleToUIntClamped(0.164706), Col.DoubleToUIntClamped(0.164706));
+        public static C4ui BurlyWood => new C4ui(Col.DoubleToUIntClamped(0.870588), Col.DoubleToUIntClamped(0.721569), Col.DoubleToUIntClamped(0.529412));
+        public static C4ui CadetBlue => new C4ui(Col.DoubleToUIntClamped(0.372549), Col.DoubleToUIntClamped(0.619608), Col.DoubleToUIntClamped(0.627451));
+        public static C4ui Chartreuse => new C4ui(Col.DoubleToUIntClamped(0.498039), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0));
+        public static C4ui Chocolate => new C4ui(Col.DoubleToUIntClamped(0.823529), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.117647));
+        public static C4ui Coral => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.498039), Col.DoubleToUIntClamped(0.313725));
+        public static C4ui CornflowerBlue => new C4ui(Col.DoubleToUIntClamped(0.392157), Col.DoubleToUIntClamped(0.584314), Col.DoubleToUIntClamped(0.929412));
+        public static C4ui Cornsilk => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(0.862745));
+        public static C4ui Crimson => new C4ui(Col.DoubleToUIntClamped(0.862745), Col.DoubleToUIntClamped(0.078431), Col.DoubleToUIntClamped(0.235294));
+        public static C4ui Cyan => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C4ui DarkBlue => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.545098));
+        public static C4ui DarkCyan => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.545098));
+        public static C4ui DarkGoldenRod => new C4ui(Col.DoubleToUIntClamped(0.721569), Col.DoubleToUIntClamped(0.52549), Col.DoubleToUIntClamped(0.043137));
+        public static C4ui DarkGray => new C4ui(Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745));
+        public static C4ui DarkGrey => new C4ui(Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745), Col.DoubleToUIntClamped(0.662745));
+        public static C4ui DarkGreen => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.392157), Col.DoubleToUIntClamped(0));
+        public static C4ui DarkKhaki => new C4ui(Col.DoubleToUIntClamped(0.741176), Col.DoubleToUIntClamped(0.717647), Col.DoubleToUIntClamped(0.419608));
+        public static C4ui DarkMagenta => new C4ui(Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.545098));
+        public static C4ui DarkOliveGreen => new C4ui(Col.DoubleToUIntClamped(0.333333), Col.DoubleToUIntClamped(0.419608), Col.DoubleToUIntClamped(0.184314));
+        public static C4ui DarkOrange => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.54902), Col.DoubleToUIntClamped(0));
+        public static C4ui DarkOrchid => new C4ui(Col.DoubleToUIntClamped(0.6), Col.DoubleToUIntClamped(0.196078), Col.DoubleToUIntClamped(0.8));
+        public static C4ui DarkRed => new C4ui(Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C4ui DarkSalmon => new C4ui(Col.DoubleToUIntClamped(0.913725), Col.DoubleToUIntClamped(0.588235), Col.DoubleToUIntClamped(0.478431));
+        public static C4ui DarkSeaGreen => new C4ui(Col.DoubleToUIntClamped(0.560784), Col.DoubleToUIntClamped(0.737255), Col.DoubleToUIntClamped(0.560784));
+        public static C4ui DarkSlateBlue => new C4ui(Col.DoubleToUIntClamped(0.282353), Col.DoubleToUIntClamped(0.239216), Col.DoubleToUIntClamped(0.545098));
+        public static C4ui DarkSlateGray => new C4ui(Col.DoubleToUIntClamped(0.184314), Col.DoubleToUIntClamped(0.309804), Col.DoubleToUIntClamped(0.309804));
+        public static C4ui DarkSlateGrey => new C4ui(Col.DoubleToUIntClamped(0.184314), Col.DoubleToUIntClamped(0.309804), Col.DoubleToUIntClamped(0.309804));
+        public static C4ui DarkTurquoise => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.807843), Col.DoubleToUIntClamped(0.819608));
+        public static C4ui DarkViolet => new C4ui(Col.DoubleToUIntClamped(0.580392), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.827451));
+        public static C4ui DeepPink => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.078431), Col.DoubleToUIntClamped(0.576471));
+        public static C4ui DeepSkyBlue => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.74902), Col.DoubleToUIntClamped(1));
+        public static C4ui DimGray => new C4ui(Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765));
+        public static C4ui DimGrey => new C4ui(Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.411765));
+        public static C4ui DodgerBlue => new C4ui(Col.DoubleToUIntClamped(0.117647), Col.DoubleToUIntClamped(0.564706), Col.DoubleToUIntClamped(1));
+        public static C4ui FireBrick => new C4ui(Col.DoubleToUIntClamped(0.698039), Col.DoubleToUIntClamped(0.133333), Col.DoubleToUIntClamped(0.133333));
+        public static C4ui FloralWhite => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.941176));
+        public static C4ui ForestGreen => new C4ui(Col.DoubleToUIntClamped(0.133333), Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.133333));
+        public static C4ui Fuchsia => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1));
+        public static C4ui Gainsboro => new C4ui(Col.DoubleToUIntClamped(0.862745), Col.DoubleToUIntClamped(0.862745), Col.DoubleToUIntClamped(0.862745));
+        public static C4ui GhostWhite => new C4ui(Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(0.972549), Col.DoubleToUIntClamped(1));
+        public static C4ui Gold => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.843137), Col.DoubleToUIntClamped(0));
+        public static C4ui GoldenRod => new C4ui(Col.DoubleToUIntClamped(0.854902), Col.DoubleToUIntClamped(0.647059), Col.DoubleToUIntClamped(0.12549));
+        public static C4ui Gray => new C4ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C4ui Grey => new C4ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C4ui Green => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0));
+        public static C4ui GreenYellow => new C4ui(Col.DoubleToUIntClamped(0.678431), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.184314));
+        public static C4ui HoneyDew => new C4ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.941176));
+        public static C4ui HotPink => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.705882));
+        public static C4ui IndianRed  => new C4ui(Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.360784), Col.DoubleToUIntClamped(0.360784));
+        public static C4ui Indigo  => new C4ui(Col.DoubleToUIntClamped(0.294118), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.509804));
+        public static C4ui Ivory => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.941176));
+        public static C4ui Khaki => new C4ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.901961), Col.DoubleToUIntClamped(0.54902));
+        public static C4ui Lavender => new C4ui(Col.DoubleToUIntClamped(0.901961), Col.DoubleToUIntClamped(0.901961), Col.DoubleToUIntClamped(0.980392));
+        public static C4ui LavenderBlush => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.960784));
+        public static C4ui LawnGreen => new C4ui(Col.DoubleToUIntClamped(0.486275), Col.DoubleToUIntClamped(0.988235), Col.DoubleToUIntClamped(0));
+        public static C4ui LemonChiffon => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.803922));
+        public static C4ui LightBlue => new C4ui(Col.DoubleToUIntClamped(0.678431), Col.DoubleToUIntClamped(0.847059), Col.DoubleToUIntClamped(0.901961));
+        public static C4ui LightCoral => new C4ui(Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C4ui LightCyan => new C4ui(Col.DoubleToUIntClamped(0.878431), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C4ui LightGoldenRodYellow => new C4ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.823529));
+        public static C4ui LightGray => new C4ui(Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451));
+        public static C4ui LightGrey => new C4ui(Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451), Col.DoubleToUIntClamped(0.827451));
+        public static C4ui LightGreen => new C4ui(Col.DoubleToUIntClamped(0.564706), Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.564706));
+        public static C4ui LightPink => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.713725), Col.DoubleToUIntClamped(0.756863));
+        public static C4ui LightSalmon => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.627451), Col.DoubleToUIntClamped(0.478431));
+        public static C4ui LightSeaGreen => new C4ui(Col.DoubleToUIntClamped(0.12549), Col.DoubleToUIntClamped(0.698039), Col.DoubleToUIntClamped(0.666667));
+        public static C4ui LightSkyBlue => new C4ui(Col.DoubleToUIntClamped(0.529412), Col.DoubleToUIntClamped(0.807843), Col.DoubleToUIntClamped(0.980392));
+        public static C4ui LightSlateGray => new C4ui(Col.DoubleToUIntClamped(0.466667), Col.DoubleToUIntClamped(0.533333), Col.DoubleToUIntClamped(0.6));
+        public static C4ui LightSlateGrey => new C4ui(Col.DoubleToUIntClamped(0.466667), Col.DoubleToUIntClamped(0.533333), Col.DoubleToUIntClamped(0.6));
+        public static C4ui LightSteelBlue => new C4ui(Col.DoubleToUIntClamped(0.690196), Col.DoubleToUIntClamped(0.768627), Col.DoubleToUIntClamped(0.870588));
+        public static C4ui LightYellow => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.878431));
+        public static C4ui Lime => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0));
+        public static C4ui LimeGreen => new C4ui(Col.DoubleToUIntClamped(0.196078), Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.196078));
+        public static C4ui Linen => new C4ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.941176), Col.DoubleToUIntClamped(0.901961));
+        public static C4ui Magenta => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1));
+        public static C4ui Maroon => new C4ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C4ui MediumAquaMarine => new C4ui(Col.DoubleToUIntClamped(0.4), Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.666667));
+        public static C4ui MediumBlue => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.803922));
+        public static C4ui MediumOrchid => new C4ui(Col.DoubleToUIntClamped(0.729412), Col.DoubleToUIntClamped(0.333333), Col.DoubleToUIntClamped(0.827451));
+        public static C4ui MediumPurple => new C4ui(Col.DoubleToUIntClamped(0.576471), Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.847059));
+        public static C4ui MediumSeaGreen => new C4ui(Col.DoubleToUIntClamped(0.235294), Col.DoubleToUIntClamped(0.701961), Col.DoubleToUIntClamped(0.443137));
+        public static C4ui MediumSlateBlue => new C4ui(Col.DoubleToUIntClamped(0.482353), Col.DoubleToUIntClamped(0.407843), Col.DoubleToUIntClamped(0.933333));
+        public static C4ui MediumSpringGreen => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.603922));
+        public static C4ui MediumTurquoise => new C4ui(Col.DoubleToUIntClamped(0.282353), Col.DoubleToUIntClamped(0.819608), Col.DoubleToUIntClamped(0.8));
+        public static C4ui MediumVioletRed => new C4ui(Col.DoubleToUIntClamped(0.780392), Col.DoubleToUIntClamped(0.082353), Col.DoubleToUIntClamped(0.521569));
+        public static C4ui MidnightBlue => new C4ui(Col.DoubleToUIntClamped(0.098039), Col.DoubleToUIntClamped(0.098039), Col.DoubleToUIntClamped(0.439216));
+        public static C4ui MintCream => new C4ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392));
+        public static C4ui MistyRose => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.894118), Col.DoubleToUIntClamped(0.882353));
+        public static C4ui Moccasin => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.894118), Col.DoubleToUIntClamped(0.709804));
+        public static C4ui NavajoWhite => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.870588), Col.DoubleToUIntClamped(0.678431));
+        public static C4ui Navy => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961));
+        public static C4ui OldLace => new C4ui(Col.DoubleToUIntClamped(0.992157), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.901961));
+        public static C4ui Olive => new C4ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0));
+        public static C4ui OliveDrab => new C4ui(Col.DoubleToUIntClamped(0.419608), Col.DoubleToUIntClamped(0.556863), Col.DoubleToUIntClamped(0.137255));
+        public static C4ui Orange => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.647059), Col.DoubleToUIntClamped(0));
+        public static C4ui OrangeRed => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.270588), Col.DoubleToUIntClamped(0));
+        public static C4ui Orchid => new C4ui(Col.DoubleToUIntClamped(0.854902), Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.839216));
+        public static C4ui PaleGoldenRod => new C4ui(Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.909804), Col.DoubleToUIntClamped(0.666667));
+        public static C4ui PaleGreen => new C4ui(Col.DoubleToUIntClamped(0.596078), Col.DoubleToUIntClamped(0.984314), Col.DoubleToUIntClamped(0.596078));
+        public static C4ui PaleTurquoise => new C4ui(Col.DoubleToUIntClamped(0.686275), Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.933333));
+        public static C4ui PaleVioletRed => new C4ui(Col.DoubleToUIntClamped(0.847059), Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.576471));
+        public static C4ui PapayaWhip => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.937255), Col.DoubleToUIntClamped(0.835294));
+        public static C4ui PeachPuff => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.854902), Col.DoubleToUIntClamped(0.72549));
+        public static C4ui Peru => new C4ui(Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.521569), Col.DoubleToUIntClamped(0.247059));
+        public static C4ui Pink => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.752941), Col.DoubleToUIntClamped(0.796078));
+        public static C4ui Plum => new C4ui(Col.DoubleToUIntClamped(0.866667), Col.DoubleToUIntClamped(0.627451), Col.DoubleToUIntClamped(0.866667));
+        public static C4ui PowderBlue => new C4ui(Col.DoubleToUIntClamped(0.690196), Col.DoubleToUIntClamped(0.878431), Col.DoubleToUIntClamped(0.901961));
+        public static C4ui Purple => new C4ui(Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961));
+        public static C4ui Red => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0));
+        public static C4ui RosyBrown => new C4ui(Col.DoubleToUIntClamped(0.737255), Col.DoubleToUIntClamped(0.560784), Col.DoubleToUIntClamped(0.560784));
+        public static C4ui RoyalBlue => new C4ui(Col.DoubleToUIntClamped(0.254902), Col.DoubleToUIntClamped(0.411765), Col.DoubleToUIntClamped(0.882353));
+        public static C4ui SaddleBrown => new C4ui(Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.270588), Col.DoubleToUIntClamped(0.07451));
+        public static C4ui Salmon => new C4ui(Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.447059));
+        public static C4ui SandyBrown => new C4ui(Col.DoubleToUIntClamped(0.956863), Col.DoubleToUIntClamped(0.643137), Col.DoubleToUIntClamped(0.376471));
+        public static C4ui SeaGreen => new C4ui(Col.DoubleToUIntClamped(0.180392), Col.DoubleToUIntClamped(0.545098), Col.DoubleToUIntClamped(0.341176));
+        public static C4ui SeaShell => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.933333));
+        public static C4ui Sienna => new C4ui(Col.DoubleToUIntClamped(0.627451), Col.DoubleToUIntClamped(0.321569), Col.DoubleToUIntClamped(0.176471));
+        public static C4ui Silver => new C4ui(Col.DoubleToUIntClamped(0.752941), Col.DoubleToUIntClamped(0.752941), Col.DoubleToUIntClamped(0.752941));
+        public static C4ui SkyBlue => new C4ui(Col.DoubleToUIntClamped(0.529412), Col.DoubleToUIntClamped(0.807843), Col.DoubleToUIntClamped(0.921569));
+        public static C4ui SlateBlue => new C4ui(Col.DoubleToUIntClamped(0.415686), Col.DoubleToUIntClamped(0.352941), Col.DoubleToUIntClamped(0.803922));
+        public static C4ui SlateGray => new C4ui(Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.564706));
+        public static C4ui SlateGrey => new C4ui(Col.DoubleToUIntClamped(0.439216), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.564706));
+        public static C4ui Snow => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.980392), Col.DoubleToUIntClamped(0.980392));
+        public static C4ui SpringGreen => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.498039));
+        public static C4ui SteelBlue => new C4ui(Col.DoubleToUIntClamped(0.27451), Col.DoubleToUIntClamped(0.509804), Col.DoubleToUIntClamped(0.705882));
+        public static C4ui Tan => new C4ui(Col.DoubleToUIntClamped(0.823529), Col.DoubleToUIntClamped(0.705882), Col.DoubleToUIntClamped(0.54902));
+        public static C4ui Teal => new C4ui(Col.DoubleToUIntClamped(0), Col.DoubleToUIntClamped(0.501961), Col.DoubleToUIntClamped(0.501961));
+        public static C4ui Thistle => new C4ui(Col.DoubleToUIntClamped(0.847059), Col.DoubleToUIntClamped(0.74902), Col.DoubleToUIntClamped(0.847059));
+        public static C4ui Tomato => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0.388235), Col.DoubleToUIntClamped(0.278431));
+        public static C4ui Turquoise => new C4ui(Col.DoubleToUIntClamped(0.25098), Col.DoubleToUIntClamped(0.878431), Col.DoubleToUIntClamped(0.815686));
+        public static C4ui Violet => new C4ui(Col.DoubleToUIntClamped(0.933333), Col.DoubleToUIntClamped(0.509804), Col.DoubleToUIntClamped(0.933333));
+        public static C4ui Wheat => new C4ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.870588), Col.DoubleToUIntClamped(0.701961));
+        public static C4ui White => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1));
+        public static C4ui WhiteSmoke => new C4ui(Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.960784), Col.DoubleToUIntClamped(0.960784));
+        public static C4ui Yellow => new C4ui(Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(1), Col.DoubleToUIntClamped(0));
+        public static C4ui YellowGreen => new C4ui(Col.DoubleToUIntClamped(0.603922), Col.DoubleToUIntClamped(0.803922), Col.DoubleToUIntClamped(0.196078));
 
         public static C4ui DarkYellow => Olive;
 
-        public static C4ui VRVisGreen => new C4ui(Col.UIntFromDoubleClamped(0.698), Col.UIntFromDoubleClamped(0.851), Col.UIntFromDoubleClamped(0.008));
+        public static C4ui VRVisGreen => new C4ui(Col.DoubleToUIntClamped(0.698), Col.DoubleToUIntClamped(0.851), Col.DoubleToUIntClamped(0.008));
 
-        public static C4ui Gray10 => new C4ui(Col.UIntFromDoubleClamped(0.1));
-        public static C4ui Gray20 => new C4ui(Col.UIntFromDoubleClamped(0.2));
-        public static C4ui Gray30 => new C4ui(Col.UIntFromDoubleClamped(0.3));
-        public static C4ui Gray40 => new C4ui(Col.UIntFromDoubleClamped(0.4));
-        public static C4ui Gray50 => new C4ui(Col.UIntFromDoubleClamped(0.5));
-        public static C4ui Gray60 => new C4ui(Col.UIntFromDoubleClamped(0.6));
-        public static C4ui Gray70 => new C4ui(Col.UIntFromDoubleClamped(0.7));
-        public static C4ui Gray80 => new C4ui(Col.UIntFromDoubleClamped(0.8));
-        public static C4ui Gray90 => new C4ui(Col.UIntFromDoubleClamped(0.9));
+        public static C4ui Gray10 => new C4ui(Col.DoubleToUIntClamped(0.1));
+        public static C4ui Gray20 => new C4ui(Col.DoubleToUIntClamped(0.2));
+        public static C4ui Gray30 => new C4ui(Col.DoubleToUIntClamped(0.3));
+        public static C4ui Gray40 => new C4ui(Col.DoubleToUIntClamped(0.4));
+        public static C4ui Gray50 => new C4ui(Col.DoubleToUIntClamped(0.5));
+        public static C4ui Gray60 => new C4ui(Col.DoubleToUIntClamped(0.6));
+        public static C4ui Gray70 => new C4ui(Col.DoubleToUIntClamped(0.7));
+        public static C4ui Gray80 => new C4ui(Col.DoubleToUIntClamped(0.8));
+        public static C4ui Gray90 => new C4ui(Col.DoubleToUIntClamped(0.9));
 
         #endregion
 
@@ -16981,40 +16981,40 @@ namespace Aardvark.Base
         public static C4ui operator +(C4ui c0, C4b c1)
         {
             return new C4ui(
-                (uint)(c0.R + Col.UIntFromByte(c1.R)), 
-                (uint)(c0.G + Col.UIntFromByte(c1.G)), 
-                (uint)(c0.B + Col.UIntFromByte(c1.B)), 
-                (uint)(c0.A + Col.UIntFromByte(c1.A)));
+                (uint)(c0.R + Col.ByteToUInt(c1.R)), 
+                (uint)(c0.G + Col.ByteToUInt(c1.G)), 
+                (uint)(c0.B + Col.ByteToUInt(c1.B)), 
+                (uint)(c0.A + Col.ByteToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4b c1)
         {
             return new C4ui(
-                (uint)(c0.R - Col.UIntFromByte(c1.R)), 
-                (uint)(c0.G - Col.UIntFromByte(c1.G)), 
-                (uint)(c0.B - Col.UIntFromByte(c1.B)), 
-                (uint)(c0.A - Col.UIntFromByte(c1.A)));
+                (uint)(c0.R - Col.ByteToUInt(c1.R)), 
+                (uint)(c0.G - Col.ByteToUInt(c1.G)), 
+                (uint)(c0.B - Col.ByteToUInt(c1.B)), 
+                (uint)(c0.A - Col.ByteToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator +(C4ui c0, C4us c1)
         {
             return new C4ui(
-                (uint)(c0.R + Col.UIntFromUShort(c1.R)), 
-                (uint)(c0.G + Col.UIntFromUShort(c1.G)), 
-                (uint)(c0.B + Col.UIntFromUShort(c1.B)), 
-                (uint)(c0.A + Col.UIntFromUShort(c1.A)));
+                (uint)(c0.R + Col.UShortToUInt(c1.R)), 
+                (uint)(c0.G + Col.UShortToUInt(c1.G)), 
+                (uint)(c0.B + Col.UShortToUInt(c1.B)), 
+                (uint)(c0.A + Col.UShortToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4us c1)
         {
             return new C4ui(
-                (uint)(c0.R - Col.UIntFromUShort(c1.R)), 
-                (uint)(c0.G - Col.UIntFromUShort(c1.G)), 
-                (uint)(c0.B - Col.UIntFromUShort(c1.B)), 
-                (uint)(c0.A - Col.UIntFromUShort(c1.A)));
+                (uint)(c0.R - Col.UShortToUInt(c1.R)), 
+                (uint)(c0.G - Col.UShortToUInt(c1.G)), 
+                (uint)(c0.B - Col.UShortToUInt(c1.B)), 
+                (uint)(c0.A - Col.UShortToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17041,40 +17041,40 @@ namespace Aardvark.Base
         public static C4ui operator +(C4ui c0, C4f c1)
         {
             return new C4ui(
-                (uint)(c0.R + Col.UIntFromFloat(c1.R)), 
-                (uint)(c0.G + Col.UIntFromFloat(c1.G)), 
-                (uint)(c0.B + Col.UIntFromFloat(c1.B)), 
-                (uint)(c0.A + Col.UIntFromFloat(c1.A)));
+                (uint)(c0.R + Col.FloatToUInt(c1.R)), 
+                (uint)(c0.G + Col.FloatToUInt(c1.G)), 
+                (uint)(c0.B + Col.FloatToUInt(c1.B)), 
+                (uint)(c0.A + Col.FloatToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4f c1)
         {
             return new C4ui(
-                (uint)(c0.R - Col.UIntFromFloat(c1.R)), 
-                (uint)(c0.G - Col.UIntFromFloat(c1.G)), 
-                (uint)(c0.B - Col.UIntFromFloat(c1.B)), 
-                (uint)(c0.A - Col.UIntFromFloat(c1.A)));
+                (uint)(c0.R - Col.FloatToUInt(c1.R)), 
+                (uint)(c0.G - Col.FloatToUInt(c1.G)), 
+                (uint)(c0.B - Col.FloatToUInt(c1.B)), 
+                (uint)(c0.A - Col.FloatToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator +(C4ui c0, C4d c1)
         {
             return new C4ui(
-                (uint)(c0.R + Col.UIntFromDouble(c1.R)), 
-                (uint)(c0.G + Col.UIntFromDouble(c1.G)), 
-                (uint)(c0.B + Col.UIntFromDouble(c1.B)), 
-                (uint)(c0.A + Col.UIntFromDouble(c1.A)));
+                (uint)(c0.R + Col.DoubleToUInt(c1.R)), 
+                (uint)(c0.G + Col.DoubleToUInt(c1.G)), 
+                (uint)(c0.B + Col.DoubleToUInt(c1.B)), 
+                (uint)(c0.A + Col.DoubleToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4d c1)
         {
             return new C4ui(
-                (uint)(c0.R - Col.UIntFromDouble(c1.R)), 
-                (uint)(c0.G - Col.UIntFromDouble(c1.G)), 
-                (uint)(c0.B - Col.UIntFromDouble(c1.B)), 
-                (uint)(c0.A - Col.UIntFromDouble(c1.A)));
+                (uint)(c0.R - Col.DoubleToUInt(c1.R)), 
+                (uint)(c0.G - Col.DoubleToUInt(c1.G)), 
+                (uint)(c0.B - Col.DoubleToUInt(c1.B)), 
+                (uint)(c0.A - Col.DoubleToUInt(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17326,20 +17326,20 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.DoubleFromUInt(R); }
-            set { R = Col.UIntFromDoubleClamped(value); }
+            get { return Col.UIntToDouble(R); }
+            set { R = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.DoubleFromUInt(G); }
-            set { G = Col.UIntFromDoubleClamped(value); }
+            get { return Col.UIntToDouble(G); }
+            set { G = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.DoubleFromUInt(B); }
-            set { B = Col.UIntFromDoubleClamped(value); }
+            get { return Col.UIntToDouble(B); }
+            set { B = Col.DoubleToUIntClamped(value); }
         }
 
         #endregion
@@ -17349,8 +17349,8 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return Col.DoubleFromUInt(A); }
-            set { A = Col.UIntFromDoubleClamped(value); }
+            get { return Col.UIntToDouble(A); }
+            set { A = Col.DoubleToUIntClamped(value); }
         }
 
         #endregion
@@ -17981,9 +17981,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3b color)
         {
-            R = Col.FloatFromByte(color.R);
-            G = Col.FloatFromByte(color.G);
-            B = Col.FloatFromByte(color.B);
+            R = Col.ByteToFloat(color.R);
+            G = Col.ByteToFloat(color.G);
+            B = Col.ByteToFloat(color.B);
             A = 1.0f;
         }
 
@@ -17994,9 +17994,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3b color, float alpha)
         {
-            R = Col.FloatFromByte(color.R);
-            G = Col.FloatFromByte(color.G);
-            B = Col.FloatFromByte(color.B);
+            R = Col.ByteToFloat(color.R);
+            G = Col.ByteToFloat(color.G);
+            B = Col.ByteToFloat(color.B);
             A = alpha;
         }
 
@@ -18008,9 +18008,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3us color)
         {
-            R = Col.FloatFromUShort(color.R);
-            G = Col.FloatFromUShort(color.G);
-            B = Col.FloatFromUShort(color.B);
+            R = Col.UShortToFloat(color.R);
+            G = Col.UShortToFloat(color.G);
+            B = Col.UShortToFloat(color.B);
             A = 1.0f;
         }
 
@@ -18021,9 +18021,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3us color, float alpha)
         {
-            R = Col.FloatFromUShort(color.R);
-            G = Col.FloatFromUShort(color.G);
-            B = Col.FloatFromUShort(color.B);
+            R = Col.UShortToFloat(color.R);
+            G = Col.UShortToFloat(color.G);
+            B = Col.UShortToFloat(color.B);
             A = alpha;
         }
 
@@ -18035,9 +18035,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3ui color)
         {
-            R = Col.FloatFromUInt(color.R);
-            G = Col.FloatFromUInt(color.G);
-            B = Col.FloatFromUInt(color.B);
+            R = Col.UIntToFloat(color.R);
+            G = Col.UIntToFloat(color.G);
+            B = Col.UIntToFloat(color.B);
             A = 1.0f;
         }
 
@@ -18048,9 +18048,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3ui color, float alpha)
         {
-            R = Col.FloatFromUInt(color.R);
-            G = Col.FloatFromUInt(color.G);
-            B = Col.FloatFromUInt(color.B);
+            R = Col.UIntToFloat(color.R);
+            G = Col.UIntToFloat(color.G);
+            B = Col.UIntToFloat(color.B);
             A = alpha;
         }
 
@@ -18086,9 +18086,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3d color)
         {
-            R = Col.FloatFromDouble(color.R);
-            G = Col.FloatFromDouble(color.G);
-            B = Col.FloatFromDouble(color.B);
+            R = Col.DoubleToFloat(color.R);
+            G = Col.DoubleToFloat(color.G);
+            B = Col.DoubleToFloat(color.B);
             A = 1.0f;
         }
 
@@ -18098,9 +18098,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C3d color, float alpha)
         {
-            R = Col.FloatFromDouble(color.R);
-            G = Col.FloatFromDouble(color.G);
-            B = Col.FloatFromDouble(color.B);
+            R = Col.DoubleToFloat(color.R);
+            G = Col.DoubleToFloat(color.G);
+            B = Col.DoubleToFloat(color.B);
             A = alpha;
         }
 
@@ -18111,10 +18111,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4b color)
         {
-            R = Col.FloatFromByte(color.R);
-            G = Col.FloatFromByte(color.G);
-            B = Col.FloatFromByte(color.B);
-            A = Col.FloatFromByte(color.A);
+            R = Col.ByteToFloat(color.R);
+            G = Col.ByteToFloat(color.G);
+            B = Col.ByteToFloat(color.B);
+            A = Col.ByteToFloat(color.A);
         }
 
         /// <summary>
@@ -18124,10 +18124,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4us color)
         {
-            R = Col.FloatFromUShort(color.R);
-            G = Col.FloatFromUShort(color.G);
-            B = Col.FloatFromUShort(color.B);
-            A = Col.FloatFromUShort(color.A);
+            R = Col.UShortToFloat(color.R);
+            G = Col.UShortToFloat(color.G);
+            B = Col.UShortToFloat(color.B);
+            A = Col.UShortToFloat(color.A);
         }
 
         /// <summary>
@@ -18137,10 +18137,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4ui color)
         {
-            R = Col.FloatFromUInt(color.R);
-            G = Col.FloatFromUInt(color.G);
-            B = Col.FloatFromUInt(color.B);
-            A = Col.FloatFromUInt(color.A);
+            R = Col.UIntToFloat(color.R);
+            G = Col.UIntToFloat(color.G);
+            B = Col.UIntToFloat(color.B);
+            A = Col.UIntToFloat(color.A);
         }
 
         /// <summary>
@@ -18161,10 +18161,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(C4d color)
         {
-            R = Col.FloatFromDouble(color.R);
-            G = Col.FloatFromDouble(color.G);
-            B = Col.FloatFromDouble(color.B);
-            A = Col.FloatFromDouble(color.A);
+            R = Col.DoubleToFloat(color.R);
+            G = Col.DoubleToFloat(color.G);
+            B = Col.DoubleToFloat(color.B);
+            A = Col.DoubleToFloat(color.A);
         }
 
         /// <summary>
@@ -18260,10 +18260,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(byte[] values)
         {
-            R = Col.FloatFromByte(values[0]);
-            G = Col.FloatFromByte(values[1]);
-            B = Col.FloatFromByte(values[2]);
-            A = Col.FloatFromByte(values[3]);
+            R = Col.ByteToFloat(values[0]);
+            G = Col.ByteToFloat(values[1]);
+            B = Col.ByteToFloat(values[2]);
+            A = Col.ByteToFloat(values[3]);
         }
 
         /// <summary>
@@ -18273,10 +18273,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(byte[] values, int start)
         {
-            R = Col.FloatFromByte(values[start + 0]);
-            G = Col.FloatFromByte(values[start + 1]);
-            B = Col.FloatFromByte(values[start + 2]);
-            A = Col.FloatFromByte(values[start + 3]);
+            R = Col.ByteToFloat(values[start + 0]);
+            G = Col.ByteToFloat(values[start + 1]);
+            B = Col.ByteToFloat(values[start + 2]);
+            A = Col.ByteToFloat(values[start + 3]);
         }
 
         /// <summary>
@@ -18286,10 +18286,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(ushort[] values)
         {
-            R = Col.FloatFromUShort(values[0]);
-            G = Col.FloatFromUShort(values[1]);
-            B = Col.FloatFromUShort(values[2]);
-            A = Col.FloatFromUShort(values[3]);
+            R = Col.UShortToFloat(values[0]);
+            G = Col.UShortToFloat(values[1]);
+            B = Col.UShortToFloat(values[2]);
+            A = Col.UShortToFloat(values[3]);
         }
 
         /// <summary>
@@ -18299,10 +18299,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(ushort[] values, int start)
         {
-            R = Col.FloatFromUShort(values[start + 0]);
-            G = Col.FloatFromUShort(values[start + 1]);
-            B = Col.FloatFromUShort(values[start + 2]);
-            A = Col.FloatFromUShort(values[start + 3]);
+            R = Col.UShortToFloat(values[start + 0]);
+            G = Col.UShortToFloat(values[start + 1]);
+            B = Col.UShortToFloat(values[start + 2]);
+            A = Col.UShortToFloat(values[start + 3]);
         }
 
         /// <summary>
@@ -18312,10 +18312,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(uint[] values)
         {
-            R = Col.FloatFromUInt(values[0]);
-            G = Col.FloatFromUInt(values[1]);
-            B = Col.FloatFromUInt(values[2]);
-            A = Col.FloatFromUInt(values[3]);
+            R = Col.UIntToFloat(values[0]);
+            G = Col.UIntToFloat(values[1]);
+            B = Col.UIntToFloat(values[2]);
+            A = Col.UIntToFloat(values[3]);
         }
 
         /// <summary>
@@ -18325,10 +18325,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(uint[] values, int start)
         {
-            R = Col.FloatFromUInt(values[start + 0]);
-            G = Col.FloatFromUInt(values[start + 1]);
-            B = Col.FloatFromUInt(values[start + 2]);
-            A = Col.FloatFromUInt(values[start + 3]);
+            R = Col.UIntToFloat(values[start + 0]);
+            G = Col.UIntToFloat(values[start + 1]);
+            B = Col.UIntToFloat(values[start + 2]);
+            A = Col.UIntToFloat(values[start + 3]);
         }
 
         /// <summary>
@@ -18361,10 +18361,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(double[] values)
         {
-            R = Col.FloatFromDouble(values[0]);
-            G = Col.FloatFromDouble(values[1]);
-            B = Col.FloatFromDouble(values[2]);
-            A = Col.FloatFromDouble(values[3]);
+            R = Col.DoubleToFloat(values[0]);
+            G = Col.DoubleToFloat(values[1]);
+            B = Col.DoubleToFloat(values[2]);
+            A = Col.DoubleToFloat(values[3]);
         }
 
         /// <summary>
@@ -18373,10 +18373,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4f(double[] values, int start)
         {
-            R = Col.FloatFromDouble(values[start + 0]);
-            G = Col.FloatFromDouble(values[start + 1]);
-            B = Col.FloatFromDouble(values[start + 2]);
-            A = Col.FloatFromDouble(values[start + 3]);
+            R = Col.DoubleToFloat(values[start + 0]);
+            G = Col.DoubleToFloat(values[start + 1]);
+            B = Col.DoubleToFloat(values[start + 2]);
+            A = Col.DoubleToFloat(values[start + 3]);
         }
 
         #endregion
@@ -18778,7 +18778,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C4f color)
-            => new byte[] { Col.ByteFromFloat(color.R), Col.ByteFromFloat(color.G), Col.ByteFromFloat(color.B), Col.ByteFromFloat(color.A) };
+            => new byte[] { Col.FloatToByte(color.R), Col.FloatToByte(color.G), Col.FloatToByte(color.B), Col.FloatToByte(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -18794,7 +18794,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C4f color)
-            => new ushort[] { Col.UShortFromFloat(color.R), Col.UShortFromFloat(color.G), Col.UShortFromFloat(color.B), Col.UShortFromFloat(color.A) };
+            => new ushort[] { Col.FloatToUShort(color.R), Col.FloatToUShort(color.G), Col.FloatToUShort(color.B), Col.FloatToUShort(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -18810,7 +18810,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C4f color)
-            => new uint[] { Col.UIntFromFloat(color.R), Col.UIntFromFloat(color.G), Col.UIntFromFloat(color.B), Col.UIntFromFloat(color.A) };
+            => new uint[] { Col.FloatToUInt(color.R), Col.FloatToUInt(color.G), Col.FloatToUInt(color.B), Col.FloatToUInt(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -18838,7 +18838,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](C4f color)
-            => new double[] { Col.DoubleFromFloat(color.R), Col.DoubleFromFloat(color.G), Col.DoubleFromFloat(color.B), Col.DoubleFromFloat(color.A) };
+            => new double[] { Col.FloatToDouble(color.R), Col.FloatToDouble(color.G), Col.FloatToDouble(color.B), Col.FloatToDouble(color.A) };
 
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
@@ -19159,60 +19159,60 @@ namespace Aardvark.Base
         public static C4f operator +(C4f c0, C4b c1)
         {
             return new C4f(
-                (float)(c0.R + Col.FloatFromByte(c1.R)), 
-                (float)(c0.G + Col.FloatFromByte(c1.G)), 
-                (float)(c0.B + Col.FloatFromByte(c1.B)), 
-                (float)(c0.A + Col.FloatFromByte(c1.A)));
+                (float)(c0.R + Col.ByteToFloat(c1.R)), 
+                (float)(c0.G + Col.ByteToFloat(c1.G)), 
+                (float)(c0.B + Col.ByteToFloat(c1.B)), 
+                (float)(c0.A + Col.ByteToFloat(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator -(C4f c0, C4b c1)
         {
             return new C4f(
-                (float)(c0.R - Col.FloatFromByte(c1.R)), 
-                (float)(c0.G - Col.FloatFromByte(c1.G)), 
-                (float)(c0.B - Col.FloatFromByte(c1.B)), 
-                (float)(c0.A - Col.FloatFromByte(c1.A)));
+                (float)(c0.R - Col.ByteToFloat(c1.R)), 
+                (float)(c0.G - Col.ByteToFloat(c1.G)), 
+                (float)(c0.B - Col.ByteToFloat(c1.B)), 
+                (float)(c0.A - Col.ByteToFloat(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator +(C4f c0, C4us c1)
         {
             return new C4f(
-                (float)(c0.R + Col.FloatFromUShort(c1.R)), 
-                (float)(c0.G + Col.FloatFromUShort(c1.G)), 
-                (float)(c0.B + Col.FloatFromUShort(c1.B)), 
-                (float)(c0.A + Col.FloatFromUShort(c1.A)));
+                (float)(c0.R + Col.UShortToFloat(c1.R)), 
+                (float)(c0.G + Col.UShortToFloat(c1.G)), 
+                (float)(c0.B + Col.UShortToFloat(c1.B)), 
+                (float)(c0.A + Col.UShortToFloat(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator -(C4f c0, C4us c1)
         {
             return new C4f(
-                (float)(c0.R - Col.FloatFromUShort(c1.R)), 
-                (float)(c0.G - Col.FloatFromUShort(c1.G)), 
-                (float)(c0.B - Col.FloatFromUShort(c1.B)), 
-                (float)(c0.A - Col.FloatFromUShort(c1.A)));
+                (float)(c0.R - Col.UShortToFloat(c1.R)), 
+                (float)(c0.G - Col.UShortToFloat(c1.G)), 
+                (float)(c0.B - Col.UShortToFloat(c1.B)), 
+                (float)(c0.A - Col.UShortToFloat(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator +(C4f c0, C4ui c1)
         {
             return new C4f(
-                (float)(c0.R + Col.FloatFromUInt(c1.R)), 
-                (float)(c0.G + Col.FloatFromUInt(c1.G)), 
-                (float)(c0.B + Col.FloatFromUInt(c1.B)), 
-                (float)(c0.A + Col.FloatFromUInt(c1.A)));
+                (float)(c0.R + Col.UIntToFloat(c1.R)), 
+                (float)(c0.G + Col.UIntToFloat(c1.G)), 
+                (float)(c0.B + Col.UIntToFloat(c1.B)), 
+                (float)(c0.A + Col.UIntToFloat(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator -(C4f c0, C4ui c1)
         {
             return new C4f(
-                (float)(c0.R - Col.FloatFromUInt(c1.R)), 
-                (float)(c0.G - Col.FloatFromUInt(c1.G)), 
-                (float)(c0.B - Col.FloatFromUInt(c1.B)), 
-                (float)(c0.A - Col.FloatFromUInt(c1.A)));
+                (float)(c0.R - Col.UIntToFloat(c1.R)), 
+                (float)(c0.G - Col.UIntToFloat(c1.G)), 
+                (float)(c0.B - Col.UIntToFloat(c1.B)), 
+                (float)(c0.A - Col.UIntToFloat(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20161,9 +20161,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3b color)
         {
-            R = Col.DoubleFromByte(color.R);
-            G = Col.DoubleFromByte(color.G);
-            B = Col.DoubleFromByte(color.B);
+            R = Col.ByteToDouble(color.R);
+            G = Col.ByteToDouble(color.G);
+            B = Col.ByteToDouble(color.B);
             A = 1.0;
         }
 
@@ -20174,9 +20174,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3b color, double alpha)
         {
-            R = Col.DoubleFromByte(color.R);
-            G = Col.DoubleFromByte(color.G);
-            B = Col.DoubleFromByte(color.B);
+            R = Col.ByteToDouble(color.R);
+            G = Col.ByteToDouble(color.G);
+            B = Col.ByteToDouble(color.B);
             A = alpha;
         }
 
@@ -20188,9 +20188,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3us color)
         {
-            R = Col.DoubleFromUShort(color.R);
-            G = Col.DoubleFromUShort(color.G);
-            B = Col.DoubleFromUShort(color.B);
+            R = Col.UShortToDouble(color.R);
+            G = Col.UShortToDouble(color.G);
+            B = Col.UShortToDouble(color.B);
             A = 1.0;
         }
 
@@ -20201,9 +20201,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3us color, double alpha)
         {
-            R = Col.DoubleFromUShort(color.R);
-            G = Col.DoubleFromUShort(color.G);
-            B = Col.DoubleFromUShort(color.B);
+            R = Col.UShortToDouble(color.R);
+            G = Col.UShortToDouble(color.G);
+            B = Col.UShortToDouble(color.B);
             A = alpha;
         }
 
@@ -20215,9 +20215,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3ui color)
         {
-            R = Col.DoubleFromUInt(color.R);
-            G = Col.DoubleFromUInt(color.G);
-            B = Col.DoubleFromUInt(color.B);
+            R = Col.UIntToDouble(color.R);
+            G = Col.UIntToDouble(color.G);
+            B = Col.UIntToDouble(color.B);
             A = 1.0;
         }
 
@@ -20228,9 +20228,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3ui color, double alpha)
         {
-            R = Col.DoubleFromUInt(color.R);
-            G = Col.DoubleFromUInt(color.G);
-            B = Col.DoubleFromUInt(color.B);
+            R = Col.UIntToDouble(color.R);
+            G = Col.UIntToDouble(color.G);
+            B = Col.UIntToDouble(color.B);
             A = alpha;
         }
 
@@ -20241,9 +20241,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3f color)
         {
-            R = Col.DoubleFromFloat(color.R);
-            G = Col.DoubleFromFloat(color.G);
-            B = Col.DoubleFromFloat(color.B);
+            R = Col.FloatToDouble(color.R);
+            G = Col.FloatToDouble(color.G);
+            B = Col.FloatToDouble(color.B);
             A = 1.0;
         }
 
@@ -20253,9 +20253,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C3f color, double alpha)
         {
-            R = Col.DoubleFromFloat(color.R);
-            G = Col.DoubleFromFloat(color.G);
-            B = Col.DoubleFromFloat(color.B);
+            R = Col.FloatToDouble(color.R);
+            G = Col.FloatToDouble(color.G);
+            B = Col.FloatToDouble(color.B);
             A = alpha;
         }
 
@@ -20291,10 +20291,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4b color)
         {
-            R = Col.DoubleFromByte(color.R);
-            G = Col.DoubleFromByte(color.G);
-            B = Col.DoubleFromByte(color.B);
-            A = Col.DoubleFromByte(color.A);
+            R = Col.ByteToDouble(color.R);
+            G = Col.ByteToDouble(color.G);
+            B = Col.ByteToDouble(color.B);
+            A = Col.ByteToDouble(color.A);
         }
 
         /// <summary>
@@ -20304,10 +20304,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4us color)
         {
-            R = Col.DoubleFromUShort(color.R);
-            G = Col.DoubleFromUShort(color.G);
-            B = Col.DoubleFromUShort(color.B);
-            A = Col.DoubleFromUShort(color.A);
+            R = Col.UShortToDouble(color.R);
+            G = Col.UShortToDouble(color.G);
+            B = Col.UShortToDouble(color.B);
+            A = Col.UShortToDouble(color.A);
         }
 
         /// <summary>
@@ -20317,10 +20317,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4ui color)
         {
-            R = Col.DoubleFromUInt(color.R);
-            G = Col.DoubleFromUInt(color.G);
-            B = Col.DoubleFromUInt(color.B);
-            A = Col.DoubleFromUInt(color.A);
+            R = Col.UIntToDouble(color.R);
+            G = Col.UIntToDouble(color.G);
+            B = Col.UIntToDouble(color.B);
+            A = Col.UIntToDouble(color.A);
         }
 
         /// <summary>
@@ -20329,10 +20329,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(C4f color)
         {
-            R = Col.DoubleFromFloat(color.R);
-            G = Col.DoubleFromFloat(color.G);
-            B = Col.DoubleFromFloat(color.B);
-            A = Col.DoubleFromFloat(color.A);
+            R = Col.FloatToDouble(color.R);
+            G = Col.FloatToDouble(color.G);
+            B = Col.FloatToDouble(color.B);
+            A = Col.FloatToDouble(color.A);
         }
 
         /// <summary>
@@ -20440,10 +20440,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(byte[] values)
         {
-            R = Col.DoubleFromByte(values[0]);
-            G = Col.DoubleFromByte(values[1]);
-            B = Col.DoubleFromByte(values[2]);
-            A = Col.DoubleFromByte(values[3]);
+            R = Col.ByteToDouble(values[0]);
+            G = Col.ByteToDouble(values[1]);
+            B = Col.ByteToDouble(values[2]);
+            A = Col.ByteToDouble(values[3]);
         }
 
         /// <summary>
@@ -20453,10 +20453,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(byte[] values, int start)
         {
-            R = Col.DoubleFromByte(values[start + 0]);
-            G = Col.DoubleFromByte(values[start + 1]);
-            B = Col.DoubleFromByte(values[start + 2]);
-            A = Col.DoubleFromByte(values[start + 3]);
+            R = Col.ByteToDouble(values[start + 0]);
+            G = Col.ByteToDouble(values[start + 1]);
+            B = Col.ByteToDouble(values[start + 2]);
+            A = Col.ByteToDouble(values[start + 3]);
         }
 
         /// <summary>
@@ -20466,10 +20466,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(ushort[] values)
         {
-            R = Col.DoubleFromUShort(values[0]);
-            G = Col.DoubleFromUShort(values[1]);
-            B = Col.DoubleFromUShort(values[2]);
-            A = Col.DoubleFromUShort(values[3]);
+            R = Col.UShortToDouble(values[0]);
+            G = Col.UShortToDouble(values[1]);
+            B = Col.UShortToDouble(values[2]);
+            A = Col.UShortToDouble(values[3]);
         }
 
         /// <summary>
@@ -20479,10 +20479,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(ushort[] values, int start)
         {
-            R = Col.DoubleFromUShort(values[start + 0]);
-            G = Col.DoubleFromUShort(values[start + 1]);
-            B = Col.DoubleFromUShort(values[start + 2]);
-            A = Col.DoubleFromUShort(values[start + 3]);
+            R = Col.UShortToDouble(values[start + 0]);
+            G = Col.UShortToDouble(values[start + 1]);
+            B = Col.UShortToDouble(values[start + 2]);
+            A = Col.UShortToDouble(values[start + 3]);
         }
 
         /// <summary>
@@ -20492,10 +20492,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(uint[] values)
         {
-            R = Col.DoubleFromUInt(values[0]);
-            G = Col.DoubleFromUInt(values[1]);
-            B = Col.DoubleFromUInt(values[2]);
-            A = Col.DoubleFromUInt(values[3]);
+            R = Col.UIntToDouble(values[0]);
+            G = Col.UIntToDouble(values[1]);
+            B = Col.UIntToDouble(values[2]);
+            A = Col.UIntToDouble(values[3]);
         }
 
         /// <summary>
@@ -20505,10 +20505,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(uint[] values, int start)
         {
-            R = Col.DoubleFromUInt(values[start + 0]);
-            G = Col.DoubleFromUInt(values[start + 1]);
-            B = Col.DoubleFromUInt(values[start + 2]);
-            A = Col.DoubleFromUInt(values[start + 3]);
+            R = Col.UIntToDouble(values[start + 0]);
+            G = Col.UIntToDouble(values[start + 1]);
+            B = Col.UIntToDouble(values[start + 2]);
+            A = Col.UIntToDouble(values[start + 3]);
         }
 
         /// <summary>
@@ -20517,10 +20517,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(float[] values)
         {
-            R = Col.DoubleFromFloat(values[0]);
-            G = Col.DoubleFromFloat(values[1]);
-            B = Col.DoubleFromFloat(values[2]);
-            A = Col.DoubleFromFloat(values[3]);
+            R = Col.FloatToDouble(values[0]);
+            G = Col.FloatToDouble(values[1]);
+            B = Col.FloatToDouble(values[2]);
+            A = Col.FloatToDouble(values[3]);
         }
 
         /// <summary>
@@ -20529,10 +20529,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4d(float[] values, int start)
         {
-            R = Col.DoubleFromFloat(values[start + 0]);
-            G = Col.DoubleFromFloat(values[start + 1]);
-            B = Col.DoubleFromFloat(values[start + 2]);
-            A = Col.DoubleFromFloat(values[start + 3]);
+            R = Col.FloatToDouble(values[start + 0]);
+            G = Col.FloatToDouble(values[start + 1]);
+            B = Col.FloatToDouble(values[start + 2]);
+            A = Col.FloatToDouble(values[start + 3]);
         }
 
         /// <summary>
@@ -20958,7 +20958,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C4d color)
-            => new byte[] { Col.ByteFromDouble(color.R), Col.ByteFromDouble(color.G), Col.ByteFromDouble(color.B), Col.ByteFromDouble(color.A) };
+            => new byte[] { Col.DoubleToByte(color.R), Col.DoubleToByte(color.G), Col.DoubleToByte(color.B), Col.DoubleToByte(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -20974,7 +20974,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C4d color)
-            => new ushort[] { Col.UShortFromDouble(color.R), Col.UShortFromDouble(color.G), Col.UShortFromDouble(color.B), Col.UShortFromDouble(color.A) };
+            => new ushort[] { Col.DoubleToUShort(color.R), Col.DoubleToUShort(color.G), Col.DoubleToUShort(color.B), Col.DoubleToUShort(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -20990,7 +20990,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C4d color)
-            => new uint[] { Col.UIntFromDouble(color.R), Col.UIntFromDouble(color.G), Col.UIntFromDouble(color.B), Col.UIntFromDouble(color.A) };
+            => new uint[] { Col.DoubleToUInt(color.R), Col.DoubleToUInt(color.G), Col.DoubleToUInt(color.B), Col.DoubleToUInt(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -21004,7 +21004,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](C4d color)
-            => new float[] { Col.FloatFromDouble(color.R), Col.FloatFromDouble(color.G), Col.FloatFromDouble(color.B), Col.FloatFromDouble(color.A) };
+            => new float[] { Col.DoubleToFloat(color.R), Col.DoubleToFloat(color.G), Col.DoubleToFloat(color.B), Col.DoubleToFloat(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
@@ -21339,60 +21339,60 @@ namespace Aardvark.Base
         public static C4d operator +(C4d c0, C4b c1)
         {
             return new C4d(
-                (double)(c0.R + Col.DoubleFromByte(c1.R)), 
-                (double)(c0.G + Col.DoubleFromByte(c1.G)), 
-                (double)(c0.B + Col.DoubleFromByte(c1.B)), 
-                (double)(c0.A + Col.DoubleFromByte(c1.A)));
+                (double)(c0.R + Col.ByteToDouble(c1.R)), 
+                (double)(c0.G + Col.ByteToDouble(c1.G)), 
+                (double)(c0.B + Col.ByteToDouble(c1.B)), 
+                (double)(c0.A + Col.ByteToDouble(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator -(C4d c0, C4b c1)
         {
             return new C4d(
-                (double)(c0.R - Col.DoubleFromByte(c1.R)), 
-                (double)(c0.G - Col.DoubleFromByte(c1.G)), 
-                (double)(c0.B - Col.DoubleFromByte(c1.B)), 
-                (double)(c0.A - Col.DoubleFromByte(c1.A)));
+                (double)(c0.R - Col.ByteToDouble(c1.R)), 
+                (double)(c0.G - Col.ByteToDouble(c1.G)), 
+                (double)(c0.B - Col.ByteToDouble(c1.B)), 
+                (double)(c0.A - Col.ByteToDouble(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator +(C4d c0, C4us c1)
         {
             return new C4d(
-                (double)(c0.R + Col.DoubleFromUShort(c1.R)), 
-                (double)(c0.G + Col.DoubleFromUShort(c1.G)), 
-                (double)(c0.B + Col.DoubleFromUShort(c1.B)), 
-                (double)(c0.A + Col.DoubleFromUShort(c1.A)));
+                (double)(c0.R + Col.UShortToDouble(c1.R)), 
+                (double)(c0.G + Col.UShortToDouble(c1.G)), 
+                (double)(c0.B + Col.UShortToDouble(c1.B)), 
+                (double)(c0.A + Col.UShortToDouble(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator -(C4d c0, C4us c1)
         {
             return new C4d(
-                (double)(c0.R - Col.DoubleFromUShort(c1.R)), 
-                (double)(c0.G - Col.DoubleFromUShort(c1.G)), 
-                (double)(c0.B - Col.DoubleFromUShort(c1.B)), 
-                (double)(c0.A - Col.DoubleFromUShort(c1.A)));
+                (double)(c0.R - Col.UShortToDouble(c1.R)), 
+                (double)(c0.G - Col.UShortToDouble(c1.G)), 
+                (double)(c0.B - Col.UShortToDouble(c1.B)), 
+                (double)(c0.A - Col.UShortToDouble(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator +(C4d c0, C4ui c1)
         {
             return new C4d(
-                (double)(c0.R + Col.DoubleFromUInt(c1.R)), 
-                (double)(c0.G + Col.DoubleFromUInt(c1.G)), 
-                (double)(c0.B + Col.DoubleFromUInt(c1.B)), 
-                (double)(c0.A + Col.DoubleFromUInt(c1.A)));
+                (double)(c0.R + Col.UIntToDouble(c1.R)), 
+                (double)(c0.G + Col.UIntToDouble(c1.G)), 
+                (double)(c0.B + Col.UIntToDouble(c1.B)), 
+                (double)(c0.A + Col.UIntToDouble(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator -(C4d c0, C4ui c1)
         {
             return new C4d(
-                (double)(c0.R - Col.DoubleFromUInt(c1.R)), 
-                (double)(c0.G - Col.DoubleFromUInt(c1.G)), 
-                (double)(c0.B - Col.DoubleFromUInt(c1.B)), 
-                (double)(c0.A - Col.DoubleFromUInt(c1.A)));
+                (double)(c0.R - Col.UIntToDouble(c1.R)), 
+                (double)(c0.G - Col.UIntToDouble(c1.G)), 
+                (double)(c0.B - Col.UIntToDouble(c1.B)), 
+                (double)(c0.A - Col.UIntToDouble(c1.A)));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
