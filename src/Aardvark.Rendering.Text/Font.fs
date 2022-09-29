@@ -422,7 +422,7 @@ type private FontImpl private(f : Typeface) =
             reader.Read(stream, 0, ReadFlags.Full)
         with e ->
             failwithf "could not load font %s: %A" file e.Message
-
+           
     static member Symbola = symbola.Value
 
     member x.Family = f.Name
@@ -486,6 +486,10 @@ type Font private(impl : FontImpl, family : string, style : FontStyle) =
                 let impl = FontImpl(file)
                 impl
             )
+        Font(impl, impl.Family, impl.Style)
+        
+    new(stream : System.IO.Stream) =
+        let impl = FontImpl(stream)
         Font(impl, impl.Family, impl.Style)
 
     new(family : string, style : FontStyle) =
