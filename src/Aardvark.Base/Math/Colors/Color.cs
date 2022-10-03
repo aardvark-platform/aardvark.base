@@ -918,10 +918,9 @@ namespace Aardvark.Base
 
         #endregion
 
-        // explicit lambda function versions to aid type infererence
-
         #region Color to Gray Conversions
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ToGrayByte(this C3b c)
         {
             return (byte)((c.R * c_grayByteFromC3bRed
@@ -929,6 +928,7 @@ namespace Aardvark.Base
                          + c.B * c_grayByteFromC3bBlue) >> 16);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte ToGrayByte(this C4b c)
         {
             return (byte)((c.R * c_grayByteFromC3bRed
@@ -936,6 +936,7 @@ namespace Aardvark.Base
                          + c.B * c_grayByteFromC3bBlue) >> 16);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ToGrayUShort(this C3us c)
         {
             return (ushort)((c.R * c_grayUShortFromC3usRed
@@ -943,6 +944,7 @@ namespace Aardvark.Base
                            + c.B * c_grayUShortFromC3usBlue) >> 32);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort ToGrayUShort(this C4us c)
         {
             return (ushort)((c.R * c_grayUShortFromC3usRed
@@ -950,38 +952,57 @@ namespace Aardvark.Base
                            + c.B * c_grayUShortFromC3usBlue) >> 32);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ToGrayFloat(this C3f c) { return c.R * 0.30f + c.G * 0.59f + c.B * 0.11f; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ToGrayFloat(this C4f c) { return c.R * 0.30f + c.G * 0.59f + c.B * 0.11f; }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ToGrayFloatClamped(this C3f c)
         {
             return Fun.Clamp(c.R * 0.30f + c.G * 0.59f + c.B * 0.11f, 0.0f, 1.0f);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ToGrayFloatClamped(C4f c)
         {
             return Fun.Clamp(c.R * 0.30f + c.G * 0.59f + c.B * 0.11f, 0.0f, 1.0f);
         }
 
+        #region Obsolete
+
+        [Obsolete("Use Col.ToGrayByte() instead")]
         public static readonly Func<C3b, byte> GrayByteFromC3b = ToGrayByte;
+        [Obsolete("Use Col.ToGrayByte() instead")]
         public static readonly Func<C4b, byte> GrayByteFromC4b = ToGrayByte;
+        [Obsolete("Use Col.ToGrayUShort() instead")]
         public static readonly Func<C3us, ushort> GrayUShortFromC3us = ToGrayUShort;
+        [Obsolete("Use Col.ToGrayUShort() instead")]
         public static readonly Func<C4us, ushort> GrayUShortFromC4us = ToGrayUShort;
+        [Obsolete("Use Col.ToGrayFloat() instead")]
         public static readonly Func<C3f, float> GrayFloatFromC3f = ToGrayFloat;
+        [Obsolete("Use Col.ToGrayFloat() instead")]
         public static readonly Func<C4f, float> GrayFloatFromC4f = ToGrayFloat;
+        [Obsolete("Use Col.ToGrayFloatClamped() instead")]
         public static readonly Func<C3f, float> GrayFloatClampedFromC3f = ToGrayFloatClamped;
+        [Obsolete("Use Col.ToGrayFloatClamped() instead")]
         public static readonly Func<C4f, float> GrayFloatClampedFromC4f = ToGrayFloatClamped;
+
+        #endregion
 
         #endregion
 
         #region Alpha to premultiplied Alpha and back
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b AlphaToPremultipliedAlpha(this C4b c)
         {
             var f = c_byteToDouble * (double)c.A;
             return new C4b((byte)(f * c.R), (byte)(f * c.G), (byte)(f * c.B), c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b PremultipliedAlphaToAlpha(this C4b c)
         {
             if (c.A == 0) return new C4b(0, 0, 0, 0);
@@ -989,12 +1010,14 @@ namespace Aardvark.Base
             return new C4b((byte)(f * c.R), (byte)(f * c.G), (byte)(f * c.B), c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us AlphaToPremultipliedAlpha(this C4us c)
         {
             var f = c_uShortToDouble * (double)c.A;
             return new C4us((ushort)(f * c.R), (ushort)(f * c.G), (ushort)(f * c.B), c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us PremultipliedAlphaToAlpha(this C4us c)
         {
             if (c.A == 0) return new C4us(0, 0, 0, 0);
@@ -1002,12 +1025,14 @@ namespace Aardvark.Base
             return new C4us((ushort)(f * c.R), (ushort)(f * c.G), (ushort)(f * c.B), c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui AlphaToPremultipliedAlpha(this C4ui c)
         {
             var f = c_uIntToDouble * (double)c.A;
             return new C4ui((uint)(f * c.R), (uint)(f * c.G), (uint)(f * c.B), c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui PremultipliedAlphaToAlpha(this C4ui c)
         {
             if (c.A == 0) return new C4ui(0, 0, 0, 0);
@@ -1015,53 +1040,70 @@ namespace Aardvark.Base
             return new C4ui((uint)(f * c.R), (uint)(f * c.G), (uint)(f * c.B), c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f AlphaToPremultipliedAlpha(this C4f c)
         {
             return new C4f(c.R * c.A, c.G * c.A, c.B * c.A, c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f PremultipliedAlphaToAlpha(this C4f c)
         {
             if (c.A == 0.0f) return new C4f(0.0f, 0.0f, 0.0f, 0.0f);
             return new C4f(c.R / c.A, c.G / c.A, c.B / c.A, c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d AlphaToPremultipliedAlpha(this C4d c)
         {
             return new C4d(c.R * c.A, c.G * c.A, c.B * c.A, c.A);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d PremultipliedAlphaToAlpha(this C4d c)
         {
             if (c.A == 0.0) return new C4d(0.0, 0.0, 0.0, 0.0);
             return new C4d(c.R / c.A, c.G / c.A, c.B / c.A, c.A);
         }
 
+        #region Obsolete
+
+        [Obsolete("Use Col.AlphaToPremultipliedAlpha() instead")]
         public static readonly Func<C4b, C4b> PremultipliedAlphaFromAlphaC4b = AlphaToPremultipliedAlpha;
+        [Obsolete("Use Col.PremultipliedAlphaToAlpha() instead")]
         public static readonly Func<C4b, C4b> AlphaFromPremultipliedAlphaC4b = PremultipliedAlphaToAlpha;
+        [Obsolete("Use Col.AlphaToPremultipliedAlpha() instead")]
         public static readonly Func<C4us, C4us> PremultipliedAlphaFromAlphaC4us = AlphaToPremultipliedAlpha;
+        [Obsolete("Use Col.PremultipliedAlphaToAlpha() instead")]
         public static readonly Func<C4us, C4us> AlphaFromPremultipliedAlphaC4us = PremultipliedAlphaToAlpha;
+        [Obsolete("Use Col.AlphaToPremultipliedAlpha() instead")]
         public static readonly Func<C4ui, C4ui> PremultipliedAlphaFromAlphaC4ui = AlphaToPremultipliedAlpha;
+        [Obsolete("Use Col.PremultipliedAlphaToAlpha() instead")]
         public static readonly Func<C4ui, C4ui> AlphaFromPremultipliedAlphaC4ui = PremultipliedAlphaToAlpha;
+        [Obsolete("Use Col.AlphaToPremultipliedAlpha() instead")]
         public static readonly Func<C4f, C4f> PremultipliedAlphaFromAlphaC4f = AlphaToPremultipliedAlpha;
+        [Obsolete("Use Col.PremultipliedAlphaToAlpha() instead")]
         public static readonly Func<C4f, C4f> AlphaFromPremultipliedAlphaC4f = PremultipliedAlphaToAlpha;
+        [Obsolete("Use Col.AlphaToPremultipliedAlpha() instead")]
         public static readonly Func<C4d, C4d> PremultipliedAlphaFromAlphaC4d = AlphaToPremultipliedAlpha;
+        [Obsolete("Use Col.PremultipliedAlphaToAlpha() instead")]
         public static readonly Func<C4d, C4d> AlphaFromPremultipliedAlphaC4d = PremultipliedAlphaToAlpha;
+
+        #endregion
 
         #endregion
 
         #region SRGB/Linear SRGB/CieXYZ/CieLab/CieYxy Conversions
 
-        public static float ColLinearSRGBFloatToSRGBFloat(this float c)
-        {
-            return (float)(c <= 0.0031308 ? c * 12.92 : 1.055 * Fun.Pow(c, 1.0 / 2.4) - 0.055);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float LinearSRGBFloatToSRGBFloat(this float c)
+            => (float)(c <= 0.0031308 ? c * 12.92 : 1.055 * Fun.Pow(c, 1.0 / 2.4) - 0.055);
 
-        public static float ColSRGBFloatToLinearSRGBFloat(this float c)
-        {
-            return (float)(c <= 0.04045 ? c / 12.92 : Fun.Pow((c + 0.055) / 1.055, 2.4));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float SRGBFloatToLinearSRGBFloat(this float c)
+            => (float)(c <= 0.04045 ? c / 12.92 : Fun.Pow((c + 0.055) / 1.055, 2.4));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f LinearSRGBToSRGB(this C3f c)
         {
             return new C3f(c.R <= 0.0031308 ? c.R * 12.92 : 1.055 * Fun.Pow(c.R, 1.0 / 2.4) - 0.055,
@@ -1069,6 +1111,7 @@ namespace Aardvark.Base
                            c.B <= 0.0031308 ? c.B * 12.92 : 1.055 * Fun.Pow(c.B, 1.0 / 2.4) - 0.055);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f LinearSRGBAToSRGBA(this C4f c)
         {
             return new C4f(c.R <= 0.0031308 ? c.R * 12.92 : 1.055 * Fun.Pow(c.R, 1.0 / 2.4) - 0.055,
@@ -1077,6 +1120,7 @@ namespace Aardvark.Base
                            c.A <= 0.0031308 ? c.A * 12.92 : 1.055 * Fun.Pow(c.A, 1.0 / 2.4) - 0.055);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f SRGBToLinearSRGB(this C3f c)
         {
             return new C3f(c.R <= 0.04045 ? c.R / 12.92 : Fun.Pow((c.R + 0.055) / 1.055, 2.4),
@@ -1084,6 +1128,7 @@ namespace Aardvark.Base
                            c.B <= 0.04045 ? c.B / 12.92 : Fun.Pow((c.B + 0.055) / 1.055, 2.4));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f SRGBAToLinearSRGBA(this C4f c)
         {
             return new C4f(c.R <= 0.04045 ? c.R / 12.92 : Fun.Pow((c.R + 0.055) / 1.055, 2.4),
@@ -1097,6 +1142,7 @@ namespace Aardvark.Base
         /// SRGB white (1, 1, 1) is converted to XYZ white (0.9505, 1.0000, 1.0890)
         /// at D65 with unit luminance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f LinearSRGBToXYZinC3f(this C3f c)
         {
             return new C3f(0.4124 * c.R + 0.3576 * c.G + 0.1805 * c.B,
@@ -1109,6 +1155,7 @@ namespace Aardvark.Base
         /// XYZ white (0.9505, 1.0000, 1.0890) at D65 with unit luminance is
         /// converted to SRGB white (1, 1, 1)
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f XYZinC3fToLinearSRGB(this C3f c)
         {
             return new C3f(3.2406 * c.R - 1.5372 * c.G - 0.4986 * c.B,
@@ -1120,6 +1167,7 @@ namespace Aardvark.Base
         /// Convert XYZ to CIE RGB with channel values in the range [0.0, 1.0].
         /// XYZ white (1, 1, 1) is converted to (1, 1, 1).
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f XYZinC3fToCIERGB(this C3f c)
         {
             return new C3f( 2.3706743 * c.R - 0.9000405 * c.G - 0.4706338 * c.B,
@@ -1132,6 +1180,7 @@ namespace Aardvark.Base
         /// SRGB white (1, 1, 1) is converted to XYZ white (0.9505, 1.0000, 1.0890)
         /// at D65 with unit luminance.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f SRGBToXYZinC3f(this C3f c) { return c.SRGBToLinearSRGB().LinearSRGBToXYZinC3f(); }
 
         /// <summary>
@@ -1139,6 +1188,7 @@ namespace Aardvark.Base
         /// XYZ white (0.9505, 1.0000, 1.0890) at D65 with unit luminance is
         /// converted to SRGB white (1, 1, 1)
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f XYZinC3fToSRGB(this C3f c) { return c.XYZinC3fToLinearSRGB().LinearSRGBToSRGB(); }
 
         /// <summary>
@@ -1146,6 +1196,7 @@ namespace Aardvark.Base
         /// SRGB white (1, 1, 1) is converted to XYZA white (0.9505, 1.0000, 1.0890)
         /// at D65 with unit luminance. The alpha value is simply copied.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f LinearSRGBAToXYZAinC4f(this C4f c)
         {
             return new C4f(0.4124 * c.R + 0.3576 * c.G + 0.1805 * c.B,
@@ -1159,6 +1210,7 @@ namespace Aardvark.Base
         /// XYZ white (0.9505, 1.0000, 1.0890) at D65 with unit luminance is
         /// converted to SRGB white (1, 1, 1). The alpha value is simply copied.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f XYZAinC4fToLinearSRGBA(this C4f c)
         {
             return new C4f(3.2410 * c.R - 1.5374 * c.G - 0.4986 * c.B,
@@ -1173,6 +1225,7 @@ namespace Aardvark.Base
         /// at D65 with unit luminance. The alpha value is subject to sRGB de-gamma
         /// conversion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f SRGBAToXYZAinC4f(this C4f c) { return c.SRGBAToLinearSRGBA().LinearSRGBAToXYZAinC4f(); }
 
         /// <summary>
@@ -1181,79 +1234,146 @@ namespace Aardvark.Base
         /// converted to SRGBA white (1, 1, 1). The alpha value is subject to
         /// sRGB gamma conversion.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f XYZAinC4fToSRGBA(this C4f c) { return c.XYZAinC4fToLinearSRGBA().LinearSRGBAToSRGBA(); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf XYZinC3fToCieXYZf(this C3f c) { return new CieXYZf(c.R * 100.0, c.G * 100.0, c.B * 100.0); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf XYZAinC4fToCieXYZf(this C4f c) { return new CieXYZf(c.R * 100.0, c.G * 100.0, c.B * 100.0); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf LinearSRGBToCieXYZf(this C3f c) { return c.LinearSRGBToXYZinC3f().XYZinC3fToCieXYZf(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf LinearSRGBAToCieXYZf(this C4f c) { return c.LinearSRGBAToXYZAinC4f().XYZAinC4fToCieXYZf(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf SRGBToCieXYZf(this C3f c) { return c.SRGBToXYZinC3f().XYZinC3fToCieXYZf(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf SRGBAToCieXYZf(this C4f c) { return c.SRGBAToXYZAinC4f().XYZAinC4fToCieXYZf(); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f ToXYZinC3f(this CieXYZf c) { return new C3f(c.X * 0.01f, c.Y * 0.01f, c.Z * 0.01f); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f ToXYZAinC4f(this CieXYZf c) { return new C4f(c.X * 0.01f, c.Y * 0.01f, c.Z * 0.01f); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f ToLinearSRGB(this CieXYZf c) { return c.ToXYZinC3f().XYZinC3fToLinearSRGB(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f ToLinearSRGBA(this CieXYZf c) { return c.ToXYZAinC4f().XYZAinC4fToLinearSRGBA(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f ToSRGB(this CieXYZf c) { return c. ToXYZinC3f().XYZinC3fToSRGB(); }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f ToSRGBA(this CieXYZf c) { return c.ToXYZAinC4f().XYZAinC4fToSRGBA(); }
 
+        #region Obsolete
+
+        [Obsolete("Use Col.LinearSRGBFloatToSRGBFloat() instead")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ColLinearSRGBFloatToSRGBFloat(this float c)
+        {
+            return (float)(c <= 0.0031308 ? c * 12.92 : 1.055 * Fun.Pow(c, 1.0 / 2.4) - 0.055);
+        }
+
+        [Obsolete("Use Col.SRGBFloatToLinearSRGBFloat() instead")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ColSRGBFloatToLinearSRGBFloat(this float c)
+        {
+            return (float)(c <= 0.04045 ? c / 12.92 : Fun.Pow((c + 0.055) / 1.055, 2.4));
+        }
+
+        [Obsolete("Use Col.LinearSRGBFloatToSRGBFloat() instead")]
         public static readonly Func<float, float> SRGBFloatFromLinearSRGBFloat = ColLinearSRGBFloatToSRGBFloat;
+        [Obsolete("Use Col.SRGBFloatToLinearSRGBFloat() instead")]
         public static readonly Func<float, float> LinearSRGBFloatFromSRGBFloat = ColSRGBFloatToLinearSRGBFloat;
+        [Obsolete("Use Col.LinearSRGBToSRGB() Instead")]
         public static readonly Func<C3f, C3f> SRGBFromLinearSRGB = LinearSRGBToSRGB;
+        [Obsolete("Use Col.LinearSRGBAToSRGBA() Instead")]
         public static readonly Func<C4f, C4f> SRGBAFromLinearSRGBA = LinearSRGBAToSRGBA;
+        [Obsolete("Use Col.SRGBToLinearSRGB() Instead")]
         public static readonly Func<C3f, C3f> LinearSRGBFromSRGB = SRGBToLinearSRGB;
+        [Obsolete("Use Col.SRGBAToLinearSRGBA() Instead")]
         public static readonly Func<C4f, C4f> LinearSRGBAFromSRGBA = SRGBAToLinearSRGBA;
+        [Obsolete("Use Col.LinearSRGBToXYZinC3f() Instead")]
         public static readonly Func<C3f, C3f> XYZinC3fFromLinearSRGB = LinearSRGBToXYZinC3f;
+        [Obsolete("Use Col.XYZinC3fToLinearSRGB;() Instead")]
         public static readonly Func<C3f, C3f> LinearSRGBFromXYZinC3f = XYZinC3fToLinearSRGB;
+        [Obsolete("Use Col.SRGBToXYZinC3f() Instead")]
         public static readonly Func<C3f, C3f> XYZinC3fFromSRGB = SRGBToXYZinC3f;
+        [Obsolete("Use Col.XYZinC3fToSRGB() Instead")]
         public static readonly Func<C3f, C3f> SRGBFromXYZinC3f = XYZinC3fToSRGB;
+        [Obsolete("Use Col.LinearSRGBAToXYZAinC4f() Instead")]
         public static readonly Func<C4f, C4f> XYZAinC4fFromLinearSRGBA = LinearSRGBAToXYZAinC4f;
+        [Obsolete("Use Col.XYZAinC4fToLinearSRGBA() Instead")]
         public static readonly Func<C4f, C4f> LinearSRGBAFromXYZAinC4f = XYZAinC4fToLinearSRGBA;
+        [Obsolete("Use Col.SRGBAToXYZAinC4f() Instead")]
         public static readonly Func<C4f, C4f> XYZAinC4fFromSRGBA = SRGBAToXYZAinC4f;
+        [Obsolete("Use Col.XYZAinC4fToSRGBA() Instead")]
         public static readonly Func<C4f, C4f> SRGBAFromXYZAinC4f = XYZAinC4fToSRGBA;
 
+        [Obsolete("Use Col.XYZinC3fToCieXYZf() instead")]
         public static readonly Func<C3f, CieXYZf> CieXYZfFromXYZinC3f = XYZinC3fToCieXYZf;
+        [Obsolete("Use Col.XYZAinC4fToCieXYZf() instead")]
         public static readonly Func<C4f, CieXYZf> CieXYZfFromXYZAinC3f = XYZAinC4fToCieXYZf;
+        [Obsolete("Use Col.LinearSRGBToCieXYZf() instead")]
         public static readonly Func<C3f, CieXYZf> CieXYZfFromLinearSRGB = LinearSRGBToCieXYZf;
+        [Obsolete("Use Col.LinearSRGBAToCieXYZf() instead")]
         public static readonly Func<C4f, CieXYZf> CieXYZfFromLinearSRGBA = LinearSRGBAToCieXYZf;
+        [Obsolete("Use Col.SRGBToCieXYZf() instead")]
         public static readonly Func<C3f, CieXYZf> CieXYZfFromSRGB = SRGBToCieXYZf;
+        [Obsolete("Use Col.SRGBAToCieXYZf() instead")]
         public static readonly Func<C4f, CieXYZf> CieXYZfFromSRGBA = SRGBAToCieXYZf;
 
+        [Obsolete("Use Col.ToXYZinC3f() instead")]
         public static readonly Func<CieXYZf, C3f> XYZinC3fFromCieXYZf = ToXYZinC3f;
+        [Obsolete("Use Col.ToXYZAinC4f() instead")]
         public static readonly Func<CieXYZf, C4f> XYZAinC3fFromCieXYZf = ToXYZAinC4f;
+        [Obsolete("Use Col.ToLinearSRGB() instead")]
         public static readonly Func<CieXYZf, C3f> LinearSRGBFromCieXYZf = ToLinearSRGB;
+        [Obsolete("Use Col.ToLinearSRGBA() instead")]
         public static readonly Func<CieXYZf, C4f> LinearSRGBAFromCieXYZf = ToLinearSRGBA;
+        [Obsolete("Use Col.ToSRGB() instead")]
         public static readonly Func<CieXYZf, C3f> SRGBFromCieXYZf = ToSRGB;
+        [Obsolete("Use Col.ToSRGBA() instead")]
         public static readonly Func<CieXYZf, C4f> SRGBAFromCieXYZf = ToSRGBA;
 
+        #endregion
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieYxyf ToCieYxyf(this CieXYZf c)
         {
             var s = c.X + c.Y + c.Z; return s > 0.0f ? new CieYxyf(c.Y, c.X / s, c.Y / s) : new CieYxyf(0, 0, 0);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf ToCieXYZf(this CieYxyf c)
         {
             var s = c.y > 0.0 ? c.Y / c.y : 0.0; return new CieXYZf(s * c.x, c.Y, s * (1 - c.x - c.y));
         }
 
+        [Obsolete("Use Col.ToCieYxyf() instead")]
         public static readonly Func<CieXYZf, CieYxyf> CieYxyfFromCieXYZf = ToCieYxyf;
+        [Obsolete("Use Col.ToCieXYZf() instead")]
         public static readonly Func<CieYxyf, CieXYZf> CieXYZfFromCieXxyf = ToCieXYZf;
 
         private const double s_labF_t3 = (6 / 29.0) * (6 / 29.0) * (6 / 29.0);
         private const double s_labF_t1 = (1 / 3.0) * (29 / 6.0) * (29 / 6.0);
         private const double s_labF_t0 = 4 / 29.0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double s_labF(double t) { return t > s_labF_t3 ? Math.Pow(t, Constant.OneThird) : s_labF_t1 * t + s_labF_t0; }
 
         private const double s_labFinv_t3 = 6 / 29.0;
         private const double s_labFinv_t1 = 3.0 * (6 / 29.0) * (6 / 29.0);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static double s_labFinv(double t) { return t > s_labFinv_t3 ? t * t * t : s_labFinv_t1 * (t - s_labF_t0); }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieLabf ToCieLabf(this CieXYZf c, CieXYZf white)
         {
             var fy = s_labF(c.Y / white.Y);
             return new CieLabf( 116.0 * fy - 16.0, 500.0 * (s_labF(c.X / white.X) - fy), 200.0 * (fy - s_labF(c.Z / white.Z)));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf ToCieXYZf(this CieLabf c, CieXYZf white)
         {
             var l = (c.L + 16.0) / 116.0;
@@ -1301,12 +1421,19 @@ namespace Aardvark.Base
             return coneResponseDomain.Backward * scaleMat * coneResponseDomain.Forward;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieLabf ToCieLabfD65(this CieXYZf c) { return ToCieLabf(c, CieXYZfD65White); }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static CieXYZf ToCieXYZfD65(this CieLabf c) { return ToCieXYZf(c, CieXYZfD65White); }
 
+        [Obsolete("Use Col.ToCieLabf() instead")]
         public static readonly Func<CieXYZf, CieXYZf, CieLabf> CieLabfFromCieXYZf = ToCieLabf;
+        [Obsolete("Use Col.ToCieXYZf() instead")]
         public static readonly Func<CieLabf, CieXYZf, CieXYZf> CieXYZfFromCieLabf = ToCieXYZf;
+        [Obsolete("Use Col.ToCieLabfD65() instead")]
         public static readonly Func<CieXYZf, CieLabf> CieLabfFromCieXYZfD65 = ToCieLabfD65;
+        [Obsolete("Use Col.ToCieXYZfD65() instead")]
         public static readonly Func<CieLabf, CieXYZf> CieXYZfD65FromCieLabf = ToCieXYZfD65;
 
         #endregion

@@ -80,7 +80,7 @@ namespace Aardvark.Base
                 if (pixImage.Format == Col.Format.BW || pixImage.Format == Col.Format.Gray)
                     return pixImage.Volume.AsMatrixWindow();
             }
-            return pixImage.GetMatrix<C3b>().MapWindow<byte>(Col.GrayByteFromC3b);
+            return pixImage.GetMatrix<C3b>().MapWindow<byte>(Col.ToGrayByte);
         }
 
         public static PixImage<byte> ToGrayscalePixImage(this PixImage<byte> pixImage)
@@ -94,7 +94,7 @@ namespace Aardvark.Base
         {
             if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
                 return pixImage.Volume.AsMatrixWindow();
-            return pixImage.GetMatrix<C3us>().MapWindow<ushort>(Col.GrayUShortFromC3us);
+            return pixImage.GetMatrix<C3us>().MapWindow<ushort>(Col.ToGrayUShort);
         }
 
         public static PixImage<ushort> ToGrayscalePixImage(this PixImage<ushort> pixImage)
@@ -111,7 +111,7 @@ namespace Aardvark.Base
                 if (pixImage.Format == Col.Format.BW || pixImage.Format == Col.Format.Gray)
                     return pixImage.Volume.AsMatrixWindow();
             }
-            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.GrayFloatFromC3f);
+            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.ToGrayFloat);
         }
 
         public static PixImage<float> ToGrayscalePixImage(this PixImage<float> pixImage)
@@ -125,7 +125,7 @@ namespace Aardvark.Base
         {
             if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
                 return pixImage.Volume.AsMatrixWindow();
-            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.GrayFloatClampedFromC3f);
+            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.ToGrayFloatClamped);
         }
 
         public static PixImage<float> ToClampedGrayscalePixImage(this PixImage<float> pixImage)

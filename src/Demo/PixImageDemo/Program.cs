@@ -369,7 +369,7 @@ namespace PixImageDemo
             floatToByteImg.Save(Path.Combine(dir, "v-byte2float2byte-color.png"));
 
             // color conversion to linear response
-            var linearFloatImg = floatImg.Copy<C3f>(Col.LinearSRGBFromSRGB);
+            var linearFloatImg = floatImg.Copy<C3f>(Col.SRGBToLinearSRGB);
 
             // converting the linear float image to a byte image and saving it in png format
             linearFloatImg.ToPixImage<byte>().Save(Path.Combine(dir, "v-linear-color.png"));
