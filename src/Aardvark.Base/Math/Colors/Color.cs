@@ -1549,43 +1549,53 @@ namespace Aardvark.Base
             }
         }
 
+        [Obsolete("Use Col.ToHSLf() instead")]
         public static readonly Func<C3f, HSLf> HSLfFromC3f = ToHSLf;
+        [Obsolete("Use Col.ToHSVf() instead")]
         public static readonly Func<C3f, HSVf> HSVfFromC3f = ToHSVf;
+        [Obsolete("Use Col.ToC3f() instead")]
         public static readonly Func<HSLf, C3f> C3fFromHSLf = ToC3f;
+        [Obsolete("Use Col.ToC3f() instead")]
         public static readonly Func<HSVf, C3f> C3fFromHSVf = ToC3f;
 
         #endregion
 
         #region Gamma Correction Conversions
 
-        public static float ColGammaFloatToLinearFloat(float c, double gamma)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GammaFloatToLinearFloat(float c, double gamma)
         {
             return (float)Fun.Pow(c, gamma);
         }
 
-        public static float ColLinearFloatToGammaFloat(float c, double gamma)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float LinearFloatToGammaFloat(float c, double gamma)
         {
             double inverseGamma = 1.0 / gamma;
             return (float)Fun.Pow(c, inverseGamma);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f GammaToLinear(this C3f c, double gamma)
         {
             return new C3f(Fun.Pow(c.R, gamma), Fun.Pow(c.G, gamma), Fun.Pow(c.B, gamma));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f GammaToLinear(this C4f c, double gamma)
         {
             return new C4f(Fun.Pow(c.R, gamma), Fun.Pow(c.G, gamma),
                            Fun.Pow(c.B, gamma), Fun.Pow(c.A, gamma));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f LinearToGamma(this C3f c, double gamma)
         {
             double inv = 1.0 / gamma;
             return new C3f(Fun.Pow(c.R, inv), Fun.Pow(c.G, inv), Fun.Pow(c.B, inv));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f LinearToGamma(this C4f c, double gamma)
         {
             double inv = 1.0 / gamma;
@@ -1593,34 +1603,57 @@ namespace Aardvark.Base
                            Fun.Pow(c.B, inv), Fun.Pow(c.A, inv));
         }
 
+        #region Obsolete
+
+        [Obsolete("Use Col.GammaFloatToLinearFloat() instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ColGammaFloatToLinearFloat(float c, double gamma)
+        {
+            return (float)Fun.Pow(c, gamma);
+        }
+
+        [Obsolete("Use Col.LinearFloatToGammaFloat() instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ColLinearFloatToGammaFloat(float c, double gamma)
+        {
+            double inverseGamma = 1.0 / gamma;
+            return (float)Fun.Pow(c, inverseGamma);
+        }
+
+        [Obsolete("Use Col.GammaFloatToLinearFloat() instead.")]
         public static Func<float, float> LinearFloatFromGammaFloat(double gamma)
         {
             return c => (float)Fun.Pow(c, gamma);
         }
 
+        [Obsolete("Use Col.LinearFloatToGammaFloat() instead.")]
         public static Func<float, float> GammaFloatFromLinearFloat(double gamma)
         {
             double inverseGamma = 1.0 / gamma;
             return c => (float)Fun.Pow(c, inverseGamma);
         }
 
+        [Obsolete("Use Col.GammaToLinear() instead.")]
         public static Func<C3f, C3f> LinearC3fFromGammaC3f(double gamma)
         {
             return c => new C3f(Fun.Pow(c.R, gamma), Fun.Pow(c.G, gamma), Fun.Pow(c.B, gamma));
         }
 
+        [Obsolete("Use Col.GammaToLinear() instead.")]
         public static Func<C4f, C4f> LinearC4fFromGammaC4f(double gamma)
         {
             return c => new C4f(Fun.Pow(c.R, gamma), Fun.Pow(c.G, gamma),
                                 Fun.Pow(c.B, gamma), Fun.Pow(c.A, gamma));
         }
 
+        [Obsolete("Use Col.LinearToGamma() instead.")]
         public static Func<C3f, C3f> GammaC3fFromLinearC3f(double gamma)
         {
             double inv = 1.0 / gamma;
             return c => new C3f(Fun.Pow(c.R, inv), Fun.Pow(c.G, inv), Fun.Pow(c.B, inv));
         }
 
+        [Obsolete("Use Col.LinearToGamma() instead.")]
         public static Func<C4f, C4f> GammaC4fFromLinearC4f(double gamma)
         {
             double inv = 1.0 / gamma;
@@ -1630,9 +1663,11 @@ namespace Aardvark.Base
 
         #endregion
 
+        #endregion
+
         #region Color Temperature
 
-        public static C3f ColTemperatureToYuvInC3f(this double t)
+        public static C3f TemperatureToYuvInC3f(this double t)
         {
             // calculation from:
             // http://en.wikipedia.org/wiki/Planckian_locus
@@ -1646,9 +1681,7 @@ namespace Aardvark.Base
                 / (1 - 2.89741816e-5 * t + 1.61456053e-7 * t2));        // v: error within 9e-5 from 1000K < T < 15000K
         }
 
-        public static Func<double, C3f> YuvInC3fFromColorTemperature = ColTemperatureToYuvInC3f;
-
-        public static C3f ColTemperatureToYxyInC3f(this double t)
+        public static C3f TemperatureToYxyInC3f(this double t)
         {
             // calculation from:
             // http://en.wikipedia.org/wiki/Planckian_locus
@@ -1664,10 +1697,26 @@ namespace Aardvark.Base
             var x3 = x2 * x;
             var y = t <= 2222 ? -1.1063814*x3 - 1.34811020*x2 + 2.18555832*x - 0.20219683
                   : t <= 4000 ? -0.9549476*x3 - 1.37418593*x2 + 2.09137015*x - 0.16748867
-                              :  3.0817580*x3 - 5.87338670*x2 + 3.75112997*x - 0.37001483;
+                              : 3.0817580*x3 - 5.87338670*x2 + 3.75112997*x - 0.37001483;
 
-            return new C3f(100, x , y);
+            return new C3f(100, x, y);
         }
+
+        #region Obsolete
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("Use Col.TemperatureToYuvInC3f() instead")]
+        public static C3f ColTemperatureToYuvInC3f(this double t)
+            => TemperatureToYuvInC3f(t);
+
+        [Obsolete("Use Col.TemperatureToYuvInC3f() instead")]
+        public static Func<double, C3f> YuvInC3fFromColorTemperature = ColTemperatureToYuvInC3f;
+
+        [Obsolete("Use Col.TemperatureToYxyInC3f() instead")]
+        public static C3f ColTemperatureToYxyInC3f(this double t)
+            => TemperatureToYxyInC3f(t);
+
+        #endregion
 
         #endregion
 
