@@ -201,6 +201,15 @@ namespace Aardvark.Base
             IsInteger = true,
         };
 
+        public static readonly SimpleType HalfType = new SimpleType()
+        {
+            Name = "Half",
+            Caps = "Half",
+            Char = "h",
+            Read = "ReadHalf",
+            IsReal = true,
+        };
+
         public static readonly SimpleType FloatType = new SimpleType()
         {
             Name = "float",
@@ -462,19 +471,23 @@ namespace Aardvark.Base
             ByteType, UShortType, UIntType, FloatType, DoubleType
         };
 
-        private static readonly Dictionary<SimpleType, string> ColorFieldTypeMinValue
+        public static readonly SimpleType[] ColorConvertibleTypes = new SimpleType[]
+        {
+            ByteType, UShortType, UIntType, HalfType, FloatType, DoubleType
+        };
+
+        public static readonly Dictionary<SimpleType, string> ColorConvertibleTypeMinValue
             = new Dictionary<SimpleType, string>()
             {
-                { ByteType, "0" }, { UShortType, "0" },
-                { UIntType, "0" }, { FloatType, "0.0f" },
-                { DoubleType, "0" },
+                { ByteType, "0" }, { UShortType, "0" }, { UIntType, "0" },
+                { HalfType, "Half.Zero" }, { FloatType, "0.0f" }, { DoubleType, "0" },
             };
-        private static readonly Dictionary<SimpleType, string> ColorFieldTypeMaxValue
+
+        public static readonly Dictionary<SimpleType, string> ColorConvertibleTypeMaxValue
             = new Dictionary<SimpleType, string>()
             {
-                { ByteType, "255" }, { UShortType, "65535" },
-                { UIntType, "UInt32.MaxValue" }, { FloatType, "1.0f" },
-                { DoubleType, "1.0" }
+                { ByteType, "255" }, { UShortType, "65535" }, { UIntType, "UInt32.MaxValue" },
+                { HalfType, "Half.One" }, { FloatType, "1.0f" }, { DoubleType, "1.0" }
             };
 
         public static readonly int[] VecTypeDimensions = new[] { 2, 3, 4 };
@@ -765,8 +778,8 @@ namespace Aardvark.Base
                         Fields = ColorFields.Take(n).ToArray(),
                         Channels = ColorFields.Take(3).ToArray(),
                         HasAlpha = n == 4,
-                        MinValue = ColorFieldTypeMinValue[ft],
-                        MaxValue = ColorFieldTypeMaxValue[ft],
+                        MinValue = ColorConvertibleTypeMinValue[ft],
+                        MaxValue = ColorConvertibleTypeMaxValue[ft],
                     };
                     typeMap[ft] = t;
                     colorTypes.Add(t);

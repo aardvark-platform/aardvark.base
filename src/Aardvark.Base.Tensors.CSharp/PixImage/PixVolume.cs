@@ -65,30 +65,42 @@ namespace Aardvark.Base
                 { (typeof(byte), typeof(byte)), v => ((Tensor4<byte>)v).CopyWindow() },
                 { (typeof(byte), typeof(ushort)), v => ((Tensor4<byte>)v).ToUShortColor() },
                 { (typeof(byte), typeof(uint)), v => ((Tensor4<byte>)v).ToUIntColor() },
+                { (typeof(byte), typeof(Half)), v => ((Tensor4<byte>)v).ToHalfColor() },
                 { (typeof(byte), typeof(float)), v => ((Tensor4<byte>)v).ToFloatColor() },
                 { (typeof(byte), typeof(double)), v => ((Tensor4<byte>)v).ToDoubleColor() },
 
                 { (typeof(ushort), typeof(byte)), v => ((Tensor4<ushort>)v).ToByteColor() },
                 { (typeof(ushort), typeof(ushort)), v => ((Tensor4<ushort>)v).CopyWindow() },
                 { (typeof(ushort), typeof(uint)), v => ((Tensor4<ushort>)v).ToUIntColor() },
+                { (typeof(ushort), typeof(Half)), v => ((Tensor4<ushort>)v).ToHalfColor() },
                 { (typeof(ushort), typeof(float)), v => ((Tensor4<ushort>)v).ToFloatColor() },
                 { (typeof(ushort), typeof(double)), v => ((Tensor4<ushort>)v).ToDoubleColor() },
-            
+
                 { (typeof(uint), typeof(byte)), v => ((Tensor4<uint>)v).ToByteColor() },
                 { (typeof(uint), typeof(ushort)), v => ((Tensor4<uint>)v).ToUShortColor() },
                 { (typeof(uint), typeof(uint)), v => ((Tensor4<uint>)v).CopyWindow() },
+                { (typeof(uint), typeof(Half)), v => ((Tensor4<uint>)v).ToHalfColor() },
                 { (typeof(uint), typeof(float)), v => ((Tensor4<uint>)v).ToFloatColor() },
                 { (typeof(uint), typeof(double)), v => ((Tensor4<uint>)v).ToDoubleColor() },
+
+                { (typeof(Half), typeof(byte)), v => ((Tensor4<Half>)v).ToByteColor() },
+                { (typeof(Half), typeof(ushort)), v => ((Tensor4<Half>)v).ToUShortColor() },
+                { (typeof(Half), typeof(uint)), v => ((Tensor4<Half>)v).ToUIntColor() },
+                { (typeof(Half), typeof(Half)), v => ((Tensor4<Half>)v).CopyWindow() },
+                { (typeof(Half), typeof(float)), v => ((Tensor4<Half>)v).ToFloatColor() },
+                { (typeof(Half), typeof(double)), v => ((Tensor4<Half>)v).ToDoubleColor() },
 
                 { (typeof(float), typeof(byte)), v => ((Tensor4<float>)v).ToByteColor() },
                 { (typeof(float), typeof(ushort)), v => ((Tensor4<float>)v).ToUShortColor() },
                 { (typeof(float), typeof(uint)), v => ((Tensor4<float>)v).ToUIntColor() },
+                { (typeof(float), typeof(Half)), v => ((Tensor4<float>)v).ToHalfColor() },
                 { (typeof(float), typeof(float)), v => ((Tensor4<float>)v).CopyWindow() },
                 { (typeof(float), typeof(double)), v => ((Tensor4<float>)v).ToDoubleColor() },
 
                 { (typeof(double), typeof(byte)), v => ((Tensor4<double>)v).ToByteColor() },
                 { (typeof(double), typeof(ushort)), v => ((Tensor4<double>)v).ToUShortColor() },
                 { (typeof(double), typeof(uint)), v => ((Tensor4<double>)v).ToUIntColor() },
+                { (typeof(double), typeof(Half)), v => ((Tensor4<double>)v).ToHalfColor() },
                 { (typeof(double), typeof(float)), v => ((Tensor4<double>)v).ToFloatColor() },
                 { (typeof(double), typeof(double)), v => ((Tensor4<double>)v).CopyWindow() },
             };

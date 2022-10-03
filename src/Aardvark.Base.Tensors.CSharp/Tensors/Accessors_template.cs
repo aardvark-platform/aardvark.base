@@ -15,8 +15,8 @@ namespace Aardvark.Base
             = new Dictionary<(Type, Type, Symbol),
                              Func<long[], ITensorAccessors>>()
             {
-                //# foreach (var tt in Meta.ColorFieldTypes) { var ttype = tt.Name;
-                //# foreach (var ct in Meta.ColorFieldTypes) { var ctype = ct.Name;
+                //# foreach (var tt in Meta.ColorConvertibleTypes) { var ttype = tt.Name;
+                //# foreach (var ct in Meta.ColorConvertibleTypes) { var ctype = ct.Name;
                 //#     var tt_from_ct = ct == tt ? "" : "Col." + ct.Caps + "To" + tt.Caps;
                 //#     var ct_from_tt = ct == tt ? "" : "Col." + tt.Caps + "To" + ct.Caps; 
                 #region ColorChannel __ttype__ as __ctype__
@@ -38,10 +38,10 @@ namespace Aardvark.Base
                 //# } // ct
                 //# } // tt
                 //# var intentArray = new[] { "RGB", "BGR", "RGBA", "BGRA" };
-                //# foreach (var tt in Meta.ColorFieldTypes) { var ttype = tt.Name;
+                //# foreach (var tt in Meta.ColorConvertibleTypes) { var ttype = tt.Name;
                 //# foreach (var ct in Meta.ColorTypes) { var ctype = ct.Name;
                 //#     var cft = ct.FieldType;
-                //#     var tmax = "(" + ttype +")" + Meta.ColorTypeOf(3, tt).MaxValue;
+                //#     var tmax = "(" + ttype +")" + Meta.ColorConvertibleTypeMaxValue[tt];
                 //#     var cmax = "(" + cft.Name + ")" + ct.MaxValue;
                 //#     string t_from_cf = "", cf_from_t = "";
                 //#     if (tt != cft) {

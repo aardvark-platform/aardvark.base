@@ -61,6 +61,22 @@ namespace Aardvark.Base
 
                 #endregion
 
+                #region ColorChannel byte as Half
+
+                {
+                    (typeof(byte), typeof(Half), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<byte, Half>()
+                        {
+                            Getter = (da, i) => Col.ByteToHalf(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.HalfToByte(v),
+                        };
+                    }
+                },
+
+                #endregion
+
                 #region ColorChannel byte as float
 
                 {
@@ -135,6 +151,22 @@ namespace Aardvark.Base
                         {
                             Getter = (da, i) => Col.UShortToUInt(da[i]),
                             Setter = (da, i, v) => da[i] = Col.UIntToUShort(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel ushort as Half
+
+                {
+                    (typeof(ushort), typeof(Half), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<ushort, Half>()
+                        {
+                            Getter = (da, i) => Col.UShortToHalf(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.HalfToUShort(v),
                         };
                     }
                 },
@@ -221,6 +253,22 @@ namespace Aardvark.Base
 
                 #endregion
 
+                #region ColorChannel uint as Half
+
+                {
+                    (typeof(uint), typeof(Half), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<uint, Half>()
+                        {
+                            Getter = (da, i) => Col.UIntToHalf(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.HalfToUInt(v),
+                        };
+                    }
+                },
+
+                #endregion
+
                 #region ColorChannel uint as float
 
                 {
@@ -247,6 +295,102 @@ namespace Aardvark.Base
                         {
                             Getter = (da, i) => Col.UIntToDouble(da[i]),
                             Setter = (da, i, v) => da[i] = Col.DoubleToUInt(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel Half as byte
+
+                {
+                    (typeof(Half), typeof(byte), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<Half, byte>()
+                        {
+                            Getter = (da, i) => Col.HalfToByte(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.ByteToHalf(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel Half as ushort
+
+                {
+                    (typeof(Half), typeof(ushort), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<Half, ushort>()
+                        {
+                            Getter = (da, i) => Col.HalfToUShort(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UShortToHalf(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel Half as uint
+
+                {
+                    (typeof(Half), typeof(uint), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<Half, uint>()
+                        {
+                            Getter = (da, i) => Col.HalfToUInt(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.UIntToHalf(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel Half as Half
+
+                {
+                    (typeof(Half), typeof(Half), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<Half, Half>()
+                        {
+                            Getter = (da, i) => (da[i]),
+                            Setter = (da, i, v) => da[i] = (v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel Half as float
+
+                {
+                    (typeof(Half), typeof(float), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<Half, float>()
+                        {
+                            Getter = (da, i) => Col.HalfToFloat(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.FloatToHalf(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel Half as double
+
+                {
+                    (typeof(Half), typeof(double), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<Half, double>()
+                        {
+                            Getter = (da, i) => Col.HalfToDouble(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.DoubleToHalf(v),
                         };
                     }
                 },
@@ -295,6 +439,22 @@ namespace Aardvark.Base
                         {
                             Getter = (da, i) => Col.FloatToUInt(da[i]),
                             Setter = (da, i, v) => da[i] = Col.UIntToFloat(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel float as Half
+
+                {
+                    (typeof(float), typeof(Half), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<float, Half>()
+                        {
+                            Getter = (da, i) => Col.FloatToHalf(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.HalfToFloat(v),
                         };
                     }
                 },
@@ -375,6 +535,22 @@ namespace Aardvark.Base
                         {
                             Getter = (da, i) => Col.DoubleToUInt(da[i]),
                             Setter = (da, i, v) => da[i] = Col.UIntToDouble(v),
+                        };
+                    }
+                },
+
+                #endregion
+
+                #region ColorChannel double as Half
+
+                {
+                    (typeof(double), typeof(Half), Intent.ColorChannel),
+                    delta =>
+                    {
+                        return new TensorAccessors<double, Half>()
+                        {
+                            Getter = (da, i) => Col.DoubleToHalf(da[i]),
+                            Setter = (da, i, v) => da[i] = Col.HalfToDouble(v),
                         };
                     }
                 },
@@ -6285,6 +6461,1966 @@ namespace Aardvark.Base
                                     da[i+d1] = Col.DoubleToUInt(v.G);
                                     da[i+d2] = Col.DoubleToUInt(v.R);
                                     da[i+d3] = Col.DoubleToUInt(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C3b
+
+                {
+                    (typeof(Half), typeof(C3b), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C3b
+
+                {
+                    (typeof(Half), typeof(C3b), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i+2]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i+d2]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C3b
+
+                {
+                    (typeof(Half), typeof(C3b), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.B);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.B);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C3b
+
+                {
+                    (typeof(Half), typeof(C3b), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i+2]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.R);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3b(
+                                            Col.HalfToByte(da[i+d2]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.R);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C3us
+
+                {
+                    (typeof(Half), typeof(C3us), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C3us
+
+                {
+                    (typeof(Half), typeof(C3us), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i+2]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i+d2]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C3us
+
+                {
+                    (typeof(Half), typeof(C3us), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.B);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.B);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C3us
+
+                {
+                    (typeof(Half), typeof(C3us), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i+2]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.R);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3us(
+                                            Col.HalfToUShort(da[i+d2]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.R);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C3ui
+
+                {
+                    (typeof(Half), typeof(C3ui), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C3ui
+
+                {
+                    (typeof(Half), typeof(C3ui), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i+2]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i+d2]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C3ui
+
+                {
+                    (typeof(Half), typeof(C3ui), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.B);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.B);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C3ui
+
+                {
+                    (typeof(Half), typeof(C3ui), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i+2]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.R);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3ui(
+                                            Col.HalfToUInt(da[i+d2]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.R);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C3f
+
+                {
+                    (typeof(Half), typeof(C3f), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C3f
+
+                {
+                    (typeof(Half), typeof(C3f), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i+2]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i+d2]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C3f
+
+                {
+                    (typeof(Half), typeof(C3f), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.B);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.B);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C3f
+
+                {
+                    (typeof(Half), typeof(C3f), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i+2]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.R);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3f(
+                                            Col.HalfToFloat(da[i+d2]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.R);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C3d
+
+                {
+                    (typeof(Half), typeof(C3d), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C3d
+
+                {
+                    (typeof(Half), typeof(C3d), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i+2]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i+d2]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C3d
+
+                {
+                    (typeof(Half), typeof(C3d), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i+2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.B);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i+d2])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.B);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C3d
+
+                {
+                    (typeof(Half), typeof(C3d), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i+2]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.R);
+                                    da[i+3] = (Half)Half.One;
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C3d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C3d(
+                                            Col.HalfToDouble(da[i+d2]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.R);
+                                    da[i+d3] = (Half)Half.One;
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C4b
+
+                {
+                    (typeof(Half), typeof(C4b), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i+2]), 
+                                            (byte)255),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i+d2]), 
+                                            (byte)255),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C4b
+
+                {
+                    (typeof(Half), typeof(C4b), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i+2]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i]), 
+                                            (byte)255),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i+d2]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i]), 
+                                            (byte)255),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C4b
+
+                {
+                    (typeof(Half), typeof(C4b), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i+2]), 
+                                            Col.HalfToByte(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.B);
+                                    da[i+3] = Col.ByteToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i+d2]), 
+                                            Col.HalfToByte(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.R);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.B);
+                                    da[i+d3] = Col.ByteToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C4b
+
+                {
+                    (typeof(Half), typeof(C4b), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i+2]), 
+                                            Col.HalfToByte(da[i+1]), 
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+1] = Col.ByteToHalf(v.G);
+                                    da[i+2] = Col.ByteToHalf(v.R);
+                                    da[i+3] = Col.ByteToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4b>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4b(
+                                            Col.HalfToByte(da[i+d2]), 
+                                            Col.HalfToByte(da[i+d1]), 
+                                            Col.HalfToByte(da[i]), 
+                                            Col.HalfToByte(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.ByteToHalf(v.B);
+                                    da[i+d1] = Col.ByteToHalf(v.G);
+                                    da[i+d2] = Col.ByteToHalf(v.R);
+                                    da[i+d3] = Col.ByteToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C4us
+
+                {
+                    (typeof(Half), typeof(C4us), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i+2]), 
+                                            (ushort)65535),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i+d2]), 
+                                            (ushort)65535),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C4us
+
+                {
+                    (typeof(Half), typeof(C4us), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i+2]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i]), 
+                                            (ushort)65535),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i+d2]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i]), 
+                                            (ushort)65535),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C4us
+
+                {
+                    (typeof(Half), typeof(C4us), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i+2]), 
+                                            Col.HalfToUShort(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.B);
+                                    da[i+3] = Col.UShortToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i+d2]), 
+                                            Col.HalfToUShort(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.R);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.B);
+                                    da[i+d3] = Col.UShortToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C4us
+
+                {
+                    (typeof(Half), typeof(C4us), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i+2]), 
+                                            Col.HalfToUShort(da[i+1]), 
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+1] = Col.UShortToHalf(v.G);
+                                    da[i+2] = Col.UShortToHalf(v.R);
+                                    da[i+3] = Col.UShortToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4us>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4us(
+                                            Col.HalfToUShort(da[i+d2]), 
+                                            Col.HalfToUShort(da[i+d1]), 
+                                            Col.HalfToUShort(da[i]), 
+                                            Col.HalfToUShort(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UShortToHalf(v.B);
+                                    da[i+d1] = Col.UShortToHalf(v.G);
+                                    da[i+d2] = Col.UShortToHalf(v.R);
+                                    da[i+d3] = Col.UShortToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C4ui
+
+                {
+                    (typeof(Half), typeof(C4ui), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i+2]), 
+                                            (uint)UInt32.MaxValue),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i+d2]), 
+                                            (uint)UInt32.MaxValue),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C4ui
+
+                {
+                    (typeof(Half), typeof(C4ui), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i+2]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i]), 
+                                            (uint)UInt32.MaxValue),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i+d2]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i]), 
+                                            (uint)UInt32.MaxValue),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C4ui
+
+                {
+                    (typeof(Half), typeof(C4ui), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i+2]), 
+                                            Col.HalfToUInt(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.B);
+                                    da[i+3] = Col.UIntToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i+d2]), 
+                                            Col.HalfToUInt(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.R);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.B);
+                                    da[i+d3] = Col.UIntToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C4ui
+
+                {
+                    (typeof(Half), typeof(C4ui), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i+2]), 
+                                            Col.HalfToUInt(da[i+1]), 
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+1] = Col.UIntToHalf(v.G);
+                                    da[i+2] = Col.UIntToHalf(v.R);
+                                    da[i+3] = Col.UIntToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4ui>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4ui(
+                                            Col.HalfToUInt(da[i+d2]), 
+                                            Col.HalfToUInt(da[i+d1]), 
+                                            Col.HalfToUInt(da[i]), 
+                                            Col.HalfToUInt(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.UIntToHalf(v.B);
+                                    da[i+d1] = Col.UIntToHalf(v.G);
+                                    da[i+d2] = Col.UIntToHalf(v.R);
+                                    da[i+d3] = Col.UIntToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C4f
+
+                {
+                    (typeof(Half), typeof(C4f), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i+2]), 
+                                            (float)1.0f),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i+d2]), 
+                                            (float)1.0f),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C4f
+
+                {
+                    (typeof(Half), typeof(C4f), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i+2]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i]), 
+                                            (float)1.0f),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i+d2]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i]), 
+                                            (float)1.0f),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C4f
+
+                {
+                    (typeof(Half), typeof(C4f), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i+2]), 
+                                            Col.HalfToFloat(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.B);
+                                    da[i+3] = Col.FloatToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i+d2]), 
+                                            Col.HalfToFloat(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.R);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.B);
+                                    da[i+d3] = Col.FloatToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C4f
+
+                {
+                    (typeof(Half), typeof(C4f), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i+2]), 
+                                            Col.HalfToFloat(da[i+1]), 
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+1] = Col.FloatToHalf(v.G);
+                                    da[i+2] = Col.FloatToHalf(v.R);
+                                    da[i+3] = Col.FloatToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4f>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4f(
+                                            Col.HalfToFloat(da[i+d2]), 
+                                            Col.HalfToFloat(da[i+d1]), 
+                                            Col.HalfToFloat(da[i]), 
+                                            Col.HalfToFloat(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.FloatToHalf(v.B);
+                                    da[i+d1] = Col.FloatToHalf(v.G);
+                                    da[i+d2] = Col.FloatToHalf(v.R);
+                                    da[i+d3] = Col.FloatToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGB Halfs as C4d
+
+                {
+                    (typeof(Half), typeof(C4d), Intent.RGB),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i+2]), 
+                                            (double)1.0),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.B);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i+d2]), 
+                                            (double)1.0),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.B);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGR Halfs as C4d
+
+                {
+                    (typeof(Half), typeof(C4d), Intent.BGR),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i+2]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i]), 
+                                            (double)1.0),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.R);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1;
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i+d2]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i]), 
+                                            (double)1.0),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.R);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region RGBA Halfs as C4d
+
+                {
+                    (typeof(Half), typeof(C4d), Intent.RGBA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i+2]), 
+                                            Col.HalfToDouble(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.B);
+                                    da[i+3] = Col.DoubleToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i+d2]), 
+                                            Col.HalfToDouble(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.R);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.B);
+                                    da[i+d3] = Col.DoubleToHalf(v.A);
+                                }
+                            };
+                        }
+                    }
+                },
+
+                #endregion
+
+                #region BGRA Halfs as C4d
+
+                {
+                    (typeof(Half), typeof(C4d), Intent.BGRA),
+                    delta =>
+                    {
+                        if (delta.Length < 3)
+                            throw new ArgumentException("to few dimensions in tensor");
+                        long d1 = delta[delta.Length - 1];
+                        if (d1 == 1)
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i+2]), 
+                                            Col.HalfToDouble(da[i+1]), 
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+1] = Col.DoubleToHalf(v.G);
+                                    da[i+2] = Col.DoubleToHalf(v.R);
+                                    da[i+3] = Col.DoubleToHalf(v.A);
+                                }
+                            };
+                        else
+                        {
+                            long d2 = d1 + d1, d3 = d1 + d2;
+                            return new TensorAccessors<Half, C4d>()
+                            {
+                                Getter = (da, i) =>
+                                    new C4d(
+                                            Col.HalfToDouble(da[i+d2]), 
+                                            Col.HalfToDouble(da[i+d1]), 
+                                            Col.HalfToDouble(da[i]), 
+                                            Col.HalfToDouble(da[i+d3])),
+                                Setter = (da, i, v) =>
+                                {
+                                    da[i] = Col.DoubleToHalf(v.B);
+                                    da[i+d1] = Col.DoubleToHalf(v.G);
+                                    da[i+d2] = Col.DoubleToHalf(v.R);
+                                    da[i+d3] = Col.DoubleToHalf(v.A);
                                 }
                             };
                         }

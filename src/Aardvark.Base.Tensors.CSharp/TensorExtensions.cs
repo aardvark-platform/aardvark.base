@@ -182,6 +182,8 @@ namespace Aardvark.Base
         // know about the channel order at this level. Only PixImages know
         // about channel order.
 
+        #region Byte
+
         internal static Volume<ushort> ToUShortColor(this Volume<byte> volume)
         {
             return volume.MapToImageWindow(Col.ByteToUShort);
@@ -190,6 +192,11 @@ namespace Aardvark.Base
         internal static Volume<uint> ToUIntColor(this Volume<byte> volume)
         {
             return volume.MapToImageWindow(Col.ByteToUInt);
+        }
+
+        internal static Volume<Half> ToHalfColor(this Volume<byte> volume)
+        {
+            return volume.MapToImageWindow(Col.ByteToHalf);
         }
 
         internal static Volume<float> ToFloatColor(this Volume<byte> volume)
@@ -202,6 +209,10 @@ namespace Aardvark.Base
             return volume.MapToImageWindow(Col.ByteToDouble);
         }
 
+        #endregion
+
+        #region UShort
+
         internal static Volume<byte> ToByteColor(this Volume<ushort> volume)
         {
             return volume.MapToImageWindow(Col.UShortToByte);
@@ -210,6 +221,11 @@ namespace Aardvark.Base
         internal static Volume<uint> ToUIntColor(this Volume<ushort> volume)
         {
             return volume.MapToImageWindow(Col.UShortToUInt);
+        }
+
+        internal static Volume<Half> ToHalfColor(this Volume<ushort> volume)
+        {
+            return volume.MapToImageWindow(Col.UShortToHalf);
         }
 
         internal static Volume<float> ToFloatColor(this Volume<ushort> volume)
@@ -222,6 +238,10 @@ namespace Aardvark.Base
             return volume.MapToImageWindow(Col.UShortToDouble);
         }
 
+        #endregion
+
+        #region UInt
+
         internal static Volume<byte> ToByteColor(this Volume<uint> volume)
         {
             return volume.MapToImageWindow(Col.UIntToByte);
@@ -230,6 +250,11 @@ namespace Aardvark.Base
         internal static Volume<ushort> ToUShortColor(this Volume<uint> volume)
         {
             return volume.MapToImageWindow(Col.UIntToUShort);
+        }
+
+        internal static Volume<Half> ToHalfColor(this Volume<uint> volume)
+        {
+            return volume.MapToImageWindow(Col.UIntToHalf);
         }
 
         internal static Volume<float> ToFloatColor(this Volume<uint> volume)
@@ -241,6 +266,39 @@ namespace Aardvark.Base
         {
             return volume.MapToImageWindow(Col.UIntToDouble);
         }
+
+        #endregion
+
+        #region Half
+
+        internal static Volume<byte> ToByteColor(this Volume<Half> volume)
+        {
+            return volume.MapToImageWindow(Col.HalfToByte);
+        }
+
+        internal static Volume<ushort> ToUShortColor(this Volume<Half> volume)
+        {
+            return volume.MapToImageWindow(Col.HalfToUShort);
+        }
+
+        internal static Volume<uint> ToUIntColor(this Volume<Half> volume)
+        {
+            return volume.MapToImageWindow(Col.HalfToUInt);
+        }
+
+        internal static Volume<float> ToFloatColor(this Volume<Half> volume)
+        {
+            return volume.MapToImageWindow(Col.HalfToFloat);
+        }
+
+        internal static Volume<double> ToDoubleColor(this Volume<Half> volume)
+        {
+            return volume.MapToImageWindow(Col.HalfToDouble);
+        }
+
+        #endregion
+
+        #region Float
 
         internal static Volume<byte> ToByteColor(this Volume<float> volume)
         {
@@ -257,10 +315,19 @@ namespace Aardvark.Base
             return volume.MapToImageWindow(Col.FloatToUInt);
         }
 
+        internal static Volume<Half> ToHalfColor(this Volume<float> volume)
+        {
+            return volume.MapToImageWindow(Col.FloatToHalf);
+        }
+
         internal static Volume<double> ToDoubleColor(this Volume<float> volume)
         {
             return volume.MapToImageWindow(Col.FloatToDouble);
         }
+
+        #endregion
+
+        #region Double
 
         internal static Volume<byte> ToByteColor(this Volume<double> volume)
         {
@@ -277,11 +344,18 @@ namespace Aardvark.Base
             return volume.MapToImageWindow(Col.DoubleToUInt);
         }
 
+        internal static Volume<Half> ToHalfColor(this Volume<double> volume)
+        {
+            return volume.MapToImageWindow(Col.DoubleToHalf);
+        }
+
         internal static Volume<float> ToFloatColor(this Volume<double> volume)
         {
             return volume.MapToImageWindow(Col.DoubleToFloat);
         }
-        
+
+        #endregion
+
         #endregion
 
         #region Conversions Tensor4 to Tensor4 (byte, ushort, uint, float, double) [CSharp (internal)]
@@ -289,6 +363,8 @@ namespace Aardvark.Base
         // All the following conversions are internal only, since we do not
         // know about the channel order at this level. Only PixVolumes know
         // about channel order.
+
+        #region Byte
 
         internal static Tensor4<ushort> ToUShortColor(this Tensor4<byte> tensor4)
         {
@@ -298,6 +374,11 @@ namespace Aardvark.Base
         internal static Tensor4<uint> ToUIntColor(this Tensor4<byte> tensor4)
         {
             return tensor4.MapToImageWindow(Col.ByteToUInt);
+        }
+
+        internal static Tensor4<Half> ToHalfColor(this Tensor4<byte> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.ByteToHalf);
         }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<byte> tensor4)
@@ -310,6 +391,10 @@ namespace Aardvark.Base
             return tensor4.MapToImageWindow(Col.ByteToDouble);
         }
 
+        #endregion
+
+        #region UShort
+
         internal static Tensor4<byte> ToByteColor(this Tensor4<ushort> tensor4)
         {
             return tensor4.MapToImageWindow(Col.UShortToByte);
@@ -318,6 +403,11 @@ namespace Aardvark.Base
         internal static Tensor4<uint> ToUIntColor(this Tensor4<ushort> tensor4)
         {
             return tensor4.MapToImageWindow(Col.UShortToUInt);
+        }
+
+        internal static Tensor4<Half> ToHalfColor(this Tensor4<ushort> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.UShortToHalf);
         }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<ushort> tensor4)
@@ -330,6 +420,10 @@ namespace Aardvark.Base
             return tensor4.MapToImageWindow(Col.UShortToDouble);
         }
 
+        #endregion
+
+        #region UInt
+
         internal static Tensor4<byte> ToByteColor(this Tensor4<uint> tensor4)
         {
             return tensor4.MapToImageWindow(Col.UIntToByte);
@@ -338,6 +432,11 @@ namespace Aardvark.Base
         internal static Tensor4<ushort> ToUShortColor(this Tensor4<uint> tensor4)
         {
             return tensor4.MapToImageWindow(Col.UIntToUShort);
+        }
+
+        internal static Tensor4<Half> ToHalfColor(this Tensor4<uint> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.UIntToHalf);
         }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<uint> tensor4)
@@ -349,6 +448,39 @@ namespace Aardvark.Base
         {
             return tensor4.MapToImageWindow(Col.UIntToDouble);
         }
+
+        #endregion
+
+        #region Half
+
+        internal static Tensor4<byte> ToByteColor(this Tensor4<Half> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.HalfToByte);
+        }
+
+        internal static Tensor4<ushort> ToUShortColor(this Tensor4<Half> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.HalfToUShort);
+        }
+
+        internal static Tensor4<uint> ToUIntColor(this Tensor4<Half> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.HalfToUInt);
+        }
+
+        internal static Tensor4<float> ToFloatColor(this Tensor4<Half> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.HalfToFloat);
+        }
+
+        internal static Tensor4<double> ToDoubleColor(this Tensor4<Half> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.HalfToDouble);
+        }
+
+        #endregion
+
+        #region Float
 
         internal static Tensor4<byte> ToByteColor(this Tensor4<float> tensor4)
         {
@@ -365,10 +497,19 @@ namespace Aardvark.Base
             return tensor4.MapToImageWindow(Col.FloatToUInt);
         }
 
+        internal static Tensor4<Half> ToHalfColor(this Tensor4<float> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.FloatToHalf);
+        }
+
         internal static Tensor4<double> ToDoubleColor(this Tensor4<float> tensor4)
         {
             return tensor4.MapToImageWindow(Col.FloatToDouble);
         }
+
+        #endregion
+
+        #region Double
 
         internal static Tensor4<byte> ToByteColor(this Tensor4<double> tensor4)
         {
@@ -384,6 +525,10 @@ namespace Aardvark.Base
         {
             return tensor4.MapToImageWindow(Col.DoubleToUInt);
         }
+        internal static Tensor4<Half> ToHalfColor(this Tensor4<double> tensor4)
+        {
+            return tensor4.MapToImageWindow(Col.DoubleToHalf);
+        }
 
         internal static Tensor4<float> ToFloatColor(this Tensor4<double> tensor4)
         {
@@ -392,23 +537,29 @@ namespace Aardvark.Base
 
         #endregion
 
+        #endregion
+
         #region Get/Set Matrix Rows/Cols
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<T> GetRow<T>(this Matrix<T> m, int i)
         {
             return m.SubXVector(i);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<T> GetCol<T>(this Matrix<T> m, int i)
         {
             return m.SubYVector(i);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SetRow<T>(this Matrix<T> m, int i, ref Vector<T> data)
         {
             m.SubXVector(i).Set(data);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SetCol<T>(this Matrix<T> m, int i, ref Vector<T> data)
         {
             m.SubYVector(i).Set(data);

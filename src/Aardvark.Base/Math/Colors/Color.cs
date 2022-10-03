@@ -449,89 +449,143 @@ namespace Aardvark.Base
 
         #region Color Channel Conversions between Byte, UShort, UInt, float, and double
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort ByteToUShort(this byte b) => (ushort)(257 * b);
+        #region Byte
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte UShortToByte(this ushort us) => (byte)(us >> 8);
+        public static ushort ByteToUShort(this byte b) => (ushort)(257 * b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ByteToUInt(this byte b) => 0x1010101u * (uint)b;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte UIntToByte(this uint ui) => (byte)(ui >> 24);
+        public static Half ByteToHalf(this byte b) => (Half)(c_byteToFloat * (float)b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float ByteToFloat(this byte b) => c_byteToFloat * (float)b;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte FloatToByte(this float f) => (byte)(c_floatToByte * f);
+        public static double ByteToDouble(this byte b) => c_byteToDouble * (double)b;
+
+        #endregion
+
+        #region UShort
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte UShortToByte(this ushort us) => (byte)(us >> 8);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint UShortToUInt(this ushort us) => 65537u * (uint)us;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort UIntToUShort(this uint ui) => (ushort)(ui >> 16);
+        public static Half UShortToHalf(this ushort us) => (Half)(c_uShortToFloat * (float)us);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float UShortToFloat(this ushort us) => c_uShortToFloat * (float)us;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort FloatToUShort(this float f) => (ushort)(c_floatToUShort * f);
+        public static double UShortToDouble(this ushort us) => c_uShortToDouble * (double)us;
+
+        #endregion
+
+        #region UInt
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte UIntToByte(this uint ui) => (byte)(ui >> 24);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort UIntToUShort(this uint ui) => (ushort)(ui >> 16);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half UIntToHalf(this uint ui) => (Half)(c_uIntToFloatAsDouble * ui);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float UIntToFloat(this uint ui) => (float)(c_uIntToFloatAsDouble * ui);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint FloatToUInt(this float f) => (uint)(c_floatToUIntAsDouble * f);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double ByteToDouble(this byte b) => c_byteToDouble * (double)b;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte DoubleToByte(this double d) => (byte)(c_doubleToByte * d);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double UShortToDouble(this ushort us) => c_uShortToDouble * (double)us;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort DoubleToUShort(this double d) => (ushort)(c_doubleToUShort * d);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double UIntToDouble(this uint ui) => c_uIntToDouble * (double)ui;
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static uint DoubleToUInt(this double d) => (uint)(c_doubleToUInt * d);
+        #endregion
+
+        #region Half
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double FloatToDouble(this float f) => (double)f;
+        public static byte HalfToByte(this Half f) => (byte)(c_floatToByte * f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float DoubleToFloat(this double d) => (float)d;
+        public static ushort HalfToUShort(this Half f) => (ushort)(c_floatToUShort * f);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint HalfToUInt(this Half f) => (uint)(c_floatToUIntAsDouble * f);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float HalfToFloat(this Half f) => (float)f;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double HalfToDouble(this Half f) => (double)f;
+
+        #endregion
+
+        #region Float
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte FloatToByte(this float f) => (byte)(c_floatToByte * f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte FloatToByteClamped(this float f) => (byte)(c_floatToByte * f).Clamp(0, 255);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort FloatToUShort(this float f) => (ushort)(c_floatToUShort * f);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort FloatToUShortClamped(this float f) => (ushort)(c_floatToUShort * f).Clamp(0, 65535);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint FloatToUInt(this float f) => (uint)(c_floatToUIntAsDouble * f);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint FloatToUIntClamped(this float f) => (uint)(c_floatToUIntAsDouble * f).Clamp(0, 4294967295);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half FloatToHalf(this float f) => (Half)f;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double FloatToDouble(this float f) => (double)f;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double FloatToDoubleClamped(this float f) => ((double)f).Clamp(0, 1);
+
+        #endregion
+
+        #region Double
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte DoubleToByte(this double d) => (byte)(c_doubleToByte * d);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte DoubleToByteClamped(this double d) => (byte)(c_doubleToByte * d).Clamp(0, 255);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ushort DoubleToUShort(this double d) => (ushort)(c_doubleToUShort * d);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ushort DoubleToUShortClamped(this double d) => (ushort)(c_doubleToUShort * d).Clamp(0, 65535);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint DoubleToUInt(this double d) => (uint)(c_doubleToUInt * d);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint DoubleToUIntClamped(this double d) => (uint)(c_doubleToUInt * d).Clamp(0, 4294967295);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double FloatToDoubleClamped(this float f) => ((double)f).Clamp(0, 1);
+        public static Half DoubleToHalf(this double d) => (Half)d;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float DoubleToFloat(this double d) => (float)d;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float DoubleToFloatClamped(this double d) => ((float)d).Clamp(0, 1);
+
+        #endregion
 
         #region Obsolete
 
