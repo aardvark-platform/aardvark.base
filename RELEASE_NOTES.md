@@ -1,3 +1,10 @@
+### 5.2.13
+* Added uint32 vector types (V2ui, V3ui, V4ui)
+* Added Disposable.empty
+* Inlined color conversion methods, deprecating lambdas
+* Implemented color conversions for Float16
+* [Patterns] Added 2x3 matrices
+
 ### 5.2.12
 * Added Fun.PowerOfTwo for int32 vectors
 * [FSharpMath] Added exp2, step, and linearstep
