@@ -18,16 +18,19 @@ module Converters =
         let inline v2d (v : ^a) = conv< Identity.Converter, ^a, V2d > v
         let inline v2f (v : ^a) = conv< Identity.Converter, ^a, V2f > v
         let inline v2i (v : ^a) = conv< Identity.Converter, ^a, V2i > v
+        let inline v2ui (v : ^a) = conv< Identity.Converter, ^a, V2ui > v
         let inline v2l (v : ^a) = conv< Identity.Converter, ^a, V2l > v
 
         let inline v3d (v : ^a) = conv< Identity.Converter, ^a, V3d > v
         let inline v3f (v : ^a) = conv< Identity.Converter, ^a, V3f > v
         let inline v3i (v : ^a) = conv< Identity.Converter, ^a, V3i > v
+        let inline v3ui (v : ^a) = conv< Identity.Converter, ^a, V3ui > v
         let inline v3l (v : ^a) = conv< Identity.Converter, ^a, V3l > v
 
         let inline v4d (v : ^a) = conv< Identity.Converter, ^a, V4d > v
         let inline v4f (v : ^a) = conv< Identity.Converter, ^a, V4f > v
         let inline v4i (v : ^a) = conv< Identity.Converter, ^a, V4i > v
+        let inline v4ui (v : ^a) = conv< Identity.Converter, ^a, V4ui > v
         let inline v4l (v : ^a) = conv< Identity.Converter, ^a, V4l > v
 
         module private CompilerTests =
@@ -41,6 +44,7 @@ module Converters =
                 let a : V3d = v3d C3ui.BlueViolet
                 let a : V4d = v4d C3ui.BlueViolet
                 let a : V3d = v3d C4f.BlueViolet
+                let a : V3ui = v3ui C4b.White
                 ()
 
     [<AutoOpen>]
