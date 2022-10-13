@@ -5,7 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
-    <WarnOn>3389</WarnOn>
+    <WarnOn>3389;3390;3395</WarnOn>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PixLoaderTests.fs" />

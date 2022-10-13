@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     <GenerateProgramFile>false</GenerateProgramFile>
-    <WarnOn>3389</WarnOn>
+    <WarnOn>3389;3390;3395</WarnOn>
     <Deterministic>false</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
