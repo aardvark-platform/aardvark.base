@@ -448,7 +448,7 @@ namespace Aardvark.Base
             // if this breaks your code just do not set IntrospectionProperties.CustomEntryAssembly or contact me (hs)
             if (IntrospectionProperties.CustomEntryAssembly != null)
             {
-                Report.Warn("[Introspection] Assembly.GetEntryAssembly() was 0 but a CustomEntryAssembly was supplied.");
+                Report.Line("[Introspection] CustomEntryAssembly used");
                 EnumerateAssemblies(IntrospectionProperties.CustomEntryAssembly.GetName().Name, IntrospectionProperties.CustomEntryAssembly);
             } else if (entryAssembly != null)
             {
