@@ -14,9 +14,8 @@ namespace Aardvark.Base
         public class MipMapOptions
         {
             public int Count;
-            public ImageInterpolation Interpolation;
             public bool PowerOfTwo;
-            // extend further - filter type...
+            public ImageInterpolation Interpolation;
 
             public static MipMapOptions Default = new MipMapOptions()
             {
@@ -41,16 +40,17 @@ namespace Aardvark.Base
         public int ImageCount { get { return ImageArray.Length; } }
 
         public IEnumerable<PixImage> Images { get { return ImageArray; } }
-        
+
         #endregion
 
         #region Static Creators
 
-        static Dictionary<Type, Func<PixImage, MipMapOptions, PixImageMipMap>> convertTable = new Dictionary<Type, Func<PixImage, MipMapOptions, PixImageMipMap>>()
+        static readonly Dictionary<Type, Func<PixImage, MipMapOptions, PixImageMipMap>> convertTable = new Dictionary<Type, Func<PixImage, MipMapOptions, PixImageMipMap>>()
             {
                 {typeof(PixImage<byte>), (pix, opt) => new PixImageMipMap<byte>((PixImage<byte>)pix, opt)},
                 {typeof(PixImage<ushort>), (pix, opt) => new PixImageMipMap<ushort>((PixImage<ushort>)pix, opt)},
                 {typeof(PixImage<uint>), (pix, opt) => new PixImageMipMap<uint>((PixImage<uint>)pix, opt)},
+                {typeof(PixImage<Half>), (pix, opt) => new PixImageMipMap<Half>((PixImage<Half>)pix, opt)},
                 {typeof(PixImage<float>), (pix, opt) => new PixImageMipMap<float>((PixImage<float>)pix, opt)},
                 {typeof(PixImage<double>), (pix, opt) => new PixImageMipMap<double>((PixImage<double>)pix, opt)}
             };
@@ -63,8 +63,8 @@ namespace Aardvark.Base
                        select convertTable[pixie.GetType()](pixie, options);
             }
             catch (KeyNotFoundException)
-            { 
-                throw new NotImplementedException("PixImage Type not implemented");
+            {
+                throw new NotImplementedException("PixImageMipMap Type not implemented");
             }
         }
 
@@ -148,6 +148,11 @@ namespace Aardvark.Base
 
         #region IPixMipMap2d
 
+        public PixFormat PixFormat
+        {
+            get { if (ImageArray.IsEmptyOrNull()) new ArgumentException("PixMipMap is empty"); return ImageArray[0].PixFormat; }
+        }
+
         public int LevelCount
         {
             get { return ImageArray.Length; }
@@ -167,11 +172,6 @@ namespace Aardvark.Base
         }
 
         #endregion
-
-        public PixFormat PixFormat
-        {
-            get { if (ImageArray.IsEmptyOrNull()) new Exception("PixMipMap is empty"); return ImageArray[0].PixFormat; }
-        }
     }
 
     public class PixImageMipMap<T> : PixImageMipMap
@@ -185,13 +185,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Constructors
-        
+
         public PixImageMipMap(PixImage<T> singleImage)
         {
             ImageArray = new PixImage<T>[] { singleImage };
             BuildMipMaps(MipMapOptions.Default);
         }
-        
+
         public PixImageMipMap(PixImage<T> singleImage, MipMapOptions options)
         {
             ImageArray = new PixImage<T>[] { singleImage };
@@ -199,6 +199,8 @@ namespace Aardvark.Base
         }
 
         #endregion
+
+        #region Methods
 
         /// <summary>
         /// Builds mipmap pyramid using supplied MipMapOptions.
@@ -240,5 +242,7 @@ namespace Aardvark.Base
             //ImagesContainer.FromPixImageArray(m_images);
             //InfoOfSet = new Info(Kind.MipMapPyramid, m_images.Length, m_images.Select(x => x.Size).ToArray());
         }
+
+        #endregion
     }
 }

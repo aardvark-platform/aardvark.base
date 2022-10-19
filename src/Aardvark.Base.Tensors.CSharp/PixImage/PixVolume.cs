@@ -21,8 +21,6 @@ namespace Aardvark.Base
 
         #region Constructors
 
-        //static PixVolume() { PixImageExtensions.Init(); }
-
         public PixVolume()
             : this(Col.Format.None)
         { }
@@ -37,8 +35,6 @@ namespace Aardvark.Base
         #region Properties
 
         public PixVolumeInfo Info { get { return new PixVolumeInfo(PixFormat, Size); } }
-
-        // public IEnumerable<INode> SubNodes { get { return Enumerable.Empty<INode>(); } }
 
         #endregion
 
@@ -261,8 +257,6 @@ namespace Aardvark.Base
 
             Tensor4 = tensor4;
             Format = format;
-            
-        
         }
 
         public PixVolume<T> CopyToImageLayout()
@@ -315,8 +309,6 @@ namespace Aardvark.Base
             return new PixImage<T>(format, vol);
         }
 
-
-
         #endregion
 
         #region Properties
@@ -360,7 +352,7 @@ namespace Aardvark.Base
         {
             get { return Channels.ToArray(); }
         }
-        
+
         public int BytesPerChannel
         {
             get { return System.Runtime.InteropServices.Marshal.SizeOf(typeof(T)); }
@@ -501,7 +493,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+
         #region IPixImage3d Members
 
         public Array Data
