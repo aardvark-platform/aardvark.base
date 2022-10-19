@@ -1,3 +1,10 @@
+### 5.2.14
+* Updated to ImageSharp 2.1
+* Implemented default PixImage scaling function
+* Configurable PixImage functions throw proper exceptions
+* Added float16 support for PixImageMipMap
+* [Introspection] changed logging message when using CustomEntryAssembly from warning to normal
+
 ### 5.2.13
 * Added uint32 vector types (V2ui, V3ui, V4ui)
 * Added Disposable.empty
