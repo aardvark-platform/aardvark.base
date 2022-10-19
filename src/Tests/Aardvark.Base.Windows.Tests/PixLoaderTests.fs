@@ -115,6 +115,7 @@ module PixLoaderTests =
         let pixEncoder (useStream : bool) (format : PixFileFormat) =
             pixLoader
             |> Gen.filter (fun loader ->
+                not (loader.Name = "ImageSharp" && format = PixFileFormat.Tiff) &&      // ImageSharp support for TIFFs is buggy atm
                 not (loader.Name = "DevIL" && format = PixFileFormat.Gif) &&            // DevIL does not support saving GIFs
                 not (loader.Name = "DevIL" && format = PixFileFormat.Tiff && useStream) // DevIL does not support saving TIFFs to streams
             )

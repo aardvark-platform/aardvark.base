@@ -9,38 +9,9 @@ namespace Aardvark.Tests.Images
     [TestFixture]
     class PixImageTests
     {
-        static Volume<byte> Scaled(Volume<byte> source, V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
-        {
-            var targetSize = (new V2d(0.5, 0.5) + scaleFactor * (V2d)source.Size.XY).ToV2l();
-            var target = new V3l(targetSize.X, targetSize.Y, source.Size.Z).CreateImageVolume<byte>();
-            for (int c = 0; c < source.Size.Z; c++)
-            {
-                var targetMat = target.SubXYMatrixWindow(0);
-                var sourceMat = source.SubXYMatrixWindow(0);
-                switch(ip)
-                {
-                    case ImageInterpolation.Near: targetMat.SetScaledNearest(sourceMat); break;
-                    case ImageInterpolation.Linear:
-                        targetMat.SetScaledLinear(sourceMat, (s, a, b) => (byte)s.Lerp(a, b), (s, a, b) => (byte)s.Lerp(a, b));
-                        break;
-                    case ImageInterpolation.Cubic: targetMat.SetScaledCubic(sourceMat); break;
-                    case ImageInterpolation.Lanczos: targetMat.SetScaledLanczos(sourceMat); break;
-                    default: throw new NotImplementedException();
-                }
-            }
-            return target;
-        }
-
-        static void Init()
-        {
-            PixImage<byte>.SetScaledFun(Scaled);
-            //PixImage<byte>.SetScaledFun(Aardvark.VRVis.TensorExtensions.Scaled);
-        }
-
         [Test]
         public void MipMapCreate1x1()
         {
-            Init();
             var pix = new PixImage<byte>(1, 1, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 1);
@@ -49,7 +20,6 @@ namespace Aardvark.Tests.Images
         [Test]
         public void MipMapCreate2x2()
         {
-            Init();
             var pix = new PixImage<byte>(2, 2, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 2);
@@ -58,7 +28,6 @@ namespace Aardvark.Tests.Images
         [Test]
         public void MipMapCreate3x3()
         {
-            Init();
             var pix = new PixImage<byte>(3, 3, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 2);
@@ -67,7 +36,6 @@ namespace Aardvark.Tests.Images
         [Test]
         public void MipMapCreate256()
         {
-            Init();
             var pix = new PixImage<byte>(256, 256, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 9);
@@ -76,7 +44,6 @@ namespace Aardvark.Tests.Images
         [Test]
         public void MipMapCreate255()
         {
-            Init();
             var pix = new PixImage<byte>(255, 255, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 8);
@@ -85,7 +52,6 @@ namespace Aardvark.Tests.Images
         [Test]
         public void MipMapCreate257()
         {
-            Init();
             var pix = new PixImage<byte>(257, 257, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 9);
@@ -94,7 +60,6 @@ namespace Aardvark.Tests.Images
         [Test]
         public void MipMapCreate57x43()
         {
-            Init();
             var pix = new PixImage<byte>(57, 43, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 6);
@@ -109,7 +74,6 @@ namespace Aardvark.Tests.Images
         [Test]
         public void MipMapCreate57x11()
         {
-            Init();
             var pix = new PixImage<byte>(57, 11, 4);
             var mip = PixImageMipMap.Create(pix);
             Assert.IsTrue(mip.LevelCount == 6);

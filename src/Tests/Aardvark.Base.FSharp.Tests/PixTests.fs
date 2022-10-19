@@ -2,6 +2,7 @@
 
 open Aardvark.Base
 
+open System
 open NUnit.Framework
 open FsUnit
 open FsCheck
@@ -125,11 +126,32 @@ module PixTests =
                 return V3i(w, h, d)
             }
 
+        let scaleFactor =
+            gen {
+                let! x = Gen.choose (0, 3000)
+                let! y = Gen.choose (0, 3000)
+                return V2d(x, y) / float 3000
+            }
+
+        let filter =
+            [ ImageInterpolation.Near
+              ImageInterpolation.Linear
+              ImageInterpolation.Cubic
+              ImageInterpolation.Lanczos ]
+            |> Gen.elements
+
     type ConversionTestCase =
         { Size : V3i
           Type : PixType
           SourceFormat : Col.Format
           TargetFormat : Col.Format }
+
+    type ScalingTestCase =
+        { Size : V2i
+          Type : PixType
+          Format : Col.Format
+          Scale : V2d
+          Filter : ImageInterpolation }
 
     type Generator private () =
 
@@ -157,6 +179,24 @@ module PixTests =
                     Type = typ
                     SourceFormat = sourceFormat
                     TargetFormat = targetFormat
+                }
+            }
+            |> Arb.fromGen
+
+        static member ScalingTestCase =
+            gen {
+                let! size = Gen.size |> Gen.map v2i
+                let! typ = Gen.pixType
+                let! format = Gen.format
+                let! scale = Gen.scaleFactor
+                let! filter = Gen.filter
+
+                return {
+                    Size = size
+                    Type = typ
+                    Format = format
+                    Scale = scale
+                    Filter = filter
                 }
             }
             |> Arb.fromGen
@@ -214,3 +254,27 @@ module PixTests =
 
                         if not <| Fun.ApproximateEquals(value, expected, eps) then
                             value |> should be (equalWithin eps expected)
+
+
+    let computePSNR =
+        let table : Type -> (PixImage -> PixImage -> float) =
+            LookupTable.lookupTable [
+                typeof<uint8>,   fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<uint8>()) (dst.AsPixImage<uint8>())
+                typeof<uint16>,  fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<uint16>()) (dst.AsPixImage<uint16>())
+                typeof<uint32>,  fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<uint32>()) (dst.AsPixImage<uint32>())
+                typeof<float16>, fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<float16>()) (dst.AsPixImage<float16>())
+                typeof<float32>, fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<float32>()) (dst.AsPixImage<float32>())
+                typeof<float>,   fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<float>()) (dst.AsPixImage<float>())
+            ]
+
+        fun (src : PixImage) (dst : PixImage) ->
+            table src.PixFormat.Type src dst
+
+    [<Property(Arbitrary = [| typeof<Generator> |])>]
+    let ``[PixImage] Scaling`` (input : ScalingTestCase) =
+        let src = PixImage.random input.Type input.Format input.Size
+        let upScaled = src.ScaledPixImage(1.0 + input.Scale, input.Filter)
+        let dst = upScaled.ResizedPixImage(input.Size, input.Filter)
+
+        let psnr = computePSNR src dst
+        psnr |> should be (greaterThan 10.0)

@@ -16,6 +16,7 @@ namespace Aardvark.Base
     //# var unsignedtypes = Meta.UnsignedTypes;
     //# var numtypes = Meta.StandardNumericTypes;
     //# var numdectypes = Meta.BuiltInNumericTypes;
+    //# var numhdectypes = Meta.BuiltInNumericTypes.Concat(Meta.HalfType);
     //# var reptypes = Meta.RealRepresentableTypes;
     //# var freptypes = reptypes[Meta.FloatType];
     //# var dreptypes = reptypes[Meta.DoubleType];
@@ -23,7 +24,9 @@ namespace Aardvark.Base
     //# var smalltypes = new [] { Meta.SByteType, Meta.ShortType, Meta.ByteType, Meta.UShortType };
     //# var iltypes = new[] { Meta.IntType, Meta.LongType };
     //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
+    //# var hfdtypes = new[] { Meta.HalfType, Meta.FloatType, Meta.DoubleType };
     //# var fddectypes = new [] { Meta.FloatType, Meta.DoubleType, Meta.DecimalType };
+    //# var hfddectypes = new [] { Meta.HalfType, Meta.FloatType, Meta.DoubleType, Meta.DecimalType };
     //# var ilfdtypes = Meta.VecFieldTypes;
     public static partial class Fun
     {
@@ -1134,7 +1137,7 @@ namespace Aardvark.Base
         //# } // tpc
         //# } // it
         //# for (int tpc = 2; tpc < 8; tpc++ ) {
-        //# foreach (var rt in Meta.RealTypes) { var rtn = rt.Name;
+        //# foreach (var rt in hfdtypes) { var rtn = rt.Name;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtn__ LinCom(/*# tpc.ForEach(i => { */__rtn__ p__i__/*# }, comma); */, ref Tup__tpc__<__rtn__> w)
         {
@@ -1648,8 +1651,8 @@ namespace Aardvark.Base
 
         #region Interpolation
 
-        //# numdectypes.ForEach(t => {
-        //# if (fddectypes.Contains(t)) {
+        //# numhdectypes.ForEach(t => {
+        //# if (hfddectypes.Contains(t)) {
         /// <summary>
         /// Linearly interpolates between a and b according to t.
         /// </summary>

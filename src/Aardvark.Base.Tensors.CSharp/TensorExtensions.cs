@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
@@ -612,6 +613,101 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Volume<T> Transformed<T>(this Volume<T> volume, ImageTrafo trafo)
             => new Volume<T>(volume.Data, volume.Info.Transformed(trafo));
+
+        #endregion
+
+        #region Scaling
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Half LerpHalf(double t, Half x, Half y) => Fun.Lerp((Half)t, x, y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float LerpFloat(double t, float x, float y) => Fun.Lerp((float)t, x, y);
+
+        private static readonly Dictionary<Type, Action<object, object>> scaleNearestTable =
+            new Dictionary<Type, Action<object, object>>()
+            {
+                {typeof(byte),   (src, dst) => ((Matrix<byte>)dst).SetScaledNearest((Matrix<byte>)src)},
+                {typeof(ushort), (src, dst) => ((Matrix<ushort>)dst).SetScaledNearest((Matrix<ushort>)src)},
+                {typeof(uint),   (src, dst) => ((Matrix<uint>)dst).SetScaledNearest((Matrix<uint>)src)},
+                {typeof(Half),   (src, dst) => ((Matrix<Half>)dst).SetScaledNearest((Matrix<Half>)src)},
+                {typeof(float),  (src, dst) => ((Matrix<float>)dst).SetScaledNearest((Matrix<float>)src)},
+                {typeof(double), (src, dst) => ((Matrix<double>)dst).SetScaledNearest((Matrix<double>)src)}
+            };
+
+        private static readonly Dictionary<Type, Action<object, object>> scaleLinearTable =
+            new Dictionary<Type, Action<object, object>>()
+            {
+                {typeof(byte),   (src, dst) => ((Matrix<byte>)dst).SetScaledLinear((Matrix<byte>)src, Fun.Lerp, Fun.Lerp)},
+                {typeof(ushort), (src, dst) => ((Matrix<ushort>)dst).SetScaledLinear((Matrix<ushort>)src, Fun.Lerp, Fun.Lerp)},
+                {typeof(uint),   (src, dst) => ((Matrix<uint>)dst).SetScaledLinear((Matrix<uint>)src, Fun.Lerp, Fun.Lerp)},
+                {typeof(Half),   (src, dst) => ((Matrix<Half>)dst).SetScaledLinear((Matrix<Half>)src, LerpHalf, LerpHalf)},
+                {typeof(float),  (src, dst) => ((Matrix<float>)dst).SetScaledLinear((Matrix<float>)src, LerpFloat, LerpFloat)},
+                {typeof(double), (src, dst) => ((Matrix<double>)dst).SetScaledLinear((Matrix<double>)src, Fun.Lerp, Fun.Lerp)}
+            };
+
+        private static readonly Dictionary<Type, Action<object, object>> scaleCubicTable =
+            new Dictionary<Type, Action<object, object>>()
+            {
+                {typeof(byte),   (src, dst) => ((Matrix<byte>)dst).SetScaledCubic((Matrix<byte>)src)},
+                {typeof(ushort), (src, dst) => ((Matrix<ushort>)dst).SetScaledCubic((Matrix<ushort>)src)},
+                {typeof(uint),   (src, dst) => ((Matrix<uint>)dst).SetScaledCubic((Matrix<uint>)src)},
+                {typeof(Half),   (src, dst) => ((Matrix<Half>)dst).SetScaledCubic((Matrix<Half>)src)},
+                {typeof(float),  (src, dst) => ((Matrix<float>)dst).SetScaledCubic((Matrix<float>)src)},
+                {typeof(double), (src, dst) => ((Matrix<double>)dst).SetScaledCubic((Matrix<double>)src)}
+            };
+
+        private static readonly Dictionary<Type, Action<object, object>> scaleLanczosTable =
+            new Dictionary<Type, Action<object, object>>()
+            {
+                {typeof(byte),   (src, dst) => ((Matrix<byte>)dst).SetScaledLanczos((Matrix<byte>)src)},
+                {typeof(ushort), (src, dst) => ((Matrix<ushort>)dst).SetScaledLanczos((Matrix<ushort>)src)},
+                {typeof(uint),   (src, dst) => ((Matrix<uint>)dst).SetScaledLanczos((Matrix<uint>)src)},
+                {typeof(Half),   (src, dst) => ((Matrix<Half>)dst).SetScaledLanczos((Matrix<Half>)src)},
+                {typeof(float),  (src, dst) => ((Matrix<float>)dst).SetScaledLanczos((Matrix<float>)src)},
+                {typeof(double), (src, dst) => ((Matrix<double>)dst).SetScaledLanczos((Matrix<double>)src)}
+            };
+
+        private static void SetScaled<T>(Dictionary<Type, Action<object, object>> table, Matrix<T> src, Matrix<T> dst)
+        {
+            if (table.TryGetValue(typeof(T), out var setScaled))
+            {
+                setScaled(src, dst);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Cannot invoke Scaled() for Matrix<{typeof(T).Name}>");
+            }
+        }
+
+        public static Volume<T> Scaled<T>(this Volume<T> source, V2d scaleFactor, ImageInterpolation interpolation)
+        {
+            if (scaleFactor.AnySmaller(0.0))
+            {
+                throw new ArgumentException("Scale factor cannot be negative");
+            }
+
+            var table =
+                interpolation switch
+                {
+                    ImageInterpolation.Near => scaleNearestTable,
+                    ImageInterpolation.Linear => scaleLinearTable,
+                    ImageInterpolation.Cubic => scaleCubicTable,
+                    ImageInterpolation.Lanczos => scaleLanczosTable,
+                    _ => throw new NotImplementedException($"{interpolation} filter not supported.")
+                };
+
+            var size = (V2d.Half + scaleFactor * (V2d)source.Size.XY).ToV2l();
+            var channels = source.Size.Z;
+            var target = ImageTensors.CreateImageVolume<T>(new V3l(size.XY, channels));
+
+            for (int c = 0; c < channels; c++)
+            {
+                SetScaled(table, source.SubXYMatrixWindow(c), target.SubXYMatrixWindow(c));
+            }
+
+            return target;
+        }
 
         #endregion
     }

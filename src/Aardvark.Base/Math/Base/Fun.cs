@@ -445,6 +445,32 @@ namespace Aardvark.Base
         /// a = -1.0 matches the slope of the sinc function at 1
         /// (amplifying frequencies just below the cutoff frequency)
         /// </summary>
+        public static Func<double, Tup4<Half>> CreateCubicTup4h(double a)
+        {
+            double ap2 = a + 2;
+            double ap3 = a + 3;
+            return t =>
+            {
+                double tt = t * t;
+                double tastta = (t - tt) * a, ttasttta = t * tastta;
+                double ttap3stttap2 = tt * (ap3 - t * ap2);
+                return new Tup4<Half>((Half)(tastta - ttasttta), (Half)(1 - ttap3stttap2),
+                                      (Half)(ttap3stttap2 - tastta), (Half)ttasttta);
+            };
+        }
+
+        /// <summary>
+        /// Creates weight function for cubic interpolation according to
+        /// "Comparison of Interpolating for Image Resampling" by
+        /// J.A.Parker, R.V.Kenyon &amp; D.E.Troxel, IEEE Transactions on
+        /// Medical Imaging Vol. 2, 1983. Recommended values for a:
+        /// -0.5 for medical/astronomical images, -1.0 for other photos.
+        /// a = -0.5 exactly reconstructs second degree polynomials,
+        /// a = -0.75 results in a continuous second derivative of the 
+        /// two polynomials used
+        /// a = -1.0 matches the slope of the sinc function at 1
+        /// (amplifying frequencies just below the cutoff frequency)
+        /// </summary>
         public static Func<double, Tup4<float>> CreateCubicTup4f(double a)
         {
             double ap2 = a + 2;
@@ -477,6 +503,18 @@ namespace Aardvark.Base
         /// parameter t in the range [0..1] traverses the approximation
         /// between the two center points.
         /// </summary>
+        public static Tup4<Half> BSpline3h(double t) => new Tup4<Half>(
+            (Half)(t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0),
+            (Half)(t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0),
+            (Half)(t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0),
+            (Half)(t*(t*(t*( 1/6.0)        )        )        ));
+
+        /// <summary>
+        /// Returns the weights of the cubic B-Spline function for four
+        /// equally distant function points to approximate. The supplied
+        /// parameter t in the range [0..1] traverses the approximation
+        /// between the two center points.
+        /// </summary>
         public static Tup4<float> BSpline3f(double t) => new Tup4<float>(
             (float)(t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0),
             (float)(t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0),
@@ -496,6 +534,20 @@ namespace Aardvark.Base
             t*(t*(t*(t*(t*( 10/120.0) -20/120.0) -20/120.0) +20/120.0) +50/120.0) +26/120.0,
             t*(t*(t*(t*(t*( -5/120.0)  +5/120.0) +10/120.0) +10/120.0)  +5/120.0)  +1/120.0,
             t*(t*(t*(t*(t*(  1/120.0) 		   ) 		  ) 	         ) 	        )          );
+
+        /// <summary>
+        /// Returns the weights of the order 5 B-Spline function for six
+        /// equally distant function points to approximate. The supplied
+        /// parameter t in the range [0..1] traverses the approximation
+        /// between the two center points.
+        /// </summary>
+        public static Tup6<Half> BSpline5h(double t) => new Tup6<Half>(
+            (Half)(t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0),
+            (Half)(t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0),
+            (Half)(t*(t*(t*(t*(t*(-10/120.0) +30/120.0)          ) -60/120.0)          ) +66/120.0),
+            (Half)(t*(t*(t*(t*(t*( 10/120.0) -20/120.0) -20/120.0) +20/120.0) +50/120.0) +26/120.0),
+            (Half)(t*(t*(t*(t*(t*( -5/120.0)  +5/120.0) +10/120.0) +10/120.0)  +5/120.0)  +1/120.0),
+            (Half)(t*(t*(t*(t*(t*(  1/120.0) 		   ) 		  ) 	         ) 	        )          ));
 
         /// <summary>
         /// Returns the weights of the order 5 B-Spline function for six
@@ -530,6 +582,27 @@ namespace Aardvark.Base
                                     (spx / p1mx) * (sp2pxa / p1mxa),
                                     -spx * sp1pxa / (p2mx * p2mx * a),
                                     spx * spxa / (p3mx * p3mx * a));
+        }
+
+        public static Tup6<Half> Lanczos3h(double x)
+        {
+            const double a = 1.0 / 3.0;
+            double px = Constant.Pi * x, pxa = px * a;
+            if (pxa.IsTiny()) return new Tup6<Half>((Half)0.0f, (Half)0.0f, (Half)1.0f, (Half)0.0f, (Half)0.0f, (Half)0.0f);
+            double p1mx = Constant.Pi - px, p1mxa = p1mx * a;
+            if (p1mxa.IsTiny()) return new Tup6<Half>((Half)0.0f, (Half)0.0f, (Half)0.0f, (Half)1.0f, (Half)0.0f, (Half)0.0f);
+
+            double p1px =   Constant.Pi + px,           p2px =  Constant.PiTimesTwo + px;
+            double p2mx =   Constant.PiTimesTwo - px,   p3mx =  Constant.PiTimesThree - px;
+            double spx =    Fun.Sin(px),                spxa =  Fun.Sin(pxa);
+            double sp1pxa = Fun.Sin(p1px * a),          sp2pxa = Fun.Sin(p2px * a);
+
+            return new Tup6<Half>( (Half)(spx * sp2pxa / (p2px * p2px * a)),
+                                    (Half)(-spx * sp1pxa / (p1px * p1px * a)),
+                                    (Half)((spx / px) * (spxa / pxa)),
+                                    (Half)((spx / p1mx) * (sp2pxa / p1mxa)),
+                                    (Half)(-spx * sp1pxa / (p2mx * p2mx * a)),
+                                    (Half)(spx * spxa / (p3mx * p3mx * a)));
         }
 
         public static Tup6<float> Lanczos3f(double x)

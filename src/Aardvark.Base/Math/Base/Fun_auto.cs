@@ -4913,6 +4913,12 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half LinCom(Half p0, Half p1, ref Tup2<Half> w)
+        {
+            return p0 * w.E0 + p1 * w.E1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, ref Tup2<float> w)
         {
             return p0 * w.E0 + p1 * w.E1;
@@ -4922,6 +4928,12 @@ namespace Aardvark.Base
         public static double LinCom(double p0, double p1, ref Tup2<double> w)
         {
             return p0 * w.E0 + p1 * w.E1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half LinCom(Half p0, Half p1, Half p2, ref Tup3<Half> w)
+        {
+            return p0 * w.E0 + p1 * w.E1 + p2 * w.E2;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4937,6 +4949,12 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half LinCom(Half p0, Half p1, Half p2, Half p3, ref Tup4<Half> w)
+        {
+            return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, float p2, float p3, ref Tup4<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
@@ -4946,6 +4964,12 @@ namespace Aardvark.Base
         public static double LinCom(double p0, double p1, double p2, double p3, ref Tup4<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half LinCom(Half p0, Half p1, Half p2, Half p3, Half p4, ref Tup5<Half> w)
+        {
+            return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4961,6 +4985,12 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half LinCom(Half p0, Half p1, Half p2, Half p3, Half p4, Half p5, ref Tup6<Half> w)
+        {
+            return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float LinCom(float p0, float p1, float p2, float p3, float p4, float p5, ref Tup6<float> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
@@ -4970,6 +5000,12 @@ namespace Aardvark.Base
         public static double LinCom(double p0, double p1, double p2, double p3, double p4, double p5, ref Tup6<double> w)
         {
             return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half LinCom(Half p0, Half p1, Half p2, Half p3, Half p4, Half p5, Half p6, ref Tup7<Half> w)
+        {
+            return p0 * w.E0 + p1 * w.E1 + p2 * w.E2 + p3 * w.E3 + p4 * w.E4 + p5 * w.E5 + p6 * w.E6;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6158,6 +6194,22 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal InvLerp(this decimal y, decimal a, decimal b)
+            => (a - y) / (a - b);
+
+        /// <summary>
+        /// Linearly interpolates between a and b according to t.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half Lerp(this Half t, Half a, Half b)
+            => a * (1 - t) + b * t;
+
+        /// <summary>
+        /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half InvLerp(this Half y, Half a, Half b)
             => (a - y) / (a - b);
 
 

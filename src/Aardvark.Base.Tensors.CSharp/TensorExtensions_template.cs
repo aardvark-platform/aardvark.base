@@ -11,21 +11,36 @@ namespace Aardvark.Base
 
         //# var intConfigs = new []
         //# {
-        //#     Tup.Create("byte",      "Byte",     "Fun",  "Fun"),
-        //#     Tup.Create("ushort",    "UShort",   "Fun",  "Fun"),
-        //#     Tup.Create("float",     "",         "Fun",  "Fun"),
-        //#     Tup.Create("byte",      "Byte",     "C3b",  "C3f"),
-        //#     Tup.Create("ushort",    "UShort",   "C3us", "C3f"),
-        //#     Tup.Create("float",     "",         "C3f",  "C3f"),
-        //#     Tup.Create("byte",      "Byte",     "C4b",  "C4f"),
-        //#     Tup.Create("ushort",    "UShort",   "C4us", "C4f"),
-        //#     Tup.Create("float",     "",         "C4f",  "C4f"),
+        //#     Tup.Create(Meta.ByteType,    Meta.FloatType,  "Fun",  "Fun"),
+        //#     Tup.Create(Meta.UShortType,  Meta.FloatType,  "Fun",  "Fun"),
+        //#     Tup.Create(Meta.UIntType,    Meta.DoubleType, "Fun",  "Fun"),
+        //#     Tup.Create(Meta.HalfType,    Meta.HalfType,   "Fun",  "Fun"),
+        //#     Tup.Create(Meta.FloatType,   Meta.FloatType,  "Fun",  "Fun"),
+        //#     Tup.Create(Meta.DoubleType,  Meta.DoubleType, "Fun",  "Fun"),
+        //#
+        //#     Tup.Create(Meta.ByteType,    Meta.FloatType,  "C3b",  "C3f"),
+        //#     Tup.Create(Meta.UShortType,  Meta.FloatType,  "C3us", "C3f"),
+        //#     Tup.Create(Meta.UIntType,    Meta.DoubleType, "C3ui", "C3d"),
+        //#     Tup.Create(Meta.FloatType,   Meta.FloatType,  "C3f",  "C3f"),
+        //#     Tup.Create(Meta.DoubleType,  Meta.DoubleType, "C3d",  "C3d"),
+        //#
+        //#     Tup.Create(Meta.ByteType,    Meta.FloatType,  "C4b",  "C4f"),
+        //#     Tup.Create(Meta.UShortType,  Meta.FloatType,  "C4us", "C4f"),
+        //#     Tup.Create(Meta.UIntType,    Meta.DoubleType, "C4ui", "C4d"),
+        //#     Tup.Create(Meta.FloatType,   Meta.FloatType,  "C4f",  "C4f"),
+        //#     Tup.Create(Meta.DoubleType,  Meta.DoubleType, "C4d",  "C4d"),
         //# };
-        //# intConfigs.ForEach((dt, dtn, ct, fct) => {
+        //# intConfigs.ForEach((dtype, ftype, ct, fct) => {
+        //#     var isReal = dtype.IsReal;
         //#     var fun = ct == "Fun" ? ct : "Col";
-        //#     var clampVal = dtn != "" && ct == "Fun";
-        //#     var clampMap = dtn != "" && ct != "Fun";
-        //#     var rfct = dtn == "" ? "" : "RawF";
+        //#     var clampVal = !isReal && ct == "Fun";
+        //#     var clampMap = !isReal && ct != "Fun";
+        //#     var dt = dtype.Name;
+        //#     var dtn = dtype.Caps;
+        //#     var ft = ftype.Name;
+        //#     var ftn = ftype.Caps;
+        //#     var ftc = ftype.Char;
+        //#     var rfct = isReal ? "" : "Raw" + ftc.ToUpper();
         //#     var dtct = ct == "Fun" ? dt : dt + ", " + ct;
         //#     var it = ct == "Fun" ? dt : ct;
         public static void SetScaledNearest(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
@@ -59,34 +74,34 @@ namespace Aardvark.Base
                                             double par = -0.5)
         {
             // create the cubic weighting function. Parameter a=-0.5 results in the cubic Hermite spline.
-            var hermiteSpline = Fun.CreateCubicTup4f(par);
+            var hermiteSpline = Fun.CreateCubicTup4__ftc__(par);
             targetMat.SetScaledCubic(sourceMat, hermiteSpline);
         }
 
         public static void SetScaledBSpline3(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
         {
-            targetMat.SetScaledCubic(sourceMat, Fun.BSpline3f);
+            targetMat.SetScaledCubic(sourceMat, Fun.BSpline3__ftc__);
         }
 
         /// <summary>
         /// Use a supplied cubic interpolator to scale the source matrix into the target matrix.
         /// </summary>
         public static void SetScaledCubic(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat,
-                                          Func<double, Tup4<float>> interpolator)
+                                          Func<double, Tup4<__ft__>> interpolator)
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled16(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                  interpolator, interpolator, __fun__.LinCom__rfct__, __fun__.LinCom,
                                  Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped/*#
                                   if (clampVal) { */,
-                                  Col.__dtn__InFloatTo__dtn__Clamped/*#
+                                  Col.__dtn__In__ftn__To__dtn__Clamped/*#
                                   } else if (clampMap) { */,
-                                  col => col.Map(Col.__dtn__InFloatTo__dtn__Clamped)/*# } */);
+                                  col => col.Map(Col.__dtn__In__ftn__To__dtn__Clamped)/*# } */);
         }
 
         public static void SetScaledBSpline5(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
         {
-            targetMat.SetScaledOrder5(sourceMat, Fun.BSpline5f);
+            targetMat.SetScaledOrder5(sourceMat, Fun.BSpline5__ftc__);
         }
 
         /// <summary>
@@ -94,20 +109,20 @@ namespace Aardvark.Base
         /// </summary>
         public static void SetScaledLanczos(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat)
         {
-            targetMat.SetScaledOrder5(sourceMat, Fun.Lanczos3f);
+            targetMat.SetScaledOrder5(sourceMat, Fun.Lanczos3__ftc__);
         }
 
         public static void SetScaledOrder5(this Matrix<__dtct__> targetMat, Matrix<__dtct__> sourceMat,
-                                           Func<double, Tup6<float>> interpolator)
+                                           Func<double, Tup6<__ft__>> interpolator)
         {
             var scale = sourceMat.Size.ToV2d() / targetMat.Size.ToV2d();
             targetMat.SetScaled36(sourceMat, scale.X, scale.Y, 0.5 * scale.X - 0.5, 0.5 * scale.Y - 0.5,
                                   interpolator, interpolator, __fun__.LinCom__rfct__, __fun__.LinCom,
                                   Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped/*#
                                   if (clampVal) { */,
-                                  Col.__dtn__InFloatTo__dtn__Clamped/*#
+                                  Col.__dtn__In__ftn__To__dtn__Clamped/*#
                                   } else if (clampMap) { */,
-                                  col => col.Map(Col.__dtn__InFloatTo__dtn__Clamped)/*# } */);
+                                  col => col.Map(Col.__dtn__In__ftn__To__dtn__Clamped)/*# } */);
         }
 
         //# }); // configs

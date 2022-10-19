@@ -1664,7 +1664,7 @@ namespace Aardvark.Base
             return new PixImage<T>(Format, s_scaledFun(Volume, scaleFactor, ip));
         }
 
-        private static Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> s_scaledFun = null;
+        private static Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> s_scaledFun = TensorExtensions.Scaled;
 
         public static void SetScaledFun(Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> scaledFun)
         {
