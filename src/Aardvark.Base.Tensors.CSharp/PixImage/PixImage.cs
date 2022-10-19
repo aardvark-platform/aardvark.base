@@ -1584,10 +1584,15 @@ namespace Aardvark.Base
             ImageInterpolation ip = ImageInterpolation.Cubic
             ) => Remapped(xMap, xMap, ip);
 
-        public PixImage<T> Remapped(
-            Matrix<float> xMap, Matrix<float> yMap,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => new PixImage<T>(Format, s_remappedFun(Volume, xMap, yMap, ip));
+        public PixImage<T> Remapped(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
+        {
+            if (s_remappedFun == null)
+            {
+                throw new NotSupportedException($"No remapping function has been installed via PixImage<{(typeof(T).Name)}>.SetRemappedFun");
+            }
+
+            return new PixImage<T>(Format, s_remappedFun(Volume, xMap, yMap, ip));
+        }
 
         private static Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> s_remappedFun = null;
 
@@ -1618,10 +1623,15 @@ namespace Aardvark.Base
             ImageInterpolation ip = ImageInterpolation.Cubic
             ) => Rotated(angleInRadiansCCW, resize, ip);
 
-        public PixImage<T> Rotated(
-            double angleInRadiansCCW, bool resize = true,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => new PixImage<T>(Format, s_rotatedFun(Volume, angleInRadiansCCW, resize, ip));
+        public PixImage<T> Rotated(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
+        {
+            if (s_rotatedFun == null)
+            {
+                throw new NotSupportedException($"No rotating function has been installed via PixImage<{(typeof(T).Name)}>.SetRotatedFun");
+            }
+
+            return new PixImage<T>(Format, s_rotatedFun(Volume, angleInRadiansCCW, resize, ip));
+        }
 
         private static Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> s_rotatedFun = null;
 
@@ -1640,6 +1650,11 @@ namespace Aardvark.Base
             V2d scaleFactor,
             ImageInterpolation ip = ImageInterpolation.Cubic)
         {
+            if (s_scaledFun == null)
+            {
+                throw new NotSupportedException($"No scaling function has been installed via PixImage<{(typeof(T).Name)}>.SetScaledFun");
+            }
+
             if (!(scaleFactor.X > 0.0 && scaleFactor.Y > 0.0)) throw new ArgumentOutOfRangeException(nameof(scaleFactor));
 
             // SuperSample is only available for scale factors < 1; fall back to Cubic
