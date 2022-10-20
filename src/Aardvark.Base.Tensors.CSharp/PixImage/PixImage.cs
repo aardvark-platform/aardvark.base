@@ -691,10 +691,13 @@ namespace Aardvark.Base
 
         #region Load from stream
 
+        private static string GetStreamDescription(Stream stream)
+            => (stream is FileStream fs) ? $"file stream '{fs.Name}'" : "stream";
+
         private static PixImage TryLoadFromStreamWithLoader(IPixLoader loader, Stream stream)
             => TryInvokeLoader(
                     loader, l => l.LoadFromStream(stream), NotNull,
-                    "load image from stream"
+                    $"load image from {GetStreamDescription(stream)}"
             );
 
         /// <summary>
@@ -708,7 +711,7 @@ namespace Aardvark.Base
         public static PixImage LoadRaw(Stream stream, IPixLoader loader = null)
             => InvokeLoadersWithStream(
                 loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), NotNull,
-                "Could not load image from stream"
+                $"Could not load image from {GetStreamDescription(stream)}"
             );
 
         /// <summary>
