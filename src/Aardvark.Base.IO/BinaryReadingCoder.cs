@@ -244,7 +244,13 @@ namespace Aardvark.Base.Coder
                                 if (tmobj != null) CodeFields(typeInfo.Type, tmobj);
                             }
                             if ((typeInfo.Options & TypeInfo.Option.Size) != 0)
-                                m_reader.BaseStream.Position = end;
+                            {
+                                if (m_reader.BaseStream.Position != end)
+                                {
+                                    Report.Warn("invalid stream position after reading type \"{0}\" (potentially skipping referenced objects)", typeName);
+                                    m_reader.BaseStream.Position = end;
+                                }
+                            }
                         }
                         else
                         {
@@ -252,7 +258,7 @@ namespace Aardvark.Base.Coder
                             {
                                 m_reader.BaseStream.Position = end;
                                 Report.Warn(
-                                    "skipping object of uncodeable type \"{0}\"",
+                                    "skipping object of uncodeable type \"{0}\" (potentially skipping referenced objects)",
                                     typeName);
                                 obj = null;
                             }
