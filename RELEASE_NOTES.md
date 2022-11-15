@@ -1,3 +1,8 @@
+### 5.2.15
+* Added File.writeAll* variants that create parent directories
+* [IO] Added logging output in case there is a stream position mismatch
+* [PixImage] Print path when loading from file stream
+
 ### 5.2.14
 * Updated to ImageSharp 2.1
 * Implemented default PixImage scaling function
