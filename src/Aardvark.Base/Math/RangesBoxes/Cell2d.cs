@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Aardvark.Base
@@ -12,8 +11,7 @@ namespace Aardvark.Base
     /// A 2^Exponent sized square positioned at (X,Y) * 2^Exponent.
     /// </summary>
     [DataContract]
-    [JsonConverter(typeof(Converter))]
-    public struct Cell2d : IEquatable<Cell2d>
+    public partial struct Cell2d : IEquatable<Cell2d>
     {
         /// <summary>
         /// Unit cell (0, 0, 0) -> Box2d[(0.0, 0.0), (1.0, 1.0)]
@@ -21,9 +19,9 @@ namespace Aardvark.Base
         public static readonly Cell2d Unit = new Cell2d(0L, 0L, 0);
 
         /// <summary>
-        /// Exponent int.MinValue gives a cell the special meaning of "invalid".
+        /// Special value denoting "invalid cell".
         /// </summary>
-        public static Cell2d Invalid => new Cell2d(long.MinValue, long.MinValue, int.MinValue);
+        public static Cell2d Invalid => new Cell2d(long.MaxValue, long.MaxValue, int.MaxValue);
 
         /// <summary>
         /// </summary>
@@ -171,16 +169,16 @@ namespace Aardvark.Base
         public bool IsCenteredAtOrigin => X == long.MaxValue && Y == long.MaxValue;
 
         /// <summary>
-        /// A cell with e=int.MinValue has the special meaning of "invalid".
+        /// Returns true if this is the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsInvalid => Exponent == int.MinValue;
+        public bool IsInvalid => X == long.MaxValue && Y == long.MaxValue && Exponent == int.MaxValue;
 
         /// <summary>
-        /// A cell with e=int.MinValue has the special meaning of "invalid".
+        /// Returns true if this is NOT the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsValid => Exponent != int.MinValue;
+        public bool IsValid => X != long.MaxValue || Y != long.MaxValue || Exponent != int.MaxValue;
 
         /// <summary>
         /// Returns true if the cell completely contains the other cell.
@@ -568,60 +566,15 @@ namespace Aardvark.Base
         public static Cell2d Parse(string s)
         {
             var xs = s.Substring(1, s.Length - 2).Split(',');
-            return new Cell2d(long.Parse(xs[0]), long.Parse(xs[1]), int.Parse(xs[2]));
-        }
-
-        #endregion
-
-        #region json serialization
-
-        public class Converter : JsonConverter<Cell2d>
-        {
-            public override Cell2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            return xs.Length switch
             {
-                if (reader.TokenType == JsonTokenType.StartArray)
-                {
-                    reader.Read(); var x = reader.GetInt64();
-                    reader.Read(); var y = reader.GetInt64();
-                    reader.Read(); var e = reader.GetInt32();
-                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
-                    return new Cell2d(x, y, e);
-                }
-                else if (reader.TokenType == JsonTokenType.StartObject)
-                {
-                    var x = 0L; var y = 0L; var e = 0;
-                    while (reader.Read())
-                    {
-                        if (reader.TokenType == JsonTokenType.EndObject) break;
-
-                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
-                        var p = reader.GetString();
-                        reader.Read(); Debug.Assert(reader.TokenType == JsonTokenType.Number);
-                        switch (p)
-                        {
-                            case "x": case "X": x = reader.GetInt64(); break;
-                            case "y": case "Y": y = reader.GetInt64(); break;
-                            case "e": case "E": e = reader.GetInt32(); break;
-                            default: throw new JsonException($"Invalid property {p}. Error 09514e99-055a-4f0a-8573-0e10bcb29446.");
-                        }
-                    }
-
-                    return new Cell2d(x, y, e);
-                }
-                else
-                {
-                    throw new JsonException();
-                }
-            }
-
-            public override void Write(Utf8JsonWriter writer, Cell2d value, JsonSerializerOptions options)
-            {
-                writer.WriteStartArray();
-                writer.WriteNumberValue(value.X);
-                writer.WriteNumberValue(value.Y);
-                writer.WriteNumberValue(value.Exponent);
-                writer.WriteEndArray();
-            }
+                1 => new Cell2d(exponent: int.Parse(xs[0])),
+                4 => new Cell2d(x: long.Parse(xs[0]), y: long.Parse(xs[1]), exponent: int.Parse(xs[2])),
+                _ => throw new FormatException(
+                    $"Expected [<x>,<y>,<z>,<exponent>], or [<exponent>], but found {s}. " +
+                    $"Error 47575d6f-072a-4166-ac83-5c4effa33427."
+                    )
+            };
         }
 
         #endregion

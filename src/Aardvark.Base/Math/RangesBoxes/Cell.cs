@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Aardvark.Base
@@ -12,8 +11,7 @@ namespace Aardvark.Base
     /// A 2^Exponent sized cube positioned at (X,Y,Z) * 2^Exponent.
     /// </summary>
     [DataContract]
-    [JsonConverter(typeof(Converter))]
-    public struct Cell : IEquatable<Cell>
+    public partial struct Cell : IEquatable<Cell>
     {
         /// <summary>
         /// Unit cell (0, 0, 0, 0) -> Box3d[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)]
@@ -21,9 +19,9 @@ namespace Aardvark.Base
         public static Cell Unit => new Cell(0L, 0L, 0L, 0);
 
         /// <summary>
-        /// Exponent int.MinValue gives a cell the special meaning of "invalid".
+        /// Special value denoting "invalid cell".
         /// </summary>
-        public static Cell Invalid => new Cell(long.MinValue, long.MinValue, long.MinValue, int.MinValue);
+        public static Cell Invalid => new Cell(long.MaxValue, long.MaxValue, long.MaxValue, int.MaxValue);
 
         /// <summary>
         /// </summary>
@@ -165,16 +163,16 @@ namespace Aardvark.Base
         public bool IsCenteredAtOrigin => X == long.MaxValue && Y == long.MaxValue && Z == long.MaxValue;
 
         /// <summary>
-        /// A cell with e=int.MinValue has the special meaning of "invalid".
+        /// Returns true if this is the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsInvalid => Exponent == int.MinValue;
+        public bool IsInvalid => X == long.MaxValue && Y == long.MaxValue && Z == long.MaxValue && Exponent == int.MaxValue;
 
         /// <summary>
-        /// A cell with e=int.MinValue has the special meaning of "invalid".
+        /// Returns true if this is NOT the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsValid => Exponent != int.MinValue;
+        public bool IsValid => X != long.MaxValue || Y != long.MaxValue || Z != long.MaxValue || Exponent != int.MaxValue;
 
         /// <summary>
         /// Returns true if the cell completely contains the other cell.
@@ -549,7 +547,15 @@ namespace Aardvark.Base
         public static Cell Parse(string s)
         {
             var xs = s.Substring(1, s.Length - 2).Split(',');
-            return new Cell(long.Parse(xs[0]), long.Parse(xs[1]), long.Parse(xs[2]), int.Parse(xs[3]));
+            return xs.Length switch
+            {
+                1 => new Cell(exponent: int.Parse(xs[0])),
+                4 => new Cell(x: long.Parse(xs[0]), y: long.Parse(xs[1]), z: long.Parse(xs[2]), exponent: int.Parse(xs[3])),
+                _ => throw new FormatException(
+                    $"Expected [<x>,<y>,<z>,<exponent>], or [<exponent>], but found {s}. " +
+                    $"Error 973f176d-6780-4f77-8736-0ed341adf136."
+                    )
+            };
         }
 
         #endregion
@@ -584,62 +590,6 @@ namespace Aardvark.Base
         [Obsolete("Parameter 'offset' is not respected, use Parse(buffer) instead.")]
         public static Cell Parse(byte[] buffer, int offset)
             => Parse(buffer);
-
-        #endregion
-
-        #region json serialization
-
-        public class Converter : JsonConverter<Cell>
-        {
-            public override Cell Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            {
-                if (reader.TokenType == JsonTokenType.StartArray)
-                {
-                    reader.Read(); var x = reader.GetInt64();
-                    reader.Read(); var y = reader.GetInt64();
-                    reader.Read(); var z = reader.GetInt64();
-                    reader.Read(); var e = reader.GetInt32();
-                    reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
-                    return new Cell(x, y, z, e);
-                }
-                else if (reader.TokenType == JsonTokenType.StartObject)
-                {
-                    var x = 0L; var y = 0L; var z = 0L; var e = 0;
-                    while (reader.Read())
-                    {
-                        if (reader.TokenType == JsonTokenType.EndObject) break;
-
-                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
-                        var p = reader.GetString();
-                        reader.Read(); Debug.Assert(reader.TokenType == JsonTokenType.Number);
-                        switch (p)
-                        {
-                            case "x": case "X": x = reader.GetInt64(); break;
-                            case "y": case "Y": y = reader.GetInt64(); break;
-                            case "z": case "Z": z = reader.GetInt64(); break;
-                            case "e": case "E": e = reader.GetInt32(); break;
-                            default: throw new JsonException($"Invalid property {p}. Error cd4c223f-8acf-4e79-8801-4446e563ae3a.");
-                        }
-                    }
-
-                    return new Cell(x, y, z, e);
-                }
-                else
-                {
-                    throw new JsonException();
-                }
-            }
-
-            public override void Write(Utf8JsonWriter writer, Cell value, JsonSerializerOptions options)
-            {
-                writer.WriteStartArray();
-                writer.WriteNumberValue(value.X);
-                writer.WriteNumberValue(value.Y);
-                writer.WriteNumberValue(value.Z);
-                writer.WriteNumberValue(value.Exponent);
-                writer.WriteEndArray();
-            }
-        }
 
         #endregion
     }
