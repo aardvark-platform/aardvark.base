@@ -29,6 +29,23 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
+        #region Box[23][dfil]
+
+        [Test] public void Box2i_Roundtrip() => RoundtripTest(new Box2i(new V2i(1, -2), new V2i(-17, 0)));
+        [Test] public void Box2l_Roundtrip() => RoundtripTest(new Box2l(new V2l(1, -2), new V2l(-17, 0)));
+        [Test] public void Box2f_Roundtrip() => RoundtripTest(new Box2f(new V2f(1.1, -2.2), new V2f(-17.17, 0)));
+        [Test] public void Box2d_Roundtrip() => RoundtripTest(new Box2d(new V2d(1.1, -2.2), new V2d(-17.17, 0)));
+        [Test] public void Box3i_Roundtrip() => RoundtripTest(new Box3i(new V3i(1, -2, 0), new V3i(-17, 42, -555555555)));
+        [Test] public void Box3l_Roundtrip() => RoundtripTest(new Box3l(new V3l(1, -2, 0), new V3l(-17, 42, -555555555)));
+        [Test] public void Box3f_Roundtrip() => RoundtripTest(new Box3f(new V3f(1.1, -2.2, 0), new V3f(-17.17, 42.42, -555.001)));
+        [Test] public void Box3d_Roundtrip() => RoundtripTest(new Box3d(new V3d(1.1, -2.2, 0), new V3d(-17.18, 42.42, -555.001)));
+
+        #endregion
+
+        #region Capsule3[df]
+        // TODO
+        #endregion
+
         #region Cell, Cell2d
 
         [Test]
@@ -77,7 +94,7 @@ namespace Aardvark.Base.Tests.Json
             DeserializeTest("\"[1,2,3,-1]\"", new Cell(1, 2, 3, -1));
             DeserializeTest("[1,2,3,-1]", new Cell(1, 2, 3, -1));
             DeserializeTest("{\"x\":1,\"y\":2,\"z\":3,\"e\":-1}", new Cell(1, 2, 3, -1));
-            DeserializeTest("{\"X\":1,\"Y\":2,\"Z\":3,\"E\":-1}", new Cell(1, 2, 3,-1));
+            DeserializeTest("{\"X\":1,\"Y\":2,\"Z\":3,\"E\":-1}", new Cell(1, 2, 3, -1));
 
             DeserializeTest("\"[10]\"", new Cell(10));
             DeserializeTest("[10]", new Cell(10));
@@ -99,27 +116,34 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
-        #region Box[23][dfil]
+        #region Circle[23][df]
+        // TODO
+        #endregion
 
-        [Test] public void Box2i_Roundtrip() => RoundtripTest(new Box2i(new V2i(1, -2), new V2i(-17, 0)));
-        [Test] public void Box2l_Roundtrip() => RoundtripTest(new Box2l(new V2l(1, -2), new V2l(-17, 0)));
-        [Test] public void Box2f_Roundtrip() => RoundtripTest(new Box2f(new V2f(1.1, -2.2), new V2f(-17.17, 0)));
-        [Test] public void Box2d_Roundtrip() => RoundtripTest(new Box2d(new V2d(1.1, -2.2), new V2d(-17.17, 0)));
-        [Test] public void Box3i_Roundtrip() => RoundtripTest(new Box3i(new V3i(1, -2, 0), new V3i(-17, 42, -555555555)));
-        [Test] public void Box3l_Roundtrip() => RoundtripTest(new Box3l(new V3l(1, -2, 0), new V3l(-17, 42, -555555555)));
-        [Test] public void Box3f_Roundtrip() => RoundtripTest(new Box3f(new V3f(1.1, -2.2, 0), new V3f(-17.17, 42.42, -555.001)));
-        [Test] public void Box3d_Roundtrip() => RoundtripTest(new Box3d(new V3d(1.1, -2.2, 0), new V3d(-17.18, 42.42, -555.001)));
+        #region Cone[23][df]
+        // TODO
+        #endregion
 
+        #region Cylinder3[df]
+        // TODO
+        #endregion
+
+        #region Ellipse[23][df]
+        // TODO
         #endregion
 
         #region Hull[23][df]
-        
+
         [Test] public void Hull2d() => RoundtripTest(new Hull2d(Box2d.Unit));
         [Test] public void Hull2f() => RoundtripTest(new Hull2f(Box2f.Unit));
 
         [Test] public void Hull3d() => RoundtripTest(new Hull3d(Box3d.Unit));
         [Test] public void Hull3f() => RoundtripTest(new Hull3f(Box3f.Unit));
 
+        #endregion
+
+        #region Line[23][df]
+        // TODO
         #endregion
 
         #region M[22|23|33|34|44][dfil]
@@ -158,6 +182,34 @@ namespace Aardvark.Base.Tests.Json
         [Test] public void Plane3d() => RoundtripTest(new Plane3d(new V3d(1.2, -3.4, 5.6).Normalized, new V3d(-7.8, 9.10, -11.12)));
         [Test] public void Plane3f() => RoundtripTest(new Plane3f(new V3f(1.2, -3.4, 5.6).Normalized, new V3f(-7.8, 9.10, -11.12)));
 
+        #endregion
+
+        #region Polygon[23][df]
+        // TODO
+        #endregion
+
+        #region Quad[23][df]
+        // TODO
+        #endregion
+
+        #region Quadric[df]
+        // TODO
+        #endregion
+
+        #region Ray[23][df], FastRay[23][df]
+        // TODO
+        #endregion
+
+        #region Sphere3[df]
+        // TODO
+        #endregion
+
+        #region Torus3[df]
+        // TODO
+        #endregion
+
+        #region Triangle[23][df]
+        // TODO
         #endregion
 
         #region V[234][dfil]
