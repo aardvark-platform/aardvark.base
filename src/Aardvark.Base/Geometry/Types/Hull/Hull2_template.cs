@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
@@ -25,7 +28,7 @@ namespace Aardvark.Base
     /// <summary>
     /// A hull is an alternative representation of a convex polygon.
     /// </summary>
-    public struct __type__ : IValidity
+    public struct __type__ : IEquatable<__type__>, IValidity
     {
         public __plane2t__[] PlaneArray;
 
@@ -108,6 +111,61 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(__type__ a, __type__ b)
+            => a.Equals(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(__type__ a, __type__ b)
+            => !a.Equals(b);
+
+        #endregion
+
+        #region Override
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            if (PlaneArray == null || PlaneArray.Length == 0) return 0;
+            var h = PlaneArray[0].GetHashCode();
+            for (var i = 1; i < PlaneArray.Length; i++) HashCode.GetCombined(h, PlaneArray[i].GetHashCode());
+            return h;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(__type__ other)
+        {
+            if (PlaneArray == null || other.PlaneArray == null) return false;
+            for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object other)
+            => (other is __type__ o) ? Equals(o) : false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString()
+            => PlaneArray != null
+                ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
+                : "[null]"
+                ;
+
+        /// <summary>
+        /// Parses __type__ from a string created with __type__.ToString().
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Parse(string s)
+        {
+            if (s == "[null]") return __type__.Invalid;
+            var planes = s.NestedBracketSplitLevelOne().Select(__plane2t__.Parse).ToArray();
+            return new __type__(planes);
         }
 
         #endregion

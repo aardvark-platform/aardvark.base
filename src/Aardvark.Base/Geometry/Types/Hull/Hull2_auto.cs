@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
@@ -10,7 +13,7 @@ namespace Aardvark.Base
     /// <summary>
     /// A hull is an alternative representation of a convex polygon.
     /// </summary>
-    public struct Hull2f : IValidity
+    public struct Hull2f : IEquatable<Hull2f>, IValidity
     {
         public Plane2f[] PlaneArray;
 
@@ -93,6 +96,61 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Hull2f a, Hull2f b)
+            => a.Equals(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Hull2f a, Hull2f b)
+            => !a.Equals(b);
+
+        #endregion
+
+        #region Override
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            if (PlaneArray == null || PlaneArray.Length == 0) return 0;
+            var h = PlaneArray[0].GetHashCode();
+            for (var i = 1; i < PlaneArray.Length; i++) HashCode.GetCombined(h, PlaneArray[i].GetHashCode());
+            return h;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Hull2f other)
+        {
+            if (PlaneArray == null || other.PlaneArray == null) return false;
+            for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object other)
+            => (other is Hull2f o) ? Equals(o) : false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString()
+            => PlaneArray != null
+                ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
+                : "[null]"
+                ;
+
+        /// <summary>
+        /// Parses Hull2f from a string created with Hull2f.ToString().
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Hull2f Parse(string s)
+        {
+            if (s == "[null]") return Hull2f.Invalid;
+            var planes = s.NestedBracketSplitLevelOne().Select(Plane2f.Parse).ToArray();
+            return new Hull2f(planes);
         }
 
         #endregion
@@ -210,7 +268,7 @@ namespace Aardvark.Base
     /// <summary>
     /// A hull is an alternative representation of a convex polygon.
     /// </summary>
-    public struct Hull2d : IValidity
+    public struct Hull2d : IEquatable<Hull2d>, IValidity
     {
         public Plane2d[] PlaneArray;
 
@@ -293,6 +351,61 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Hull2d a, Hull2d b)
+            => a.Equals(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Hull2d a, Hull2d b)
+            => !a.Equals(b);
+
+        #endregion
+
+        #region Override
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            if (PlaneArray == null || PlaneArray.Length == 0) return 0;
+            var h = PlaneArray[0].GetHashCode();
+            for (var i = 1; i < PlaneArray.Length; i++) HashCode.GetCombined(h, PlaneArray[i].GetHashCode());
+            return h;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Hull2d other)
+        {
+            if (PlaneArray == null || other.PlaneArray == null) return false;
+            for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object other)
+            => (other is Hull2d o) ? Equals(o) : false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString()
+            => PlaneArray != null
+                ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
+                : "[null]"
+                ;
+
+        /// <summary>
+        /// Parses Hull2d from a string created with Hull2d.ToString().
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Hull2d Parse(string s)
+        {
+            if (s == "[null]") return Hull2d.Invalid;
+            var planes = s.NestedBracketSplitLevelOne().Select(Plane2d.Parse).ToArray();
+            return new Hull2d(planes);
         }
 
         #endregion
