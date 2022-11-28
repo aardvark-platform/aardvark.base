@@ -417,7 +417,7 @@ and [<AbstractClass; Sealed; Extension>] PixImageSharp private() =
     static let tryGetEncoder (saveParams : PixSaveParams) =
         match saveParams with
         | :? PixJpegSaveParams as jpeg ->
-            Some (Jpeg.JpegEncoder(Quality = jpeg.Quality) :> IImageEncoder)
+            Some (Jpeg.JpegEncoder(Quality = Nullable<int>(jpeg.Quality)) :> IImageEncoder)
 
         | :? PixPngSaveParams as png ->
             Some (Png.PngEncoder(CompressionLevel = unbox png.CompressionLevel) :> IImageEncoder)
