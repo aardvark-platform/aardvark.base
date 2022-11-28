@@ -290,6 +290,22 @@ namespace Aardvark.Tests
 
         #endregion
 
+        #region IsValid, IsInvalid
+
+        [Test]
+        public void CellIsValidInvalid()
+        {
+            var a = Cell2d.Invalid;
+            Assert.IsTrue(a.IsInvalid);
+            Assert.IsFalse(a.IsValid);
+
+            var b = Cell2d.Unit;
+            Assert.IsTrue(a.IsValid);
+            Assert.IsFalse(a.IsInvalid);
+        }
+
+        #endregion
+
         #region equality
 
         [Test]

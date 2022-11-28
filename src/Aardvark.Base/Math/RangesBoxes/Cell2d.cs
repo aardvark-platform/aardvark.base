@@ -18,7 +18,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Unit cell (0, 0, 0) -> Box2d[(0.0, 0.0), (1.0, 1.0)]
         /// </summary>
-        public static readonly Cell2d Unit = new Cell2d(0, 0, 0);
+        public static readonly Cell2d Unit = new Cell2d(0L, 0L, 0);
+
+        /// <summary>
+        /// Exponent int.MinValue gives a cell the special meaning of "invalid".
+        /// </summary>
+        public static Cell2d Invalid => new Cell2d(long.MinValue, long.MinValue, int.MinValue);
 
         /// <summary>
         /// </summary>
@@ -164,6 +169,18 @@ namespace Aardvark.Base
         /// </summary>
         [JsonIgnore]
         public bool IsCenteredAtOrigin => X == long.MaxValue && Y == long.MaxValue;
+
+        /// <summary>
+        /// A cell with e=int.MinValue has the special meaning of "invalid".
+        /// </summary>
+        [JsonIgnore]
+        public bool IsInvalid => Exponent == int.MinValue;
+
+        /// <summary>
+        /// A cell with e=int.MinValue has the special meaning of "invalid".
+        /// </summary>
+        [JsonIgnore]
+        public bool IsValid => Exponent != int.MinValue;
 
         /// <summary>
         /// Returns true if the cell completely contains the other cell.
