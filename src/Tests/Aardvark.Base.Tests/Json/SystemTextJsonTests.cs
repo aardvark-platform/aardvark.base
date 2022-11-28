@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using SixLabors.ImageSharp.ColorSpaces;
 using System;
 
 namespace Aardvark.Base.Tests.Json
@@ -49,8 +50,29 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
-        #region C[34][b|d|f|ui|us], CieLabf, CieLuvf, CieXYZf, CieYxyf, CMYKf, HSLf, HSVf, Yuvf
-        // TODO
+        #region C[34][b|d|f|ui|us], CieLabf, CIeLuvf, CieXYZf, CieYxyf, CMYKf, HSLf, HSVf, Yuvf
+
+        [Test] public void C3b_Roundtrip() => RoundtripTest(new C3b(1,2,3));
+        [Test] public void C3d_Roundtrip() => RoundtripTest(new C3b(1.2, 2.3, 3.4));
+        [Test] public void C3f_Roundtrip() => RoundtripTest(new C3f(1.2, 2.3, 3.4));
+        [Test] public void C3ui_Roundtrip() => RoundtripTest(new C3ui(1, 2, 3));
+        [Test] public void C3us_Roundtrip() => RoundtripTest(new C3us(1, 2, 3));
+
+        [Test] public void C4b_Roundtrip() => RoundtripTest(new C4b(1, 2, 3, 4));
+        [Test] public void C4d_Roundtrip() => RoundtripTest(new C4b(1.2, 2.3, 3.4, 4.5));
+        [Test] public void C4f_Roundtrip() => RoundtripTest(new C4f(1.2, 2.3, 3.4, 4.5));
+        [Test] public void C4ui_Roundtrip() => RoundtripTest(new C4ui(1, 2, 3, 4));
+        [Test] public void C4us_Roundtrip() => RoundtripTest(new C4us(1, 2, 3, 4));
+
+        [Test] public void CieLabf_Roundtrip() => RoundtripTest(new CieLabf(0.1, 0.2, 0.3));
+        [Test] public void CIeLuvf_Roundtrip() => RoundtripTest(new CIeLuvf(0.1, 0.2, 0.3));
+        [Test] public void CieXYZf_Roundtrip() => RoundtripTest(new CieXYZf(0.1, 0.2, 0.3));
+        [Test] public void CieYxyf_Roundtrip() => RoundtripTest(new CieYxyf(0.1, 0.2, 0.3));
+        [Test] public void CMYKf_Roundtrip() => RoundtripTest(new CMYKf(0.1, 0.2, 0.3, 0.4));
+        [Test] public void HSLf_Roundtrip() => RoundtripTest(new HSLf(0.1, 0.2, 0.3));
+        [Test] public void HSVf_Roundtrip() => RoundtripTest(new HSVf(0.1, 0.2, 0.3));
+        [Test] public void Yuvf_Roundtrip() => RoundtripTest(new Yuvf(0.1, 0.2, 0.3));
+
         #endregion
 
         #region Capsule3[df]
