@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 
 namespace Aardvark.Tests
 {
@@ -10,6 +11,11 @@ namespace Aardvark.Tests
         [STAThread]
         public static void Main(string[] args)
         {
+            var o = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true };
+            Console.WriteLine(JsonSerializer.Serialize(V3d.XAxis), o);
+            Console.WriteLine(new Hull2d());
+            var h = Hull2d.Parse(new Hull2d().ToString());
+
             //new DictTests().Run();
             //Aardvark.Tests.Extensions.DateTimeTests.JulianDay();
             //new Aardvark.Tests.TrafoTests().TrafoDecomposeTest();

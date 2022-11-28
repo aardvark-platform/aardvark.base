@@ -21,7 +21,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Special value denoting "invalid cell".
         /// </summary>
-        public static Cell2d Invalid => new Cell2d(long.MaxValue, long.MaxValue, int.MaxValue);
+        public static Cell2d Invalid => new Cell2d(long.MinValue, long.MinValue, int.MinValue);
 
         /// <summary>
         /// </summary>
@@ -77,7 +77,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Special cell, which is centered at origin, with dimension 2^exponent.
         /// </summary>
-        public Cell2d(int exponent) : this(long.MaxValue, long.MaxValue, exponent) { }
+        public Cell2d(int exponent)
+        {
+            if (exponent == int.MinValue)
+            {
+                X = long.MinValue; Y = long.MinValue; Exponent = exponent;
+            }
+            else
+            {
+                X = long.MaxValue; Y = long.MaxValue; Exponent = exponent;
+            }
+        }
 
         /// <summary>
         /// Smallest cell that contains given box.
@@ -172,13 +182,13 @@ namespace Aardvark.Base
         /// Returns true if this is the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsInvalid => X == long.MaxValue && Y == long.MaxValue && Exponent == int.MaxValue;
+        public bool IsInvalid => X == long.MinValue && Y == long.MinValue && Exponent == int.MinValue;
 
         /// <summary>
         /// Returns true if this is NOT the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsValid => X != long.MaxValue || Y != long.MaxValue || Exponent != int.MaxValue;
+        public bool IsValid => X != long.MinValue || Y != long.MinValue || Exponent != int.MinValue;
 
         /// <summary>
         /// Returns true if the cell completely contains the other cell.
@@ -560,7 +570,14 @@ namespace Aardvark.Base
         /// <summary></summary>
         public override string ToString()
         {
-            return $"[{X}, {Y}, {Exponent}]";
+            if (IsCenteredAtOrigin || IsInvalid)
+            {
+                return $"[{Exponent}]";
+            }
+            else
+            {
+                return $"[{X}, {Y}, {Exponent}]";
+            }
         }
 
         public static Cell2d Parse(string s)
@@ -569,7 +586,7 @@ namespace Aardvark.Base
             return xs.Length switch
             {
                 1 => new Cell2d(exponent: int.Parse(xs[0])),
-                4 => new Cell2d(x: long.Parse(xs[0]), y: long.Parse(xs[1]), exponent: int.Parse(xs[2])),
+                3 => new Cell2d(x: long.Parse(xs[0]), y: long.Parse(xs[1]), exponent: int.Parse(xs[2])),
                 _ => throw new FormatException(
                     $"Expected [<x>,<y>,<z>,<exponent>], or [<exponent>], but found {s}. " +
                     $"Error 47575d6f-072a-4166-ac83-5c4effa33427."

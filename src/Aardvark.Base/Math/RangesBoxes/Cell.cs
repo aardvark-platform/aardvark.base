@@ -21,7 +21,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Special value denoting "invalid cell".
         /// </summary>
-        public static Cell Invalid => new Cell(long.MaxValue, long.MaxValue, long.MaxValue, int.MaxValue);
+        public static Cell Invalid => new Cell(long.MinValue, long.MinValue, long.MinValue, int.MinValue);
 
         /// <summary>
         /// </summary>
@@ -69,7 +69,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Special cell, which is centered at origin, with dimension 2^exponent.
         /// </summary>
-        public Cell(int exponent) : this(long.MaxValue, long.MaxValue, long.MaxValue, exponent) { }
+        public Cell(int exponent)
+        {
+            if (exponent == int.MinValue)
+            {
+                X = long.MinValue; Y = long.MinValue; Z = long.MinValue; Exponent = exponent;
+            }
+            else
+            {
+                X = long.MaxValue; Y = long.MaxValue; Z = long.MaxValue; Exponent = exponent;
+            }
+        }
 
         /// <summary>
         /// Smallest cell that contains given box.
@@ -166,13 +176,13 @@ namespace Aardvark.Base
         /// Returns true if this is the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsInvalid => X == long.MaxValue && Y == long.MaxValue && Z == long.MaxValue && Exponent == int.MaxValue;
+        public bool IsInvalid => X == long.MinValue && Y == long.MinValue && Z == long.MinValue && Exponent == int.MinValue;
 
         /// <summary>
         /// Returns true if this is NOT the special invalid cell.
         /// </summary>
         [JsonIgnore]
-        public bool IsValid => X != long.MaxValue || Y != long.MaxValue || Z != long.MaxValue || Exponent != int.MaxValue;
+        public bool IsValid => X != long.MinValue || Y != long.MinValue || Z != long.MinValue || Exponent != int.MinValue;
 
         /// <summary>
         /// Returns true if the cell completely contains the other cell.
@@ -541,7 +551,14 @@ namespace Aardvark.Base
         /// <summary></summary>
         public override string ToString()
         {
-            return $"[{X}, {Y}, {Z}, {Exponent}]";
+            if (IsCenteredAtOrigin || IsInvalid)
+            {
+                return $"[{Exponent}]";
+            }
+            else
+            {
+                return $"[{X}, {Y}, {Z}, {Exponent}]";
+            }
         }
 
         public static Cell Parse(string s)

@@ -300,8 +300,8 @@ namespace Aardvark.Tests
             Assert.IsFalse(a.IsValid);
 
             var b = Cell2d.Unit;
-            Assert.IsTrue(a.IsValid);
-            Assert.IsFalse(a.IsInvalid);
+            Assert.IsTrue(b.IsValid);
+            Assert.IsFalse(b.IsInvalid);
         }
 
         #endregion
