@@ -139,20 +139,34 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
-        #region Cone[23][df]
-        // TODO
+        #region Cone3[df]
+
+        [Test] public void Cone3d_Roundtrip() => RoundtripTest(new Cone3d(new V3d(1, -2, 3), new V3d(-4, 5, -6), 7.14));
+        [Test] public void Cone3f_Roundtrip() => RoundtripTest(new Cone3f(new V3f(1, -2, 3), new V3f(-4, 5, -6), 7.14f));
+
         #endregion
 
         #region Cylinder3[df]
-        // TODO
+
+        [Test] public void Cylinder3d_Roundtrip() => RoundtripTest(new Cylinder3d(new V3d(1, -2, 3), new V3d(-4, 5, -6), 7.14));
+        [Test] public void Cylinder3f_Roundtrip() => RoundtripTest(new Cylinder3f(new V3f(1, -2, 3), new V3f(-4, 5, -6), 7.14f));
+
         #endregion
 
         #region Ellipse[23][df]
-        // TODO
+
+        //[Test] public void Ellipse3d_Roundtrip() => RoundtripTest(new Ellipse3d(new V3d(1.2, -2.3, 3.4), new V3d(-4.5, 5.6, -6.7), new V3d(7.8, -8.9, 9.10), new V3d(-10.11, 11.12, -12.13)));
+        //[Test] public void Ellipse3f_Roundtrip() => RoundtripTest(new Ellipse3f(new V3f(1.2, -2.3, 3.4), new V3f(-4.5, 5.6, -6.7), new V3f(7.8, -8.9, 9.10), new V3f(-10.11, 11.12, -12.13)));
+
         #endregion
 
         #region Euclidean[23][df]
-        // TODO
+
+        [Test] public void Euclidean2d_Roundtrip() => RoundtripTest(new Euclidean2d(Rot2d.FromDegrees(42.17)));
+        [Test] public void Euclidean2f_Roundtrip() => RoundtripTest(new Euclidean2f(Rot2f.FromDegrees(42.17f)));
+        [Test] public void Euclidean3d_Roundtrip() => RoundtripTest(new Euclidean3d(Rot3d.FromAngleAxis(new V3d(1.2, -2.3, 3.4))));
+        [Test] public void Euclidean3f_Roundtrip() => RoundtripTest(new Euclidean3f(Rot3f.FromAngleAxis(new V3f(1.2, -2.3, 3.4))));
+
         #endregion
 
         #region Fraction
