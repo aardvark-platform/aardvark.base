@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
@@ -161,6 +163,61 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Hull3f a, Hull3f b)
+            => a.Equals(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Hull3f a, Hull3f b)
+            => !a.Equals(b);
+
+        #endregion
+
+        #region Override
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            if (PlaneArray == null || PlaneArray.Length == 0) return 0;
+            var h = PlaneArray[0].GetHashCode();
+            for (var i = 1; i < PlaneArray.Length; i++) HashCode.GetCombined(h, PlaneArray[i].GetHashCode());
+            return h;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Hull3f other)
+        {
+            if (PlaneArray == null || other.PlaneArray == null) return false;
+            for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object other)
+            => (other is Hull3f o) ? Equals(o) : false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString()
+            => PlaneArray != null
+                ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
+                : "[null]"
+                ;
+
+        /// <summary>
+        /// Parses Hull3f from a string created with Hull3f.ToString().
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Hull3f Parse(string s)
+        {
+            if (s == "[null]") return Hull3f.Invalid;
+            var planes = s.NestedBracketSplitLevelOne().Select(Plane3f.Parse).ToArray();
+            return new Hull3f(planes);
         }
 
         #endregion
@@ -494,6 +551,61 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
+        }
+
+        #endregion
+
+        #region Comparisons
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Hull3d a, Hull3d b)
+            => a.Equals(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Hull3d a, Hull3d b)
+            => !a.Equals(b);
+
+        #endregion
+
+        #region Override
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            if (PlaneArray == null || PlaneArray.Length == 0) return 0;
+            var h = PlaneArray[0].GetHashCode();
+            for (var i = 1; i < PlaneArray.Length; i++) HashCode.GetCombined(h, PlaneArray[i].GetHashCode());
+            return h;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Hull3d other)
+        {
+            if (PlaneArray == null || other.PlaneArray == null) return false;
+            for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object other)
+            => (other is Hull3d o) ? Equals(o) : false;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString()
+            => PlaneArray != null
+                ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
+                : "[null]"
+                ;
+
+        /// <summary>
+        /// Parses Hull3d from a string created with Hull3d.ToString().
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Hull3d Parse(string s)
+        {
+            if (s == "[null]") return Hull3d.Invalid;
+            var planes = s.NestedBracketSplitLevelOne().Select(Plane3d.Parse).ToArray();
+            return new Hull3d(planes);
         }
 
         #endregion
