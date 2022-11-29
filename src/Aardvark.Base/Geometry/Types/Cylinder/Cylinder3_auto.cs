@@ -15,7 +15,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Cylinder3f : IEquatable<Cylinder3f>, IBoundingBox3f, IValidity
+    public partial struct Cylinder3f : IEquatable<Cylinder3f>, IBoundingBox3f, IValidity
     {
         [DataMember]
         public V3f P0;
@@ -241,7 +241,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Cylinder3d : IEquatable<Cylinder3d>, IBoundingBox3d, IValidity
+    public partial struct Cylinder3d : IEquatable<Cylinder3d>, IBoundingBox3d, IValidity
     {
         [DataMember]
         public V3d P0;

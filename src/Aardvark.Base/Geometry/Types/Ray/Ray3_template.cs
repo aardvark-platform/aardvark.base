@@ -39,7 +39,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __ray3t__ : IEquatable<__ray3t__>, IValidity, __iboundingbox__
+    public partial struct __ray3t__ : IEquatable<__ray3t__>, IValidity, __iboundingbox__
     {
         [DataMember]
         public __v3t__ Origin;

@@ -2176,7 +2176,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CieLabf : IEquatable<CieLabf>
+    public partial struct CieLabf : IEquatable<CieLabf>
     {
         [DataMember]
         public float L;
@@ -2199,7 +2199,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CIeLuvf : IEquatable<CIeLuvf>
+    public partial struct CIeLuvf : IEquatable<CIeLuvf>
     {
         [DataMember]
         public float L;
@@ -2228,7 +2228,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CieXYZf : IEquatable<CieXYZf>
+    public partial struct CieXYZf : IEquatable<CieXYZf>
     {
         [DataMember]
         public float X;
@@ -2251,7 +2251,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CieYxyf : IEquatable<CieYxyf>
+    public partial struct CieYxyf : IEquatable<CieYxyf>
     {
         [DataMember]
         public float Y;
@@ -2274,7 +2274,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct CMYKf : IEquatable<CMYKf>
+    public partial struct CMYKf : IEquatable<CMYKf>
     {
         [DataMember]
         public float C;
@@ -2303,7 +2303,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct HSLf : IEquatable<HSLf>
+    public partial struct HSLf : IEquatable<HSLf>
     {
         [DataMember]
         public float H;
@@ -2347,7 +2347,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct HSVf : IEquatable<HSVf>
+    public partial struct HSVf : IEquatable<HSVf>
     {
         [DataMember]
         public float H;
@@ -2388,7 +2388,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Yuvf : IEquatable<Yuvf>
+    public partial struct Yuvf : IEquatable<Yuvf>
     {
         [DataMember]
         public float Y;

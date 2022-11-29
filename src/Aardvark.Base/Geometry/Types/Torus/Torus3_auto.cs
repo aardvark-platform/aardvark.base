@@ -15,7 +15,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Torus3f : IEquatable<Torus3f>, IBoundingBox3f
+    public partial struct Torus3f : IEquatable<Torus3f>, IBoundingBox3f
     {
         [DataMember]
         public V3f Position;
@@ -206,7 +206,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Torus3d : IEquatable<Torus3d>, IBoundingBox3d
+    public partial struct Torus3d : IEquatable<Torus3d>, IBoundingBox3d
     {
         [DataMember]
         public V3d Position;

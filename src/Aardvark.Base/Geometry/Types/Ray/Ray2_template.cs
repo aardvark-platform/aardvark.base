@@ -32,7 +32,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __ray2t__ : IEquatable<__ray2t__>, IValidity, __iboundingbox__
+    public partial struct __ray2t__ : IEquatable<__ray2t__>, IValidity, __iboundingbox__
     {
         [DataMember]
         public __v2t__ Origin;
@@ -333,7 +333,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Fast__ray2t__
+    public partial struct Fast__ray2t__
     {
         [DataMember]
         public readonly __ray2t__ Ray;

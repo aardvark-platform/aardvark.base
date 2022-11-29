@@ -18,7 +18,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct QuaternionF : IEquatable<QuaternionF>
+    public partial struct QuaternionF : IEquatable<QuaternionF>
     {
         /// <summary>
         /// Scalar (real) part of the quaternion.
@@ -695,7 +695,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct QuaternionD : IEquatable<QuaternionD>
+    public partial struct QuaternionD : IEquatable<QuaternionD>
     {
         /// <summary>
         /// Scalar (real) part of the quaternion.

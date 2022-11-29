@@ -17,7 +17,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Euclidean2f : IEquatable<Euclidean2f>
+    public partial struct Euclidean2f : IEquatable<Euclidean2f>
     {
         [DataMember]
         public Rot2f Rot;
@@ -629,7 +629,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Euclidean3f : IEquatable<Euclidean3f>
+    public partial struct Euclidean3f : IEquatable<Euclidean3f>
     {
         [DataMember]
         public Rot3f Rot;
@@ -1393,7 +1393,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Euclidean2d : IEquatable<Euclidean2d>
+    public partial struct Euclidean2d : IEquatable<Euclidean2d>
     {
         [DataMember]
         public Rot2d Rot;
@@ -2005,7 +2005,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Euclidean3d : IEquatable<Euclidean3d>
+    public partial struct Euclidean3d : IEquatable<Euclidean3d>
     {
         [DataMember]
         public Rot3d Rot;

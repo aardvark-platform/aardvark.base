@@ -31,7 +31,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __type__ : IEquatable<__type__>, __iboundingbox3t__
+    public partial struct __type__ : IEquatable<__type__>, __iboundingbox3t__
     {
         [DataMember]
         public __v3t__ Position;

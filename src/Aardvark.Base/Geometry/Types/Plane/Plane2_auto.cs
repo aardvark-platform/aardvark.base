@@ -16,7 +16,7 @@ namespace Aardvark.Base
     /// normalized normal vector.
     /// Equation for points p on the plane: Normal dot p == Distance
     /// </summary>
-    public struct Plane2f : IEquatable<Plane2f>, IValidity // should be InfiniteLine2d
+    public partial struct Plane2f : IEquatable<Plane2f>, IValidity // should be InfiniteLine2d
     {
         public V2f Normal;
         public float Distance;
@@ -317,7 +317,7 @@ namespace Aardvark.Base
     /// normalized normal vector.
     /// Equation for points p on the plane: Normal dot p == Distance
     /// </summary>
-    public struct Plane2d : IEquatable<Plane2d>, IValidity // should be InfiniteLine2d
+    public partial struct Plane2d : IEquatable<Plane2d>, IValidity // should be InfiniteLine2d
     {
         public V2d Normal;
         public double Distance;

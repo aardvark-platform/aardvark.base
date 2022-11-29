@@ -168,7 +168,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Cone3f : IEquatable<Cone3f>, IValidity
+    public partial struct Cone3f : IEquatable<Cone3f>, IValidity
     {
         [DataMember]
         public V3f Origin;
@@ -509,7 +509,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Cone3d : IEquatable<Cone3d>, IValidity
+    public partial struct Cone3d : IEquatable<Cone3d>, IValidity
     {
         [DataMember]
         public V3d Origin;

@@ -16,7 +16,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Ray2f : IEquatable<Ray2f>, IValidity, IBoundingBox2f
+    public partial struct Ray2f : IEquatable<Ray2f>, IValidity, IBoundingBox2f
     {
         [DataMember]
         public V2f Origin;
@@ -317,7 +317,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct FastRay2f
+    public partial struct FastRay2f
     {
         [DataMember]
         public readonly Ray2f Ray;
@@ -543,7 +543,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Ray2d : IEquatable<Ray2d>, IValidity, IBoundingBox2d
+    public partial struct Ray2d : IEquatable<Ray2d>, IValidity, IBoundingBox2d
     {
         [DataMember]
         public V2d Origin;
@@ -844,7 +844,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct FastRay2d
+    public partial struct FastRay2d
     {
         [DataMember]
         public readonly Ray2d Ray;

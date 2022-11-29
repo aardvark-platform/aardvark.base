@@ -185,7 +185,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __type__ : IEquatable<__type__>, IValidity
+    public partial struct __type__ : IEquatable<__type__>, IValidity
     {
         [DataMember]
         public __v3t__ Origin;

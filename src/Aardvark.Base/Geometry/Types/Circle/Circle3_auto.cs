@@ -17,7 +17,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Circle3f : IEquatable<Circle3f>, IBoundingBox3f, IValidity
+    public partial struct Circle3f : IEquatable<Circle3f>, IBoundingBox3f, IValidity
     {
         [DataMember]
         public V3f Center;
@@ -266,7 +266,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Circle3d : IEquatable<Circle3d>, IBoundingBox3d, IValidity
+    public partial struct Circle3d : IEquatable<Circle3d>, IBoundingBox3d, IValidity
     {
         [DataMember]
         public V3d Center;

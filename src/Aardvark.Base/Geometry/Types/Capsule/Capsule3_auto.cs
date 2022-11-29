@@ -13,7 +13,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Capsule3f : IEquatable<Capsule3f>, IValidity, IBoundingBox3f
+    public partial struct Capsule3f : IEquatable<Capsule3f>, IValidity, IBoundingBox3f
     {
         [DataMember]
         public V3f P0;
@@ -145,7 +145,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Capsule3d : IEquatable<Capsule3d>, IValidity, IBoundingBox3d
+    public partial struct Capsule3d : IEquatable<Capsule3d>, IValidity, IBoundingBox3d
     {
         [DataMember]
         public V3d P0;

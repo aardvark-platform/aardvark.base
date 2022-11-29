@@ -18,7 +18,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Affine2f : IEquatable<Affine2f>, IValidity
+    public partial struct Affine2f : IEquatable<Affine2f>, IValidity
     {
         [DataMember]
         public M22f Linear;
@@ -675,7 +675,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Affine3f : IEquatable<Affine3f>, IValidity
+    public partial struct Affine3f : IEquatable<Affine3f>, IValidity
     {
         [DataMember]
         public M33f Linear;
@@ -1483,7 +1483,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Affine2d : IEquatable<Affine2d>, IValidity
+    public partial struct Affine2d : IEquatable<Affine2d>, IValidity
     {
         [DataMember]
         public M22d Linear;
@@ -2140,7 +2140,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Affine3d : IEquatable<Affine3d>, IValidity
+    public partial struct Affine3d : IEquatable<Affine3d>, IValidity
     {
         [DataMember]
         public M33d Linear;

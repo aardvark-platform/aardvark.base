@@ -28,7 +28,7 @@ namespace Aardvark.Base
     /// <summary>
     /// A hull is an alternative representation of a convex polygon.
     /// </summary>
-    public struct __type__ : IEquatable<__type__>, IValidity
+    public partial struct __type__ : IEquatable<__type__>, IValidity
     {
         public __plane2t__[] PlaneArray;
 

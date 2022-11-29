@@ -15,7 +15,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Conic2f
+    public partial struct Conic2f
     {
         [DataMember]
         public float CXX;
@@ -60,7 +60,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Conic2d
+    public partial struct Conic2d
     {
         [DataMember]
         public double CXX;

@@ -46,7 +46,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct __type__ : IEquatable<__type__>, __iboundingbox__, IValidity
+    public partial struct __type__ : IEquatable<__type__>, __iboundingbox__, IValidity
     {
         [DataMember]
         public __v2t__ Center;

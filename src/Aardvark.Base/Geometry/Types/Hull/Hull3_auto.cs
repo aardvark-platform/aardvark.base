@@ -68,7 +68,7 @@ namespace Aardvark.Base
     /// A hull is a set of planes that bounds a convex polyhedron.
     /// Normals are expected to point outside.
     /// </summary>
-    public struct Hull3f : IEquatable<Hull3f>, IValidity
+    public partial struct Hull3f : IEquatable<Hull3f>, IValidity
     {
         public Plane3f[] PlaneArray;
 
@@ -456,7 +456,7 @@ namespace Aardvark.Base
     /// A hull is a set of planes that bounds a convex polyhedron.
     /// Normals are expected to point outside.
     /// </summary>
-    public struct Hull3d : IEquatable<Hull3d>, IValidity
+    public partial struct Hull3d : IEquatable<Hull3d>, IValidity
     {
         public Plane3d[] PlaneArray;
 
