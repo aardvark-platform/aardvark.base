@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.VisualStudio.TestPlatform.Utilities;
+using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -8,16 +9,11 @@ using System.Text.Json.Serialization;
 
 namespace Aardvark.Base.Tests.Json
 {
-    [TestFixture]
-    class SystemTextJsonTests
+    public static class JsonConverterExtensions
     {
-        #region Helpers
-
-        #region R/W ---------------------
-
         #region Colors
 
-        public static void W(Utf8JsonWriter writer, in C3b value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C3b value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -25,7 +21,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.B);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C3b value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C3b value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -39,7 +35,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C3d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C3d value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -47,7 +43,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.B);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C3d value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C3d value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -61,7 +57,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C3f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C3f value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -69,7 +65,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.B);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C3f value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C3f value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -83,7 +79,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C3ui value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C3ui value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -91,7 +87,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.B);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C3ui value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C3ui value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -105,7 +101,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C3us value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C3us value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -113,7 +109,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.B);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C3us value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C3us value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -128,7 +124,7 @@ namespace Aardvark.Base.Tests.Json
             }
         }
 
-        public static void W(Utf8JsonWriter writer, in C4b value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C4b value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -137,7 +133,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.A);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C4b value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C4b value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -152,7 +148,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C4d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C4d value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -161,7 +157,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.A);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C4d value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C4d value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -176,7 +172,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C4f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C4f value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -185,7 +181,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.A);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C4f value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C4f value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -200,7 +196,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C4ui value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C4ui value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -209,7 +205,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.A);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C4ui value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C4ui value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -224,7 +220,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in C4us value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in C4us value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.R);
@@ -233,7 +229,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.A);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out C4us value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out C4us value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -249,7 +245,7 @@ namespace Aardvark.Base.Tests.Json
             }
         }
 
-        public static void W(Utf8JsonWriter writer, in CieLabf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in CieLabf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.L);
@@ -257,7 +253,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.b);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out CieLabf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out CieLabf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -271,7 +267,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in CIeLuvf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in CIeLuvf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.L);
@@ -279,7 +275,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.v);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out CIeLuvf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out CIeLuvf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -293,7 +289,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in CieXYZf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in CieXYZf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.X);
@@ -301,7 +297,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.Z);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out CieXYZf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out CieXYZf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -315,7 +311,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in CieYxyf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in CieYxyf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.Y);
@@ -323,7 +319,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.y);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out CieYxyf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out CieYxyf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -337,7 +333,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in CMYKf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in CMYKf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.C);
@@ -346,7 +342,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.K);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out CMYKf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out CMYKf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -361,7 +357,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in HSLf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in HSLf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.H);
@@ -369,7 +365,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.L);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out HSLf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out HSLf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -383,7 +379,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in HSVf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in HSVf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.H);
@@ -391,7 +387,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.V);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out HSVf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out HSVf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -405,7 +401,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in Yuvf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in Yuvf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.Y);
@@ -413,7 +409,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.v);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, out Yuvf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out Yuvf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -430,16 +426,274 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
+        #region Euclidean
+
+        public static void W(this Utf8JsonWriter writer, in Euclidean2d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Rot"); writer.W(value.Rot, options);
+            writer.WritePropertyName("Trans"); writer.W(value.Trans, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Euclidean2d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "rot": case "Rot": reader.R(out result.Rot, options); break;
+                        case "trans": case "Trans": reader.R(out result.Trans, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Euclidean2f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Rot"); writer.W(value.Rot, options);
+            writer.WritePropertyName("Trans"); writer.W(value.Trans, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Euclidean2f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "rot": case "Rot": reader.R(out result.Rot, options); break;
+                        case "trans": case "Trans": reader.R(out result.Trans, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Euclidean3d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Rot"); writer.W(value.Rot, options);
+            writer.WritePropertyName("Trans"); writer.W(value.Trans, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Euclidean3d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "rot": case "Rot": reader.R(out result.Rot, options); break;
+                        case "trans": case "Trans": reader.R(out result.Trans, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Euclidean3f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Rot"); writer.W(value.Rot, options);
+            writer.WritePropertyName("Trans"); writer.W(value.Trans, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Euclidean3f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "rot": case "Rot": reader.R(out result.Rot, options); break;
+                        case "trans": case "Trans": reader.R(out result.Trans, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        #endregion
+
+        #region Lines
+
+        public static void W(this Utf8JsonWriter writer, in Line2d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("P0"); writer.W(value.P0, options);
+            writer.WritePropertyName("P1"); writer.W(value.P1, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Line2d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "p0": case "P0": reader.R(out result.P0, options); break;
+                        case "p1": case "P1": reader.R(out result.P1, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Line2f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("P0"); writer.W(value.P0, options);
+            writer.WritePropertyName("P1"); writer.W(value.P1, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Line2f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "p0": case "P0": reader.R(out result.P0, options); break;
+                        case "p1": case "P1": reader.R(out result.P1, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Line3d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("P0"); writer.W(value.P0, options);
+            writer.WritePropertyName("P1"); writer.W(value.P1, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Line3d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "p0": case "P0": reader.R(out result.P0, options); break;
+                        case "p1": case "P1": reader.R(out result.P1, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Line3f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("P0"); writer.W(value.P0, options);
+            writer.WritePropertyName("P1"); writer.W(value.P1, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Line3f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "p0": case "P0": reader.R(out result.P0, options); break;
+                        case "p1": case "P1": reader.R(out result.P1, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        #endregion
+
         #region Matrices
 
-        public static void W(Utf8JsonWriter writer, in M22d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in M22d value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             var xs = value.ToArray();
             for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref M22d value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out M22d value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -457,14 +711,14 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in M22f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in M22f value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             var xs = value.ToArray();
             for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref M22f value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out M22f value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -482,14 +736,14 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in M33d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in M33d value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             var xs = value.ToArray();
             for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref M33d value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out M33d value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -507,14 +761,14 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in M33f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in M33f value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             var xs = value.ToArray();
             for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref M33f value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out M33f value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -532,14 +786,14 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in M44d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in M44d value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             var xs = value.ToArray();
             for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref M44d value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out M44d value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -557,14 +811,14 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in M44f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in M44f value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             var xs = value.ToArray();
             for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref M44f value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out M44f value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -587,15 +841,15 @@ namespace Aardvark.Base.Tests.Json
 
         #region Planes
 
-        public static void W(Utf8JsonWriter writer, in Plane2d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in Plane2d value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
             writer.WritePropertyName("Normal");
-            W(writer, value.Normal, options);
+            writer.W(value.Normal, options);
             writer.WriteNumber("Distance", value.Distance);
             writer.WriteEndObject();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane2d result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane2d result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartObject)
             {
@@ -608,7 +862,7 @@ namespace Aardvark.Base.Tests.Json
                     reader.Read();
                     switch (p)
                     {
-                        case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                        case "normal": case "Normal": reader.R(out result.Normal, options); break;
                         case "distance": case "Distance": result.Distance = reader.GetDouble(); break;
                         default: throw new JsonException($"Invalid property {p}.");
                     }
@@ -619,15 +873,15 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in Plane2f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in Plane2f value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
             writer.WritePropertyName("Normal");
-            W(writer, value.Normal, options);
+            writer.W(value.Normal, options);
             writer.WriteNumber("Distance", value.Distance);
             writer.WriteEndObject();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane2f result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane2f result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartObject)
             {
@@ -640,7 +894,7 @@ namespace Aardvark.Base.Tests.Json
                     reader.Read();
                     switch (p)
                     {
-                        case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                        case "normal": case "Normal": reader.R(out result.Normal, options); break;
                         case "distance": case "Distance": result.Distance = reader.GetSingle(); break;
                         default: throw new JsonException($"Invalid property {p}.");
                     }
@@ -651,15 +905,15 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in Plane3d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in Plane3d value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
             writer.WritePropertyName("Normal");
-            W(writer, value.Normal, options);
+            writer.W(value.Normal, options);
             writer.WriteNumber("Distance", value.Distance);
             writer.WriteEndObject();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane3d result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane3d result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartObject)
             {
@@ -672,7 +926,7 @@ namespace Aardvark.Base.Tests.Json
                     reader.Read();
                     switch (p)
                     {
-                        case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                        case "normal": case "Normal": reader.R(out result.Normal, options); break;
                         case "distance": case "Distance": result.Distance = reader.GetDouble(); break;
                         default: throw new JsonException($"Invalid property {p}.");
                     }
@@ -683,15 +937,15 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in Plane3f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in Plane3f value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
             writer.WritePropertyName("Normal");
-            W(writer, value.Normal, options);
+            writer.W(value.Normal, options);
             writer.WriteNumber("Distance", value.Distance);
             writer.WriteEndObject();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane3f result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane3f result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartObject)
             {
@@ -704,7 +958,7 @@ namespace Aardvark.Base.Tests.Json
                     reader.Read();
                     switch (p)
                     {
-                        case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                        case "normal": case "Normal": reader.R(out result.Normal, options); break;
                         case "distance": case "Distance": result.Distance = reader.GetSingle(); break;
                         default: throw new JsonException($"Invalid property {p}.");
                     }
@@ -715,14 +969,14 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-
-        public static void W(Utf8JsonWriter writer, IEnumerable<Plane2d> value, JsonSerializerOptions options)
+                              
+        public static void W(this Utf8JsonWriter writer, IEnumerable<Plane2d> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane2d[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane2d[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -731,7 +985,7 @@ namespace Aardvark.Base.Tests.Json
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
                     var x = default(Plane2d);
-                    R(ref reader, ref x, options);
+                    reader.R(ref x, options);
                     xs.Add(x);
                 }
                 result = xs.ToArray();
@@ -741,13 +995,13 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, IEnumerable<Plane2f> value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, IEnumerable<Plane2f> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane2f[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane2f[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -756,7 +1010,7 @@ namespace Aardvark.Base.Tests.Json
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
                     var x = default(Plane2f);
-                    R(ref reader, ref x, options);
+                    reader.R(ref x, options);
                     xs.Add(x);
                 }
                 result = xs.ToArray();
@@ -766,13 +1020,13 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, IEnumerable<Plane3d> value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, IEnumerable<Plane3d> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane3d[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane3d[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -781,7 +1035,7 @@ namespace Aardvark.Base.Tests.Json
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
                     var x = default(Plane3d);
-                    R(ref reader, ref x, options);
+                    reader.R(ref x, options);
                     xs.Add(x);
                 }
                 result = xs.ToArray();
@@ -791,13 +1045,13 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, IEnumerable<Plane3f> value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, IEnumerable<Plane3f> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref Plane3f[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref Plane3f[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -806,7 +1060,7 @@ namespace Aardvark.Base.Tests.Json
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
                     var x = default(Plane3f);
-                    R(ref reader, ref x, options);
+                    reader.R(ref x, options);
                     xs.Add(x);
                 }
                 result = xs.ToArray();
@@ -819,16 +1073,413 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
+        #region Rays
+
+        public static void W(this Utf8JsonWriter writer, in Ray2d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Origin"); writer.W(value.Origin, options);
+            writer.WritePropertyName("Direction"); writer.W(value.Direction, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Ray2d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "origin": case "Origin": reader.R(out result.Origin, options); break;
+                        case "direction": case "Direction": reader.R(out result.Direction, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Ray2f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Origin"); writer.W(value.Origin, options);
+            writer.WritePropertyName("Direction"); writer.W(value.Direction, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Ray2f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "origin": case "Origin": reader.R(out result.Origin, options); break;
+                        case "direction": case "Direction": reader.R(out result.Direction, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Ray3d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Origin"); writer.W(value.Origin, options);
+            writer.WritePropertyName("Direction"); writer.W(value.Direction, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Ray3d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "origin": case "Origin": reader.R(out result.Origin, options); break;
+                        case "direction": case "Direction": reader.R(out result.Direction, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Ray3f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("Origin"); writer.W(value.Origin, options);
+            writer.WritePropertyName("Direction"); writer.W(value.Direction, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Ray3f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "origin": case "Origin": reader.R(out result.Origin, options); break;
+                        case "direction": case "Direction": reader.R(out result.Direction, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        #endregion
+
+        #region Rotations, Quaternions
+
+        public static void W(this Utf8JsonWriter writer, in Rot2d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.Angle);
+            writer.WriteEndArray();
+        }
+        public static void R(this ref Utf8JsonReader reader, out Rot2d value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.Angle = reader.GetDouble();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Rot2f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.Angle);
+            writer.WriteEndArray();
+        }
+        public static void R(this ref Utf8JsonReader reader, out Rot2f value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.Angle = reader.GetSingle();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(this Utf8JsonWriter writer, in Rot3d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.W);
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteEndArray();
+        }
+        public static void R(this ref Utf8JsonReader reader, out Rot3d value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.W = reader.GetDouble();
+                reader.Read(); value.X = reader.GetDouble();
+                reader.Read(); value.Y = reader.GetDouble();
+                reader.Read(); value.Z = reader.GetDouble();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Rot3f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.W);
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteEndArray();
+        }
+        public static void R(this ref Utf8JsonReader reader, out Rot3f value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.W = reader.GetSingle();
+                reader.Read(); value.X = reader.GetSingle();
+                reader.Read(); value.Y = reader.GetSingle();
+                reader.Read(); value.Z = reader.GetSingle();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(this Utf8JsonWriter writer, in QuaternionD value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.W);
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteEndArray();
+        }
+        public static void R(this ref Utf8JsonReader reader, out QuaternionD value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.W = reader.GetDouble();
+                reader.Read(); value.X = reader.GetDouble();
+                reader.Read(); value.Y = reader.GetDouble();
+                reader.Read(); value.Z = reader.GetDouble();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in QuaternionF value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.W);
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteEndArray();
+        }
+        public static void R(this ref Utf8JsonReader reader, out QuaternionF value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.W = reader.GetSingle();
+                reader.Read(); value.X = reader.GetSingle();
+                reader.Read(); value.Y = reader.GetSingle();
+                reader.Read(); value.Z = reader.GetSingle();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        #endregion
+
+        #region Similarity
+
+        public static void W(this Utf8JsonWriter writer, in Similarity2d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WriteNumber("Scale", value.Scale);
+            writer.WritePropertyName("Euclidean"); writer.W(value.Euclidean, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Similarity2d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "scale": case "Scale": result.Scale = reader.GetDouble(); break;
+                        case "euclidean": case "Euclidean": reader.R(ref result.Euclidean, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Similarity2f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WriteNumber("Scale", value.Scale);
+            writer.WritePropertyName("Euclidean"); writer.W(value.Euclidean, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Similarity2f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "scale": case "Scale": result.Scale = reader.GetSingle(); break;
+                        case "euclidean": case "Euclidean": reader.R(ref result.Euclidean, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Similarity3d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WriteNumber("Scale", value.Scale);
+            writer.WritePropertyName("Euclidean"); writer.W(value.Euclidean, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Similarity3d result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "scale": case "Scale": result.Scale = reader.GetDouble(); break;
+                        case "euclidean": case "Euclidean": reader.R(ref result.Euclidean, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(this Utf8JsonWriter writer, in Similarity3f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WriteNumber("Scale", value.Scale);
+            writer.WritePropertyName("Euclidean"); writer.W(value.Euclidean, options);
+            writer.WriteEndObject();
+        }
+        public static void R(this ref Utf8JsonReader reader, ref Similarity3f result, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartObject)
+            {
+                while (reader.Read())
+                {
+                    if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                    Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                    var p = reader.GetString();
+                    reader.Read();
+                    switch (p)
+                    {
+                        case "scale": case "Scale": result.Scale = reader.GetSingle(); break;
+                        case "euclidean": case "Euclidean": reader.R(ref result.Euclidean, options); break;
+                        default: throw new JsonException($"Invalid property {p}.");
+                    }
+                }
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        #endregion
+
         #region Vectors
 
-        public static void W(Utf8JsonWriter writer, in V2d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in V2d value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.X);
             writer.WriteNumberValue(value.Y);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V2d value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out V2d value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -841,14 +1492,14 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in V2f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in V2f value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.X);
             writer.WriteNumberValue(value.Y);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V2f value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out V2f value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -861,7 +1512,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in V3d value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in V3d value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.X);
@@ -869,7 +1520,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.Z);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V3d value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out V3d value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -883,7 +1534,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, in V3f value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in V3f value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.X);
@@ -891,7 +1542,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.Z);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V3f value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out V3f value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -906,13 +1557,13 @@ namespace Aardvark.Base.Tests.Json
             }
         }
 
-        public static void W(Utf8JsonWriter writer, IEnumerable<V2d> value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, IEnumerable<V2d> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V2d[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref V2d[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -920,9 +1571,7 @@ namespace Aardvark.Base.Tests.Json
                 while (reader.Read())
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
-                    var x = default(V2d);
-                    R(ref reader, ref x, options);
-                    xs.Add(x);
+                    reader.R(out V2d x, options); xs.Add(x);
                 }
                 result = xs.ToArray();
             }
@@ -931,13 +1580,13 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, IEnumerable<V2f> value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, IEnumerable<V2f> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V2f[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref V2f[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -945,9 +1594,7 @@ namespace Aardvark.Base.Tests.Json
                 while (reader.Read())
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
-                    var x = default(V2f);
-                    R(ref reader, ref x, options);
-                    xs.Add(x);
+                    reader.R(out V2f x, options); xs.Add(x);
                 }
                 result = xs.ToArray();
             }
@@ -956,13 +1603,13 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, IEnumerable<V3d> value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, IEnumerable<V3d> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V3d[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref V3d[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -970,9 +1617,7 @@ namespace Aardvark.Base.Tests.Json
                 while (reader.Read())
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
-                    var x = default(V3d);
-                    R(ref reader, ref x, options);
-                    xs.Add(x);
+                    reader.R(out V3d x, options); xs.Add(x);
                 }
                 result = xs.ToArray();
             }
@@ -981,13 +1626,13 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(Utf8JsonWriter writer, IEnumerable<V3f> value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, IEnumerable<V3f> value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
-            foreach (var x in value) W(writer, x, options);
+            foreach (var x in value) writer.W(x, options);
             writer.WriteEndArray();
         }
-        public static void R(ref Utf8JsonReader reader, ref V3f[] result, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, ref V3f[] result, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -995,9 +1640,7 @@ namespace Aardvark.Base.Tests.Json
                 while (reader.Read())
                 {
                     if (reader.TokenType == JsonTokenType.EndArray) break;
-                    var x = default(V3f);
-                    R(ref reader, ref x, options);
-                    xs.Add(x);
+                    reader.R(out V3f x, options); xs.Add(x);
                 }
                 result = xs.ToArray();
             }
@@ -1008,8 +1651,12 @@ namespace Aardvark.Base.Tests.Json
         }
 
         #endregion
+    }
 
-        #endregion
+    [TestFixture]
+    class SystemTextJsonTests
+    {
+        #region Helpers
 
         #region Converters --------------
 
@@ -1032,8 +1679,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
-                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            case "linear": case "Linear": reader.R(out result.Linear, options); break;
+                            case "trans": case "Trans": reader.R(out result.Trans, options); break;
                             default: throw new JsonException($"Invalid property {p}. Error 6f0df661-69db-449b-8b03-2b083d0d4f1d.");
                         }
                     }
@@ -1049,9 +1696,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Linear");
-                W(writer, value.Linear, options);
+                writer.W(value.Linear, options);
                 writer.WritePropertyName("Trans");
-                W(writer, value.Trans, options);
+                writer.W(value.Trans, options);
                 writer.WriteEndObject();
             }
         }
@@ -1072,8 +1719,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
-                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            case "linear": case "Linear": reader.R(out result.Linear, options); break;
+                            case "trans": case "Trans": reader.R(out result.Trans, options); break;
                             default: throw new JsonException($"Invalid property {p}. Error b0e8b383-d38b-4ac7-91d0-870137757902.");
                         }
                     }
@@ -1089,9 +1736,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Linear");
-                W(writer, value.Linear, options);
+                writer.W(value.Linear, options);
                 writer.WritePropertyName("Trans");
-                W(writer, value.Trans, options);
+                writer.W(value.Trans, options);
                 writer.WriteEndObject();
             }
         }
@@ -1112,8 +1759,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
-                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            case "linear": case "Linear": reader.R(out result.Linear, options); break;
+                            case "trans": case "Trans": reader.R(out result.Trans, options); break;
                             default: throw new JsonException($"Invalid property {p}. Error c5b2eee9-bd52-44ac-bfae-6fb30f45dea0.");
                         }
                     }
@@ -1129,9 +1776,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Linear");
-                W(writer, value.Linear, options);
+                writer.W(value.Linear, options);
                 writer.WritePropertyName("Trans");
-                W(writer, value.Trans, options);
+                writer.W(value.Trans, options);
                 writer.WriteEndObject();
             }
         }
@@ -1152,8 +1799,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
-                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            case "linear": case "Linear": reader.R(out result.Linear, options); break;
+                            case "trans": case "Trans": reader.R(out result.Trans, options); break;
                             default: throw new JsonException($"Invalid property {p}. Error 4ea64c2a-7739-46b9-a95a-a85bec985735.");
                         }
                     }
@@ -1169,9 +1816,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Linear");
-                W(writer, value.Linear, options);
+                writer.W(value.Linear, options);
                 writer.WritePropertyName("Trans");
-                W(writer, value.Trans, options);
+                writer.W(value.Trans, options);
                 writer.WriteEndObject();
             }
         }
@@ -1197,8 +1844,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
-                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "p0": case "P0": reader.R(out result.P0, options); break;
+                            case "p1": case "P1": reader.R(out result.P1, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1215,9 +1862,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("P0");
-                W(writer, value.P0, options);
+                writer.W(value.P0, options);
                 writer.WritePropertyName("P1");
-                W(writer, value.P1, options);
+                writer.W(value.P1, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1239,8 +1886,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
-                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "p0": case "P0": reader.R(out result.P0, options); break;
+                            case "p1": case "P1": reader.R(out result.P1, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1257,9 +1904,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("P0");
-                W(writer, value.P0, options);
+                writer.W(value.P0, options);
                 writer.WritePropertyName("P1");
-                W(writer, value.P1, options);
+                writer.W(value.P1, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1286,7 +1933,7 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "center": case "Center": reader.R(out result.Center, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1303,7 +1950,7 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Center");
-                W(writer, value.Center, options);
+                writer.W(value.Center, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1325,7 +1972,7 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "center": case "Center": reader.R(out result.Center, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1342,7 +1989,7 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Center");
-                W(writer, value.Center, options);
+                writer.W(value.Center, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1364,8 +2011,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
-                            case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                            case "center": case "Center": reader.R(out result.Center, options); break;
+                            case "normal": case "Normal": reader.R(out result.Normal, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1382,9 +2029,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Center");
-                W(writer, value.Center, options);
+                writer.W(value.Center, options);
                 writer.WritePropertyName("Normal");
-                W(writer, value.Normal, options);
+                writer.W(value.Normal, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1406,8 +2053,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
-                            case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                            case "center": case "Center": reader.R(out result.Center, options); break;
+                            case "normal": case "Normal": reader.R(out result.Normal, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1424,9 +2071,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Center");
-                W(writer, value.Center, options);
+                writer.W(value.Center, options);
                 writer.WritePropertyName("Normal");
-                W(writer, value.Normal, options);
+                writer.W(value.Normal, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1439,130 +2086,130 @@ namespace Aardvark.Base.Tests.Json
         private class C3bConverter : JsonConverter<C3b>
         {
             public override C3b Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C3b value = default; R(ref reader, out value, options); return value; }
+            { reader.R(out C3b value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C3b value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C3dConverter : JsonConverter<C3d>
         {
             public override C3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C3d value = default; R(ref reader, out value, options); return value; }
+            { reader.R(out C3d value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C3d value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C3fConverter : JsonConverter<C3f>
         {
             public override C3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C3f value = default; R(ref reader, out value, options); return value; }
+            { C3f value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C3f value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C3uiConverter : JsonConverter<C3ui>
         {
             public override C3ui Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C3ui value = default; R(ref reader, out value, options); return value; }
+            { C3ui value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C3ui value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C3usConverter : JsonConverter<C3us>
         {
             public override C3us Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C3us value = default; R(ref reader, out value, options); return value; }
+            { C3us value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C3us value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
 
         private class C4bConverter : JsonConverter<C4b>
         {
             public override C4b Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C4b value = default; R(ref reader, out value, options); return value; }
+            { C4b value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C4b value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C4dConverter : JsonConverter<C4d>
         {
             public override C4d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C4d value = default; R(ref reader, out value, options); return value; }
+            { C4d value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C4d value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C4fConverter : JsonConverter<C4f>
         {
             public override C4f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C4f value = default; R(ref reader, out value, options); return value; }
+            { C4f value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C4f value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C4uiConverter : JsonConverter<C4ui>
         {
             public override C4ui Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C4ui value = default; R(ref reader, out value, options); return value; }
+            { C4ui value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C4ui value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class C4usConverter : JsonConverter<C4us>
         {
             public override C4us Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { C4us value = default; R(ref reader, out value, options); return value; }
+            { C4us value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, C4us value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
 
         private class CieLabfConverter : JsonConverter<CieLabf>
         {
             public override CieLabf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { CieLabf value = default; R(ref reader, out value, options); return value; }
+            { CieLabf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, CieLabf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class CIeLuvfConverter : JsonConverter<CIeLuvf>
         {
             public override CIeLuvf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { CIeLuvf value = default; R(ref reader, out value, options); return value; }
+            { CIeLuvf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, CIeLuvf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class CieXYZfConverter : JsonConverter<CieXYZf>
         {
             public override CieXYZf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { CieXYZf value = default; R(ref reader, out value, options); return value; }
+            { CieXYZf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, CieXYZf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class CieYxyfConverter : JsonConverter<CieYxyf>
         {
             public override CieYxyf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { CieYxyf value = default; R(ref reader, out value, options); return value; }
+            { CieYxyf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, CieYxyf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class CMYKfConverter : JsonConverter<CMYKf>
         {
             public override CMYKf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { CMYKf value = default; R(ref reader, out value, options); return value; }
+            { CMYKf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, CMYKf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class HSLfConverter : JsonConverter<HSLf>
         {
             public override HSLf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { HSLf value = default; R(ref reader, out value, options); return value; }
+            { HSLf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, HSLf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class HSVfConverter : JsonConverter<HSVf>
         {
             public override HSVf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { HSVf value = default; R(ref reader, out value, options); return value; }
+            { HSVf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, HSVf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class YuvfConverter : JsonConverter<Yuvf>
         {
             public override Yuvf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Yuvf value = default; R(ref reader, out value, options); return value; }
+            { Yuvf value = default; reader.R(out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, Yuvf value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
 
         #endregion
@@ -1586,8 +2233,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "origin": case "Origin": R(ref reader, ref result.Origin, options); break;
-                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "origin": case "Origin": reader.R(out result.Origin, options); break;
+                            case "direction": case "Direction": reader.R(out result.Direction, options); break;
                             case "angle": case "Angle": result.Angle = reader.GetDouble(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1604,9 +2251,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Origin");
-                W(writer, value.Origin, options);
+                writer.W(value.Origin, options);
                 writer.WritePropertyName("Direction");
-                W(writer, value.Direction, options);
+                writer.W(value.Direction, options);
                 writer.WriteNumber("Angle", value.Angle);
                 writer.WriteEndObject();
             }
@@ -1628,8 +2275,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "origin": case "Origin": R(ref reader, ref result.Origin, options); break;
-                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "origin": case "Origin": reader.R(out result.Origin, options); break;
+                            case "direction": case "Direction": reader.R(out result.Direction, options); break;
                             case "angle": case "Angle": result.Angle = reader.GetSingle(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1646,9 +2293,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Origin");
-                W(writer, value.Origin, options);
+                writer.W(value.Origin, options);
                 writer.WritePropertyName("Direction");
-                W(writer, value.Direction, options);
+                writer.W(value.Direction, options);
                 writer.WriteNumber("Angle", value.Angle);
                 writer.WriteEndObject();
             }
@@ -1675,8 +2322,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
-                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "p0": case "P0": reader.R(out result.P0, options); break;
+                            case "p1": case "P1": reader.R(out result.P1, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1693,9 +2340,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("P0");
-                W(writer, value.P0, options);
+                writer.W(value.P0, options);
                 writer.WritePropertyName("P1");
-                W(writer, value.P1, options);
+                writer.W(value.P1, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1717,8 +2364,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
-                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "p0": case "P0": reader.R(out result.P0, options); break;
+                            case "p1": case "P1": reader.R(out result.P1, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1735,12 +2382,45 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("P0");
-                W(writer, value.P0, options);
+                writer.W(value.P0, options);
                 writer.WritePropertyName("P1");
-                W(writer, value.P1, options);
+                writer.W(value.P1, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
+        }
+
+        #endregion
+
+        #region Euclideans
+
+        private class Euclidean2dConverter : JsonConverter<Euclidean2d>
+        {
+            public override Euclidean2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Euclidean2d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Euclidean2d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Euclidean2fConverter : JsonConverter<Euclidean2f>
+        {
+            public override Euclidean2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Euclidean2f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Euclidean2f value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Euclidean3dConverter : JsonConverter<Euclidean3d>
+        {
+            public override Euclidean3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Euclidean3d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Euclidean3d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Euclidean3fConverter : JsonConverter<Euclidean3f>
+        {
+            public override Euclidean3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Euclidean3f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Euclidean3f value, JsonSerializerOptions options)
+                => writer.W(value, options);
         }
 
         #endregion
@@ -1750,30 +2430,63 @@ namespace Aardvark.Base.Tests.Json
         private class Hull2dConverter : JsonConverter<Hull2d>
         {
             public override Hull2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Hull2d value = default; R(ref reader, ref value.PlaneArray, options); return value; }
+            { Hull2d value = default; reader.R(ref value.PlaneArray, options); return value; }
             public override void Write(Utf8JsonWriter writer, Hull2d value, JsonSerializerOptions options)
-                => W(writer, value.PlaneArray, options);
+                => writer.W(value.PlaneArray, options);
         }
         private class Hull2fConverter : JsonConverter<Hull2f>
         {
             public override Hull2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Hull2f value = default; R(ref reader, ref value.PlaneArray, options); return value; }
+            { Hull2f value = default; reader.R(ref value.PlaneArray, options); return value; }
             public override void Write(Utf8JsonWriter writer, Hull2f value, JsonSerializerOptions options)
-                => W(writer, value.PlaneArray, options);
+                => writer.W(value.PlaneArray, options);
         }
         private class Hull3dConverter : JsonConverter<Hull3d>
         {
             public override Hull3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Hull3d value = default; R(ref reader, ref value.PlaneArray, options); return value; }
+            { Hull3d value = default; reader.R(ref value.PlaneArray, options); return value; }
             public override void Write(Utf8JsonWriter writer, Hull3d value, JsonSerializerOptions options)
-                => W(writer, value.PlaneArray, options);
+                => writer.W(value.PlaneArray, options);
         }
         private class Hull3fConverter : JsonConverter<Hull3f>
         {
             public override Hull3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Hull3f value = default; R(ref reader, ref value.PlaneArray, options); return value; }
+            { Hull3f value = default; reader.R(ref value.PlaneArray, options); return value; }
             public override void Write(Utf8JsonWriter writer, Hull3f value, JsonSerializerOptions options)
-                => W(writer, value.PlaneArray, options);
+                => writer.W(value.PlaneArray, options);
+        }
+
+        #endregion
+
+        #region Lines
+
+        private class Line2dConverter : JsonConverter<Line2d>
+        {
+            public override Line2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Line2d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Line2d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Line2fConverter : JsonConverter<Line2f>
+        {
+            public override Line2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Line2f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Line2f value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Line3dConverter : JsonConverter<Line3d>
+        {
+            public override Line3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Line3d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Line3d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Line3fConverter : JsonConverter<Line3f>
+        {
+            public override Line3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Line3f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Line3f value, JsonSerializerOptions options)
+                => writer.W(value, options);
         }
 
         #endregion
@@ -1783,30 +2496,30 @@ namespace Aardvark.Base.Tests.Json
         private class Plane2dConverter : JsonConverter<Plane2d>
         {
             public override Plane2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Plane2d value = default; R(ref reader, ref value, options); return value; }
+            { Plane2d value = default; reader.R(ref value, options); return value; }
             public override void Write(Utf8JsonWriter writer, Plane2d value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class Plane2fConverter : JsonConverter<Plane2f>
         {
             public override Plane2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Plane2f value = default; R(ref reader, ref value, options); return value; }
+            { Plane2f value = default; reader.R(ref value, options); return value; }
             public override void Write(Utf8JsonWriter writer, Plane2f value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class Plane3dConverter : JsonConverter<Plane3d>
         {
             public override Plane3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Plane3d value = default; R(ref reader, ref value, options); return value; }
+            { Plane3d value = default; reader.R(ref value, options); return value; }
             public override void Write(Utf8JsonWriter writer, Plane3d value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
         private class Plane3fConverter : JsonConverter<Plane3f>
         {
             public override Plane3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { Plane3f value = default; R(ref reader, ref value, options); return value; }
+            { Plane3f value = default; reader.R(ref value, options); return value; }
             public override void Write(Utf8JsonWriter writer, Plane3f value, JsonSerializerOptions options)
-                => W(writer, value, options);
+                => writer.W(value, options);
         }
 
         #endregion
@@ -1816,30 +2529,30 @@ namespace Aardvark.Base.Tests.Json
         private class Polygon2dConverter : JsonConverter<Polygon2d>
         {
             public override Polygon2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V2d[] value = default; R(ref reader, ref value, options); return new Polygon2d(value); }
+            { V2d[] value = default; reader.R(ref value, options); return new Polygon2d(value); }
             public override void Write(Utf8JsonWriter writer, Polygon2d value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Polygon2fConverter : JsonConverter<Polygon2f>
         {
             public override Polygon2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V2f[] value = default; R(ref reader, ref value, options); return new Polygon2f(value); }
+            { V2f[] value = default; reader.R(ref value, options); return new Polygon2f(value); }
             public override void Write(Utf8JsonWriter writer, Polygon2f value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Polygon3dConverter : JsonConverter<Polygon3d>
         {
             public override Polygon3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V3d[] value = default; R(ref reader, ref value, options); return new Polygon3d(value); }
+            { V3d[] value = default; reader.R(ref value, options); return new Polygon3d(value); }
             public override void Write(Utf8JsonWriter writer, Polygon3d value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Polygon3fConverter : JsonConverter<Polygon3f>
         {
             public override Polygon3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V3f[] value = default; R(ref reader, ref value, options); return new Polygon3f(value); }
+            { V3f[] value = default; reader.R(ref value, options); return new Polygon3f(value); }
             public override void Write(Utf8JsonWriter writer, Polygon3f value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
 
         #endregion
@@ -1849,30 +2562,210 @@ namespace Aardvark.Base.Tests.Json
         private class Quad2dConverter : JsonConverter<Quad2d>
         {
             public override Quad2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V2d[] value = default; R(ref reader, ref value, options); return new Quad2d(value); }
+            { V2d[] value = default; reader.R(ref value, options); return new Quad2d(value); }
             public override void Write(Utf8JsonWriter writer, Quad2d value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Quad2fConverter : JsonConverter<Quad2f>
         {
             public override Quad2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V2f[] value = default; R(ref reader, ref value, options); return new Quad2f(value); }
+            { V2f[] value = default; reader.R(ref value, options); return new Quad2f(value); }
             public override void Write(Utf8JsonWriter writer, Quad2f value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Quad3dConverter : JsonConverter<Quad3d>
         {
             public override Quad3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V3d[] value = default; R(ref reader, ref value, options); return new Quad3d(value); }
+            { V3d[] value = default; reader.R(ref value, options); return new Quad3d(value); }
             public override void Write(Utf8JsonWriter writer, Quad3d value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Quad3fConverter : JsonConverter<Quad3f>
         {
             public override Quad3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V3f[] value = default; R(ref reader, ref value, options); return new Quad3f(value); }
+            { V3f[] value = default; reader.R(ref value, options); return new Quad3f(value); }
             public override void Write(Utf8JsonWriter writer, Quad3f value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
+        }
+
+        #endregion
+
+        #region Rays
+
+        private class Ray2dConverter : JsonConverter<Ray2d>
+        {
+            public override Ray2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Ray2d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Ray2d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Ray2fConverter : JsonConverter<Ray2f>
+        {
+            public override Ray2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Ray2f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Ray2f value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Ray3dConverter : JsonConverter<Ray3d>
+        {
+            public override Ray3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Ray3d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Ray3d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Ray3fConverter : JsonConverter<Ray3f>
+        {
+            public override Ray3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Ray3f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Ray3f value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+
+        #endregion
+
+        #region Rotations, Quaternions
+
+        private class Rot2dConverter : JsonConverter<Rot2d>
+        {
+            public override Rot2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Rot2d value = default; reader.R(out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Rot2d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Rot2fConverter : JsonConverter<Rot2f>
+        {
+            public override Rot2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Rot2f value = default; reader.R(out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Rot2f value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Rot3dConverter : JsonConverter<Rot3d>
+        {
+            public override Rot3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Rot3d value = default; reader.R(out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Rot3d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Rot3fConverter : JsonConverter<Rot3f>
+        {
+            public override Rot3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Rot3f value = default; reader.R(out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Rot3f value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+
+        private class QuaternionDConverter : JsonConverter<QuaternionD>
+        {
+            public override QuaternionD Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { QuaternionD value = default; reader.R(out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, QuaternionD value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class QuaternionFConverter : JsonConverter<QuaternionF>
+        {
+            public override QuaternionF Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { QuaternionF value = default; reader.R(out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, QuaternionF value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+
+        #endregion
+
+        #region Scales
+
+        private class Scale2dConverter : JsonConverter<Scale2d>
+        {
+            public override Scale2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V2d value, options); return new Scale2d(value); }
+            public override void Write(Utf8JsonWriter writer, Scale2d value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+        private class Scale2fConverter : JsonConverter<Scale2f>
+        {
+            public override Scale2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V2f value, options); return new Scale2f(value); }
+            public override void Write(Utf8JsonWriter writer, Scale2f value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+        private class Scale3dConverter : JsonConverter<Scale3d>
+        {
+            public override Scale3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V3d value, options); return new Scale3d(value); }
+            public override void Write(Utf8JsonWriter writer, Scale3d value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+        private class Scale3fConverter : JsonConverter<Scale3f>
+        {
+            public override Scale3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V3f value, options); return new Scale3f(value); }
+            public override void Write(Utf8JsonWriter writer, Scale3f value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+
+        #endregion
+
+        #region Shifts
+
+        private class Shift2dConverter : JsonConverter<Shift2d>
+        {
+            public override Shift2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V2d value, options); return new Shift2d(value); }
+            public override void Write(Utf8JsonWriter writer, Shift2d value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+        private class Shift2fConverter : JsonConverter<Shift2f>
+        {
+            public override Shift2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V2f value, options); return new Shift2f(value); }
+            public override void Write(Utf8JsonWriter writer, Shift2f value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+        private class Shift3dConverter : JsonConverter<Shift3d>
+        {
+            public override Shift3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V3d value, options); return new Shift3d(value); }
+            public override void Write(Utf8JsonWriter writer, Shift3d value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+        private class Shift3fConverter : JsonConverter<Shift3f>
+        {
+            public override Shift3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { reader.R(out V3f value, options); return new Shift3f(value); }
+            public override void Write(Utf8JsonWriter writer, Shift3f value, JsonSerializerOptions options)
+                => writer.W(value.V, options);
+        }
+
+        #endregion
+
+        #region Similarities
+
+        private class Similarity2dConverter : JsonConverter<Similarity2d>
+        {
+            public override Similarity2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Similarity2d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Similarity2d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Similarity2fConverter : JsonConverter<Similarity2f>
+        {
+            public override Similarity2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Similarity2f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Similarity2f value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Similarity3dConverter : JsonConverter<Similarity3d>
+        {
+            public override Similarity3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Similarity3d value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Similarity3d value, JsonSerializerOptions options)
+                => writer.W(value, options);
+        }
+        private class Similarity3fConverter : JsonConverter<Similarity3f>
+        {
+            public override Similarity3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { Similarity3f value = default; reader.R(ref value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, Similarity3f value, JsonSerializerOptions options)
+                => writer.W(value, options);
         }
 
         #endregion
@@ -1896,7 +2789,7 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "center": case "Center": reader.R(out result.Center, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1913,7 +2806,7 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Center");
-                W(writer, value.Center, options);
+                writer.W(value.Center, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1935,7 +2828,7 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "center": case "Center": reader.R(out result.Center, options); break;
                             case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
                             default: throw new JsonException($"Invalid property {p}.");
                         }
@@ -1952,7 +2845,7 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Center");
-                W(writer, value.Center, options);
+                writer.W(value.Center, options);
                 writer.WriteNumber("Radius", value.Radius);
                 writer.WriteEndObject();
             }
@@ -1979,8 +2872,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "position": case "Position": R(ref reader, ref result.Position, options); break;
-                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "position": case "Position": reader.R(out result.Position, options); break;
+                            case "direction": case "Direction": reader.R(out result.Direction, options); break;
                             case "majorRadius": case "MajorRadius": result.MajorRadius = reader.GetDouble(); break;
                             case "minorRadius": case "MinorRadius": result.MinorRadius = reader.GetDouble(); break;
                             default: throw new JsonException($"Invalid property {p}.");
@@ -1998,9 +2891,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Position");
-                W(writer, value.Position, options);
+                writer.W(value.Position, options);
                 writer.WritePropertyName("Direction");
-                W(writer, value.Direction, options);
+                writer.W(value.Direction, options);
                 writer.WriteNumber("MajorRadius", value.MajorRadius);
                 writer.WriteNumber("MinorRadius", value.MinorRadius);
                 writer.WriteEndObject();
@@ -2023,8 +2916,8 @@ namespace Aardvark.Base.Tests.Json
                         reader.Read();
                         switch (p)
                         {
-                            case "position": case "Position": R(ref reader, ref result.Position, options); break;
-                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "position": case "Position": reader.R(out result.Position, options); break;
+                            case "direction": case "Direction": reader.R(out result.Direction, options); break;
                             case "majorRadius": case "MajorRadius": result.MajorRadius = reader.GetSingle(); break;
                             case "minorRadius": case "MinorRadius": result.MinorRadius = reader.GetSingle(); break;
                             default: throw new JsonException($"Invalid property {p}.");
@@ -2042,9 +2935,9 @@ namespace Aardvark.Base.Tests.Json
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName("Position");
-                W(writer, value.Position, options);
+                writer.W(value.Position, options);
                 writer.WritePropertyName("Direction");
-                W(writer, value.Direction, options);
+                writer.W(value.Direction, options);
                 writer.WriteNumber("MajorRadius", value.MajorRadius);
                 writer.WriteNumber("MinorRadius", value.MinorRadius);
                 writer.WriteEndObject();
@@ -2053,27 +2946,26 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
-
         #region Trafos
 
         private class Trafo2dConverter : JsonConverter<Trafo2d>
         {
             public override Trafo2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                M33d forward = default;
-                M33d backward = default;
+                M33d forward;
+                M33d backward;
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref forward, options);
+                reader.R(out forward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref backward, options);
+                reader.R(out backward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
                 return new Trafo2d(forward, backward);
             }
             public override void Write(Utf8JsonWriter writer, Trafo2d value, JsonSerializerOptions options)
             {
                 writer.WriteStartArray();
-                W(writer, value.Forward, options);
-                W(writer, value.Backward, options);
+                writer.W(value.Forward, options);
+                writer.W(value.Backward, options);
                 writer.WriteEndArray();
             }
         }
@@ -2081,20 +2973,20 @@ namespace Aardvark.Base.Tests.Json
         {
             public override Trafo2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                M33f forward = default;
-                M33f backward = default;
+                M33f forward;
+                M33f backward;
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref forward, options);
+                reader.R(out forward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref backward, options);
+                reader.R(out backward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
                 return new Trafo2f(forward, backward);
             }
             public override void Write(Utf8JsonWriter writer, Trafo2f value, JsonSerializerOptions options)
             {
                 writer.WriteStartArray();
-                W(writer, value.Forward, options);
-                W(writer, value.Backward, options);
+                writer.W(value.Forward, options);
+                writer.W(value.Backward, options);
                 writer.WriteEndArray();
             }
         }
@@ -2102,20 +2994,20 @@ namespace Aardvark.Base.Tests.Json
         {
             public override Trafo3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                M44d forward = default;
-                M44d backward = default;
+                M44d forward;
+                M44d backward;
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref forward, options);
+                reader.R(out forward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref backward, options);
+                reader.R(out backward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
                 return new Trafo3d(forward, backward);
             }
             public override void Write(Utf8JsonWriter writer, Trafo3d value, JsonSerializerOptions options)
             { 
                 writer.WriteStartArray(); 
-                W(writer, value.Forward, options);
-                W(writer, value.Backward, options);
+                writer.W(value.Forward, options);
+                writer.W(value.Backward, options);
                 writer.WriteEndArray();
             }
         }
@@ -2123,20 +3015,20 @@ namespace Aardvark.Base.Tests.Json
         {
             public override Trafo3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                M44f forward = default;
-                M44f backward = default;
+                M44f forward;
+                M44f backward;
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref forward, options);
+                reader.R(out forward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.StartArray) throw new JsonException();
-                R(ref reader, ref backward, options);
+                reader.R(out backward, options);
                 reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
                 return new Trafo3f(forward, backward);
             }
             public override void Write(Utf8JsonWriter writer, Trafo3f value, JsonSerializerOptions options)
             {
                 writer.WriteStartArray();
-                W(writer, value.Forward, options);
-                W(writer, value.Backward, options);
+                writer.W(value.Forward, options);
+                writer.W(value.Backward, options);
                 writer.WriteEndArray();
             }
         }
@@ -2148,30 +3040,30 @@ namespace Aardvark.Base.Tests.Json
         private class Triangle2dConverter : JsonConverter<Triangle2d>
         {
             public override Triangle2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V2d[] value = default; R(ref reader, ref value, options); return new Triangle2d(value); }
+            { V2d[] value = default; reader.R(ref value, options); return new Triangle2d(value); }
             public override void Write(Utf8JsonWriter writer, Triangle2d value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Triangle2fConverter : JsonConverter<Triangle2f>
         {
             public override Triangle2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V2f[] value = default; R(ref reader, ref value, options); return new Triangle2f(value); }
+            { V2f[] value = default; reader.R(ref value, options); return new Triangle2f(value); }
             public override void Write(Utf8JsonWriter writer, Triangle2f value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Triangle3dConverter : JsonConverter<Triangle3d>
         {
             public override Triangle3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V3d[] value = default; R(ref reader, ref value, options); return new Triangle3d(value); }
+            { V3d[] value = default; reader.R(ref value, options); return new Triangle3d(value); }
             public override void Write(Utf8JsonWriter writer, Triangle3d value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
         private class Triangle3fConverter : JsonConverter<Triangle3f>
         {
             public override Triangle3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { V3f[] value = default; R(ref reader, ref value, options); return new Triangle3f(value); }
+            { V3f[] value = default; reader.R(ref value, options); return new Triangle3f(value); }
             public override void Write(Utf8JsonWriter writer, Triangle3f value, JsonSerializerOptions options)
-                => W(writer, value.Points, options);
+                => writer.W(value.Points, options);
         }
 
         #endregion
@@ -2189,10 +3081,17 @@ namespace Aardvark.Base.Tests.Json
             new CMYKfConverter(), new HSLfConverter(), new HSVfConverter(), new YuvfConverter(),
             new Cone3dConverter(), new Cone3fConverter(),
             new Cylinder3dConverter(), new Cylinder3fConverter(),
+            new Euclidean2dConverter(), new Euclidean2fConverter(), new Euclidean3dConverter(), new Euclidean3fConverter(),
             new Hull2dConverter(), new Hull2fConverter(), new Hull3dConverter(), new Hull3fConverter(),
+            new Line2dConverter(), new Line2fConverter(), new Line3dConverter(), new Line3fConverter(),
             new Plane2dConverter(), new Plane2fConverter(), new Plane3dConverter(), new Plane3fConverter(),
             new Polygon2dConverter(), new Polygon2fConverter(), new Polygon3dConverter(), new Polygon3fConverter(),
             new Quad2dConverter(), new Quad2fConverter(), new Quad3dConverter(), new Quad3fConverter(),
+            new Ray2dConverter(), new Ray2fConverter(), new Ray3dConverter(), new Ray3fConverter(),
+            new Rot2dConverter(), new Rot2fConverter(), new Rot3dConverter(), new Rot3fConverter(), new QuaternionDConverter(), new QuaternionFConverter(),
+            new Scale2dConverter(), new Scale2fConverter(), new Scale3dConverter(), new Scale3fConverter(),
+            new Shift2dConverter(), new Shift2fConverter(), new Shift3dConverter(), new Shift3fConverter(),
+            new Similarity2dConverter(), new Similarity2fConverter(), new Similarity3dConverter(), new Similarity3fConverter(),
             new Sphere3dConverter(), new Sphere3fConverter(),
             new Torus3dConverter(), new Torus3fConverter(),
             new Trafo2dConverter(), new Trafo2fConverter(), new Trafo3dConverter(), new Trafo3fConverter(),
