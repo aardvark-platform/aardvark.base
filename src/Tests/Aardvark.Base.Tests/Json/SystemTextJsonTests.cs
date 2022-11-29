@@ -1,6 +1,9 @@
 ﻿using NUnit.Framework;
-using SixLabors.ImageSharp.ColorSpaces;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Aardvark.Base.Tests.Json
 {
@@ -9,20 +12,384 @@ namespace Aardvark.Base.Tests.Json
     {
         #region Helpers
 
+        public static void W(Utf8JsonWriter writer, M22d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            var xs = value.ToArray();
+            for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref M22d value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                var xs = new double[4];
+                for (var i = 0; i < xs.Length; i++)
+                {
+                    reader.Read();
+                    xs[i] = reader.GetDouble();
+                }
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                value = new M22d(xs);
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(Utf8JsonWriter writer, M22f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            var xs = value.ToArray();
+            for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref M22f value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                var xs = new float[4];
+                for (var i = 0; i < xs.Length; i++)
+                {
+                    reader.Read();
+                    xs[i] = reader.GetSingle();
+                }
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                value = new M22f(xs);
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(Utf8JsonWriter writer, M33d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            var xs = value.ToArray();
+            for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref M33d value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                var xs = new double[9];
+                for (var i = 0; i < xs.Length; i++)
+                {
+                    reader.Read();
+                    xs[i] = reader.GetDouble();
+                }
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                value = new M33d(xs);
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(Utf8JsonWriter writer, M33f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            var xs = value.ToArray();
+            for (var i = 0; i < xs.Length; i++) writer.WriteNumberValue(xs[i]);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref M33f value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                var xs = new float[9];
+                for (var i = 0; i < xs.Length; i++)
+                {
+                    reader.Read();
+                    xs[i] = reader.GetSingle();
+                }
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+                value = new M33f(xs);
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(Utf8JsonWriter writer, V2d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref V2d value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.X = reader.GetDouble();
+                reader.Read(); value.Y = reader.GetDouble();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+       
+        public static void W(Utf8JsonWriter writer, V2f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref V2f value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.X = reader.GetSingle();
+                reader.Read(); value.Y = reader.GetSingle();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(Utf8JsonWriter writer, V3d value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref V3d value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.X = reader.GetDouble();
+                reader.Read(); value.Y = reader.GetDouble();
+                reader.Read(); value.Z = reader.GetDouble();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        public static void W(Utf8JsonWriter writer, V3f value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.X);
+            writer.WriteNumberValue(value.Y);
+            writer.WriteNumberValue(value.Z);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, ref V3f value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.X = reader.GetSingle();
+                reader.Read(); value.Y = reader.GetSingle();
+                reader.Read(); value.Z = reader.GetSingle();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+
+        private class Affine2dConverter : JsonConverter<Affine2d>
+        {
+            public override Affine2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Affine2d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
+                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            default: throw new JsonException($"Invalid property {p}. Error 6f0df661-69db-449b-8b03-2b083d0d4f1d.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Affine2d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Linear");
+                W(writer, value.Linear, options);
+                writer.WritePropertyName("Trans");
+                W(writer, value.Trans, options);
+                writer.WriteEndObject();
+            }
+        }
+        private class Affine2fConverter : JsonConverter<Affine2f>
+        {
+            public override Affine2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Affine2f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
+                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            default: throw new JsonException($"Invalid property {p}. Error b0e8b383-d38b-4ac7-91d0-870137757902.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Affine2f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Linear");
+                W(writer, value.Linear, options);
+                writer.WritePropertyName("Trans");
+                W(writer, value.Trans, options);
+                writer.WriteEndObject();
+            }
+        }
+        private class Affine3dConverter : JsonConverter<Affine3d>
+        {
+            public override Affine3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Affine3d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
+                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            default: throw new JsonException($"Invalid property {p}. Error c5b2eee9-bd52-44ac-bfae-6fb30f45dea0.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Affine3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Linear");
+                W(writer, value.Linear, options);
+                writer.WritePropertyName("Trans");
+                W(writer, value.Trans, options);
+                writer.WriteEndObject();
+            }
+        }
+        private class Affine3fConverter : JsonConverter<Affine3f>
+        {
+            public override Affine3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Affine3f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "linear": case "Linear": R(ref reader, ref result.Linear, options); break;
+                            case "trans": case "Trans": R(ref reader, ref result.Trans, options); break;
+                            default: throw new JsonException($"Invalid property {p}. Error 4ea64c2a-7739-46b9-a95a-a85bec985735.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Affine3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Linear");
+                W(writer, value.Linear, options);
+                writer.WritePropertyName("Trans");
+                W(writer, value.Trans, options);
+                writer.WriteEndObject();
+            }
+        }
+
+        private static readonly List<JsonConverter> _converters = new()
+        {
+            new Affine2dConverter(), new Affine2fConverter(), new Affine3dConverter(), new Affine3fConverter(),
+        };
+        private static readonly JsonSerializerOptions _options;
+        static SystemTextJsonTests()
+        {
+            _options = new();
+            _options.Converters.AddRange(_converters);
+        }
+
         private static void SerializeTest<T>(T a, string s) where T : IEquatable<T>
         {
-            var json = System.Text.Json.JsonSerializer.Serialize(a);
+            var json = JsonSerializer.Serialize(a, _options);
             Assert.IsTrue(json == s);
         }
         private static void DeserializeTest<T>(string json, T a) where T : IEquatable<T>
         {
-            var b = System.Text.Json.JsonSerializer.Deserialize<T>(json);
+            var b = JsonSerializer.Deserialize<T>(json, _options);
             Assert.IsTrue(a.Equals(b));
         }
         private static void RoundtripTest<T>(T a) where T : IEquatable<T>
         {
-            var json = System.Text.Json.JsonSerializer.Serialize(a);
-            var b = System.Text.Json.JsonSerializer.Deserialize<T>(json);
+            var json = JsonSerializer.Serialize(a, _options);
+            var b = JsonSerializer.Deserialize<T>(json, _options);
             Assert.IsTrue(a.Equals(b));
         }
 
@@ -192,7 +559,9 @@ namespace Aardvark.Base.Tests.Json
         #endregion
 
         #region Fraction
-        // TODO
+
+        //[Test] public void Fraction_Roundtrip() => RoundtripTest(new Fraction(-123, 456789));
+
         #endregion
 
         #region Hull[23][df]
@@ -206,7 +575,12 @@ namespace Aardvark.Base.Tests.Json
         #endregion
 
         #region Line[23][df]
-        // TODO
+
+        [Test] public void Line2d_Roundtrip() => RoundtripTest(new Line2d(new V2d(1.2, -2.3), new V2d(-4.5, 5.6)));
+        [Test] public void Line2f_Roundtrip() => RoundtripTest(new Line2f(new V2f(1.2, -2.3), new V2f(-4.5, 5.6)));
+        [Test] public void Line3d_Roundtrip() => RoundtripTest(new Line3d(new V3d(1.2, -2.3, 3.4), new V3d(-4.5, 5.6, -6.7)));
+        [Test] public void Line3f_Roundtrip() => RoundtripTest(new Line3f(new V3f(1.2, -2.3, 3.4), new V3f(-4.5, 5.6, -6.7)));
+
         #endregion
 
         #region M[22|23|33|34|44][dfil]
@@ -239,7 +613,12 @@ namespace Aardvark.Base.Tests.Json
         #endregion
 
         #region OrientedBox[23][df]
-        // TODO
+
+        //[Test] public void OrientedBox2d_Roundtrip() => RoundtripTest(new OrientedBox2d(Box2d.Unit));
+        //[Test] public void OrientedBox2f_Roundtrip() => RoundtripTest(new OrientedBox2f(Box2f.Unit));
+        //[Test] public void OrientedBox3d_Roundtrip() => RoundtripTest(new OrientedBox3d(Box3d.Unit));
+        //[Test] public void OrientedBox3f_Roundtrip() => RoundtripTest(new OrientedBox3f(Box3f.Unit));
+
         #endregion
 
         #region Plane[23][df]
@@ -252,59 +631,111 @@ namespace Aardvark.Base.Tests.Json
         #endregion
 
         #region Polygon[23][df]
-        // TODO
+
+        [Test] public void Polygon2d_Roundtrip() => RoundtripTest(new Polygon2d(new[] { new V2d(1.2, -2.3), new V2d(3.4, -4.5), new V2d(-5.6, 6.7) }));
+        [Test] public void Polygon2f_Roundtrip() => RoundtripTest(new Polygon2f(new[] { new V2f(1.2, -2.3), new V2f(3.4, -4.5), new V2f(-5.6, 6.7) }));
+        [Test] public void Polygon3d_Roundtrip() => RoundtripTest(new Polygon3d(new[] { new V3d(1.2, -2.3, 0.1), new V3d(3.4, -4.5, -0.2), new V3d(-5.6, 6.7, -0.3) }));
+        [Test] public void Polygon3f_Roundtrip() => RoundtripTest(new Polygon3f(new[] { new V3f(1.2, -2.3, 0.1), new V3f(3.4, -4.5, -0.2), new V3f(-5.6, 6.7, -0.3) }));
+
         #endregion
 
         #region Quad[23][df]
-        // TODO
-        #endregion
 
-        #region Quadric[df]
-        // TODO
+        [Test] public void Quad2d_Roundtrip() => RoundtripTest(new Quad2d(new V2d(1.2, -2.3), new V2d(3.4, -4.5), new V2d(5.6, 6.7), new V2d(-7.8, 8.9)));
+        [Test] public void Quad2f_Roundtrip() => RoundtripTest(new Quad2f(new V2f(1.2, -2.3), new V2f(3.4, -4.5), new V2f(5.6, 6.7), new V2f(-7.8, 8.9)));
+        [Test] public void Quad3d_Roundtrip() => RoundtripTest(new Quad3d(new V3d(1.2, -2.3, 0.1), new V3d(3.4, -4.5, 0.1), new V3d(5.6, 6.7, 0.1), new V3d(-7.8, 8.9, 0.1)));
+        [Test] public void Quad3f_Roundtrip() => RoundtripTest(new Quad3f(new V3f(1.2, -2.3, 0.1), new V3f(3.4, -4.5, 0.1), new V3f(5.6, 6.7, 0.1), new V3f(-7.8, 8.9, 0.1)));
+
         #endregion
 
         #region Quaternion[DF]
-        // TODO
+
+        [Test] public void QuaternionD_Roundtrip() => RoundtripTest(new QuaternionD(1.2, -2.3, 3.4, 1.0));
+        [Test] public void QuaternionF_Roundtrip() => RoundtripTest(new QuaternionF(1.2f, -2.3f, 3.4f, 1.0f));
+
         #endregion
 
         #region Ray[23][df], FastRay[23][df]
-        // TODO
+
+        [Test] public void Ray2d_Roundtrip() => RoundtripTest(new Ray2d(new V2d(-1.2, 2.3), new V2d(3.4, -4.5).Normalized));
+        [Test] public void Ray2f_Roundtrip() => RoundtripTest(new Ray2f(new V2f(-1.2, 2.3), new V2f(3.4, -4.5).Normalized));
+        [Test] public void Ray3d_Roundtrip() => RoundtripTest(new Ray3d(new V3d(-1.2, 2.3, -3.4), new V3d(3.4, -4.5, 5.6).Normalized));
+        [Test] public void Ray3f_Roundtrip() => RoundtripTest(new Ray3f(new V3f(-1.2, 2.3, -3.4), new V3f(3.4, -4.5, 5.6).Normalized));
+
         #endregion
 
         #region Rot[23][df]
-        // TODO
+
+        [Test] public void Rot2d_Roundtrip() => RoundtripTest(Rot2d.FromDegrees(123.456));
+        [Test] public void Rot2f_Roundtrip() => RoundtripTest(Rot2f.FromDegrees(123.456f));
+        [Test] public void Rot3d_Roundtrip() => RoundtripTest(Rot3d.FromAngleAxis(new V3d(1.2, -2.3, 3.4)));
+        [Test] public void Rot3f_Roundtrip() => RoundtripTest(Rot3f.FromAngleAxis(new V3f(1.2, -2.3, 3.4)));
+
         #endregion
 
         #region Scale[23][df]
-        // TODO
+
+        [Test] public void Scale2d_Roundtrip() => RoundtripTest(new Scale2d(1.2, 2.3));
+        [Test] public void Scale2f_Roundtrip() => RoundtripTest(new Scale2f(1.2f, 2.3f));
+        [Test] public void Scale3d_Roundtrip() => RoundtripTest(new Scale3d(1.2, 2.3, 3.4));
+        [Test] public void Scale3f_Roundtrip() => RoundtripTest(new Scale3f(1.2f, 2.3f, 3.4f));
+
         #endregion
 
         #region Shift[23][df]
-        // TODO
+
+        [Test] public void Shift2d_Roundtrip() => RoundtripTest(new Shift2d(1.2, 2.3));
+        [Test] public void Shift2f_Roundtrip() => RoundtripTest(new Shift2f(1.2f, 2.3f));
+        [Test] public void Shift3d_Roundtrip() => RoundtripTest(new Shift3d(1.2, 2.3, 3.4));
+        [Test] public void Shift3f_Roundtrip() => RoundtripTest(new Shift3f(1.2f, 2.3f, 3.4f));
+
         #endregion
 
         #region Similarity[23][df]
-        // TODO
+
+        [Test] public void Similarity2d_Roundtrip() => RoundtripTest(new Similarity2d(Rot2d.FromDegrees(123.456), 1.2, 2.3));
+        [Test] public void Similarity2f_Roundtrip() => RoundtripTest(new Similarity2f(Rot2f.FromDegrees(123.456f), 1.2f, 2.3f));
+        [Test] public void Similarity3d_Roundtrip() => RoundtripTest(new Similarity3d(Rot3d.FromAngleAxis(new V3d(1.2, -2.3, 3.4)), 2.3, 3.4, 4.5));
+        [Test] public void Similarity3f_Roundtrip() => RoundtripTest(new Similarity3f(Rot3f.FromAngleAxis(new V3f(1.2, -2.3, 3.4)), 2.3f, 3.4f, 4.5f));
+
         #endregion
 
         #region Spectrum
-        // TODO
+
+        //[Test] public void Spectrum_Roundtrip() => RoundtripTest(new Spectrum(300.5, 800.7, new[] { 1.2, 3.4,5.6, 7.8, 9.10 } ));
+
         #endregion
 
         #region Sphere3[df]
-        // TODO
+
+        [Test] public void Sphere3d_Roundtrip() => RoundtripTest(new Sphere3d(new V3d(1.2, -2.3, 3.4), 4.5));
+        [Test] public void Sphere3f_Roundtrip() => RoundtripTest(new Sphere3f(new V3f(1.2, -2.3, 3.4), 4.5f));
+
         #endregion
 
         #region Torus3[df]
-        // TODO
+
+        [Test] public void Torus3d_Roundtrip() => RoundtripTest(new Torus3d(new V3d(1.2, -2.3, 3.4), new V3d(1.2, -2.3, 3.4).Normalized, 5.6, 4.5));
+        [Test] public void Torus3f_Roundtrip() => RoundtripTest(new Torus3f(new V3f(1.2, -2.3, 3.4), new V3f(1.2, -2.3, 3.4).Normalized, 5.6f, 4.5f));
+
         #endregion
 
         #region Trafo[23][df]
-        // TODO
+
+        [Test] public void Trafo2d_Roundtrip() => RoundtripTest(new Trafo2d(Rot2d.FromDegrees(123.456)));
+        [Test] public void Trafo2f_Roundtrip() => RoundtripTest(new Trafo2f(Rot2f.FromDegrees(123.456f)));
+        [Test] public void Trafo3d_Roundtrip() => RoundtripTest(new Trafo3d(Rot3d.FromAngleAxis(new V3d(1.2, -2.3, 3.4))));
+        [Test] public void Trafo3f_Roundtrip() => RoundtripTest(new Trafo3f(Rot3f.FromAngleAxis(new V3f(1.2, -2.3, 3.4))));
+
         #endregion
 
         #region Triangle[23][df]
-        // TODO
+
+        [Test] public void Triangle2d_Roundtrip() => RoundtripTest(new Triangle2d(new V2d(1.2, -2.3), new V2d(3.4, -4.5), new V2d(5.6, 6.7)));
+        [Test] public void Triangle2f_Roundtrip() => RoundtripTest(new Triangle2f(new V2f(1.2, -2.3), new V2f(3.4, -4.5), new V2f(5.6, 6.7)));
+        [Test] public void Triangle3d_Roundtrip() => RoundtripTest(new Triangle3d(new V3d(1.2, -2.3, 0.1), new V3d(3.4, -4.5, 0.1), new V3d(5.6, 6.7, 0.1)));
+        [Test] public void Triangle3f_Roundtrip() => RoundtripTest(new Triangle3f(new V3f(1.2, -2.3, 0.1), new V3f(3.4, -4.5, 0.1), new V3f(5.6, 6.7, 0.1)));
+
         #endregion
 
         #region V[234][dfil]
