@@ -361,6 +361,50 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
+        public static void W(Utf8JsonWriter writer, in HSLf value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.H);
+            writer.WriteNumberValue(value.S);
+            writer.WriteNumberValue(value.L);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, out HSLf value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.H = reader.GetSingle();
+                reader.Read(); value.S = reader.GetSingle();
+                reader.Read(); value.L = reader.GetSingle();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
+        public static void W(Utf8JsonWriter writer, in HSVf value, JsonSerializerOptions options)
+        {
+            writer.WriteStartArray();
+            writer.WriteNumberValue(value.H);
+            writer.WriteNumberValue(value.S);
+            writer.WriteNumberValue(value.V);
+            writer.WriteEndArray();
+        }
+        public static void R(ref Utf8JsonReader reader, out HSVf value, JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.StartArray)
+            {
+                reader.Read(); value.H = reader.GetSingle();
+                reader.Read(); value.S = reader.GetSingle();
+                reader.Read(); value.V = reader.GetSingle();
+                reader.Read(); if (reader.TokenType != JsonTokenType.EndArray) throw new JsonException();
+            }
+            else
+            {
+                throw new JsonException();
+            }
+        }
         public static void W(Utf8JsonWriter writer, in Yuvf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
@@ -1134,6 +1178,262 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
+        #region Capsules
+
+        private class Capsule3dConverter : JsonConverter<Capsule3d>
+        {
+            public override Capsule3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Capsule3d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
+                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Capsule3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("P0");
+                W(writer, value.P0, options);
+                writer.WritePropertyName("P1");
+                W(writer, value.P1, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+        private class Capsule3fConverter : JsonConverter<Capsule3f>
+        {
+            public override Capsule3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Capsule3f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
+                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Capsule3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("P0");
+                W(writer, value.P0, options);
+                writer.WritePropertyName("P1");
+                W(writer, value.P1, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+
+        #endregion
+
+        #region Circles
+
+        private class Circle2dConverter : JsonConverter<Circle2d>
+        {
+            public override Circle2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Circle2d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Circle2d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Center");
+                W(writer, value.Center, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+        private class Circle2fConverter : JsonConverter<Circle2f>
+        {
+            public override Circle2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Circle2f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Circle2f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Center");
+                W(writer, value.Center, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+        private class Circle3dConverter : JsonConverter<Circle3d>
+        {
+            public override Circle3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Circle3d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Circle3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Center");
+                W(writer, value.Center, options);
+                writer.WritePropertyName("Normal");
+                W(writer, value.Normal, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+        private class Circle3fConverter : JsonConverter<Circle3f>
+        {
+            public override Circle3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Circle3f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "normal": case "Normal": R(ref reader, ref result.Normal, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Circle3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Center");
+                W(writer, value.Center, options);
+                writer.WritePropertyName("Normal");
+                W(writer, value.Normal, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+
+        #endregion
+
         #region Colors
 
         private class C3bConverter : JsonConverter<C3b>
@@ -1243,12 +1543,204 @@ namespace Aardvark.Base.Tests.Json
             public override void Write(Utf8JsonWriter writer, CMYKf value, JsonSerializerOptions options)
                 => W(writer, value, options);
         }
+        private class HSLfConverter : JsonConverter<HSLf>
+        {
+            public override HSLf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { HSLf value = default; R(ref reader, out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, HSLf value, JsonSerializerOptions options)
+                => W(writer, value, options);
+        }
+        private class HSVfConverter : JsonConverter<HSVf>
+        {
+            public override HSVf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { HSVf value = default; R(ref reader, out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, HSVf value, JsonSerializerOptions options)
+                => W(writer, value, options);
+        }
         private class YuvfConverter : JsonConverter<Yuvf>
         {
             public override Yuvf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             { Yuvf value = default; R(ref reader, out value, options); return value; }
             public override void Write(Utf8JsonWriter writer, Yuvf value, JsonSerializerOptions options)
                 => W(writer, value, options);
+        }
+
+        #endregion
+
+        #region Cones
+
+        private class Cone3dConverter : JsonConverter<Cone3d>
+        {
+            public override Cone3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Cone3d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "origin": case "Origin": R(ref reader, ref result.Origin, options); break;
+                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "angle": case "Angle": result.Angle = reader.GetDouble(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Cone3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Origin");
+                W(writer, value.Origin, options);
+                writer.WritePropertyName("Direction");
+                W(writer, value.Direction, options);
+                writer.WriteNumber("Angle", value.Angle);
+                writer.WriteEndObject();
+            }
+        }
+        private class Cone3fConverter : JsonConverter<Cone3f>
+        {
+            public override Cone3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Cone3f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "origin": case "Origin": R(ref reader, ref result.Origin, options); break;
+                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "angle": case "Angle": result.Angle = reader.GetSingle(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Cone3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Origin");
+                W(writer, value.Origin, options);
+                writer.WritePropertyName("Direction");
+                W(writer, value.Direction, options);
+                writer.WriteNumber("Angle", value.Angle);
+                writer.WriteEndObject();
+            }
+        }
+
+        #endregion
+
+        #region Cylinder
+
+        private class Cylinder3dConverter : JsonConverter<Cylinder3d>
+        {
+            public override Cylinder3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Cylinder3d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
+                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Cylinder3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("P0");
+                W(writer, value.P0, options);
+                writer.WritePropertyName("P1");
+                W(writer, value.P1, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+        private class Cylinder3fConverter : JsonConverter<Cylinder3f>
+        {
+            public override Cylinder3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Cylinder3f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "p0": case "P0": R(ref reader, ref result.P0, options); break;
+                            case "p1": case "P1": R(ref reader, ref result.P1, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Cylinder3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("P0");
+                W(writer, value.P0, options);
+                writer.WritePropertyName("P1");
+                W(writer, value.P1, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
         }
 
         #endregion
@@ -1351,6 +1843,216 @@ namespace Aardvark.Base.Tests.Json
         }
 
         #endregion
+
+        #region Quads
+
+        private class Quad2dConverter : JsonConverter<Quad2d>
+        {
+            public override Quad2d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { V2d[] value = default; R(ref reader, ref value, options); return new Quad2d(value); }
+            public override void Write(Utf8JsonWriter writer, Quad2d value, JsonSerializerOptions options)
+                => W(writer, value.Points, options);
+        }
+        private class Quad2fConverter : JsonConverter<Quad2f>
+        {
+            public override Quad2f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { V2f[] value = default; R(ref reader, ref value, options); return new Quad2f(value); }
+            public override void Write(Utf8JsonWriter writer, Quad2f value, JsonSerializerOptions options)
+                => W(writer, value.Points, options);
+        }
+        private class Quad3dConverter : JsonConverter<Quad3d>
+        {
+            public override Quad3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { V3d[] value = default; R(ref reader, ref value, options); return new Quad3d(value); }
+            public override void Write(Utf8JsonWriter writer, Quad3d value, JsonSerializerOptions options)
+                => W(writer, value.Points, options);
+        }
+        private class Quad3fConverter : JsonConverter<Quad3f>
+        {
+            public override Quad3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { V3f[] value = default; R(ref reader, ref value, options); return new Quad3f(value); }
+            public override void Write(Utf8JsonWriter writer, Quad3f value, JsonSerializerOptions options)
+                => W(writer, value.Points, options);
+        }
+
+        #endregion
+
+        #region Spheres
+
+        private class Sphere3dConverter : JsonConverter<Sphere3d>
+        {
+            public override Sphere3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Sphere3d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetDouble(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Sphere3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Center");
+                W(writer, value.Center, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+        private class Sphere3fConverter : JsonConverter<Sphere3f>
+        {
+            public override Sphere3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Sphere3f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "center": case "Center": R(ref reader, ref result.Center, options); break;
+                            case "radius": case "Radius": result.Radius = reader.GetSingle(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Sphere3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Center");
+                W(writer, value.Center, options);
+                writer.WriteNumber("Radius", value.Radius);
+                writer.WriteEndObject();
+            }
+        }
+
+        #endregion
+
+        #region Tori
+
+        private class Torus3dConverter : JsonConverter<Torus3d>
+        {
+            public override Torus3d Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Torus3d result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "position": case "Position": R(ref reader, ref result.Position, options); break;
+                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "majorRadius": case "MajorRadius": result.MajorRadius = reader.GetDouble(); break;
+                            case "minorRadius": case "MinorRadius": result.MinorRadius = reader.GetDouble(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Torus3d value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Position");
+                W(writer, value.Position, options);
+                writer.WritePropertyName("Direction");
+                W(writer, value.Direction, options);
+                writer.WriteNumber("MajorRadius", value.MajorRadius);
+                writer.WriteNumber("MinorRadius", value.MinorRadius);
+                writer.WriteEndObject();
+            }
+        }
+        private class Torus3fConverter : JsonConverter<Torus3f>
+        {
+            public override Torus3f Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                {
+                    Torus3f result = default;
+
+                    while (reader.Read())
+                    {
+                        if (reader.TokenType == JsonTokenType.EndObject) break;
+
+                        Debug.Assert(reader.TokenType == JsonTokenType.PropertyName);
+                        var p = reader.GetString();
+                        reader.Read();
+                        switch (p)
+                        {
+                            case "position": case "Position": R(ref reader, ref result.Position, options); break;
+                            case "direction": case "Direction": R(ref reader, ref result.Direction, options); break;
+                            case "majorRadius": case "MajorRadius": result.MajorRadius = reader.GetSingle(); break;
+                            case "minorRadius": case "MinorRadius": result.MinorRadius = reader.GetSingle(); break;
+                            default: throw new JsonException($"Invalid property {p}.");
+                        }
+                    }
+
+                    return result;
+                }
+                else
+                {
+                    throw new JsonException();
+                }
+            }
+            public override void Write(Utf8JsonWriter writer, Torus3f value, JsonSerializerOptions options)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName("Position");
+                W(writer, value.Position, options);
+                writer.WritePropertyName("Direction");
+                W(writer, value.Direction, options);
+                writer.WriteNumber("MajorRadius", value.MajorRadius);
+                writer.WriteNumber("MinorRadius", value.MinorRadius);
+                writer.WriteEndObject();
+            }
+        }
+
+        #endregion
+
 
         #region Trafos
 
@@ -1479,16 +2181,20 @@ namespace Aardvark.Base.Tests.Json
         private static readonly List<JsonConverter> _converters = new()
         {
             new Affine2dConverter(), new Affine2fConverter(), new Affine3dConverter(), new Affine3fConverter(),
-
+            new Capsule3dConverter(), new Capsule3fConverter(),
+            new Circle2dConverter(), new Circle2fConverter(), new Circle3dConverter(), new Circle3fConverter(),
             new C3bConverter(), new C3dConverter(), new C3fConverter(), new C3uiConverter(), new C3usConverter(),
             new C4bConverter(), new C4dConverter(), new C4fConverter(), new C4uiConverter(), new C4usConverter(),
             new CieLabfConverter(), new CIeLuvfConverter(), new CieXYZfConverter(), new CieYxyfConverter(),
-            new CMYKfConverter(), new YuvfConverter(),
-
+            new CMYKfConverter(), new HSLfConverter(), new HSVfConverter(), new YuvfConverter(),
+            new Cone3dConverter(), new Cone3fConverter(),
+            new Cylinder3dConverter(), new Cylinder3fConverter(),
             new Hull2dConverter(), new Hull2fConverter(), new Hull3dConverter(), new Hull3fConverter(),
             new Plane2dConverter(), new Plane2fConverter(), new Plane3dConverter(), new Plane3fConverter(),
             new Polygon2dConverter(), new Polygon2fConverter(), new Polygon3dConverter(), new Polygon3fConverter(),
-
+            new Quad2dConverter(), new Quad2fConverter(), new Quad3dConverter(), new Quad3fConverter(),
+            new Sphere3dConverter(), new Sphere3fConverter(),
+            new Torus3dConverter(), new Torus3fConverter(),
             new Trafo2dConverter(), new Trafo2fConverter(), new Trafo3dConverter(), new Trafo3fConverter(),
             new Triangle2dConverter(), new Triangle2fConverter(), new Triangle3dConverter(), new Triangle3fConverter(),
         };
