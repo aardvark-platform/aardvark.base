@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.Utilities;
-using NUnit.Framework;
-using NUnit.Framework.Interfaces;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1681,7 +1679,7 @@ namespace Aardvark.Base.Tests.Json
                         {
                             case "linear": case "Linear": reader.R(out result.Linear, options); break;
                             case "trans": case "Trans": reader.R(out result.Trans, options); break;
-                            default: throw new JsonException($"Invalid property {p}. Error 6f0df661-69db-449b-8b03-2b083d0d4f1d.");
+                            default: throw new JsonException($"Invalid property {p}.");
                         }
                     }
 
@@ -1721,7 +1719,7 @@ namespace Aardvark.Base.Tests.Json
                         {
                             case "linear": case "Linear": reader.R(out result.Linear, options); break;
                             case "trans": case "Trans": reader.R(out result.Trans, options); break;
-                            default: throw new JsonException($"Invalid property {p}. Error b0e8b383-d38b-4ac7-91d0-870137757902.");
+                            default: throw new JsonException($"Invalid property {p}.");
                         }
                     }
 
@@ -1761,7 +1759,7 @@ namespace Aardvark.Base.Tests.Json
                         {
                             case "linear": case "Linear": reader.R(out result.Linear, options); break;
                             case "trans": case "Trans": reader.R(out result.Trans, options); break;
-                            default: throw new JsonException($"Invalid property {p}. Error c5b2eee9-bd52-44ac-bfae-6fb30f45dea0.");
+                            default: throw new JsonException($"Invalid property {p}.");
                         }
                     }
 
@@ -1801,7 +1799,7 @@ namespace Aardvark.Base.Tests.Json
                         {
                             case "linear": case "Linear": reader.R(out result.Linear, options); break;
                             case "trans": case "Trans": reader.R(out result.Trans, options); break;
-                            default: throw new JsonException($"Invalid property {p}. Error 4ea64c2a-7739-46b9-a95a-a85bec985735.");
+                            default: throw new JsonException($"Invalid property {p}.");
                         }
                     }
 
