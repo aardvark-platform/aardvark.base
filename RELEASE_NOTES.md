@@ -1,3 +1,7 @@
+### 5.2.16
+* support System.Text.Json for primitive types 
+  (vectors, matrices, boxes, transforms, geometric primitives, ...)
+
 ### 5.2.15
 * Added File.writeAll* variants that create parent directories
 * [IO] Added logging output in case there is a stream position mismatch
