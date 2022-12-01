@@ -108,6 +108,10 @@ module Vec =
     let inline z< ^a, ^b when ^a : (member P_Z : ^b)> (v : ^a) =
         (^a : (member P_Z : ^b) v)
 
+    /// Returns the w-component of the vector v.
+    let inline w< ^a, ^b when ^a : (member P_W : ^b)> (v : ^a) =
+        (^a : (member P_W : ^b) v)
+
     /// Returns the xy-components of the vector v.
     let inline xy< ^a, ^b when ^a : (member XY : ^b)> (v : ^a) =
         (^a : (member XY : ^b) v)
@@ -182,7 +186,7 @@ module Vec =
             let a : float = dot V3d.One V3d.Zero
             let a : int = dot V3i.One V3i.Zero
             ()
-        
+
         let crossWorking () =
             let a : V3d = cross V3d.One V3d.Zero
             let a : V3i = cross V3i.One V3i.Zero
@@ -222,16 +226,17 @@ module Vec =
             let a : V3f = reflect V3f.One V3f.Zero
             let a : V3d = reflect V3d.One V3d.Zero
             ()
-            
+
         let refractWorking () =
-            let a : V3f = refract 0.0f V3f.One V3f.Zero 
-            let a : V3d = refract 0.0 V3d.One V3d.Zero 
+            let a : V3f = refract 0.0f V3f.One V3f.Zero
+            let a : V3d = refract 0.0 V3d.One V3d.Zero
             ()
 
         let swizzlesWorking () =
             let a : float = x V3d.One
             let a : float = y V3d.One
             let a : float = z V3d.One
+            let a : float = w V4d.One
             let a : V2d = xy V3d.One
             let a : V2d = yz V3d.One
             let a : V2d = zw V4d.One
