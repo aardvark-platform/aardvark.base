@@ -1,3 +1,10 @@
+### 5.2.17
+* JSON support
+	- add missing Range1* types
+	- handling of special float values (NaN, +Inf, -Inf)
+* Add Vec.w
+* Update Aardvark.Build
+
 ### 5.2.16
 * support System.Text.Json for primitive types 
   (vectors, matrices, boxes, transforms, geometric primitives, ...)
