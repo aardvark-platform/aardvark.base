@@ -804,7 +804,15 @@ module FSharpMath =
             let a : bool = isPositiveInfinity 0.0
             let a : bool = isPositiveInfinity 0.0f
             let a : bool = isPositiveInfinity (float16 0.0f)
+            let a : bool = isPositiveInfinity ComplexD.Zero
+            let a : bool = isPositiveInfinity C3d.Black
+            let a : bool = isPositiveInfinity V3d.Zero
+            let a : bool = isPositiveInfinity M33d.Zero
             let a : bool = isNegativeInfinity 0.0
             let a : bool = isNegativeInfinity 0.0f
             let a : bool = isNegativeInfinity (float16 0.0f)
+            let a : bool = isNegativeInfinity ComplexD.Zero
+            let a : bool = isNegativeInfinity C3d.Black
+            let a : bool = isNegativeInfinity V3d.Zero
+            let a : bool = isNegativeInfinity M33d.Zero
             ()

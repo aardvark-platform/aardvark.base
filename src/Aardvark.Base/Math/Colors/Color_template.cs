@@ -636,6 +636,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if any component of the color is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the color is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
+        }
+
+        /// <summary>
         /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -1290,6 +1308,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(__type__ c)
             => c.IsInfinity;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="__type__"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(__type__ c)
+            => c.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="__type__"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(__type__ c)
+            => c.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether all components of the the given <see cref="__type__"/> are finite (i.e. not NaN and not infinity).

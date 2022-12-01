@@ -6381,6 +6381,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
+        }
+
+        /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -8141,6 +8159,20 @@ namespace Aardvark.Base
             => v.IsInfinity;
 
         /// <summary>
+        /// Returns whether any element of the given <see cref="M22f"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M22f v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M22f"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M22f v)
+            => v.IsNegativeInfinity;
+
+        /// <summary>
         /// Returns whether all elements of the given <see cref="M22f"/> are finite (i.e. not NaN and not infinity).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9227,6 +9259,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
         }
 
         /// <summary>
@@ -10888,6 +10938,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(M22d v)
             => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M22d"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M22d v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M22d"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M22d v)
+            => v.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether all elements of the given <see cref="M22d"/> are finite (i.e. not NaN and not infinity).
@@ -17403,6 +17467,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
+        }
+
+        /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -19008,6 +19090,20 @@ namespace Aardvark.Base
             => v.IsInfinity;
 
         /// <summary>
+        /// Returns whether any element of the given <see cref="M23f"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M23f v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M23f"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M23f v)
+            => v.IsNegativeInfinity;
+
+        /// <summary>
         /// Returns whether all elements of the given <see cref="M23f"/> are finite (i.e. not NaN and not infinity).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20115,6 +20211,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
         }
 
         /// <summary>
@@ -21609,6 +21723,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(M23d v)
             => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M23d"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M23d v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M23d"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M23d v)
+            => v.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether all elements of the given <see cref="M23d"/> are finite (i.e. not NaN and not infinity).
@@ -29931,6 +30059,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
+        }
+
+        /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -32106,6 +32252,20 @@ namespace Aardvark.Base
             => v.IsInfinity;
 
         /// <summary>
+        /// Returns whether any element of the given <see cref="M33f"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M33f v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M33f"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M33f v)
+            => v.IsNegativeInfinity;
+
+        /// <summary>
         /// Returns whether all elements of the given <see cref="M33f"/> are finite (i.e. not NaN and not infinity).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -33641,6 +33801,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
         }
 
         /// <summary>
@@ -35703,6 +35881,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(M33d v)
             => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M33d"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M33d v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M33d"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M33d v)
+            => v.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether all elements of the given <see cref="M33d"/> are finite (i.e. not NaN and not infinity).
@@ -43824,6 +44016,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
+        }
+
+        /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -45790,6 +46000,20 @@ namespace Aardvark.Base
             => v.IsInfinity;
 
         /// <summary>
+        /// Returns whether any element of the given <see cref="M34f"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M34f v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M34f"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M34f v)
+            => v.IsNegativeInfinity;
+
+        /// <summary>
         /// Returns whether all elements of the given <see cref="M34f"/> are finite (i.e. not NaN and not infinity).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -47272,6 +47496,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
         }
 
         /// <summary>
@@ -49113,6 +49355,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(M34d v)
             => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M34d"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M34d v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M34d"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M34d v)
+            => v.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether all elements of the given <see cref="M34d"/> are finite (i.e. not NaN and not infinity).
@@ -58806,6 +59062,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
+        }
+
+        /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -61412,6 +61686,20 @@ namespace Aardvark.Base
             => v.IsInfinity;
 
         /// <summary>
+        /// Returns whether any element of the given <see cref="M44f"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M44f v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M44f"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M44f v)
+            => v.IsNegativeInfinity;
+
+        /// <summary>
         /// Returns whether all elements of the given <see cref="M44f"/> are finite (i.e. not NaN and not infinity).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63103,6 +63391,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any element of the matrix is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
         }
 
         /// <summary>
@@ -65607,6 +65913,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(M44d v)
             => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M44d"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(M44d v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any element of the given <see cref="M44d"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(M44d v)
+            => v.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether all elements of the given <see cref="M44d"/> are finite (i.e. not NaN and not infinity).

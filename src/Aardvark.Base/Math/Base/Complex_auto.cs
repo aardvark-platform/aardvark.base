@@ -251,6 +251,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns whether the complex number has a part that is infinite and positive.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return (float.IsPositiveInfinity(Real) || float.IsPositiveInfinity(Imag)); }
+        }
+
+        /// <summary>
+        /// Returns whether the complex number has a part that is infinite and negative.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return (float.IsNegativeInfinity(Real) || float.IsNegativeInfinity(Imag)); }
+        }
+
+        /// <summary>
         /// Returns whether the complex number is finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -1003,6 +1021,20 @@ namespace Aardvark.Base
             => v.IsInfinity;
 
         /// <summary>
+        /// Returns whether the given <see cref="ComplexF"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(ComplexF v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexF"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(ComplexF v)
+            => v.IsNegativeInfinity;
+
+        /// <summary>
         /// Returns whether the given <see cref="ComplexF"/> is finite (i.e. not NaN and not infinity).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1251,6 +1283,24 @@ namespace Aardvark.Base
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (double.IsInfinity(Real) || double.IsInfinity(Imag)); }
+        }
+
+        /// <summary>
+        /// Returns whether the complex number has a part that is infinite and positive.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return (double.IsPositiveInfinity(Real) || double.IsPositiveInfinity(Imag)); }
+        }
+
+        /// <summary>
+        /// Returns whether the complex number has a part that is infinite and negative.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get { return (double.IsNegativeInfinity(Real) || double.IsNegativeInfinity(Imag)); }
         }
 
         /// <summary>
@@ -2065,6 +2115,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(ComplexD v)
             => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexD"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(ComplexD v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether the given <see cref="ComplexD"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(ComplexD v)
+            => v.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether the given <see cref="ComplexD"/> is finite (i.e. not NaN and not infinity).

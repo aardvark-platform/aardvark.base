@@ -604,6 +604,24 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if any component of the vector is infinite and positive, false otherwise.
+        /// </summary>
+        public bool IsPositiveInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyPositiveInfinity;
+        }
+
+        /// <summary>
+        /// Returns true if any component of the vector is infinite and negative, false otherwise.
+        /// </summary>
+        public bool IsNegativeInfinity
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => AnyNegativeInfinity;
+        }
+
+        /// <summary>
         /// Returns whether all components of the vector are finite (i.e. not NaN and not infinity).
         /// </summary>
         public bool IsFinite
@@ -1825,6 +1843,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(__vtype__ v)
             => v.IsInfinity;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="__vtype__"/> is positive infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPositiveInfinity(__vtype__ v)
+            => v.IsPositiveInfinity;
+
+        /// <summary>
+        /// Returns whether any component of the the given <see cref="__vtype__"/> is negative infinity.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNegativeInfinity(__vtype__ v)
+            => v.IsNegativeInfinity;
 
         /// <summary>
         /// Returns whether all components of the the given <see cref="__vtype__"/> are finite (i.e. not NaN and not infinity).
