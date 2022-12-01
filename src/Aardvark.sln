@@ -63,7 +63,22 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.FSharp.Benchm
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.PixImage.WindowsMedia", "Aardvark.PixImage.WindowsMedia\Aardvark.PixImage.WindowsMedia.csproj", "{02533034-24CF-4065-B7D3-A10A4CE0FC81}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.Windows.Tests", "Tests\Aardvark.Base.Windows.Tests\Aardvark.Base.Windows.Tests.fsproj", "{CE56CD59-C199-457C-9C6D-9D19D45F3940}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Windows.Tests", "Tests\Aardvark.Base.Windows.Tests\Aardvark.Base.Windows.Tests.fsproj", "{CE56CD59-C199-457C-9C6D-9D19D45F3940}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "._", "._", "{61D029CD-C474-4CC5-AEF6-B898F9B3D6A3}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\build.cmd = ..\build.cmd
+		..\build.sh = ..\build.sh
+		..\generate.cmd = ..\generate.cmd
+		..\generate.sh = ..\generate.sh
+		..\LICENSE = ..\LICENSE
+		..\PACKAGES.md = ..\PACKAGES.md
+		..\paket.dependencies = ..\paket.dependencies
+		..\paket.lock = ..\paket.lock
+		..\README.md = ..\README.md
+		..\RELEASE_NOTES.md = ..\RELEASE_NOTES.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

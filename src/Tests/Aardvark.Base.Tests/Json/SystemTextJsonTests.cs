@@ -1662,7 +1662,21 @@ namespace Aardvark.Base.Tests.Json
         private static readonly JsonSerializerOptions _options;
         static SystemTextJsonTests()
         {
-            _options = new();
+            _options = new()
+            {
+                AllowTrailingCommas = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true,
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                //WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals | JsonNumberHandling.AllowReadingFromString,
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                },
+            };
+
             _options.Converters.AddRange(_converters);
         }
 
@@ -1696,14 +1710,37 @@ namespace Aardvark.Base.Tests.Json
 
         #region Box[23][dfil]
 
-        [Test] public void Box2i_Roundtrip() => RoundtripTest(new Box2i(new V2i(1, -2), new V2i(-17, 0)));
-        [Test] public void Box2l_Roundtrip() => RoundtripTest(new Box2l(new V2l(1, -2), new V2l(-17, 0)));
-        [Test] public void Box2f_Roundtrip() => RoundtripTest(new Box2f(new V2f(1.1, -2.2), new V2f(-17.17, 0)));
-        [Test] public void Box2d_Roundtrip() => RoundtripTest(new Box2d(new V2d(1.1, -2.2), new V2d(-17.17, 0)));
-        [Test] public void Box3i_Roundtrip() => RoundtripTest(new Box3i(new V3i(1, -2, 0), new V3i(-17, 42, -555555555)));
-        [Test] public void Box3l_Roundtrip() => RoundtripTest(new Box3l(new V3l(1, -2, 0), new V3l(-17, 42, -555555555)));
-        [Test] public void Box3f_Roundtrip() => RoundtripTest(new Box3f(new V3f(1.1, -2.2, 0), new V3f(-17.17, 42.42, -555.001)));
-        [Test] public void Box3d_Roundtrip() => RoundtripTest(new Box3d(new V3d(1.1, -2.2, 0), new V3d(-17.18, 42.42, -555.001)));
+        [Test] public void Box2i_Roundtrip()            => RoundtripTest(new Box2i(new V2i(1, -2), new V2i(-17, 0)));
+        [Test] public void Box2i_Roundtrip_Infinite()   => RoundtripTest(Box2i.Infinite);
+        [Test] public void Box2i_Roundtrip_Invalid()    => RoundtripTest(Box2i.Invalid);
+
+        [Test] public void Box2l_Roundtrip()            => RoundtripTest(new Box2l(new V2l(1, -2), new V2l(-17, 0)));
+        [Test] public void Box2l_Roundtrip_Infinite()   => RoundtripTest(Box2l.Infinite);
+        [Test] public void Box2l_Roundtrip_Invalid()    => RoundtripTest(Box2l.Invalid);
+
+        [Test] public void Box2f_Roundtrip()            => RoundtripTest(new Box2f(new V2f(1.1, -2.2), new V2f(-17.17, 0)));
+        [Test] public void Box2f_Roundtrip_Infinite()   => RoundtripTest(Box2f.Infinite);
+        [Test] public void Box2f_Roundtrip_Invalid()    => RoundtripTest(Box2f.Invalid);
+
+        [Test] public void Box2d_Roundtrip()            => RoundtripTest(new Box2d(new V2d(1.1, -2.2), new V2d(-17.17, 0)));
+        [Test] public void Box2d_Roundtrip_Infinite()   => RoundtripTest(Box2d.Infinite);
+        [Test] public void Box2d_Roundtrip_Invalid()    => RoundtripTest(Box2d.Invalid);
+
+        [Test] public void Box3i_Roundtrip()            => RoundtripTest(new Box3i(new V3i(1, -2, 0), new V3i(-17, 42, -555555555)));
+        [Test] public void Box3i_Roundtrip_Infinite()   => RoundtripTest(Box3i.Infinite);
+        [Test] public void Box3i_Roundtrip_Invalid()    => RoundtripTest(Box3i.Invalid);
+
+        [Test] public void Box3l_Roundtrip()            => RoundtripTest(new Box3l(new V3l(1, -2, 0), new V3l(-17, 42, -555555555)));
+        [Test] public void Box3l_Roundtrip_Infinite()   => RoundtripTest(Box3l.Infinite);
+        [Test] public void Box3l_Roundtrip_Invalid()    => RoundtripTest(Box3l.Invalid);
+
+        [Test] public void Box3f_Roundtrip()            => RoundtripTest(new Box3f(new V3f(1.1, -2.2, 0), new V3f(-17.17, 42.42, -555.001)));
+        [Test] public void Box3f_Roundtrip_Infinite()   => RoundtripTest(Box3f.Infinite);
+        [Test] public void Box3f_Roundtrip_Invalid()    => RoundtripTest(Box3f.Invalid);
+
+        [Test] public void Box3d_Roundtrip()            => RoundtripTest(new Box3d(new V3d(1.1, -2.2, 0), new V3d(-17.18, 42.42, -555.001)));
+        [Test] public void Box3d_Roundtrip_Infinite()   => RoundtripTest(Box3d.Infinite);
+        [Test] public void Box3d_Roundtrip_Invalid()    => RoundtripTest(Box3d.Invalid);
 
         #endregion
 
@@ -1945,6 +1982,21 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
+        #region Range1*
+
+        [Test] public void Range1b_Roundtrip() => RoundtripTest(new Range1b(7, 42));
+        [Test] public void Range1d_Roundtrip() => RoundtripTest(new Range1d(-7.1, 42.2));
+        [Test] public void Range1f_Roundtrip() => RoundtripTest(new Range1f(-7.1f, 42.2f));
+        [Test] public void Range1i_Roundtrip() => RoundtripTest(new Range1i(-7, 42));
+        [Test] public void Range1l_Roundtrip() => RoundtripTest(new Range1l(-7, 42));
+        [Test] public void Range1s_Roundtrip() => RoundtripTest(new Range1s(-7, 42));
+        [Test] public void Range1sb_Roundtrip() => RoundtripTest(new Range1sb(-7, 42));
+        [Test] public void Range1ui_Roundtrip() => RoundtripTest(new Range1ui(7, 42));
+        [Test] public void Range1ul_Roundtrip() => RoundtripTest(new Range1ul(7, 42));
+        [Test] public void Range1us_Roundtrip() => RoundtripTest(new Range1us(7, 42));
+
+        #endregion
+
         #region Ray[23][df], FastRay[23][df]
 
         [Test] public void Ray2d_Roundtrip() => RoundtripTest(new Ray2d(new V2d(-1.2, 2.3), new V2d(3.4, -4.5).Normalized));
@@ -2030,20 +2082,75 @@ namespace Aardvark.Base.Tests.Json
 
         #region V[234][dfil]
 
-        [Test] public void V2f_Roundtrip() => RoundtripTest(new V2f(1.1, -2.2));
-        [Test] public void V2d_Roundtrip() => RoundtripTest(new V2d(1.1, -2.2));
-        [Test] public void V2i_Roundtrip() => RoundtripTest(new V2i(1, -2));
-        [Test] public void V2l_Roundtrip() => RoundtripTest(new V2l(1, -2));
+        [Test] public void V2f_Roundtrip()                  => RoundtripTest(new V2f(1.1, -2.2));
+        [Test] public void V2f_Roundtrip_MinValue()         => RoundtripTest(V2f.MinValue);
+        [Test] public void V2f_Roundtrip_MaxValue()         => RoundtripTest(V2f.MaxValue);
+        [Test] public void V2f_Roundtrip_NegativeInfinity() => RoundtripTest(V2f.NegativeInfinity);
+        [Test] public void V2f_Roundtrip_PositiveInfinity() => RoundtripTest(V2f.PositiveInfinity);
+        [Test] public void V2f_Roundtrip_NaN()              => RoundtripTest(V2f.NaN);
 
-        [Test] public void V3f_Roundtrip() => RoundtripTest(new V3f(1.1, 0, -2.2));
-        [Test] public void V3d_Roundtrip() => RoundtripTest(new V3d(1.1, 0, -2.2));
-        [Test] public void V3i_Roundtrip() => RoundtripTest(new V3i(1, 0, -2));
-        [Test] public void V3l_Roundtrip() => RoundtripTest(new V3l(1, 0, -2));
+        [Test] public void V2d_Roundtrip()                  => RoundtripTest(new V2d(1.1, -2.2));
+        [Test] public void V2d_Roundtrip_MinValue()         => RoundtripTest(V2d.MinValue);
+        [Test] public void V2d_Roundtrip_MaxValue()         => RoundtripTest(V2d.MaxValue);
+        [Test] public void V2d_Roundtrip_NegativeInfinity() => RoundtripTest(V2d.NegativeInfinity);
+        [Test] public void V2d_Roundtrip_PositiveInfinity() => RoundtripTest(V2d.PositiveInfinity);
+        [Test] public void V2d_Roundtrip_NaN()              => RoundtripTest(V2d.NaN);
 
-        [Test] public void V4f_Roundtrip() => RoundtripTest(new V4f(1.1, 0, -2.2, 3.3));
-        [Test] public void V4d_Roundtrip() => RoundtripTest(new V4d(1.1, 0, -2.2, 3.3));
-        [Test] public void V4i_Roundtrip() => RoundtripTest(new V4i(1, 0, -2, 3));
-        [Test] public void V4l_Roundtrip() => RoundtripTest(new V4l(1, 0, -2, 3));
+        [Test] public void V2i_Roundtrip()                  => RoundtripTest(new V2i(1, -2));
+        [Test] public void V2i_Roundtrip_MinValue()         => RoundtripTest(V2i.MinValue);
+        [Test] public void V2i_Roundtrip_MaxValue()         => RoundtripTest(V2i.MaxValue);
+
+        [Test] public void V2l_Roundtrip()                  => RoundtripTest(new V2l(1, -2));
+        [Test] public void V2l_Roundtrip_MinValue()         => RoundtripTest(V2l.MinValue);
+        [Test] public void V2l_Roundtrip_MaxValue()         => RoundtripTest(V2l.MaxValue);
+
+
+
+        [Test] public void V3f_Roundtrip()                  => RoundtripTest(new V3f(1.1, 0, -2.2));
+        [Test] public void V3f_Roundtrip_MinValue()         => RoundtripTest(V3f.MinValue);
+        [Test] public void V3f_Roundtrip_MaxValue()         => RoundtripTest(V3f.MaxValue);
+        [Test] public void V3f_Roundtrip_NegativeInfinity() => RoundtripTest(V3f.NegativeInfinity);
+        [Test] public void V3f_Roundtrip_PositiveInfinity() => RoundtripTest(V3f.PositiveInfinity);
+        [Test] public void V3f_Roundtrip_NaN()              => RoundtripTest(V3f.NaN);
+
+        [Test] public void V3d_Roundtrip()                  => RoundtripTest(new V3d(1.1, 0, -2.2));
+        [Test] public void V3d_Roundtrip_MinValue()         => RoundtripTest(V3d.MinValue);
+        [Test] public void V3d_Roundtrip_MaxValue()         => RoundtripTest(V3d.MaxValue);
+        [Test] public void V3d_Roundtrip_NegativeInfinity() => RoundtripTest(V3d.NegativeInfinity);
+        [Test] public void V3d_Roundtrip_PositiveInfinity() => RoundtripTest(V3d.PositiveInfinity);
+        [Test] public void V3d_Roundtrip_NaN()              => RoundtripTest(V3d.NaN);
+
+        [Test] public void V3i_Roundtrip()                  => RoundtripTest(new V3i(1, 0, -2));
+        [Test] public void V3i_Roundtrip_MinValue()         => RoundtripTest(V3i.MinValue);
+        [Test] public void V3i_Roundtrip_MaxValue()         => RoundtripTest(V3i.MaxValue);
+
+        [Test] public void V3l_Roundtrip()                  => RoundtripTest(new V3l(1, 0, -2));
+        [Test] public void V3l_Roundtrip_MinValue()         => RoundtripTest(V3l.MinValue);
+        [Test] public void V3l_Roundtrip_MaxValue()         => RoundtripTest(V3l.MaxValue);
+
+
+
+        [Test] public void V4f_Roundtrip()                  => RoundtripTest(new V4f(1.1, 0, -2.2, 3.3));
+        [Test] public void V4f_Roundtrip_MinValue()         => RoundtripTest(V4f.MinValue);
+        [Test] public void V4f_Roundtrip_MaxValue()         => RoundtripTest(V4f.MaxValue);
+        [Test] public void V4f_Roundtrip_NegativeInfinity() => RoundtripTest(V4f.NegativeInfinity);
+        [Test] public void V4f_Roundtrip_PositiveInfinity() => RoundtripTest(V4f.PositiveInfinity);
+        [Test] public void V4f_Roundtrip_NaN()              => RoundtripTest(V4f.NaN);
+
+        [Test] public void V4d_Roundtrip()                  => RoundtripTest(new V4d(1.1, 0, -2.2, 3.3));
+        [Test] public void V4d_Roundtrip_MinValue()         => RoundtripTest(V4d.MinValue);
+        [Test] public void V4d_Roundtrip_MaxValue()         => RoundtripTest(V4d.MaxValue);
+        [Test] public void V4d_Roundtrip_NegativeInfinity() => RoundtripTest(V4d.NegativeInfinity);
+        [Test] public void V4d_Roundtrip_PositiveInfinity() => RoundtripTest(V4d.PositiveInfinity);
+        [Test] public void V4d_Roundtrip_NaN()              => RoundtripTest(V4d.NaN);
+
+        [Test] public void V4i_Roundtrip()                  => RoundtripTest(new V4i(1, 0, -2, 3));
+        [Test] public void V4i_Roundtrip_MinValue()         => RoundtripTest(V4i.MinValue);
+        [Test] public void V4i_Roundtrip_MaxValue()         => RoundtripTest(V4i.MaxValue);
+
+        [Test] public void V4l_Roundtrip()                  => RoundtripTest(new V4l(1, 0, -2, 3));
+        [Test] public void V4l_Roundtrip_MinValue()         => RoundtripTest(V4l.MinValue);
+        [Test] public void V4l_Roundtrip_MaxValue()         => RoundtripTest(V4l.MaxValue);
 
         #endregion
     }
