@@ -1,3 +1,6 @@
+### 5.2.18
+* made introspection attribute querying more robust
+
 ### 5.2.17
 * JSON support
 	- add missing Range1* types

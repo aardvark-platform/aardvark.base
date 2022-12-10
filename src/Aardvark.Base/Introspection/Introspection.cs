@@ -397,6 +397,19 @@ namespace Aardvark.Base
             return new T[0];
         }
 
+        private static T[] TryGetCustomAttributes<T>(MethodInfo t)
+        {
+            try
+            {
+                return t.GetCustomAttributes(typeof(T), false).Select(x => (T)x).ToArray();
+            }
+            catch (Exception e)
+            {
+                Report.Warn(e.ToString());
+            }
+            return new T[0];
+        }
+
         /// <summary>
         /// Enumerates all methods from the specified assembly
         /// decorated with attribute T as tuples of MethodInfo
@@ -408,15 +421,15 @@ namespace Aardvark.Base
                            let t = Type.GetType(line)
                            where t != null
                            from m in t.GetMethods()
-                           let attribs = m.GetCustomAttributes(typeof(T), false)
+                           let attribs = TryGetCustomAttributes<T>(m)
                            where attribs.Length > 0
-                           select (m, attribs.Select(x => (T)x).ToArray()),
+                           select (m, attribs),
                   types => from t in types
                            where t != null
                            from m in t.GetMethods()
-                           let attribs = m.GetCustomAttributes(typeof(T), false)
+                           let attribs = TryGetCustomAttributes<T>(m)
                            where attribs.Length > 0
-                           select (m, attribs.Select(x => (T)x).ToArray()),
+                           select (m, attribs),
                   result => result.Select(m => m.Item1.DeclaringType.AssemblyQualifiedName)
                   );
         
