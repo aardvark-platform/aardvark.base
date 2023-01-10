@@ -1,3 +1,7 @@
+### 5.2.19
+* Added IPixMipmapLoader for loading images with mipmap chains
+* Marked some exotic image loading functions obsolete
+
 ### 5.2.18
 * made introspection attribute querying more robust
 
