@@ -349,7 +349,7 @@ namespace Aardvark.Base
             }
         }
 
-        private static Result TryInvokeLoader<Result>(
+        internal static Result TryInvokeLoader<Result>(
                         IPixLoader loader, Func<IPixLoader, Result> invoke,
                         Func<Result, bool> isValid,
                         string operationDescription)
@@ -378,7 +378,7 @@ namespace Aardvark.Base
             return default;
         }
 
-        private static Result InvokeLoaders<Input, Result>(
+        internal static Result InvokeLoaders<Input, Result>(
                                 IPixLoader loader, Input input,
                                 Func<IPixLoader, Input, Result> tryInvoke,
                                 Action<Input> resetInput,
@@ -406,7 +406,7 @@ namespace Aardvark.Base
             throw new ImageLoadException(errorMessage);
         }
 
-        private static Result InvokeLoadersWithStream<Result>(
+        internal static Result InvokeLoadersWithStream<Result>(
                         IPixLoader loader, Stream stream,
                         Func<IPixLoader, Stream, Result> tryInvoke,
                         Func<Result, bool> isValid,
@@ -421,11 +421,11 @@ namespace Aardvark.Base
             );
         }
 
-        private static void Ignore<T>(T _) { }
+        internal static void Ignore<T>(T _) { }
 
-        private static bool NotNull<T>(T x) => x != null;
+        internal static bool NotNull<T>(T x) => x != null;
 
-        private static bool Identity(bool x) => x;
+        internal static bool Identity(bool x) => x;
 
         #endregion
 
@@ -672,6 +672,7 @@ namespace Aardvark.Base
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded images.</returns>
         /// <exception cref="ImageLoadException">if an image could not be loaded.</exception>
+        [Obsolete]
         public static IEnumerable<PixImage> Load(IEnumerable<string> filenames, IPixLoader loader = null)
             => from file in filenames select Load(file, loader);
 
@@ -691,7 +692,7 @@ namespace Aardvark.Base
 
         #region Load from stream
 
-        private static string GetStreamDescription(Stream stream)
+        internal static string GetStreamDescription(Stream stream)
             => (stream is FileStream fs) ? $"file stream '{fs.Name}'" : "stream";
 
         private static PixImage TryLoadFromStreamWithLoader(IPixLoader loader, Stream stream)

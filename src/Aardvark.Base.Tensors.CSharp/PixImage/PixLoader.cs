@@ -114,4 +114,26 @@ namespace Aardvark.Base
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         PixImageInfo GetInfoFromStream(Stream stream);
     }
+
+    /// <summary>
+    /// Interface for PixImage loaders supporting loading mipmap chains.
+    /// </summary>
+    public interface IPixMipmapLoader : IPixLoader
+    {
+        /// <summary>
+        /// Loads a PixImageMipMap from a file.
+        /// </summary>
+        /// <param name="filename">The file to load.</param>
+        /// <returns>The loaded PixImageMipMap.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        PixImageMipMap LoadMipmapFromFile(string filename);
+
+        /// <summary>
+        /// Loads a PixImageMipMap from a stream.
+        /// </summary>
+        /// <param name="stream">The strean to load.</param>
+        /// <returns>The loaded PixImageMipMap.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        PixImageMipMap LoadMipmapFromStream(Stream stream);
+    }
 }

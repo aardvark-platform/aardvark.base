@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -83,6 +84,26 @@ namespace Aardvark.Base
             return Create(pix.IntoIEnumerable(), options).Single();
         }
 
+        #region Load from file
+
+        private static PixImageMipMap LoadMipmapFromFileWithLoader(IPixLoader loader, string filename)
+        {
+            if (loader is IPixMipmapLoader mipLoader)
+            {
+                return mipLoader.LoadMipmapFromFile(filename);
+            }
+            else
+            {
+                return new PixImageMipMap(loader.LoadFromFile(filename));
+            }
+        }
+
+        private static PixImageMipMap TryLoadFromFileWithLoader(IPixLoader loader, string filename)
+            => PixImage.TryInvokeLoader(
+                    loader, l => LoadMipmapFromFileWithLoader(loader, filename), PixImage.NotNull,
+                    $"load image mipmap from file '{filename}'"
+            );
+
         /// <summary>
         /// Loads an image from the given file.
         /// </summary>
@@ -91,7 +112,10 @@ namespace Aardvark.Base
         /// <returns>The loaded image.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImageMipMap Load(string filename, IPixLoader loader = null)
-            => new PixImageMipMap(PixImage.Load(filename, loader));
+            => PixImage.InvokeLoaders(
+                    loader, filename, (l, f) => TryLoadFromFileWithLoader(l, f), PixImage.Ignore, PixImage.NotNull,
+                    $"Could not load image mipmap from file '{filename}'"
+            );
 
         /// <summary>
         /// Loads images from the given files.
@@ -100,6 +124,7 @@ namespace Aardvark.Base
         /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
         /// <returns>The loaded images.</returns>
         /// <exception cref="ImageLoadException">if an image could not be loaded.</exception>
+        [Obsolete]
         public static IEnumerable<PixImageMipMap> Load(IEnumerable<string> filenames, IPixLoader loader = null)
             => Load(filenames, MipMapOptions.Default, loader);
 
@@ -111,7 +136,8 @@ namespace Aardvark.Base
         /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
         /// <returns>The loaded images.</returns>
         /// <exception cref="ImageLoadException">if an image could not be loaded.</exception>
-        public static IEnumerable<PixImageMipMap>Load(IEnumerable<string> filenames, MipMapOptions options, IPixLoader loader = null)
+        [Obsolete]
+        public static IEnumerable<PixImageMipMap> Load(IEnumerable<string> filenames, MipMapOptions options, IPixLoader loader = null)
             => Create(PixImage.Load(filenames, loader), options);
 
         [Obsolete("Use Load()")]
@@ -137,6 +163,44 @@ namespace Aardvark.Base
         {
             return Create(from filename in filenames select PixImage.Create(filename), options);
         }
+
+        #endregion
+
+        #region Load from stream
+
+        private static PixImageMipMap LoadMipmapFromStreamWithLoader(IPixLoader loader, Stream stream)
+        {
+            if (loader is IPixMipmapLoader mipLoader)
+            {
+                return mipLoader.LoadMipmapFromStream(stream);
+            }
+            else
+            {
+                return new PixImageMipMap(loader.LoadFromStream(stream));
+            }
+        }
+
+        private static PixImageMipMap TryLoadFromStreamWithLoader(IPixLoader loader, Stream stream)
+            => PixImage.TryInvokeLoader(
+                    loader, l => LoadMipmapFromStreamWithLoader(l, stream), PixImage.NotNull,
+                    $"load image mipmap from {PixImage.GetStreamDescription(stream)}"
+            );
+
+        /// <summary>
+        /// Loads an image from the given stream.
+        /// </summary>
+        /// <param name="stream">The image stream to load.</param>
+        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
+        /// <returns>The loaded image.</returns>
+        /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
+        /// <exception cref="NotSupportedException">if the stream is not seekable and multiple loaders are invoked.</exception>
+        public static PixImageMipMap Load(Stream stream, IPixLoader loader = null)
+            => PixImage.InvokeLoadersWithStream(
+                loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), PixImage.NotNull,
+                $"Could not load image mipmap from {PixImage.GetStreamDescription(stream)}"
+            );
+
+        #endregion
 
         #endregion
 
