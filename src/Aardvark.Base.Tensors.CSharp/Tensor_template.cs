@@ -30,6 +30,7 @@ namespace Aardvark.Base
     //# var itza = new[] { "0L", "V2l.Zero", "V3l.Zero", "V4l.Zero" };
     //# var itoa = new[] { "1L", "V2l.One", "V3l.One", "V4l.One" };
     //# var deltacomments = new[] { "Element stride", "Element and line stride", "Stride in each dimension", "Stride in each dimension" };
+    //# var zerocoords = new[] { "coordinate 0", "coordinates [0, 0]", "coordinates [0, 0, 0]", "coordinates [0, 0, 0, 0]" };
     //# var vectn = Meta.GenericTensorTypes[0].Name;
     //# var mattn = Meta.GenericTensorTypes[2].Name;
     //# var voltn = Meta.GenericTensorTypes[4].Name;
@@ -219,7 +220,7 @@ namespace Aardvark.Base
     public struct __ttn__Info : ITensorInfo
     {
         /// <summary>
-        /// Location of [0,0] element within data array.
+        /// Index of element with __zerocoords[d-1]__ in the underlying data array.
         /// </summary>
         public long Origin;
 
@@ -235,6 +236,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Coordinates of the first element.
+        /// May differ from __zerocoords[d-1]__ for subwindows that retain the original coordinate space.
         /// </summary>
         public __itn__ First;
 
@@ -324,7 +326,7 @@ namespace Aardvark.Base
 
         //# }
         /// <summary>
-        /// Construct matrix info of specified size.
+        /// Construct __ttnl__ info of specified size.
         /// </summary>
         public __ttn__Info(__iitn__ size)
             : this((__itn__)size)
@@ -332,21 +334,21 @@ namespace Aardvark.Base
 
         //# if (d > 1) {
         /// <summary>
-        /// Construct matrix info of specified size and delta.
+        /// Construct __ttnl__ info of specified size and delta.
         /// </summary>
         public __ttn__Info(__iitn__ size, __iitn__ delta)
             : this((__itn__)size, (__itn__)delta)
         { }
 
         /// <summary>
-        /// Construct matrix info of specified size.
+        /// Construct __ttnl__ info of specified size.
         /// </summary>
         public __ttn__Info(/*# ifa.ForEach(f => { */long size__f__/*# }, comma); */)
             : this(new __itn__(/*# ifa.ForEach(f => { */size__f__/*# }, comma); */))
         { }
 
         /// <summary>
-        /// Construct matrix info of specified size.
+        /// Construct __ttnl__ info of specified size.
         /// </summary>
         public __ttn__Info(/*# ifa.ForEach(f => { */int size__f__/*# }, comma); */)
             : this(new __itn__(/*# ifa.ForEach(f => { */size__f__/*# }, comma); */))
