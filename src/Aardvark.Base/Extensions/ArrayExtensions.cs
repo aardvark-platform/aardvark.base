@@ -2255,18 +2255,6 @@ namespace Aardvark.Base
 
         #region Memcopy
 
-        private static class Msvcrt
-        {
-            [DllImport("msvcrt.dll")]
-            public static extern int memcpy (IntPtr target, IntPtr src, UIntPtr size);
-        }
-
-        private static class Libc
-        {
-            [DllImport("libc")]
-            public static extern int memcpy (IntPtr target, IntPtr src, UIntPtr size);
-        }
-
         /// <summary>
         /// Copies the specified part of an array to the target-pointer.
         /// NOTE: May cause AccessViolationException if the target-pointer
@@ -2278,16 +2266,25 @@ namespace Aardvark.Base
         /// <param name="target">The target pointer</param>
         public static void CopyTo(this Array input, int offset, int length, IntPtr target)
         {
-            var gc = GCHandle.Alloc (input, GCHandleType.Pinned);
-            var type = input.GetType().GetElementType();
-            var typeSize = Marshal.SizeOf (type);
+            var gc = GCHandle.Alloc(input, GCHandleType.Pinned);
 
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
-                Libc.memcpy (target, gc.AddrOfPinnedObject () + offset * typeSize, (UIntPtr)(length * typeSize));
-            else
-                Msvcrt.memcpy (target, gc.AddrOfPinnedObject () + offset * typeSize, (UIntPtr)(length * typeSize));
+            try
+            {
+                var type = input.GetType().GetElementType();
+                var typeSize = Marshal.SizeOf(type);
+                var dataSize = length * typeSize;
 
-            gc.Free ();
+                unsafe
+                {
+                    var src = gc.AddrOfPinnedObject() + offset * typeSize;
+                    Buffer.MemoryCopy(src.ToPointer(), target.ToPointer(), dataSize, dataSize);
+                };
+
+            }
+            finally
+            {
+                gc.Free();
+            }
         }
 
         public static void CopyTo(this Array input, int length, IntPtr target)
@@ -2302,16 +2299,24 @@ namespace Aardvark.Base
 
         public static void CopyTo(this IntPtr input, Array target, int offset, int length)
         {
-            var gc = GCHandle.Alloc (target, GCHandleType.Pinned);
-            var type = target.GetType().GetElementType();
-            var typeSize = Marshal.SizeOf (type);
+            var gc = GCHandle.Alloc(target, GCHandleType.Pinned);
 
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
-                Libc.memcpy (gc.AddrOfPinnedObject () + offset * typeSize, input, (UIntPtr)(length * typeSize));
-            else
-                Msvcrt.memcpy (gc.AddrOfPinnedObject () + offset * typeSize, input, (UIntPtr)(length * typeSize));
+            try
+            {
+                var type = target.GetType().GetElementType();
+                var typeSize = Marshal.SizeOf(type);
+                var dataSize = length * typeSize;
 
-            gc.Free ();
+                unsafe
+                {
+                    var dst = gc.AddrOfPinnedObject() + offset * typeSize;
+                    Buffer.MemoryCopy(input.ToPointer(), dst.ToPointer(), dataSize, dataSize);
+                };
+            }
+            finally
+            {
+                gc.Free();
+            }
         }
 
         public static void CopyTo(this IntPtr input, Array target, int length)
@@ -2327,11 +2332,10 @@ namespace Aardvark.Base
 
         public static void CopyTo(this IntPtr input, IntPtr target, int size)
         {
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
-                Libc.memcpy(target, input, (UIntPtr)size);
-            else
-                Msvcrt.memcpy(target, input, (UIntPtr)size);
-
+            unsafe
+            {
+                Buffer.MemoryCopy(input.ToPointer(), target.ToPointer(), size, size);
+            };
         }
 
         #endregion
