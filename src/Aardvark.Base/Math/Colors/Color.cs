@@ -151,6 +151,9 @@ namespace Aardvark.Base
         {
             public static readonly Symbol BW = "BW";
             public static readonly Symbol Gray = "Gray";
+            public static readonly Symbol Alpha = "Alpha";
+
+            public static readonly Symbol GrayAlpha = "GrayAlpha";
 
             public static readonly Symbol RGB = "RGB";
             public static readonly Symbol BGR = "BGR";
@@ -176,6 +179,9 @@ namespace Aardvark.Base
         {
             public static readonly Symbol BW = "BW";
             public static readonly Symbol Gray = "Gray";
+            public static readonly Symbol Alpha = "Alpha";
+
+            public static readonly Symbol GrayAlpha = "GrayAlpha";
 
             public static readonly Symbol RGB = "RGB";
             public static readonly Symbol BGR = "BGR";
@@ -195,11 +201,15 @@ namespace Aardvark.Base
             public static readonly Symbol NormalUV = "NormalUV";
         };
 
-        private static (Col.Format, Symbol, Symbol, int)[] s_colFormatArray =
+        private static readonly (Col.Format, Symbol, Symbol, int)[] s_colFormatArray =
             new[]
             {
                 (Format.BW,   Name.BW,   Intent.BW,   1),
                 (Format.Gray, Name.Gray, Intent.Gray, 1),
+                (Format.Alpha, Name.Alpha, Intent.Alpha, 1),
+
+                (Format.GrayAlpha, Name.GrayAlpha, Intent.GrayAlpha, 2),
+
                 (Format.RGB,  Name.RGB,  Intent.RGB,  3),
                 (Format.BGR,  Name.BGR,  Intent.BGR,  3),
                 (Format.RGBA, Name.RGBA, Intent.RGBA, 4),
@@ -265,11 +275,15 @@ namespace Aardvark.Base
             return s_channelCountMap[format];
         }
 
-        private static Dict<Format, Channel[]> s_formatChannelsMap =
+        private static readonly Dict<Format, Channel[]> s_formatChannelsMap =
             new Dict<Format, Channel[]>()
             {
                 { Format.BW, new[] { Channel.BW } },
                 { Format.Gray, new[] { Channel.Gray } },
+                { Format.Alpha, new[] { Channel.Alpha } },
+
+                { Format.GrayAlpha, new[] { Channel.Gray, Channel.Alpha } },
+
                 { Format.RGB, new[] { Channel.Red, Channel.Green, Channel.Blue } },
                 { Format.BGR, new[] { Channel.Blue, Channel.Green, Channel.Red } },
                 { Format.RGBA, new[] { Channel.Red, Channel.Green, Channel.Blue, Channel.Alpha } },
@@ -294,13 +308,18 @@ namespace Aardvark.Base
             Channel[] channels;
             if (s_formatChannelsMap.TryGetValue(format, out channels))
                 return channels;
-            throw new ArgumentException("channels of format not defined");
+            throw new ArgumentException($"Channels of format {format} not defined.");
         }
 
-        private static Dict<Format, long[]> s_channelOrderMap =
+        private static readonly Dict<Format, long[]> s_channelOrderMap =
             new Dict<Format, long[]>()
             {
+                { Format.BW, new[] { 0L } },
                 { Format.Gray, new[] { 0L } },
+                { Format.Alpha, new[] { 0L } },
+
+                { Format.GrayAlpha, new[] { 0L, 1L } },
+
                 { Format.RGB, new[] { 0L, 1L, 2L } },
                 { Format.BGR, new[] { 2L, 1L, 0L } },
                 { Format.RGBA, new[] { 0L, 1L, 2L, 3L } },
@@ -325,12 +344,15 @@ namespace Aardvark.Base
             return s_channelOrderMap[format];
         }
 
-        private static Dict<(Format, Channel), long> s_channelIndexMap =
+        private static readonly Dict<(Format, Channel), long> s_channelIndexMap =
             new Dict<(Format, Channel), long>()
             {
                 { (Format.BW, Channel.BW), 0L },
-
                 { (Format.Gray, Channel.Gray), 0L },
+                { (Format.Alpha, Channel.Alpha), 0L },
+
+                { (Format.GrayAlpha, Channel.Gray), 0L },
+                { (Format.GrayAlpha, Channel.Alpha), 1L },
 
                 { (Format.RGB, Channel.Red), 0L },
                 { (Format.RGB, Channel.Green), 1L },
@@ -399,7 +421,7 @@ namespace Aardvark.Base
             if (s_channelIndexMap.TryGetValue((format, channel),
                                               out long index))
                 return index;
-            throw new ArgumentException("format does not contain channel");
+            throw new ArgumentException($"Format {format} does not contain channel {channel}.");
         }
 
         public static long ChannelIndexNoThrow(this Format format, Channel channel)
