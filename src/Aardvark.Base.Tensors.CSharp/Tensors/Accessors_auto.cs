@@ -8,584 +8,624 @@ namespace Aardvark.Base
 {
     public static partial class TensorAccessors
     {
-        private static Dictionary<(Type, Type, Symbol),
-                                  Func<long[], ITensorAccessors>> s_creatorMap
+        #region Single channel accessors
+
+        private static ITensorAccessors GetByteAsByte(long[] delta)
+        {
+            return new TensorAccessors<byte, byte>()
+            {
+                Getter = (da, i) => (da[i]),
+                Setter = (da, i, v) => da[i] = (v),
+            };
+        }
+
+        private static ITensorAccessors GetByteAsUShort(long[] delta)
+        {
+            return new TensorAccessors<byte, ushort>()
+            {
+                Getter = (da, i) => Col.ByteToUShort(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UShortToByte(v),
+            };
+        }
+
+        private static ITensorAccessors GetByteAsUInt(long[] delta)
+        {
+            return new TensorAccessors<byte, uint>()
+            {
+                Getter = (da, i) => Col.ByteToUInt(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UIntToByte(v),
+            };
+        }
+
+        private static ITensorAccessors GetByteAsHalf(long[] delta)
+        {
+            return new TensorAccessors<byte, Half>()
+            {
+                Getter = (da, i) => Col.ByteToHalf(da[i]),
+                Setter = (da, i, v) => da[i] = Col.HalfToByte(v),
+            };
+        }
+
+        private static ITensorAccessors GetByteAsFloat(long[] delta)
+        {
+            return new TensorAccessors<byte, float>()
+            {
+                Getter = (da, i) => Col.ByteToFloat(da[i]),
+                Setter = (da, i, v) => da[i] = Col.FloatToByte(v),
+            };
+        }
+
+        private static ITensorAccessors GetByteAsDouble(long[] delta)
+        {
+            return new TensorAccessors<byte, double>()
+            {
+                Getter = (da, i) => Col.ByteToDouble(da[i]),
+                Setter = (da, i, v) => da[i] = Col.DoubleToByte(v),
+            };
+        }
+
+        private static ITensorAccessors GetUShortAsByte(long[] delta)
+        {
+            return new TensorAccessors<ushort, byte>()
+            {
+                Getter = (da, i) => Col.UShortToByte(da[i]),
+                Setter = (da, i, v) => da[i] = Col.ByteToUShort(v),
+            };
+        }
+
+        private static ITensorAccessors GetUShortAsUShort(long[] delta)
+        {
+            return new TensorAccessors<ushort, ushort>()
+            {
+                Getter = (da, i) => (da[i]),
+                Setter = (da, i, v) => da[i] = (v),
+            };
+        }
+
+        private static ITensorAccessors GetUShortAsUInt(long[] delta)
+        {
+            return new TensorAccessors<ushort, uint>()
+            {
+                Getter = (da, i) => Col.UShortToUInt(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UIntToUShort(v),
+            };
+        }
+
+        private static ITensorAccessors GetUShortAsHalf(long[] delta)
+        {
+            return new TensorAccessors<ushort, Half>()
+            {
+                Getter = (da, i) => Col.UShortToHalf(da[i]),
+                Setter = (da, i, v) => da[i] = Col.HalfToUShort(v),
+            };
+        }
+
+        private static ITensorAccessors GetUShortAsFloat(long[] delta)
+        {
+            return new TensorAccessors<ushort, float>()
+            {
+                Getter = (da, i) => Col.UShortToFloat(da[i]),
+                Setter = (da, i, v) => da[i] = Col.FloatToUShort(v),
+            };
+        }
+
+        private static ITensorAccessors GetUShortAsDouble(long[] delta)
+        {
+            return new TensorAccessors<ushort, double>()
+            {
+                Getter = (da, i) => Col.UShortToDouble(da[i]),
+                Setter = (da, i, v) => da[i] = Col.DoubleToUShort(v),
+            };
+        }
+
+        private static ITensorAccessors GetUIntAsByte(long[] delta)
+        {
+            return new TensorAccessors<uint, byte>()
+            {
+                Getter = (da, i) => Col.UIntToByte(da[i]),
+                Setter = (da, i, v) => da[i] = Col.ByteToUInt(v),
+            };
+        }
+
+        private static ITensorAccessors GetUIntAsUShort(long[] delta)
+        {
+            return new TensorAccessors<uint, ushort>()
+            {
+                Getter = (da, i) => Col.UIntToUShort(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UShortToUInt(v),
+            };
+        }
+
+        private static ITensorAccessors GetUIntAsUInt(long[] delta)
+        {
+            return new TensorAccessors<uint, uint>()
+            {
+                Getter = (da, i) => (da[i]),
+                Setter = (da, i, v) => da[i] = (v),
+            };
+        }
+
+        private static ITensorAccessors GetUIntAsHalf(long[] delta)
+        {
+            return new TensorAccessors<uint, Half>()
+            {
+                Getter = (da, i) => Col.UIntToHalf(da[i]),
+                Setter = (da, i, v) => da[i] = Col.HalfToUInt(v),
+            };
+        }
+
+        private static ITensorAccessors GetUIntAsFloat(long[] delta)
+        {
+            return new TensorAccessors<uint, float>()
+            {
+                Getter = (da, i) => Col.UIntToFloat(da[i]),
+                Setter = (da, i, v) => da[i] = Col.FloatToUInt(v),
+            };
+        }
+
+        private static ITensorAccessors GetUIntAsDouble(long[] delta)
+        {
+            return new TensorAccessors<uint, double>()
+            {
+                Getter = (da, i) => Col.UIntToDouble(da[i]),
+                Setter = (da, i, v) => da[i] = Col.DoubleToUInt(v),
+            };
+        }
+
+        private static ITensorAccessors GetHalfAsByte(long[] delta)
+        {
+            return new TensorAccessors<Half, byte>()
+            {
+                Getter = (da, i) => Col.HalfToByte(da[i]),
+                Setter = (da, i, v) => da[i] = Col.ByteToHalf(v),
+            };
+        }
+
+        private static ITensorAccessors GetHalfAsUShort(long[] delta)
+        {
+            return new TensorAccessors<Half, ushort>()
+            {
+                Getter = (da, i) => Col.HalfToUShort(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UShortToHalf(v),
+            };
+        }
+
+        private static ITensorAccessors GetHalfAsUInt(long[] delta)
+        {
+            return new TensorAccessors<Half, uint>()
+            {
+                Getter = (da, i) => Col.HalfToUInt(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UIntToHalf(v),
+            };
+        }
+
+        private static ITensorAccessors GetHalfAsHalf(long[] delta)
+        {
+            return new TensorAccessors<Half, Half>()
+            {
+                Getter = (da, i) => (da[i]),
+                Setter = (da, i, v) => da[i] = (v),
+            };
+        }
+
+        private static ITensorAccessors GetHalfAsFloat(long[] delta)
+        {
+            return new TensorAccessors<Half, float>()
+            {
+                Getter = (da, i) => Col.HalfToFloat(da[i]),
+                Setter = (da, i, v) => da[i] = Col.FloatToHalf(v),
+            };
+        }
+
+        private static ITensorAccessors GetHalfAsDouble(long[] delta)
+        {
+            return new TensorAccessors<Half, double>()
+            {
+                Getter = (da, i) => Col.HalfToDouble(da[i]),
+                Setter = (da, i, v) => da[i] = Col.DoubleToHalf(v),
+            };
+        }
+
+        private static ITensorAccessors GetFloatAsByte(long[] delta)
+        {
+            return new TensorAccessors<float, byte>()
+            {
+                Getter = (da, i) => Col.FloatToByte(da[i]),
+                Setter = (da, i, v) => da[i] = Col.ByteToFloat(v),
+            };
+        }
+
+        private static ITensorAccessors GetFloatAsUShort(long[] delta)
+        {
+            return new TensorAccessors<float, ushort>()
+            {
+                Getter = (da, i) => Col.FloatToUShort(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UShortToFloat(v),
+            };
+        }
+
+        private static ITensorAccessors GetFloatAsUInt(long[] delta)
+        {
+            return new TensorAccessors<float, uint>()
+            {
+                Getter = (da, i) => Col.FloatToUInt(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UIntToFloat(v),
+            };
+        }
+
+        private static ITensorAccessors GetFloatAsHalf(long[] delta)
+        {
+            return new TensorAccessors<float, Half>()
+            {
+                Getter = (da, i) => Col.FloatToHalf(da[i]),
+                Setter = (da, i, v) => da[i] = Col.HalfToFloat(v),
+            };
+        }
+
+        private static ITensorAccessors GetFloatAsFloat(long[] delta)
+        {
+            return new TensorAccessors<float, float>()
+            {
+                Getter = (da, i) => (da[i]),
+                Setter = (da, i, v) => da[i] = (v),
+            };
+        }
+
+        private static ITensorAccessors GetFloatAsDouble(long[] delta)
+        {
+            return new TensorAccessors<float, double>()
+            {
+                Getter = (da, i) => Col.FloatToDouble(da[i]),
+                Setter = (da, i, v) => da[i] = Col.DoubleToFloat(v),
+            };
+        }
+
+        private static ITensorAccessors GetDoubleAsByte(long[] delta)
+        {
+            return new TensorAccessors<double, byte>()
+            {
+                Getter = (da, i) => Col.DoubleToByte(da[i]),
+                Setter = (da, i, v) => da[i] = Col.ByteToDouble(v),
+            };
+        }
+
+        private static ITensorAccessors GetDoubleAsUShort(long[] delta)
+        {
+            return new TensorAccessors<double, ushort>()
+            {
+                Getter = (da, i) => Col.DoubleToUShort(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UShortToDouble(v),
+            };
+        }
+
+        private static ITensorAccessors GetDoubleAsUInt(long[] delta)
+        {
+            return new TensorAccessors<double, uint>()
+            {
+                Getter = (da, i) => Col.DoubleToUInt(da[i]),
+                Setter = (da, i, v) => da[i] = Col.UIntToDouble(v),
+            };
+        }
+
+        private static ITensorAccessors GetDoubleAsHalf(long[] delta)
+        {
+            return new TensorAccessors<double, Half>()
+            {
+                Getter = (da, i) => Col.DoubleToHalf(da[i]),
+                Setter = (da, i, v) => da[i] = Col.HalfToDouble(v),
+            };
+        }
+
+        private static ITensorAccessors GetDoubleAsFloat(long[] delta)
+        {
+            return new TensorAccessors<double, float>()
+            {
+                Getter = (da, i) => Col.DoubleToFloat(da[i]),
+                Setter = (da, i, v) => da[i] = Col.FloatToDouble(v),
+            };
+        }
+
+        private static ITensorAccessors GetDoubleAsDouble(long[] delta)
+        {
+            return new TensorAccessors<double, double>()
+            {
+                Getter = (da, i) => (da[i]),
+                Setter = (da, i, v) => da[i] = (v),
+            };
+        }
+
+        #endregion
+
+        private static readonly Dictionary<(Type, Type, Symbol),
+                                           Func<long[], ITensorAccessors>> s_creatorMap
             = new Dictionary<(Type, Type, Symbol),
                              Func<long[], ITensorAccessors>>()
             {
-                #region ColorChannel byte as byte
+                #region Single channel byte as byte
 
-                {
-                    (typeof(byte), typeof(byte), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<byte, byte>()
-                        {
-                            Getter = (da, i) => (da[i]),
-                            Setter = (da, i, v) => da[i] = (v),
-                        };
-                    }
-                },
+                { (typeof(byte), typeof(byte), Intent.ColorChannel), GetByteAsByte },
+                { (typeof(byte), typeof(byte), Intent.BW), GetByteAsByte },
+                { (typeof(byte), typeof(byte), Intent.Gray), GetByteAsByte },
 
                 #endregion
 
-                #region ColorChannel byte as ushort
+                #region Single channel byte as ushort
 
-                {
-                    (typeof(byte), typeof(ushort), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<byte, ushort>()
-                        {
-                            Getter = (da, i) => Col.ByteToUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortToByte(v),
-                        };
-                    }
-                },
+                { (typeof(byte), typeof(ushort), Intent.ColorChannel), GetByteAsUShort },
+                { (typeof(byte), typeof(ushort), Intent.BW), GetByteAsUShort },
+                { (typeof(byte), typeof(ushort), Intent.Gray), GetByteAsUShort },
 
                 #endregion
 
-                #region ColorChannel byte as uint
+                #region Single channel byte as uint
 
-                {
-                    (typeof(byte), typeof(uint), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<byte, uint>()
-                        {
-                            Getter = (da, i) => Col.ByteToUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntToByte(v),
-                        };
-                    }
-                },
+                { (typeof(byte), typeof(uint), Intent.ColorChannel), GetByteAsUInt },
+                { (typeof(byte), typeof(uint), Intent.BW), GetByteAsUInt },
+                { (typeof(byte), typeof(uint), Intent.Gray), GetByteAsUInt },
 
                 #endregion
 
-                #region ColorChannel byte as Half
+                #region Single channel byte as Half
 
-                {
-                    (typeof(byte), typeof(Half), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<byte, Half>()
-                        {
-                            Getter = (da, i) => Col.ByteToHalf(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.HalfToByte(v),
-                        };
-                    }
-                },
+                { (typeof(byte), typeof(Half), Intent.ColorChannel), GetByteAsHalf },
+                { (typeof(byte), typeof(Half), Intent.BW), GetByteAsHalf },
+                { (typeof(byte), typeof(Half), Intent.Gray), GetByteAsHalf },
 
                 #endregion
 
-                #region ColorChannel byte as float
+                #region Single channel byte as float
 
-                {
-                    (typeof(byte), typeof(float), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<byte, float>()
-                        {
-                            Getter = (da, i) => Col.ByteToFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatToByte(v),
-                        };
-                    }
-                },
+                { (typeof(byte), typeof(float), Intent.ColorChannel), GetByteAsFloat },
+                { (typeof(byte), typeof(float), Intent.BW), GetByteAsFloat },
+                { (typeof(byte), typeof(float), Intent.Gray), GetByteAsFloat },
 
                 #endregion
 
-                #region ColorChannel byte as double
+                #region Single channel byte as double
 
-                {
-                    (typeof(byte), typeof(double), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<byte, double>()
-                        {
-                            Getter = (da, i) => Col.ByteToDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleToByte(v),
-                        };
-                    }
-                },
+                { (typeof(byte), typeof(double), Intent.ColorChannel), GetByteAsDouble },
+                { (typeof(byte), typeof(double), Intent.BW), GetByteAsDouble },
+                { (typeof(byte), typeof(double), Intent.Gray), GetByteAsDouble },
 
                 #endregion
 
-                #region ColorChannel ushort as byte
+                #region Single channel ushort as byte
 
-                {
-                    (typeof(ushort), typeof(byte), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<ushort, byte>()
-                        {
-                            Getter = (da, i) => Col.UShortToByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteToUShort(v),
-                        };
-                    }
-                },
+                { (typeof(ushort), typeof(byte), Intent.ColorChannel), GetUShortAsByte },
+                { (typeof(ushort), typeof(byte), Intent.BW), GetUShortAsByte },
+                { (typeof(ushort), typeof(byte), Intent.Gray), GetUShortAsByte },
 
                 #endregion
 
-                #region ColorChannel ushort as ushort
+                #region Single channel ushort as ushort
 
-                {
-                    (typeof(ushort), typeof(ushort), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<ushort, ushort>()
-                        {
-                            Getter = (da, i) => (da[i]),
-                            Setter = (da, i, v) => da[i] = (v),
-                        };
-                    }
-                },
+                { (typeof(ushort), typeof(ushort), Intent.ColorChannel), GetUShortAsUShort },
+                { (typeof(ushort), typeof(ushort), Intent.BW), GetUShortAsUShort },
+                { (typeof(ushort), typeof(ushort), Intent.Gray), GetUShortAsUShort },
 
                 #endregion
 
-                #region ColorChannel ushort as uint
+                #region Single channel ushort as uint
 
-                {
-                    (typeof(ushort), typeof(uint), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<ushort, uint>()
-                        {
-                            Getter = (da, i) => Col.UShortToUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntToUShort(v),
-                        };
-                    }
-                },
+                { (typeof(ushort), typeof(uint), Intent.ColorChannel), GetUShortAsUInt },
+                { (typeof(ushort), typeof(uint), Intent.BW), GetUShortAsUInt },
+                { (typeof(ushort), typeof(uint), Intent.Gray), GetUShortAsUInt },
 
                 #endregion
 
-                #region ColorChannel ushort as Half
+                #region Single channel ushort as Half
 
-                {
-                    (typeof(ushort), typeof(Half), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<ushort, Half>()
-                        {
-                            Getter = (da, i) => Col.UShortToHalf(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.HalfToUShort(v),
-                        };
-                    }
-                },
+                { (typeof(ushort), typeof(Half), Intent.ColorChannel), GetUShortAsHalf },
+                { (typeof(ushort), typeof(Half), Intent.BW), GetUShortAsHalf },
+                { (typeof(ushort), typeof(Half), Intent.Gray), GetUShortAsHalf },
 
                 #endregion
 
-                #region ColorChannel ushort as float
+                #region Single channel ushort as float
 
-                {
-                    (typeof(ushort), typeof(float), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<ushort, float>()
-                        {
-                            Getter = (da, i) => Col.UShortToFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatToUShort(v),
-                        };
-                    }
-                },
+                { (typeof(ushort), typeof(float), Intent.ColorChannel), GetUShortAsFloat },
+                { (typeof(ushort), typeof(float), Intent.BW), GetUShortAsFloat },
+                { (typeof(ushort), typeof(float), Intent.Gray), GetUShortAsFloat },
 
                 #endregion
 
-                #region ColorChannel ushort as double
+                #region Single channel ushort as double
 
-                {
-                    (typeof(ushort), typeof(double), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<ushort, double>()
-                        {
-                            Getter = (da, i) => Col.UShortToDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleToUShort(v),
-                        };
-                    }
-                },
+                { (typeof(ushort), typeof(double), Intent.ColorChannel), GetUShortAsDouble },
+                { (typeof(ushort), typeof(double), Intent.BW), GetUShortAsDouble },
+                { (typeof(ushort), typeof(double), Intent.Gray), GetUShortAsDouble },
 
                 #endregion
 
-                #region ColorChannel uint as byte
+                #region Single channel uint as byte
 
-                {
-                    (typeof(uint), typeof(byte), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<uint, byte>()
-                        {
-                            Getter = (da, i) => Col.UIntToByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteToUInt(v),
-                        };
-                    }
-                },
+                { (typeof(uint), typeof(byte), Intent.ColorChannel), GetUIntAsByte },
+                { (typeof(uint), typeof(byte), Intent.BW), GetUIntAsByte },
+                { (typeof(uint), typeof(byte), Intent.Gray), GetUIntAsByte },
 
                 #endregion
 
-                #region ColorChannel uint as ushort
+                #region Single channel uint as ushort
 
-                {
-                    (typeof(uint), typeof(ushort), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<uint, ushort>()
-                        {
-                            Getter = (da, i) => Col.UIntToUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortToUInt(v),
-                        };
-                    }
-                },
+                { (typeof(uint), typeof(ushort), Intent.ColorChannel), GetUIntAsUShort },
+                { (typeof(uint), typeof(ushort), Intent.BW), GetUIntAsUShort },
+                { (typeof(uint), typeof(ushort), Intent.Gray), GetUIntAsUShort },
 
                 #endregion
 
-                #region ColorChannel uint as uint
+                #region Single channel uint as uint
 
-                {
-                    (typeof(uint), typeof(uint), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<uint, uint>()
-                        {
-                            Getter = (da, i) => (da[i]),
-                            Setter = (da, i, v) => da[i] = (v),
-                        };
-                    }
-                },
+                { (typeof(uint), typeof(uint), Intent.ColorChannel), GetUIntAsUInt },
+                { (typeof(uint), typeof(uint), Intent.BW), GetUIntAsUInt },
+                { (typeof(uint), typeof(uint), Intent.Gray), GetUIntAsUInt },
 
                 #endregion
 
-                #region ColorChannel uint as Half
+                #region Single channel uint as Half
 
-                {
-                    (typeof(uint), typeof(Half), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<uint, Half>()
-                        {
-                            Getter = (da, i) => Col.UIntToHalf(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.HalfToUInt(v),
-                        };
-                    }
-                },
+                { (typeof(uint), typeof(Half), Intent.ColorChannel), GetUIntAsHalf },
+                { (typeof(uint), typeof(Half), Intent.BW), GetUIntAsHalf },
+                { (typeof(uint), typeof(Half), Intent.Gray), GetUIntAsHalf },
 
                 #endregion
 
-                #region ColorChannel uint as float
+                #region Single channel uint as float
 
-                {
-                    (typeof(uint), typeof(float), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<uint, float>()
-                        {
-                            Getter = (da, i) => Col.UIntToFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatToUInt(v),
-                        };
-                    }
-                },
+                { (typeof(uint), typeof(float), Intent.ColorChannel), GetUIntAsFloat },
+                { (typeof(uint), typeof(float), Intent.BW), GetUIntAsFloat },
+                { (typeof(uint), typeof(float), Intent.Gray), GetUIntAsFloat },
 
                 #endregion
 
-                #region ColorChannel uint as double
+                #region Single channel uint as double
 
-                {
-                    (typeof(uint), typeof(double), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<uint, double>()
-                        {
-                            Getter = (da, i) => Col.UIntToDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleToUInt(v),
-                        };
-                    }
-                },
+                { (typeof(uint), typeof(double), Intent.ColorChannel), GetUIntAsDouble },
+                { (typeof(uint), typeof(double), Intent.BW), GetUIntAsDouble },
+                { (typeof(uint), typeof(double), Intent.Gray), GetUIntAsDouble },
 
                 #endregion
 
-                #region ColorChannel Half as byte
+                #region Single channel Half as byte
 
-                {
-                    (typeof(Half), typeof(byte), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<Half, byte>()
-                        {
-                            Getter = (da, i) => Col.HalfToByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteToHalf(v),
-                        };
-                    }
-                },
+                { (typeof(Half), typeof(byte), Intent.ColorChannel), GetHalfAsByte },
+                { (typeof(Half), typeof(byte), Intent.BW), GetHalfAsByte },
+                { (typeof(Half), typeof(byte), Intent.Gray), GetHalfAsByte },
 
                 #endregion
 
-                #region ColorChannel Half as ushort
+                #region Single channel Half as ushort
 
-                {
-                    (typeof(Half), typeof(ushort), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<Half, ushort>()
-                        {
-                            Getter = (da, i) => Col.HalfToUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortToHalf(v),
-                        };
-                    }
-                },
+                { (typeof(Half), typeof(ushort), Intent.ColorChannel), GetHalfAsUShort },
+                { (typeof(Half), typeof(ushort), Intent.BW), GetHalfAsUShort },
+                { (typeof(Half), typeof(ushort), Intent.Gray), GetHalfAsUShort },
 
                 #endregion
 
-                #region ColorChannel Half as uint
+                #region Single channel Half as uint
 
-                {
-                    (typeof(Half), typeof(uint), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<Half, uint>()
-                        {
-                            Getter = (da, i) => Col.HalfToUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntToHalf(v),
-                        };
-                    }
-                },
+                { (typeof(Half), typeof(uint), Intent.ColorChannel), GetHalfAsUInt },
+                { (typeof(Half), typeof(uint), Intent.BW), GetHalfAsUInt },
+                { (typeof(Half), typeof(uint), Intent.Gray), GetHalfAsUInt },
 
                 #endregion
 
-                #region ColorChannel Half as Half
+                #region Single channel Half as Half
 
-                {
-                    (typeof(Half), typeof(Half), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<Half, Half>()
-                        {
-                            Getter = (da, i) => (da[i]),
-                            Setter = (da, i, v) => da[i] = (v),
-                        };
-                    }
-                },
+                { (typeof(Half), typeof(Half), Intent.ColorChannel), GetHalfAsHalf },
+                { (typeof(Half), typeof(Half), Intent.BW), GetHalfAsHalf },
+                { (typeof(Half), typeof(Half), Intent.Gray), GetHalfAsHalf },
 
                 #endregion
 
-                #region ColorChannel Half as float
+                #region Single channel Half as float
 
-                {
-                    (typeof(Half), typeof(float), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<Half, float>()
-                        {
-                            Getter = (da, i) => Col.HalfToFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatToHalf(v),
-                        };
-                    }
-                },
+                { (typeof(Half), typeof(float), Intent.ColorChannel), GetHalfAsFloat },
+                { (typeof(Half), typeof(float), Intent.BW), GetHalfAsFloat },
+                { (typeof(Half), typeof(float), Intent.Gray), GetHalfAsFloat },
 
                 #endregion
 
-                #region ColorChannel Half as double
+                #region Single channel Half as double
 
-                {
-                    (typeof(Half), typeof(double), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<Half, double>()
-                        {
-                            Getter = (da, i) => Col.HalfToDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleToHalf(v),
-                        };
-                    }
-                },
+                { (typeof(Half), typeof(double), Intent.ColorChannel), GetHalfAsDouble },
+                { (typeof(Half), typeof(double), Intent.BW), GetHalfAsDouble },
+                { (typeof(Half), typeof(double), Intent.Gray), GetHalfAsDouble },
 
                 #endregion
 
-                #region ColorChannel float as byte
+                #region Single channel float as byte
 
-                {
-                    (typeof(float), typeof(byte), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<float, byte>()
-                        {
-                            Getter = (da, i) => Col.FloatToByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteToFloat(v),
-                        };
-                    }
-                },
+                { (typeof(float), typeof(byte), Intent.ColorChannel), GetFloatAsByte },
+                { (typeof(float), typeof(byte), Intent.BW), GetFloatAsByte },
+                { (typeof(float), typeof(byte), Intent.Gray), GetFloatAsByte },
 
                 #endregion
 
-                #region ColorChannel float as ushort
+                #region Single channel float as ushort
 
-                {
-                    (typeof(float), typeof(ushort), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<float, ushort>()
-                        {
-                            Getter = (da, i) => Col.FloatToUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortToFloat(v),
-                        };
-                    }
-                },
+                { (typeof(float), typeof(ushort), Intent.ColorChannel), GetFloatAsUShort },
+                { (typeof(float), typeof(ushort), Intent.BW), GetFloatAsUShort },
+                { (typeof(float), typeof(ushort), Intent.Gray), GetFloatAsUShort },
 
                 #endregion
 
-                #region ColorChannel float as uint
+                #region Single channel float as uint
 
-                {
-                    (typeof(float), typeof(uint), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<float, uint>()
-                        {
-                            Getter = (da, i) => Col.FloatToUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntToFloat(v),
-                        };
-                    }
-                },
+                { (typeof(float), typeof(uint), Intent.ColorChannel), GetFloatAsUInt },
+                { (typeof(float), typeof(uint), Intent.BW), GetFloatAsUInt },
+                { (typeof(float), typeof(uint), Intent.Gray), GetFloatAsUInt },
 
                 #endregion
 
-                #region ColorChannel float as Half
+                #region Single channel float as Half
 
-                {
-                    (typeof(float), typeof(Half), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<float, Half>()
-                        {
-                            Getter = (da, i) => Col.FloatToHalf(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.HalfToFloat(v),
-                        };
-                    }
-                },
+                { (typeof(float), typeof(Half), Intent.ColorChannel), GetFloatAsHalf },
+                { (typeof(float), typeof(Half), Intent.BW), GetFloatAsHalf },
+                { (typeof(float), typeof(Half), Intent.Gray), GetFloatAsHalf },
 
                 #endregion
 
-                #region ColorChannel float as float
+                #region Single channel float as float
 
-                {
-                    (typeof(float), typeof(float), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<float, float>()
-                        {
-                            Getter = (da, i) => (da[i]),
-                            Setter = (da, i, v) => da[i] = (v),
-                        };
-                    }
-                },
+                { (typeof(float), typeof(float), Intent.ColorChannel), GetFloatAsFloat },
+                { (typeof(float), typeof(float), Intent.BW), GetFloatAsFloat },
+                { (typeof(float), typeof(float), Intent.Gray), GetFloatAsFloat },
 
                 #endregion
 
-                #region ColorChannel float as double
+                #region Single channel float as double
 
-                {
-                    (typeof(float), typeof(double), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<float, double>()
-                        {
-                            Getter = (da, i) => Col.FloatToDouble(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.DoubleToFloat(v),
-                        };
-                    }
-                },
+                { (typeof(float), typeof(double), Intent.ColorChannel), GetFloatAsDouble },
+                { (typeof(float), typeof(double), Intent.BW), GetFloatAsDouble },
+                { (typeof(float), typeof(double), Intent.Gray), GetFloatAsDouble },
 
                 #endregion
 
-                #region ColorChannel double as byte
+                #region Single channel double as byte
 
-                {
-                    (typeof(double), typeof(byte), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<double, byte>()
-                        {
-                            Getter = (da, i) => Col.DoubleToByte(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.ByteToDouble(v),
-                        };
-                    }
-                },
+                { (typeof(double), typeof(byte), Intent.ColorChannel), GetDoubleAsByte },
+                { (typeof(double), typeof(byte), Intent.BW), GetDoubleAsByte },
+                { (typeof(double), typeof(byte), Intent.Gray), GetDoubleAsByte },
 
                 #endregion
 
-                #region ColorChannel double as ushort
+                #region Single channel double as ushort
 
-                {
-                    (typeof(double), typeof(ushort), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<double, ushort>()
-                        {
-                            Getter = (da, i) => Col.DoubleToUShort(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UShortToDouble(v),
-                        };
-                    }
-                },
+                { (typeof(double), typeof(ushort), Intent.ColorChannel), GetDoubleAsUShort },
+                { (typeof(double), typeof(ushort), Intent.BW), GetDoubleAsUShort },
+                { (typeof(double), typeof(ushort), Intent.Gray), GetDoubleAsUShort },
 
                 #endregion
 
-                #region ColorChannel double as uint
+                #region Single channel double as uint
 
-                {
-                    (typeof(double), typeof(uint), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<double, uint>()
-                        {
-                            Getter = (da, i) => Col.DoubleToUInt(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.UIntToDouble(v),
-                        };
-                    }
-                },
+                { (typeof(double), typeof(uint), Intent.ColorChannel), GetDoubleAsUInt },
+                { (typeof(double), typeof(uint), Intent.BW), GetDoubleAsUInt },
+                { (typeof(double), typeof(uint), Intent.Gray), GetDoubleAsUInt },
 
                 #endregion
 
-                #region ColorChannel double as Half
+                #region Single channel double as Half
 
-                {
-                    (typeof(double), typeof(Half), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<double, Half>()
-                        {
-                            Getter = (da, i) => Col.DoubleToHalf(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.HalfToDouble(v),
-                        };
-                    }
-                },
+                { (typeof(double), typeof(Half), Intent.ColorChannel), GetDoubleAsHalf },
+                { (typeof(double), typeof(Half), Intent.BW), GetDoubleAsHalf },
+                { (typeof(double), typeof(Half), Intent.Gray), GetDoubleAsHalf },
 
                 #endregion
 
-                #region ColorChannel double as float
+                #region Single channel double as float
 
-                {
-                    (typeof(double), typeof(float), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<double, float>()
-                        {
-                            Getter = (da, i) => Col.DoubleToFloat(da[i]),
-                            Setter = (da, i, v) => da[i] = Col.FloatToDouble(v),
-                        };
-                    }
-                },
+                { (typeof(double), typeof(float), Intent.ColorChannel), GetDoubleAsFloat },
+                { (typeof(double), typeof(float), Intent.BW), GetDoubleAsFloat },
+                { (typeof(double), typeof(float), Intent.Gray), GetDoubleAsFloat },
 
                 #endregion
 
-                #region ColorChannel double as double
+                #region Single channel double as double
 
-                {
-                    (typeof(double), typeof(double), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<double, double>()
-                        {
-                            Getter = (da, i) => (da[i]),
-                            Setter = (da, i, v) => da[i] = (v),
-                        };
-                    }
-                },
+                { (typeof(double), typeof(double), Intent.ColorChannel), GetDoubleAsDouble },
+                { (typeof(double), typeof(double), Intent.BW), GetDoubleAsDouble },
+                { (typeof(double), typeof(double), Intent.Gray), GetDoubleAsDouble },
 
                 #endregion
 
