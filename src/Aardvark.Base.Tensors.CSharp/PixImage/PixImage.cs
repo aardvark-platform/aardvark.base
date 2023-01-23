@@ -1409,9 +1409,9 @@ namespace Aardvark.Base
                     matrix.Set(Col.Info<T>.MaxValue);
                 }
                 else if (channel == Col.Channel.Gray &&
-                         srcChannels.IndexOf(Col.Channel.Red) is var redIndex && redIndex > -1 &&
-                         srcChannels.IndexOf(Col.Channel.Green) is var greenIndex && greenIndex > -1 &&
-                         srcChannels.IndexOf(Col.Channel.Blue) is var blueIndex && blueIndex > -1)
+                         srcChannels.Contains(Col.Channel.Red) &&
+                         srcChannels.Contains(Col.Channel.Green) &&
+                         srcChannels.Contains(Col.Channel.Blue))
                 {
                     var t1 = pixImage.PixFormat.Type;
                     var t2 = typeof(T);
@@ -1426,6 +1426,13 @@ namespace Aardvark.Base
                             $"Conversion from {t1} image with format {pixImage.Format} to {t2} grayscale not implemented."
                         );
                     }
+                }
+                else if (channel == Col.Channel.Blue &&
+                         pixImage.Format == Col.Format.RG &&
+                         dstChannels.Contains(Col.Channel.Red) &&
+                         dstChannels.Contains(Col.Channel.Green))
+                {
+                    // Allow expanding from RG to RGB formats, blue channel is set to zero
                 }
                 else
                 {

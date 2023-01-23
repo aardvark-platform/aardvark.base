@@ -356,7 +356,7 @@ and [<AbstractClass; Sealed; Extension>] PixImageSharp private() =
             typeof<PixelFormats.Bgra4444>,      (fun (img : Image) (trafo : ImageTrafo) -> usingTransformed Col.Format.BGRA img.Width img.Height trafo (fun dst -> piMapping<Bgra4444, byte, C4b>(unbox img, dst, ImageSharpImageExtensions.ToC4b)) :> PixImage)
             typeof<PixelFormats.Bgra5551>,      (fun (img : Image) (trafo : ImageTrafo) -> usingTransformed Col.Format.BGRA img.Width img.Height trafo (fun dst -> piMapping<Bgra5551, byte, C4b>(unbox img, dst, ImageSharpImageExtensions.ToC4b)) :> PixImage)
             typeof<PixelFormats.Byte4>,         (fun (img : Image) (trafo : ImageTrafo) -> usingTransformed Col.Format.BGRA img.Width img.Height trafo (fun dst -> piMapping<Byte4, byte, C4b>(unbox img, dst, ImageSharpImageExtensions.ToC4b)) :> PixImage)
-            typeof<PixelFormats.Rg32>,          (fun (img : Image) (trafo : ImageTrafo) -> usingTransformed Col.Format.NormalUV img.Width img.Height trafo (fun dst -> piDirect<Rg32, uint16>(unbox img, dst)) :> PixImage)
+            typeof<PixelFormats.Rg32>,          (fun (img : Image) (trafo : ImageTrafo) -> usingTransformed Col.Format.RG img.Width img.Height trafo (fun dst -> piDirect<Rg32, uint16>(unbox img, dst)) :> PixImage)
             typeof<PixelFormats.HalfSingle>,    (fun (img : Image) (trafo : ImageTrafo) -> usingTransformed Col.Format.Gray img.Width img.Height trafo (fun dst -> piMapping<HalfSingle, float16, float16>(unbox img, dst, fun v -> Half.ToHalf v.PackedValue)) :> PixImage)
             typeof<PixelFormats.RgbaVector>,    (fun (img : Image) (trafo : ImageTrafo) -> usingTransformed Col.Format.RGBA img.Width img.Height trafo (fun dst -> piDirect<RgbaVector, float32>(unbox img, dst)) :> PixImage)
         ]

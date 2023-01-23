@@ -87,46 +87,51 @@ namespace Aardvark.Tests.Images
             //level 5: 1x1
         }
 
-        private static void FormatConversion<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<T, byte[]> expectedConversion)
+        private static byte[] GetArray(PixImage<byte> pi, V2l coord)
+        {
+            var arr = new byte[pi.ChannelCount];
+            arr.SetByIndex(i => pi.Volume[new V3l(coord, i)]);
+            return arr;
+        }
+
+        private static T GetColor<T>(PixImage<byte> pi, V2l coord)
+            => pi.GetMatrix<T>()[coord];
+
+        private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat,
+                                                     Func<PixImage<byte>, V2l, T1> getInput,
+                                                     Func<PixImage<byte>, V2l, T2> getActual,
+                                                     Func<T1, T2> expectedConversion)
         {
             var src = new PixImage<byte>(sourceFormat, 43, 81);
             src.Volume.Data.SetByIndex((_) => (byte)rnd.UniformInt(256));
-            var srcMatrix = src.GetMatrix<T>();
 
             var dst = src.ToFormat(targetFormat);
 
-            srcMatrix.ForeachCoord((coord) =>
+            src.GetChannel(0L).ForeachCoord((coord) =>
             {
-                var expected = expectedConversion(srcMatrix[coord.XY]);
-
-                var actual = new byte[dst.ChannelCount];
-                actual.SetByIndex(i => dst.Volume[new V3l(coord, i)]);
-
+                var expected = expectedConversion(getInput(src, coord));
+                var actual = getActual(dst, coord);
                 Assert.AreEqual(expected, actual);
             });
         }
 
+        private static void FormatConversionArrays(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], byte[]> expectedConversion)
+            => FormatConversion(sourceFormat, targetFormat, GetArray, GetArray, expectedConversion);
+
+        private static void FormatConversionFromArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], T> expectedConversion)
+            => FormatConversion(sourceFormat, targetFormat, GetArray, GetColor<T>, expectedConversion);
+
+        private static void FormatConversionToArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<T, byte[]> expectedConversion)
+            => FormatConversion(sourceFormat, targetFormat, GetColor<T>, GetArray, expectedConversion);
+
         private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat, Func<T1, T2> expectedConversion)
-        {
-            var src = new PixImage<byte>(sourceFormat, 43, 81);
-            src.Volume.Data.SetByIndex((_) => (byte)rnd.UniformInt(256));
-            var srcMatrix = src.GetMatrix<T1>();
-
-            var dst = src.ToFormat(targetFormat);
-            var dstMatrix = dst.GetMatrix<T2>();
-
-            dstMatrix.ForeachCoord((coord) =>
-            {
-                var expected = expectedConversion(srcMatrix[coord]);
-                Assert.AreEqual(expected, dstMatrix[coord]);
-            });
-        }
+            => FormatConversion(sourceFormat, targetFormat, GetColor<T1>, GetColor<T2>, expectedConversion);
 
         #region From Gray
 
         [Test]
         public void FormatConversionGrayToGrayAlpha()
-            => FormatConversion<byte>(Col.Format.Gray, Col.Format.GrayAlpha, gray => new byte[] { gray, 255 });
+            => FormatConversionToArray<byte>(Col.Format.Gray, Col.Format.GrayAlpha, gray => new byte[] { gray, 255 });
 
         [Test]
         public void FormatConversionGrayToAlpha()
@@ -147,6 +152,42 @@ namespace Aardvark.Tests.Images
         [Test]
         public void FormatConversionGrayToBGRA()
             => FormatConversion<byte, C4b>(Col.Format.Gray, Col.Format.BGRA, gray => new C4b(gray));
+
+        [Test]
+        public void FormatConversionGrayToRG()
+            => FormatConversionToArray<byte>(Col.Format.Gray, Col.Format.RG, gray => new byte[] { gray, gray });
+
+        #endregion
+
+        #region From GrayAlpha
+
+        [Test]
+        public void FormatConversionGrayAlphaToGray()
+            => FormatConversionFromArray<byte>(Col.Format.GrayAlpha, Col.Format.Gray, gray => gray[0]);
+
+        [Test]
+        public void FormatConversionGrayAlphaToAlpha()
+            => FormatConversionFromArray<byte>(Col.Format.GrayAlpha, Col.Format.Alpha, gray => gray[1]);
+
+        [Test]
+        public void FormatConversionGrayAlphaToRGB()
+            => FormatConversionFromArray<C3b>(Col.Format.GrayAlpha, Col.Format.RGB, gray => new C3b(gray[0]));
+
+        [Test]
+        public void FormatConversionGrayAlphaToBGR()
+            => FormatConversionFromArray<C3b>(Col.Format.GrayAlpha, Col.Format.BGR, gray => new C3b(gray[0]));
+
+        [Test]
+        public void FormatConversionGrayAlphaToRGBA()
+            => FormatConversionFromArray<C4b>(Col.Format.GrayAlpha, Col.Format.RGBA, gray => new C4b(gray[0], gray[0], gray[0], gray[1]));
+
+        [Test]
+        public void FormatConversionGrayAlphaToBGRA()
+            => FormatConversionFromArray<C4b>(Col.Format.GrayAlpha, Col.Format.BGRA, gray => new C4b(gray[0], gray[0], gray[0], gray[1]));
+
+        [Test]
+        public void FormatConversionGrayAlphaToRG()
+            => FormatConversionArrays(Col.Format.GrayAlpha, Col.Format.RG, gray => new byte[] { gray[0], gray[0] });
 
         #endregion
 
@@ -170,7 +211,11 @@ namespace Aardvark.Tests.Images
 
         [Test]
         public void FormatConversionRGBAToGrayAlpha()
-            => FormatConversion<C4b>(Col.Format.RGBA, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), color.A });
+            => FormatConversionToArray<C4b>(Col.Format.RGBA, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), color.A });
+
+        [Test]
+        public void FormatConversionRGBAToRG()
+            => FormatConversionToArray<C4b>(Col.Format.RGBA, Col.Format.RG, color => new byte[] { color.R, color.G });
 
         #endregion
 
@@ -194,7 +239,11 @@ namespace Aardvark.Tests.Images
 
         [Test]
         public void FormatConversionBGRAToGrayAlpha()
-            => FormatConversion<C4b>(Col.Format.BGRA, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), color.A });
+            => FormatConversionToArray<C4b>(Col.Format.BGRA, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), color.A });
+
+        [Test]
+        public void FormatConversionBGRAToRG()
+            => FormatConversionToArray<C4b>(Col.Format.BGRA, Col.Format.RG, color => new byte[] { color.R, color.G });
 
         #endregion
 
@@ -218,7 +267,11 @@ namespace Aardvark.Tests.Images
 
         [Test]
         public void FormatConversionRGBToGrayAlpha()
-            => FormatConversion<C3b>(Col.Format.RGB, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), 255 });
+            => FormatConversionToArray<C3b>(Col.Format.RGB, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), 255 });
+
+        [Test]
+        public void FormatConversionRGBToRG()
+            => FormatConversionToArray<C3b>(Col.Format.RGB, Col.Format.RG, color => new byte[] { color.R, color.G });
 
         #endregion
 
@@ -242,7 +295,31 @@ namespace Aardvark.Tests.Images
 
         [Test]
         public void FormatConversionBGRToGrayAlpha()
-            => FormatConversion<C3b>(Col.Format.BGR, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), 255 });
+            => FormatConversionToArray<C3b>(Col.Format.BGR, Col.Format.GrayAlpha, color => new byte[] { color.ToGrayByte(), 255 });
+
+        [Test]
+        public void FormatConversionBGRToRG()
+            => FormatConversionToArray<C3b>(Col.Format.BGR, Col.Format.RG, color => new byte[] { color.R, color.G });
+
+        #endregion
+
+        #region From RG
+
+        [Test]
+        public void FormatConversionRGToBGRA()
+            => FormatConversionFromArray<C4b>(Col.Format.RG, Col.Format.BGRA, color => new C4b(color[0], color[1], (byte)0, (byte)255));
+
+        [Test]
+        public void FormatConversionRGToRGBA()
+            => FormatConversionFromArray<C4b>(Col.Format.RG, Col.Format.RGBA, color => new C4b(color[0], color[1], (byte)0, (byte)255));
+
+        [Test]
+        public void FormatConversionRGToRGB()
+            => FormatConversionFromArray<C3b>(Col.Format.RG, Col.Format.RGB, color => new C3b(color[0], color[1], (byte)0));
+
+        [Test]
+        public void FormatConversionRGToBGR()
+            => FormatConversionFromArray<C3b>(Col.Format.RG, Col.Format.BGR, color => new C3b(color[0], color[1], (byte)0));
 
         #endregion
     }

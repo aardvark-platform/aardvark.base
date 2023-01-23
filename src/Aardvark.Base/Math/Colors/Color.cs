@@ -65,8 +65,10 @@ namespace Aardvark.Base
             HSL,
             HSV,
 
-            //
-            NormalUV,
+            RG,
+
+            [Obsolete("Use Col.Format.RG instead.")]
+            NormalUV = RG,
         }
 
         #endregion
@@ -103,6 +105,8 @@ namespace Aardvark.Base
             Y,
             u,
             v,
+
+            [Obsolete("Was used for NormalUV.")]
             U,
         }
 
@@ -155,6 +159,7 @@ namespace Aardvark.Base
 
             public static readonly Symbol GrayAlpha = "GrayAlpha";
 
+            public static readonly Symbol RG = "RG";
             public static readonly Symbol RGB = "RGB";
             public static readonly Symbol BGR = "BGR";
             public static readonly Symbol RGBA = "RGBA";
@@ -172,7 +177,8 @@ namespace Aardvark.Base
             public static readonly Symbol HSL = "HSL";
             public static readonly Symbol HSV = "HSV";
 
-            public static readonly Symbol NormalUV = "NormalUV";
+            [Obsolete("Use Col.Name.RG instead.")]
+            public static readonly Symbol NormalUV = RG;
         };
 
         public static class Intent
@@ -183,6 +189,7 @@ namespace Aardvark.Base
 
             public static readonly Symbol GrayAlpha = "GrayAlpha";
 
+            public static readonly Symbol RG = "RG";
             public static readonly Symbol RGB = "RGB";
             public static readonly Symbol BGR = "BGR";
             public static readonly Symbol RGBA = "RGBA";
@@ -198,7 +205,8 @@ namespace Aardvark.Base
             public static readonly Symbol HSL = "HSL";
             public static readonly Symbol HSV = "HSV";
 
-            public static readonly Symbol NormalUV = "NormalUV";
+            [Obsolete("Use Col.Intent.RG instead.")]
+            public static readonly Symbol NormalUV = RG;
         };
 
         private static readonly (Col.Format, Symbol, Symbol, int)[] s_colFormatArray =
@@ -210,6 +218,7 @@ namespace Aardvark.Base
 
                 (Format.GrayAlpha, Name.GrayAlpha, Intent.GrayAlpha, 2),
 
+                (Format.RG,   Name.RG,   Intent.RG,   2),
                 (Format.RGB,  Name.RGB,  Intent.RGB,  3),
                 (Format.BGR,  Name.BGR,  Intent.BGR,  3),
                 (Format.RGBA, Name.RGBA, Intent.RGBA, 4),
@@ -225,7 +234,6 @@ namespace Aardvark.Base
                 (Format.HSL,  Name.HSL,  Intent.HSL,  3),
                 (Format.HSV,  Name.HSV,  Intent.HSV,  3),
 
-                (Format.NormalUV, Name.NormalUV, Intent.NormalUV, 2),
             };
 
         static Col()
@@ -284,6 +292,7 @@ namespace Aardvark.Base
 
                 { Format.GrayAlpha, new[] { Channel.Gray, Channel.Alpha } },
 
+                { Format.RG, new[] { Channel.Red, Channel.Green } },
                 { Format.RGB, new[] { Channel.Red, Channel.Green, Channel.Blue } },
                 { Format.BGR, new[] { Channel.Blue, Channel.Green, Channel.Red } },
                 { Format.RGBA, new[] { Channel.Red, Channel.Green, Channel.Blue, Channel.Alpha } },
@@ -299,8 +308,6 @@ namespace Aardvark.Base
                 { Format.HSL, new[] { Channel.H, Channel.S, Channel.L } },
                 { Format.HSV, new[] { Channel.H, Channel.S, Channel.V } },
                 { Format.Yuv, new[] { Channel.Y, Channel.u, Channel.v } },
-
-                { Format.NormalUV, new[] {Channel.U, Channel.V } },
             };
 
         public static Channel[] ChannelsOfFormat(this Format format)
@@ -320,6 +327,7 @@ namespace Aardvark.Base
 
                 { Format.GrayAlpha, new[] { 0L, 1L } },
 
+                { Format.RG, new[] { 0L, 1L } },
                 { Format.RGB, new[] { 0L, 1L, 2L } },
                 { Format.BGR, new[] { 2L, 1L, 0L } },
                 { Format.RGBA, new[] { 0L, 1L, 2L, 3L } },
@@ -335,8 +343,6 @@ namespace Aardvark.Base
                 { Format.HSL, new[] { 0L, 1L, 2L } },
                 { Format.HSV, new[] { 0L, 1L, 2L } },
                 { Format.Yuv, new[] { 0L, 1L, 2L } },
-
-                { Format.NormalUV, new[] { 0L, 1L } },
             };
 
         public static long[] ChannelOrder(this Format format)
@@ -353,6 +359,9 @@ namespace Aardvark.Base
 
                 { (Format.GrayAlpha, Channel.Gray), 0L },
                 { (Format.GrayAlpha, Channel.Alpha), 1L },
+
+                { (Format.RG, Channel.Red), 0L },
+                { (Format.RG, Channel.Green), 1L },
 
                 { (Format.RGB, Channel.Red), 0L },
                 { (Format.RGB, Channel.Green), 1L },
@@ -409,10 +418,6 @@ namespace Aardvark.Base
                 { (Format.Yuv, Channel.Y), 0L },
                 { (Format.Yuv, Channel.u), 1L },
                 { (Format.Yuv, Channel.v), 2L },
-
-                { (Format.NormalUV, Channel.U), 0L },
-                { (Format.NormalUV, Channel.V), 1L },
-
             };
 
 
@@ -438,7 +443,7 @@ namespace Aardvark.Base
             return channelCount switch
             {
                 1 => Format.Gray,
-                2 => Format.NormalUV,
+                2 => Format.RG,
                 3 => (type == typeof(byte)) ? Format.BGR : Format.RGB,
                 4 => (type == typeof(byte)) ? Format.BGRA : Format.RGBA,
                 _ => throw new ArgumentException($"No default format for {type} with {channelCount} channels"),
