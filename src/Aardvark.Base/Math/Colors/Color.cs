@@ -982,69 +982,129 @@ namespace Aardvark.Base
 
         #region Color to Gray Conversion Constants
 
+        private const double c_grayDoubleRed   = 0.2989;
+        private const double c_grayDoubleGreen = 0.5870;
+        private const double c_grayDoubleBlue  = 0.1140;
+
+        private const float c_grayFloatRed     = (float)c_grayDoubleRed;
+        private const float c_grayFloatGreen   = (float)c_grayDoubleGreen;
+        private const float c_grayFloatBlue    = (float)c_grayDoubleBlue;
+
         // 65793 == 65536 * 255.99998/255
-        private const int c_grayByteFromC3bRed = (int)(65793 * 0.30);
-        private const int c_grayByteFromC3bGreen = (int)(65793 * 0.59);
-        private const int c_grayByteFromC3bBlue = (int)(65793 * 0.11);
+        private const int c_grayByteRed   = (int)(65793 * c_grayDoubleRed);
+        private const int c_grayByteGreen = (int)(65793 * c_grayDoubleGreen);
+        private const int c_grayByteBlue  = (int)(65793 * c_grayDoubleBlue);
 
         // 4295032833 == 4294967296 * 65535.99999999999/65535
-        private const long c_grayUShortFromC3usRed = (long)(4295032833L * 0.30);
-        private const long c_grayUShortFromC3usGreen = (long)(4295032833L * 0.59);
-        private const long c_grayUShortFromC3usBlue = (long)(4295032833L * 0.11);
+        private const long c_grayUShortRed   = (long)(4295032833L * c_grayDoubleRed);
+        private const long c_grayUShortGreen = (long)(4295032833L * c_grayDoubleGreen);
+        private const long c_grayUShortBlue  = (long)(4295032833L * c_grayDoubleBlue);
 
         #endregion
 
         #region Color to Gray Conversions
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte ToGrayByte(this C3b c)
-        {
-            return (byte)((c.R * c_grayByteFromC3bRed
-                         + c.G * c_grayByteFromC3bGreen
-                         + c.B * c_grayByteFromC3bBlue) >> 16);
-        }
+        #region Byte
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte ToGrayByte(this C4b c)
-        {
-            return (byte)((c.R * c_grayByteFromC3bRed
-                         + c.G * c_grayByteFromC3bGreen
-                         + c.B * c_grayByteFromC3bBlue) >> 16);
-        }
+        public static byte ToGrayByte(byte r, byte g, byte b)
+            => (byte)((r * c_grayByteRed + g * c_grayByteGreen + b * c_grayByteBlue) >> 16);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort ToGrayUShort(this C3us c)
-        {
-            return (ushort)((c.R * c_grayUShortFromC3usRed
-                           + c.G * c_grayUShortFromC3usGreen
-                           + c.B * c_grayUShortFromC3usBlue) >> 32);
-        }
+        public static byte ToGrayByte(this C3b c) => ToGrayByte(c.R, c.G, c.B);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort ToGrayUShort(this C4us c)
-        {
-            return (ushort)((c.R * c_grayUShortFromC3usRed
-                           + c.G * c_grayUShortFromC3usGreen
-                           + c.B * c_grayUShortFromC3usBlue) >> 32);
-        }
+        public static byte ToGrayByte(this C4b c) => ToGrayByte(c.R, c.G, c.B);
+
+        #endregion
+
+        #region UShort
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloat(this C3f c) { return c.R * 0.30f + c.G * 0.59f + c.B * 0.11f; }
+        public static ushort ToGrayUShort(ushort r, ushort g, ushort b)
+            => (ushort)((r * c_grayUShortRed + g * c_grayUShortGreen + b * c_grayUShortBlue) >> 32);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloat(this C4f c) { return c.R * 0.30f + c.G * 0.59f + c.B * 0.11f; }
+        public static ushort ToGrayUShort(this C3us c) => ToGrayUShort(c.R, c.G, c.B);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloatClamped(this C3f c)
-        {
-            return Fun.Clamp(c.R * 0.30f + c.G * 0.59f + c.B * 0.11f, 0.0f, 1.0f);
-        }
+        public static ushort ToGrayUShort(this C4us c) => ToGrayUShort(c.R, c.G, c.B);
+
+        #endregion
+
+        #region UInt
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloatClamped(C4f c)
-        {
-            return Fun.Clamp(c.R * 0.30f + c.G * 0.59f + c.B * 0.11f, 0.0f, 1.0f);
-        }
+        public static uint ToGrayUInt(uint r, uint g, uint b)
+            => DoubleToUInt(ToGrayDoubleClamped(UIntToDouble(r), UIntToDouble(g), UIntToDouble(b)));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ToGrayUInt(this C3ui c) => ToGrayUInt(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ToGrayUInt(this C4ui c) => ToGrayUInt(c.R, c.G, c.B);
+
+        #endregion
+
+        #region Half
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half ToGrayHalf(Half r, Half g, Half b)
+            => (Half)ToGrayFloat(r, g, b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half ToGrayHalfClamped(Half r, Half g, Half b)
+            => (Half)ToGrayFloatClamped(r, g, b);
+
+        #endregion
+
+        #region Float
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloat(float r, float g, float b)
+            => r * c_grayFloatRed + g * c_grayFloatGreen + b * c_grayFloatBlue;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloat(this C3f c) => ToGrayFloat(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloat(this C4f c) => ToGrayFloat(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloatClamped(float r, float g, float b)
+            => ToGrayFloat(r, g, b).Clamp(0, 1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloatClamped(this C3f c) => ToGrayFloatClamped(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloatClamped(C4f c) => ToGrayFloatClamped(c.R, c.G, c.B);
+
+        #endregion
+
+        #region Double
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDouble(double r, double g, double b)
+            => r * c_grayDoubleRed + g * c_grayDoubleGreen + b * c_grayDoubleBlue;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDouble(this C3d c) => ToGrayDouble(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDouble(this C4d c) => ToGrayDouble(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDoubleClamped(double r, double g, double b)
+            => ToGrayDouble(r, g, b).Clamp(0, 1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDoubleClamped(this C3d c) => ToGrayDoubleClamped(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDoubleClamped(C4d c) => ToGrayDoubleClamped(c.R, c.G, c.B);
+
+        #endregion
 
         #region Obsolete
 

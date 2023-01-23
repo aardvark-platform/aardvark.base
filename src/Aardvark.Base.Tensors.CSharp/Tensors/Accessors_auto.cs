@@ -346,6 +346,7 @@ namespace Aardvark.Base
                 { (typeof(byte), typeof(byte), Intent.ColorChannel), GetByteAsByte },
                 { (typeof(byte), typeof(byte), Intent.BW), GetByteAsByte },
                 { (typeof(byte), typeof(byte), Intent.Gray), GetByteAsByte },
+                { (typeof(byte), typeof(byte), Intent.Alpha), GetByteAsByte },
 
                 #endregion
 
@@ -354,6 +355,7 @@ namespace Aardvark.Base
                 { (typeof(byte), typeof(ushort), Intent.ColorChannel), GetByteAsUShort },
                 { (typeof(byte), typeof(ushort), Intent.BW), GetByteAsUShort },
                 { (typeof(byte), typeof(ushort), Intent.Gray), GetByteAsUShort },
+                { (typeof(byte), typeof(ushort), Intent.Alpha), GetByteAsUShort },
 
                 #endregion
 
@@ -362,6 +364,7 @@ namespace Aardvark.Base
                 { (typeof(byte), typeof(uint), Intent.ColorChannel), GetByteAsUInt },
                 { (typeof(byte), typeof(uint), Intent.BW), GetByteAsUInt },
                 { (typeof(byte), typeof(uint), Intent.Gray), GetByteAsUInt },
+                { (typeof(byte), typeof(uint), Intent.Alpha), GetByteAsUInt },
 
                 #endregion
 
@@ -370,6 +373,7 @@ namespace Aardvark.Base
                 { (typeof(byte), typeof(Half), Intent.ColorChannel), GetByteAsHalf },
                 { (typeof(byte), typeof(Half), Intent.BW), GetByteAsHalf },
                 { (typeof(byte), typeof(Half), Intent.Gray), GetByteAsHalf },
+                { (typeof(byte), typeof(Half), Intent.Alpha), GetByteAsHalf },
 
                 #endregion
 
@@ -378,6 +382,7 @@ namespace Aardvark.Base
                 { (typeof(byte), typeof(float), Intent.ColorChannel), GetByteAsFloat },
                 { (typeof(byte), typeof(float), Intent.BW), GetByteAsFloat },
                 { (typeof(byte), typeof(float), Intent.Gray), GetByteAsFloat },
+                { (typeof(byte), typeof(float), Intent.Alpha), GetByteAsFloat },
 
                 #endregion
 
@@ -386,6 +391,7 @@ namespace Aardvark.Base
                 { (typeof(byte), typeof(double), Intent.ColorChannel), GetByteAsDouble },
                 { (typeof(byte), typeof(double), Intent.BW), GetByteAsDouble },
                 { (typeof(byte), typeof(double), Intent.Gray), GetByteAsDouble },
+                { (typeof(byte), typeof(double), Intent.Alpha), GetByteAsDouble },
 
                 #endregion
 
@@ -394,6 +400,7 @@ namespace Aardvark.Base
                 { (typeof(ushort), typeof(byte), Intent.ColorChannel), GetUShortAsByte },
                 { (typeof(ushort), typeof(byte), Intent.BW), GetUShortAsByte },
                 { (typeof(ushort), typeof(byte), Intent.Gray), GetUShortAsByte },
+                { (typeof(ushort), typeof(byte), Intent.Alpha), GetUShortAsByte },
 
                 #endregion
 
@@ -402,6 +409,7 @@ namespace Aardvark.Base
                 { (typeof(ushort), typeof(ushort), Intent.ColorChannel), GetUShortAsUShort },
                 { (typeof(ushort), typeof(ushort), Intent.BW), GetUShortAsUShort },
                 { (typeof(ushort), typeof(ushort), Intent.Gray), GetUShortAsUShort },
+                { (typeof(ushort), typeof(ushort), Intent.Alpha), GetUShortAsUShort },
 
                 #endregion
 
@@ -410,6 +418,7 @@ namespace Aardvark.Base
                 { (typeof(ushort), typeof(uint), Intent.ColorChannel), GetUShortAsUInt },
                 { (typeof(ushort), typeof(uint), Intent.BW), GetUShortAsUInt },
                 { (typeof(ushort), typeof(uint), Intent.Gray), GetUShortAsUInt },
+                { (typeof(ushort), typeof(uint), Intent.Alpha), GetUShortAsUInt },
 
                 #endregion
 
@@ -418,6 +427,7 @@ namespace Aardvark.Base
                 { (typeof(ushort), typeof(Half), Intent.ColorChannel), GetUShortAsHalf },
                 { (typeof(ushort), typeof(Half), Intent.BW), GetUShortAsHalf },
                 { (typeof(ushort), typeof(Half), Intent.Gray), GetUShortAsHalf },
+                { (typeof(ushort), typeof(Half), Intent.Alpha), GetUShortAsHalf },
 
                 #endregion
 
@@ -426,6 +436,7 @@ namespace Aardvark.Base
                 { (typeof(ushort), typeof(float), Intent.ColorChannel), GetUShortAsFloat },
                 { (typeof(ushort), typeof(float), Intent.BW), GetUShortAsFloat },
                 { (typeof(ushort), typeof(float), Intent.Gray), GetUShortAsFloat },
+                { (typeof(ushort), typeof(float), Intent.Alpha), GetUShortAsFloat },
 
                 #endregion
 
@@ -434,6 +445,7 @@ namespace Aardvark.Base
                 { (typeof(ushort), typeof(double), Intent.ColorChannel), GetUShortAsDouble },
                 { (typeof(ushort), typeof(double), Intent.BW), GetUShortAsDouble },
                 { (typeof(ushort), typeof(double), Intent.Gray), GetUShortAsDouble },
+                { (typeof(ushort), typeof(double), Intent.Alpha), GetUShortAsDouble },
 
                 #endregion
 
@@ -442,6 +454,7 @@ namespace Aardvark.Base
                 { (typeof(uint), typeof(byte), Intent.ColorChannel), GetUIntAsByte },
                 { (typeof(uint), typeof(byte), Intent.BW), GetUIntAsByte },
                 { (typeof(uint), typeof(byte), Intent.Gray), GetUIntAsByte },
+                { (typeof(uint), typeof(byte), Intent.Alpha), GetUIntAsByte },
 
                 #endregion
 
@@ -450,6 +463,7 @@ namespace Aardvark.Base
                 { (typeof(uint), typeof(ushort), Intent.ColorChannel), GetUIntAsUShort },
                 { (typeof(uint), typeof(ushort), Intent.BW), GetUIntAsUShort },
                 { (typeof(uint), typeof(ushort), Intent.Gray), GetUIntAsUShort },
+                { (typeof(uint), typeof(ushort), Intent.Alpha), GetUIntAsUShort },
 
                 #endregion
 
@@ -458,6 +472,7 @@ namespace Aardvark.Base
                 { (typeof(uint), typeof(uint), Intent.ColorChannel), GetUIntAsUInt },
                 { (typeof(uint), typeof(uint), Intent.BW), GetUIntAsUInt },
                 { (typeof(uint), typeof(uint), Intent.Gray), GetUIntAsUInt },
+                { (typeof(uint), typeof(uint), Intent.Alpha), GetUIntAsUInt },
 
                 #endregion
 
@@ -466,6 +481,7 @@ namespace Aardvark.Base
                 { (typeof(uint), typeof(Half), Intent.ColorChannel), GetUIntAsHalf },
                 { (typeof(uint), typeof(Half), Intent.BW), GetUIntAsHalf },
                 { (typeof(uint), typeof(Half), Intent.Gray), GetUIntAsHalf },
+                { (typeof(uint), typeof(Half), Intent.Alpha), GetUIntAsHalf },
 
                 #endregion
 
@@ -474,6 +490,7 @@ namespace Aardvark.Base
                 { (typeof(uint), typeof(float), Intent.ColorChannel), GetUIntAsFloat },
                 { (typeof(uint), typeof(float), Intent.BW), GetUIntAsFloat },
                 { (typeof(uint), typeof(float), Intent.Gray), GetUIntAsFloat },
+                { (typeof(uint), typeof(float), Intent.Alpha), GetUIntAsFloat },
 
                 #endregion
 
@@ -482,6 +499,7 @@ namespace Aardvark.Base
                 { (typeof(uint), typeof(double), Intent.ColorChannel), GetUIntAsDouble },
                 { (typeof(uint), typeof(double), Intent.BW), GetUIntAsDouble },
                 { (typeof(uint), typeof(double), Intent.Gray), GetUIntAsDouble },
+                { (typeof(uint), typeof(double), Intent.Alpha), GetUIntAsDouble },
 
                 #endregion
 
@@ -490,6 +508,7 @@ namespace Aardvark.Base
                 { (typeof(Half), typeof(byte), Intent.ColorChannel), GetHalfAsByte },
                 { (typeof(Half), typeof(byte), Intent.BW), GetHalfAsByte },
                 { (typeof(Half), typeof(byte), Intent.Gray), GetHalfAsByte },
+                { (typeof(Half), typeof(byte), Intent.Alpha), GetHalfAsByte },
 
                 #endregion
 
@@ -498,6 +517,7 @@ namespace Aardvark.Base
                 { (typeof(Half), typeof(ushort), Intent.ColorChannel), GetHalfAsUShort },
                 { (typeof(Half), typeof(ushort), Intent.BW), GetHalfAsUShort },
                 { (typeof(Half), typeof(ushort), Intent.Gray), GetHalfAsUShort },
+                { (typeof(Half), typeof(ushort), Intent.Alpha), GetHalfAsUShort },
 
                 #endregion
 
@@ -506,6 +526,7 @@ namespace Aardvark.Base
                 { (typeof(Half), typeof(uint), Intent.ColorChannel), GetHalfAsUInt },
                 { (typeof(Half), typeof(uint), Intent.BW), GetHalfAsUInt },
                 { (typeof(Half), typeof(uint), Intent.Gray), GetHalfAsUInt },
+                { (typeof(Half), typeof(uint), Intent.Alpha), GetHalfAsUInt },
 
                 #endregion
 
@@ -514,6 +535,7 @@ namespace Aardvark.Base
                 { (typeof(Half), typeof(Half), Intent.ColorChannel), GetHalfAsHalf },
                 { (typeof(Half), typeof(Half), Intent.BW), GetHalfAsHalf },
                 { (typeof(Half), typeof(Half), Intent.Gray), GetHalfAsHalf },
+                { (typeof(Half), typeof(Half), Intent.Alpha), GetHalfAsHalf },
 
                 #endregion
 
@@ -522,6 +544,7 @@ namespace Aardvark.Base
                 { (typeof(Half), typeof(float), Intent.ColorChannel), GetHalfAsFloat },
                 { (typeof(Half), typeof(float), Intent.BW), GetHalfAsFloat },
                 { (typeof(Half), typeof(float), Intent.Gray), GetHalfAsFloat },
+                { (typeof(Half), typeof(float), Intent.Alpha), GetHalfAsFloat },
 
                 #endregion
 
@@ -530,6 +553,7 @@ namespace Aardvark.Base
                 { (typeof(Half), typeof(double), Intent.ColorChannel), GetHalfAsDouble },
                 { (typeof(Half), typeof(double), Intent.BW), GetHalfAsDouble },
                 { (typeof(Half), typeof(double), Intent.Gray), GetHalfAsDouble },
+                { (typeof(Half), typeof(double), Intent.Alpha), GetHalfAsDouble },
 
                 #endregion
 
@@ -538,6 +562,7 @@ namespace Aardvark.Base
                 { (typeof(float), typeof(byte), Intent.ColorChannel), GetFloatAsByte },
                 { (typeof(float), typeof(byte), Intent.BW), GetFloatAsByte },
                 { (typeof(float), typeof(byte), Intent.Gray), GetFloatAsByte },
+                { (typeof(float), typeof(byte), Intent.Alpha), GetFloatAsByte },
 
                 #endregion
 
@@ -546,6 +571,7 @@ namespace Aardvark.Base
                 { (typeof(float), typeof(ushort), Intent.ColorChannel), GetFloatAsUShort },
                 { (typeof(float), typeof(ushort), Intent.BW), GetFloatAsUShort },
                 { (typeof(float), typeof(ushort), Intent.Gray), GetFloatAsUShort },
+                { (typeof(float), typeof(ushort), Intent.Alpha), GetFloatAsUShort },
 
                 #endregion
 
@@ -554,6 +580,7 @@ namespace Aardvark.Base
                 { (typeof(float), typeof(uint), Intent.ColorChannel), GetFloatAsUInt },
                 { (typeof(float), typeof(uint), Intent.BW), GetFloatAsUInt },
                 { (typeof(float), typeof(uint), Intent.Gray), GetFloatAsUInt },
+                { (typeof(float), typeof(uint), Intent.Alpha), GetFloatAsUInt },
 
                 #endregion
 
@@ -562,6 +589,7 @@ namespace Aardvark.Base
                 { (typeof(float), typeof(Half), Intent.ColorChannel), GetFloatAsHalf },
                 { (typeof(float), typeof(Half), Intent.BW), GetFloatAsHalf },
                 { (typeof(float), typeof(Half), Intent.Gray), GetFloatAsHalf },
+                { (typeof(float), typeof(Half), Intent.Alpha), GetFloatAsHalf },
 
                 #endregion
 
@@ -570,6 +598,7 @@ namespace Aardvark.Base
                 { (typeof(float), typeof(float), Intent.ColorChannel), GetFloatAsFloat },
                 { (typeof(float), typeof(float), Intent.BW), GetFloatAsFloat },
                 { (typeof(float), typeof(float), Intent.Gray), GetFloatAsFloat },
+                { (typeof(float), typeof(float), Intent.Alpha), GetFloatAsFloat },
 
                 #endregion
 
@@ -578,6 +607,7 @@ namespace Aardvark.Base
                 { (typeof(float), typeof(double), Intent.ColorChannel), GetFloatAsDouble },
                 { (typeof(float), typeof(double), Intent.BW), GetFloatAsDouble },
                 { (typeof(float), typeof(double), Intent.Gray), GetFloatAsDouble },
+                { (typeof(float), typeof(double), Intent.Alpha), GetFloatAsDouble },
 
                 #endregion
 
@@ -586,6 +616,7 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(byte), Intent.ColorChannel), GetDoubleAsByte },
                 { (typeof(double), typeof(byte), Intent.BW), GetDoubleAsByte },
                 { (typeof(double), typeof(byte), Intent.Gray), GetDoubleAsByte },
+                { (typeof(double), typeof(byte), Intent.Alpha), GetDoubleAsByte },
 
                 #endregion
 
@@ -594,6 +625,7 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(ushort), Intent.ColorChannel), GetDoubleAsUShort },
                 { (typeof(double), typeof(ushort), Intent.BW), GetDoubleAsUShort },
                 { (typeof(double), typeof(ushort), Intent.Gray), GetDoubleAsUShort },
+                { (typeof(double), typeof(ushort), Intent.Alpha), GetDoubleAsUShort },
 
                 #endregion
 
@@ -602,6 +634,7 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(uint), Intent.ColorChannel), GetDoubleAsUInt },
                 { (typeof(double), typeof(uint), Intent.BW), GetDoubleAsUInt },
                 { (typeof(double), typeof(uint), Intent.Gray), GetDoubleAsUInt },
+                { (typeof(double), typeof(uint), Intent.Alpha), GetDoubleAsUInt },
 
                 #endregion
 
@@ -610,6 +643,7 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(Half), Intent.ColorChannel), GetDoubleAsHalf },
                 { (typeof(double), typeof(Half), Intent.BW), GetDoubleAsHalf },
                 { (typeof(double), typeof(Half), Intent.Gray), GetDoubleAsHalf },
+                { (typeof(double), typeof(Half), Intent.Alpha), GetDoubleAsHalf },
 
                 #endregion
 
@@ -618,6 +652,7 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(float), Intent.ColorChannel), GetDoubleAsFloat },
                 { (typeof(double), typeof(float), Intent.BW), GetDoubleAsFloat },
                 { (typeof(double), typeof(float), Intent.Gray), GetDoubleAsFloat },
+                { (typeof(double), typeof(float), Intent.Alpha), GetDoubleAsFloat },
 
                 #endregion
 
@@ -626,6 +661,7 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(double), Intent.ColorChannel), GetDoubleAsDouble },
                 { (typeof(double), typeof(double), Intent.BW), GetDoubleAsDouble },
                 { (typeof(double), typeof(double), Intent.Gray), GetDoubleAsDouble },
+                { (typeof(double), typeof(double), Intent.Alpha), GetDoubleAsDouble },
 
                 #endregion
 

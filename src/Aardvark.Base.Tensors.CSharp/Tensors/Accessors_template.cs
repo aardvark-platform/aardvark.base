@@ -40,7 +40,7 @@ namespace Aardvark.Base
                 //#     var ct_from_tt = ct == tt ? "" : "Col." + tt.Caps + "To" + ct.Caps;
                 #region Single channel __ttype__ as __ctype__
 
-                //# foreach (var intent in new [] { "ColorChannel", "BW", "Gray" }) {
+                //# foreach (var intent in new [] { "ColorChannel", "BW", "Gray", "Alpha" }) {
                 { (typeof(__ttype__), typeof(__ctype__), Intent.__intent__), Get__tcaps__As__ccaps__ },
                 //# } // intent
 

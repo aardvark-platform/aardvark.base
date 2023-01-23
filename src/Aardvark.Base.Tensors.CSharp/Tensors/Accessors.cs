@@ -19,6 +19,7 @@ namespace Aardvark.Base
         {
             public static readonly Symbol BW = Col.Intent.BW;
             public static readonly Symbol Gray = Col.Intent.Gray;
+            public static readonly Symbol Alpha = Col.Intent.Alpha;
 
             public static readonly Symbol RGB = Col.Intent.RGB;
             public static readonly Symbol BGR = Col.Intent.BGR;
