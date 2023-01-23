@@ -1400,7 +1400,8 @@ namespace Aardvark.Base
                     }
                     else
                     {
-                        pixImage.CopyChannelTo(srcIndex, matrix);
+                        var order = pixImage.Format.ChannelOrder();
+                        pixImage.CopyChannelTo(order[srcIndex], matrix); // CopyChannelTo uses canonical order
                     }
                 }
                 else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
