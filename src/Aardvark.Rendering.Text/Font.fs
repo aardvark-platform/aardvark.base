@@ -611,7 +611,6 @@ type ShapeCache(r : IRuntime) =
                     | None ->
                         None
 
-            member x.All = Seq.empty
             member x.Dispose() = ()
         }
 
