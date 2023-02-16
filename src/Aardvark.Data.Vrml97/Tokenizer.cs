@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Aardvark.Data.Vrml97
 {
-    internal class Tokenizer
+    public class Tokenizer
     {
-        internal Tokenizer(Stream input)
+        public Tokenizer(Stream input)
         {
             m_in = input;
 
@@ -21,13 +21,13 @@ namespace Aardvark.Data.Vrml97
                 );
         }
 
-        internal void PushBack(Token t)
+        public void PushBack(Token t)
         {
             m_pushedBackToken = t;
             m_pushedBackTokenValid = true;
         }
 
-        internal Token NextNameToken()
+        public Token NextNameToken()
         {
             var t = "";
             if (!NextNonWhiteSpaceChar(out int c)) return Token.EOF;
@@ -67,7 +67,7 @@ namespace Aardvark.Data.Vrml97
                 return s + char.ConvertFromUtf32(c);
         }
 
-        internal Token NextToken()
+        public Token NextToken()
         {
             if (m_pushedBackTokenValid)
             {
@@ -128,7 +128,7 @@ namespace Aardvark.Data.Vrml97
             }
         }
 
-        internal struct Token
+        public struct Token
         {
             public static readonly Token EOF = new Token();
 
