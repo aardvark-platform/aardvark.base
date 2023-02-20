@@ -102,91 +102,67 @@ namespace Aardvark.Data.Vrml97
 
     /// <summary>
     /// Vrml97 parser.
-    /// Creates a parse tree from a file, or a stream reader.
-    /// 
-    /// Example:
-    /// Parser parser = new Parser("myVrmlFile.wrl");
-    /// SymMapBase parseTree = parser.Perform();
-    /// 
     /// </summary>
-    public class Parser : IDisposable
+    public static class Parser
     {
-        Stream m_inputStream;
-
-        #region Public interface.
-
-        /// <summary>
-        /// Constructs a Parser for the given input stream.
-        /// In order to actually parse the data, call the
-        /// Perform method, which returns a SymMapBase containing
-        /// the parse tree.
-        /// </summary>
-        /// <param name="input">Input stream.</param>
-        /// <param name="fileName"></param>
-        public Parser(Stream input, string fileName)
+        internal class State
         {
-            m_result.TypeName = Vrml97Sym.Vrml97;
-            m_result[Vrml97Sym.filename] = fileName;
-            m_inputStream = input;
-            m_tokenizer = new Tokenizer(input);
-        }
+            SymMapBase m_result = new SymMapBase();
+            Tokenizer m_tokenizer;
 
-        /// <summary>
-        /// Constructs a Parser for the given file.
-        /// In order to actually parse the data, call the
-        /// Perform method, which returns a SymMapBase
-        /// containing the parse tree.
-        /// This constructor creates an internal file stream and Dispose
-        /// needs to be called when the Parser is no longer needed.
-        /// </summary>
-        /// <param name="fileName">Input filename.</param>
-        public Parser(string fileName)
-        {
-            m_result.TypeName = Vrml97Sym.Vrml97;
-            m_result[Vrml97Sym.filename] = fileName;
-
-            m_inputStream = new FileStream(
-                                    fileName,
-                                    FileMode.Open, FileAccess.Read, FileShare.Read,
-                                    4096, false
-                                    );
-
-            m_tokenizer = new Tokenizer(m_inputStream);
-        }
-
-        /// <summary>
-        /// Parses the input data and returns a SymMapBase
-        /// containing the parse tree.
-        /// </summary>
-        /// <returns>Parse tree.</returns>
-        public Vrml97Scene Perform()
-        {
-            var root = new List<SymMapBase>();
-
-            while (true)
+            /// <summary>
+            /// Constructs a Parser for the given input stream.
+            /// In order to actually parse the data, call the
+            /// Perform method, which returns a SymMapBase containing
+            /// the parse tree.
+            /// </summary>
+            /// <param name="input">Input stream.</param>
+            /// <param name="fileName">FileName</param>
+            public State(Stream input, string fileName)
             {
-				try
-				{
-                    var node = ParseNode(m_tokenizer);
-					if (node == null) break;
-					root.Add(node);
-					Thread.Sleep(0);
-				}
-				catch (ParseException e)
-				{
-					Console.WriteLine("WARNING: Caught exception while parsing: {0}!", e.Message);
-                    Console.WriteLine("WARNING: Result may contain partial, incorrect or invalid data!");
-					break;
-				}
+                m_result.TypeName = Vrml97Sym.Vrml97;
+                m_result[Vrml97Sym.filename] = fileName;
+                m_tokenizer = new Tokenizer(input);
             }
 
-            m_result[Vrml97Sym.root] = root;
-            return new Vrml97Scene(m_result);
+            /// <summary>
+            /// Parses the input data and returns a SymMapBase
+            /// containing the parse tree.
+            /// </summary>
+            /// <returns>Parse tree.</returns>
+            public Vrml97Scene Perform()
+            {
+                var root = new List<SymMapBase>();
+
+                while (true)
+                {
+                    try
+                    {
+                        var node = ParseNode(m_tokenizer);
+                        if (node == null) break;
+                        root.Add(node);
+                        Thread.Sleep(0);
+                    }
+                    catch (ParseException e)
+                    {
+                        Report.Warn("[Vrml97] Caught exception while parsing: {0}!", e.Message);
+                        Report.Warn("[Vrml97] Result may contain partial, incorrect or invalid data!");
+                        break;
+                    }
+                }
+
+                m_result[Vrml97Sym.root] = root;
+                return new Vrml97Scene(m_result);
+            }
         }
 
-        #endregion
-
         #region Node specs.
+
+        private static SymbolDict<NodeParseInfo> s_parseInfoMap;
+
+        private delegate SymMapBase NodeParser(Tokenizer t);
+
+        public delegate object FieldParser(Tokenizer t);
 
         public static readonly FieldParser SFBool = new FieldParser(ParseSFBool);
         public static readonly FieldParser MFBool = new FieldParser(ParseMFBool);
@@ -223,7 +199,9 @@ namespace Aardvark.Data.Vrml97
             npi.FieldDefs.Add(fieldName, (parser, defaultValue));
         }
 
-        /** Static constructor. */
+        /// <summary>
+        /// Static constructor.
+        /// </summary>
         static Parser()
         {
             // Lookup table for Vrml97 node types.
@@ -1138,10 +1116,6 @@ namespace Aardvark.Data.Vrml97
             return result;
         }
 
-        
-
-
-
         private static void ExpectBraceOpen(Tokenizer t)
         {
             var token = t.NextToken();
@@ -1196,10 +1170,9 @@ namespace Aardvark.Data.Vrml97
             return node;
         }
 
-
-        /**
-         * Specifies how to parse a node.
-         **/
+        /// <summary>
+        /// Specifies how to parse a node.
+        /// </summary>
         private struct NodeParseInfo
         {
             private NodeParser m_parseFunction;
@@ -1223,11 +1196,13 @@ namespace Aardvark.Data.Vrml97
             }
 
             public NodeParser NodeParser { get { return m_parseFunction; } }
+
             public FieldParser FieldParser(string fieldName)
             {
                 if (fieldName == "ROUTE") return new FieldParser(ParseROUTE);
                 return FieldDefs[fieldName].Item1;
             }
+
             public bool TryGetFieldParser(string fieldName, out FieldParser fieldParser)
             {
                 if (fieldName == "ROUTE")
@@ -1243,16 +1218,14 @@ namespace Aardvark.Data.Vrml97
                 fieldParser = null;
                 return false;
             }
+
             public object DefaultValue(string fieldName)
             {
                 return FieldDefs[fieldName].Item2;
             }
         }
 
-        private static SymMapBase ParseGenericNode(
-            Tokenizer t,
-            NodeParseInfo info
-            )
+        private static SymMapBase ParseGenericNode(Tokenizer t, NodeParseInfo info)
         {
             var result = new SymMapBase();
             ExpectBraceOpen(t);
@@ -1302,23 +1275,6 @@ namespace Aardvark.Data.Vrml97
             result["content"] = sb.ToString();
             return result;
         }
-
-        /// <summary>
-        /// Disposed the input stream: Either the FileStream created by
-        /// FromFile or the Stream passed when creating.
-        /// </summary>
-        public void Dispose()
-        {
-            m_inputStream.Dispose();
-        }
-
-        private delegate SymMapBase NodeParser(Tokenizer t);
-        public delegate object FieldParser(Tokenizer t);
-
-        private static SymbolDict<NodeParseInfo> s_parseInfoMap;
-
-        private SymMapBase m_result = new SymMapBase();
-        private Tokenizer m_tokenizer;
 
         #endregion
     }
