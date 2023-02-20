@@ -47,7 +47,7 @@ namespace Aardvark.Data.Vrml97
                 SymMapBase node;
                 if (!m_defs.TryGetValue(name, out node))
                 {
-                    Report.Warn("DefUseResolver: USE " + name + ": Unknown!");
+                    Report.Warn($"[Vrml97] DefUseResolver: USE \"{name}\" unknown!");
                     return map; // keep "USE" ref node in SymMap-Tree
                     //throw new Exception("DefUseResolver: USE " + name + ": Unknown!");
                 }

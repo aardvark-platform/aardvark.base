@@ -1177,9 +1177,8 @@ namespace Aardvark.Data.Vrml97
             // If a field description is available for this type,
             // then use the generic node parser, else use the custom
             // parse function.
-            if (s_parseInfoMap.ContainsKey(nodeType))
+            if (s_parseInfoMap.TryGetValue(nodeType, out var info))
             {
-                var info = s_parseInfoMap[nodeType];
                 node = (info.FieldDefs == null) ?
                     info.NodeParser(t) :
                     ParseGenericNode(t, info);
@@ -1187,6 +1186,7 @@ namespace Aardvark.Data.Vrml97
             else
             {
                 // unknown node type
+                Report.Warn($"[Vrml97] ParseNode: \"{nodeType}\" unknown node type!");
                 node = ParseUnknownNode(t);
             }
 
@@ -1228,6 +1228,21 @@ namespace Aardvark.Data.Vrml97
                 if (fieldName == "ROUTE") return new FieldParser(ParseROUTE);
                 return FieldDefs[fieldName].Item1;
             }
+            public bool TryGetFieldParser(string fieldName, out FieldParser fieldParser)
+            {
+                if (fieldName == "ROUTE")
+                {
+                    fieldParser = new FieldParser(ParseROUTE);
+                    return true;
+                }
+                if (FieldDefs.TryGetValue(fieldName, out var fpDef))
+                {
+                    fieldParser = fpDef.Item1;
+                    return true;
+                }
+                fieldParser = null;
+                return false;
+            }
             public object DefaultValue(string fieldName)
             {
                 return FieldDefs[fieldName].Item2;
@@ -1253,7 +1268,10 @@ namespace Aardvark.Data.Vrml97
             while (!token.IsBraceClose)
             {
                 string fieldName = token.ToString();
-                result[fieldName] = info.FieldParser(fieldName)(t);
+                if (info.TryGetFieldParser(fieldName, out var fp))
+                    result[fieldName] = fp(t);
+                else
+                    Report.Warn($"[Vrml97] FieldParser: \"{fieldName}\" unknown/unexpected token!");
 
                 token = t.NextToken();
                 Thread.Sleep(0);
