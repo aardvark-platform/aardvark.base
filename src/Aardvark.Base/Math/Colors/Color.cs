@@ -1932,6 +1932,7 @@ namespace Aardvark.Base
 
         public static readonly PixFormat ByteBW = new PixFormat(typeof(byte), Col.Format.BW);
         public static readonly PixFormat ByteGray = new PixFormat(typeof(byte), Col.Format.Gray);
+        public static readonly PixFormat ByteRG = new PixFormat(typeof(byte), Col.Format.RG);
         public static readonly PixFormat ByteBGR = new PixFormat(typeof(byte), Col.Format.BGR);
         public static readonly PixFormat ByteRGB = new PixFormat(typeof(byte), Col.Format.RGB);
         public static readonly PixFormat ByteBGRA = new PixFormat(typeof(byte), Col.Format.BGRA);
@@ -1941,6 +1942,7 @@ namespace Aardvark.Base
 
         public static readonly PixFormat SByteBW = new PixFormat(typeof(sbyte), Col.Format.BW);
         public static readonly PixFormat SByteGray = new PixFormat(typeof(sbyte), Col.Format.Gray);
+        public static readonly PixFormat SByteRG = new PixFormat(typeof(sbyte), Col.Format.RG);
         public static readonly PixFormat SByteBGR = new PixFormat(typeof(sbyte), Col.Format.BGR);
         public static readonly PixFormat SByteRGB = new PixFormat(typeof(sbyte), Col.Format.RGB);
         public static readonly PixFormat SByteBGRA = new PixFormat(typeof(sbyte), Col.Format.BGRA);
@@ -1949,6 +1951,7 @@ namespace Aardvark.Base
         public static readonly PixFormat SByteRGBP = new PixFormat(typeof(sbyte), Col.Format.RGBP);
 
         public static readonly PixFormat UShortGray = new PixFormat(typeof(ushort), Col.Format.Gray);
+        public static readonly PixFormat UShortRG = new PixFormat(typeof(ushort), Col.Format.RG);
         public static readonly PixFormat UShortBGR = new PixFormat(typeof(ushort), Col.Format.BGR);
         public static readonly PixFormat UShortRGB = new PixFormat(typeof(ushort), Col.Format.RGB);
         public static readonly PixFormat UShortBGRA = new PixFormat(typeof(ushort), Col.Format.BGRA);
@@ -1957,6 +1960,7 @@ namespace Aardvark.Base
         public static readonly PixFormat UShortRGBP = new PixFormat(typeof(ushort), Col.Format.RGBP);
 
         public static readonly PixFormat ShortGray = new PixFormat(typeof(short), Col.Format.Gray);
+        public static readonly PixFormat ShortRG = new PixFormat(typeof(short), Col.Format.RG);
         public static readonly PixFormat ShortBGR = new PixFormat(typeof(short), Col.Format.BGR);
         public static readonly PixFormat ShortRGB = new PixFormat(typeof(short), Col.Format.RGB);
         public static readonly PixFormat ShortBGRA = new PixFormat(typeof(short), Col.Format.BGRA);
@@ -1965,6 +1969,7 @@ namespace Aardvark.Base
         public static readonly PixFormat ShortRGBP = new PixFormat(typeof(short), Col.Format.RGBP);
 
         public static readonly PixFormat UIntGray = new PixFormat(typeof(uint), Col.Format.Gray);
+        public static readonly PixFormat UIntRG = new PixFormat(typeof(uint), Col.Format.RG);
         public static readonly PixFormat UIntBGR = new PixFormat(typeof(uint), Col.Format.BGR);
         public static readonly PixFormat UIntRGB = new PixFormat(typeof(uint), Col.Format.RGB);
         public static readonly PixFormat UIntBGRA = new PixFormat(typeof(uint), Col.Format.BGRA);
@@ -1973,6 +1978,7 @@ namespace Aardvark.Base
         public static readonly PixFormat UIntRGBP = new PixFormat(typeof(uint), Col.Format.RGBP);
 
         public static readonly PixFormat IntGray = new PixFormat(typeof(int), Col.Format.Gray);
+        public static readonly PixFormat IntRG = new PixFormat(typeof(int), Col.Format.RG);
         public static readonly PixFormat IntBGR = new PixFormat(typeof(int), Col.Format.BGR);
         public static readonly PixFormat IntRGB = new PixFormat(typeof(int), Col.Format.RGB);
         public static readonly PixFormat IntBGRA = new PixFormat(typeof(int), Col.Format.BGRA);
@@ -1981,6 +1987,7 @@ namespace Aardvark.Base
         public static readonly PixFormat IntRGBP = new PixFormat(typeof(int), Col.Format.RGBP);
 
         public static readonly PixFormat HalfGray = new PixFormat(typeof(Half), Col.Format.Gray);
+        public static readonly PixFormat HalfRG = new PixFormat(typeof(Half), Col.Format.RG);
         public static readonly PixFormat HalfBGR = new PixFormat(typeof(Half), Col.Format.BGR);
         public static readonly PixFormat HalfRGB = new PixFormat(typeof(Half), Col.Format.RGB);
         public static readonly PixFormat HalfBGRA = new PixFormat(typeof(Half), Col.Format.BGRA);
@@ -1989,6 +1996,7 @@ namespace Aardvark.Base
         public static readonly PixFormat HalfRGBP = new PixFormat(typeof(Half), Col.Format.RGBP);
 
         public static readonly PixFormat FloatGray = new PixFormat(typeof(float), Col.Format.Gray);
+        public static readonly PixFormat FloatRG = new PixFormat(typeof(float), Col.Format.RG);
         public static readonly PixFormat FloatBGR = new PixFormat(typeof(float), Col.Format.BGR);
         public static readonly PixFormat FloatRGB = new PixFormat(typeof(float), Col.Format.RGB);
         public static readonly PixFormat FloatBGRA = new PixFormat(typeof(float), Col.Format.BGRA);
@@ -1997,6 +2005,7 @@ namespace Aardvark.Base
         public static readonly PixFormat FloatRGBP = new PixFormat(typeof(float), Col.Format.RGBP);
 
         public static readonly PixFormat DoubleGray = new PixFormat(typeof(double), Col.Format.Gray);
+        public static readonly PixFormat DoubleRG = new PixFormat(typeof(double), Col.Format.RG);
         public static readonly PixFormat DoubleBGR = new PixFormat(typeof(double), Col.Format.BGR);
         public static readonly PixFormat DoubleRGB = new PixFormat(typeof(double), Col.Format.RGB);
         public static readonly PixFormat DoubleBGRA = new PixFormat(typeof(double), Col.Format.BGRA);

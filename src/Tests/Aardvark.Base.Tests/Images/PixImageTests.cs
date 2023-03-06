@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Aardvark.Base;
+using System.Runtime.InteropServices;
 
 namespace Aardvark.Tests.Images
 {
@@ -328,6 +329,48 @@ namespace Aardvark.Tests.Images
             => FormatConversionFromArray<C3b>(Col.Format.RG, Col.Format.BGR, color => new C3b(color[0], color[1], (byte)0));
 
         #endregion
+
+        #endregion
+
+        #region Creation
+
+        struct Foo
+        {
+            public string Hugo;
+            public int Bar;
+        }
+
+        [Test]
+        public void CreateWithCustomFormat()
+        {
+            var format = new PixFormat(typeof(Foo), Col.Format.RG);
+            var pi = PixImage.Create(format, 4, 4).AsPixImage<Foo>();
+
+            pi.Volume[3, 2, 0] = new Foo() { Hugo = "Hey", Bar = 43 };
+
+            var result = pi.Volume[3, 2, 0];
+            Assert.AreEqual("Hey", result.Hugo);
+            Assert.AreEqual(43, result.Bar);
+        }
+
+        [Test]
+        public void CreateArrayWithCustomFormat()
+        {
+            var data = new Foo[]
+            {
+                new Foo() { Hugo = "A", Bar = 1 },
+                new Foo() { Hugo = "B", Bar = 2 },
+                new Foo() { Hugo = "C", Bar = 3 },
+                new Foo() { Hugo = "D", Bar = 4 },
+            };
+
+            var pi = PixImage.Create(data, Col.Format.Gray, 2, 2).AsPixImage<Foo>();
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Assert.AreEqual(data[i], pi.Matrix[i % 2, i / 2]);
+            }
+        }
 
         #endregion
     }
