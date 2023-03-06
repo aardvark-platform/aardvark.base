@@ -4,6 +4,7 @@
 #nowarn "44"
 
 open System
+open FSharp.NativeInterop
 
 [<AutoOpen>]
 module Prelude =
@@ -170,8 +171,16 @@ module Prelude =
         static member AwaitTask(t : System.Threading.Tasks.Task) =
             t |> Async.AwaitIAsyncResult |> Async.Ignore
 
+    type nativeptr<'T when 'T : unmanaged> with
+        member ptr.Value
+            with inline get () = NativePtr.read ptr
+            and  inline set (value : 'T) = NativePtr.write ptr value
+
+        member ptr.Item
+            with inline get (index : int) = NativePtr.get ptr index
+            and  inline set (index : int) (value : 'T) = NativePtr.set ptr index value
+
     module NativePtr =
-        open Microsoft.FSharp.NativeInterop
         open System.Runtime.InteropServices
         open System.IO
 
@@ -224,7 +233,13 @@ module Prelude =
             let ( !* ) (ptr : nativeptr<'a>) =
                 NativePtr.read ptr
 
+    type Buffer with
 
+        static member inline MemoryCopy(source : nativeint, destination : nativeint, destinationSizeInBytes : uint64, sourceBytesToCopy : uint64) =
+            Buffer.MemoryCopy(source.ToPointer(), destination.ToPointer(), destinationSizeInBytes, sourceBytesToCopy)
+
+        static member inline MemoryCopy(source : nativeint, destination : nativeint, destinationSizeInBytes : int64, sourceBytesToCopy : int64) =
+            Buffer.MemoryCopy(source.ToPointer(), destination.ToPointer(), destinationSizeInBytes, sourceBytesToCopy)
 
     (* Error datastructure *)
     type Error<'a> = Success of 'a
