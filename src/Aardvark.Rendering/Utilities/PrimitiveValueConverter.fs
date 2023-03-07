@@ -8,10 +8,26 @@ open System.Runtime.InteropServices
 open Microsoft.FSharp.Reflection
 open FSharp.Data.Adaptive
 
-
 module PrimitiveValueConverter =
-    let private trafoToM44f(t : Trafo3d) =
-        M44f.op_Explicit (t.Forward)
+
+    /// Exception thrown when an invalid conversion is requested.
+    type InvalidConversionException =
+        class
+            inherit Exception
+
+            /// The source type of the requested conversion.
+            val public Source : Type
+
+            /// The target type of the requested conversion.
+            val public Target : Type
+
+            new() = { inherit Exception(); Source = null; Target = null }
+            new(message : string) = { inherit Exception(message); Source = null; Target = null }
+            new(message : string, inner : Exception) = { inherit Exception(message, inner); Source = null; Target = null}
+
+            new(message : string, source : Type, target : Type) = { inherit Exception(message); Source = source; Target = target }
+            new(message : string, source : Type, target : Type, inner : Exception) = { inherit Exception(message, inner); Source = source; Target = target}
+        end
 
     let private integralConversions =
         [
@@ -170,56 +186,85 @@ module PrimitiveValueConverter =
         [
             // V2i -> other vectors
             ( fun (b : V2i)        -> b ) :> obj
+            ( fun (b : V2i)        -> V2ui b ) :> obj
             ( fun (b : V2i)        -> V2l b ) :> obj
             ( fun (b : V2i)        -> V2f b ) :> obj
             ( fun (b : V2i)        -> V2d b ) :> obj
             ( fun (b : V2i)        -> V3i(b.X, b.Y, 0) ) :> obj
+            ( fun (b : V2i)        -> V3ui(uint b.X, uint b.Y, 0u) ) :> obj
             ( fun (b : V2i)        -> V3l(int64 b.X, int64 b.Y,0L) ) :> obj
             ( fun (b : V2i)        -> V3f(float32 b.X, float32 b.Y, 0.0f) ) :> obj
             ( fun (b : V2i)        -> V3d(float b.X, float b.Y,0.0) ) :> obj
             ( fun (b : V2i)        -> V4i(b.X, b.Y, 0, 0) ) :> obj
+            ( fun (b : V2i)        -> V4ui(uint b.X, uint b.Y, 0u, 0u) ) :> obj
             ( fun (b : V2i)        -> V4l(int64 b.X, int64 b.Y, 0L, 0L) ) :> obj
             ( fun (b : V2i)        -> V4f(float32 b.X, float32 b.Y, 0.0f, 0.0f) ) :> obj
             ( fun (b : V2i)        -> V4d(float b.X, float b.Y, 0.0, 0.0) ) :> obj
 
+            // V2ui -> other vectors
+            ( fun (b : V2ui)        -> V2i b ) :> obj
+            ( fun (b : V2ui)        -> b ) :> obj
+            ( fun (b : V2ui)        -> V2l b ) :> obj
+            ( fun (b : V2ui)        -> V2f b ) :> obj
+            ( fun (b : V2ui)        -> V2d b ) :> obj
+            ( fun (b : V2ui)        -> V3i(int b.X, int b.Y, 0) ) :> obj
+            ( fun (b : V2ui)        -> V3ui(b.X, b.Y, 0u) ) :> obj
+            ( fun (b : V2ui)        -> V3l(int64 b.X, int64 b.Y,0L) ) :> obj
+            ( fun (b : V2ui)        -> V3f(float32 b.X, float32 b.Y, 0.0f) ) :> obj
+            ( fun (b : V2ui)        -> V3d(float b.X, float b.Y,0.0) ) :> obj
+            ( fun (b : V2ui)        -> V4i(int b.X, int b.Y, 0, 0) ) :> obj
+            ( fun (b : V2ui)        -> V4ui(b.X, b.Y, 0u, 0u) ) :> obj
+            ( fun (b : V2ui)        -> V4l(int64 b.X, int64 b.Y, 0L, 0L) ) :> obj
+            ( fun (b : V2ui)        -> V4f(float32 b.X, float32 b.Y, 0.0f, 0.0f) ) :> obj
+            ( fun (b : V2ui)        -> V4d(float b.X, float b.Y, 0.0, 0.0) ) :> obj
+
             // V2l -> other vectors
             ( fun (b : V2l)        -> V2i b ) :> obj
+            ( fun (b : V2l)        -> V2ui b ) :> obj
             ( fun (b : V2l)        -> b ) :> obj
             ( fun (b : V2l)        -> V2f b ) :> obj
             ( fun (b : V2l)        -> V2d b ) :> obj
             ( fun (b : V2l)        -> V3i(int b.X, int b.Y, 0) ) :> obj
+            ( fun (b : V2l)        -> V3ui(uint b.X, uint b.Y, 0u) ) :> obj
             ( fun (b : V2l)        -> V3l(b.X, b.Y,0L) ) :> obj
             ( fun (b : V2l)        -> V3f(float32 b.X, float32 b.Y, 0.0f) ) :> obj
             ( fun (b : V2l)        -> V3d(float b.X, float b.Y,0.0) ) :> obj
             ( fun (b : V2l)        -> V4i(int b.X, int b.Y, 0, 0) ) :> obj
+            ( fun (b : V2l)        -> V4ui(uint b.X, uint b.Y, 0u, 0u) ) :> obj
             ( fun (b : V2l)        -> V4l(b.X, b.Y, 0L, 0L) ) :> obj
             ( fun (b : V2l)        -> V4f(float32 b.X, float32 b.Y, 0.0f, 0.0f) ) :> obj
             ( fun (b : V2l)        -> V4d(float b.X, float b.Y, 0.0, 0.0) ) :> obj
 
             // V2f -> other vectors
             ( fun (b : V2f)        -> V2i b ) :> obj
+            ( fun (b : V2f)        -> V2ui b ) :> obj
             ( fun (b : V2f)        -> V2l b ) :> obj
             ( fun (b : V2f)        -> b ) :> obj
             ( fun (b : V2f)        -> V2d b ) :> obj
             ( fun (b : V2f)        -> V3i(int b.X, int b.Y, 0) ) :> obj
+            ( fun (b : V2f)        -> V3ui(uint b.X, uint b.Y, 0u) ) :> obj
             ( fun (b : V2f)        -> V3l(int64 b.X, int64 b.Y,0L) ) :> obj
             ( fun (b : V2f)        -> V3f(b.X, b.Y, 0.0f) ) :> obj
             ( fun (b : V2f)        -> V3d(float b.X, float b.Y, 0.0) ) :> obj
             ( fun (b : V2f)        -> V4i(int b.X, int b.Y, 0, 0) ) :> obj
+            ( fun (b : V2f)        -> V4ui(uint b.X, uint b.Y, 0u, 0u) ) :> obj
             ( fun (b : V2f)        -> V4l(int64 b.X, int64 b.Y, 0L, 0L) ) :> obj
             ( fun (b : V2f)        -> V4f(b.X, b.Y, 0.0f, 1.0f) ) :> obj
             ( fun (b : V2f)        -> V4d(float b.X, float b.Y, 0.0, 1.0) ) :> obj
 
             // V2d -> other vectors
             ( fun (b : V2d)        -> V2i b ) :> obj
+            ( fun (b : V2d)        -> V2ui b ) :> obj
             ( fun (b : V2d)        -> V2l b ) :> obj
             ( fun (b : V2d)        -> V2f b ) :> obj
             ( fun (b : V2d)        -> b ) :> obj
             ( fun (b : V2d)        -> V3i(int b.X, int b.Y, 0) ) :> obj
+            ( fun (b : V2d)        -> V3ui(uint b.X, uint b.Y, 0u) ) :> obj
             ( fun (b : V2d)        -> V3l(int64 b.X, int64 b.Y,0L) ) :> obj
             ( fun (b : V2d)        -> V3f(float32 b.X, float32 b.Y, 0.0f) ) :> obj
             ( fun (b : V2d)        -> V3d(b.X, b.Y, 0.0) ) :> obj
             ( fun (b : V2d)        -> V4i(int b.X, int b.Y, 0, 0) ) :> obj
+            ( fun (b : V2d)        -> V4ui(uint b.X, uint b.Y, 0u, 0u) ) :> obj
             ( fun (b : V2d)        -> V4l(int64 b.X, int64 b.Y, 0L, 0L) ) :> obj
             ( fun (b : V2d)        -> V4f(float32 b.X, float32 b.Y, 0.0f, 1.0f) ) :> obj
             ( fun (b : V2d)        -> V4d(b.X, b.Y, 0.0, 1.0) ) :> obj
@@ -230,40 +275,60 @@ module PrimitiveValueConverter =
         [
             // V3i -> other vectors
             ( fun (b : V3i)        -> b) :> obj
+            ( fun (b : V3i)        -> V3ui b) :> obj
             ( fun (b : V3i)        -> V3l b) :> obj
             ( fun (b : V3i)        -> V3f b) :> obj
             ( fun (b : V3i)        -> V3d b) :> obj
             ( fun (b : V3i)        -> V4i(b.X, b.Y, b.Z, 0)) :> obj
+            ( fun (b : V3i)        -> V4ui(uint b.X, uint b.Y, uint b.Z, 0u)) :> obj
             ( fun (b : V3i)        -> V4l(int64 b.X, int64 b.Y, int64 b.Z, 0L)) :> obj
             ( fun (b : V3i)        -> V4f(float32 b.X, float32 b.Y, float32 b.Z, 0.0f)) :> obj
             ( fun (b : V3i)        -> V4d(float b.X, float b.Y, float b.Z, 0.0)) :> obj
 
+            // V3ui -> other vectors
+            ( fun (b : V3ui)        -> V3i b) :> obj
+            ( fun (b : V3ui)        -> b) :> obj
+            ( fun (b : V3ui)        -> V3l b) :> obj
+            ( fun (b : V3ui)        -> V3f b) :> obj
+            ( fun (b : V3ui)        -> V3d b) :> obj
+            ( fun (b : V3ui)        -> V4i(int b.X, int b.Y, int b.Z, 0)) :> obj
+            ( fun (b : V3ui)        -> V4ui(b.X, b.Y, b.Z, 0u)) :> obj
+            ( fun (b : V3ui)        -> V4l(int64 b.X, int64 b.Y, int64 b.Z, 0L)) :> obj
+            ( fun (b : V3ui)        -> V4f(float32 b.X, float32 b.Y, float32 b.Z, 0.0f)) :> obj
+            ( fun (b : V3ui)        -> V4d(float b.X, float b.Y, float b.Z, 0.0)) :> obj
+
             // V3l -> other vectors
             ( fun (b : V3l)        -> V3i b) :> obj
+            ( fun (b : V3l)        -> V3ui b) :> obj
             ( fun (b : V3l)        -> b) :> obj
             ( fun (b : V3l)        -> V3f b) :> obj
             ( fun (b : V3l)        -> V3d b) :> obj
             ( fun (b : V3l)        -> V4i(int b.X, int b.Y, int b.Z, 0)) :> obj
+            ( fun (b : V3l)        -> V4ui(uint b.X, uint b.Y, uint b.Z, 0u)) :> obj
             ( fun (b : V3l)        -> V4l(b.X, b.Y, b.Z, 0L)) :> obj
             ( fun (b : V3l)        -> V4f(float32 b.X, float32 b.Y, float32 b.Z, 0.0f)) :> obj
             ( fun (b : V3l)        -> V4d(float b.X, float b.Y, float b.Z, 0.0)) :> obj
 
             // V3f -> other vectors
             ( fun (b : V3f)        -> V3i b) :> obj
+            ( fun (b : V3f)        -> V3ui b) :> obj
             ( fun (b : V3f)        -> V3l b) :> obj
             ( fun (b : V3f)        -> b) :> obj
             ( fun (b : V3f)        -> V3d b) :> obj
             ( fun (b : V3f)        -> V4i(int b.X, int b.Y, int b.Z, 0)) :> obj
+            ( fun (b : V3f)        -> V4ui(uint b.X, uint b.Y, uint b.Z, 0u)) :> obj
             ( fun (b : V3f)        -> V4l(int64 b.X, int64 b.Y, int64 b.Z, 0L)) :> obj
             ( fun (b : V3f)        -> V4f(b.X, b.Y, b.Z, 1.0f)) :> obj
             ( fun (b : V3f)        -> V4d(float b.X, float b.Y, float b.Z, 1.0)) :> obj
 
             // V3d -> other vectors
             ( fun (b : V3d)        -> V3i b) :> obj
+            ( fun (b : V3d)        -> V3ui b) :> obj
             ( fun (b : V3d)        -> V3l b) :> obj
             ( fun (b : V3d)        -> V3f b) :> obj
             ( fun (b : V3d)        -> b) :> obj
             ( fun (b : V3d)        -> V4i(int b.X, int b.Y, int b.Z, 0)) :> obj
+            ( fun (b : V3d)        -> V4ui(uint b.X, uint b.Y, uint b.Z, 0u)) :> obj
             ( fun (b : V3d)        -> V4l(int64 b.X, int64 b.Y, int64 b.Z, 0L)) :> obj
             ( fun (b : V3d)        -> V4f(float32 b.X, float32 b.Y, float32 b.Z, 1.0f)) :> obj
             ( fun (b : V3d)        -> V4d(b.X, b.Y, b.Z, 1.0)) :> obj
@@ -274,24 +339,35 @@ module PrimitiveValueConverter =
         [
             // V4i -> other vectors
             ( fun (b : V4i)        -> b) :> obj
+            ( fun (b : V4i)        -> V4ui b) :> obj
             ( fun (b : V4i)        -> V4l b) :> obj
             ( fun (b : V4i)        -> V4f b) :> obj
             ( fun (b : V4i)        -> V4d b) :> obj
 
+            // V4ui -> other vectors
+            ( fun (b : V4ui)        -> V4i b) :> obj
+            ( fun (b : V4ui)        -> b) :> obj
+            ( fun (b : V4ui)        -> V4l b) :> obj
+            ( fun (b : V4ui)        -> V4f b) :> obj
+            ( fun (b : V4ui)        -> V4d b) :> obj
+
             // V4l -> other vectors
             ( fun (b : V4l)        -> V4i b) :> obj
+            ( fun (b : V4l)        -> V4ui b) :> obj
             ( fun (b : V4l)        -> b) :> obj
             ( fun (b : V4l)        -> V4f b) :> obj
             ( fun (b : V4l)        -> V4d b) :> obj
 
             // V4f -> other vectors
             ( fun (b : V4f)        -> V4i b) :> obj
+            ( fun (b : V4f)        -> V4ui b) :> obj
             ( fun (b : V4f)        -> V4l b) :> obj
             ( fun (b : V4f)        -> b) :> obj
             ( fun (b : V4f)        -> V4d b) :> obj
 
             // V4d -> other vectors
             ( fun (b : V4d)        -> V4i b) :> obj
+            ( fun (b : V4d)        -> V4ui b) :> obj
             ( fun (b : V4d)        -> V4l b) :> obj
             ( fun (b : V4d)        -> V4f b) :> obj
             ( fun (b : V4d)        -> b) :> obj
@@ -781,6 +857,8 @@ module PrimitiveValueConverter =
             // C3b -> vectors
             ( fun (v : C3b)        -> v.ToV3i() ) :> obj
             ( fun (v : C3b)        -> v.ToV4i() ) :> obj
+            ( fun (v : C3b)        -> v.ToV3ui() ) :> obj
+            ( fun (v : C3b)        -> v.ToV4ui() ) :> obj
             ( fun (v : C3b)        -> v.ToV3l() ) :> obj
             ( fun (v : C3b)        -> v.ToV4l() ) :> obj
             ( fun (v : C3b)        -> C3f(v).ToV3f() ) :> obj
@@ -803,6 +881,8 @@ module PrimitiveValueConverter =
             // C4b -> vectors
             ( fun (v : C4b)        -> v.ToV3i() ) :> obj
             ( fun (v : C4b)        -> v.ToV4i() ) :> obj
+            ( fun (v : C4b)        -> v.ToV3ui() ) :> obj
+            ( fun (v : C4b)        -> v.ToV4ui() ) :> obj
             ( fun (v : C4b)        -> v.ToV3l() ) :> obj
             ( fun (v : C4b)        -> v.ToV4l() ) :> obj
             ( fun (v : C4b)        -> C3f(v).ToV3f() ) :> obj
@@ -826,6 +906,8 @@ module PrimitiveValueConverter =
             // C3us -> vectors
             ( fun (v : C3us)       -> v.ToV3i() ) :> obj
             ( fun (v : C3us)       -> v.ToV4i() ) :> obj
+            ( fun (v : C3us)       -> v.ToV3ui() ) :> obj
+            ( fun (v : C3us)       -> v.ToV4ui() ) :> obj
             ( fun (v : C3us)       -> v.ToV3l() ) :> obj
             ( fun (v : C3us)       -> v.ToV4l() ) :> obj
             ( fun (v : C3us)       -> C3f(v).ToV3f() ) :> obj
@@ -848,6 +930,8 @@ module PrimitiveValueConverter =
             // C4us -> vectors
             ( fun (v : C4us)       -> v.ToV3i() ) :> obj
             ( fun (v : C4us)       -> v.ToV4i() ) :> obj
+            ( fun (v : C4us)       -> v.ToV3ui() ) :> obj
+            ( fun (v : C4us)       -> v.ToV4ui() ) :> obj
             ( fun (v : C4us)       -> v.ToV3l() ) :> obj
             ( fun (v : C4us)       -> v.ToV4l() ) :> obj
             ( fun (v : C4us)       -> C3f(v).ToV3f() ) :> obj
@@ -869,6 +953,8 @@ module PrimitiveValueConverter =
             ( fun (v : C3ui)       -> C4d(v) ) :> obj
 
             // C3ui -> vectors
+            ( fun (v : C3ui)       -> v.ToV3ui() ) :> obj
+            ( fun (v : C3ui)       -> v.ToV4ui() ) :> obj
             ( fun (v : C3ui)       -> v.ToV3l() ) :> obj
             ( fun (v : C3ui)       -> v.ToV4l() ) :> obj
             ( fun (v : C3ui)       -> C3f(v).ToV3f() ) :> obj
@@ -889,6 +975,8 @@ module PrimitiveValueConverter =
             ( fun (v : C4ui)       -> C4d(v) ) :> obj
 
             // C4ui -> vectors
+            ( fun (v : C4ui)       -> v.ToV3ui() ) :> obj
+            ( fun (v : C4ui)       -> v.ToV4ui() ) :> obj
             ( fun (v : C4ui)       -> v.ToV3l() ) :> obj
             ( fun (v : C4ui)       -> v.ToV4l() ) :> obj
             ( fun (v : C4ui)       -> C3f(v).ToV3f() ) :> obj
@@ -984,6 +1072,23 @@ module PrimitiveValueConverter =
             ( fun (v : V4i)        -> C4us(v) ) :> obj
 
 
+            // V3ui -> colors
+            ( fun (v : V3ui)       -> C3b(v) ) :> obj
+            ( fun (v : V3ui)       -> C4b(v) ) :> obj
+            ( fun (v : V3ui)       -> C3us(v) ) :> obj
+            ( fun (v : V3ui)       -> C4us(v) ) :> obj
+            ( fun (v : V3ui)       -> C3ui(v) ) :> obj
+            ( fun (v : V3ui)       -> C4ui(v) ) :> obj
+
+            // V4ui -> colors
+            ( fun (v : V4ui)       -> C3b(v) ) :> obj
+            ( fun (v : V4ui)       -> C4b(v) ) :> obj
+            ( fun (v : V4ui)       -> C3us(v) ) :> obj
+            ( fun (v : V4ui)       -> C4us(v) ) :> obj
+            ( fun (v : V4ui)       -> C3ui(v) ) :> obj
+            ( fun (v : V4ui)       -> C4ui(v) ) :> obj
+
+
             // V3l -> colors
             ( fun (v : V3l)        -> C3b(v) ) :> obj
             ( fun (v : V3l)        -> C4b(v) ) :> obj
@@ -1030,7 +1135,7 @@ module PrimitiveValueConverter =
 
     let private specialConversions =
         [
-            ( fun (t : Trafo3d)     -> trafoToM44f t ) :> obj
+            ( fun (t : Trafo3d)     -> M44f.op_Explicit (t.Forward) ) :> obj
         ]
 
     let private allConversions =
@@ -1233,7 +1338,7 @@ module PrimitiveValueConverter =
     let rec getConverter (inType : Type) (outType : Type) =
         match tryGetConverter inType outType with
             | Some c -> c
-            | None -> failwithf "unknown conversion from %A to %A" inType.FullName outType.FullName
+            | None -> raise <| InvalidConversionException($"Unknown conversion from {inType} to {outType}", inType, outType)
 
     open Aardvark.Base.IL
     type private Invoker private() =
@@ -1266,7 +1371,7 @@ module PrimitiveValueConverter =
 
     let convert (outType : Type) (value : obj) =
         if isNull value then
-            if outType.IsValueType then failwithf "cannot convert null to %A" outType
+            if outType.IsValueType then raise <| InvalidConversionException($"Cannot convert null to value type {outType}.", null, outType)
             null
         else
             let inType = value.GetType()
