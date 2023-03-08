@@ -1,0 +1,32 @@
+{
+  "solution": {
+    "path": "Aardvark.sln",
+    "projects": [
+      "Aardvark.Base.Essentials\\Aardvark.Base.Essentials.csproj",
+      "Aardvark.Base.FSharp\\Aardvark.Base.FSharp.fsproj",
+      "Aardvark.Base.IO\\Aardvark.Base.IO.csproj",
+      "Aardvark.Base.Incremental\\Aardvark.Base.Incremental.fsproj",
+      "Aardvark.Base.Runtime\\Aardvark.Base.Runtime.fsproj",
+      "Aardvark.Base.Telemetry\\Aardvark.Base.Telemetry.csproj",
+      "Aardvark.Base.Tensors.CSharp\\Aardvark.Base.Tensors.CSharp.csproj",
+      "Aardvark.Base.Tensors\\Aardvark.Base.Tensors.fsproj",
+      "Aardvark.Base\\Aardvark.Base.csproj",
+      "Aardvark.Data.Vrml97\\Aardvark.Data.Vrml97.csproj",
+      "Aardvark.Geometry\\Aardvark.Geometry.fsproj",
+      "Aardvark.PixImage.DevIL\\Aardvark.PixImage.DevIL.csproj",
+      "CodeGenerator\\CodeGenerator.csproj",
+      "Demo\\CoreTest\\CoreTest.fsproj",
+      "Demo\\ExamplesCSharp\\ExamplesCSharp.csproj",
+      "Demo\\IncrementalDemo.CSharp\\IncrementalDemo.CSharp.csproj",
+      "Demo\\PixImageDemo\\PixImageDemo.csproj",
+      "Demo\\RandomSampleDemo\\RandomSampleDemo.csproj",
+      "Demo\\Scratch\\Scratch.fsproj",
+      "Tests\\Aardvark.Base.Benchmarks\\Aardvark.Base.Benchmarks.csproj",
+      "Tests\\Aardvark.Base.FSharp.Benchmarks\\Aardvark.Base.FSharp.Benchmarks.fsproj",
+      "Tests\\Aardvark.Base.FSharp.Tests\\Aardvark.Base.FSharp.Tests.fsproj",
+      "Tests\\Aardvark.Base.Runtime.Tests\\Aardvark.Base.Runtime.Tests.fsproj",
+      "Tests\\Aardvark.Base.Tests\\Aardvark.Base.Tests.csproj",
+      "Tests\\Aardvark.Geometry.Tests\\Aardvark.Geometry.Tests.fsproj"
+    ]
+  }
+}
