@@ -101,6 +101,21 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(double)), v => ((Tensor4<double>)v).CopyWindow() },
             };
 
+        private static void ToGray<T, Tv, R>(PixVolume src, object dst, Func<Tv, R> toGray)
+        {
+            ((Volume<R>)dst).SetMap(src.AsPixVolume<T>().GetVolume<Tv>(), toGray);
+        }
+
+        protected static Dictionary<(Type, Type), Action<PixVolume, object>> s_rgbToGrayMap =
+            new Dictionary<(Type, Type), Action<PixVolume, object>>()
+            {
+                { (typeof(byte), typeof(byte)),     (src, dst) => ToGray<byte, C3b, byte>(src, dst, Col.ToGrayByte) },
+                { (typeof(ushort), typeof(ushort)), (src, dst) => ToGray<ushort, C3us, ushort>(src, dst, Col.ToGrayUShort) },
+                { (typeof(uint), typeof(uint)),     (src, dst) => ToGray<uint, C3ui, uint>(src, dst, Col.ToGrayUInt) },
+                { (typeof(float), typeof(float)),   (src, dst) => ToGray<float, C3f, float>(src, dst, Col.ToGrayFloat) },
+                { (typeof(double), typeof(double)), (src, dst) => ToGray<double, C3d, double>(src, dst, Col.ToGrayDouble) },
+            };
+
         public abstract PixVolume<T1> ToPixVolume<T1>();
 
         public PixVolume<T> AsPixVolume<T>()
@@ -201,58 +216,84 @@ namespace Aardvark.Base
         /// <summary>
         /// Copy constructor: ALWAYS creates a copy of the data!
         /// </summary>
-        public PixVolume(Col.Format format, PixVolume pixImage)
+        public PixVolume(Col.Format format, PixVolume pixVolume)
         {
-            var size = pixImage.Size;
-            var channelCount = format.ChannelCount();
-            var tensor4 = CreateTensor4<T>(size.X, size.Y, size.Z, channelCount);
-            var order = format.ChannelOrder();
-            var typedPixImage = pixImage as PixVolume<T>;
-            if (channelCount != pixImage.ChannelCount
-                && !(channelCount == 3 && pixImage.ChannelCount == 4))
+            if (format.IsPremultiplied() != pixVolume.Format.IsPremultiplied())
             {
-                if (channelCount == 4 && pixImage.ChannelCount == 3)
+                throw new NotImplementedException(
+                    "Conversion between alpha and premultiplied alpha formats not implemented yet."
+                );
+            }
+
+            var size = pixVolume.Size;
+            var srcChannels = Col.ChannelsOfFormat(pixVolume.Format);
+            var dstChannels = Col.ChannelsOfFormat(format);
+            var tensor4 = CreateTensor4<T>(size.X, size.Y, size.Z, dstChannels.Length);
+
+            for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
+            {
+                var channel = dstChannels[dstIndex];
+                var volume = tensor4.SubXYZVolume(dstIndex);
+                var srcIndex = srcChannels.IndexOf(channel);
+
+                // If we have an RGB channel, we may also just copy a Gray or BW channel
+                if (srcIndex == -1 && (channel == Col.Channel.Red || channel == Col.Channel.Green || channel == Col.Channel.Blue))
                 {
-                    channelCount = 3;   // only copy three channels, and set channel 4 (implied alpha) to 'opaque'
-                    tensor4.SubXYZVolume(3).Set(Col.Info<T>.MaxValue);
+                    var bw = srcChannels.IndexOf(Col.Channel.BW);
+                    var gray = srcChannels.IndexOf(Col.Channel.Gray);
+                    srcIndex = Fun.Max(bw, gray);
                 }
-                else if (channelCount > 1 && pixImage.ChannelCount == 1)
+
+                if (srcIndex > -1)
                 {
-                    if (typedPixImage != null)
+                    // Channel exists in source image, just copy
+                    if (pixVolume is PixVolume<T> pi)
                     {
-                        var vol = typedPixImage.Volume;
-                        for (int i = 0; i < channelCount; i++)
-                            tensor4.SubXYZVolume(i).Set(vol);
+                        volume.Set(pi.GetChannelInFormatOrder(srcIndex));
                     }
                     else
                     {
-                        for (int i = 0; i < channelCount; i++)
-                            pixImage.CopyChannelTo(0, tensor4.SubXYZVolume(i));
+                        var order = pixVolume.Format.ChannelOrder();
+                        pixVolume.CopyChannelTo(order[srcIndex], volume); // CopyChannelTo uses canonical order
                     }
-                    Tensor4 = tensor4;
-                    Format = format;
-                    return;
+                }
+                else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
+                {
+                    // Alpha channel does not exist in source image, fill with max value
+                    volume.Set(Col.Info<T>.MaxValue);
+                }
+                else if (channel == Col.Channel.Gray &&
+                         srcChannels.Contains(Col.Channel.Red) &&
+                         srcChannels.Contains(Col.Channel.Green) &&
+                         srcChannels.Contains(Col.Channel.Blue))
+                {
+                    var t1 = pixVolume.PixFormat.Type;
+                    var t2 = typeof(T);
+
+                    if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
+                    {
+                        toGray(pixVolume, volume);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException(
+                            $"Conversion from {t1} image with format {pixVolume.Format} to {t2} grayscale not implemented."
+                        );
+                    }
+                }
+                else if (channel == Col.Channel.Blue &&
+                         pixVolume.Format == Col.Format.RG &&
+                         dstChannels.Contains(Col.Channel.Red) &&
+                         dstChannels.Contains(Col.Channel.Green))
+                {
+                    // Allow expanding from RG to RGB formats, blue channel is set to zero
                 }
                 else
-                    throw new ArgumentException("cannot perform color space conversion");
-            }
-
-            if (format.IsPremultiplied() != pixImage.Format.IsPremultiplied())
-            {
-                throw new NotImplementedException(
-                        "conversion between alpha and premultiplied alpha not implemented yet");
-            }
-
-            if (typedPixImage != null)
-            {
-                var channelArray = typedPixImage.ChannelArray;
-                for (int i = 0; i < channelCount; i++)
-                    tensor4.SubXYZVolume(order[i]).Set(channelArray[i]);
-            }
-            else
-            {
-                for (int i = 0; i < channelCount; i++)
-                    pixImage.CopyChannelTo(i, tensor4.SubXYZVolume(order[i]));
+                {
+                    throw new NotSupportedException(
+                        $"Conversion from format {pixVolume.Format} to format {format} is not supported."
+                    );
+                }
             }
 
             Tensor4 = tensor4;

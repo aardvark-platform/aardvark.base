@@ -1,3 +1,19 @@
+### 5.2.21
+* Made non-generic PixImage creation more flexible and robust
+* Added NativePtr.Item and NativePtr.Value
+* Added Buffer.MemoryCopy overloads with nativeint arguments
+
+### 5.2.20
+* [Base] added float overloads to RandomSample methods
+* [Base] changed array memory copies to use Buffer.MemoryCopy
+* [PixImage] respect channel order in format and type conversion
+* [PixImage] improved support for dual-channel images
+* [PixImage] fixed and improved format conversion
+* [Tensors] added simple accessors for Gray and BW
+* [Vrml] added support for gzip compressed files
+* [Vrml] allow registration of custom field parsers
+* [Vrml] improved robustness in case of unknown field tokens
+
 ### 5.2.19
 * Added IPixMipmapLoader for loading images with mipmap chains
 * Marked some exotic image loading functions obsolete

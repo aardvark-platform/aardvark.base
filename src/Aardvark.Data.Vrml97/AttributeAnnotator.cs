@@ -118,7 +118,7 @@ namespace Aardvark.Data.Vrml97
                     // while (m.Contains(key)) key += "X";
                     if (m.Contains(key))
                     {
-                        Console.WriteLine("WARNING: trying to annotate annotated node!");
+                        Report.Warn("[Vrml97]: trying to annotate annotated node!");
                     }
                     map[key] = m_transform.Peek();
                 }

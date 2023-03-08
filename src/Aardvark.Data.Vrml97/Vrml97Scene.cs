@@ -1,6 +1,7 @@
 ﻿using Aardvark.Base;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 
 namespace Aardvark.Data.Vrml97
 {
@@ -14,13 +15,17 @@ namespace Aardvark.Data.Vrml97
 
         /// <summary>
         /// Creates a Vrml97Scene from given VRML97 file.
+        /// Supports text based and Gzip compressed files.
+        /// Gzip is detected independent of the file extension by checking if the file contains a gzip header.
         /// </summary>
         public static Vrml97Scene FromFile(string fileName) => FromFile(fileName, true, true);
 
         /// <summary>
         /// Creates a Vrml97Scene from given VRML97 file.
+        /// Supports text based and Gzip compressed files.
+        /// Gzip is detected independent of the file extension by checking if the file contains a gzip header.
         /// </summary>
-        /// <param name="fileName"></param>
+        /// <param name="fileName">file name</param>
         /// <param name="resolveDefUse"></param>
         /// <param name="annotate"></param>
         /// <param name="duplicateDefUseMaps"></param>
@@ -28,11 +33,24 @@ namespace Aardvark.Data.Vrml97
         public static Vrml97Scene FromFile(string fileName, bool resolveDefUse, bool annotate, bool duplicateDefUseMaps = true)
         {
             if (fileName == null) return null;
+            using var fileStream = new FileStream(
+                                  fileName,
+                                  FileMode.Open, FileAccess.Read, FileShare.Read,
+                                  4096, false
+                                  );
+            if (fileStream.Length < 2)
+            {
+                Report.Warn("[Vrml97] File empty or does not contain any valid Vrml97 content!");
+                return null;
+            }
 
-            var parser = new Parser(fileName);
-            var result = Parse(parser, resolveDefUse, annotate, duplicateDefUseMaps);
-            parser.Dispose();
-            return result;
+            // check if file is gzip compressed: 10 byte header starts with: 1f 8b
+            var h1 = fileStream.ReadByte();
+            var h2 = fileStream.ReadByte();
+            fileStream.Position = 0;
+
+            var inputStream = h1 == 0x1f && h2 == 0x8b ? (Stream)new GZipStream(fileStream, CompressionMode.Decompress, true) : fileStream;
+            return Parse(new Parser.State(inputStream, fileName), resolveDefUse, annotate, duplicateDefUseMaps);
         }
 
         /// <summary>
@@ -42,7 +60,7 @@ namespace Aardvark.Data.Vrml97
         /// <param name="fileName">Optional filename used to build absolute texture file paths</param>
         /// <returns>Parsed Vrml97 scene</returns>
         public static Vrml97Scene FromStream(Stream stream, string fileName)
-            => Parse(new Parser(stream, fileName), true, true);
+            => Parse(new Parser.State(stream, fileName), true, true);
 
         /// <summary>
         ///  Constructor.
@@ -141,7 +159,7 @@ namespace Aardvark.Data.Vrml97
         /// </summary>
         public Dictionary<string, SymMapBase> NamedNodes => m_namedNodes;
 
-        private static Vrml97Scene Parse(Parser parser, bool resolveDefUse, bool annotate, bool duplicateMaps = true)
+        private static Vrml97Scene Parse(Parser.State parser, bool resolveDefUse, bool annotate, bool duplicateMaps = true)
         {
             var root = parser.Perform();
 

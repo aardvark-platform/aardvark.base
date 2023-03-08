@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 
@@ -522,105 +523,55 @@ namespace Aardvark.Base
                 throw new ArgumentException("File name has unknown extension: " + ext);
         }
 
+        // Helper class to create PixImage from given Type
+        private static class Dispatch
+        {
+            private static class CreateDispatcher
+            {
+                public static PixImage<T> Create<T>(Col.Format format, long x, long y, long channels)
+                    => new PixImage<T>(format, x, y, channels);
+
+                public static PixImage<T> CreateArray<T>(T[] data, Col.Format format, long x, long y, long channels)
+                    => new PixImage<T>(format, data.CreateImageVolume(new V3l(x, y, channels)));
+            }
+
+            private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+            private static readonly MethodInfo s_createMethod = typeof(CreateDispatcher).GetMethod("Create", flags);
+            private static readonly MethodInfo s_createArrayMethod = typeof(CreateDispatcher).GetMethod("CreateArray", flags);
+
+            public static PixImage Create(PixFormat format, long x, long y, long channels)
+            {
+                var mi = s_createMethod.MakeGenericMethod(format.Type);
+                return (PixImage)mi.Invoke(null, new object[] { format.Format, x, y, channels });
+            }
+
+            public static PixImage Create(Array array, Col.Format format, long x, long y, long channels)
+            {
+                var mi = s_createArrayMethod.MakeGenericMethod(array.GetType().GetElementType());
+                return (PixImage)mi.Invoke(null, new object[] { array, format, x, y, channels });
+            }
+        }
+
         public static string GetPreferredExtensionOfFormat(PixFileFormat format)
         {
             return s_preferredExtensionOfFormat.Value[format];
         }
 
-        private static Dictionary<PixFormat, Func<long, long, long, PixImage>> s_pixImageCreatorMap =
-            new Dictionary<PixFormat, Func<long, long, long, PixImage>>()
-            {
-                { PixFormat.ByteBW, (x, y, c) => new PixImage<byte>(Col.Format.BW, x, y, c) },
-                { PixFormat.ByteGray, (x, y, c) => new PixImage<byte>(Col.Format.Gray, x, y, c) },
-                { PixFormat.ByteBGR, (x, y, c) => new PixImage<byte>(Col.Format.BGR, x, y, c) },
-                { PixFormat.ByteBGRA, (x, y, c) => new PixImage<byte>(Col.Format.BGRA, x, y, c) },
-                { PixFormat.ByteRGBA, (x, y, c) => new PixImage<byte>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.ByteRGB, (x, y, c) => new PixImage<byte>(Col.Format.RGB, x, y, c) },
-                { PixFormat.ByteBGRP, (x, y, c) => new PixImage<byte>(Col.Format.BGRP, x, y, c) },
-
-                { PixFormat.SByteBW, (x, y, c) => new PixImage<sbyte>(Col.Format.BW, x, y, c) },
-                { PixFormat.SByteGray, (x, y, c) => new PixImage<sbyte>(Col.Format.Gray, x, y, c) },
-                { PixFormat.SByteBGR, (x, y, c) => new PixImage<sbyte>(Col.Format.BGR, x, y, c) },
-                { PixFormat.SByteBGRA, (x, y, c) => new PixImage<sbyte>(Col.Format.BGRA, x, y, c) },
-                { PixFormat.SByteRGBA, (x, y, c) => new PixImage<sbyte>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.SByteRGB, (x, y, c) => new PixImage<sbyte>(Col.Format.RGB, x, y, c) },
-                { PixFormat.SByteBGRP, (x, y, c) => new PixImage<sbyte>(Col.Format.BGRP, x, y, c) },
-
-                { PixFormat.UShortGray, (x, y, c) => new PixImage<ushort>(Col.Format.Gray, x, y, c) },
-                { PixFormat.UShortRGB, (x, y, c) => new PixImage<ushort>(Col.Format.RGB, x, y, c) },
-                { PixFormat.UShortRGBA, (x, y, c) => new PixImage<ushort>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.UShortRGBP, (x, y, c) => new PixImage<ushort>(Col.Format.RGBP, x, y, c) },
-
-                { PixFormat.ShortGray, (x, y, c) => new PixImage<short>(Col.Format.Gray, x, y, c) },
-                { PixFormat.ShortRGB, (x, y, c) => new PixImage<short>(Col.Format.RGB, x, y, c) },
-                { PixFormat.ShortRGBA, (x, y, c) => new PixImage<short>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.ShortRGBP, (x, y, c) => new PixImage<short>(Col.Format.RGBP, x, y, c) },
-
-                { PixFormat.UIntGray, (x, y, c) => new PixImage<uint>(Col.Format.Gray, x, y, c) },
-                { PixFormat.UIntRGB, (x, y, c) => new PixImage<uint>(Col.Format.RGB, x, y, c) },
-                { PixFormat.UIntRGBA, (x, y, c) => new PixImage<uint>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.UIntRGBP, (x, y, c) => new PixImage<uint>(Col.Format.RGBP, x, y, c) },
-
-                { PixFormat.IntGray, (x, y, c) => new PixImage<int>(Col.Format.Gray, x, y, c) },
-                { PixFormat.IntRGB, (x, y, c) => new PixImage<int>(Col.Format.RGB, x, y, c) },
-                { PixFormat.IntRGBA, (x, y, c) => new PixImage<int>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.IntRGBP, (x, y, c) => new PixImage<int>(Col.Format.RGBP, x, y, c) },
-
-                { PixFormat.HalfGray, (x, y, c) => new PixImage<Half>(Col.Format.Gray, x, y, c) },
-                { PixFormat.HalfRGB, (x, y, c) => new PixImage<Half>(Col.Format.RGB, x, y, c) },
-                { PixFormat.HalfRGBA, (x, y, c) => new PixImage<Half>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.HalfRGBP, (x, y, c) => new PixImage<Half>(Col.Format.RGBP, x, y, c) },
-
-                { PixFormat.FloatGray, (x, y, c) => new PixImage<float>(Col.Format.Gray, x, y, c) },
-                { PixFormat.FloatRGB, (x, y, c) => new PixImage<float>(Col.Format.RGB, x, y, c) },
-                { PixFormat.FloatRGBA, (x, y, c) => new PixImage<float>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.FloatRGBP, (x, y, c) => new PixImage<float>(Col.Format.RGBP, x, y, c) },
-
-                { PixFormat.DoubleGray, (x, y, c) => new PixImage<double>(Col.Format.Gray, x, y, c) },
-                { PixFormat.DoubleRGB, (x, y, c) => new PixImage<double>(Col.Format.RGB, x, y, c) },
-                { PixFormat.DoubleRGBA, (x, y, c) => new PixImage<double>(Col.Format.RGBA, x, y, c) },
-                { PixFormat.DoubleRGBP, (x, y, c) => new PixImage<double>(Col.Format.RGBP, x, y, c) },
-            };
-
-        private static Dictionary<Type, Func<Array, Col.Format, long, long, long, PixImage>> s_pixImageArrayCreatorMap =
-            new Dictionary<Type, Func<Array, Col.Format, long, long, long, PixImage>>()
-            {
-                { typeof(byte[]), (a, f, x, y, c) =>
-                                    new PixImage<byte>(f, ((byte[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(sbyte[]), (a, f, x, y, c) =>
-                                    new PixImage<sbyte>(f, ((sbyte[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(ushort[]), (a, f, x, y, c) =>
-                                    new PixImage<ushort>(f, ((ushort[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(short[]), (a, f, x, y, c) =>
-                                    new PixImage<short>(f, ((short[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(uint[]), (a, f, x, y, c) =>
-                                    new PixImage<uint>(f, ((uint[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(int[]), (a, f, x, y, c) =>
-                                    new PixImage<int>(f, ((int[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(Half[]), (a, f, x, y, c) =>
-                                    new PixImage<Half>(f, ((Half[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(float[]), (a, f, x, y, c) =>
-                                    new PixImage<float>(f, ((float[])a).CreateImageVolume(new V3l(x, y, c))) },
-                { typeof(double[]), (a, f, x, y, c) =>
-                                    new PixImage<double>(f, ((double[])a).CreateImageVolume(new V3l(x, y, c))) },
-            };
-
-
         #endregion
 
         #region Static Creator Functions
 
-        public static PixImage Create(PixFormat pixFormat, long sx, long sy, long ch)
-            => s_pixImageCreatorMap[pixFormat](sx, sy, ch);
+        public static PixImage Create(PixFormat format, long sx, long sy, long ch)
+            => Dispatch.Create(format, sx, sy, ch);
 
-        public static PixImage Create(PixFormat pixFormat, long sx, long sy)
-            => s_pixImageCreatorMap[pixFormat](sx, sy, pixFormat.Format.ChannelCount());
+        public static PixImage Create(PixFormat format, long sx, long sy)
+            => Dispatch.Create(format, sx, sy, format.ChannelCount);
 
         public static PixImage Create(Array array, Col.Format format, long sx, long sy, long ch)
-            => s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, ch);
+            => Dispatch.Create(array, format, sx, sy, ch);
 
         public static PixImage Create(Array array, Col.Format format, long sx, long sy)
-            => s_pixImageArrayCreatorMap[array.GetType()](array, format, sx, sy, format.ChannelCount());
+            => Dispatch.Create(array, format, sx, sy, format.ChannelCount());
 
         public static Volume<T> CreateVolume<T>(V3i size) => size.ToV3l().CreateImageVolume<T>();
 
@@ -1101,6 +1052,21 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
             };
 
+        private static void ToGray<T, Tv, R>(PixImage src, object dst, Func<Tv, R> toGray)
+        {
+            ((Matrix<R>)dst).SetMap(src.AsPixImage<T>().GetMatrix<Tv>(), toGray);
+        }
+
+        protected static Dictionary<(Type, Type), Action<PixImage, object>> s_rgbToGrayMap =
+            new Dictionary<(Type, Type), Action<PixImage, object>>()
+            {
+                { (typeof(byte), typeof(byte)),     (src, dst) => ToGray<byte, C3b, byte>(src, dst, Col.ToGrayByte) },
+                { (typeof(ushort), typeof(ushort)), (src, dst) => ToGray<ushort, C3us, ushort>(src, dst, Col.ToGrayUShort) },
+                { (typeof(uint), typeof(uint)),     (src, dst) => ToGray<uint, C3ui, uint>(src, dst, Col.ToGrayUInt) },
+                { (typeof(float), typeof(float)),   (src, dst) => ToGray<float, C3f, float>(src, dst, Col.ToGrayFloat) },
+                { (typeof(double), typeof(double)), (src, dst) => ToGray<double, C3d, double>(src, dst, Col.ToGrayDouble) },
+            };
+
         public abstract PixImage<T1> ToPixImage<T1>();
         public abstract PixImage Transformed(ImageTrafo trafo);
 
@@ -1350,62 +1316,88 @@ namespace Aardvark.Base
         /// </summary>
         public PixImage(Col.Format format, PixImage pixImage)
         {
-            var size = pixImage.Size;
-            var channelCount = format.ChannelCount();
-            var volume = CreateVolume<T>(size.X, size.Y, channelCount);
-            var order = format.ChannelOrder();
-            var typedPixImage = pixImage as PixImage<T>;
-            if (channelCount != pixImage.ChannelCount
-                && !(channelCount == 3 && pixImage.ChannelCount == 4))
-            {
-                if (channelCount == 4 && pixImage.ChannelCount == 3)
-                {
-                    channelCount = 3;   // only copy three channels, and set channel 4 (implied alpha) to 'opaque'
-                    volume.SubXYMatrix(3).Set(Col.Info<T>.MaxValue);
-                }
-                else if (channelCount > 1 && pixImage.ChannelCount == 1)
-                {
-                    if (typedPixImage != null)
-                    {
-                        var mat = typedPixImage.Matrix;
-                        for (int i = 0; i < channelCount; i++)
-                            volume.SubXYMatrix(i).Set(mat);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < channelCount; i++)
-                            pixImage.CopyChannelTo(0, volume.SubXYMatrix(i));
-                    }
-                    Volume = volume;
-                    Format = format;
-                    return;
-                }
-                else
-                    throw new ArgumentException("cannot perform color space conversion");
-            }
-
             if (format.IsPremultiplied() != pixImage.Format.IsPremultiplied())
             {
                 throw new NotImplementedException(
-                        "conversion between alpha and premultiplied alpha not implemented yet");
+                    "Conversion between alpha and premultiplied alpha formats not implemented yet."
+                );
             }
 
-            if (typedPixImage != null)
+            var size = pixImage.Size;
+            var srcChannels = Col.ChannelsOfFormat(pixImage.Format);
+            var dstChannels = Col.ChannelsOfFormat(format);
+            var volume = CreateVolume<T>(size.X, size.Y, dstChannels.Length);
+
+            for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
             {
-                var channelArray = typedPixImage.ChannelArray;
-                for (int i = 0; i < channelCount; i++)
-                    volume.SubXYMatrix(order[i]).Set(channelArray[i]);
-            }
-            else
-            {
-                for (int i = 0; i < channelCount; i++)
-                    pixImage.CopyChannelTo(i, volume.SubXYMatrix(order[i]));
+                var channel = dstChannels[dstIndex];
+                var matrix = volume.SubXYMatrix(dstIndex);
+                var srcIndex = srcChannels.IndexOf(channel);
+
+                // If we have an RGB channel, we may also just copy a Gray or BW channel
+                if (srcIndex == -1 && (channel == Col.Channel.Red || channel == Col.Channel.Green || channel == Col.Channel.Blue))
+                {
+                    var bw = srcChannels.IndexOf(Col.Channel.BW);
+                    var gray = srcChannels.IndexOf(Col.Channel.Gray);
+                    srcIndex = Fun.Max(bw, gray);
+                }
+
+                if (srcIndex > -1)
+                {
+                    // Channel exists in source image, just copy
+                    if (pixImage is PixImage<T> pi)
+                    {
+                        matrix.Set(pi.GetChannelInFormatOrder(srcIndex));
+                    }
+                    else
+                    {
+                        var order = pixImage.Format.ChannelOrder();
+                        pixImage.CopyChannelTo(order[srcIndex], matrix); // CopyChannelTo uses canonical order
+                    }
+                }
+                else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
+                {
+                    // Alpha channel does not exist in source image, fill with max value
+                    matrix.Set(Col.Info<T>.MaxValue);
+                }
+                else if (channel == Col.Channel.Gray &&
+                         srcChannels.Contains(Col.Channel.Red) &&
+                         srcChannels.Contains(Col.Channel.Green) &&
+                         srcChannels.Contains(Col.Channel.Blue))
+                {
+                    var t1 = pixImage.PixFormat.Type;
+                    var t2 = typeof(T);
+
+                    if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
+                    {
+                        toGray(pixImage, matrix);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException(
+                            $"Conversion from {t1} image with format {pixImage.Format} to {t2} grayscale not implemented."
+                        );
+                    }
+                }
+                else if (channel == Col.Channel.Blue &&
+                         pixImage.Format == Col.Format.RG &&
+                         dstChannels.Contains(Col.Channel.Red) &&
+                         dstChannels.Contains(Col.Channel.Green))
+                {
+                    // Allow expanding from RG to RGB formats, blue channel is set to zero
+                }
+                else
+                {
+                    throw new NotSupportedException(
+                        $"Conversion from format {pixImage.Format} to format {format} is not supported."
+                    );
+                }
             }
 
             Volume = volume;
             Format = format;
         }
-        
+
         public PixImage<T> CopyToImageLayout()
         {
             if (Volume.HasImageLayout())

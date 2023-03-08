@@ -17,6 +17,10 @@ namespace Aardvark.Base
     {
         public static class Intent
         {
+            public static readonly Symbol BW = Col.Intent.BW;
+            public static readonly Symbol Gray = Col.Intent.Gray;
+            public static readonly Symbol Alpha = Col.Intent.Alpha;
+
             public static readonly Symbol RGB = Col.Intent.RGB;
             public static readonly Symbol BGR = Col.Intent.BGR;
             public static readonly Symbol RGBA = Col.Intent.RGBA;
@@ -37,7 +41,8 @@ namespace Aardvark.Base
                 if (typed != null) return typed;
             }
             throw new KeyNotFoundException(
-                            "no accessors of appropriate type and intent");
+                $"No accessors to view {typeof(Td)} as {typeof(Tv)} with intent {intent}."
+            );
         }
     }
 

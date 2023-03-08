@@ -10,28 +10,39 @@ namespace Aardvark.Base
 {
     public static partial class TensorAccessors
     {
-        private static Dictionary<(Type, Type, Symbol),
-                                  Func<long[], ITensorAccessors>> s_creatorMap
+        #region Single channel accessors
+
+        //# foreach (var tt in Meta.ColorConvertibleTypes) { var ttype = tt.Name; var tcaps = tt.Caps;
+        //# foreach (var ct in Meta.ColorConvertibleTypes) { var ctype = ct.Name; var ccaps = ct.Caps;
+        //#     var tt_from_ct = ct == tt ? "" : "Col." + ct.Caps + "To" + tt.Caps;
+        //#     var ct_from_tt = ct == tt ? "" : "Col." + tt.Caps + "To" + ct.Caps;
+        private static ITensorAccessors Get__tcaps__As__ccaps__(long[] delta)
+        {
+            return new TensorAccessors<__ttype__, __ctype__>()
+            {
+                Getter = (da, i) => __ct_from_tt__(da[i]),
+                Setter = (da, i, v) => da[i] = __tt_from_ct__(v),
+            };
+        }
+
+        //# } // ct
+        //# } // tt
+        #endregion
+
+        private static readonly Dictionary<(Type, Type, Symbol),
+                                           Func<long[], ITensorAccessors>> s_creatorMap
             = new Dictionary<(Type, Type, Symbol),
                              Func<long[], ITensorAccessors>>()
             {
-                //# foreach (var tt in Meta.ColorConvertibleTypes) { var ttype = tt.Name;
-                //# foreach (var ct in Meta.ColorConvertibleTypes) { var ctype = ct.Name;
+                //# foreach (var tt in Meta.ColorConvertibleTypes) { var ttype = tt.Name; var tcaps = tt.Caps;
+                //# foreach (var ct in Meta.ColorConvertibleTypes) { var ctype = ct.Name; var ccaps = ct.Caps;
                 //#     var tt_from_ct = ct == tt ? "" : "Col." + ct.Caps + "To" + tt.Caps;
-                //#     var ct_from_tt = ct == tt ? "" : "Col." + tt.Caps + "To" + ct.Caps; 
-                #region ColorChannel __ttype__ as __ctype__
+                //#     var ct_from_tt = ct == tt ? "" : "Col." + tt.Caps + "To" + ct.Caps;
+                #region Single channel __ttype__ as __ctype__
 
-                {
-                    (typeof(__ttype__), typeof(__ctype__), Intent.ColorChannel),
-                    delta =>
-                    {
-                        return new TensorAccessors<__ttype__, __ctype__>()
-                        {
-                            Getter = (da, i) => __ct_from_tt__(da[i]),
-                            Setter = (da, i, v) => da[i] = __tt_from_ct__(v),
-                        };
-                    }
-                },
+                //# foreach (var intent in new [] { "ColorChannel", "BW", "Gray", "Alpha" }) {
+                { (typeof(__ttype__), typeof(__ctype__), Intent.__intent__), Get__tcaps__As__ccaps__ },
+                //# } // intent
 
                 #endregion
 

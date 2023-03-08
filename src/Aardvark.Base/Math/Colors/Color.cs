@@ -65,8 +65,10 @@ namespace Aardvark.Base
             HSL,
             HSV,
 
-            //
-            NormalUV,
+            RG,
+
+            [Obsolete("Use Col.Format.RG instead.")]
+            NormalUV = RG,
         }
 
         #endregion
@@ -103,6 +105,8 @@ namespace Aardvark.Base
             Y,
             u,
             v,
+
+            [Obsolete("Was used for NormalUV.")]
             U,
         }
 
@@ -151,7 +155,11 @@ namespace Aardvark.Base
         {
             public static readonly Symbol BW = "BW";
             public static readonly Symbol Gray = "Gray";
+            public static readonly Symbol Alpha = "Alpha";
 
+            public static readonly Symbol GrayAlpha = "GrayAlpha";
+
+            public static readonly Symbol RG = "RG";
             public static readonly Symbol RGB = "RGB";
             public static readonly Symbol BGR = "BGR";
             public static readonly Symbol RGBA = "RGBA";
@@ -169,14 +177,19 @@ namespace Aardvark.Base
             public static readonly Symbol HSL = "HSL";
             public static readonly Symbol HSV = "HSV";
 
-            public static readonly Symbol NormalUV = "NormalUV";
+            [Obsolete("Use Col.Name.RG instead.")]
+            public static readonly Symbol NormalUV = RG;
         };
 
         public static class Intent
         {
             public static readonly Symbol BW = "BW";
             public static readonly Symbol Gray = "Gray";
+            public static readonly Symbol Alpha = "Alpha";
 
+            public static readonly Symbol GrayAlpha = "GrayAlpha";
+
+            public static readonly Symbol RG = "RG";
             public static readonly Symbol RGB = "RGB";
             public static readonly Symbol BGR = "BGR";
             public static readonly Symbol RGBA = "RGBA";
@@ -192,14 +205,20 @@ namespace Aardvark.Base
             public static readonly Symbol HSL = "HSL";
             public static readonly Symbol HSV = "HSV";
 
-            public static readonly Symbol NormalUV = "NormalUV";
+            [Obsolete("Use Col.Intent.RG instead.")]
+            public static readonly Symbol NormalUV = RG;
         };
 
-        private static (Col.Format, Symbol, Symbol, int)[] s_colFormatArray =
+        private static readonly (Col.Format, Symbol, Symbol, int)[] s_colFormatArray =
             new[]
             {
                 (Format.BW,   Name.BW,   Intent.BW,   1),
                 (Format.Gray, Name.Gray, Intent.Gray, 1),
+                (Format.Alpha, Name.Alpha, Intent.Alpha, 1),
+
+                (Format.GrayAlpha, Name.GrayAlpha, Intent.GrayAlpha, 2),
+
+                (Format.RG,   Name.RG,   Intent.RG,   2),
                 (Format.RGB,  Name.RGB,  Intent.RGB,  3),
                 (Format.BGR,  Name.BGR,  Intent.BGR,  3),
                 (Format.RGBA, Name.RGBA, Intent.RGBA, 4),
@@ -215,7 +234,6 @@ namespace Aardvark.Base
                 (Format.HSL,  Name.HSL,  Intent.HSL,  3),
                 (Format.HSV,  Name.HSV,  Intent.HSV,  3),
 
-                (Format.NormalUV, Name.NormalUV, Intent.NormalUV, 2),
             };
 
         static Col()
@@ -265,11 +283,16 @@ namespace Aardvark.Base
             return s_channelCountMap[format];
         }
 
-        private static Dict<Format, Channel[]> s_formatChannelsMap =
+        private static readonly Dict<Format, Channel[]> s_formatChannelsMap =
             new Dict<Format, Channel[]>()
             {
                 { Format.BW, new[] { Channel.BW } },
                 { Format.Gray, new[] { Channel.Gray } },
+                { Format.Alpha, new[] { Channel.Alpha } },
+
+                { Format.GrayAlpha, new[] { Channel.Gray, Channel.Alpha } },
+
+                { Format.RG, new[] { Channel.Red, Channel.Green } },
                 { Format.RGB, new[] { Channel.Red, Channel.Green, Channel.Blue } },
                 { Format.BGR, new[] { Channel.Blue, Channel.Green, Channel.Red } },
                 { Format.RGBA, new[] { Channel.Red, Channel.Green, Channel.Blue, Channel.Alpha } },
@@ -285,8 +308,6 @@ namespace Aardvark.Base
                 { Format.HSL, new[] { Channel.H, Channel.S, Channel.L } },
                 { Format.HSV, new[] { Channel.H, Channel.S, Channel.V } },
                 { Format.Yuv, new[] { Channel.Y, Channel.u, Channel.v } },
-
-                { Format.NormalUV, new[] {Channel.U, Channel.V } },
             };
 
         public static Channel[] ChannelsOfFormat(this Format format)
@@ -294,13 +315,19 @@ namespace Aardvark.Base
             Channel[] channels;
             if (s_formatChannelsMap.TryGetValue(format, out channels))
                 return channels;
-            throw new ArgumentException("channels of format not defined");
+            throw new ArgumentException($"Channels of format {format} not defined.");
         }
 
-        private static Dict<Format, long[]> s_channelOrderMap =
+        private static readonly Dict<Format, long[]> s_channelOrderMap =
             new Dict<Format, long[]>()
             {
+                { Format.BW, new[] { 0L } },
                 { Format.Gray, new[] { 0L } },
+                { Format.Alpha, new[] { 0L } },
+
+                { Format.GrayAlpha, new[] { 0L, 1L } },
+
+                { Format.RG, new[] { 0L, 1L } },
                 { Format.RGB, new[] { 0L, 1L, 2L } },
                 { Format.BGR, new[] { 2L, 1L, 0L } },
                 { Format.RGBA, new[] { 0L, 1L, 2L, 3L } },
@@ -316,8 +343,6 @@ namespace Aardvark.Base
                 { Format.HSL, new[] { 0L, 1L, 2L } },
                 { Format.HSV, new[] { 0L, 1L, 2L } },
                 { Format.Yuv, new[] { 0L, 1L, 2L } },
-
-                { Format.NormalUV, new[] { 0L, 1L } },
             };
 
         public static long[] ChannelOrder(this Format format)
@@ -325,12 +350,18 @@ namespace Aardvark.Base
             return s_channelOrderMap[format];
         }
 
-        private static Dict<(Format, Channel), long> s_channelIndexMap =
+        private static readonly Dict<(Format, Channel), long> s_channelIndexMap =
             new Dict<(Format, Channel), long>()
             {
                 { (Format.BW, Channel.BW), 0L },
-
                 { (Format.Gray, Channel.Gray), 0L },
+                { (Format.Alpha, Channel.Alpha), 0L },
+
+                { (Format.GrayAlpha, Channel.Gray), 0L },
+                { (Format.GrayAlpha, Channel.Alpha), 1L },
+
+                { (Format.RG, Channel.Red), 0L },
+                { (Format.RG, Channel.Green), 1L },
 
                 { (Format.RGB, Channel.Red), 0L },
                 { (Format.RGB, Channel.Green), 1L },
@@ -387,10 +418,6 @@ namespace Aardvark.Base
                 { (Format.Yuv, Channel.Y), 0L },
                 { (Format.Yuv, Channel.u), 1L },
                 { (Format.Yuv, Channel.v), 2L },
-
-                { (Format.NormalUV, Channel.U), 0L },
-                { (Format.NormalUV, Channel.V), 1L },
-
             };
 
 
@@ -399,7 +426,7 @@ namespace Aardvark.Base
             if (s_channelIndexMap.TryGetValue((format, channel),
                                               out long index))
                 return index;
-            throw new ArgumentException("format does not contain channel");
+            throw new ArgumentException($"Format {format} does not contain channel {channel}.");
         }
 
         public static long ChannelIndexNoThrow(this Format format, Channel channel)
@@ -416,7 +443,7 @@ namespace Aardvark.Base
             return channelCount switch
             {
                 1 => Format.Gray,
-                2 => Format.NormalUV,
+                2 => Format.RG,
                 3 => (type == typeof(byte)) ? Format.BGR : Format.RGB,
                 4 => (type == typeof(byte)) ? Format.BGRA : Format.RGBA,
                 _ => throw new ArgumentException($"No default format for {type} with {channelCount} channels"),
@@ -960,69 +987,129 @@ namespace Aardvark.Base
 
         #region Color to Gray Conversion Constants
 
+        private const double c_grayDoubleRed   = 0.2989;
+        private const double c_grayDoubleGreen = 0.5870;
+        private const double c_grayDoubleBlue  = 0.1140;
+
+        private const float c_grayFloatRed     = (float)c_grayDoubleRed;
+        private const float c_grayFloatGreen   = (float)c_grayDoubleGreen;
+        private const float c_grayFloatBlue    = (float)c_grayDoubleBlue;
+
         // 65793 == 65536 * 255.99998/255
-        private const int c_grayByteFromC3bRed = (int)(65793 * 0.30);
-        private const int c_grayByteFromC3bGreen = (int)(65793 * 0.59);
-        private const int c_grayByteFromC3bBlue = (int)(65793 * 0.11);
+        private const int c_grayByteRed   = (int)(65793 * c_grayDoubleRed);
+        private const int c_grayByteGreen = (int)(65793 * c_grayDoubleGreen);
+        private const int c_grayByteBlue  = (int)(65793 * c_grayDoubleBlue);
 
         // 4295032833 == 4294967296 * 65535.99999999999/65535
-        private const long c_grayUShortFromC3usRed = (long)(4295032833L * 0.30);
-        private const long c_grayUShortFromC3usGreen = (long)(4295032833L * 0.59);
-        private const long c_grayUShortFromC3usBlue = (long)(4295032833L * 0.11);
+        private const long c_grayUShortRed   = (long)(4295032833L * c_grayDoubleRed);
+        private const long c_grayUShortGreen = (long)(4295032833L * c_grayDoubleGreen);
+        private const long c_grayUShortBlue  = (long)(4295032833L * c_grayDoubleBlue);
 
         #endregion
 
         #region Color to Gray Conversions
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte ToGrayByte(this C3b c)
-        {
-            return (byte)((c.R * c_grayByteFromC3bRed
-                         + c.G * c_grayByteFromC3bGreen
-                         + c.B * c_grayByteFromC3bBlue) >> 16);
-        }
+        #region Byte
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte ToGrayByte(this C4b c)
-        {
-            return (byte)((c.R * c_grayByteFromC3bRed
-                         + c.G * c_grayByteFromC3bGreen
-                         + c.B * c_grayByteFromC3bBlue) >> 16);
-        }
+        public static byte ToGrayByte(byte r, byte g, byte b)
+            => (byte)((r * c_grayByteRed + g * c_grayByteGreen + b * c_grayByteBlue) >> 16);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort ToGrayUShort(this C3us c)
-        {
-            return (ushort)((c.R * c_grayUShortFromC3usRed
-                           + c.G * c_grayUShortFromC3usGreen
-                           + c.B * c_grayUShortFromC3usBlue) >> 32);
-        }
+        public static byte ToGrayByte(this C3b c) => ToGrayByte(c.R, c.G, c.B);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ushort ToGrayUShort(this C4us c)
-        {
-            return (ushort)((c.R * c_grayUShortFromC3usRed
-                           + c.G * c_grayUShortFromC3usGreen
-                           + c.B * c_grayUShortFromC3usBlue) >> 32);
-        }
+        public static byte ToGrayByte(this C4b c) => ToGrayByte(c.R, c.G, c.B);
+
+        #endregion
+
+        #region UShort
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloat(this C3f c) { return c.R * 0.30f + c.G * 0.59f + c.B * 0.11f; }
+        public static ushort ToGrayUShort(ushort r, ushort g, ushort b)
+            => (ushort)((r * c_grayUShortRed + g * c_grayUShortGreen + b * c_grayUShortBlue) >> 32);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloat(this C4f c) { return c.R * 0.30f + c.G * 0.59f + c.B * 0.11f; }
+        public static ushort ToGrayUShort(this C3us c) => ToGrayUShort(c.R, c.G, c.B);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloatClamped(this C3f c)
-        {
-            return Fun.Clamp(c.R * 0.30f + c.G * 0.59f + c.B * 0.11f, 0.0f, 1.0f);
-        }
+        public static ushort ToGrayUShort(this C4us c) => ToGrayUShort(c.R, c.G, c.B);
+
+        #endregion
+
+        #region UInt
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float ToGrayFloatClamped(C4f c)
-        {
-            return Fun.Clamp(c.R * 0.30f + c.G * 0.59f + c.B * 0.11f, 0.0f, 1.0f);
-        }
+        public static uint ToGrayUInt(uint r, uint g, uint b)
+            => DoubleToUInt(ToGrayDoubleClamped(UIntToDouble(r), UIntToDouble(g), UIntToDouble(b)));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ToGrayUInt(this C3ui c) => ToGrayUInt(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static uint ToGrayUInt(this C4ui c) => ToGrayUInt(c.R, c.G, c.B);
+
+        #endregion
+
+        #region Half
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half ToGrayHalf(Half r, Half g, Half b)
+            => (Half)ToGrayFloat(r, g, b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Half ToGrayHalfClamped(Half r, Half g, Half b)
+            => (Half)ToGrayFloatClamped(r, g, b);
+
+        #endregion
+
+        #region Float
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloat(float r, float g, float b)
+            => r * c_grayFloatRed + g * c_grayFloatGreen + b * c_grayFloatBlue;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloat(this C3f c) => ToGrayFloat(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloat(this C4f c) => ToGrayFloat(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloatClamped(float r, float g, float b)
+            => ToGrayFloat(r, g, b).Clamp(0, 1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloatClamped(this C3f c) => ToGrayFloatClamped(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float ToGrayFloatClamped(C4f c) => ToGrayFloatClamped(c.R, c.G, c.B);
+
+        #endregion
+
+        #region Double
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDouble(double r, double g, double b)
+            => r * c_grayDoubleRed + g * c_grayDoubleGreen + b * c_grayDoubleBlue;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDouble(this C3d c) => ToGrayDouble(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDouble(this C4d c) => ToGrayDouble(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDoubleClamped(double r, double g, double b)
+            => ToGrayDouble(r, g, b).Clamp(0, 1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDoubleClamped(this C3d c) => ToGrayDoubleClamped(c.R, c.G, c.B);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double ToGrayDoubleClamped(C4d c) => ToGrayDoubleClamped(c.R, c.G, c.B);
+
+        #endregion
 
         #region Obsolete
 
@@ -1845,6 +1932,7 @@ namespace Aardvark.Base
 
         public static readonly PixFormat ByteBW = new PixFormat(typeof(byte), Col.Format.BW);
         public static readonly PixFormat ByteGray = new PixFormat(typeof(byte), Col.Format.Gray);
+        public static readonly PixFormat ByteRG = new PixFormat(typeof(byte), Col.Format.RG);
         public static readonly PixFormat ByteBGR = new PixFormat(typeof(byte), Col.Format.BGR);
         public static readonly PixFormat ByteRGB = new PixFormat(typeof(byte), Col.Format.RGB);
         public static readonly PixFormat ByteBGRA = new PixFormat(typeof(byte), Col.Format.BGRA);
@@ -1854,6 +1942,7 @@ namespace Aardvark.Base
 
         public static readonly PixFormat SByteBW = new PixFormat(typeof(sbyte), Col.Format.BW);
         public static readonly PixFormat SByteGray = new PixFormat(typeof(sbyte), Col.Format.Gray);
+        public static readonly PixFormat SByteRG = new PixFormat(typeof(sbyte), Col.Format.RG);
         public static readonly PixFormat SByteBGR = new PixFormat(typeof(sbyte), Col.Format.BGR);
         public static readonly PixFormat SByteRGB = new PixFormat(typeof(sbyte), Col.Format.RGB);
         public static readonly PixFormat SByteBGRA = new PixFormat(typeof(sbyte), Col.Format.BGRA);
@@ -1862,6 +1951,7 @@ namespace Aardvark.Base
         public static readonly PixFormat SByteRGBP = new PixFormat(typeof(sbyte), Col.Format.RGBP);
 
         public static readonly PixFormat UShortGray = new PixFormat(typeof(ushort), Col.Format.Gray);
+        public static readonly PixFormat UShortRG = new PixFormat(typeof(ushort), Col.Format.RG);
         public static readonly PixFormat UShortBGR = new PixFormat(typeof(ushort), Col.Format.BGR);
         public static readonly PixFormat UShortRGB = new PixFormat(typeof(ushort), Col.Format.RGB);
         public static readonly PixFormat UShortBGRA = new PixFormat(typeof(ushort), Col.Format.BGRA);
@@ -1870,6 +1960,7 @@ namespace Aardvark.Base
         public static readonly PixFormat UShortRGBP = new PixFormat(typeof(ushort), Col.Format.RGBP);
 
         public static readonly PixFormat ShortGray = new PixFormat(typeof(short), Col.Format.Gray);
+        public static readonly PixFormat ShortRG = new PixFormat(typeof(short), Col.Format.RG);
         public static readonly PixFormat ShortBGR = new PixFormat(typeof(short), Col.Format.BGR);
         public static readonly PixFormat ShortRGB = new PixFormat(typeof(short), Col.Format.RGB);
         public static readonly PixFormat ShortBGRA = new PixFormat(typeof(short), Col.Format.BGRA);
@@ -1878,6 +1969,7 @@ namespace Aardvark.Base
         public static readonly PixFormat ShortRGBP = new PixFormat(typeof(short), Col.Format.RGBP);
 
         public static readonly PixFormat UIntGray = new PixFormat(typeof(uint), Col.Format.Gray);
+        public static readonly PixFormat UIntRG = new PixFormat(typeof(uint), Col.Format.RG);
         public static readonly PixFormat UIntBGR = new PixFormat(typeof(uint), Col.Format.BGR);
         public static readonly PixFormat UIntRGB = new PixFormat(typeof(uint), Col.Format.RGB);
         public static readonly PixFormat UIntBGRA = new PixFormat(typeof(uint), Col.Format.BGRA);
@@ -1886,6 +1978,7 @@ namespace Aardvark.Base
         public static readonly PixFormat UIntRGBP = new PixFormat(typeof(uint), Col.Format.RGBP);
 
         public static readonly PixFormat IntGray = new PixFormat(typeof(int), Col.Format.Gray);
+        public static readonly PixFormat IntRG = new PixFormat(typeof(int), Col.Format.RG);
         public static readonly PixFormat IntBGR = new PixFormat(typeof(int), Col.Format.BGR);
         public static readonly PixFormat IntRGB = new PixFormat(typeof(int), Col.Format.RGB);
         public static readonly PixFormat IntBGRA = new PixFormat(typeof(int), Col.Format.BGRA);
@@ -1894,6 +1987,7 @@ namespace Aardvark.Base
         public static readonly PixFormat IntRGBP = new PixFormat(typeof(int), Col.Format.RGBP);
 
         public static readonly PixFormat HalfGray = new PixFormat(typeof(Half), Col.Format.Gray);
+        public static readonly PixFormat HalfRG = new PixFormat(typeof(Half), Col.Format.RG);
         public static readonly PixFormat HalfBGR = new PixFormat(typeof(Half), Col.Format.BGR);
         public static readonly PixFormat HalfRGB = new PixFormat(typeof(Half), Col.Format.RGB);
         public static readonly PixFormat HalfBGRA = new PixFormat(typeof(Half), Col.Format.BGRA);
@@ -1902,6 +1996,7 @@ namespace Aardvark.Base
         public static readonly PixFormat HalfRGBP = new PixFormat(typeof(Half), Col.Format.RGBP);
 
         public static readonly PixFormat FloatGray = new PixFormat(typeof(float), Col.Format.Gray);
+        public static readonly PixFormat FloatRG = new PixFormat(typeof(float), Col.Format.RG);
         public static readonly PixFormat FloatBGR = new PixFormat(typeof(float), Col.Format.BGR);
         public static readonly PixFormat FloatRGB = new PixFormat(typeof(float), Col.Format.RGB);
         public static readonly PixFormat FloatBGRA = new PixFormat(typeof(float), Col.Format.BGRA);
@@ -1910,6 +2005,7 @@ namespace Aardvark.Base
         public static readonly PixFormat FloatRGBP = new PixFormat(typeof(float), Col.Format.RGBP);
 
         public static readonly PixFormat DoubleGray = new PixFormat(typeof(double), Col.Format.Gray);
+        public static readonly PixFormat DoubleRG = new PixFormat(typeof(double), Col.Format.RG);
         public static readonly PixFormat DoubleBGR = new PixFormat(typeof(double), Col.Format.BGR);
         public static readonly PixFormat DoubleRGB = new PixFormat(typeof(double), Col.Format.RGB);
         public static readonly PixFormat DoubleBGRA = new PixFormat(typeof(double), Col.Format.BGRA);
