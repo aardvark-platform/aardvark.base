@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 
 namespace Aardvark.Base
 {
@@ -46,43 +46,36 @@ namespace Aardvark.Base
 
         #region Static Creators
 
-        static readonly Dictionary<Type, Func<PixImage, MipMapOptions, PixImageMipMap>> convertTable = new Dictionary<Type, Func<PixImage, MipMapOptions, PixImageMipMap>>()
+        // Helper class to create PixImageMipMap from untyped PixImage
+        private static class Dispatch
+        {
+            private static class CreateDispatcher
             {
-                {typeof(PixImage<byte>), (pix, opt) => new PixImageMipMap<byte>((PixImage<byte>)pix, opt)},
-                {typeof(PixImage<ushort>), (pix, opt) => new PixImageMipMap<ushort>((PixImage<ushort>)pix, opt)},
-                {typeof(PixImage<uint>), (pix, opt) => new PixImageMipMap<uint>((PixImage<uint>)pix, opt)},
-                {typeof(PixImage<Half>), (pix, opt) => new PixImageMipMap<Half>((PixImage<Half>)pix, opt)},
-                {typeof(PixImage<float>), (pix, opt) => new PixImageMipMap<float>((PixImage<float>)pix, opt)},
-                {typeof(PixImage<double>), (pix, opt) => new PixImageMipMap<double>((PixImage<double>)pix, opt)}
-            };
+                public static PixImageMipMap<T> Create<T>(PixImage<T> image, MipMapOptions options)
+                    => new PixImageMipMap<T>(image, options);
+            }
+
+            private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+            private static readonly MethodInfo s_createMethod = typeof(CreateDispatcher).GetMethod("Create", flags);
+
+            public static PixImageMipMap Create(PixImage image, MipMapOptions options)
+            {
+                var mi = s_createMethod.MakeGenericMethod(image.PixFormat.Type);
+                return (PixImageMipMap)mi.Invoke(null, new object[] { image, options });
+            }
+        }
 
         public static IEnumerable<PixImageMipMap> Create(IEnumerable<PixImage> pixies, MipMapOptions options)
-        {
-            try
-            {
-                return from pixie in pixies
-                       select convertTable[pixie.GetType()](pixie, options);
-            }
-            catch (KeyNotFoundException)
-            {
-                throw new NotImplementedException("PixImageMipMap Type not implemented");
-            }
-        }
+            => pixies.Select(pix => Dispatch.Create(pix, options));
 
         public static IEnumerable<PixImageMipMap> Create(IEnumerable<PixImage> pixies)
-        {
-            return Create(pixies, MipMapOptions.Default);
-        }
+            => Create(pixies, MipMapOptions.Default);
 
         public static PixImageMipMap Create(PixImage pix)
-        {
-            return Create(pix.IntoIEnumerable(), MipMapOptions.Default).Single();
-        }
+            => Dispatch.Create(pix, MipMapOptions.Default);
 
         public static PixImageMipMap Create(PixImage pix, MipMapOptions options)
-        {
-            return Create(pix.IntoIEnumerable(), options).Single();
-        }
+            => Dispatch.Create(pix, options);
 
         #region Load from file
 
