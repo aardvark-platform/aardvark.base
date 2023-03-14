@@ -105,6 +105,18 @@ module TypeInfo =
     let TV3d = { vectorType = typeof<V3d>; baseType = TFloat64; dimension = 3 }
     let TV4d = { vectorType = typeof<V4d>; baseType = TFloat64; dimension = 4 }
 
+    let TC3b  = { vectorType = typeof<C3b>;  baseType = TByte;    dimension = 3 }
+    let TC3us = { vectorType = typeof<C3us>; baseType = TUInt16;  dimension = 3 }
+    let TC3ui = { vectorType = typeof<C3ui>; baseType = TUInt32;  dimension = 3 }
+    let TC3f  = { vectorType = typeof<C3f>;  baseType = TFloat32; dimension = 3 }
+    let TC3d  = { vectorType = typeof<C3d>;  baseType = TFloat64; dimension = 3 }
+
+    let TC4b  = { vectorType = typeof<C4b>;  baseType = TByte;    dimension = 4 }
+    let TC4us = { vectorType = typeof<C4us>; baseType = TUInt16;  dimension = 4 }
+    let TC4ui = { vectorType = typeof<C4ui>; baseType = TUInt32;  dimension = 4 }
+    let TC4f  = { vectorType = typeof<C4f>;  baseType = TFloat32; dimension = 4 }
+    let TC4d  = { vectorType = typeof<C4d>;  baseType = TFloat64; dimension = 4 }
+
     let TM22i = { matrixType = typeof<M22i>; baseType = TInt32; dimension = V2i(2,2) }
     let TM23i = { matrixType = typeof<M23i>; baseType = TInt32; dimension = V2i(3,2) }
     let TM33i = { matrixType = typeof<M33i>; baseType = TInt32; dimension = V2i(3,3) }
@@ -140,6 +152,12 @@ module TypeInfo =
             TV2l; TV3l; TV4l
             TV2f; TV3f; TV4f
             TV2d; TV3d; TV4d
+        ]
+
+    let ColorTypes : Set<ITypeInfo> =
+        Set.ofList [
+            TC3b; TC3us; TC3ui; TC3f; TC3d
+            TC4b; TC4us; TC4ui; TC4f; TC4d
         ]
 
     let MatrixTypes : Set<ITypeInfo> =
@@ -257,6 +275,12 @@ module TypeInfo =
             else
                 None
 
+        let (|Color|_|) (t : Type) =
+            if Set.contains (typeInfo t) ColorTypes then
+                Some ()
+            else
+                None
+
         let (|Matrix|_|) (t : Type) =
             if Set.contains (typeInfo t) MatrixTypes then
                 Some Matrix
@@ -269,6 +293,14 @@ module TypeInfo =
                 | Some(v) -> let vt = v |> unbox<VectorType>
                              VectorOf(vt.dimension, vt.baseType.Type) |> Some
                 | None -> None
+
+        let (|ColorOf|_|) (t : Type) =
+            ColorTypes
+            |> Seq.tryFind (fun ti -> ti.Type.Name = t.Name)
+            |> Option.map (fun t ->
+                let vt = unbox<VectorType> t
+                vt.dimension, vt.baseType.Type
+            )
 
         let (|MatrixOf|_|) (t : Type) =
             let v = MatrixTypes |> Set.filter (fun vi -> vi.Type.Name = t.Name) |> Seq.tryFind (fun _ -> true)
