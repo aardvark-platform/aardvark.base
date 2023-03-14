@@ -1292,7 +1292,9 @@ namespace Aardvark.Base
             #region Floating point bits
             Add("Floating point bits",
                 Method("FloatToBits", IntType, Domain(FloatType), Tensor("x")),
+                Method("FloatToUnsignedBits", UIntType, Domain(FloatType), Tensor("x")),
                 Method("FloatFromBits", FloatType, Domain(IntType), Tensor("x")),
+                Method("FloatFromUnsignedBits", FloatType, Domain(UIntType), Tensor("x")),
                 Method("FloatToBits", LongType, Domain(DoubleType), Tensor("x")),
                 Method("FloatFromBits", DoubleType, Domain(LongType), Tensor("x"))
             );
