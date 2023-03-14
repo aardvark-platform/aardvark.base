@@ -16,8 +16,8 @@ namespace Aardvark.Base
         public static V3d Spherical(double x1, double x2)
         {
             var phi = Constant.PiTimesTwo * x1;
-            var z = 1.0 - 2.0 * x2;
-            var r = Fun.Max(1.0 - z * z, 0.0).Sqrt();
+            var z = 1 - 2 * x2;
+            var r = Fun.Max(1 - z * z, 0).Sqrt();
             return new V3d(r * phi.Cos(), r * phi.Sin(), z);
         }
 
@@ -27,8 +27,8 @@ namespace Aardvark.Base
         public static V3f Spherical(float x1, float x2)
         {
             var phi = ConstantF.PiTimesTwo * x1;
-            var z = 1.0f - 2.0f * x2;
-            var r = Fun.Max(1.0f - z * z, 0.0f).Sqrt();
+            var z = 1 - 2 * x2;
+            var r = Fun.Max(1 - z * z, 0).Sqrt();
             return new V3f(r * phi.Cos(), r * phi.Sin(), z);
         }
 
@@ -65,9 +65,9 @@ namespace Aardvark.Base
         {
             // random point on cylinder barrel
             var phi = Constant.PiTimesTwo * x1;
-            var z = 1.0 - 2.0 * x2;
+            var z = 1 - 2 * x2;
             // project to sphere
-            var r = Fun.Max(1.0 - z * z, 0.0).Sqrt();
+            var r = Fun.Max(1 - z * z, 0).Sqrt();
             var vec = new V3d(r * phi.Cos(), r * phi.Sin(), z) + normal;
             var squareLen = vec.LengthSquared;
 
@@ -75,7 +75,7 @@ namespace Aardvark.Base
             if (squareLen < 1e-9)
                 return normal;
 
-            var norm = 1.0 / squareLen.Sqrt();
+            var norm = 1 / squareLen.Sqrt();
             return vec * norm;
         }
 
@@ -87,10 +87,10 @@ namespace Aardvark.Base
         public static V3f Lambertian(V3f normal, float x1, float x2)
         {
             // random point on cylinder barrel
-            var phi = Constant.PiTimesTwo * x1;
-            var z = 1.0 - 2.0 * x2;
+            var phi = ConstantF.PiTimesTwo * x1;
+            var z = 1 - 2 * x2;
             // project to sphere
-            var r = Fun.Max(1.0 - z * z, 0.0).Sqrt();
+            var r = Fun.Max(1 - z * z, 0).Sqrt();
             var vec = new V3f(r * phi.Cos(), r * phi.Sin(), z) + normal;
             var squareLen = vec.LengthSquared;
 
