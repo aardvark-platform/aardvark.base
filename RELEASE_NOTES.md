@@ -1,3 +1,12 @@
+### 5.2.22
+* Fixed RandomSample.Lambertian internal calculation precision
+* Added float bits method overloads for unsigned vectors
+* Use reflection-based PixImageMipMap creation
+* [TypeInfo] Added color-related types and patterns
+* [Trafo] Implemented infinite far plane for perspective projection
+* [Trafo] Added reversed perspective projection variants
+* [Introspection] Increased verbosity level of custom attribute error
+
 ### 5.2.21
 * Made non-generic PixImage creation more flexible and robust
 * Added NativePtr.Item and NativePtr.Value
