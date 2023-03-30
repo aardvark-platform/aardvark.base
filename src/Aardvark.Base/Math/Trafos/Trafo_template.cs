@@ -598,6 +598,68 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Creates a right-handed reversed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, +1), (+1, +1, 0)].
+        /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ PerspectiveProjectionReversedRH(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
+        {
+            __rtype__ m22, m23, m32i, m33i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = 0;
+                m23  = n;
+                m32i = 1 / n;
+                m33i = 0;
+            }
+            else
+            {
+                m22  = n / (f - n);
+                m23  = (f * n) / (f - n);
+                m32i = (f - n) / (f * n);
+                m33i = 1 / f;
+            }
+
+            return new __type__(
+                new __mmmt__(
+                    (2 * n) / (r - l),                     0,     (r + l) / (r - l),                     0,
+                                    0,     (2 * n) / (t - b),     (t + b) / (t - b),                     0,
+                                    0,                     0,                   m22,                   m23,
+                                    0,                     0,                    -1,                     0
+                    ),
+                new __mmmt__(
+                    (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
+                                    0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
+                                    0,                     0,                     0,                    -1,
+                                    0,                     0,                  m32i,                  m33i
+                    )
+                );
+        }
+
+        /// <summary>
+        /// Creates a right-handed reversed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, +1), (+1, +1, 0)].
+        /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ PerspectiveProjectionReversedRH(__rtype__ horizontalFovInRadians, __rtype__ aspect, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
+        {
+            __rtype__ d = Fun.Tan(__half__ * horizontalFovInRadians) * n;
+            return __type__.PerspectiveProjectionReversedRH(-d, d, -d / aspect, d / aspect, n, f);
+        }
+
+        /// <summary>
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
         /// </summary>
@@ -661,6 +723,68 @@ namespace Aardvark.Base
         {
             __rtype__ d = Fun.Tan(__half__ * horizontalFovInRadians) * n;
             return __type__.PerspectiveProjectionGL(-d, d, -d / aspect, d / aspect, n, f);
+        }
+
+        /// <summary>
+        /// Creates a right-handed reversed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, +1), (+1, +1, -1)].
+        /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ PerspectiveProjectionReversedGL(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
+        {
+            __rtype__ m22, m23, m32i, m33i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = 1;
+                m23  = 2 * n;
+                m32i = 1 / (2 * n);
+                m33i = m32i;
+            }
+            else
+            {
+                m22  = (f + n) / (f - n);
+                m23  = (2 * f * n) / (f - n);
+                m32i = (f - n) / (2 * f * n);
+                m33i = (f + n) / (2 * f * n);
+            }
+
+            return new __type__(
+                new __mmmt__(
+                    (2 * n) / (r - l),                     0,     (r + l) / (r - l),                      0,
+                                    0,     (2 * n) / (t - b),     (t + b) / (t - b),                      0,
+                                    0,                     0,                   m22,                    m23,
+                                    0,                     0,                    -1,                      0
+                    ),
+                new __mmmt__(
+                    (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
+                                    0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
+                                    0,                     0,                     0,                    -1,
+                                    0,                     0,                   m32i,                 m33i
+                    )
+                );
+        }
+
+        /// <summary>
+        /// Creates a right-handed reversed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, +1), (+1, +1, -1)].
+        /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ PerspectiveProjectionReversedGL(__rtype__ horizontalFovInRadians, __rtype__ aspect, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
+        {
+            __rtype__ d = Fun.Tan(__half__ * horizontalFovInRadians) * n;
+            return __type__.PerspectiveProjectionReversedGL(-d, d, -d / aspect, d / aspect, n, f);
         }
 
         /// <summary>

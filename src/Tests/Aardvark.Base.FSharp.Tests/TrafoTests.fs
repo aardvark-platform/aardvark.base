@@ -2,9 +2,7 @@
 
 open Aardvark.Base
 
-open System
 open NUnit.Framework
-open FsUnit
 open FsCheck
 open FsCheck.NUnit
 open Expecto
@@ -94,6 +92,25 @@ module TrafoTests =
         let matrix = M44d.PerspectiveProjectionTransformRH(-100.0, 100.0, 100.0, -100.0, 1.0, 10.0)
         compareMatrix trafo.Forward matrix
 
+    [<Property(Arbitrary = [| typeof<Generator> |])>]
+    let ``[Trafo] Perspective projection reversed RH`` (input : ProjectionTestCase) =
+        let trafo = Trafo3d.PerspectiveProjectionReversedRH(70.0, 1.0, input.Near, input.Far)
+
+        let reference =
+            let P = Trafo3d.PerspectiveProjectionRH(70.0, 1.0, input.Near, input.Far)
+            let S = Trafo3d.Scale(1.0, 1.0, -1.0)
+            let T = Trafo3d.Translation(0.0, 0.0, 1.0)
+            P * S * T
+
+        compareMatrix trafo.Forward reference.Forward
+        compareMatrix trafo.Backward reference.Backward
+        trafo |> testTrafo input.Point
+
+    [<Test>]
+    let ``[Trafo] Perspective projection reversed RH frustum corners`` () =
+        let trafo = Trafo3d.PerspectiveProjectionReversedRH(-100.0, 100.0, -100.0, 100.0, 1.0, 10.0)
+        trafo |> testNearPlaneCorners true 1.0
+
     // LH variants are broken, check the frustum corners test.
     // Didn't bother to fix, since nobody seems to use them anyway.
 
@@ -117,6 +134,24 @@ module TrafoTests =
     let ``[Trafo] Perspective projection GL frustum corners`` () =
         let trafo = Trafo3d.PerspectiveProjectionGL(-100.0, 100.0, -100.0, 100.0, 1.0, 10.0)
         trafo |> testNearPlaneCorners true -1.0
+
+    [<Property(Arbitrary = [| typeof<Generator> |])>]
+    let ``[Trafo] Perspective projection reversed GL`` (input : ProjectionTestCase) =
+        let trafo = Trafo3d.PerspectiveProjectionReversedGL(70.0, 1.0, input.Near, input.Far)
+
+        let reference =
+            let P = Trafo3d.PerspectiveProjectionGL(70.0, 1.0, input.Near, input.Far)
+            let S = Trafo3d.Scale(1.0, 1.0, -1.0)
+            P * S
+
+        compareMatrix trafo.Forward reference.Forward
+        compareMatrix trafo.Backward reference.Backward
+        trafo |> testTrafo input.Point
+
+    [<Test>]
+    let ``[Trafo] Perspective projection reversed GL frustum corners`` () =
+        let trafo = Trafo3d.PerspectiveProjectionReversedGL(-100.0, 100.0, -100.0, 100.0, 1.0, 10.0)
+        trafo |> testNearPlaneCorners true 1.0
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
     let ``[Trafo] Orthographic projection RH`` (input : ProjectionTestCase) =
