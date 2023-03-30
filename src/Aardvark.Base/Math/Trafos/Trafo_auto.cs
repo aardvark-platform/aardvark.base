@@ -968,54 +968,133 @@ namespace Aardvark.Base
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Trafo3f PerspectiveProjectionRH(float l, float r, float b, float t, float n, float f)
+        public static Trafo3f PerspectiveProjectionRH(float l, float r, float b, float t, float n, float f = float.PositiveInfinity)
         {
+            float m22, m23, m32i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = -1;
+                m23  = -n;
+                m32i = -1 / n;
+            }
+            else
+            {
+                m22  = f / (n - f);
+                m23  = (f * n) / (n - f);
+                m32i = (n - f) / (f * n);
+            }
+
             return new Trafo3f(
                 new M44f(
                     (2 * n) / (r - l),                     0,     (r + l) / (r - l),                     0,
                                     0,     (2 * n) / (t - b),     (t + b) / (t - b),                     0,
-                                    0,                     0,           f / (n - f),     (f * n) / (n - f),
+                                    0,                     0,                   m22,                   m23,
                                     0,                     0,                    -1,                     0
-                    ),                                                     
-                                                                       
-                new M44f(                                      
+                    ),
+                new M44f(
                     (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
                                     0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
                                     0,                     0,                     0,                    -1,
-                                    0,                     0,     (n - f) / (f * n),                 1 / n
+                                    0,                     0,                  m32i,                 1 / n
                     )
                 );
         }
 
         /// <summary>
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
-        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)].
+        /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Trafo3f PerspectiveProjectionOpenGl(float l, float r, float b, float t, float n, float f)
+        public static Trafo3f PerspectiveProjectionRH(float horizontalFovInRadians, float aspect, float n, float f = float.PositiveInfinity)
         {
+            float d = Fun.Tan(0.5f * horizontalFovInRadians) * n;
+            return Trafo3f.PerspectiveProjectionRH(-d, d, -d / aspect, d / aspect, n, f);
+        }
+
+        /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
+        /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3f PerspectiveProjectionGL(float l, float r, float b, float t, float n, float f = float.PositiveInfinity)
+        {
+            float m22, m23, m32i, m33i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = -1;
+                m23  = -2 * n;
+                m32i = -1 / (2 * n);
+                m33i = -m32i;
+            }
+            else
+            {
+                m22  = (f + n) / (n - f);
+                m23  = (2 * f * n) / (n - f);
+                m32i = (n - f) / (2 * f * n);
+                m33i = (f + n) / (2 * f * n);
+            }
+
             return new Trafo3f(
                 new M44f(
                     (2 * n) / (r - l),                     0,     (r + l) / (r - l),                      0,
                                     0,     (2 * n) / (t - b),     (t + b) / (t - b),                      0,
-                                    0,                     0,     (f + n) / (n - f),  (2 * f * n) / (n - f),
+                                    0,                     0,                   m22,                    m23,
                                     0,                     0,                    -1,                      0
                     ),
-
                 new M44f(
                     (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
                                     0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
                                     0,                     0,                     0,                    -1,
-                                    0,                     0, (n - f) / (2 * f * n),  (f + n) / (2 * f * n)
+                                    0,                     0,                   m32i,                 m33i
                     )
                 );
+        }
+
+        [Obsolete("Use PerspectiveProjectionGL instead.")]
+        public static Trafo3f PerspectiveProjectionOpenGl(float l, float r, float b, float t, float n, float f)
+            => Trafo3f.PerspectiveProjectionGL(l, r, b, t, n, f);
+
+        /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
+        /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3f PerspectiveProjectionGL(float horizontalFovInRadians, float aspect, float n, float f = float.PositiveInfinity)
+        {
+            float d = Fun.Tan(0.5f * horizontalFovInRadians) * n;
+            return Trafo3f.PerspectiveProjectionGL(-d, d, -d / aspect, d / aspect, n, f);
         }
 
         /// <summary>
         /// Creates a left-handed perspective projection transform, where z-positive points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        [Obsolete("Broken, do not use.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo3f PerspectiveProjectionLH(float l, float r, float b, float t, float n, float f)
         {
@@ -1037,9 +1116,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
+        /// Creates a right-handed orthographic projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo3f OrthoProjectionRH(float l, float r, float b, float t, float n, float f)
         {
@@ -1050,7 +1135,6 @@ namespace Aardvark.Base
                               0,               0,     1 / (n - f),           n / (n - f),
                               0,               0,               0,                     1
                     ),
-
                 new M44f(
                     (r - l) / 2,               0,               0,           (l + r) / 2,
                               0,     (t - b) / 2,               0,           (b + t) / 2,
@@ -1061,11 +1145,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
-        /// The resulting canonical view volume is [(-1, -1, 1), (+1, +1, +1)].
+        /// Creates a right-handed orthographic projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Trafo3f OrthoProjectionOpenGl(float l, float r, float b, float t, float n, float f)
+        public static Trafo3f OrthoProjectionGL(float l, float r, float b, float t, float n, float f)
         {
             return new Trafo3f(
                 new M44f(
@@ -1074,7 +1164,6 @@ namespace Aardvark.Base
                               0,               0,     2 / (n - f),     (f + n) / (n - f),
                               0,               0,               0,                     1
                     ),
-
                 new M44f(
                     (r - l) / 2,               0,               0,           (l + r) / 2,
                               0,     (t - b) / 2,               0,           (b + t) / 2,
@@ -1083,6 +1172,10 @@ namespace Aardvark.Base
                     )
                 );
         }
+
+        [Obsolete("Use OrthoProjectionGL instead.")]
+        public static Trafo3f OrthoProjectionOpenGl(float l, float r, float b, float t, float n, float f)
+            => Trafo3f.OrthoProjectionGL(l, r, b, t, n, f);
 
         #endregion
 
@@ -2319,54 +2412,133 @@ namespace Aardvark.Base
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Trafo3d PerspectiveProjectionRH(double l, double r, double b, double t, double n, double f)
+        public static Trafo3d PerspectiveProjectionRH(double l, double r, double b, double t, double n, double f = double.PositiveInfinity)
         {
+            double m22, m23, m32i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = -1;
+                m23  = -n;
+                m32i = -1 / n;
+            }
+            else
+            {
+                m22  = f / (n - f);
+                m23  = (f * n) / (n - f);
+                m32i = (n - f) / (f * n);
+            }
+
             return new Trafo3d(
                 new M44d(
                     (2 * n) / (r - l),                     0,     (r + l) / (r - l),                     0,
                                     0,     (2 * n) / (t - b),     (t + b) / (t - b),                     0,
-                                    0,                     0,           f / (n - f),     (f * n) / (n - f),
+                                    0,                     0,                   m22,                   m23,
                                     0,                     0,                    -1,                     0
-                    ),                                                     
-                                                                       
-                new M44d(                                      
+                    ),
+                new M44d(
                     (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
                                     0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
                                     0,                     0,                     0,                    -1,
-                                    0,                     0,     (n - f) / (f * n),                 1 / n
+                                    0,                     0,                  m32i,                 1 / n
                     )
                 );
         }
 
         /// <summary>
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
-        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)].
+        /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Trafo3d PerspectiveProjectionOpenGl(double l, double r, double b, double t, double n, double f)
+        public static Trafo3d PerspectiveProjectionRH(double horizontalFovInRadians, double aspect, double n, double f = double.PositiveInfinity)
         {
+            double d = Fun.Tan(0.5 * horizontalFovInRadians) * n;
+            return Trafo3d.PerspectiveProjectionRH(-d, d, -d / aspect, d / aspect, n, f);
+        }
+
+        /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
+        /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3d PerspectiveProjectionGL(double l, double r, double b, double t, double n, double f = double.PositiveInfinity)
+        {
+            double m22, m23, m32i, m33i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = -1;
+                m23  = -2 * n;
+                m32i = -1 / (2 * n);
+                m33i = -m32i;
+            }
+            else
+            {
+                m22  = (f + n) / (n - f);
+                m23  = (2 * f * n) / (n - f);
+                m32i = (n - f) / (2 * f * n);
+                m33i = (f + n) / (2 * f * n);
+            }
+
             return new Trafo3d(
                 new M44d(
                     (2 * n) / (r - l),                     0,     (r + l) / (r - l),                      0,
                                     0,     (2 * n) / (t - b),     (t + b) / (t - b),                      0,
-                                    0,                     0,     (f + n) / (n - f),  (2 * f * n) / (n - f),
+                                    0,                     0,                   m22,                    m23,
                                     0,                     0,                    -1,                      0
                     ),
-
                 new M44d(
                     (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
                                     0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
                                     0,                     0,                     0,                    -1,
-                                    0,                     0, (n - f) / (2 * f * n),  (f + n) / (2 * f * n)
+                                    0,                     0,                   m32i,                 m33i
                     )
                 );
+        }
+
+        [Obsolete("Use PerspectiveProjectionGL instead.")]
+        public static Trafo3d PerspectiveProjectionOpenGl(double l, double r, double b, double t, double n, double f)
+            => Trafo3d.PerspectiveProjectionGL(l, r, b, t, n, f);
+
+        /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
+        /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Trafo3d PerspectiveProjectionGL(double horizontalFovInRadians, double aspect, double n, double f = double.PositiveInfinity)
+        {
+            double d = Fun.Tan(0.5 * horizontalFovInRadians) * n;
+            return Trafo3d.PerspectiveProjectionGL(-d, d, -d / aspect, d / aspect, n, f);
         }
 
         /// <summary>
         /// Creates a left-handed perspective projection transform, where z-positive points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        [Obsolete("Broken, do not use.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo3d PerspectiveProjectionLH(double l, double r, double b, double t, double n, double f)
         {
@@ -2388,9 +2560,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
+        /// Creates a right-handed orthographic projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Trafo3d OrthoProjectionRH(double l, double r, double b, double t, double n, double f)
         {
@@ -2401,7 +2579,6 @@ namespace Aardvark.Base
                               0,               0,     1 / (n - f),           n / (n - f),
                               0,               0,               0,                     1
                     ),
-
                 new M44d(
                     (r - l) / 2,               0,               0,           (l + r) / 2,
                               0,     (t - b) / 2,               0,           (b + t) / 2,
@@ -2412,11 +2589,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
-        /// The resulting canonical view volume is [(-1, -1, 1), (+1, +1, +1)].
+        /// Creates a right-handed orthographic projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Trafo3d OrthoProjectionOpenGl(double l, double r, double b, double t, double n, double f)
+        public static Trafo3d OrthoProjectionGL(double l, double r, double b, double t, double n, double f)
         {
             return new Trafo3d(
                 new M44d(
@@ -2425,7 +2608,6 @@ namespace Aardvark.Base
                               0,               0,     2 / (n - f),     (f + n) / (n - f),
                               0,               0,               0,                     1
                     ),
-
                 new M44d(
                     (r - l) / 2,               0,               0,           (l + r) / 2,
                               0,     (t - b) / 2,               0,           (b + t) / 2,
@@ -2434,6 +2616,10 @@ namespace Aardvark.Base
                     )
                 );
         }
+
+        [Obsolete("Use OrthoProjectionGL instead.")]
+        public static Trafo3d OrthoProjectionOpenGl(double l, double r, double b, double t, double n, double f)
+            => Trafo3d.OrthoProjectionGL(l, r, b, t, n, f);
 
         #endregion
 

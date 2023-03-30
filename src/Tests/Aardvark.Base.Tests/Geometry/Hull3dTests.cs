@@ -57,7 +57,7 @@ namespace Aardvark.Tests.Geometry
         public void VisualHullTest()
         {
             var view = Trafo3d.ViewTrafoRH(V3d.III, V3d.OOI, V3d.IOO);
-            var proj = Trafo3d.PerspectiveProjectionOpenGl(-1, 1, -1, 1, 1, 100);
+            var proj = Trafo3d.PerspectiveProjectionGL(-1, 1, -1, 1, 1, 100);
             var vpTrafo = view * proj;
             var frustumCorners = new Box3d(-V3d.III, V3d.III).ComputeCorners();
 

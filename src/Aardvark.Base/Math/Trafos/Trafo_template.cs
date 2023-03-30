@@ -41,6 +41,7 @@ namespace Aardvark.Base
     //#     var nfieldsL = fieldsL.Take(n).ToArray();
     //#     var fn = fields[n];
     //#     var isDouble = (rt == Meta.DoubleType);
+    //#     var half = (rt != Meta.DoubleType) ? "0.5f" : "0.5";
     #region __type__
 
     /// <summary>
@@ -540,54 +541,133 @@ namespace Aardvark.Base
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ PerspectiveProjectionRH(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
+        public static __type__ PerspectiveProjectionRH(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
         {
+            __rtype__ m22, m23, m32i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = -1;
+                m23  = -n;
+                m32i = -1 / n;
+            }
+            else
+            {
+                m22  = f / (n - f);
+                m23  = (f * n) / (n - f);
+                m32i = (n - f) / (f * n);
+            }
+
             return new __type__(
                 new __mmmt__(
                     (2 * n) / (r - l),                     0,     (r + l) / (r - l),                     0,
                                     0,     (2 * n) / (t - b),     (t + b) / (t - b),                     0,
-                                    0,                     0,           f / (n - f),     (f * n) / (n - f),
+                                    0,                     0,                   m22,                   m23,
                                     0,                     0,                    -1,                     0
-                    ),                                                     
-                                                                       
-                new __mmmt__(                                      
+                    ),
+                new __mmmt__(
                     (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
                                     0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
                                     0,                     0,                     0,                    -1,
-                                    0,                     0,     (n - f) / (f * n),                 1 / n
+                                    0,                     0,                  m32i,                 1 / n
                     )
                 );
         }
 
         /// <summary>
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
-        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)].
+        /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ PerspectiveProjectionOpenGl(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
+        public static __type__ PerspectiveProjectionRH(__rtype__ horizontalFovInRadians, __rtype__ aspect, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
         {
+            __rtype__ d = Fun.Tan(__half__ * horizontalFovInRadians) * n;
+            return __type__.PerspectiveProjectionRH(-d, d, -d / aspect, d / aspect, n, f);
+        }
+
+        /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
+        /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume. Can be infinite.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ PerspectiveProjectionGL(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
+        {
+            __rtype__ m22, m23, m32i, m33i;
+
+            if (f.IsPositiveInfinity())
+            {
+                m22  = -1;
+                m23  = -2 * n;
+                m32i = -1 / (2 * n);
+                m33i = -m32i;
+            }
+            else
+            {
+                m22  = (f + n) / (n - f);
+                m23  = (2 * f * n) / (n - f);
+                m32i = (n - f) / (2 * f * n);
+                m33i = (f + n) / (2 * f * n);
+            }
+
             return new __type__(
                 new __mmmt__(
                     (2 * n) / (r - l),                     0,     (r + l) / (r - l),                      0,
                                     0,     (2 * n) / (t - b),     (t + b) / (t - b),                      0,
-                                    0,                     0,     (f + n) / (n - f),  (2 * f * n) / (n - f),
+                                    0,                     0,                   m22,                    m23,
                                     0,                     0,                    -1,                      0
                     ),
-
                 new __mmmt__(
                     (r - l) / (2 * n),                     0,                     0,     (r + l) / (2 * n),
                                     0,     (t - b) / (2 * n),                     0,     (t + b) / (2 * n),
                                     0,                     0,                     0,                    -1,
-                                    0,                     0, (n - f) / (2 * f * n),  (f + n) / (2 * f * n)
+                                    0,                     0,                   m32i,                 m33i
                     )
                 );
+        }
+
+        [Obsolete("Use PerspectiveProjectionGL instead.")]
+        public static __type__ PerspectiveProjectionOpenGl(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
+            => __type__.PerspectiveProjectionGL(l, r, b, t, n, f);
+
+        /// <summary>
+        /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
+        /// </summary>
+        /// <param name="horizontalFovInRadians">Horizontal field of view in radians.</param>
+        /// <param name="aspect">Aspect ratio, defined as view space width divided by height.</param>
+        /// <param name="n">Z-value of the near view-plane.</param>
+        /// <param name="f">Z-value of the far view-plane. Can be infinite.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ PerspectiveProjectionGL(__rtype__ horizontalFovInRadians, __rtype__ aspect, __rtype__ n, __rtype__ f = __rtype__.PositiveInfinity)
+        {
+            __rtype__ d = Fun.Tan(__half__ * horizontalFovInRadians) * n;
+            return __type__.PerspectiveProjectionGL(-d, d, -d / aspect, d / aspect, n, f);
         }
 
         /// <summary>
         /// Creates a left-handed perspective projection transform, where z-positive points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        [Obsolete("Broken, do not use.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ PerspectiveProjectionLH(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
         {
@@ -609,9 +689,15 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
+        /// Creates a right-handed orthographic projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ OrthoProjectionRH(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
         {
@@ -622,7 +708,6 @@ namespace Aardvark.Base
                               0,               0,     1 / (n - f),           n / (n - f),
                               0,               0,               0,                     1
                     ),
-
                 new __mmmt__(
                     (r - l) / 2,               0,               0,           (l + r) / 2,
                               0,     (t - b) / 2,               0,           (b + t) / 2,
@@ -633,11 +718,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a right-handed ortho projection transform, where z-negative points into the scene.
-        /// The resulting canonical view volume is [(-1, -1, 1), (+1, +1, +1)].
+        /// Creates a right-handed orthographic projection transform, where z-negative points into the scene.
+        /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
         /// </summary>
+        /// <param name="l">Minimum x-value of the view volume.</param>
+        /// <param name="r">Maximum x-value of the view volume.</param>
+        /// <param name="b">Minimum y-value of the view volume.</param>
+        /// <param name="t">Maximum y-value of the view volume.</param>
+        /// <param name="n">Minimum z-value of the view volume.</param>
+        /// <param name="f">Maximum z-value of the view volume.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ OrthoProjectionOpenGl(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
+        public static __type__ OrthoProjectionGL(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
         {
             return new __type__(
                 new __mmmt__(
@@ -646,7 +737,6 @@ namespace Aardvark.Base
                               0,               0,     2 / (n - f),     (f + n) / (n - f),
                               0,               0,               0,                     1
                     ),
-
                 new __mmmt__(
                     (r - l) / 2,               0,               0,           (l + r) / 2,
                               0,     (t - b) / 2,               0,           (b + t) / 2,
@@ -655,6 +745,10 @@ namespace Aardvark.Base
                     )
                 );
         }
+
+        [Obsolete("Use OrthoProjectionGL instead.")]
+        public static __type__ OrthoProjectionOpenGl(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
+            => __type__.OrthoProjectionGL(l, r, b, t, n, f);
 
         #endregion
 

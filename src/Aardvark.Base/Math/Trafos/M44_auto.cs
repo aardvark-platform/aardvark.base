@@ -162,6 +162,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Builds a customized, left-handed perspective Off-Center projection matrix.
         /// </summary>
+        [Obsolete("Broken, do not use.")]
         public static M44f PerspectiveProjectionTransformLH(float l, float r, float t, float b, float n, float f)
         {
             //  Fx     0      0     0
@@ -402,6 +403,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Builds a customized, left-handed perspective Off-Center projection matrix.
         /// </summary>
+        [Obsolete("Broken, do not use.")]
         public static M44d PerspectiveProjectionTransformLH(double l, double r, double t, double b, double n, double f)
         {
             //  Fx     0      0     0
