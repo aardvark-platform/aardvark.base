@@ -29,6 +29,49 @@ module PrimitiveValueConverter =
             new(message : string, source : Type, target : Type, inner : Exception) = { inherit Exception(message, inner); Source = source; Target = target}
         end
 
+    module internal Interop =
+
+        [<AutoOpen>]
+        module Types =
+
+            /// Type representing 2x4 matrices
+            /// Only used for padding rows of 2x2 and 2x3 matrices
+            [<Struct; StructLayout(LayoutKind.Sequential)>]
+            type M24f =
+                val M00 : float32
+                val M01 : float32
+                val M02 : float32
+                val M03 : float32
+                val M10 : float32
+                val M11 : float32
+                val M12 : float32
+                val M13 : float32
+
+                new (m : inref<M22f>) =
+                    { M00 = m.M00; M01 = m.M01; M02 = 0.0f; M03 = 0.0f
+                      M10 = m.M10; M11 = m.M11; M12 = 0.0f; M13 = 0.0f }
+
+                new (m : inref<M22d>) =
+                    { M00 = float32 m.M00; M01 = float32 m.M01; M02 = 0.0f; M03 = 0.0f
+                      M10 = float32 m.M10; M11 = float32 m.M11; M12 = 0.0f; M13 = 0.0f }
+
+                new (m : inref<M23f>) =
+                    { M00 = m.M00; M01 = m.M01; M02 = m.M02; M03 = 0.0f
+                      M10 = m.M10; M11 = m.M11; M12 = m.M12; M13 = 0.0f }
+
+                new (m : inref<M23d>) =
+                    { M00 = float32 m.M00; M01 = float32 m.M01; M02 = float32 m.M02; M03 = 0.0f
+                      M10 = float32 m.M10; M11 = float32 m.M11; M12 = float32 m.M12; M13 = 0.0f }
+
+        let conversions =
+            [
+                // padding for 2 row matrices
+                ( fun (i : M22f) -> M24f &i ) :> obj
+                ( fun (i : M22d) -> M24f &i ) :> obj
+                ( fun (i : M23f) -> M24f &i ) :> obj
+                ( fun (i : M23d) -> M24f &i ) :> obj
+            ]
+
     let private integralConversions =
         [
             // int8 -> other scalars
@@ -1156,6 +1199,8 @@ module PrimitiveValueConverter =
 
             colorConversions
             specialConversions
+
+            Interop.conversions
         ]
 
 
