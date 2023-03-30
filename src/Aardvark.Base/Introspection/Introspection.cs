@@ -392,7 +392,7 @@ namespace Aardvark.Base
             }
             catch (Exception e)
             {
-                Report.Warn(e.ToString());
+                Report.Line(3, "[Introspection] Failed to get custom attributes for {0}: {1} ({2})", t.FullName, e.Message, e.GetType().Name);
             }
             return new T[0];
         }
@@ -405,7 +405,7 @@ namespace Aardvark.Base
             }
             catch (Exception e)
             {
-                Report.Warn(e.ToString());
+                Report.Line(3, "[Introspection] Failed to get custom attributes for {0}.{1}: {2} ({3})", t.DeclaringType.FullName, t.Name, e.Message, e.GetType().Name);
             }
             return new T[0];
         }
