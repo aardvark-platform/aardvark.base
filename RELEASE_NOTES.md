@@ -1,3 +1,6 @@
+### 5.2.23
+* Fixed build for VS 2019 / .NET 6
+
 ### 5.2.22
 * Fixed RandomSample.Lambertian internal calculation precision
 * Added float bits method overloads for unsigned vectors
