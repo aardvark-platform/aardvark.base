@@ -29,7 +29,7 @@ module PrimitiveValueConverter =
             new(message : string, source : Type, target : Type, inner : Exception) = { inherit Exception(message, inner); Source = source; Target = target}
         end
 
-    module internal Interop =
+    module Interop =
 
         [<AutoOpen>]
         module Types =
@@ -62,6 +62,19 @@ module PrimitiveValueConverter =
                 new (m : inref<M23d>) =
                     { M00 = float32 m.M00; M01 = float32 m.M01; M02 = float32 m.M02; M03 = 0.0f
                       M10 = float32 m.M10; M11 = float32 m.M11; M12 = float32 m.M12; M13 = 0.0f }
+
+            module Patterns =
+                open TypeInfo
+
+                /// MatrixOf pattern also considering interop types.
+                let (|MatrixOf|_|) (t : Type) =
+                    match t with
+                    | MatrixOf(s, t) -> Some (s, t)
+                    | _ ->
+                        if t = typeof<M24f> then
+                            Some (V2i(4, 2), typeof<float32>)
+                        else
+                            None
 
         let conversions =
             [
