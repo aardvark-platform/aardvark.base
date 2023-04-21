@@ -1,3 +1,7 @@
+### 5.2.24
+* fixed and optimized Cell.Contains
+* update Aardvark.Build to 1.0.19
+
 ### 5.2.23
 * Fixed build for VS 2019 / .NET 6
 
