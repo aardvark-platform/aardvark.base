@@ -193,32 +193,29 @@ namespace Aardvark.Base
             if (other.Exponent > Exponent) return false;
             if (other.Exponent == Exponent) return other.X == X && other.Y == Y && other.Z == Z;
 
+            // always true from here on:
+            //   Exponent > other.Exponent
+            //   other.Exponent < Exponent
+
             if (IsCenteredAtOrigin)
             {
                 if (other.IsCenteredAtOrigin)
                 {
-                    return Exponent >= other.Exponent;
+                    return true;
                 }
                 else
                 {
-                    if (Exponent > other.Exponent)
-                    {
-                        // bring other into scale of this
-                        var d = Exponent - other.Exponent;
+                    // bring other into scale of this
+                    var d = (Exponent - 1) - other.Exponent;
 
-                        // right-shift with long argument only uses low-order 6 bits
-                        // https://docs.microsoft.com/en-us/dotnet/articles/csharp/language-reference/operators/right-shift-operator
-                        if (d > 63) d = 63;
+                    // right-shift with long argument only uses low-order 6 bits
+                    // https://docs.microsoft.com/en-us/dotnet/articles/csharp/language-reference/operators/right-shift-operator
+                    if (d > 63) d = 63;
 
-                        var x = other.X >> d;
-                        var y = other.Y >> d;
-                        var z = other.Z >> d;
-                        return x >= -1 && x <= 0 && y >= -1 && y <= 0 && z >= -1 && z <= 0;
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    var x = other.X >> d;
+                    var y = other.Y >> d;
+                    var z = other.Z >> d;
+                    return x >= -1 && x <= 0 && y >= -1 && y <= 0 && z >= -1 && z <= 0;
                 }
             }
             else
@@ -229,34 +226,17 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    if (Exponent > other.Exponent)
-                    {
-                        // bring other into scale of this
-                        var d = Exponent - other.Exponent;
+                    // bring other into scale of this
+                    var d = Exponent - other.Exponent;
 
-                        // right-shift with long argument only uses low-order 6 bits
-                        // https://docs.microsoft.com/en-us/dotnet/articles/csharp/language-reference/operators/right-shift-operator
-                        if (d > 63) d = 63;
+                    // right-shift with long argument only uses low-order 6 bits
+                    // https://docs.microsoft.com/en-us/dotnet/articles/csharp/language-reference/operators/right-shift-operator
+                    if (d > 63) d = 63;
 
-                        var x = other.X >> d;
-                        var y = other.Y >> d;
-                        var z = other.Z >> d;
-                        return x == X && y == Y && z == Z;
-                    }
-                    else
-                    {
-                        // bring this into scale of other
-                        var d = other.Exponent - Exponent;
-
-                        // right-shift with long argument only uses low-order 6 bits
-                        // https://docs.microsoft.com/en-us/dotnet/articles/csharp/language-reference/operators/right-shift-operator
-                        if (d > 63) d = 63;
-
-                        var x = X >> d;
-                        var y = Y >> d;
-                        var z = Z >> d;
-                        return x == other.X && y == other.Y && z == other.Z;
-                    }
+                    var x = other.X >> d;
+                    var y = other.Y >> d;
+                    var z = other.Z >> d;
+                    return x == X && y == Y && z == Z;
                 }
             }
         }

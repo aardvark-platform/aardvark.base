@@ -497,6 +497,13 @@ namespace Aardvark.Tests
             Assert.IsTrue(r == new Cell2d(2));
         }
 
+        [Test]
+        public void Cell_CommonRootCell_7()
+        {
+            var r = Cell2d.GetCommonRoot(new Cell2d(3, 3, 6), new Cell2d(1, -1, 7));
+            Assert.IsTrue(r == new Cell2d(9));
+        }
+
         #endregion
 
         #region touches origin
@@ -526,6 +533,41 @@ namespace Aardvark.Tests
 
         #region contains/intersects
 
+        [Test]
+        public void Cell_Contains()
+        {
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(-1, -1, 7)) == true);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(-1,  0, 7)) == true);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d( 0, -1, 7)) == true);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d( 0,  0, 7)) == true);
+
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(-2, -2, 7)) == false);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(-2,  1, 7)) == false);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d( 1, -2, 7)) == false);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d( 1,  1, 7)) == false);
+
+            Assert.IsTrue(new Cell2d(9).Contains(new Cell2d(-2, -2, 7)) == true);
+            Assert.IsTrue(new Cell2d(9).Contains(new Cell2d(-2,  1, 7)) == true);
+            Assert.IsTrue(new Cell2d(9).Contains(new Cell2d( 1, -2, 7)) == true);
+            Assert.IsTrue(new Cell2d(9).Contains(new Cell2d( 1,  1, 7)) == true);
+
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(3, 3, 6)) == false);
+            Assert.IsTrue(new Cell2d(9).Contains(new Cell2d(3, 3, 6)) == true);
+
+
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(7)) == true);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(8)) == true);
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(9)) == false);
+
+            Assert.IsTrue(new Cell2d(8).Contains(new Cell2d(0, 0, 8)) == false);
+
+            Assert.IsTrue(new Cell2d(0, 0, 8).Contains(new Cell2d(7)) == false);
+
+
+            Assert.IsTrue(new Cell2d(0, 0, 8).Contains(new Cell2d(0, 0, 7)) == true);
+            Assert.IsTrue(new Cell2d(0, 0, 8).Contains(new Cell2d(1, 0, 7)) == true);
+            Assert.IsTrue(new Cell2d(0, 0, 8).Contains(new Cell2d(2, 0, 7)) == false);
+        }
         [Test]
         public void Cell_InsideOutside_ContainsEqual()
         {

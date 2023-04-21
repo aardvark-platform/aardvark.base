@@ -517,6 +517,13 @@ namespace Aardvark.Tests
             Assert.IsTrue(r == new Cell(2));
         }
 
+        [Test]
+        public void Cell_CommonRootCell_7()
+        {
+            var r = Cell.GetCommonRoot(new Cell(3, 3, 0, 6), new Cell(1, 1, -1, 7));
+            Assert.IsTrue(r == new Cell(9));
+        }
+
         #endregion
 
         #region touches origin
@@ -554,6 +561,54 @@ namespace Aardvark.Tests
         #endregion
 
         #region contains/intersects
+
+        [Test]
+        public void Cell_Contains()
+        {
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-1, -1, -1, 7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-1, -1,  0, 7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-1,  0, -1, 7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-1,  0,  0, 7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 0, -1, -1, 7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 0, -1,  0, 7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 0,  0, -1, 7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 0,  0,  0, 7)) == true);
+
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-2, -2, -2, 7)) == false);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-2, -2,  1, 7)) == false);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-2,  1, -2, 7)) == false);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(-2,  1,  1, 7)) == false);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 1, -2, -2, 7)) == false);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 1, -2,  1, 7)) == false);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 1,  1, -2, 7)) == false);
+            Assert.IsTrue(new Cell(8).Contains(new Cell( 1,  1,  1, 7)) == false);
+
+            Assert.IsTrue(new Cell(9).Contains(new Cell(-2, -2, -2, 7)) == true);
+            Assert.IsTrue(new Cell(9).Contains(new Cell(-2, -2,  1, 7)) == true);
+            Assert.IsTrue(new Cell(9).Contains(new Cell(-2,  1, -2, 7)) == true);
+            Assert.IsTrue(new Cell(9).Contains(new Cell(-2,  1,  1, 7)) == true);
+            Assert.IsTrue(new Cell(9).Contains(new Cell( 1, -2, -2, 7)) == true);
+            Assert.IsTrue(new Cell(9).Contains(new Cell( 1, -2,  1, 7)) == true);
+            Assert.IsTrue(new Cell(9).Contains(new Cell( 1,  1, -2, 7)) == true);
+            Assert.IsTrue(new Cell(9).Contains(new Cell( 1,  1,  1, 7)) == true);
+
+            Assert.IsTrue(new Cell(8).Contains(new Cell(3, 3, 0, 6)) == false);
+            Assert.IsTrue(new Cell(9).Contains(new Cell(3, 3, 0, 6)) == true);
+
+
+            Assert.IsTrue(new Cell(8).Contains(new Cell(7)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(8)) == true);
+            Assert.IsTrue(new Cell(8).Contains(new Cell(9)) == false);
+
+            Assert.IsTrue(new Cell(8).Contains(new Cell(0, 0, 0, 8)) == false);
+
+            Assert.IsTrue(new Cell(0, 0, 0, 8).Contains(new Cell(7)) == false);
+
+
+            Assert.IsTrue(new Cell(0, 0, 0, 8).Contains(new Cell(0, 0, 0, 7)) == true);
+            Assert.IsTrue(new Cell(0, 0, 0, 8).Contains(new Cell(1, 0, 0, 7)) == true);
+            Assert.IsTrue(new Cell(0, 0, 0, 8).Contains(new Cell(2, 0, 0, 7)) == false);
+        }
 
         [Test]
         public void Cell_InsideOutside_ContainsEqual()
