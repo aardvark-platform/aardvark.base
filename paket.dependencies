@@ -1,4 +1,4 @@
-framework: netstandard2.0, net472, netcoreapp3.1, net6.0
+framework: netstandard2.0, net472, net6.0, net6.0-windows
 storage: none
 source https://api.nuget.org/v3/index.json
 
@@ -29,17 +29,17 @@ nuget FsPickler.Json               ~> 5.3.2
 nuget System.Text.Json             >= 4.7.2 lowest_matching: true
 
 group Test
-    framework: netcoreapp3.1, net6.0, net6.0-windows
+    framework: net6.0, net6.0-windows
     source https://api.nuget.org/v3/index.json
 
     nuget NUnit                    ~> 3.13.3
-    nuget FsUnit                   ~> 5.0.0
+    nuget FsUnit                   ~> 5.2.0
     nuget FsCheck                  ~> 2.16.4
     nuget FsCheck.NUnit            ~> 2.16.4
-    nuget NUnit3TestAdapter        ~> 4.2.1
-    nuget Microsoft.NET.Test.Sdk   ~> 17.2.0
+    nuget NUnit3TestAdapter        ~> 4.4.2
+    nuget Microsoft.NET.Test.Sdk   ~> 17.5.0
     nuget Expecto                  ~> 9.0.4
     nuget Expecto.FsCheck          ~> 9.0.4
-    nuget YoloDev.Expecto.TestSdk  ~> 0.12.20
+    nuget YoloDev.Expecto.TestSdk  ~> 0.13.3
 
     nuget BenchmarkDotNet          ~> 0.13.1
