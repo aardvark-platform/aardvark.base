@@ -7,9 +7,10 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Aardvark.Base
@@ -736,6 +737,47 @@ namespace Aardvark.Base
     [Serializable]
     public class Aardvark
     {
+        /// <summary>
+        /// Cache containing information about whether an assembly is an Aardvark plugin.
+        /// </summary>
+        [CollectionDataContract(Name = "Plugins", ItemName = "Assembly", KeyName = "Path", ValueName = "Data")]
+        private class PluginCache : Dictionary<string, PluginCache.Data>
+        {
+            [DataContract]
+            public struct Data
+            {
+                /// <summary>
+                /// Modification time stamp of the assembly when the cache was created.
+                /// Used to determine if the cache has been invalidated.
+                /// </summary>
+                [DataMember(IsRequired = true)]
+                public DateTime LastModified;
+
+                /// <summary>
+                /// Indicates whether the assembly is an Aardvark plugin.
+                /// </summary>
+                [DataMember(IsRequired = true)]
+                public bool IsPlugin;
+
+                public Data(DateTime lastModified, bool isPlugin)
+                {
+                    LastModified = lastModified;
+                    IsPlugin = isPlugin;
+                }
+            }
+
+            private static readonly DataContractSerializer serializer = new DataContractSerializer(typeof(PluginCache));
+
+            public static PluginCache Deserialize(Stream stream)
+                => (PluginCache)serializer.ReadObject(stream);
+
+            public void Serialize(Stream stream)
+            {
+                using var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true });
+                serializer.WriteObject(writer, this);
+            }
+        }
+
         private static string InitializeCacheDirectory()
         {
             var path = Path.Combine(CachingProperties.CacheDirectory, "Plugins");
@@ -748,7 +790,7 @@ namespace Aardvark.Base
             return path;
         }
 
-        private static Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
+        private static readonly Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
 
         /// <summary>
         /// Returns the directory of the plugins cache files.
@@ -762,40 +804,36 @@ namespace Aardvark.Base
             Assembly asm = IntrospectionProperties.CurrentEntryAssembly;
             string entryAssemblyName = asm?.GetName().Name ?? "unknown";
             string entryAssemblyId = asm?.GetIdentifier(CachingProperties.PluginsCacheFileNaming) ?? "unknown";
-            string fileName = string.Format("{0}_{1}_plugins.bin", entryAssemblyName, entryAssemblyId);
+            string fileName = string.Format("{0}_{1}_plugins.xml", entryAssemblyName, entryAssemblyId);
 
             CacheFile = Path.Combine(CacheDirectory, fileName);
         }
 
-        private Dictionary<string, Tuple<DateTime, bool>> ReadCacheFile()
+        private PluginCache ReadCacheFile()
         {
             if (File.Exists(CacheFile))
             {
-                var formatter = new BinaryFormatter();
-
                 try
                 {
-                    using (var stream = new FileStream(CacheFile, FileMode.Open))
-                    {
-                        var result = (Dictionary<string, Tuple<DateTime, bool>>)formatter.Deserialize(stream);
-                        Report.Line(3, "[ReadCacheFile] loaded cache file: {0}", CacheFile);
-                        return result;
-                    }
+                    using var stream = new FileStream(CacheFile, FileMode.Open);
+                    var result = PluginCache.Deserialize(stream);
+                    Report.Line(3, "[ReadCacheFile] loaded cache file: {0}", CacheFile);
+                    return result;
                 }
                 catch (Exception e)
                 {
                     Report.Line(3, "[ReadCacheFile] could not load cache file: {0} with {1}", CacheFile, e.Message);
-                    return new Dictionary<string, Tuple<DateTime, bool>>();
+                    return new PluginCache();
                 }
             }
             else
             {
                 Report.Line(3, "[ReadCacheFile] no plugins cache file found at {0}", CacheFile);
-                return new Dictionary<string, Tuple<DateTime, bool>>();
+                return new PluginCache();
             }
         }
 
-        private void WriteCacheFile(Dictionary<string, Tuple<DateTime, bool>> cache)
+        private void WriteCacheFile(PluginCache cache)
         {
             if (string.IsNullOrEmpty(CacheFile))
             {
@@ -807,19 +845,17 @@ namespace Aardvark.Base
                 {
                     if (File.Exists(CacheFile)) File.Delete(CacheFile);
 
-                    var formatter = new BinaryFormatter();
-                    using (var stream = new FileStream(CacheFile, FileMode.CreateNew))
-                    {
-                        formatter.Serialize(stream, cache);
-                    }
-                } catch(Exception ex)
+                    using var stream = new FileStream(CacheFile, FileMode.CreateNew);
+                    cache.Serialize(stream);
+                }
+                catch(Exception ex)
                 {
                     Report.Warn("Could not write cache file: {0}", ex.Message);
                 }
             }
         }
 
-        private static Regex versionRx = new Regex(@"^[ \t]*(?<name>[\.A-Za-z_0-9]+)[ \t]*,[ \t]*(v|V)ersion[ \t]*=[ \t]*(?<version>[\.A-Za-z_0-9]+)$");
+        private static readonly Regex versionRx = new Regex(@"^[ \t]*(?<name>[\.A-Za-z_0-9]+)[ \t]*,[ \t]*(v|V)ersion[ \t]*=[ \t]*(?<version>[\.A-Za-z_0-9]+)$");
 
         private static unsafe bool IsPlugin(string file)
         {
@@ -915,13 +951,12 @@ namespace Aardvark.Base
 
         public string[] GetPluginAssemblyPaths()
         {
-
             var cache = ReadCacheFile();
-            var newCache = new Dictionary<string, Tuple<DateTime, bool>>();
+            var newCache = new PluginCache();
 
-            var folder = new string[0];
+            var folder = Array.Empty<string>();
 
-            // attach folder contents if possilbe (e.g. not possible in bundle deployments if no bundle entry is specified)
+            // attach folder contents if possible (e.g. not possible in bundle deployments if no bundle entry is specified)
             if (IntrospectionProperties.CurrentEntryPath != null)
                 folder = Directory.EnumerateFiles(IntrospectionProperties.CurrentEntryPath).ToArray();
             else if (IntrospectionProperties.BundleEntryPoint != null)
@@ -950,24 +985,24 @@ namespace Aardvark.Base
                     Report.Line(3, "[GetPluginAssemblyPaths] could not get write time for: {0}", fileName);
                 }
 
-                Tuple<DateTime, bool> cacheValue;
-                if (cache.TryGetValue(fileName, out cacheValue) && lastWrite <= cacheValue.Item1)
+                bool exists = cache.TryGetValue(fileName, out PluginCache.Data cacheValue);
+
+                if (exists && lastWrite <= cacheValue.LastModified)
                 {
                     Report.Line(3, "[GetPluginAssemblyPaths] cache found for: {0}", fileName);
-                    if (cacheValue.Item2)
+                    if (cacheValue.IsPlugin)
                     {
-                        newCache[fileName] = Tuple.Create(lastWrite, true);
+                        newCache[fileName] = new PluginCache.Data(lastWrite, true);
                         paths.Add(fileName);
                     }
                     else
                     {
-                        newCache[fileName] = Tuple.Create(lastWrite, false);
+                        newCache[fileName] = new PluginCache.Data(lastWrite, false);
                     }
                 }
                 else
                 {
-                    
-                    if (cacheValue != null && cacheValue.Item1 > lastWrite)
+                    if (exists)
                         Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because cache outdated {0}", fileName);
                     else
                         Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because not in cache {0}", fileName);
@@ -975,21 +1010,19 @@ namespace Aardvark.Base
                     if (IsPlugin(fileName))
                     {
                         Report.Line(3, "[GetPluginAssemblyPaths] plugin found {0}", fileName);
-                        newCache[fileName] = Tuple.Create(lastWrite, true);
+                        newCache[fileName] = new PluginCache.Data(lastWrite, true);
                         paths.Add(fileName);
                     }
                     else
                     {
-                        newCache[fileName] = Tuple.Create(lastWrite, false);
+                        newCache[fileName] = new PluginCache.Data(lastWrite, false);
                     }
                 }
             }
 
-
             WriteCacheFile(newCache);
             return paths.ToArray();
         }
-
 
         public static List<Assembly> LoadPlugins()
         {
