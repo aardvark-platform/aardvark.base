@@ -90,6 +90,7 @@ namespace Aardvark.Base
         /// Returns WGS84 Longitude/Latitude/Height for given street address,
         /// or null if address not found. Uses maps.google.com webservice.
         /// </summary>
+        [Obsolete("Uses unsupported Google Geocoding V2 API.")]
         public static V3d? Wgs84FromStreetAddress(string address, string key)
         {
             var output = "csv";
