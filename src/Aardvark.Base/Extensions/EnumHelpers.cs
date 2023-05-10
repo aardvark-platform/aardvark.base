@@ -9,7 +9,7 @@ namespace Aardvark.Base
 
         static Dict<long, (object, object)> GetNeighbourValuesDict<T>(Type enumType)
         {
-            if (!enumType.IsEnum) throw new ArgumentException(nameof(enumType));
+            if (!enumType.IsEnum) throw new ArgumentException($"{enumType.Name} is not an enumeration type.");
 
             if (!s_neighbourValuesDicts.TryGetValue(enumType, out Dict<long, (object, object)> neighbourValuesDict))
             {
@@ -61,7 +61,7 @@ namespace Aardvark.Base
 
         static (Array, Dictionary<long, int>) GetValueIndexMapping(Type enumType)
         {
-            if (!enumType.IsEnum) throw new ArgumentException(nameof(enumType));
+            if (!enumType.IsEnum) throw new ArgumentException($"{enumType.Name} is not an enumeration type.");
 
             return s_valueIndexMapping.GetCreate(enumType, et =>
             {
