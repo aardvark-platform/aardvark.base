@@ -87,7 +87,8 @@ namespace Aardvark.Base
             }
             else
             {
-                return new PixImageMipMap(loader.LoadFromFile(filename));
+                var pi = loader.LoadFromFile(filename);
+                return (pi != null) ? new PixImageMipMap(pi) : null;
             }
         }
 
@@ -169,7 +170,8 @@ namespace Aardvark.Base
             }
             else
             {
-                return new PixImageMipMap(loader.LoadFromStream(stream));
+                var pi = loader.LoadFromStream(stream);
+                return (pi != null) ? new PixImageMipMap(pi) : null;
             }
         }
 
