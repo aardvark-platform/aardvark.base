@@ -1,3 +1,9 @@
+### 5.2.25
+* Fixed issue with PixImageMipMap loading
+* Improved exception message of EnumHelpers methods
+* [Introspection] Use XML serialization for plugin cache
+* Replaced netcoreapp3.1 target with net6.0
+
 ### 5.2.24
 * fixed and optimized Cell.Contains
 * update Aardvark.Build to 1.0.19
