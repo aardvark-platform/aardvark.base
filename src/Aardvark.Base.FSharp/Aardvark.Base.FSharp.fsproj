@@ -67,7 +67,7 @@
     <Compile Include="Runtime\CustomSchedulers.fs" />
     <Compile Include="Runtime\Caches.fs" />
     <Compile Include="SVDM33f.fs" />
-    <Compile Include="Reflection.fs" />
+    <Compile Include="String.fs" />
     <Compile Include="Runtime.fs" />
     <Compile Include="Control.fs" />
     <Compile Include="FsPicklerExtensions.fs" />
