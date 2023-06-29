@@ -395,7 +395,7 @@ namespace Aardvark.Base
             {
                 Report.Line(3, "[Introspection] Failed to get custom attributes for {0}: {1} ({2})", t.FullName, e.Message, e.GetType().Name);
             }
-            return new T[0];
+            return Array.Empty<T>();
         }
 
         private static T[] TryGetCustomAttributes<T>(MethodInfo t)
@@ -408,7 +408,7 @@ namespace Aardvark.Base
             {
                 Report.Line(3, "[Introspection] Failed to get custom attributes for {0}.{1}: {2} ({3})", t.DeclaringType.FullName, t.Name, e.Message, e.GetType().Name);
             }
-            return new T[0];
+            return Array.Empty<T>();
         }
 
         /// <summary>
@@ -630,7 +630,7 @@ namespace Aardvark.Base
             // even in case of typeloadexception there may be some successfully loaded
             // types in result set. Just continue processing with these types
             // effect: dlls with external unused dependencies don't have to be shipped.
-            Type[] ts = new Type[0];
+            Type[] ts = Array.Empty<Type>();
             try
             {
                 ts = a.GetTypes().ToArray();
@@ -822,7 +822,7 @@ namespace Aardvark.Base
                 }
                 catch (Exception e)
                 {
-                    Report.Line(3, "[ReadCacheFile] could not load cache file: {0} with {1}", CacheFile, e.Message);
+                    Report.Line(3, "[ReadCacheFile] could not load cache file {0}: {1}", CacheFile, e.Message);
                     return new PluginCache();
                 }
             }
@@ -1456,7 +1456,7 @@ namespace Aardvark.Base
             }
             catch (Exception e)
             {
-                Report.Warn("could not unpack native dependencies for {0}: {1}", a.FullName, e);
+                Report.Warn("could not unpack native dependencies for {0}: {1}", a.FullName, e.Message);
                 Report.End(3);
             }
         }
@@ -1724,8 +1724,7 @@ namespace Aardvark.Base
 
         public static void LoadNativeDependencies(Assembly a)
         {
-            string dstFolder;
-            if(TryGetNativeLibraryPath(a, out dstFolder))
+            if (TryGetNativeLibraryPath(a, out string dstFolder))
             {
                 try
                 {
@@ -1733,9 +1732,7 @@ namespace Aardvark.Base
                     Report.BeginTimed(3, "Loading native dependencies for {0}", a.FullName);
                     try
                     {
-                        string arch;
-                        string platform;
-                        GetPlatformAndArch(out platform, out arch);
+                        GetPlatformAndArch(out string platform, out string arch);
 
                         var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
                         var toLoad = new List<string>();
@@ -1860,7 +1857,7 @@ namespace Aardvark.Base
                             }
                             catch (Exception ex)
                             {
-                                Report.Warn("could not load native library {0}: {1}", file, ex);
+                                Report.Warn("could not load native library {0}: {1}", file, ex.Message);
                             }
                         }
 #endif
@@ -1873,10 +1870,10 @@ namespace Aardvark.Base
                 }
                 catch (Exception e)
                 {
-                    Report.Warn("could not load native dependencies for {0}: {1}", a.FullName, e);
+                    Report.Warn("could not load native dependencies for {0}: {1}", a.FullName, e.Message);
                 }
             }
-            
+
         }
 
         private static string ArchitectureString(Architecture arch)
@@ -1942,7 +1939,8 @@ namespace Aardvark.Base
                         }
                         catch (Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
                         {
-                            Report.Warn("Could not load native dependencies for {0}:{1}", e.FullName, ex.StackTrace.ToString());
+                            Report.Warn("Could not load native dependencies for {0}: {1}", e.FullName, ex.Message);
+                            Report.End(4);
                         }
                     }
                 };
