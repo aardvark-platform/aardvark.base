@@ -9,20 +9,26 @@ open System
 open System.Text.RegularExpressions
 open System.Runtime.CompilerServices
 
-#if !NET6_0_OR_GREATER
 [<Sealed; Extension>]
 type StringExtensions private() =
 
     /// Replaces all newline sequences in the current string with replacementText.
     [<Extension>]
-    static member inline ReplaceLineEndings(str : string, replacementText : string) =
+    static member inline NormalizeLineEndings(str : string, replacementText : string) =
+        #if NET6_0_OR_GREATER
+        str.ReplaceLineEndings(replacementText)
+        #else
         Regex.Replace(str, @"\r\n?|\n", replacementText)
+        #endif
 
     /// Replaces all newline sequences in the current string with Environment.NewLine.
     [<Extension>]
-    static member inline ReplaceLineEndings(str : string) =
-        str.ReplaceLineEndings(Environment.NewLine)
-#endif
+    static member inline NormalizeLineEndings(str : string) =
+        #if NET6_0_OR_GREATER
+        str.ReplaceLineEndings()
+        #else
+        str.NormalizeLineEndings(Environment.NewLine)
+        #endif
 
 [<AutoOpen>]
 module ``String Extensions`` =
@@ -30,11 +36,11 @@ module ``String Extensions`` =
 
         /// Splits the string into individual lines, recognizing various line ending sequences.
         let inline getLines (str : string) =
-            str.ReplaceLineEndings().Split([| Environment.NewLine |], StringSplitOptions.None)
+            str.NormalizeLineEndings().Split([| Environment.NewLine |], StringSplitOptions.None)
 
         /// Replaces all newline sequences in the given string with Environment.NewLine.
         let inline normalizeLineEndings (str : string) =
-            str.ReplaceLineEndings()
+            str.NormalizeLineEndings()
 
         /// Adds line number prefixes to the given string.
         /// Line endings are normalized.
