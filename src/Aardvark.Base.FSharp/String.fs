@@ -68,3 +68,31 @@ module ``String Extensions`` =
         let lineCount (s : string) =
             let lines = getLines s
             lines.Length
+
+        /// Returns whether the string contains the given pattern.
+        let inline contains (pattern : string) (str : string) =
+            str.Contains pattern
+
+        /// Returns a copy of the string converted to lowercase.
+        let inline toLower (str : string) =
+            str.ToLower()
+
+        /// Returns a copy of the string converted to uppercase.
+        let inline toUpper (str : string) =
+            str.ToUpper()
+
+        /// Splits the string into substring based on the separator.
+        let inline split (separator : string) (str : string) =
+            str.Split([| separator |], StringSplitOptions.None)
+
+        /// Returns whether the string starts with the given pattern.
+        let inline startsWith (pattern : string) (str : string) =
+            str.StartsWith pattern
+
+        /// Returns whether the string ends with the given pattern.
+        let inline endsWith (pattern : string) (str : string) =
+            str.EndsWith pattern
+
+        /// Removes all leading and trailing white-space characters from the string.
+        let inline trim (str : string) =
+            str.Trim()

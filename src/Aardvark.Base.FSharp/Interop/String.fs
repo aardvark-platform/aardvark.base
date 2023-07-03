@@ -2,6 +2,7 @@
 
 open System
 
+[<Obsolete("Use String module instead.")>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Strings =
     let partRx = System.Text.RegularExpressions.Regex @"([A-Z][a-z0-9]*)[_]*"
