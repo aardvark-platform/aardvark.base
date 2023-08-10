@@ -31,6 +31,7 @@
     <Compile Include="Interop\SortedSet.fs" />
     <Compile Include="Interop\HashSet.fs" />
     <Compile Include="Interop\CSharpList.fs" />
+    <Compile Include="Interop\ArraySegment.fs" />
     <Compile Include="Datastructures\Mutable\FixedSizeArray.fs" />
     <Compile Include="Datastructures\Mutable\Order.fs" />
     <Compile Include="Datastructures\Mutable\OrderMaintenance.fs" />
