@@ -143,10 +143,21 @@ module Dict =
 
     let inline tryFind (key : 'k) (d : Dict<'k, 'v>) =
         match d.TryGetValue key with
-            | (true, v) -> Some v
-            | _ -> None
+        | (true, v) -> Some v
+        | _ -> None
+
+    let inline tryFindV (key : 'k) (d : Dict<'k, 'v>) =
+        let mutable value = Unchecked.defaultof<_>
+        if d.TryGetValue(key, &value) then ValueSome value
+        else ValueNone
 
     let inline ofSeq (elements : seq<'k * 'v>) =
+        let result = Dict()
+        for (k,v) in elements do
+            result.[k] <- v
+        result
+
+    let inline ofSeqV (elements : seq<struct('k * 'v)>) =
         let result = Dict()
         for (k,v) in elements do
             result.[k] <- v
@@ -155,8 +166,14 @@ module Dict =
     let inline ofList (elements : list<'k * 'v>) =
         ofSeq elements
 
+    let inline ofListV (elements : list<struct('k * 'v)>) =
+        ofSeqV elements
+
     let inline ofArray (elements : ('k * 'v)[]) =
         ofSeq elements
+
+    let inline ofArrayV (elements : struct('k * 'v)[]) =
+        ofSeqV elements
 
     let inline ofMap (elements : Map<'k, 'v>) =
         elements |> Map.toSeq |> ofSeq
@@ -164,11 +181,20 @@ module Dict =
     let inline toSeq (d : Dict<'k, 'v>) =
         d |> Seq.map (fun (KeyValue(k,v)) -> k,v)
 
+    let inline toSeqV (d : Dict<'k, 'v>) =
+        d |> Seq.map (fun (KeyValue(k,v)) -> struct(k,v))
+
     let inline toList (d : Dict<'k, 'v>) =
         d |> toSeq |> Seq.toList
 
+    let inline toListV (d : Dict<'k, 'v>) =
+        d |> toSeqV |> Seq.toList
+
     let inline toArray (d : Dict<'k, 'v>) =
-        d |> toSeq |> Seq.toArray  
+        d |> toSeq |> Seq.toArray
+
+    let inline toArrayV (d : Dict<'k, 'v>) =
+        d |> toSeqV |> Seq.toArray
 
     let inline toMap (d : Dict<'k, 'v>) =
         d |> toSeq |> Map.ofSeq
