@@ -1681,16 +1681,29 @@ module internal MapExtImplementation =
 
 
         let ofList comparer l = List.fold (fun acc (k,v) -> add comparer k v acc) empty l
+        let ofListV comparer l = List.fold (fun acc (struct (k,v)) -> add comparer k v acc) empty l
 
         let rec mkFromEnumerator comparer acc (e : IEnumerator<_>) = 
             if e.MoveNext() then 
                 let (x,y) = e.Current 
                 mkFromEnumerator comparer (add comparer x y acc) e
             else acc
+
+        let rec mkFromEnumeratorV comparer acc (e : IEnumerator<_>) = 
+            if e.MoveNext() then 
+                let struct (x,y) = e.Current 
+                mkFromEnumeratorV comparer (add comparer x y acc) e
+            else acc
           
         let ofArray comparer (arr : array<_>) =
             let mutable res = empty
             for (x,y) in arr do
+                res <- add comparer x y res 
+            res
+
+        let ofArrayV comparer (arr : array<_>) =
+            let mutable res = empty
+            for struct (x,y) in arr do
                 res <- add comparer x y res 
             res
 
@@ -1700,7 +1713,15 @@ module internal MapExtImplementation =
             | :? list<'Key * 'T> as xs -> ofList comparer xs
             | _ -> 
                 use ie = c.GetEnumerator()
-                mkFromEnumerator comparer empty ie 
+                mkFromEnumerator comparer empty ie
+
+        let ofSeqV comparer (c : seq<struct ('Key * 'T)>) =
+            match c with 
+            | :? array<struct ('Key * 'T)> as xs -> ofArrayV comparer xs
+            | :? list<struct ('Key * 'T)> as xs -> ofListV comparer xs
+            | _ -> 
+                use ie = c.GetEnumerator()
+                mkFromEnumeratorV comparer empty ie 
 
           
         let copyToArray s (arr: _[]) i =
@@ -1948,6 +1969,10 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     static member Create(ie : IEnumerable<_>) : MapExt<'Key,'Value> = 
         let comparer = LanguagePrimitives.FastGenericComparer<'Key> 
         new MapExt<_,_>(comparer,MapTree.ofSeq comparer ie)
+
+    static member CreateV(ie : IEnumerable<_>) : MapExt<'Key,'Value> = 
+        let comparer = LanguagePrimitives.FastGenericComparer<'Key> 
+        new MapExt<_,_>(comparer,MapTree.ofSeqV comparer ie)
     
     static member Create() : MapExt<'Key,'Value> = empty
 
@@ -2153,6 +2178,10 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     static member ofList(l) : MapExt<'Key,'Value> = 
         let comparer = LanguagePrimitives.FastGenericComparer<'Key> 
         new MapExt<_,_>(comparer,MapTree.ofList comparer l)
+
+    static member ofListV(l) : MapExt<'Key,'Value> = 
+        let comparer = LanguagePrimitives.FastGenericComparer<'Key> 
+        new MapExt<_,_>(comparer,MapTree.ofListV comparer l)
            
     member this.ComputeHashCode() = 
         let combineHash x y = (x <<< 1) + y + 631 
@@ -2351,9 +2380,15 @@ module MapExt =
     [<CompiledName("OfList")>]
     let ofList (l: ('Key * 'Value) list) = MapExt<_,_>.ofList(l)
 
+    [<CompiledName("OfListV")>]
+    let ofListV (l: (struct ('Key * 'Value)) list) = MapExt<_,_>.ofListV(l)
+
     [<CompiledName("OfSeq")>]
     let ofSeq l = MapExt<_,_>.Create(l)
-    
+
+    [<CompiledName("OfSeqV")>]
+    let ofSeqV l = MapExt<_,_>.CreateV(l)
+
     [<CompiledName("Singleton")>]
     let singleton k v = MapExt<_,_>(LanguagePrimitives.FastGenericComparer<_>,MapOne(k,v))
 
@@ -2361,6 +2396,11 @@ module MapExt =
     let ofArray (array: ('Key * 'Value) array) = 
         let comparer = LanguagePrimitives.FastGenericComparer<'Key> 
         new MapExt<_,_>(comparer,MapTree.ofArray comparer array)
+
+    [<CompiledName("OfArrayV")>]
+    let ofArrayV (array: (struct ('Key * 'Value)) array) = 
+        let comparer = LanguagePrimitives.FastGenericComparer<'Key> 
+        new MapExt<_,_>(comparer,MapTree.ofArrayV comparer array)
 
     [<CompiledName("ToList")>]
     let toList (m:MapExt<_,_>) = m.ToList()
@@ -2388,6 +2428,9 @@ module MapExt =
     
     [<CompiledName("TryMin")>]
     let tryMin (m:MapExt<_,_>) = m.TryMinKey
+
+    [<CompiledName("TryMinV")>]
+    let tryMinV (m:MapExt<_,_>) = m.TryMinKeyV
     
     [<CompiledName("Min")>]
     let min (m:MapExt<_,_>) = 
@@ -2397,6 +2440,9 @@ module MapExt =
 
     [<CompiledName("TryMax")>]
     let tryMax (m:MapExt<_,_>) = m.TryMaxKey
+
+    [<CompiledName("TryMaxV")>]
+    let tryMaxV (m:MapExt<_,_>) = m.TryMaxKeyV
 
     [<CompiledName("Max")>]
     let max (m:MapExt<_,_>) = 
@@ -2428,6 +2474,9 @@ module MapExt =
 
     [<CompiledName("Split")>]
     let split k (m:MapExt<_,_>) = m.Split k
+
+    [<CompiledName("SplitV")>]
+    let splitV k (m:MapExt<_,_>) = m.SplitV k
 
     [<CompiledName("TryIndexOf")>]
     let tryIndexOf i (m:MapExt<_,_>) = m.TryIndexOf i
