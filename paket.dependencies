@@ -33,13 +33,13 @@ group Test
     source https://api.nuget.org/v3/index.json
 
     nuget NUnit                    ~> 3.13.3
-    nuget FsUnit                   ~> 5.2.0
+    nuget FsUnit                   ~> 5.4.0
     nuget FsCheck                  ~> 2.16.4
     nuget FsCheck.NUnit            ~> 2.16.4
-    nuget NUnit3TestAdapter        ~> 4.4.2
-    nuget Microsoft.NET.Test.Sdk   ~> 17.5.0
-    nuget Expecto                  ~> 9.0.4
-    nuget Expecto.FsCheck          ~> 9.0.4
-    nuget YoloDev.Expecto.TestSdk  ~> 0.13.3
+    nuget NUnit3TestAdapter        ~> 4.5.0
+    nuget Microsoft.NET.Test.Sdk   ~> 17.7.2
+    nuget Expecto                  ~> 10.1.0
+    nuget Expecto.FsCheck          ~> 10.1.0
+    nuget YoloDev.Expecto.TestSdk  ~> 0.14.2
 
-    nuget BenchmarkDotNet          ~> 0.13.1
+    nuget BenchmarkDotNet          ~> 0.13.9
