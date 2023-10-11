@@ -46,5 +46,11 @@ let ``[MapExt] choose`` (m : Map<int, int>) (f : int -> int -> Option<int>) =
         MapExt.toList (MapExt.choose f me) = Map.toList (choose f m)
     ]
 
-
-
+[<Property>]
+let ``[MapExt] range`` (m : Map<int, int>) (min : int) (max : int) =
+    (min <= max) ==> lazy (
+        let me = MapExt.ofSeq (Map.toSeq m)
+        let expected = me |> MapExt.filter (fun k _ -> k >= min && k <= max)
+        let actual = me |> MapExt.range min max
+        expected = actual
+    )

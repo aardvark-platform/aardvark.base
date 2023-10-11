@@ -455,6 +455,40 @@ module internal MapExtImplementation =
             | ValueSome v -> join left k v right
             | ValueNone -> merge left right
 
+        let rec range (comparer : IComparer<'Value>) lk rk m =
+            match m with
+            | _ when comparer.Compare(lk, rk) > 0 ->
+                MapEmpty
+
+            | MapEmpty ->
+                MapEmpty
+
+            | MapOne(k, _) as n ->
+                if comparer.Compare(lk, k) <= 0 && comparer.Compare(k, rk) <= 0 then n
+                else MapEmpty
+
+            | MapNode(k, v, l, r, _, _) ->
+                let cl = comparer.Compare(lk, k)
+
+                if cl = 0 then
+                    if comparer.Compare(k, rk) = 0 then
+                        MapOne(k, v)
+                    else
+                        join MapEmpty k v (range comparer lk rk r)
+
+                elif cl < 0 then
+                    let cr = comparer.Compare(k, rk)
+
+                    if cr = 0 then
+                        join (range comparer lk rk l) k v MapEmpty
+                    elif cr < 0 then
+                        join (range comparer lk rk l) k v (range comparer lk rk r)
+                    else
+                        range comparer lk rk l
+
+                else
+                    range comparer lk rk r
+
         let rec split (comparer: IComparer<'Value>) k m =
             match m with
             | MapEmpty -> 
@@ -2110,6 +2144,9 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     member x.TryMinValueV = MapTree.tryMinV tree |> ValueOption.map (fun struct(_,v) -> v)
     member x.TryMaxValueV = MapTree.tryMaxV tree |> ValueOption.map (fun struct(_,v) -> v)
 
+    member x.Range(min, max) =
+        MapExt<'Key, 'Value>(comparer, MapTree.range comparer min max tree)
+
     member x.Split (k) =
         let l, self, r = MapTree.split comparer k tree
         MapExt<'Key, 'Value>(comparer, l), self, MapExt<'Key, 'Value>(comparer, r)
@@ -2471,6 +2508,9 @@ module MapExt =
     
     [<CompiledName("ChooseMonotonic")>]
     let chooseMonotonic f (m:MapExt<_,_>) = m.ChooseMonotonic(f)
+
+    [<CompiledName("Range")>]
+    let range min max (m:MapExt<_,_>) = m.Range(min, max)
 
     [<CompiledName("Split")>]
     let split k (m:MapExt<_,_>) = m.Split k
