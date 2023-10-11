@@ -369,24 +369,25 @@ module LinearRegression2d =
 
 [<Struct>]
 type LinearRegression3d =
+    val mutable public Reference : V3d
+    val mutable public Sum : V3d
+    val mutable public SumSq : V3d
+    val mutable public Off : V3d
     
-    val mutable private _reference : V3d
-    val mutable private _sum : V3d
-    val mutable private _sumSq : V3d
-    val mutable private _off : V3d
-    val mutable private _count : int
+    /// The total number of points added. Note that at least 3 points are required to fit a plane.
+    val mutable public Count : int
 
-    private new(reference : V3d, sum : V3d, sumSq : V3d, off : V3d, count : int) =
-        { _reference = reference; _sum = sum; _sumSq = sumSq; _off = off; _count = count }
+    new(reference : V3d, sum : V3d, sumSq : V3d, off : V3d, count : int) =
+        { Reference = reference; Sum = sum; SumSq = sumSq; Off = off; Count = count }
 
     /// Creates a new regression with a single point.
     new(point : V3d) =
-        { _reference = point; _sum = V3d.Zero; _sumSq = V3d.Zero; _off = V3d.Zero; _count = 1 }
+        { Reference = point; Sum = V3d.Zero; SumSq = V3d.Zero; Off = V3d.Zero; Count = 1 }
         
     /// Creates a new regression from the given points.
     new([<ParamArray>] points : V3d[]) =
         if points.Length = 0 then
-            { _reference = V3d.Zero; _sum = V3d.Zero; _sumSq = V3d.Zero; _off = V3d.Zero; _count = 0 }
+            { Reference = V3d.Zero; Sum = V3d.Zero; SumSq = V3d.Zero; Off = V3d.Zero; Count = 0 }
         else
             let reference = points.[0]
             let mutable sum = V3d.Zero
@@ -401,7 +402,7 @@ type LinearRegression3d =
                 off <- off + V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y)
                 count <- count + 1
             
-            { _reference = reference; _sum = sum; _sumSq = sumSq; _off = off; _count = count }
+            { Reference = reference; Sum = sum; SumSq = sumSq; Off = off; Count = count }
         
     /// Creates a new regression from the given points.
     new(s : seq<V3d>) = LinearRegression3d(Seq.toArray s)
@@ -417,21 +418,21 @@ type LinearRegression3d =
     static member Empty = LinearRegression3d(V3d.Zero, V3d.Zero, V3d.Zero, V3d.Zero, 0)
     
     /// The total number of points added. Note that at least 3 points are required to fit a plane.
-    member x.Count = x._count
+    // member x.Count = x._count
 
     member private x.WithReferencePoint(r : V3d) =
-        let d = x._reference - r
+        let d = x.Reference - r
         if r + d = r then
             x
         else
-            let n = float x._count
+            let n = float x.Count
 
             // sum ((xi+dx)*(yi+dy))
             // sum (xi*yi + dx*yi + dy*xi + dx*dy)
             // sum (xi*yi) + dx*sum(yi) + dy*sum(xi) + n*dx*dy
-            let vxy = d.X*x._sum.Y + d.Y*x._sum.X + n*d.X*d.Y
-            let vxz = d.X*x._sum.Z + d.Z*x._sum.X + n*d.X*d.Z
-            let vyz = d.Y*x._sum.Z + d.Z*x._sum.Y + n*d.Y*d.Z
+            let vxy = d.X*x.Sum.Y + d.Y*x.Sum.X + n*d.X*d.Y
+            let vxz = d.X*x.Sum.Z + d.Z*x.Sum.X + n*d.X*d.Z
+            let vyz = d.Y*x.Sum.Z + d.Z*x.Sum.Y + n*d.Y*d.Z
 
             // sum (xi+d)^2 
             // sum (xi^2 + 2xi*d + d^2)
@@ -439,101 +440,101 @@ type LinearRegression3d =
 
             LinearRegression3d(
                 r, 
-                x._sum + n*d,
-                x._sumSq + 2.0*d*x._sum + n*sqr d,
-                x._off + V3d(vyz, vxz, vxy),
-                x._count
+                x.Sum + n*d,
+                x.SumSq + 2.0*d*x.Sum + n*sqr d,
+                x.Off + V3d(vyz, vxz, vxy),
+                x.Count
             )
 
     /// The centroid of all added points.
     member x.Centroid = 
-        if x._count = 0 then V3d.Zero
-        else x._reference + x._sum / float x._count
+        if x.Count = 0 then V3d.Zero
+        else x.Reference + x.Sum / float x.Count
 
     /// Adds the given point to the regression.
     member x.Add(pt : V3d) =
-        if x._count = 0 then
+        if x.Count = 0 then
             LinearRegression3d(pt, V3d.Zero, V3d.Zero, V3d.Zero, 1)
         else
-            let pt = pt - x._reference
+            let pt = pt - x.Reference
             LinearRegression3d(
-                x._reference,
-                x._sum + pt,
-                x._sumSq + sqr pt,
-                x._off + V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y),
-                x._count + 1
+                x.Reference,
+                x.Sum + pt,
+                x.SumSq + sqr pt,
+                x.Off + V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y),
+                x.Count + 1
             )
 
     /// Adds the given point to the regression (mutating the regression).
     member x.AddInPlace(pt : V3d) =
-        if x._count = 0 then
-            x._reference <- pt
-            x._sum <- V3d.Zero
-            x._sumSq <- V3d.Zero
-            x._off <- V3d.Zero
-            x._count <- 1
+        if x.Count = 0 then
+            x.Reference <- pt
+            x.Sum <- V3d.Zero
+            x.SumSq <- V3d.Zero
+            x.Off <- V3d.Zero
+            x.Count <- 1
         else
-            let pt = pt - x._reference
-            x._sum <- x._sum + pt
-            x._sumSq <- x._sumSq + sqr pt
-            x._off <- x._off + V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y)
-            x._count <- x._count + 1
+            let pt = pt - x.Reference
+            x.Sum <- x.Sum + pt
+            x.SumSq <- x.SumSq + sqr pt
+            x.Off <- x.Off + V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y)
+            x.Count <- x.Count + 1
             
             
     /// Removes the given point from the regression assuming that it has previously been added.
     /// NOTE: when removing non-added points the regression will produce inconsistent results.
     member x.Remove(pt : V3d) =
-        if x._count <= 1 then
+        if x.Count <= 1 then
             LinearRegression3d.Empty
         else
-            let pt = pt - x._reference
+            let pt = pt - x.Reference
             LinearRegression3d(
-                x._reference,
-                x._sum - pt,
-                x._sumSq - sqr pt |> max V3d.Zero,
-                x._off - V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y),
-                x._count - 1
+                x.Reference,
+                x.Sum - pt,
+                x.SumSq - sqr pt |> max V3d.Zero,
+                x.Off - V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y),
+                x.Count - 1
             )
  
     /// Removes the given point from the regression assuming that it has previously been added.
     /// NOTE: when removing non-added points the regression will produce inconsistent results.
     member x.RemoveInPlace(pt : V3d) =
-        if x._count <= 1 then
-            x._reference <- V3d.Zero
-            x._sum <- V3d.Zero
-            x._sumSq <- V3d.Zero
-            x._off <- V3d.Zero
-            x._count <- 0
+        if x.Count <= 1 then
+            x.Reference <- V3d.Zero
+            x.Sum <- V3d.Zero
+            x.SumSq <- V3d.Zero
+            x.Off <- V3d.Zero
+            x.Count <- 0
         else
-            let pt = pt - x._reference
-            x._sum <- x._sum - pt
-            x._sumSq <- x._sumSq - sqr pt
-            x._off <- x._off - V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y)
-            x._count <- x._count - 1
+            let pt = pt - x.Reference
+            x.Sum <- x.Sum - pt
+            x.SumSq <- x.SumSq - sqr pt
+            x.Off <- x.Off - V3d(pt.Y*pt.Z, pt.X*pt.Z, pt.X*pt.Y)
+            x.Count <- x.Count - 1
 
 
     /// Gets the variances as [Var(X), Var(Y), Var(Z)]
     member x.Variance =
-        if x._count < 2 then
+        if x.Count < 2 then
             V3d.Zero
         else
-            let n = float x._count
-            let avg = x._sum / n
-            let xx = (x._sumSq.X - avg.X * x._sum.X) / (n - 1.0)
-            let yy = (x._sumSq.Y - avg.Y * x._sum.Y) / (n - 1.0)
-            let zz = (x._sumSq.Z - avg.Z * x._sum.Z) / (n - 1.0)
+            let n = float x.Count
+            let avg = x.Sum / n
+            let xx = (x.SumSq.X - avg.X * x.Sum.X) / (n - 1.0)
+            let yy = (x.SumSq.Y - avg.Y * x.Sum.Y) / (n - 1.0)
+            let zz = (x.SumSq.Z - avg.Z * x.Sum.Z) / (n - 1.0)
             V3d(xx, yy, zz)
 
     /// Gets the covariances as [Cov(Y,Z), Cov(X,Z), Cov(X,Y)]
     member x.Covariance =
-        if x._count < 2 then
+        if x.Count < 2 then
             V3d.Zero
         else
-            let n = float x._count
-            let avg = x._sum / n
-            let xy = (x._off.Z - avg.X * x._sum.Y) / (n - 1.0)
-            let xz = (x._off.Y - avg.X * x._sum.Z) / (n - 1.0)
-            let yz = (x._off.X - avg.Y * x._sum.Z) / (n - 1.0)
+            let n = float x.Count
+            let avg = x.Sum / n
+            let xy = (x.Off.Z - avg.X * x.Sum.Y) / (n - 1.0)
+            let xz = (x.Off.Y - avg.X * x.Sum.Z) / (n - 1.0)
+            let yz = (x.Off.X - avg.Y * x.Sum.Z) / (n - 1.0)
             V3d(yz, xz, xy)
 
     /// Gets the covariance matrix as
@@ -541,18 +542,18 @@ type LinearRegression3d =
     /// | Cov(X,Y) | Cov(Y,Y) | Cov(Y,Z) |
     /// | Cov(X,Z) | Cov(Y,Z) | Cov(Z,Z) |
     member x.CovarianceMatrix =
-        if x._count < 2  then
+        if x.Count < 2  then
             M33d.Zero
         else
-            let n = float x._count
-            let avg = x._sum / n
-            let xx = (x._sumSq.X - avg.X * x._sum.X) / (n - 1.0)
-            let yy = (x._sumSq.Y - avg.Y * x._sum.Y) / (n - 1.0)
-            let zz = (x._sumSq.Z - avg.Z * x._sum.Z) / (n - 1.0)
+            let n = float x.Count
+            let avg = x.Sum / n
+            let xx = (x.SumSq.X - avg.X * x.Sum.X) / (n - 1.0)
+            let yy = (x.SumSq.Y - avg.Y * x.Sum.Y) / (n - 1.0)
+            let zz = (x.SumSq.Z - avg.Z * x.Sum.Z) / (n - 1.0)
 
-            let xy = (x._off.Z - avg.X * x._sum.Y) / (n - 1.0)
-            let xz = (x._off.Y - avg.X * x._sum.Z) / (n - 1.0)
-            let yz = (x._off.X - avg.Y * x._sum.Z) / (n - 1.0)
+            let xy = (x.Off.Z - avg.X * x.Sum.Y) / (n - 1.0)
+            let xz = (x.Off.Y - avg.X * x.Sum.Z) / (n - 1.0)
+            let yz = (x.Off.X - avg.Y * x.Sum.Z) / (n - 1.0)
         
             M33d(
                 xx, xy, xz,
@@ -562,18 +563,18 @@ type LinearRegression3d =
 
     /// Gets the least-squares plane and a confidence value in [0,1] where 1 stands for a perfect plane.
     member x.GetPlaneAndConfidence() =
-        if x._count < 3 then
+        if x.Count < 3 then
             struct(Plane3d.Invalid, 0.0)
         else
-            let n = float x._count
-            let avg = x._sum / n
-            let xx = (x._sumSq.X - avg.X * x._sum.X) / (n - 1.0)
-            let yy = (x._sumSq.Y - avg.Y * x._sum.Y) / (n - 1.0)
-            let zz = (x._sumSq.Z - avg.Z * x._sum.Z) / (n - 1.0)
+            let n = float x.Count
+            let avg = x.Sum / n
+            let xx = (x.SumSq.X - avg.X * x.Sum.X) / (n - 1.0)
+            let yy = (x.SumSq.Y - avg.Y * x.Sum.Y) / (n - 1.0)
+            let zz = (x.SumSq.Z - avg.Z * x.Sum.Z) / (n - 1.0)
 
-            let xy = (x._off.Z - avg.X * x._sum.Y) / (n - 1.0)
-            let xz = (x._off.Y - avg.X * x._sum.Z) / (n - 1.0)
-            let yz = (x._off.X - avg.Y * x._sum.Z) / (n - 1.0)
+            let xy = (x.Off.Z - avg.X * x.Sum.Y) / (n - 1.0)
+            let xz = (x.Off.Y - avg.X * x.Sum.Z) / (n - 1.0)
+            let yz = (x.Off.X - avg.Y * x.Sum.Z) / (n - 1.0)
             
             let _a = 1.0
             let b = -xx - yy - zz
@@ -603,24 +604,24 @@ type LinearRegression3d =
                             if len2 > len0 then Vec.cross c1 c2 |> Vec.normalize
                             else Vec.cross c0 c1 |> Vec.normalize
 
-                    struct(Plane3d(normal, x._reference + avg), goodness)
+                    struct(Plane3d(normal, x.Reference + avg), goodness)
                 else
                     struct(Plane3d.Invalid, goodness)
 
     /// Gets a Trafo3d for the entire plane (using its principal components) and the respective standard deviations for each axis.
     member x.GetTrafoAndSizes() =
-        if x._count < 3 then
+        if x.Count < 3 then
             struct(Trafo3d.Identity, V3d.Zero)
         else
-            let n = float x._count
-            let avg = x._sum / n
-            let xx = (x._sumSq.X - avg.X * x._sum.X) / (n - 1.0)
-            let yy = (x._sumSq.Y - avg.Y * x._sum.Y) / (n - 1.0)
-            let zz = (x._sumSq.Z - avg.Z * x._sum.Z) / (n - 1.0)
+            let n = float x.Count
+            let avg = x.Sum / n
+            let xx = (x.SumSq.X - avg.X * x.Sum.X) / (n - 1.0)
+            let yy = (x.SumSq.Y - avg.Y * x.Sum.Y) / (n - 1.0)
+            let zz = (x.SumSq.Z - avg.Z * x.Sum.Z) / (n - 1.0)
 
-            let xy = (x._off.Z - avg.X * x._sum.Y) / (n - 1.0)
-            let xz = (x._off.Y - avg.X * x._sum.Z) / (n - 1.0)
-            let yz = (x._off.X - avg.Y * x._sum.Z) / (n - 1.0)
+            let xy = (x.Off.Z - avg.X * x.Sum.Y) / (n - 1.0)
+            let xz = (x.Off.Y - avg.X * x.Sum.Z) / (n - 1.0)
+            let yz = (x.Off.X - avg.Y * x.Sum.Z) / (n - 1.0)
             
             let _a = 1.0
             let b = -xx - yy - zz
@@ -629,7 +630,7 @@ type LinearRegression3d =
 
             let struct (l0, l1, l2) = sortTripleAbs (Polynomial.RealRootsOfNormed(b,c,d))
             if Fun.IsTiny l1 then
-                struct (Trafo3d.Identity, x._reference + avg)
+                struct (Trafo3d.Identity, x.Reference + avg)
             else
                 let c0 = V3d(xx - l0, xy, xz)
                 let c1 = V3d(xy, yy - l0, yz)
@@ -660,7 +661,7 @@ type LinearRegression3d =
                 let dev = V3d(s2, s1, s0)
 
                 let trafo =
-                    let o = x._reference + avg
+                    let o = x.Reference + avg
                     Trafo3d(
                         M44d(
                             vx.X, vy.X, vz.X, o.X,
@@ -690,30 +691,30 @@ type LinearRegression3d =
     static member (+) (l : LinearRegression3d, r : LinearRegression3d) =
         if r.Count <= 0 then l
         elif l.Count <= 0 then r
-        elif l.Count = 1 then r.Add l._reference
-        elif r.Count = 1 then l.Add r._reference
+        elif l.Count = 1 then r.Add l.Reference
+        elif r.Count = 1 then l.Add r.Reference
         else
-            let r1 = r.WithReferencePoint l._reference
+            let r1 = r.WithReferencePoint l.Reference
             LinearRegression3d(
-                l._reference,
-                l._sum + r1._sum,
-                l._sumSq + r1._sumSq,
-                l._off + r1._off,
-                l._count + r1._count
+                l.Reference,
+                l.Sum + r1.Sum,
+                l.SumSq + r1.SumSq,
+                l.Off + r1.Off,
+                l.Count + r1.Count
             )
         
     static member (-) (l : LinearRegression3d, r : LinearRegression3d) =
         if r.Count <= 0 then l
         elif l.Count <= r.Count then LinearRegression3d.Zero
-        elif r.Count = 1 then l.Remove r._reference
+        elif r.Count = 1 then l.Remove r.Reference
         else
-            let r = r.WithReferencePoint l._reference
+            let r = r.WithReferencePoint l.Reference
             LinearRegression3d(
-                l._reference,
-                l._sum - r._sum,
-                l._sumSq - r._sumSq,
-                l._off - r._off,
-                l._count - r._count
+                l.Reference,
+                l.Sum - r.Sum,
+                l.SumSq - r.SumSq,
+                l.Off - r.Off,
+                l.Count - r.Count
             )
         
     static member (+) (l : LinearRegression3d, r : V3d) =
