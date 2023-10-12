@@ -1,9 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     <GenerateProgramFile>false</GenerateProgramFile>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     <WarnOn>3389;3390;3395</WarnOn>
     <Deterministic>false</Deterministic>
   </PropertyGroup>
@@ -20,6 +21,8 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="paket.references" />
+    <Compile Include="RangeSet.fs" />
     <None Include="Tuples_template.fs" />
     <Compile Include="Tuples_auto.fs" />
     <Compile Include="Program.fs" />

@@ -3,447 +3,1664 @@ namespace Aardvark.Base
 open System
 open System.Collections
 open System.Collections.Generic
-open FingerTreeImplementation
+open Aardvark.Base
 
-[<CustomEquality; CustomComparison>]
-type private HalfRange =
-    struct
-        val mutable public IsMax : bool
-        val mutable public Value : int32
+type internal HalfRangeKind =
+    | Left = 0
+    | Right = 1
 
-        new(m,v) = { IsMax = m; Value = v }
+module private RangeSetUtils =
 
-        override x.GetHashCode() =
-            if x.IsMax then 0
-            else x.Value.GetHashCode()
+    let inline inc (value : 'T) =
+        let res = value + LanguagePrimitives.GenericOne<'T>
+        if res = Constant<'T>.ParseableMinValue then struct (Constant<'T>.ParseableMaxValue, true)
+        else struct (res, false)
 
-        override x.Equals o =
-            match o with
-            | :? HalfRange as o -> 
-                x.IsMax = o.IsMax && x.Value = o.Value
-            | _ ->
-                false
+    module MapExt =
+        let inline splitAt (key : 'K) (map : MapExt<'K, 'V>) =
+            let struct (l, _, _, _, r) = MapExt.splitV key map
+            struct (l, r)
 
-        member x.CompareTo (o : HalfRange) =
-            let c = x.Value.CompareTo o.Value
-            if c = 0 then 
-                if x.IsMax = o.IsMax then 0
-                else (if x.IsMax then 1 else -1)
-            else
-                c
+        let inline tryMinValue (map : MapExt<'K, 'V>) =
+            MapExt.tryMinV map |> ValueOption.map (fun mk -> map.[mk])
 
-        interface IComparable with
-            member x.CompareTo o =
-                match o with
-                | :? HalfRange as o -> x.CompareTo(o)
-                | _ -> failwith "uncomparable"
-    end
+        let inline tryMaxValue (map : MapExt<'K, 'V>) =
+            MapExt.tryMaxV map |> ValueOption.map (fun mk -> map.[mk])
 
+        let inline maxValue (map : MapExt<'K, 'V>) =
+            map.[MapExt.max map]
 
+open RangeSetUtils
+
+/// Set of ranges where overlapping and neighboring ranges are coalesced.
+/// Note that ranges describe closed intervals.
 [<StructuredFormatDisplay("{AsString}")>]
-type RangeSet = private { root : FingerTreeNode<HalfRange, HalfRange> } with
-    
-    member private x.AsString =
-        x |> Seq.map (sprintf "%A")
-          |> String.concat "; "
-          |> sprintf "set [%s]"
+type RangeSet1i internal (store : MapExt<int32, HalfRangeKind>) =
+    static let empty = RangeSet1i(MapExt.empty)
 
+    /// Empty range set.
+    static member Empty = empty
+
+    /// Builds a range set of the given sequence of ranges.
+    static member OfSeq(ranges : Range1i seq) =
+        let arr = ranges |> Seq.toArray
+        if arr.Length = 0 then
+            empty
+        elif arr.Length = 1 then
+            let r = arr.[0]
+            RangeSet1i(MapExt.ofListV [
+                struct (r.Min, HalfRangeKind.Left)
+                if r.Max < Int32.MaxValue then struct (r.Max + 1, HalfRangeKind.Right)
+            ])
+        else
+            // TODO: better impl possible (sort array and traverse)
+            arr |> Array.fold (fun s r -> s.Add r) empty
+
+    member inline private x.Store = store
+
+    // We cannot directly describe a range that ends at Int32.MaxValue since the right half-range is inserted
+    // at max + 1. In that case the right-half range will be missing and the total count is odd.
+    member inline private x.HasMaxValue = store.Count % 2 = 1
+
+    /// Returns the minimum value in the range set or Int32.MaxValue if the range is empty.
     member x.Min =
-        match x.root |> FingerTreeNode.firstOpt with
-        | Some f -> f.Value
+        match store.TryMinKeyV with
+        | ValueSome min -> min
         | _ -> Int32.MaxValue
 
+    /// Returns the maximum value in the range set or Int32.MinValue if the range is empty.
     member x.Max =
-        match x.root |> FingerTreeNode.lastOpt with
-        | Some f -> f.Value
-        | _ -> Int32.MinValue
+        if x.HasMaxValue then Int32.MaxValue
+        else
+            match store.TryMaxKeyV with
+            | ValueSome max -> max - 1
+            | _ -> Int32.MinValue
 
-    member x.Range =
-        match FingerTreeNode.firstOpt x.root, FingerTreeNode.lastOpt x.root with
-        | Some min, Some max -> Range1i(min.Value, max.Value)
-        | _ -> Range1i.Invalid
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    member inline x.Range =
+        Range1i(x.Min, x.Max)
+
+    /// Adds the given range to the set.
+    member x.Add(r : Range1i) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
+
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
+
+            // If the set contained Int32.MaxValue or we have overflown, we must not add an explicit right half-range.
+            // Int32.MaxValue is stored implicitly.
+            let fixRightBoundary =
+                if x.HasMaxValue || overflow then
+                    id
+                else
+                    MapExt.add max HalfRangeKind.Right
+
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.ofListV [
+                        struct (min, HalfRangeKind.Left)
+                    ]
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> MapExt.add max HalfRangeKind.Right
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left); struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    MapExt.union lm rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1i(newStore)
+
+    /// Removes the given range from the set.
+    member x.Remove(r : Range1i) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
+
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
+
+            // If the set contained Int32.MaxValue and we have not overflown, there is still a range [max, Int32.MaxValue]
+            let fixRightBoundary =
+                if x.HasMaxValue && not overflow then
+                    MapExt.add max HalfRangeKind.Left
+                else
+                    id
+
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.empty
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Right
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add max HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    MapExt.union lm rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right); struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1i(newStore)
+
+    /// Returns the intersection of the set with the given range.
+    member x.Intersect(r : Range1i) =
+        if r.Max < r.Min then
+            empty
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let inner =
+                store
+                |> MapExt.splitAt min |> sndv
+                |> if not overflow then MapExt.splitAt max >> fstv else id
+
+            let newStore =
+                inner
+                |> if x.Contains r.Min then MapExt.add min HalfRangeKind.Left else id
+                |> if x.Contains r.Max && not overflow then MapExt.add max HalfRangeKind.Right else id
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1i(newStore)
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : int32) =
+        let struct (l, s, _) = MapExt.neighboursV v store
+        match s with
+        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | _ ->
+            match l with
+            | ValueSome (_, HalfRangeKind.Left) -> true
+            | _ -> false
+
+    /// Returns the number of disjoint ranges in the set.
+    member x.Count =
+        (store.Count + 1) / 2
+
+    /// Returns whether the set is empty.
+    member inline x.IsEmpty =
+        x.Count = 0
+
+    /// Builds an array from the range set.
+    member x.ToArray() =
+        let arr = Array.zeroCreate x.Count
+
+        let rec write (i : int) (l : struct (int32 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                arr.[i] <- Range1i(l, r - 1)
+                write (i + 1) rest
+
+            | [struct (l, HalfRangeKind.Left)] when i = x.Count - 1 ->
+                arr.[i] <- Range1i(l, Int32.MaxValue)
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> ()
+
+        store |> MapExt.toListV |> write 0
+        arr
+
+    /// Builds a list from the range set.
+    member x.ToList() =
+        let rec build (accum : Range1i list) (l : struct (int32 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                build (Range1i(l, r - 1) :: accum) rest
+
+            | [struct (l, HalfRangeKind.Left)] ->
+                build (Range1i(l, Int32.MaxValue) :: accum) []
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> List.rev accum
+
+        store |> MapExt.toListV |> build []
+
+    /// Views the range set as a sequence.
+    member x.ToSeq() =
+        x :> seq<_>
+
+    member inline private x.Equals(other : RangeSet1i) =
+        store = other.Store
+
+    override x.Equals(other : obj) =
+        match other with
+        | :? RangeSet1i as o -> x.Equals o
+        | _ -> false
+
+    override x.GetHashCode() =
+        store.GetHashCode()
+
+    member private x.AsString = x.ToString()
+
+    override x.ToString() =
+        let content =
+            x |> Seq.map (fun r ->
+                $"[{r.Min}, {r.Max}]"
+            )
+            |> String.concat "; "
+
+        $"ranges [{content}]"
+
+    member x.GetEnumerator() =
+        new RangeSetEnumerator1i((store :> seq<_>).GetEnumerator())
+
+    interface IEquatable<RangeSet1i> with
+        member x.Equals(other) = x.Equals(other)
 
     interface IEnumerable with
-        member x.GetEnumerator() = new RangeSetEnumerator(FingerTreeImplementation.FingerTreeNode.getEnumeratorFw x.root) :> IEnumerator
+        member x.GetEnumerator() = new RangeSetEnumerator1i((store :> seq<_>).GetEnumerator()) :> _
 
     interface IEnumerable<Range1i> with
-        member x.GetEnumerator() = new RangeSetEnumerator(FingerTreeImplementation.FingerTreeNode.getEnumeratorFw x.root) :> _
+        member x.GetEnumerator() = new RangeSetEnumerator1i((store :> seq<_>).GetEnumerator()) :> _
 
+// TODO: MapExt should use a struct enumerator and return it directly.
+// That way we could get rid of allocations.
+and RangeSetEnumerator1i =
+    struct
+        val private Inner : IEnumerator<KeyValuePair<int32, HalfRangeKind>>
+        val mutable private Left : KeyValuePair<int32, HalfRangeKind>
+        val mutable private Right : KeyValuePair<int32, HalfRangeKind>
 
-and private RangeSetEnumerator(i : IEnumerator<HalfRange>) =
-    
-    let mutable last = HalfRange()
-    let mutable current = HalfRange()
+        internal new (inner : IEnumerator<KeyValuePair<int32, HalfRangeKind>>) =
+            { Inner = inner
+              Left = Unchecked.defaultof<_>
+              Right = Unchecked.defaultof<_> }
 
-    member x.Current = Range1i(last.Value, current.Value - 1)
-
-    interface IEnumerator with
         member x.MoveNext() =
-            if i.MoveNext() then
-                last <- i.Current
-                if i.MoveNext() then
-                    current <- i.Current
+            if x.Inner.MoveNext() then
+                x.Left <- x.Inner.Current
+                if x.Inner.MoveNext() then
+                    x.Right <- x.Inner.Current
                     true
                 else
-                    false
+                    if x.Left.Value = HalfRangeKind.Left then
+                        x.Right <- KeyValuePair(Int32.MinValue, HalfRangeKind.Right) // MaxValue + 1
+                        true
+                    else
+                        failwithf "bad RangeSet"
             else
                 false
-
-        member x.Current = x.Current :> obj
 
         member x.Reset() =
-            i.Reset()
+            x.Inner.Reset()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
 
-    interface IEnumerator<Range1i> with
-        member x.Current = x.Current
-        member x.Dispose() = i.Dispose()
+        member x.Current =
+            assert (x.Left.Value = HalfRangeKind.Left && x.Right.Value = HalfRangeKind.Right)
+            Range1i(x.Left.Key, x.Right.Key - 1)
 
-[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module RangeSet =
-    let private mm =
-        {
-            quantify = fun (r : HalfRange) -> r
-            mempty = HalfRange(false, Int32.MinValue)
-            mappend = fun l r -> if l.CompareTo r > 0 then l else r
-        }
+        member x.Dispose() =
+            x.Inner.Dispose()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
 
-    let private minRange = HalfRange(false, Int32.MinValue)
+        interface IEnumerator with
+            member x.MoveNext() = x.MoveNext()
+            member x.Current = x.Current :> obj
+            member x.Reset() = x.Reset()
 
-    let inline private leq v = HalfRange(true, v)
-    let inline private geq v = HalfRange(false, v)
-
-    let inline private (|Leq|Geq|) (r : HalfRange) =
-        if r.IsMax then Leq r.Value
-        else Geq r.Value
-
-    let empty = { root = Empty }
-
-    let insert (range : Range1i) (t : RangeSet) =
-        let rangeMax = range.Max + 1
-
-        let (l,rest) = t.root |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo range.Min >= 0) minRange
-        let (_,r) = rest |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo rangeMax > 0) minRange
-
-        let max = leq rangeMax
-        let min = geq range.Min
-
-        match FingerTreeNode.lastOpt l, FingerTreeNode.firstOpt r with
-        | None, None -> 
-            { root = Deep(max, One(min), Empty, One(max)) }
-
-        | Some lmax, None ->
-            match lmax with
-            | Leq _ -> { root = l |> FingerTreeNode.append mm min |> FingerTreeNode.append mm max }
-            | Geq _ -> { root = l |> FingerTreeNode.append mm max }
-
-        | None, Some rmin ->
-            match rmin with
-            | Leq _ -> { root = r |> FingerTreeNode.prepend mm min }
-            | Geq _ -> { root = r |> FingerTreeNode.prepend mm max |> FingerTreeNode.prepend mm min }
-
-        | Some lmax, Some rmin ->
-            match lmax, rmin with
-            | Leq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min;max] r }
-
-            | Geq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [] r }
-
-            | Leq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min] r }
-
-            | Geq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [max] r }
-
-    let remove (range : Range1i) (t : RangeSet) =
-        let rangeMax = range.Max + 1
-
-        let (l,rest) = t.root |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo range.Min >= 0) minRange
-        let (_,r) = rest |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo rangeMax > 0) minRange
-
-        let max = geq rangeMax
-        let min = leq range.Min
-
-        match FingerTreeNode.lastOpt l, FingerTreeNode.firstOpt r with
-        | None, None -> 
-            { root = Empty }
-
-        | Some lmax, None ->
-            match lmax with
-            | Leq _ -> { root = l }
-            | Geq _ -> { root = l |> FingerTreeNode.append mm min }
-
-        | None, Some rmin ->
-            match rmin with
-            | Leq _ -> { root = r |> FingerTreeNode.prepend mm max }
-            | Geq _ -> { root = r }
-
-        | Some lmax, Some rmin ->
-            match lmax, rmin with
-            | Leq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [] r }
-
-            | Geq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min; max] r }
-
-            | Leq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [max] r }
-
-            | Geq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min] r }
-
-    let ofSeq (s : seq<Range1i>) =
-        let mutable res = empty
-        for e in s do res <- insert e res
-        res
-
-    let inline ofList (l : list<Range1i>) = ofSeq l
-    let inline ofArray (l : Range1i[]) = ofSeq l
-
-    let toSeq (r : RangeSet) = r :> seq<_>
-    let toList (r : RangeSet) = r |> Seq.toList
-    let toArray (r : RangeSet) = r |> Seq.toArray
-
-    let inline min (t : RangeSet) = t.Min
-    let inline max (t : RangeSet) = t.Max
-    let inline range (t : RangeSet) = t.Range
-
-    let window (window : Range1i) (set : RangeSet) =
-        let rangeMax = window.Max + 1
-
-        let (l,rest) = set.root |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo window.Min > 0) minRange
-        let (inner,r) = rest |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo rangeMax >= 0) minRange
-
-        let inner =
-            match FingerTreeNode.lastOpt l with
-            | Some (Geq _) -> FingerTreeNode.prepend mm (geq window.Min) inner
-            | _ -> inner
-
-        let inner =
-            match FingerTreeNode.firstOpt r with
-            | Some (Leq _) -> FingerTreeNode.append mm (leq rangeMax) inner
-            | _ -> inner
-
-        { root = inner }
-
-[<CustomEquality; CustomComparison>]
-type private HalfRange64 =
-    struct
-        val mutable public IsMax : bool
-        val mutable public Value : int64
-
-        new(m,v) = { IsMax = m; Value = v }
-
-        override x.GetHashCode() =
-            if x.IsMax then 0
-            else x.Value.GetHashCode()
-
-        override x.Equals o =
-            match o with
-            | :? HalfRange64 as o -> 
-                x.IsMax = o.IsMax && x.Value = o.Value
-            | _ ->
-                false
-
-        member x.CompareTo (o : HalfRange64) =
-            let c = x.Value.CompareTo o.Value
-            if c = 0 then 
-                if x.IsMax = o.IsMax then 0
-                else (if x.IsMax then 1 else -1)
-            else
-                c
-
-        interface IComparable with
-            member x.CompareTo o =
-                match o with
-                | :? HalfRange64 as o -> x.CompareTo(o)
-                | _ -> failwith "uncomparable"
+        interface IEnumerator<Range1i> with
+            member x.Dispose() = x.Dispose()
+            member x.Current = x.Current
     end
 
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module RangeSet1i =
 
+    /// Empty range set.
+    let empty = RangeSet1i.Empty
+
+    /// Returns the minimum value in the range set or Int32.MaxValue if the range is empty.
+    let inline min (set : RangeSet1i) = set.Min
+
+    /// Returns the maximum value in the range set or Int32.MinValue if the range is empty.
+    let inline max (set : RangeSet1i) = set.Max
+
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    let inline range (set : RangeSet1i) = set.Range
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1i>) = RangeSet1i.OfSeq ranges
+
+    /// Builds a range set of the given list of ranges.
+    let inline ofList (ranges : Range1i list) = RangeSet1i.OfSeq ranges
+
+    /// Builds a range set of the given array of ranges.
+    let inline ofArray (ranges : Range1i[]) = RangeSet1i.OfSeq ranges
+
+    /// Adds the given range to the set.
+    let inline add (range : Range1i) (set : RangeSet1i) = set.Add range
+
+    [<Obsolete("Use RangeSet1i.add instead.")>]
+    let inline insert (range : Range1i) (set : RangeSet1i) = set.Add range
+
+    /// Removes the given range from the set.
+    let inline remove (range : Range1i) (set : RangeSet1i) = set.Remove range
+
+    /// Returns the intersection of the set with the given range.
+    let inline intersect (range : Range1i) (set : RangeSet1i) = set.Intersect range
+
+    [<Obsolete("Use RangeSet1i.intersect instead.")>]
+    let inline window (range : Range1i) (set : RangeSet1i) = intersect range set
+
+    /// Returns whether the given value is contained in the range set.
+    let inline contains (value : int32) (set : RangeSet1i) = set.Contains value
+
+    /// Returns the number of disjoint ranges in the set.
+    let inline count (set : RangeSet1i) = set.Count
+
+    /// Returns whether the set is empty.
+    let inline isEmpty (set : RangeSet1i) = set.IsEmpty
+
+    /// Views the range set as a sequence.
+    let inline toSeq (set : RangeSet1i) = set :> seq<_>
+
+    /// Builds a list from the range set.
+    let inline toList (set : RangeSet1i) = set.ToList()
+
+    /// Builds an array from the range set.
+    let inline toArray (set : RangeSet1i) = set.ToArray()
+
+
+/// Set of ranges where overlapping and neighboring ranges are coalesced.
+/// Note that ranges describe closed intervals.
 [<StructuredFormatDisplay("{AsString}")>]
-type RangeSet64 = private { root : FingerTreeNode<HalfRange64, HalfRange64> } with
-    
-    member private x.AsString =
-        x |> Seq.map (sprintf "%A")
-          |> String.concat "; "
-          |> sprintf "set [%s]"
+type RangeSet1ui internal (store : MapExt<uint32, HalfRangeKind>) =
+    static let empty = RangeSet1ui(MapExt.empty)
 
+    /// Empty range set.
+    static member Empty = empty
+
+    /// Builds a range set of the given sequence of ranges.
+    static member OfSeq(ranges : Range1ui seq) =
+        let arr = ranges |> Seq.toArray
+        if arr.Length = 0 then
+            empty
+        elif arr.Length = 1 then
+            let r = arr.[0]
+            RangeSet1ui(MapExt.ofListV [
+                struct (r.Min, HalfRangeKind.Left)
+                if r.Max < UInt32.MaxValue then struct (r.Max + 1u, HalfRangeKind.Right)
+            ])
+        else
+            // TODO: better impl possible (sort array and traverse)
+            arr |> Array.fold (fun s r -> s.Add r) empty
+
+    member inline private x.Store = store
+
+    // We cannot directly describe a range that ends at UInt32.MaxValue since the right half-range is inserted
+    // at max + 1. In that case the right-half range will be missing and the total count is odd.
+    member inline private x.HasMaxValue = store.Count % 2 = 1
+
+    /// Returns the minimum value in the range set or UInt32.MaxValue if the range is empty.
     member x.Min =
-        match x.root |> FingerTreeNode.firstOpt with
-        | Some f -> f.Value
-        | _ -> Int64.MaxValue
+        match store.TryMinKeyV with
+        | ValueSome min -> min
+        | _ -> UInt32.MaxValue
 
+    /// Returns the maximum value in the range set or UInt32.MinValue if the range is empty.
     member x.Max =
-        match x.root |> FingerTreeNode.lastOpt with
-        | Some f -> f.Value
-        | _ -> Int64.MinValue
+        if x.HasMaxValue then UInt32.MaxValue
+        else
+            match store.TryMaxKeyV with
+            | ValueSome max -> max - 1u
+            | _ -> UInt32.MinValue
 
-    member x.Range =
-        match FingerTreeNode.firstOpt x.root, FingerTreeNode.lastOpt x.root with
-        | Some min, Some max -> Range1l(min.Value, max.Value)
-        | _ -> Range1l.Invalid
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    member inline x.Range =
+        Range1ui(x.Min, x.Max)
+
+    /// Adds the given range to the set.
+    member x.Add(r : Range1ui) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
+
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
+
+            // If the set contained UInt32.MaxValue or we have overflown, we must not add an explicit right half-range.
+            // UInt32.MaxValue is stored implicitly.
+            let fixRightBoundary =
+                if x.HasMaxValue || overflow then
+                    id
+                else
+                    MapExt.add max HalfRangeKind.Right
+
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.ofListV [
+                        struct (min, HalfRangeKind.Left)
+                    ]
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> MapExt.add max HalfRangeKind.Right
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left); struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    MapExt.union lm rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1ui(newStore)
+
+    /// Removes the given range from the set.
+    member x.Remove(r : Range1ui) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
+
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
+
+            // If the set contained UInt32.MaxValue and we have not overflown, there is still a range [max, UInt32.MaxValue]
+            let fixRightBoundary =
+                if x.HasMaxValue && not overflow then
+                    MapExt.add max HalfRangeKind.Left
+                else
+                    id
+
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.empty
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Right
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add max HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    MapExt.union lm rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right); struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1ui(newStore)
+
+    /// Returns the intersection of the set with the given range.
+    member x.Intersect(r : Range1ui) =
+        if r.Max < r.Min then
+            empty
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let inner =
+                store
+                |> MapExt.splitAt min |> sndv
+                |> if not overflow then MapExt.splitAt max >> fstv else id
+
+            let newStore =
+                inner
+                |> if x.Contains r.Min then MapExt.add min HalfRangeKind.Left else id
+                |> if x.Contains r.Max && not overflow then MapExt.add max HalfRangeKind.Right else id
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1ui(newStore)
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : uint32) =
+        let struct (l, s, _) = MapExt.neighboursV v store
+        match s with
+        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | _ ->
+            match l with
+            | ValueSome (_, HalfRangeKind.Left) -> true
+            | _ -> false
+
+    /// Returns the number of disjoint ranges in the set.
+    member x.Count =
+        (store.Count + 1) / 2
+
+    /// Returns whether the set is empty.
+    member inline x.IsEmpty =
+        x.Count = 0
+
+    /// Builds an array from the range set.
+    member x.ToArray() =
+        let arr = Array.zeroCreate x.Count
+
+        let rec write (i : int) (l : struct (uint32 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                arr.[i] <- Range1ui(l, r - 1u)
+                write (i + 1) rest
+
+            | [struct (l, HalfRangeKind.Left)] when i = x.Count - 1 ->
+                arr.[i] <- Range1ui(l, UInt32.MaxValue)
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> ()
+
+        store |> MapExt.toListV |> write 0
+        arr
+
+    /// Builds a list from the range set.
+    member x.ToList() =
+        let rec build (accum : Range1ui list) (l : struct (uint32 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                build (Range1ui(l, r - 1u) :: accum) rest
+
+            | [struct (l, HalfRangeKind.Left)] ->
+                build (Range1ui(l, UInt32.MaxValue) :: accum) []
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> List.rev accum
+
+        store |> MapExt.toListV |> build []
+
+    /// Views the range set as a sequence.
+    member x.ToSeq() =
+        x :> seq<_>
+
+    member inline private x.Equals(other : RangeSet1ui) =
+        store = other.Store
+
+    override x.Equals(other : obj) =
+        match other with
+        | :? RangeSet1ui as o -> x.Equals o
+        | _ -> false
+
+    override x.GetHashCode() =
+        store.GetHashCode()
+
+    member private x.AsString = x.ToString()
+
+    override x.ToString() =
+        let content =
+            x |> Seq.map (fun r ->
+                $"[{r.Min}, {r.Max}]"
+            )
+            |> String.concat "; "
+
+        $"ranges [{content}]"
+
+    member x.GetEnumerator() =
+        new RangeSetEnumerator1ui((store :> seq<_>).GetEnumerator())
+
+    interface IEquatable<RangeSet1ui> with
+        member x.Equals(other) = x.Equals(other)
 
     interface IEnumerable with
-        member x.GetEnumerator() = new RangeSet64Enumerator(FingerTreeImplementation.FingerTreeNode.getEnumeratorFw x.root) :> IEnumerator
+        member x.GetEnumerator() = new RangeSetEnumerator1ui((store :> seq<_>).GetEnumerator()) :> _
 
-    interface IEnumerable<Range1l> with
-        member x.GetEnumerator() = new RangeSet64Enumerator(FingerTreeImplementation.FingerTreeNode.getEnumeratorFw x.root) :> _
+    interface IEnumerable<Range1ui> with
+        member x.GetEnumerator() = new RangeSetEnumerator1ui((store :> seq<_>).GetEnumerator()) :> _
 
+// TODO: MapExt should use a struct enumerator and return it directly.
+// That way we could get rid of allocations.
+and RangeSetEnumerator1ui =
+    struct
+        val private Inner : IEnumerator<KeyValuePair<uint32, HalfRangeKind>>
+        val mutable private Left : KeyValuePair<uint32, HalfRangeKind>
+        val mutable private Right : KeyValuePair<uint32, HalfRangeKind>
 
-and private RangeSet64Enumerator(i : IEnumerator<HalfRange64>) =
-    
-    let mutable last = HalfRange64()
-    let mutable current = HalfRange64()
+        internal new (inner : IEnumerator<KeyValuePair<uint32, HalfRangeKind>>) =
+            { Inner = inner
+              Left = Unchecked.defaultof<_>
+              Right = Unchecked.defaultof<_> }
 
-    member x.Current = Range1l(last.Value, current.Value - 1L)
-
-    interface IEnumerator with
         member x.MoveNext() =
-            if i.MoveNext() then
-                last <- i.Current
-                if i.MoveNext() then
-                    current <- i.Current
+            if x.Inner.MoveNext() then
+                x.Left <- x.Inner.Current
+                if x.Inner.MoveNext() then
+                    x.Right <- x.Inner.Current
                     true
                 else
-                    false
+                    if x.Left.Value = HalfRangeKind.Left then
+                        x.Right <- KeyValuePair(UInt32.MinValue, HalfRangeKind.Right) // MaxValue + 1
+                        true
+                    else
+                        failwithf "bad RangeSet"
             else
                 false
 
-        member x.Current = x.Current :> obj
-
         member x.Reset() =
-            i.Reset()
+            x.Inner.Reset()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
 
-    interface IEnumerator<Range1l> with
-        member x.Current = x.Current
-        member x.Dispose() = i.Dispose()
+        member x.Current =
+            assert (x.Left.Value = HalfRangeKind.Left && x.Right.Value = HalfRangeKind.Right)
+            Range1ui(x.Left.Key, x.Right.Key - 1u)
+
+        member x.Dispose() =
+            x.Inner.Dispose()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
+
+        interface IEnumerator with
+            member x.MoveNext() = x.MoveNext()
+            member x.Current = x.Current :> obj
+            member x.Reset() = x.Reset()
+
+        interface IEnumerator<Range1ui> with
+            member x.Dispose() = x.Dispose()
+            member x.Current = x.Current
+    end
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-module RangeSet64 =
-    let private mm =
-        {
-            quantify = fun (r : HalfRange64) -> r
-            mempty = HalfRange64(false, Int64.MinValue)
-            mappend = fun l r -> if l.CompareTo r > 0 then l else r
-        }
+module RangeSet1ui =
 
-    let private minRange = HalfRange64(false, Int64.MinValue)
+    /// Empty range set.
+    let empty = RangeSet1ui.Empty
 
-    let inline private leq v = HalfRange64(true, v)
-    let inline private geq v = HalfRange64(false, v)
+    /// Returns the minimum value in the range set or UInt32.MaxValue if the range is empty.
+    let inline min (set : RangeSet1ui) = set.Min
 
-    let inline private (|Leq|Geq|) (r : HalfRange64) =
-        if r.IsMax then Leq r.Value
-        else Geq r.Value
+    /// Returns the maximum value in the range set or UInt32.MinValue if the range is empty.
+    let inline max (set : RangeSet1ui) = set.Max
 
-    let empty = { root = Empty }
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    let inline range (set : RangeSet1ui) = set.Range
 
-    let insert (range : Range1l) (t : RangeSet64) =
-        let rangeMax = range.Max + 1L
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1ui>) = RangeSet1ui.OfSeq ranges
 
-        let (l,rest) = t.root |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo range.Min >= 0) minRange
-        let (_,r) = rest |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo rangeMax > 0) minRange
+    /// Builds a range set of the given list of ranges.
+    let inline ofList (ranges : Range1ui list) = RangeSet1ui.OfSeq ranges
 
-        let max = leq rangeMax
-        let min = geq range.Min
+    /// Builds a range set of the given array of ranges.
+    let inline ofArray (ranges : Range1ui[]) = RangeSet1ui.OfSeq ranges
 
-        match FingerTreeNode.lastOpt l, FingerTreeNode.firstOpt r with
-        | None, None -> 
-            { root = Deep(max, One(min), Empty, One(max)) }
+    /// Adds the given range to the set.
+    let inline add (range : Range1ui) (set : RangeSet1ui) = set.Add range
 
-        | Some lmax, None ->
-            match lmax with
-            | Leq _ -> { root = l |> FingerTreeNode.append mm min |> FingerTreeNode.append mm max }
-            | Geq _ -> { root = l |> FingerTreeNode.append mm max }
+    [<Obsolete("Use RangeSet1ui.add instead.")>]
+    let inline insert (range : Range1ui) (set : RangeSet1ui) = set.Add range
 
-        | None, Some rmin ->
-            match rmin with
-            | Leq _ -> { root = r |> FingerTreeNode.prepend mm min }
-            | Geq _ -> { root = r |> FingerTreeNode.prepend mm max |> FingerTreeNode.prepend mm min }
+    /// Removes the given range from the set.
+    let inline remove (range : Range1ui) (set : RangeSet1ui) = set.Remove range
 
-        | Some lmax, Some rmin ->
-            match lmax, rmin with
-            | Leq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min;max] r }
+    /// Returns the intersection of the set with the given range.
+    let inline intersect (range : Range1ui) (set : RangeSet1ui) = set.Intersect range
 
-            | Geq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [] r }
+    [<Obsolete("Use RangeSet1ui.intersect instead.")>]
+    let inline window (range : Range1ui) (set : RangeSet1ui) = intersect range set
 
-            | Leq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min] r }
+    /// Returns whether the given value is contained in the range set.
+    let inline contains (value : uint32) (set : RangeSet1ui) = set.Contains value
 
-            | Geq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [max] r }
+    /// Returns the number of disjoint ranges in the set.
+    let inline count (set : RangeSet1ui) = set.Count
 
-    let remove (range : Range1l) (t : RangeSet64) =
-        let rangeMax = range.Max + 1L
+    /// Returns whether the set is empty.
+    let inline isEmpty (set : RangeSet1ui) = set.IsEmpty
 
-        let (l,rest) = t.root |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo range.Min >= 0) minRange
-        let (_,r) = rest |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo rangeMax > 0) minRange
+    /// Views the range set as a sequence.
+    let inline toSeq (set : RangeSet1ui) = set :> seq<_>
 
-        let max = geq rangeMax
-        let min = leq range.Min
+    /// Builds a list from the range set.
+    let inline toList (set : RangeSet1ui) = set.ToList()
 
-        match FingerTreeNode.lastOpt l, FingerTreeNode.firstOpt r with
-        | None, None -> 
-            { root = Empty }
+    /// Builds an array from the range set.
+    let inline toArray (set : RangeSet1ui) = set.ToArray()
 
-        | Some lmax, None ->
-            match lmax with
-            | Leq _ -> { root = l }
-            | Geq _ -> { root = l |> FingerTreeNode.append mm min }
 
-        | None, Some rmin ->
-            match rmin with
-            | Leq _ -> { root = r |> FingerTreeNode.prepend mm max }
-            | Geq _ -> { root = r }
+/// Set of ranges where overlapping and neighboring ranges are coalesced.
+/// Note that ranges describe closed intervals.
+[<StructuredFormatDisplay("{AsString}")>]
+type RangeSet1l internal (store : MapExt<int64, HalfRangeKind>) =
+    static let empty = RangeSet1l(MapExt.empty)
 
-        | Some lmax, Some rmin ->
-            match lmax, rmin with
-            | Leq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [] r }
+    /// Empty range set.
+    static member Empty = empty
 
-            | Geq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min; max] r }
+    /// Builds a range set of the given sequence of ranges.
+    static member OfSeq(ranges : Range1l seq) =
+        let arr = ranges |> Seq.toArray
+        if arr.Length = 0 then
+            empty
+        elif arr.Length = 1 then
+            let r = arr.[0]
+            RangeSet1l(MapExt.ofListV [
+                struct (r.Min, HalfRangeKind.Left)
+                if r.Max < Int64.MaxValue then struct (r.Max + 1L, HalfRangeKind.Right)
+            ])
+        else
+            // TODO: better impl possible (sort array and traverse)
+            arr |> Array.fold (fun s r -> s.Add r) empty
 
-            | Leq _, Leq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [max] r }
+    member inline private x.Store = store
 
-            | Geq _, Geq _ ->
-                { root = FingerTreeNode.concatWithMiddle mm l [min] r }
+    // We cannot directly describe a range that ends at Int64.MaxValue since the right half-range is inserted
+    // at max + 1. In that case the right-half range will be missing and the total count is odd.
+    member inline private x.HasMaxValue = store.Count % 2 = 1
 
-    let ofSeq (s : seq<Range1l>) =
-        let mutable res = empty
-        for e in s do res <- insert e res
-        res
+    /// Returns the minimum value in the range set or Int64.MaxValue if the range is empty.
+    member x.Min =
+        match store.TryMinKeyV with
+        | ValueSome min -> min
+        | _ -> Int64.MaxValue
 
-    let inline ofList (l : list<Range1l>) = ofSeq l
-    let inline ofArray (l : Range1l[]) = ofSeq l
+    /// Returns the maximum value in the range set or Int64.MinValue if the range is empty.
+    member x.Max =
+        if x.HasMaxValue then Int64.MaxValue
+        else
+            match store.TryMaxKeyV with
+            | ValueSome max -> max - 1L
+            | _ -> Int64.MinValue
 
-    let toSeq (r : RangeSet64) = r :> seq<_>
-    let toList (r : RangeSet64) = r |> Seq.toList
-    let toArray (r : RangeSet64) = r |> Seq.toArray
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    member inline x.Range =
+        Range1l(x.Min, x.Max)
 
-    let inline min (t : RangeSet64) = t.Min
-    let inline max (t : RangeSet64) = t.Max
-    let inline range (t : RangeSet64) = t.Range
+    /// Adds the given range to the set.
+    member x.Add(r : Range1l) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
 
-    let window (window : Range1l) (set : RangeSet64) =
-        let rangeMax = window.Max + 1L
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
 
-        let (l,rest) = set.root |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo window.Min > 0) minRange
-        let (inner,r) = rest |> FingerTreeNode.splitFirstRight mm (fun v -> v.Value.CompareTo rangeMax >= 0) minRange
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
 
-        let inner =
-            match FingerTreeNode.lastOpt l with
-            | Some (Geq _) -> FingerTreeNode.prepend mm (geq window.Min) inner
-            | _ -> inner
+            // If the set contained Int64.MaxValue or we have overflown, we must not add an explicit right half-range.
+            // Int64.MaxValue is stored implicitly.
+            let fixRightBoundary =
+                if x.HasMaxValue || overflow then
+                    id
+                else
+                    MapExt.add max HalfRangeKind.Right
 
-        let inner =
-            match FingerTreeNode.firstOpt r with
-            | Some (Leq _) -> FingerTreeNode.append mm (leq rangeMax) inner
-            | _ -> inner
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.ofListV [
+                        struct (min, HalfRangeKind.Left)
+                    ]
+                    |> fixRightBoundary
 
-        { root = inner }
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> MapExt.add max HalfRangeKind.Right
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left); struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    MapExt.union lm rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1l(newStore)
+
+    /// Removes the given range from the set.
+    member x.Remove(r : Range1l) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
+
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
+
+            // If the set contained Int64.MaxValue and we have not overflown, there is still a range [max, Int64.MaxValue]
+            let fixRightBoundary =
+                if x.HasMaxValue && not overflow then
+                    MapExt.add max HalfRangeKind.Left
+                else
+                    id
+
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.empty
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Right
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add max HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    MapExt.union lm rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right); struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1l(newStore)
+
+    /// Returns the intersection of the set with the given range.
+    member x.Intersect(r : Range1l) =
+        if r.Max < r.Min then
+            empty
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let inner =
+                store
+                |> MapExt.splitAt min |> sndv
+                |> if not overflow then MapExt.splitAt max >> fstv else id
+
+            let newStore =
+                inner
+                |> if x.Contains r.Min then MapExt.add min HalfRangeKind.Left else id
+                |> if x.Contains r.Max && not overflow then MapExt.add max HalfRangeKind.Right else id
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1l(newStore)
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : int64) =
+        let struct (l, s, _) = MapExt.neighboursV v store
+        match s with
+        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | _ ->
+            match l with
+            | ValueSome (_, HalfRangeKind.Left) -> true
+            | _ -> false
+
+    /// Returns the number of disjoint ranges in the set.
+    member x.Count =
+        (store.Count + 1) / 2
+
+    /// Returns whether the set is empty.
+    member inline x.IsEmpty =
+        x.Count = 0
+
+    /// Builds an array from the range set.
+    member x.ToArray() =
+        let arr = Array.zeroCreate x.Count
+
+        let rec write (i : int) (l : struct (int64 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                arr.[i] <- Range1l(l, r - 1L)
+                write (i + 1) rest
+
+            | [struct (l, HalfRangeKind.Left)] when i = x.Count - 1 ->
+                arr.[i] <- Range1l(l, Int64.MaxValue)
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> ()
+
+        store |> MapExt.toListV |> write 0
+        arr
+
+    /// Builds a list from the range set.
+    member x.ToList() =
+        let rec build (accum : Range1l list) (l : struct (int64 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                build (Range1l(l, r - 1L) :: accum) rest
+
+            | [struct (l, HalfRangeKind.Left)] ->
+                build (Range1l(l, Int64.MaxValue) :: accum) []
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> List.rev accum
+
+        store |> MapExt.toListV |> build []
+
+    /// Views the range set as a sequence.
+    member x.ToSeq() =
+        x :> seq<_>
+
+    member inline private x.Equals(other : RangeSet1l) =
+        store = other.Store
+
+    override x.Equals(other : obj) =
+        match other with
+        | :? RangeSet1l as o -> x.Equals o
+        | _ -> false
+
+    override x.GetHashCode() =
+        store.GetHashCode()
+
+    member private x.AsString = x.ToString()
+
+    override x.ToString() =
+        let content =
+            x |> Seq.map (fun r ->
+                $"[{r.Min}, {r.Max}]"
+            )
+            |> String.concat "; "
+
+        $"ranges [{content}]"
+
+    member x.GetEnumerator() =
+        new RangeSetEnumerator1l((store :> seq<_>).GetEnumerator())
+
+    interface IEquatable<RangeSet1l> with
+        member x.Equals(other) = x.Equals(other)
+
+    interface IEnumerable with
+        member x.GetEnumerator() = new RangeSetEnumerator1l((store :> seq<_>).GetEnumerator()) :> _
+
+    interface IEnumerable<Range1l> with
+        member x.GetEnumerator() = new RangeSetEnumerator1l((store :> seq<_>).GetEnumerator()) :> _
+
+// TODO: MapExt should use a struct enumerator and return it directly.
+// That way we could get rid of allocations.
+and RangeSetEnumerator1l =
+    struct
+        val private Inner : IEnumerator<KeyValuePair<int64, HalfRangeKind>>
+        val mutable private Left : KeyValuePair<int64, HalfRangeKind>
+        val mutable private Right : KeyValuePair<int64, HalfRangeKind>
+
+        internal new (inner : IEnumerator<KeyValuePair<int64, HalfRangeKind>>) =
+            { Inner = inner
+              Left = Unchecked.defaultof<_>
+              Right = Unchecked.defaultof<_> }
+
+        member x.MoveNext() =
+            if x.Inner.MoveNext() then
+                x.Left <- x.Inner.Current
+                if x.Inner.MoveNext() then
+                    x.Right <- x.Inner.Current
+                    true
+                else
+                    if x.Left.Value = HalfRangeKind.Left then
+                        x.Right <- KeyValuePair(Int64.MinValue, HalfRangeKind.Right) // MaxValue + 1
+                        true
+                    else
+                        failwithf "bad RangeSet"
+            else
+                false
+
+        member x.Reset() =
+            x.Inner.Reset()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
+
+        member x.Current =
+            assert (x.Left.Value = HalfRangeKind.Left && x.Right.Value = HalfRangeKind.Right)
+            Range1l(x.Left.Key, x.Right.Key - 1L)
+
+        member x.Dispose() =
+            x.Inner.Dispose()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
+
+        interface IEnumerator with
+            member x.MoveNext() = x.MoveNext()
+            member x.Current = x.Current :> obj
+            member x.Reset() = x.Reset()
+
+        interface IEnumerator<Range1l> with
+            member x.Dispose() = x.Dispose()
+            member x.Current = x.Current
+    end
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module RangeSet1l =
+
+    /// Empty range set.
+    let empty = RangeSet1l.Empty
+
+    /// Returns the minimum value in the range set or Int64.MaxValue if the range is empty.
+    let inline min (set : RangeSet1l) = set.Min
+
+    /// Returns the maximum value in the range set or Int64.MinValue if the range is empty.
+    let inline max (set : RangeSet1l) = set.Max
+
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    let inline range (set : RangeSet1l) = set.Range
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1l>) = RangeSet1l.OfSeq ranges
+
+    /// Builds a range set of the given list of ranges.
+    let inline ofList (ranges : Range1l list) = RangeSet1l.OfSeq ranges
+
+    /// Builds a range set of the given array of ranges.
+    let inline ofArray (ranges : Range1l[]) = RangeSet1l.OfSeq ranges
+
+    /// Adds the given range to the set.
+    let inline add (range : Range1l) (set : RangeSet1l) = set.Add range
+
+    [<Obsolete("Use RangeSet1l.add instead.")>]
+    let inline insert (range : Range1l) (set : RangeSet1l) = set.Add range
+
+    /// Removes the given range from the set.
+    let inline remove (range : Range1l) (set : RangeSet1l) = set.Remove range
+
+    /// Returns the intersection of the set with the given range.
+    let inline intersect (range : Range1l) (set : RangeSet1l) = set.Intersect range
+
+    [<Obsolete("Use RangeSet1l.intersect instead.")>]
+    let inline window (range : Range1l) (set : RangeSet1l) = intersect range set
+
+    /// Returns whether the given value is contained in the range set.
+    let inline contains (value : int64) (set : RangeSet1l) = set.Contains value
+
+    /// Returns the number of disjoint ranges in the set.
+    let inline count (set : RangeSet1l) = set.Count
+
+    /// Returns whether the set is empty.
+    let inline isEmpty (set : RangeSet1l) = set.IsEmpty
+
+    /// Views the range set as a sequence.
+    let inline toSeq (set : RangeSet1l) = set :> seq<_>
+
+    /// Builds a list from the range set.
+    let inline toList (set : RangeSet1l) = set.ToList()
+
+    /// Builds an array from the range set.
+    let inline toArray (set : RangeSet1l) = set.ToArray()
+
+
+/// Set of ranges where overlapping and neighboring ranges are coalesced.
+/// Note that ranges describe closed intervals.
+[<StructuredFormatDisplay("{AsString}")>]
+type RangeSet1ul internal (store : MapExt<uint64, HalfRangeKind>) =
+    static let empty = RangeSet1ul(MapExt.empty)
+
+    /// Empty range set.
+    static member Empty = empty
+
+    /// Builds a range set of the given sequence of ranges.
+    static member OfSeq(ranges : Range1ul seq) =
+        let arr = ranges |> Seq.toArray
+        if arr.Length = 0 then
+            empty
+        elif arr.Length = 1 then
+            let r = arr.[0]
+            RangeSet1ul(MapExt.ofListV [
+                struct (r.Min, HalfRangeKind.Left)
+                if r.Max < UInt64.MaxValue then struct (r.Max + 1UL, HalfRangeKind.Right)
+            ])
+        else
+            // TODO: better impl possible (sort array and traverse)
+            arr |> Array.fold (fun s r -> s.Add r) empty
+
+    member inline private x.Store = store
+
+    // We cannot directly describe a range that ends at UInt64.MaxValue since the right half-range is inserted
+    // at max + 1. In that case the right-half range will be missing and the total count is odd.
+    member inline private x.HasMaxValue = store.Count % 2 = 1
+
+    /// Returns the minimum value in the range set or UInt64.MaxValue if the range is empty.
+    member x.Min =
+        match store.TryMinKeyV with
+        | ValueSome min -> min
+        | _ -> UInt64.MaxValue
+
+    /// Returns the maximum value in the range set or UInt64.MinValue if the range is empty.
+    member x.Max =
+        if x.HasMaxValue then UInt64.MaxValue
+        else
+            match store.TryMaxKeyV with
+            | ValueSome max -> max - 1UL
+            | _ -> UInt64.MinValue
+
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    member inline x.Range =
+        Range1ul(x.Min, x.Max)
+
+    /// Adds the given range to the set.
+    member x.Add(r : Range1ul) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
+
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
+
+            // If the set contained UInt64.MaxValue or we have overflown, we must not add an explicit right half-range.
+            // UInt64.MaxValue is stored implicitly.
+            let fixRightBoundary =
+                if x.HasMaxValue || overflow then
+                    id
+                else
+                    MapExt.add max HalfRangeKind.Right
+
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.ofListV [
+                        struct (min, HalfRangeKind.Left)
+                    ]
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+                    |> MapExt.add max HalfRangeKind.Right
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add min HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left); struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    MapExt.union lm rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1ul(newStore)
+
+    /// Removes the given range from the set.
+    member x.Remove(r : Range1ul) =
+        if r.Max < r.Min then
+            x
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let struct (lm, inner) = MapExt.splitAt min store
+            let rm =
+                if overflow then MapExt.empty
+                else sndv <| MapExt.splitAt max inner
+
+            let before = MapExt.tryMaxValue lm
+            let after = MapExt.tryMinValue rm
+
+            // If the set contained UInt64.MaxValue and we have not overflown, there is still a range [max, UInt64.MaxValue]
+            let fixRightBoundary =
+                if x.HasMaxValue && not overflow then
+                    MapExt.add max HalfRangeKind.Left
+                else
+                    id
+
+            let newStore =
+                match before, after with
+                | ValueNone, ValueNone ->
+                    MapExt.empty
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Right, ValueNone ->
+                    lm
+                    |> fixRightBoundary
+
+                | ValueSome HalfRangeKind.Left, ValueNone ->
+                    lm
+                    |> MapExt.add min HalfRangeKind.Right
+                    |> fixRightBoundary
+
+                | ValueNone, ValueSome HalfRangeKind.Left ->
+                    rm
+
+                | ValueNone, ValueSome HalfRangeKind.Right ->
+                    rm
+                    |> MapExt.add max HalfRangeKind.Left
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Left ->
+                    MapExt.union lm rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Left ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Right, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | ValueSome HalfRangeKind.Left, ValueSome HalfRangeKind.Right ->
+                    let self = MapExt.ofListV [ struct (min, HalfRangeKind.Right); struct (max, HalfRangeKind.Left) ]
+                    MapExt.union (MapExt.union lm self) rm
+
+                | _ ->
+                    failwithf "impossible"
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1ul(newStore)
+
+    /// Returns the intersection of the set with the given range.
+    member x.Intersect(r : Range1ul) =
+        if r.Max < r.Min then
+            empty
+        else
+            let min = r.Min
+            let struct (max, overflow) = inc r.Max
+
+            let inner =
+                store
+                |> MapExt.splitAt min |> sndv
+                |> if not overflow then MapExt.splitAt max >> fstv else id
+
+            let newStore =
+                inner
+                |> if x.Contains r.Min then MapExt.add min HalfRangeKind.Left else id
+                |> if x.Contains r.Max && not overflow then MapExt.add max HalfRangeKind.Right else id
+
+            assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
+            RangeSet1ul(newStore)
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : uint64) =
+        let struct (l, s, _) = MapExt.neighboursV v store
+        match s with
+        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | _ ->
+            match l with
+            | ValueSome (_, HalfRangeKind.Left) -> true
+            | _ -> false
+
+    /// Returns the number of disjoint ranges in the set.
+    member x.Count =
+        (store.Count + 1) / 2
+
+    /// Returns whether the set is empty.
+    member inline x.IsEmpty =
+        x.Count = 0
+
+    /// Builds an array from the range set.
+    member x.ToArray() =
+        let arr = Array.zeroCreate x.Count
+
+        let rec write (i : int) (l : struct (uint64 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                arr.[i] <- Range1ul(l, r - 1UL)
+                write (i + 1) rest
+
+            | [struct (l, HalfRangeKind.Left)] when i = x.Count - 1 ->
+                arr.[i] <- Range1ul(l, UInt64.MaxValue)
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> ()
+
+        store |> MapExt.toListV |> write 0
+        arr
+
+    /// Builds a list from the range set.
+    member x.ToList() =
+        let rec build (accum : Range1ul list) (l : struct (uint64 * HalfRangeKind) list) =
+            match l with
+            | struct (l, _) :: struct (r, _) :: rest ->
+                build (Range1ul(l, r - 1UL) :: accum) rest
+
+            | [struct (l, HalfRangeKind.Left)] ->
+                build (Range1ul(l, UInt64.MaxValue) :: accum) []
+
+            | [_] -> failwith "bad RangeSet"
+
+            | [] -> List.rev accum
+
+        store |> MapExt.toListV |> build []
+
+    /// Views the range set as a sequence.
+    member x.ToSeq() =
+        x :> seq<_>
+
+    member inline private x.Equals(other : RangeSet1ul) =
+        store = other.Store
+
+    override x.Equals(other : obj) =
+        match other with
+        | :? RangeSet1ul as o -> x.Equals o
+        | _ -> false
+
+    override x.GetHashCode() =
+        store.GetHashCode()
+
+    member private x.AsString = x.ToString()
+
+    override x.ToString() =
+        let content =
+            x |> Seq.map (fun r ->
+                $"[{r.Min}, {r.Max}]"
+            )
+            |> String.concat "; "
+
+        $"ranges [{content}]"
+
+    member x.GetEnumerator() =
+        new RangeSetEnumerator1ul((store :> seq<_>).GetEnumerator())
+
+    interface IEquatable<RangeSet1ul> with
+        member x.Equals(other) = x.Equals(other)
+
+    interface IEnumerable with
+        member x.GetEnumerator() = new RangeSetEnumerator1ul((store :> seq<_>).GetEnumerator()) :> _
+
+    interface IEnumerable<Range1ul> with
+        member x.GetEnumerator() = new RangeSetEnumerator1ul((store :> seq<_>).GetEnumerator()) :> _
+
+// TODO: MapExt should use a struct enumerator and return it directly.
+// That way we could get rid of allocations.
+and RangeSetEnumerator1ul =
+    struct
+        val private Inner : IEnumerator<KeyValuePair<uint64, HalfRangeKind>>
+        val mutable private Left : KeyValuePair<uint64, HalfRangeKind>
+        val mutable private Right : KeyValuePair<uint64, HalfRangeKind>
+
+        internal new (inner : IEnumerator<KeyValuePair<uint64, HalfRangeKind>>) =
+            { Inner = inner
+              Left = Unchecked.defaultof<_>
+              Right = Unchecked.defaultof<_> }
+
+        member x.MoveNext() =
+            if x.Inner.MoveNext() then
+                x.Left <- x.Inner.Current
+                if x.Inner.MoveNext() then
+                    x.Right <- x.Inner.Current
+                    true
+                else
+                    if x.Left.Value = HalfRangeKind.Left then
+                        x.Right <- KeyValuePair(UInt64.MinValue, HalfRangeKind.Right) // MaxValue + 1
+                        true
+                    else
+                        failwithf "bad RangeSet"
+            else
+                false
+
+        member x.Reset() =
+            x.Inner.Reset()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
+
+        member x.Current =
+            assert (x.Left.Value = HalfRangeKind.Left && x.Right.Value = HalfRangeKind.Right)
+            Range1ul(x.Left.Key, x.Right.Key - 1UL)
+
+        member x.Dispose() =
+            x.Inner.Dispose()
+            x.Left <- Unchecked.defaultof<_>
+            x.Right <- Unchecked.defaultof<_>
+
+        interface IEnumerator with
+            member x.MoveNext() = x.MoveNext()
+            member x.Current = x.Current :> obj
+            member x.Reset() = x.Reset()
+
+        interface IEnumerator<Range1ul> with
+            member x.Dispose() = x.Dispose()
+            member x.Current = x.Current
+    end
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module RangeSet1ul =
+
+    /// Empty range set.
+    let empty = RangeSet1ul.Empty
+
+    /// Returns the minimum value in the range set or UInt64.MaxValue if the range is empty.
+    let inline min (set : RangeSet1ul) = set.Min
+
+    /// Returns the maximum value in the range set or UInt64.MinValue if the range is empty.
+    let inline max (set : RangeSet1ul) = set.Max
+
+    /// Returns the total range spanned by the range set, i.e. [min, max].
+    let inline range (set : RangeSet1ul) = set.Range
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1ul>) = RangeSet1ul.OfSeq ranges
+
+    /// Builds a range set of the given list of ranges.
+    let inline ofList (ranges : Range1ul list) = RangeSet1ul.OfSeq ranges
+
+    /// Builds a range set of the given array of ranges.
+    let inline ofArray (ranges : Range1ul[]) = RangeSet1ul.OfSeq ranges
+
+    /// Adds the given range to the set.
+    let inline add (range : Range1ul) (set : RangeSet1ul) = set.Add range
+
+    [<Obsolete("Use RangeSet1ul.add instead.")>]
+    let inline insert (range : Range1ul) (set : RangeSet1ul) = set.Add range
+
+    /// Removes the given range from the set.
+    let inline remove (range : Range1ul) (set : RangeSet1ul) = set.Remove range
+
+    /// Returns the intersection of the set with the given range.
+    let inline intersect (range : Range1ul) (set : RangeSet1ul) = set.Intersect range
+
+    [<Obsolete("Use RangeSet1ul.intersect instead.")>]
+    let inline window (range : Range1ul) (set : RangeSet1ul) = intersect range set
+
+    /// Returns whether the given value is contained in the range set.
+    let inline contains (value : uint64) (set : RangeSet1ul) = set.Contains value
+
+    /// Returns the number of disjoint ranges in the set.
+    let inline count (set : RangeSet1ul) = set.Count
+
+    /// Returns whether the set is empty.
+    let inline isEmpty (set : RangeSet1ul) = set.IsEmpty
+
+    /// Views the range set as a sequence.
+    let inline toSeq (set : RangeSet1ul) = set :> seq<_>
+
+    /// Builds a list from the range set.
+    let inline toList (set : RangeSet1ul) = set.ToList()
+
+    /// Builds an array from the range set.
+    let inline toArray (set : RangeSet1ul) = set.ToArray()
+
 

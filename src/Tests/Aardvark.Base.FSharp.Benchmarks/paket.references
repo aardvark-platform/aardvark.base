@@ -3,5 +3,6 @@ group Test
 FSharp.Core
 BenchmarkDotNet
 NUnit
+FsUnit
 NUnit3TestAdapter
 Microsoft.NET.Test.Sdk

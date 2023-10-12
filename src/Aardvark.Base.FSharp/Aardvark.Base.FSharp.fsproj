@@ -43,6 +43,8 @@
     <Compile Include="Datastructures\Mutable\ReferenceCountingSet.fs" />
     <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
+    <None Include="Datastructures\Immutable\RangeSetOld_template.fs" />
+    <Compile Include="Datastructures\Immutable\RangeSetOld_auto.fs" />
     <None Include="Datastructures\Immutable\RangeSet_template.fs" />
     <Compile Include="Datastructures\Immutable\RangeSet_auto.fs" />
     <Compile Include="Datastructures\Immutable\Graph.fs" />
