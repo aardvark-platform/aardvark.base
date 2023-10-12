@@ -1,3 +1,6 @@
+### 5.2.26
+* LinearRegression3d: made fields public
+
 ### 5.2.25
 * Fixed issue with PixImageMipMap loading
 * Improved exception message of EnumHelpers methods
