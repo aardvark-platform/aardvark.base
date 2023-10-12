@@ -166,6 +166,11 @@ module Prelude =
             match option with
              | Some value ->  value
              | None -> fallback
+
+    [<AutoOpen>]
+    module ValueOptionOperators =
+        let inline fstv (struct (x, _)) = x
+        let inline sndv (struct (_, y)) = y
     
     type Async with
         static member AwaitTask(t : System.Threading.Tasks.Task) =
