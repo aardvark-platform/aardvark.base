@@ -185,6 +185,26 @@ module RangeSetTests =
         (a1 = b1) |> should be True
         (a2 = b2) |> should be True
 
+    [<Test>]
+    let ``[RangeSet] ofList`` () =
+        let rnd = RandomSystem(0)
+
+        let ranges =
+            List.init 5 (fun _ ->
+                let mutable l = Int64.MaxValue
+                let mutable r = Int64.MinValue
+
+                while l > r do
+                    l <- rnd.UniformLong()
+                    r <- l + rnd.UniformLong(100000L)
+
+                Range1l(l, r)
+            )
+
+        let expected = (RangeSet1l.empty, ranges) ||> List.fold (fun s r -> RangeSet1l.add r s)
+        let actual = RangeSet1l.ofList ranges
+        actual |> should equal expected
+
 
 module RangeSetBenchmarks =
     open BenchmarkDotNet.Attributes;
@@ -220,6 +240,15 @@ module RangeSetBenchmarks =
             ranges2 <- x.Generate x.Count
             setOld <- RangeSet64.ofList ranges
             setNew <- RangeSet1l.ofList ranges
+
+
+        [<Benchmark(Description = "OfList (Old)")>]
+        member x.OfListOld() =
+            RangeSet64.ofList ranges
+
+        [<Benchmark(Description = "OfList (New)")>]
+        member x.OfListNew() =
+            RangeSet1l.ofList ranges
 
 
         [<Benchmark(Description = "Insert (Old)")>]

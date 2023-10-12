@@ -41,21 +41,6 @@ type RangeSet1i internal (store : MapExt<int32, HalfRangeKind>) =
     /// Empty range set.
     static member Empty = empty
 
-    /// Builds a range set of the given sequence of ranges.
-    static member OfSeq(ranges : Range1i seq) =
-        let arr = ranges |> Seq.toArray
-        if arr.Length = 0 then
-            empty
-        elif arr.Length = 1 then
-            let r = arr.[0]
-            RangeSet1i(MapExt.ofListV [
-                struct (r.Min, HalfRangeKind.Left)
-                if r.Max < Int32.MaxValue then struct (r.Max + 1, HalfRangeKind.Right)
-            ])
-        else
-            // TODO: better impl possible (sort array and traverse)
-            arr |> Array.fold (fun s r -> s.Add r) empty
-
     member inline private x.Store = store
 
     // We cannot directly describe a range that ends at Int32.MaxValue since the right half-range is inserted
@@ -397,14 +382,49 @@ module RangeSet1i =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1i) = set.Range
 
-    /// Builds a range set of the given sequence of ranges.
-    let inline ofSeq (ranges : seq<Range1i>) = RangeSet1i.OfSeq ranges
+    let inline private getHalfRanges (r : Range1i) =
+        [ struct (r.Min, HalfRangeKind.Left)
+          if r.Max < Int32.MaxValue then struct (r.Max + 1, HalfRangeKind.Right) ]
+
+    let inline private ofRange (r : Range1i) =
+        RangeSet1i(MapExt.ofListV <| getHalfRanges r)
+
+    let private ofRanges (ranges : seq<Range1i>) =
+        let halves =
+            ranges
+            |> Seq.toList
+            |> List.collect getHalfRanges
+            |> List.sortBy fstv
+
+        let mutable level = 0
+        let result = ResizeArray()
+
+        for (struct (i, k) as h) in halves do
+            if k = HalfRangeKind.Left then
+                if level = 0 then result.Add h
+                level <- level + 1
+            else
+                level <- level - 1
+                if level = 0 then result.Add h
+
+        RangeSet1i(MapExt.ofSeqV result)
 
     /// Builds a range set of the given list of ranges.
-    let inline ofList (ranges : Range1i list) = RangeSet1i.OfSeq ranges
+    let ofList (ranges : Range1i list) =
+        match ranges with
+        | [] -> empty
+        | [r] -> ofRange r
+        | _ -> ofRanges ranges
 
     /// Builds a range set of the given array of ranges.
-    let inline ofArray (ranges : Range1i[]) = RangeSet1i.OfSeq ranges
+    let ofArray (ranges : Range1i[]) =
+        if ranges.Length = 0 then empty
+        elif ranges.Length = 1 then ofRange ranges.[0]
+        else ofRanges ranges
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1i>) =
+        ofList <| Seq.toList ranges
 
     /// Adds the given range to the set.
     let inline add (range : Range1i) (set : RangeSet1i) = set.Add range
@@ -448,21 +468,6 @@ type RangeSet1ui internal (store : MapExt<uint32, HalfRangeKind>) =
 
     /// Empty range set.
     static member Empty = empty
-
-    /// Builds a range set of the given sequence of ranges.
-    static member OfSeq(ranges : Range1ui seq) =
-        let arr = ranges |> Seq.toArray
-        if arr.Length = 0 then
-            empty
-        elif arr.Length = 1 then
-            let r = arr.[0]
-            RangeSet1ui(MapExt.ofListV [
-                struct (r.Min, HalfRangeKind.Left)
-                if r.Max < UInt32.MaxValue then struct (r.Max + 1u, HalfRangeKind.Right)
-            ])
-        else
-            // TODO: better impl possible (sort array and traverse)
-            arr |> Array.fold (fun s r -> s.Add r) empty
 
     member inline private x.Store = store
 
@@ -805,14 +810,49 @@ module RangeSet1ui =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1ui) = set.Range
 
-    /// Builds a range set of the given sequence of ranges.
-    let inline ofSeq (ranges : seq<Range1ui>) = RangeSet1ui.OfSeq ranges
+    let inline private getHalfRanges (r : Range1ui) =
+        [ struct (r.Min, HalfRangeKind.Left)
+          if r.Max < UInt32.MaxValue then struct (r.Max + 1u, HalfRangeKind.Right) ]
+
+    let inline private ofRange (r : Range1ui) =
+        RangeSet1ui(MapExt.ofListV <| getHalfRanges r)
+
+    let private ofRanges (ranges : seq<Range1ui>) =
+        let halves =
+            ranges
+            |> Seq.toList
+            |> List.collect getHalfRanges
+            |> List.sortBy fstv
+
+        let mutable level = 0
+        let result = ResizeArray()
+
+        for (struct (i, k) as h) in halves do
+            if k = HalfRangeKind.Left then
+                if level = 0 then result.Add h
+                level <- level + 1
+            else
+                level <- level - 1
+                if level = 0 then result.Add h
+
+        RangeSet1ui(MapExt.ofSeqV result)
 
     /// Builds a range set of the given list of ranges.
-    let inline ofList (ranges : Range1ui list) = RangeSet1ui.OfSeq ranges
+    let ofList (ranges : Range1ui list) =
+        match ranges with
+        | [] -> empty
+        | [r] -> ofRange r
+        | _ -> ofRanges ranges
 
     /// Builds a range set of the given array of ranges.
-    let inline ofArray (ranges : Range1ui[]) = RangeSet1ui.OfSeq ranges
+    let ofArray (ranges : Range1ui[]) =
+        if ranges.Length = 0 then empty
+        elif ranges.Length = 1 then ofRange ranges.[0]
+        else ofRanges ranges
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1ui>) =
+        ofList <| Seq.toList ranges
 
     /// Adds the given range to the set.
     let inline add (range : Range1ui) (set : RangeSet1ui) = set.Add range
@@ -856,21 +896,6 @@ type RangeSet1l internal (store : MapExt<int64, HalfRangeKind>) =
 
     /// Empty range set.
     static member Empty = empty
-
-    /// Builds a range set of the given sequence of ranges.
-    static member OfSeq(ranges : Range1l seq) =
-        let arr = ranges |> Seq.toArray
-        if arr.Length = 0 then
-            empty
-        elif arr.Length = 1 then
-            let r = arr.[0]
-            RangeSet1l(MapExt.ofListV [
-                struct (r.Min, HalfRangeKind.Left)
-                if r.Max < Int64.MaxValue then struct (r.Max + 1L, HalfRangeKind.Right)
-            ])
-        else
-            // TODO: better impl possible (sort array and traverse)
-            arr |> Array.fold (fun s r -> s.Add r) empty
 
     member inline private x.Store = store
 
@@ -1213,14 +1238,49 @@ module RangeSet1l =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1l) = set.Range
 
-    /// Builds a range set of the given sequence of ranges.
-    let inline ofSeq (ranges : seq<Range1l>) = RangeSet1l.OfSeq ranges
+    let inline private getHalfRanges (r : Range1l) =
+        [ struct (r.Min, HalfRangeKind.Left)
+          if r.Max < Int64.MaxValue then struct (r.Max + 1L, HalfRangeKind.Right) ]
+
+    let inline private ofRange (r : Range1l) =
+        RangeSet1l(MapExt.ofListV <| getHalfRanges r)
+
+    let private ofRanges (ranges : seq<Range1l>) =
+        let halves =
+            ranges
+            |> Seq.toList
+            |> List.collect getHalfRanges
+            |> List.sortBy fstv
+
+        let mutable level = 0
+        let result = ResizeArray()
+
+        for (struct (i, k) as h) in halves do
+            if k = HalfRangeKind.Left then
+                if level = 0 then result.Add h
+                level <- level + 1
+            else
+                level <- level - 1
+                if level = 0 then result.Add h
+
+        RangeSet1l(MapExt.ofSeqV result)
 
     /// Builds a range set of the given list of ranges.
-    let inline ofList (ranges : Range1l list) = RangeSet1l.OfSeq ranges
+    let ofList (ranges : Range1l list) =
+        match ranges with
+        | [] -> empty
+        | [r] -> ofRange r
+        | _ -> ofRanges ranges
 
     /// Builds a range set of the given array of ranges.
-    let inline ofArray (ranges : Range1l[]) = RangeSet1l.OfSeq ranges
+    let ofArray (ranges : Range1l[]) =
+        if ranges.Length = 0 then empty
+        elif ranges.Length = 1 then ofRange ranges.[0]
+        else ofRanges ranges
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1l>) =
+        ofList <| Seq.toList ranges
 
     /// Adds the given range to the set.
     let inline add (range : Range1l) (set : RangeSet1l) = set.Add range
@@ -1264,21 +1324,6 @@ type RangeSet1ul internal (store : MapExt<uint64, HalfRangeKind>) =
 
     /// Empty range set.
     static member Empty = empty
-
-    /// Builds a range set of the given sequence of ranges.
-    static member OfSeq(ranges : Range1ul seq) =
-        let arr = ranges |> Seq.toArray
-        if arr.Length = 0 then
-            empty
-        elif arr.Length = 1 then
-            let r = arr.[0]
-            RangeSet1ul(MapExt.ofListV [
-                struct (r.Min, HalfRangeKind.Left)
-                if r.Max < UInt64.MaxValue then struct (r.Max + 1UL, HalfRangeKind.Right)
-            ])
-        else
-            // TODO: better impl possible (sort array and traverse)
-            arr |> Array.fold (fun s r -> s.Add r) empty
 
     member inline private x.Store = store
 
@@ -1621,14 +1666,49 @@ module RangeSet1ul =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1ul) = set.Range
 
-    /// Builds a range set of the given sequence of ranges.
-    let inline ofSeq (ranges : seq<Range1ul>) = RangeSet1ul.OfSeq ranges
+    let inline private getHalfRanges (r : Range1ul) =
+        [ struct (r.Min, HalfRangeKind.Left)
+          if r.Max < UInt64.MaxValue then struct (r.Max + 1UL, HalfRangeKind.Right) ]
+
+    let inline private ofRange (r : Range1ul) =
+        RangeSet1ul(MapExt.ofListV <| getHalfRanges r)
+
+    let private ofRanges (ranges : seq<Range1ul>) =
+        let halves =
+            ranges
+            |> Seq.toList
+            |> List.collect getHalfRanges
+            |> List.sortBy fstv
+
+        let mutable level = 0
+        let result = ResizeArray()
+
+        for (struct (i, k) as h) in halves do
+            if k = HalfRangeKind.Left then
+                if level = 0 then result.Add h
+                level <- level + 1
+            else
+                level <- level - 1
+                if level = 0 then result.Add h
+
+        RangeSet1ul(MapExt.ofSeqV result)
 
     /// Builds a range set of the given list of ranges.
-    let inline ofList (ranges : Range1ul list) = RangeSet1ul.OfSeq ranges
+    let ofList (ranges : Range1ul list) =
+        match ranges with
+        | [] -> empty
+        | [r] -> ofRange r
+        | _ -> ofRanges ranges
 
     /// Builds a range set of the given array of ranges.
-    let inline ofArray (ranges : Range1ul[]) = RangeSet1ul.OfSeq ranges
+    let ofArray (ranges : Range1ul[]) =
+        if ranges.Length = 0 then empty
+        elif ranges.Length = 1 then ofRange ranges.[0]
+        else ofRanges ranges
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<Range1ul>) =
+        ofList <| Seq.toList ranges
 
     /// Adds the given range to the set.
     let inline add (range : Range1ul) (set : RangeSet1ul) = set.Add range

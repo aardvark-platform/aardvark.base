@@ -55,21 +55,6 @@ type __rangeset__ internal (store : MapExt<__ltype__, HalfRangeKind>) =
     /// Empty range set.
     static member Empty = empty
 
-    /// Builds a range set of the given sequence of ranges.
-    static member OfSeq(ranges : __range__ seq) =
-        let arr = ranges |> Seq.toArray
-        if arr.Length = 0 then
-            empty
-        elif arr.Length = 1 then
-            let r = arr.[0]
-            __rangeset__(MapExt.ofListV [
-                struct (r.Min, HalfRangeKind.Left)
-                if r.Max < __maxvalue__ then struct (r.Max + __one__, HalfRangeKind.Right)
-            ])
-        else
-            // TODO: better impl possible (sort array and traverse)
-            arr |> Array.fold (fun s r -> s.Add r) empty
-
     member inline private x.Store = store
 
     // We cannot directly describe a range that ends at __maxvalue__ since the right half-range is inserted
@@ -411,14 +396,49 @@ module __rangeset__ =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : __rangeset__) = set.Range
 
-    /// Builds a range set of the given sequence of ranges.
-    let inline ofSeq (ranges : seq<__range__>) = __rangeset__.OfSeq ranges
+    let inline private getHalfRanges (r : __range__) =
+        [ struct (r.Min, HalfRangeKind.Left)
+          if r.Max < __maxvalue__ then struct (r.Max + __one__, HalfRangeKind.Right) ]
+
+    let inline private ofRange (r : __range__) =
+        __rangeset__(MapExt.ofListV <| getHalfRanges r)
+
+    let private ofRanges (ranges : seq<__range__>) =
+        let halves =
+            ranges
+            |> Seq.toList
+            |> List.collect getHalfRanges
+            |> List.sortBy fstv
+
+        let mutable level = 0
+        let result = ResizeArray()
+
+        for (struct (i, k) as h) in halves do
+            if k = HalfRangeKind.Left then
+                if level = 0 then result.Add h
+                level <- level + 1
+            else
+                level <- level - 1
+                if level = 0 then result.Add h
+
+        __rangeset__(MapExt.ofSeqV result)
 
     /// Builds a range set of the given list of ranges.
-    let inline ofList (ranges : __range__ list) = __rangeset__.OfSeq ranges
+    let ofList (ranges : __range__ list) =
+        match ranges with
+        | [] -> empty
+        | [r] -> ofRange r
+        | _ -> ofRanges ranges
 
     /// Builds a range set of the given array of ranges.
-    let inline ofArray (ranges : __range__[]) = __rangeset__.OfSeq ranges
+    let ofArray (ranges : __range__[]) =
+        if ranges.Length = 0 then empty
+        elif ranges.Length = 1 then ofRange ranges.[0]
+        else ofRanges ranges
+
+    /// Builds a range set of the given sequence of ranges.
+    let inline ofSeq (ranges : seq<__range__>) =
+        ofList <| Seq.toList ranges
 
     /// Adds the given range to the set.
     let inline add (range : __range__) (set : __rangeset__) = set.Add range
