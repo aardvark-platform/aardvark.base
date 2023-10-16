@@ -67,6 +67,15 @@ module Prelude =
                 (i + 1), folder i state x
             ) |> snd
 
+        let inline tryPickV chooser (source : seq<'T>) =
+            use e = source.GetEnumerator()
+            let mutable res = ValueNone
+
+            while (ValueOption.isNone res && e.MoveNext()) do
+                res <- chooser e.Current
+
+            res
+
         open System.Collections
         open System.Collections.Generic
 
@@ -153,6 +162,17 @@ module Prelude =
                     ValueNone
 
             search 0 (array.Length - 1)
+
+        let inline tryPickV chooser (array : _[]) =
+            let rec loop i =
+                if i >= array.Length then
+                    ValueNone
+                else
+                    match chooser array.[i] with
+                    | ValueNone -> loop (i + 1)
+                    | res -> res
+
+            loop 0
     
     module Disposable =
 
@@ -161,11 +181,17 @@ module Prelude =
         let inline dispose v = (^a : (member Dispose : unit -> unit) v)
 
     module Option =
-        
         let inline defaultValue (fallback : 'a) (option : Option<'a>) = 
             match option with
              | Some value ->  value
              | None -> fallback
+
+        let inline toValueOption (value : 'T option) =
+            match value with Some x -> ValueSome x | _ -> ValueNone
+
+    module ValueOption =
+        let inline toOption (value : 'T voption) =
+            match value with ValueSome x -> Some x | _ -> None
 
     [<AutoOpen>]
     module ValueOptionOperators =
