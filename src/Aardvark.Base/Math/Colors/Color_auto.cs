@@ -13457,7 +13457,7 @@ namespace Aardvark.Base
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
             B = (ushort)(vec.Z);
-            A = 2^16 - 1;
+            A = 65535;
         }
 
         /// <summary>
@@ -13471,7 +13471,7 @@ namespace Aardvark.Base
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
             B = (ushort)(vec.Z);
-            A = 2^16 - 1;
+            A = 65535;
         }
 
         /// <summary>
@@ -13485,7 +13485,7 @@ namespace Aardvark.Base
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
             B = (ushort)(vec.Z);
-            A = 2^16 - 1;
+            A = 65535;
         }
 
         /// <summary>
@@ -13499,7 +13499,7 @@ namespace Aardvark.Base
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
             B = (ushort)(vec.Z);
-            A = 2^16 - 1;
+            A = 65535;
         }
 
         /// <summary>
@@ -13513,7 +13513,7 @@ namespace Aardvark.Base
             R = (ushort)(vec.X);
             G = (ushort)(vec.Y);
             B = (ushort)(vec.Z);
-            A = 2^16 - 1;
+            A = 65535;
         }
 
         /// <summary>
@@ -15933,7 +15933,7 @@ namespace Aardvark.Base
             R = (vec.X);
             G = (vec.Y);
             B = (vec.Z);
-            A = 2^32 - 1;
+            A = UInt32.MaxValue;
         }
 
         /// <summary>
@@ -15947,7 +15947,7 @@ namespace Aardvark.Base
             R = (uint)(vec.X);
             G = (uint)(vec.Y);
             B = (uint)(vec.Z);
-            A = 2^32 - 1;
+            A = UInt32.MaxValue;
         }
 
         /// <summary>
@@ -15961,7 +15961,7 @@ namespace Aardvark.Base
             R = (uint)(vec.X);
             G = (uint)(vec.Y);
             B = (uint)(vec.Z);
-            A = 2^32 - 1;
+            A = UInt32.MaxValue;
         }
 
         /// <summary>
@@ -15975,7 +15975,7 @@ namespace Aardvark.Base
             R = (uint)(vec.X);
             G = (uint)(vec.Y);
             B = (uint)(vec.Z);
-            A = 2^32 - 1;
+            A = UInt32.MaxValue;
         }
 
         /// <summary>
@@ -18241,7 +18241,7 @@ namespace Aardvark.Base
             R = (vec.X);
             G = (vec.Y);
             B = (vec.Z);
-            A = 1;
+            A = 1.0f;
         }
 
         /// <summary>
@@ -18254,7 +18254,7 @@ namespace Aardvark.Base
             R = (float)(vec.X);
             G = (float)(vec.Y);
             B = (float)(vec.Z);
-            A = 1;
+            A = 1.0f;
         }
 
         /// <summary>
@@ -20453,7 +20453,7 @@ namespace Aardvark.Base
             R = (double)(vec.X);
             G = (double)(vec.Y);
             B = (double)(vec.Z);
-            A = 1;
+            A = 1.0;
         }
 
         /// <summary>
@@ -20466,7 +20466,7 @@ namespace Aardvark.Base
             R = (vec.X);
             G = (vec.Y);
             B = (vec.Z);
-            A = 1;
+            A = 1.0;
         }
 
         /// <summary>

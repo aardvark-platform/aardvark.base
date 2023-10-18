@@ -510,7 +510,7 @@ namespace Aardvark.Base
         public __type__(__vt.Name__ vec)
         {
             //# fields.ForEach(Meta.VecFields, (c, vf, i) => {
-            __c__ = /*# if (i < d) { */__convert__(vec.__vf__);/*# } else {*/__maxval__;/*# }*/
+            __c__ = /*# if (i < d) { */__convert__(vec.__vf__);/*# } else {*/__t.MaxValue__;/*# }*/
             //# });
         }
 
