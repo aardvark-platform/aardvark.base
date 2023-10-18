@@ -240,12 +240,13 @@ namespace Aardvark.Base
             /// </summary>
             public PixImage LoadFromFile(string filename)
             {
+                using var stream = new MemoryStream(File.ReadAllBytes(filename));
+
                 var bitmapImage = new BitmapImage();
                 bitmapImage.BeginInit();
-                bitmapImage.UriSource = new Uri(filename, UriKind.RelativeOrAbsolute);
+                bitmapImage.StreamSource = stream;
                 bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.CreateOptions = BitmapCreateOptions.None
-                                     | BitmapCreateOptions.PreservePixelFormat;
+                bitmapImage.CreateOptions = BitmapCreateOptions.PreservePixelFormat;
                 bitmapImage.EndInit();
                 return CreateFromBitmapSource(bitmapImage);
             }
