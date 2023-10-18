@@ -1254,7 +1254,8 @@ namespace Aardvark.Base
 
         public static List<string> ToListOfString(this Text[] textArray)
             => textArray.MapToList(t => t.ToString());
-        
+
+        [Obsolete("Does not always return the same count as NestedBracketSplit() result length. Use NestedBracketSplitCount2 instead.")]
         public static int NestedBracketSplitCount(this Text text, int splitLevel)
         {
             int count = 0;
@@ -1271,6 +1272,38 @@ namespace Aardvark.Base
                 }
             }
             if (level == splitLevel) ++count;
+            return count;
+        }
+
+        public static int NestedBracketSplitCount2(this Text text, int splitLevel)
+        {
+            int count = 0;
+            int level = 0;
+            int begin = text.Start;
+            int end = text.End;
+            for (int pos = text.Start; pos < end; pos++)
+            {
+                switch (text.String[pos])
+                {
+                    case '[':
+                        ++level;
+                        if (level == splitLevel) begin = pos + 1;
+                        break;
+                    case ']':
+                        if (level == splitLevel) ++count;
+                        --level;
+                        break;
+                    case ',':
+                        if (level == splitLevel)
+                        {
+                            ++count;
+                            begin = pos + 1;
+                        }
+                        break;
+                }
+            }
+            if (level == splitLevel && begin < end)
+                ++count;
             return count;
         }
 
