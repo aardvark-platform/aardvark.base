@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Aardvark.Base
 {
@@ -1898,6 +1900,97 @@ namespace Aardvark.Base
             var scale = 1.0 / count;
             return new C4f(sum.R * scale, sum.B * scale, sum.G * scale, sum.A * scale);
         }
+
+        #endregion
+
+        #region Hex Parsing
+
+        // See: https://developer.mozilla.org/en-US/docs/Web/CSS/hex-color
+        private static readonly Regex regexHexSgl = new Regex("^(?:#|0x)?(?<R>[0-9a-fA-F])(?<G>[0-9a-fA-F])(?<B>[0-9a-fA-F])(?<A>[0-9a-fA-F])?$", RegexOptions.Compiled);
+        private static readonly Regex regexHexDbl = new Regex("^(?:#|0x)?(?<R>[0-9a-fA-F]{2})(?<G>[0-9a-fA-F]{2})(?<B>[0-9a-fA-F]{2})(?<A>[0-9a-fA-F]{2})?$", RegexOptions.Compiled);
+
+        private static bool TryParseHex(Regex regex, string input, out C4b result)
+        {
+            var m = regex.Match(input);
+            if (m.Success)
+            {
+                string[] values = new string[4];
+                values[0] = m.Groups["R"].Value;
+                values[1] = m.Groups["G"].Value;
+                values[2] = m.Groups["B"].Value;
+                values[3] = m.Groups["A"].Success ? m.Groups["A"].Value : "FF";
+
+                result =
+                    new C4b(values.Map((x) => {
+                        var value = x.Length == 1 ? new string(x[0], 2) : x;
+                        return byte.Parse(value, NumberStyles.AllowHexSpecifier);
+                    }));
+
+                return true;
+            }
+
+            result = C4b.Zero;
+            return false;
+        }
+
+        /// <summary>
+        /// Parses a hexadecimal color string with format RRGGBBAA or RGBA, where the alpha component is optional.
+        /// </summary>
+        /// <remarks>
+        /// For the single digit RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// The color string may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="input">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4b.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParseHex(Text input, out C4b result)
+        {
+            var str = input.WhiteSpaceTrimmed.ToString();
+            return TryParseHex(regexHexDbl, str, out result) || TryParseHex(regexHexSgl, str, out result);
+        }
+
+        /// <summary>
+        /// Parses a hexadecimal color string with format RRGGBBAA or RGBA, where the alpha component is optional.
+        /// </summary>
+        /// <remarks>
+        /// For the single digit RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// The color string may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="input">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4b.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParseHex(string input, out C4b result)
+            => TryParseHex(new Text(input), out result);
+
+        /// <summary>
+        /// Parses a hexadecimal color string with format RRGGBBAA or RGBA, where the alpha component is optional.
+        /// </summary>
+        /// <remarks>
+        /// For the single digit RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// The color string may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="input">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid hexadecimal color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b ParseHex(Text input)
+            => TryParseHex(input, out C4b result) ? result : throw new FormatException($"{input} is not a valid hexadecimal color.");
+
+        /// <summary>
+        /// Parses a hexadecimal color string with format RRGGBBAA or RGBA, where the alpha component is optional.
+        /// </summary>
+        /// <remarks>
+        /// For the single digit RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// The color string may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="input">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid hexadecimal color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b ParseHex(string input)
+            => ParseHex(new Text(input));
 
         #endregion
     }

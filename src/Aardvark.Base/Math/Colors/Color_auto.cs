@@ -1594,30 +1594,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3b.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C3b result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC3b();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                byte[] values = new byte[4] { 255, 255, 255, 255 };
+
+                byte parse(Text t)
+                {
+                    if (!byte.TryParse(t.ToString(), out byte value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C3b(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3b.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C3b result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3b color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C3b(
-                byte.Parse(x[0], CultureInfo.InvariantCulture), 
-                byte.Parse(x[1], CultureInfo.InvariantCulture), 
-                byte.Parse(x[2], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<byte>.Parse, C3b.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<byte>.Parse, C3b.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3b color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<byte>.Parse, C3b.Setter);
-        }
+            => TryParse(t, out C3b result) ? result : throw new FormatException($"{t} is not a valid C3b color.");
 
         #endregion
 
@@ -1724,6 +1796,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBB.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C3b c)
+            => $"{c.R:X2}{c.G:X2}{c.B:X2}";
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -3786,30 +3869,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3us.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C3us result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC3us();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                ushort[] values = new ushort[4] { 65535, 65535, 65535, 65535 };
+
+                ushort parse(Text t)
+                {
+                    if (!ushort.TryParse(t.ToString(), out ushort value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C3us(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3us.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C3us result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3us color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C3us(
-                ushort.Parse(x[0], CultureInfo.InvariantCulture), 
-                ushort.Parse(x[1], CultureInfo.InvariantCulture), 
-                ushort.Parse(x[2], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<ushort>.Parse, C3us.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<ushort>.Parse, C3us.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3us color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<ushort>.Parse, C3us.Setter);
-        }
+            => TryParse(t, out C3us result) ? result : throw new FormatException($"{t} is not a valid C3us color.");
 
         #endregion
 
@@ -3916,6 +4071,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBB.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C3us c)
+            => c.ToC3b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -5901,30 +6067,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3ui.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C3ui result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC3ui();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                uint[] values = new uint[4] { UInt32.MaxValue, UInt32.MaxValue, UInt32.MaxValue, UInt32.MaxValue };
+
+                uint parse(Text t)
+                {
+                    if (!uint.TryParse(t.ToString(), out uint value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C3ui(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3ui.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C3ui result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3ui color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C3ui(
-                uint.Parse(x[0], CultureInfo.InvariantCulture), 
-                uint.Parse(x[1], CultureInfo.InvariantCulture), 
-                uint.Parse(x[2], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<uint>.Parse, C3ui.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<uint>.Parse, C3ui.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3ui color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<uint>.Parse, C3ui.Setter);
-        }
+            => TryParse(t, out C3ui result) ? result : throw new FormatException($"{t} is not a valid C3ui color.");
 
         #endregion
 
@@ -6031,6 +6269,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBB.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C3ui c)
+            => c.ToC3b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -7891,30 +8140,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3f.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C3f result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC3f();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                float[] values = new float[4] { 1.0f, 1.0f, 1.0f, 1.0f };
+
+                float parse(Text t)
+                {
+                    if (!float.TryParse(t.ToString(), out float value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C3f(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3f.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C3f result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3f color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C3f(
-                float.Parse(x[0], CultureInfo.InvariantCulture), 
-                float.Parse(x[1], CultureInfo.InvariantCulture), 
-                float.Parse(x[2], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<float>.Parse, C3f.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<float>.Parse, C3f.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3f color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<float>.Parse, C3f.Setter);
-        }
+            => TryParse(t, out C3f result) ? result : throw new FormatException($"{t} is not a valid C3f color.");
 
         #endregion
 
@@ -8064,6 +8385,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBB.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C3f c)
+            => c.ToC3b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -9918,30 +10250,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3d.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C3d result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC3d();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                double[] values = new double[4] { 1.0, 1.0, 1.0, 1.0 };
+
+                double parse(Text t)
+                {
+                    if (!double.TryParse(t.ToString(), out double value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C3d(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C3d.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C3d result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3d color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C3d(
-                double.Parse(x[0], CultureInfo.InvariantCulture), 
-                double.Parse(x[1], CultureInfo.InvariantCulture), 
-                double.Parse(x[2], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<double>.Parse, C3d.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<double>.Parse, C3d.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional and discarded.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C3d color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<double>.Parse, C3d.Setter);
-        }
+            => TryParse(t, out C3d result) ? result : throw new FormatException($"{t} is not a valid C3d color.");
 
         #endregion
 
@@ -10091,6 +10495,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBB.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C3d c)
+            => c.ToC3b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -12466,31 +12881,101 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4b.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C4b result)
+        {
+            if (Col.TryParseHex(t, out result))
+            {
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                byte[] values = new byte[4] { 255, 255, 255, 255 };
+
+                byte parse(Text t)
+                {
+                    if (!byte.TryParse(t.ToString(), out byte value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C4b(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4b.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C4b result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4b color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C4b(
-                byte.Parse(x[0], CultureInfo.InvariantCulture), 
-                byte.Parse(x[1], CultureInfo.InvariantCulture), 
-                byte.Parse(x[2], CultureInfo.InvariantCulture), 
-                byte.Parse(x[3], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<byte>.Parse, C4b.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<byte>.Parse, C4b.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4b color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<byte>.Parse, C4b.Setter);
-        }
+            => TryParse(t, out C4b result) ? result : throw new FormatException($"{t} is not a valid C4b color.");
 
         #endregion
 
@@ -12608,6 +13093,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBBAA.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C4b c)
+            => $"{c.R:X2}{c.G:X2}{c.B:X2}{c.A:X2}";
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -14943,31 +15439,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4us.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C4us result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC4us();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                ushort[] values = new ushort[4] { 65535, 65535, 65535, 65535 };
+
+                ushort parse(Text t)
+                {
+                    if (!ushort.TryParse(t.ToString(), out ushort value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C4us(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4us.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C4us result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4us color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C4us(
-                ushort.Parse(x[0], CultureInfo.InvariantCulture), 
-                ushort.Parse(x[1], CultureInfo.InvariantCulture), 
-                ushort.Parse(x[2], CultureInfo.InvariantCulture), 
-                ushort.Parse(x[3], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<ushort>.Parse, C4us.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<ushort>.Parse, C4us.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4us color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<ushort>.Parse, C4us.Setter);
-        }
+            => TryParse(t, out C4us result) ? result : throw new FormatException($"{t} is not a valid C4us color.");
 
         #endregion
 
@@ -15085,6 +15652,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBBAA.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C4us c)
+            => c.ToC4b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -17325,31 +17903,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4ui.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C4ui result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC4ui();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                uint[] values = new uint[4] { UInt32.MaxValue, UInt32.MaxValue, UInt32.MaxValue, UInt32.MaxValue };
+
+                uint parse(Text t)
+                {
+                    if (!uint.TryParse(t.ToString(), out uint value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C4ui(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4ui.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C4ui result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4ui color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C4ui(
-                uint.Parse(x[0], CultureInfo.InvariantCulture), 
-                uint.Parse(x[1], CultureInfo.InvariantCulture), 
-                uint.Parse(x[2], CultureInfo.InvariantCulture), 
-                uint.Parse(x[3], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<uint>.Parse, C4ui.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<uint>.Parse, C4ui.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4ui color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<uint>.Parse, C4ui.Setter);
-        }
+            => TryParse(t, out C4ui result) ? result : throw new FormatException($"{t} is not a valid C4ui color.");
 
         #endregion
 
@@ -17467,6 +18116,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBBAA.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C4ui c)
+            => c.ToC4b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -19497,31 +20157,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4f.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C4f result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC4f();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                float[] values = new float[4] { 1.0f, 1.0f, 1.0f, 1.0f };
+
+                float parse(Text t)
+                {
+                    if (!float.TryParse(t.ToString(), out float value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C4f(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4f.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C4f result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4f color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C4f(
-                float.Parse(x[0], CultureInfo.InvariantCulture), 
-                float.Parse(x[1], CultureInfo.InvariantCulture), 
-                float.Parse(x[2], CultureInfo.InvariantCulture), 
-                float.Parse(x[3], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<float>.Parse, C4f.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<float>.Parse, C4f.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4f color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<float>.Parse, C4f.Setter);
-        }
+            => TryParse(t, out C4f result) ? result : throw new FormatException($"{t} is not a valid C4f color.");
 
         #endregion
 
@@ -19682,6 +20413,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBBAA.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C4f c)
+            => c.ToC4b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>
@@ -21709,31 +22451,102 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4d.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out C4d result)
+        {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.ToC4d();
+                return true;
+            }
+            else
+            {
+                bool success = true;
+                double[] values = new double[4] { 1.0, 1.0, 1.0, 1.0 };
+
+                double parse(Text t)
+                {
+                    if (!double.TryParse(t.ToString(), out double value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new C4d(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, C4d.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out C4d result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4d color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new C4d(
-                double.Parse(x[0], CultureInfo.InvariantCulture), 
-                double.Parse(x[1], CultureInfo.InvariantCulture), 
-                double.Parse(x[2], CultureInfo.InvariantCulture), 
-                double.Parse(x[3], CultureInfo.InvariantCulture)
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<double>.Parse, C4d.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<double>.Parse, C4d.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid C4d color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<double>.Parse, C4d.Setter);
-        }
+            => TryParse(t, out C4d result) ? result : throw new FormatException($"{t} is not a valid C4d color.");
 
         #endregion
 
@@ -21894,6 +22707,17 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBBAA.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this C4d c)
+            => c.ToC4b().ToHexString();
+
+        #endregion
+
         #region Comparisons
 
         /// <summary>

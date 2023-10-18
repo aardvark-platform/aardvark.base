@@ -171,5 +171,79 @@ namespace Aardvark.Tests
                 Assert.AreEqual(new C4b(scalar, scalar, scalar, scalar) / color, scalar / color);
             }
         }
+
+        [Test]
+        public void Parse()
+        {
+            var rnd = new RandomSystem(0);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var c = rnd.UniformC4ui();
+                var s1 = $"[{c.R}, {c.G}, {c.B}, {c.A}]";
+                var s2 = $"[{c.R}, {c.G}, {c.B}]";
+
+                Assert.AreEqual(c.RGB, C3ui.Parse(s1));
+                Assert.AreEqual(c, C4ui.Parse(s1));
+                Assert.AreEqual(c.RGB, C3ui.Parse(s2));
+                Assert.AreEqual(new C4ui(c.RGB, uint.MaxValue), C4ui.Parse(s2));
+            }
+        }
+
+        [Test]
+        public void ParseTooManyComponents()
+        {
+            var t1 = new Text("[1,2,3");
+            var c1 = t1.NestedBracketSplitCount2(1);
+            var r1 = t1.NestedBracketSplit(1).ToArray();
+
+            var t2 = new Text("[42]");
+            var c2 = t2.NestedBracketSplitCount2(1);
+            var r2 = t2.NestedBracketSplit(1).ToArray();
+
+            var t3 = new Text("[42,43]");
+            var c3 = t3.NestedBracketSplitCount2(1);
+            var r3 = t3.NestedBracketSplit(1).ToArray();
+
+            Assert.AreEqual(r1.Length, c1);
+            Assert.AreEqual(r2.Length, c2);
+            Assert.AreEqual(r3.Length, c3);
+
+            Assert.IsFalse(C4d.TryParse("[1, 2, 3, 4, 5]", out C4d _));
+        }
+
+        [Test]
+        public void ParseHex()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var color = rnd.UniformC4d().ToC4b();
+                var str = color.ToHexString();
+
+                Assert.IsTrue(Col.TryParseHex(str, out C4b result));
+                Assert.IsTrue(C4b.TryParse(str, out C4b result2));
+                Assert.AreEqual(color, result);
+                Assert.AreEqual(result, result2);
+            }
+        }
+
+        [Test]
+        public void ParseHexSingleDigit()
+        {
+            var rnd = new RandomSystem(1);
+
+            for (int i = 0; i < 100; i++)
+            {
+                var str = rnd.UniformC4d().ToHexString();
+                var dbl = $"#{str[0]}{str[0]}{str[2]}{str[2]}{str[4]}{str[4]}";
+                var sgl = $"0x{str[0]}{str[2]}{str[4]}F";
+
+                Assert.IsTrue(Col.TryParseHex(dbl, out C4b a));
+                Assert.IsTrue(C4b.TryParse(sgl, out C4b b));
+                Assert.AreEqual(a, b);
+            }
+        }
     }
 }

@@ -1133,28 +1133,109 @@ namespace Aardvark.Base
 
         #region Parsing
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional/*# if (!t.HasAlpha) {*/ and discarded/*#}*/.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, __type__.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        public static bool TryParse(Text t, out __type__ result)
+        {
+            //# if (type == "C4b") {
+            if (Col.TryParseHex(t, out result))
+            {
+                return true;
+            }
+            //# } else {
+            if (Col.TryParseHex(t, out C4b tmp))
+            {
+                result = tmp.To__type__();
+                return true;
+            }
+            //# }
+            else
+            {
+                bool success = true;
+                __ftype__[] values = new __ftype__[4] { /*# 4.ForEach(p => { */__t.MaxValue__/*# }, comma);*/ };
+
+                __ftype__ parse(Text t)
+                {
+                    if (!__ftype__.TryParse(t.ToString(), out __ftype__ value))
+                        success = false;
+
+                    return value;
+                };
+
+                var count = t.NestedBracketSplitCount2(1);
+                if (count == 3 || count == 4)
+                    t.NestedBracketSplit(1, parse, () => values);
+                else
+                    success = false;
+
+                result = success ? new __type__(values) : Zero;
+                return success;
+            }
+        }
+
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional/*# if (!t.HasAlpha) {*/ and discarded/*#}*/.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <param name="result">Contains the parsed color on success, __type__.Zero otherwise.</param>
+        /// <returns>True on success, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryParse(string s, out __type__ result)
+            => TryParse(new Text(s), out result);
+
+        [Obsolete("Parameter provider is unused.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Parse(string s, IFormatProvider provider)
-        {
-            return Parse(s);
-        }
+            => Parse(s);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional/*# if (!t.HasAlpha) {*/ and discarded/*#}*/.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="s">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid __type__ color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Parse(string s)
-        {
-            var x = s.NestedBracketSplitLevelOne().ToArray();
-            return new __type__(/*# t.Len.ForEach(p => { */
-                __ftype__.Parse(x[__p__], CultureInfo.InvariantCulture)/*# }, comma); */
-            );
-        }
+            => Parse(new Text(s));
 
+        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Parse(Text t, int bracketLevel = 1)
-        {
-            return t.NestedBracketSplit(bracketLevel, Text<__ftype__>.Parse, __type__.Setter);
-        }
+            => t.NestedBracketSplit(bracketLevel, Text<__ftype__>.Parse, __type__.Setter);
 
+        /// <summary>
+        /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
+        /// </summary>
+        /// <remarks>
+        /// The alpha component in any format is optional/*# if (!t.HasAlpha) {*/ and discarded/*#}*/.
+        /// For the single digit hexadecimal RGBA format, the components are duplicated (e.g. "F" is interpreted as "FF").
+        /// Color strings in a hexadecimal format may be prefixed by "#" or "0x".
+        /// </remarks>
+        /// <param name="t">The string to be parsed.</param>
+        /// <returns>The parsed color.</returns>
+        /// <exception cref="FormatException">the input does not represent a valid __type__ color.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Parse(Text t)
-        {
-            return t.NestedBracketSplit(1, Text<__ftype__>.Parse, __type__.Setter);
-        }
+            => TryParse(t, out __type__ result) ? result : throw new FormatException($"{t} is not a valid __type__ color.");
 
         #endregion
 
@@ -1336,6 +1417,21 @@ namespace Aardvark.Base
 
     public static partial class Col
     {
+        #region ToHexString
+
+        /// <summary>
+        /// Returns the hexadecimal representation with format RRGGBB/*# if (t.HasAlpha) {*/AA/*#}*/.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToHexString(this __type__ c)
+            //# if (ft == Meta.ByteType) {
+            => /*# if (t.HasAlpha) {*/$"{c.R:X2}{c.G:X2}{c.B:X2}{c.A:X2}"/*# } else {*/$"{c.R:X2}{c.G:X2}{c.B:X2}"/*#}*/;
+            //# } else {
+            => c.ToC__t.Len__b().ToHexString();
+            //# }
+
+        #endregion
+
         #region Comparisons
 
         //# var bops = new[,] { { "<",  "Smaller"        }, { ">" , "Greater"},
