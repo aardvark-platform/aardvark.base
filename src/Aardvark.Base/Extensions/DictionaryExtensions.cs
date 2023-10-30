@@ -117,17 +117,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Removes the value with the given key from the dictionary and passes it as out argument.
+        /// In case the value is not found default(T) will be returned.
+        /// </summary>
+        /// <return>true if the value was removed from the dictionary, false otherwise.</return>
+        public static bool TryPop<TK, TV>(this IDictionary<TK, TV> self, TK key, out TV value)
+            => self.TryGetValue(key, out value) && self.Remove(key);
+
+        /// <summary>
         /// Removes the value with the given key from the dictionary and passes it as return argument.
-        /// In case the value is not found default(T) will be return.
+        /// In case the value is not found default(T) will be returned.
         /// </summary>
         /// <return>The value removed from the dictionary or default(T)</return>
         public static TV TryPop<TK, TV>(this IDictionary<TK, TV> self, TK key)
-        {
-            if (self.TryGetValue(key, out TV value))
-                self.Remove(key);
-            return value;
-        }
-        
+            => self.TryPop(key, out TV value) ? value : default;
+
+
         public static T1v[] CopyToArray<Tk, Tv, T1v>(this IDictionary<Tk, Tv> self, Func<KeyValuePair<Tk, Tv>, T1v> fun)
         {
             var r = new T1v[self.Count];

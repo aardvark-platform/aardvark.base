@@ -338,30 +338,6 @@ module CSharpInterop =
         static member Create<'a,'b,'c,'d> (func:System.Func<'a,'b,'c,'d>) = FSharpFuncUtil.ToFSharpFunc func
 
 [<AutoOpen>]
-module CSharpCollectionExtensions =
-
-    open System.Runtime.CompilerServices
-    open System.Collections.Generic
-    open System.Runtime.InteropServices 
-
-    type public DictionaryExtensions = 
-
-        [<Extension>] 
-        static member TryRemove(x : Dictionary<'a,'b>, k,[<Out>] r: byref<'b>) =
-            match x.TryGetValue k with
-             | (true,v) -> r <- v; true
-             | _ -> false
-
-        [<Extension>] 
-        static member GetOrAdd(x : Dictionary<'a,'b>, k : 'a, creator : 'a -> 'b) =
-            match x.TryGetValue k with
-             | (true,v) -> v
-             | _ ->
-                let v = creator k
-                x.Add(k,v) |> ignore
-                v
-
-[<AutoOpen>]
 module Threading =
     open System.Threading
 
