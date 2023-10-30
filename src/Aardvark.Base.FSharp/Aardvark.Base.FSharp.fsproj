@@ -28,6 +28,7 @@
     <Compile Include="Utilities\Pickler\AdaptivePicklers.fs" />
     <Compile Include="Utilities\Threading.fs" />
     <Compile Include="Utilities\IO.fs" />
+    <Compile Include="Utilities\Native.fs" />
     <Compile Include="Utilities\Measures.fs" />
     <Compile Include="Utilities\Lens.fs" />
     <Compile Include="Utilities\Monoid.fs" />
