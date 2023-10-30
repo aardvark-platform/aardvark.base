@@ -430,30 +430,3 @@ module ReflectionPatterns =
 
     let (|Create|_|) (c : ConstructorInfo) =
         Create(c.DeclaringType, c.GetParameters() |> Seq.toList) |> Some
-
-[<AutoOpen>]
-module MarshalDelegateExtensions =
-    open System.Runtime.InteropServices
-    open System.Collections.Concurrent
-
-    let private pinnedDelegates = ConcurrentDictionary<Delegate, nativeint>()
-    type PinnedDelegate internal(d : Delegate, ptr : nativeint) =
-        member x.Pointer = ptr
-        member x.Dispose() = pinnedDelegates.TryRemove d |> ignore
-
-        interface IDisposable with
-            member x.Dispose() = x.Dispose()
-
-    type Marshal with
-        static member PinDelegate(d : Delegate) =
-            let ptr = pinnedDelegates.GetOrAdd(d, fun _ -> Marshal.GetFunctionPointerForDelegate d)
-            new PinnedDelegate(d, ptr)
-
-        static member PinFunction(f : 'a -> 'b) =
-            Marshal.PinDelegate(Func<'a, 'b>(f))
-
-        static member PinFunction(f : 'a -> 'b -> 'c) =
-            Marshal.PinDelegate(Func<'a, 'b, 'c>(f))
-
-        static member PinFunction(f : 'a -> 'b -> 'c -> 'd) =
-            Marshal.PinDelegate(Func<'a, 'b, 'c, 'd>(f))
