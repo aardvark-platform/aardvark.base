@@ -336,5 +336,153 @@ type MethodInfoGenericExtensions private() =
         match MethodResolver.tryMakeApplicable args ret this with
         | Some m -> m
         | None -> null
-      
 
+
+[<System.Runtime.CompilerServices.Extension>]
+module ReflectionHelpers =
+    open Microsoft.FSharp.Reflection
+
+    let private lockObj = obj()
+
+    let private prettyNames =
+        Dict.ofList [
+            typeof<sbyte>, "sbyte"
+            typeof<byte>, "byte"
+            typeof<int16>, "int16"
+            typeof<uint16>, "uint16"
+            typeof<int>, "int"
+            typeof<uint32>, "uint32"
+            typeof<int64>, "int64"
+            typeof<uint64>, "uint64"
+            typeof<nativeint>, "nativeint"
+            typeof<unativeint>, "unativeint"
+
+            typeof<char>, "char"
+            typeof<string>, "string"
+
+
+            typeof<float32>, "float32"
+            typeof<float>, "float"
+            typeof<decimal>, "decimal"
+
+            typeof<obj>, "obj"
+            typeof<unit>, "unit"
+            typeof<System.Void>, "void"
+
+        ]
+
+    let private genericPrettyNames =
+        Dict.ofList [
+            typedefof<list<_>>, "list"
+            typedefof<Option<_>>, "Option"
+            typedefof<Set<_>>, "Set"
+            typedefof<Map<_,_>>, "Map"
+            typedefof<seq<_>>, "seq"
+
+        ]
+
+    let private idRx = System.Text.RegularExpressions.Regex @"[a-zA-Z_][a-zA-Z_0-9]*"
+
+    let rec private getPrettyNameInternal (t : Type) =
+        let res = 
+            match prettyNames.TryGetValue t with
+                | (true, n) -> n
+                | _ ->
+                    if t.IsArray then
+                        t.GetElementType() |> getPrettyNameInternal |> sprintf "%s[]"
+
+                    elif FSharpType.IsTuple t then
+                        FSharpType.GetTupleElements t |> Seq.map getPrettyNameInternal |> String.concat " * "
+
+                    elif FSharpType.IsFunction t then
+                        let (arg, res) = FSharpType.GetFunctionElements t
+
+                        sprintf "%s -> %s" (getPrettyNameInternal arg) (getPrettyNameInternal res)
+
+                    elif typeof<Aardvark.Base.INatural>.IsAssignableFrom t then
+                        let s = Aardvark.Base.Peano.getSize t
+                        sprintf "N%d" s
+
+                    elif t.IsGenericType then
+                        let args = t.GetGenericArguments() |> Seq.map getPrettyNameInternal |> String.concat ", "
+                        let bt = t.GetGenericTypeDefinition()
+                        match genericPrettyNames.TryGetValue bt with
+                            | (true, gen) ->
+                                sprintf "%s<%s>" gen args
+                            | _ ->
+                                let gen = idRx.Match bt.Name
+                                sprintf "%s<%s>" gen.Value args
+
+
+                    else
+                        t.Name
+
+        prettyNames.[t] <- res
+        res
+
+    [<System.Runtime.CompilerServices.Extension; CompiledName("GetPrettyName")>]
+    let getPrettyName(t : Type) =
+        lock lockObj (fun () ->
+            getPrettyNameInternal t
+        )
+
+    type Type with
+        member x.PrettyName =
+            lock lockObj (fun () ->
+                getPrettyNameInternal x
+            )
+
+
+/// <summary>
+/// Defines a number of active patterns for matching expressions. Includes some
+/// functionality missing in F#.
+/// </summary>
+[<AutoOpen>]
+module ReflectionPatterns =
+    open Microsoft.FSharp.Quotations
+    open QuotationReflectionHelpers
+
+    let private typePrefixPattern = System.Text.RegularExpressions.Regex @"^.*\.(?<methodName>.*)$"
+    let (|Method|_|)  (mi : MethodInfo) =
+        let args = mi.GetParameters() |> Seq.map(fun p -> p.ParameterType)
+        let parameters = if mi.IsStatic then
+                            args
+                            else
+                            seq { yield mi.DeclaringType; yield! args }
+
+        let m = typePrefixPattern.Match mi.Name
+        let name =
+            if m.Success then m.Groups.["methodName"].Value
+            else mi.Name
+
+        Method (name, parameters |> Seq.toList) |> Some
+
+    let private compareMethods (template : MethodInfo) (m : MethodInfo) =
+        if template.IsGenericMethod && m.IsGenericMethod then
+            if template.GetGenericMethodDefinition() = m.GetGenericMethodDefinition() then
+                let targs = template.GetGenericArguments() |> Array.toList
+                let margs = m.GetGenericArguments() |> Array.toList
+
+                let zip = List.zip targs margs
+
+                let args = zip |> List.filter(fun (l,r) -> l.IsGenericParameter) |> List.map (fun (_,a) -> a)
+
+                Some args
+            else
+                None
+        elif template = m then
+            Some []
+        else
+            None          
+
+    let (|MethodQuote|_|) (e : Expr) (mi : MethodInfo) =
+        let m = tryGetMethodInfo e
+        match m with
+            | Some m -> match compareMethods m mi with
+                            | Some a -> MethodQuote(a) |> Some
+                            | None -> None
+            | _ -> None
+
+
+    let (|Create|_|) (c : ConstructorInfo) =
+        Create(c.DeclaringType, c.GetParameters() |> Seq.toList) |> Some
