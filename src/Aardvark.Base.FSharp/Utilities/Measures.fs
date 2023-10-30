@@ -135,8 +135,8 @@ type MicroTime =
         new (ts : TimeSpan) = { TotalNanoseconds = ts.Ticks * (1000000000L / TimeSpan.TicksPerSecond) }
         new (ns : float) =
             { TotalNanoseconds =
-                if isFinite ns then int64 ns
-                elif isPositiveInfinity ns then Int64.MaxValue
+                if Fun.IsFinite ns then int64 ns
+                elif Fun.IsPositiveInfinity ns then Int64.MaxValue
                 else Int64.MinValue
             }
 
