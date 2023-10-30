@@ -112,3 +112,7 @@ module ``String Extensions`` =
         /// Removes all leading and trailing white-space characters from the string.
         let inline trim (str : string) =
             str.Trim()
+
+        /// Replaces all occurrences of the pattern with the replacement string.
+        let inline replace (pattern : string) (replacement : string) (str : string) =
+            str.Replace(pattern, replacement)
