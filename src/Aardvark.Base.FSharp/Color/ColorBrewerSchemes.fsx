@@ -166,7 +166,7 @@ let writeToFile() =
     writeln 0 "module ColorBrewerSchemes ="
     writeln 1 "open ColorBrewer"
     writeln 0 ""
-    writeln 1 "/// Brewer color schemes designed for chloropleth map visualizations."
+    writeln 1 "/// Brewer color schemes designed for choropleth map visualizations."
     writeln 1 "module ColorBrewer ="
     writeln 0 ""
     writeln 2 "module Scheme ="

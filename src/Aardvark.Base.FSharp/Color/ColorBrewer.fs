@@ -4,7 +4,7 @@ open System
 open System.Collections
 open System.Collections.Generic
 
-/// Brewer color schemes designed for chloropleth map visualizations.
+/// Brewer color schemes designed for choropleth map visualizations.
 module ColorBrewer =
 
     [<Flags>]

@@ -4,7 +4,7 @@ namespace Aardvark.Base
 module ColorBrewerSchemes =
     open ColorBrewer
 
-    /// Brewer color schemes designed for chloropleth map visualizations.
+    /// Brewer color schemes designed for choropleth map visualizations.
     module ColorBrewer =
 
         module Scheme =
