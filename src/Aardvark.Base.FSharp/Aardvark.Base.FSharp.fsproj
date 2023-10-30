@@ -30,6 +30,7 @@
     <Compile Include="Utilities\Lens.fs" />
     <Compile Include="Utilities\Monoid.fs" />
     <Compile Include="Utilities\Monads.fs" />
+    <Compile Include="Utilities\Weak.fs" />
     <Compile Include="Math\Math.fs" />
     <Compile Include="Math\Vectors.fs" />
     <Compile Include="Math\Matrix.fs" />
@@ -79,7 +80,6 @@
     <Compile Include="Native\FileTable.fs" />
     <Compile Include="Native\Manager.fs" />
     <Compile Include="Native\Store.fs" />
-    <Compile Include="Runtime.fs" />
     <Compile Include="Ag.fs" />
     <None Include="paket.references" />
   </ItemGroup>
