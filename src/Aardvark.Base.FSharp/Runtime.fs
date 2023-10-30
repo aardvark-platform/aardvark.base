@@ -457,36 +457,3 @@ module MarshalDelegateExtensions =
 
         static member PinFunction(f : 'a -> 'b -> 'c -> 'd) =
             Marshal.PinDelegate(Func<'a, 'b, 'c, 'd>(f))
-
-
-module ConversionHelpers =
-    open System.Collections.Generic
-
-    let lookupTableOption (l : list<'a * 'b>) =
-        let d = Dictionary()
-        for (k,v) in l do
-
-            match d.TryGetValue k with
-                | (true, vo) -> failwithf "duplicated lookup-entry: %A (%A vs %A)" k vo v
-                | _ -> ()
-
-            d.[k] <- v
-
-        fun (key : 'a) ->
-            match d.TryGetValue key with
-                | (true, v) -> Some v
-                | _ -> None
-
-    let lookupTable (l : list<'a * 'b>) =
-        let tryLookup = lookupTableOption l
-        fun (key : 'a) ->
-            match tryLookup key with
-             | Some v -> v
-             | _ -> failwithf "unsupported %A: %A" typeof<'a> key
-
-    let inline convertEnum< ^a, ^b when ^a : (static member op_Explicit : ^a -> int)> (fmt : ^a) : ^b =
-        let v = int fmt
-        if Enum.IsDefined(typeof< ^b >, v) then
-            unbox< ^b > v
-        else
-            failwithf "cannot convert %s %A to %s" typeof< ^a >.Name fmt typeof< ^b >.Name

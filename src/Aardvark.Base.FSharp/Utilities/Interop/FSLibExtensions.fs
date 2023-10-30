@@ -858,5 +858,21 @@ module NativeUtilities =
         finally
             gc.Free()
 
+module ConversionHelpers =
+
+    [<Obsolete("Use LookupTable.lookupTable' instead.")>]
+    let lookupTableOption (l : list<'a * 'b>) : ('a -> 'b option) =
+        LookupTable.lookupTable' l
+
+    [<Obsolete("Use LookupTable.lookupTable instead.")>]
+    let lookupTable (l : list<'a * 'b>) : ('a -> 'b) =
+        LookupTable.lookupTable l
+
+    let inline convertEnum< ^a, ^b when ^a : (static member op_Explicit : ^a -> int)> (fmt : ^a) : ^b =
+        let v = int fmt
+        if Enum.IsDefined(typeof< ^b >, v) then
+            unbox< ^b > v
+        else
+            failwithf "cannot convert %s %A to %s" typeof< ^a >.Name fmt typeof< ^b >.Name
 
 type float16 = Aardvark.Base.Half
