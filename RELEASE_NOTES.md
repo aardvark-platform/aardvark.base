@@ -1,3 +1,8 @@
+### 5.2.28
+* Added Brewer color schemes
+* Added String.replace
+* Added IDictionary.TryPop overload with output argument
+
 ### 5.2.27
 * Improved and fixed RangeSet implementation
 * Added utilities for ValueOption
