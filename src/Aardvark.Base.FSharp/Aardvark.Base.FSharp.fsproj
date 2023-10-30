@@ -20,7 +20,6 @@
     <Compile Include="Utilities\Interop\Dictionary.fs" />
     <Compile Include="Utilities\Interop\Symbol.fs" />
     <Compile Include="Utilities\Interop\String.fs" />
-    <Compile Include="Utilities\Interop\Strings.fs" />
     <Compile Include="Utilities\Interop\SortedSet.fs" />
     <Compile Include="Utilities\Interop\HashSet.fs" />
     <Compile Include="Utilities\Interop\CSharpList.fs" />
