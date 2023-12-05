@@ -8,6 +8,7 @@ open System.Collections.Concurrent
 open System.Runtime.CompilerServices
 open Aardvark.Base
 open Aardvark.Rendering
+open Typography.OpenFont.Extensions
 
 
 [<Flags>]
@@ -186,78 +187,7 @@ module private Typography =
                 //|]
                 
             
-            
-
-    module FontResolver =
-        module private Win32 =
-            open Microsoft.FSharp.NativeInterop
-            open System.Runtime.InteropServices
-            open System.Security
-
-            type HKey =
-                | HKEY_CLASSES_ROOT = 0x80000000
-                | HKEY_CURRENT_USER = 0x80000001
-                | HKEY_LOCAL_MACHINE = 0x80000002
-                | HKEY_USERS = 0x80000003
-                | HKEY_PERFORMANCE_DATA = 0x80000004
-                | HKEY_CURRENT_CONFIG = 0x80000005
-                | HKEY_DYN_DATA = 0x80000006
-
-            type Flags =
-                | RRF_RT_ANY = 0x0000ffff
-                | RRF_RT_DWORD = 0x00000018
-                | RRF_RT_QWORD = 0x00000048
-                | RRF_RT_REG_BINARY = 0x00000008
-                | RRF_RT_REG_DWORD = 0x00000010
-                | RRF_RT_REG_EXPAND_SZ = 0x00000004
-                | RRF_RT_REG_MULTI_SZ = 0x00000020
-                | RRF_RT_REG_NONE = 0x00000001
-                | RRF_RT_REG_QWORD = 0x00000040
-                | RRF_RT_REG_SZ = 0x00000002
-
-            [<DllImport("kernel32.dll")>]
-            extern int RegGetValue(HKey hkey, string lpSubKey, string lpValue, Flags dwFlags, uint32& pdwType, nativeint pvData, uint32& pcbData)
-            
-            let tryGetFontFileName (family : string) (style : FontStyle) =
-
-                let suffix =
-                    match style with
-                        | FontStyle.BoldItalic -> " Bold Italic"
-                        | FontStyle.Bold -> " Bold"
-                        | FontStyle.Italic -> " Italic"
-                        | _ -> ""
-
-                let name = sprintf "%s%s (TrueType)" family suffix
-                let arr : byte[] = Array.zeroCreate 1024
-                let gc = GCHandle.Alloc(arr, GCHandleType.Pinned)
-
-                try
-                    let ptr = gc.AddrOfPinnedObject()
-                    let mutable pdwType = 0u
-                    let mutable pcbData = uint32 arr.Length
-                    if RegGetValue(HKey.HKEY_LOCAL_MACHINE, "software\\microsoft\\windows nt\\currentversion\\Fonts", name, Flags.RRF_RT_REG_SZ, &pdwType, ptr, &pcbData) = 0 then
-                        if pcbData > 0u && arr.[int pcbData - 1] = 0uy then pcbData <- pcbData - 1u
-                        let file = System.Text.Encoding.UTF8.GetString(arr, 0, int pcbData)
-                        let path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), file)
-                        Some path
-                    else
-                        None
-                finally
-                    gc.Free()
-
-
-        let tryResolveFont (family : string) (style : FontStyle) : Option<string> =
-            match Environment.OSVersion with
-                | Windows -> Win32.tryGetFontFileName family style
-                | _ -> failwith "not implemented"
-
-
-        let resolveFont (family : string) (style : FontStyle) =
-            match tryResolveFont family style with
-                | Some file -> file
-                | None -> failwithf "[Text] could not get font %s %A" family style
-
-
+           
 
 
 [<Struct; StructuredFormatDisplay("{AsString}")>]
@@ -358,7 +288,7 @@ type Glyph internal(g : Typography.OpenFont.Glyph, isValid : bool, scale : float
 
 
 
-type private FontImpl private(f : Typeface) =
+type private FontImpl internal(f : Typeface, familyName : string, weight : int, italic : bool) =
     let scale = f.CalculateScaleToPixel 1.0f |> float
 
     let glyphCache = Dict<CodePoint, Glyph>()
@@ -387,9 +317,10 @@ type private FontImpl private(f : Typeface) =
 
     static let symbola = 
         lazy (
-            let resName = typeof<FontImpl>.Assembly.GetManifestResourceNames() |> Array.find (fun n -> n.EndsWith "Symbola.ttf")
-            use s = typeof<FontImpl>.Assembly.GetManifestResourceStream(resName)
-            new FontImpl(s)
+            let assembly = typeof<FontImpl>.Assembly
+            let resName = assembly.GetManifestResourceNames() |> Array.find (fun n -> n.EndsWith "Symbola.ttf")
+            let openStream () = assembly.GetManifestResourceStream(resName)
+            FontImpl("Symbola.ttf", openStream, 400, false)
         )
 
     let get (c : CodePoint) (self : FontImpl) =
@@ -415,24 +346,26 @@ type private FontImpl private(f : Typeface) =
             )
         )
 
-    static let getTypeFace (file : string) =
-        try 
-            use stream = System.IO.File.OpenRead file
-            let reader = OpenFontReader()
-            reader.Read(stream, 0, ReadFlags.Full)
-        with e ->
-            failwithf "could not load font %s: %A" file e.Message
-           
     static member Symbola = symbola.Value
 
-    member x.Family = f.Name
+    member x.Family = familyName
     member x.LineHeight = lineHeight
     member x.Descent = descent
     member x.Ascent = ascent
     member x.LineGap = lineGap
     member x.InternalLeading = internalLeading
     member x.ExternalLeading = externalLeading
-    member x.Style = FontStyle.Regular
+    member x.Weight = weight
+    member x.Italic = italic
+    
+    member x.Style =
+        if weight >= 700 then
+            if italic then FontStyle.BoldItalic
+            else FontStyle.Bold
+        else
+            if italic then FontStyle.Italic
+            else FontStyle.Regular
+    
     member x.Spacing = spacing
 
 
@@ -446,26 +379,49 @@ type private FontImpl private(f : Typeface) =
         let d = f.GetKernDistance(l, r)
         float d * scale
 
-    new(file : string) = 
-        FontImpl(getTypeFace file)
+    new(file : string, ?weight : int, ?italic : bool) =
+        let weight = defaultArg weight 400
+        let italic = defaultArg italic false
+        let entry = 
+            FontResolver.FontTableEntries.ofFile file
+            |> FontResolver.FontTableEntries.chooseBestEntry weight italic
+        
+        let face = entry |> FontResolver.FontTableEntries.read System.IO.File.OpenRead
+        FontImpl(face, entry.FamilyName, entry.Weight, entry.Italic)
 
-    new(stream : System.IO.Stream) = 
-        let reader = OpenFontReader()
-        FontImpl(reader.Read(stream, 0, ReadFlags.Full))
+    new(name : string, openStream : unit -> System.IO.Stream, ?weight : int, ?italic : bool) =
+        let weight = defaultArg weight 400
+        let italic = defaultArg italic false
+        let entry = 
+            FontResolver.FontTableEntries.ofStream () openStream
+            |> FontResolver.FontTableEntries.chooseBestEntry weight italic
+        
+        
+        let face = entry |> FontResolver.FontTableEntries.read openStream
+        FontImpl(face, name, entry.Weight, entry.Italic)
 
 
-
-type Font private(impl : FontImpl, family : string, style : FontStyle) =
+type Font private(impl : FontImpl, family : string) =
 
     static let symbola = 
         lazy (
             let impl = FontImpl.Symbola
-            new Font(impl, impl.Family, impl.Style)
+            new Font(impl, impl.Family)
         )
 
-    static let systemTable = System.Collections.Concurrent.ConcurrentDictionary<string * FontStyle, FontImpl>()
+    static let systemTable = System.Collections.Concurrent.ConcurrentDictionary<string * int * bool, FontImpl>()
     static let fileTable = System.Collections.Concurrent.ConcurrentDictionary<string, FontImpl>()
 
+    
+    static let copyStream (stream : System.IO.Stream) =
+        let arr = 
+            use data = new System.IO.MemoryStream()
+            stream.CopyTo(data)
+            data.ToArray()
+            
+        fun () -> new System.IO.MemoryStream(arr) :> System.IO.Stream
+    
+    
     static member Symbola = symbola.Value
 
     member x.Family = family
@@ -475,32 +431,76 @@ type Font private(impl : FontImpl, family : string, style : FontStyle) =
     member x.LineGap = impl.LineGap
     member x.InternalLeading = impl.InternalLeading
     member x.ExternalLeading = impl.ExternalLeading
-    member x.Style = style
+    member x.Style = impl.Style
+    member x.Weight = impl.Weight
+    member x.Italic = impl.Italic
     member x.Spacing = impl.Spacing
     member x.GetGlyph(c : CodePoint) = impl.GetGlyph(c)
     member x.GetKerning(l : CodePoint, r : CodePoint) = impl.GetKerning(l,r)
 
-    static member Load(file : string) =
+    static member Load(file : string, weight : int, italic : bool) =
         let impl =
             fileTable.GetOrAdd(file, fun file ->
-                let impl = FontImpl(file)
+                let impl = FontImpl(file, weight, italic)
                 impl
             )
-        Font(impl, impl.Family, impl.Style)
+        Font(impl, impl.Family)
+        
+    static member Load(file : string) =
+        Font.Load(file, 400, false)
+        
+    static member Load(file : string, style : FontStyle) =
+        let weight =
+            match style with
+            | FontStyle.Bold | FontStyle.BoldItalic -> 700
+            | _ -> 400
+        let italic =
+            match style with
+            | FontStyle.Italic | FontStyle.BoldItalic -> true
+            | _ -> false
+        Font.Load(file, weight, italic)
+        
+    new(stream : System.IO.Stream, weight : int, italic : bool) =
+        let openStream = copyStream stream
+        let impl = FontImpl("Stream", openStream, weight, italic)
+        Font(impl, impl.Family)
+        
+    new(stream : System.IO.Stream, style : FontStyle) =
+        let weight =
+            match style with
+            | FontStyle.Bold | FontStyle.BoldItalic -> 700
+            | _ -> 400
+        let italic =
+            match style with
+            | FontStyle.Italic | FontStyle.BoldItalic -> true
+            | _ -> false
+        Font(stream, weight, italic)
         
     new(stream : System.IO.Stream) =
-        let impl = FontImpl(stream)
-        Font(impl, impl.Family, impl.Style)
+        Font(stream, 400, false)
 
-    new(family : string, style : FontStyle) =
+    new(family : string, weight : int, italic : bool) =
         let impl =
-            systemTable.GetOrAdd((family, style), fun (family, style) ->
-                let impl = FontImpl(FontResolver.resolveFont family style)
+            systemTable.GetOrAdd((family, weight, italic), fun (family, weight, italic) ->
+                let (face, familyName, weight, italic) = FontResolver.loadTypeface family weight italic
+                let impl = FontImpl(face, familyName, weight, italic)
                 impl
             )
-        Font(impl, family, style)
+        Font(impl, family)
     
-    new(family : string) = Font(family, FontStyle.Regular)
+    new(family : string, style : FontStyle) =
+        let weight =
+            match style with
+            | FontStyle.Bold | FontStyle.BoldItalic -> 700
+            | _ -> 400
+        let italic =
+            match style with
+            | FontStyle.Italic | FontStyle.BoldItalic -> true
+            | _ -> false
+        Font(family, weight, italic)
+            
+    
+    new(family : string) = Font(family, 400, false)
 
 type ShapeCache(r : IRuntime) =
     static let cache = ConcurrentDictionary<IRuntime, ShapeCache>()
