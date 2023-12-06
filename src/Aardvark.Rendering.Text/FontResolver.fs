@@ -9,6 +9,8 @@ open System.Security
 open FuzzySharp
 open Typography.OpenFont
 
+#nowarn "9"
+
 module internal FontResolver =
     
     type FontTableEntry<'a> =
@@ -237,9 +239,7 @@ module internal FontResolver =
                         
                 FontTable result
             )
-    
-    
-    
+
     module private MacOs =
         open System.Runtime.InteropServices
         open System.IO
