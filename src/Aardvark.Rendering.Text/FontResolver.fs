@@ -144,10 +144,9 @@ module internal FontResolver =
             let (_, key) = keys.[res.Index]
             let entries = table.[key]
             FontTableEntries.chooseBestEntry weight italic entries
-        
     
     module private Win32 =
-        
+        open System.Runtime.InteropServices
 
         type HKey =
             | HKEY_CLASSES_ROOT = 0x80000000
@@ -172,37 +171,73 @@ module internal FontResolver =
 
         [<DllImport("kernel32.dll")>]
         extern int RegGetValue(HKey hkey, string lpSubKey, string lpValue, Flags dwFlags, uint32& pdwType, nativeint pvData, uint32& pcbData)
-        
-        let tryGetFontFileName (family : string) (weight : int) (italic : bool) =
 
-            // TODO: respect weight and italic properly
-            let bold = weight >= 700
-            let suffix =
-                if bold then
-                    if italic then " Bold Italic"
-                    else " Bold"
-                else
-                    if italic then " Italic"
-                    else ""
 
-            let name = sprintf "%s%s (TrueType)" family suffix
-            let arr : byte[] = Array.zeroCreate 1024
-            let gc = GCHandle.Alloc(arr, GCHandleType.Pinned)
+        [<DllImport("kernel32.dll")>]
+        extern int RegEnumValue(HKey hKey, int index, byte* lpValueName, int& lpcchValueName, void* lpReserved, void* lpType, byte* lpData, int& lpcbData)
 
-            try
-                let ptr = gc.AddrOfPinnedObject()
-                let mutable pdwType = 0u
-                let mutable pcbData = uint32 arr.Length
-                if RegGetValue(HKey.HKEY_LOCAL_MACHINE, "software\\microsoft\\windows nt\\currentversion\\Fonts", name, Flags.RRF_RT_REG_SZ, &pdwType, ptr, &pcbData) = 0 then
-                    if pcbData > 0u && arr.[int pcbData - 1] = 0uy then pcbData <- pcbData - 1u
-                    let file = System.Text.Encoding.UTF8.GetString(arr, 0, int pcbData)
-                    let path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Fonts), file)
-                    Some path
-                else
-                    None
-            finally
-                gc.Free()
+        [<DllImport("kernel32.dll")>]
+        extern int RegOpenKeyExA(HKey hHey, string lpSubKey, int ulOptions, int samDesired, HKey& res)
 
+        let table =
+            lazy (
+
+                let mutable key = Unchecked.defaultof<HKey>
+                let ret = RegOpenKeyExA(HKey.HKEY_LOCAL_MACHINE, "software\\microsoft\\windows nt\\currentversion\\Fonts", 0, 0x20019, &key)
+
+
+                let mutable index = 0
+
+                let mutable run = true
+
+                let nameRx = System.Text.RegularExpressions.Regex @"^(.*?)[ \t]*(Bold|Semibold|Thin|Italic)?[ \t]*\([ \t]*(TrueType|OpenType)[ \t]*\)[ \t]*$"
+                
+                let result = System.Collections.Generic.List<_>()
+                let fonts = Environment.GetFolderPath Environment.SpecialFolder.Fonts
+                while run do
+
+                    let valueBuffer = Array.zeroCreate<byte> 8192
+                    let mutable valueLen = valueBuffer.Length
+
+                    let nameBuffer = Array.zeroCreate<byte> 8192
+                    let mutable nameLen = nameBuffer.Length
+
+                    use pValue = fixed valueBuffer
+                    use pName = fixed nameBuffer
+                    
+                    
+                    
+                    let ret = RegEnumValue(key, index, pName, &nameLen, 0n, 0n, pValue, &valueLen)
+                    if ret = 0 then
+                        let name = System.Text.Encoding.ASCII.GetString(nameBuffer, 0, nameLen)
+                        let file = System.Text.Encoding.ASCII.GetString(valueBuffer, 0, valueLen)
+                        
+                        let familyName =
+                            let m = nameRx.Match name
+                            if m.Success then
+                                let value = m.Groups.[1].Value
+                                if value.Contains ";" then None
+                                else Some value
+                            else
+                                None
+                        
+                        let path = Path.Combine(fonts, file)
+                        if File.Exists path then
+                            let entries = FontTableEntries.ofFile path
+                            match familyName with
+                            | Some f ->
+                                for r in entries do result.Add { r with FamilyName = f }
+                            | None ->
+                                result.AddRange entries
+                            
+                                
+                        index <- index + 1
+                    else
+                        run <- false
+                        
+                FontTable result
+            )
+    
     
     
     module private MacOs =
@@ -344,9 +379,7 @@ module internal FontResolver =
             let entry = 
                 match Environment.OSVersion with
                 | Windows ->
-                    match Win32.tryGetFontFileName family weight italic with
-                    | Some file -> Some { FontTableEntry.FamilyName = family; Tag = file; Weight = weight; Italic = italic; Offset = 0; SubFamilyName = "" }
-                    | None -> failwithf "[Text] could not get font %s %A %s" family weight (if italic then "italic" else "")
+                    Win32.table.Value.Find(family, weight, italic) |> Some
                 | Mac ->
                     MacOs.CFText.table.Value.Find(family, weight, italic) |> Some
                 | _ ->
