@@ -190,7 +190,7 @@ module internal FontResolver =
 
                 let mutable run = true
 
-                let nameRx = System.Text.RegularExpressions.Regex @"^(.*?)[ \t]*(Bold|Semibold|Thin|Italic)?[ \t]*\([ \t]*(TrueType|OpenType)[ \t]*\)[ \t]*$"
+                let nameRx = System.Text.RegularExpressions.Regex(@"^(.*?)[ \t]*(Bold Italic|Light Italic|Thin Italic|Bold|Semibold|Thin|Italic|Light)?[ \t]*\([ \t]*(TrueType|OpenType)[ \t]*\)[ \t]*$", System.Text.RegularExpressions.RegexOptions.IgnoreCase)
                 
                 let result = System.Collections.Generic.List<_>()
                 let fonts = Environment.GetFolderPath Environment.SpecialFolder.Fonts
@@ -209,8 +209,8 @@ module internal FontResolver =
                     
                     let ret = RegEnumValue(key, index, pName, &nameLen, 0n, 0n, pValue, &valueLen)
                     if ret = 0 then
-                        let name = System.Text.Encoding.ASCII.GetString(nameBuffer, 0, nameLen)
-                        let file = System.Text.Encoding.ASCII.GetString(valueBuffer, 0, valueLen)
+                        let name = System.Text.Encoding.ASCII.GetString(nameBuffer, 0, nameLen).Trim(' ', char 0)
+                        let file = System.Text.Encoding.ASCII.GetString(valueBuffer, 0, valueLen).Trim(' ', char 0)
                         
                         let familyName =
                             let m = nameRx.Match name
