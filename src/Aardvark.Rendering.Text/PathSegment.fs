@@ -1401,8 +1401,6 @@ module PathSegment =
             
             let lfSq = F.LengthSquared
             
-            let lfSqCbrt = Fun.Cbrt F.LengthSquared
-            
             let diff = lfSq**(-1.5) * ((F.X*H.Y - F.Y*H.X) - 3.0 * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) / lfSq)
             //     
             //
