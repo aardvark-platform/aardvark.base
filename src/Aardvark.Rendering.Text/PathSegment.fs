@@ -944,15 +944,13 @@ module PathSegment =
             let dd = (p3 - p0)
             let len = Vec.length dd
             let d03 = dd / len
-            let d01 = Vec.normalize (p1 - p0)
-            let d23 = Vec.normalize (p3 - p2)
 
             let n = V2d(-d03.Y, d03.X)
             let h1 = Vec.dot (p1 - p0) n
             let h2 = Vec.dot (p2 - p0) n
 
             if Fun.IsTiny(h1, epsilon) && Fun.IsTiny(h2, epsilon) then
-                line p0 p1
+                line p0 p3
             else
                 let f3 = -p0 + 3.0*p1 - 3.0*p2 + p3
                 if Fun.IsTiny(f3, epsilon) then
@@ -994,7 +992,7 @@ module PathSegment =
             let h2 = Vec.dot (p2 - p0) n
 
             if Fun.IsTiny(h1, epsilon) && Fun.IsTiny(h2, epsilon) then
-                tryLine p0 p1
+                tryLine p0 p3
             else        
                 // let f3 = -p0 + 3.0*p1 - 3.0*p2 + p3
                 // let f2 = 3.0*p0 - 6.0*p1 + 3.0*p2
@@ -1324,7 +1322,7 @@ module PathSegment =
             
             
             let df = derivative t seg
-            let ddf = secondDerivative t seg
+            let ddf = secondDerivative t seg 
             (df.X*ddf.Y - df.Y*ddf.X) / (df.LengthSquared ** 1.5)
           
     /// evaluates the curvature-derivative for the given parameter (t <- [0;1]).
@@ -1356,14 +1354,64 @@ module PathSegment =
             
             // (Fx*Hy - Fy*Hx) * (Fx^2 + Fy^2)^(2/3) + (Fx*Gy - Fy*Gx) * (2/3) * (Fx^2 + Fy^2)^(-1/3) * 2*(Fx*Gx + Fy*Gy)
             
+            // A := lim dp->0 [(c(p + dp) - c(p)) / |dp|]
+            
+            // p(t) = f(t)
+            // dp(t) = f'(t) * dt
+            
+            // dc/sqrt(dpx^2 + dpy^2)
+            
+            
+            // A^2 = dc^2/(dpx^2 + dpy^2)
+            
+            
+            // A^2 = dc^2/(f'x(t)^2*dt^2 + f'y(t)^2*dt^2)
+            // A^2 = (1 / (f'x(t)^2 + f'y(t)^2)) * (dc^/dt)^2
+            // A = (1 / |f'|) * (dc/dt)
+            
+            
+            
+            // (c(f(t) + f'(t) * dt) - c(f(t))) / |f'(t) * dt|
+            // (1 / |f'(t)|) * lim dt->0 [(C(t + dt) - C(t)) / dt]
+            
+            // (1 / |f'(t)|) * dC/dt
+            
+            
+            // (1 / |f'(t)|) * (c(t + dt) - c(t)) / dt
+            
+            
+            // c = (F.X*G.Y - F.Y*G.X) * (F.X^2 + F.Y^2)^(-3/2)
+            
+            // dc / dt = (G.X*G.Y + F.X*H.Y - G.Y*G.X - F.Y*H.X) * (F.X^2 + F.Y^2)^(-3/2) -
+            // 3 * (F.X*G.Y - F.Y*G.X) * (F.X^2 + F.Y^2)^(-5/2) * (F.X*G.X + F.Y*G.Y)
+            
+            
+            // dc / dt = (F.X*H.Y - F.Y*H.X) * (F.X^2 + F.Y^2)^(-3/2) -
+            // 3 * (F.X*G.Y - F.Y*G.X) * (F.X^2 + F.Y^2)^(-5/2) * (F.X*G.X + F.Y*G.Y)
+            
+            
+            // dc / dt = (F.X^2 + F.Y^2)^(-3/2) * [(F.X*H.Y - F.Y*H.X) -
+            // 3 * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) * (F.X^2 + F.Y^2)^-1]
+            
+            
+            
             let F = derivative t seg
             let G = secondDerivative t seg
             let H = thirdDerivative t seg
+            
+            let lfSq = F.LengthSquared
+            
             let lfSqCbrt = Fun.Cbrt F.LengthSquared
             
-            (F.X*H.Y - F.Y*H.X) * sqr lfSqCbrt +
-            (4.0/3.0) * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) / lfSqCbrt
+            let diff = lfSq**(-1.5) * ((F.X*H.Y - F.Y*H.X) - 3.0 * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) / lfSq)
+            //     
+            //
+            // let diff = 
+            //     (F.X*H.Y - F.Y*H.X) * sqr lfSqCbrt +
+            //     (4.0/3.0) * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) / lfSqCbrt
 
+            diff / F.Length
+    
 
     /// finds all parameters t <- [0;1] where the curvature changes its sign.
     /// note that only Bezier3 segments may have inflection points.
@@ -1435,7 +1483,7 @@ module PathSegment =
                 Vec.normalize (s*s*u + 2.0*t*s*v + t*t*w)
         
     /// gets a normalized (left) normal at the given parameter (t <- [0;1])
-    let inline normal (t : float) (seg : PathSegment) =
+    let normal (t : float) (seg : PathSegment) =
         let t = tangent t seg
         V2d(-t.Y, t.X)
 
@@ -1623,10 +1671,10 @@ module PathSegment =
     /// tries to get the t-parameter for a point very near the segment (within eps)
     let tryGetT (eps : float) (pt : V2d) (segment : PathSegment) =
         
-        let inline newtonImprove (t : float) =
+        let newtonImprove (iter : int) (t : float) =
             let mutable t = t
             let mutable dt = 1000.0
-            let mutable iter = 10
+            let mutable iter = iter
             while iter > 0 && not (Fun.IsTiny (dt, 1E-15)) do
                 // err^2 = min
                 // 2*err * err' = 0
@@ -1643,7 +1691,7 @@ module PathSegment =
                 let ddv = 2.0 * (Vec.dot d d + Vec.dot err dd)
                 
                 
-                dt <- -dv / ddv
+                dt <- -0.8 * dv / ddv
                 //printfn "%d: %A %A -> %A" iter t dv dt
                 t <- t + dt
                 iter <- iter - 1
@@ -1687,9 +1735,9 @@ module PathSegment =
                     let d1 = if t1 >= 0.0 && t1 <= 1.0 then Vec.length (a * sqr t1 + b * t1 + c) else System.Double.PositiveInfinity
                     
                     if d0 < d1 then
-                        newtonImprove t0
+                        newtonImprove 20 t0
                     else
-                        if not (System.Double.IsPositiveInfinity d1) then newtonImprove t1
+                        if not (System.Double.IsPositiveInfinity d1) then newtonImprove 20 t1
                         else None
                 else
                     None
@@ -1711,25 +1759,26 @@ module PathSegment =
                     let struct(t0, t1, t2) = 
                         if box.Size.MajorDim = 0 then Polynomial.RealRootsOf(a.X, b.X, c.X, d.X)
                         else Polynomial.RealRootsOf(a.Y, b.Y, c.Y, d.Y)
+                    
+                    
+                    let t0 = if t0 >= -eps && t0 <= 1.0 + eps then newtonImprove 10 t0 else None
+                    let t1 = if t1 >= -eps && t1 <= 1.0 + eps then newtonImprove 10 t1 else None
+                    let t2 = if t2 >= -eps && t2 <= 1.0 + eps then newtonImprove 10 t2 else None
                         
-                    let d0 = if t0 >= 0.0 && t0 <= 1.0 then Vec.length (a * sqr t0 + b * t0 + c) else System.Double.PositiveInfinity
-                    let d1 = if t1 >= 0.0 && t1 <= 1.0 then Vec.length (a * sqr t1 + b * t1 + c) else System.Double.PositiveInfinity
-                    let d2 = if t2 >= 0.0 && t2 <= 1.0 then Vec.length (a * sqr t2 + b * t2 + c) else System.Double.PositiveInfinity
+                    let d0 = match t0 with | Some t0 -> Vec.length (a * sqr t0 + b * t0 + c) | _ -> System.Double.PositiveInfinity
+                    let d1 = match t1 with | Some t1 -> Vec.length (a * sqr t1 + b * t1 + c) | _ -> System.Double.PositiveInfinity
+                    let d2 = match t2 with | Some t2 -> Vec.length (a * sqr t2 + b * t2 + c) | _ -> System.Double.PositiveInfinity
                     
                     
-                    if d0 < d1 then
-                        if d0 < d2 then
-                            newtonImprove t0
+                    let result = 
+                        if d0 < d1 then
+                            if d0 < d2 then t0
+                            else t2
                         else
-                            if not (System.Double.IsPositiveInfinity d2) then newtonImprove t2
-                            else None
-                    else
-                        if d1 < d2 then
-                            newtonImprove t1
-                        else
-                            if not (System.Double.IsPositiveInfinity d2) then newtonImprove t2
-                            else None
-                    
+                            if d1 < d2 then t1
+                            else t2
+                            
+                    result |> Option.bind (newtonImprove 30)
                     
                 else
                     None
@@ -1745,7 +1794,7 @@ module PathSegment =
                 let t = arcT a da angle
                 
                 if Fun.ApproximateEquals(m.TransformPos c, pt, eps) then
-                    newtonImprove t
+                    newtonImprove 30 t
                 else
                     None    
        
