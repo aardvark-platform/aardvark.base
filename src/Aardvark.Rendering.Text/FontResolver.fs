@@ -122,13 +122,14 @@ module internal FontResolver =
             let dict = System.Collections.Generic.Dictionary<string, list<_>>()
             
             for e in entries do
-                let key = normalizeFamilyName e.FamilyName
+                if not (isNull e.FamilyName) then
+                    let key = normalizeFamilyName e.FamilyName
                 
-                match dict.TryGetValue key with
-                | (true,  s) ->
-                    dict.[key] <-  e :: s
-                | _ ->
-                    dict.[key] <- [e]
+                    match dict.TryGetValue key with
+                    | (true,  s) ->
+                        dict.[key] <-  e :: s
+                    | _ ->
+                        dict.[key] <- [e]
                     
             dict
             
@@ -227,9 +228,9 @@ module internal FontResolver =
                         if File.Exists path then
                             let entries = FontTableEntries.ofFile path
                             match familyName with
-                            | Some f ->
+                            | Some f when not (isNull f) ->
                                 for r in entries do result.Add { r with FamilyName = f }
-                            | None ->
+                            | _ ->
                                 result.AddRange entries
                             
                                 
