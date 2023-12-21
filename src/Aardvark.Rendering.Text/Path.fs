@@ -58,6 +58,22 @@ module Path =
                 [<TrafoOffsetAndScale>] instanceTrafo : M34d
             }
 
+        type VertexNoSampleShading =
+            {
+                [<Position>] p : V4d
+                [<KLMKind>] klmKind : V4d
+                [<ShapeTrafoR0>] tr0 : V4d
+                [<ShapeTrafoR1>] tr1 : V4d
+                [<PathColor>] color : V4d
+
+                [<SamplePosition>] samplePos : V2d
+                
+                [<DepthLayer>] layer : float
+
+
+                [<TrafoOffsetAndScale>] instanceTrafo : M34d
+            }
+
         let eps = 0.00001
         [<Inline>]
         let keepsWinding (isOrtho : bool) (t : M44d) =
@@ -204,6 +220,45 @@ module Path =
         let pathFragment(v : Vertex) =
             fragment {
                 let kind = v.klmKind.W + 0.001 * v.samplePos.X
+   
+                let mutable color = v.color
+
+                if uniform.FillGlyphs then
+                    if kind > 1.5 && kind < 3.5 then
+                        // bezier2
+                        let ci = v.klmKind.XYZ
+                        let f = (ci.X * ci.X - ci.Y) * ci.Z
+                        if f > 0.0 then
+                            discard()
+                        
+                    elif kind > 3.5 && kind < 5.5 then
+                        // arc
+                        let ci = v.klmKind.XYZ
+                        let f = ((ci.X * ci.X + ci.Y*ci.Y) - 1.0) * ci.Z
+                    
+                        if f > 0.0 then
+                            discard()
+
+                     elif kind > 5.5  then
+                        let ci = v.klmKind.XYZ
+                        let f = ci.X * ci.X * ci.X - ci.Y * ci.Z
+                        if f > 0.0 then
+                            discard()
+                else
+                    if kind > 1.5 && kind < 3.5 then
+                        color <- V4d.IOOI
+                    elif kind > 3.5 && kind < 5.5 then
+                        color <- V4d.OIOI
+                    elif kind > 5.5  then
+                        color <- V4d.OOII
+
+                return color
+                    
+            }
+        
+        let pathFragmentNoSampleShading(v : VertexNoSampleShading) =
+            fragment {
+                let kind = v.klmKind.W 
    
                 let mutable color = v.color
 

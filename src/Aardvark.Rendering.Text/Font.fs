@@ -502,6 +502,11 @@ type Font private(impl : FontImpl, family : string) =
     
     new(family : string) = Font(family, 400, false)
 
+
+module FontRenderingSettings =
+    let mutable DisableSampleShading = false
+
+
 type ShapeCache(r : IRuntime) =
     static let cache = ConcurrentDictionary<IRuntime, ShapeCache>()
 
@@ -519,19 +524,26 @@ type ShapeCache(r : IRuntime) =
     let boundarySurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
     let billboardSurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
 
+
+    let pathShader =
+        if FontRenderingSettings.DisableSampleShading then
+            Path.Shader.pathFragmentNoSampleShading |> toEffect
+        else
+            Path.Shader.pathFragment |> toEffect
+
     let effect =
         FShade.Effect.compose [
             Path.Shader.pathVertex      |> toEffect
             //Path.Shader.pathTrafo       |> toEffect
             Path.Shader.depthBiasVs     |> toEffect
-            Path.Shader.pathFragment    |> toEffect
+            pathShader 
         ]
         
     let instancedEffect =
         FShade.Effect.compose [
             Path.Shader.pathVertexInstanced |> toEffect
             Path.Shader.depthBiasVs         |> toEffect
-            Path.Shader.pathFragment        |> toEffect
+            pathShader 
         ]
 
     let boundaryEffect =
@@ -551,14 +563,14 @@ type ShapeCache(r : IRuntime) =
         FShade.Effect.compose [
             Path.Shader.pathVertexBillboard |> toEffect
             Path.Shader.depthBiasVs         |> toEffect
-            Path.Shader.pathFragment        |> toEffect
+            pathShader 
         ]
         
     let instancedBillboardEffect =
         FShade.Effect.compose [
             Path.Shader.pathVertexInstancedBillboard |> toEffect
             Path.Shader.depthBiasVs         |> toEffect
-            Path.Shader.pathFragment        |> toEffect
+            pathShader
         ]
 
     let surface (s : IFramebufferSignature) =
@@ -566,7 +578,7 @@ type ShapeCache(r : IRuntime) =
             r.PrepareEffect(
                 s, [
                     Path.Shader.pathVertex      |> toEffect
-                    Path.Shader.pathFragment    |> toEffect
+                    pathShader
                 ]
             )
         )
