@@ -9,6 +9,6 @@
 [Gallery](https://github.com/aardvark-platform/aardvark.docs/wiki/Gallery) | 
 [Packages&Repositories](https://github.com/aardvark-platform/aardvark.docs/wiki/Packages-and-Repositories)
 
-Aardvark.Base is the foundation of the open-source [Aardvark Platform](https://github.com/aardvark-platform) for visual computing, real-time graphics, and visualization. It consists of multiple platform-independent packages (netstandard2.0) that deliver essential tools for visual computing, including vectors, matrices, algorithms, and data structures.
+Aardvark.Base is the foundation of the open-source [Aardvark Platform](https://github.com/aardvark-platform) for visual computing, real-time graphics, and visualization. It consists of multiple platform-independent packages (netstandard2.0) that deliver essential tools for visual computing, including vectors, matrices, algorithms, and data structures. Supported platforms are windows, linux, macOS.
 
 You can find demos and code in the Gallery and Packages&Repositories links above. [This repository's wiki](https://github.com/aardvark-platform/aardvark.base/wiki) hosts technical documentation. For more information, please refer to the [aardvark.docs wiki](https://github.com/aardvark-platform/aardvark.docs/wiki).
