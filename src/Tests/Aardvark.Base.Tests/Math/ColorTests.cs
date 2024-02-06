@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Aardvark.Base;
 using NUnit.Framework;
 
@@ -244,6 +241,18 @@ namespace Aardvark.Tests
                 Assert.IsTrue(C4b.TryParse(sgl, out C4b b));
                 Assert.AreEqual(a, b);
             }
+        }
+
+        [Test]
+        [SetCulture("de-DE")]
+        public void ParseWithBadCulture()
+        {
+            var rnd = new RandomSystem(1);
+            var col = rnd.UniformC4d();
+            var str = col.ToString();
+            var res = C4d.Parse(str);
+
+            Assert.True(Fun.ApproximateEquals(col, res));
         }
     }
 }

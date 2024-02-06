@@ -259,6 +259,7 @@ namespace Aardvark.Base
     //#     var getptr = "&" + ((ft == Meta.ByteType) ? fields[2] : fields[0]);
     //#     var rgba = t.HasAlpha ? "RGBA" : "RGB";
     //#     var maxval = maxvalmap[ft];
+    //#     var parseNumberStyle = isReal ? "NumberStyles.Float | NumberStyles.AllowThousands" : "NumberStyles.Integer";
     #region __type__
 
     /// <summary>
@@ -1165,7 +1166,7 @@ namespace Aardvark.Base
 
                 __ftype__ parse(Text t)
                 {
-                    if (!__ftype__.TryParse(t.ToString(), out __ftype__ value))
+                    if (!__ftype__.TryParse(t.ToString(), __parseNumberStyle__, CultureInfo.InvariantCulture, out __ftype__ value))
                         success = false;
 
                     return value;

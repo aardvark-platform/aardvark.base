@@ -1619,7 +1619,7 @@ namespace Aardvark.Base
 
                 byte parse(Text t)
                 {
-                    if (!byte.TryParse(t.ToString(), out byte value))
+                    if (!byte.TryParse(t.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out byte value))
                         success = false;
 
                     return value;
@@ -3894,7 +3894,7 @@ namespace Aardvark.Base
 
                 ushort parse(Text t)
                 {
-                    if (!ushort.TryParse(t.ToString(), out ushort value))
+                    if (!ushort.TryParse(t.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort value))
                         success = false;
 
                     return value;
@@ -6092,7 +6092,7 @@ namespace Aardvark.Base
 
                 uint parse(Text t)
                 {
-                    if (!uint.TryParse(t.ToString(), out uint value))
+                    if (!uint.TryParse(t.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out uint value))
                         success = false;
 
                     return value;
@@ -8165,7 +8165,7 @@ namespace Aardvark.Base
 
                 float parse(Text t)
                 {
-                    if (!float.TryParse(t.ToString(), out float value))
+                    if (!float.TryParse(t.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out float value))
                         success = false;
 
                     return value;
@@ -10275,7 +10275,7 @@ namespace Aardvark.Base
 
                 double parse(Text t)
                 {
-                    if (!double.TryParse(t.ToString(), out double value))
+                    if (!double.TryParse(t.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double value))
                         success = false;
 
                     return value;
@@ -12905,7 +12905,7 @@ namespace Aardvark.Base
 
                 byte parse(Text t)
                 {
-                    if (!byte.TryParse(t.ToString(), out byte value))
+                    if (!byte.TryParse(t.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out byte value))
                         success = false;
 
                     return value;
@@ -15464,7 +15464,7 @@ namespace Aardvark.Base
 
                 ushort parse(Text t)
                 {
-                    if (!ushort.TryParse(t.ToString(), out ushort value))
+                    if (!ushort.TryParse(t.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out ushort value))
                         success = false;
 
                     return value;
@@ -17928,7 +17928,7 @@ namespace Aardvark.Base
 
                 uint parse(Text t)
                 {
-                    if (!uint.TryParse(t.ToString(), out uint value))
+                    if (!uint.TryParse(t.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out uint value))
                         success = false;
 
                     return value;
@@ -20182,7 +20182,7 @@ namespace Aardvark.Base
 
                 float parse(Text t)
                 {
-                    if (!float.TryParse(t.ToString(), out float value))
+                    if (!float.TryParse(t.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out float value))
                         success = false;
 
                     return value;
@@ -22476,7 +22476,7 @@ namespace Aardvark.Base
 
                 double parse(Text t)
                 {
-                    if (!double.TryParse(t.ToString(), out double value))
+                    if (!double.TryParse(t.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double value))
                         success = false;
 
                     return value;
