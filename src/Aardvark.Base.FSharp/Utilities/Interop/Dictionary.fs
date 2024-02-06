@@ -1,41 +1,15 @@
 ﻿namespace Aardvark.Base
 
-[<AutoOpen>]
-module CSharpCollectionExtensions =
-    open System
-    open System.Runtime.CompilerServices
-    open System.Collections.Generic
-    open System.Runtime.InteropServices 
-
-    type public DictionaryExtensions = 
-
-        [<Obsolete("Broken. Use IDictionary.TryPop instead.")>]
-        [<Extension>] 
-        static member TryRemove(x : Dictionary<'a,'b>, k,[<Out>] r: byref<'b>) =
-            match x.TryGetValue k with
-             | (true,v) -> r <- v; true
-             | _ -> false
-
-        [<Obsolete("Use IDictionary.GetCreate instead.")>]
-        [<Extension>] 
-        static member GetOrAdd(x : Dictionary<'a,'b>, k : 'a, creator : 'a -> 'b) =
-            match x.TryGetValue k with
-             | (true,v) -> v
-             | _ ->
-                let v = creator k
-                x.Add(k,v) |> ignore
-                v
-
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Dictionary =
     open System.Collections.Generic
 
     let empty<'k, 'v when 'k : equality> = Dictionary<'k, 'v>()
-    let emptyNoEquality<'k,'v> = 
+    let emptyNoEquality<'k,'v> =
         Dictionary<'k,'v>(
-            { new IEqualityComparer<'k> with 
+            { new IEqualityComparer<'k> with
                     member x.Equals(a,b)    = Unchecked.equals a b
-                    member x.GetHashCode(t) = Unchecked.hash t 
+                    member x.GetHashCode(t) = Unchecked.hash t
             })
 
     let inline add (key : 'k) (value : 'v) (d : Dictionary<'k, 'v>) =
@@ -49,7 +23,6 @@ module Dictionary =
 
     let inline clear (d : Dictionary<'k, 'v>) =
         d.Clear()
-
 
     let inline map (f : 'k -> 'a -> 'b) (d : Dictionary<'k, 'a>) =
         let result = Dictionary()
@@ -75,10 +48,21 @@ module Dictionary =
 
     let inline tryFind (key : 'k) (d : Dictionary<'k, 'v>) =
         match d.TryGetValue key with
-            | (true, v) -> Some v
-            | _ -> None
+        | (true, v) -> Some v
+        | _ -> None
+
+    let inline tryFindV (key : 'k) (d : Dictionary<'k, 'v>) =
+        let mutable value = Unchecked.defaultof<_>
+        if d.TryGetValue(key, &value) then ValueSome value
+        else ValueNone
 
     let inline ofSeq (elements : seq<'k * 'v>) =
+        let result = Dictionary()
+        for (k,v) in elements do
+            result.[k] <- v
+        result
+
+    let inline ofSeqV (elements : seq<struct('k * 'v)>) =
         let result = Dictionary()
         for (k,v) in elements do
             result.[k] <- v
@@ -87,8 +71,14 @@ module Dictionary =
     let inline ofList (elements : list<'k * 'v>) =
         ofSeq elements
 
+    let inline ofListV (elements : list<struct('k * 'v)>) =
+        ofSeqV elements
+
     let inline ofArray (elements : ('k * 'v)[]) =
         ofSeq elements
+
+    let inline ofArrayV (elements : (struct('k * 'v))[]) =
+        ofSeqV elements
 
     let inline ofMap (elements : Map<'k, 'v>) =
         elements |> Map.toSeq |> ofSeq
@@ -96,11 +86,20 @@ module Dictionary =
     let inline toSeq (d : Dictionary<'k, 'v>) =
         d |> Seq.map (fun (KeyValue(k,v)) -> k,v)
 
+    let inline toSeqV (d : Dictionary<'k, 'v>) =
+        d |> Seq.map (fun (KeyValue(k,v)) -> struct(k,v))
+
     let inline toList (d : Dictionary<'k, 'v>) =
         d |> toSeq |> Seq.toList
 
+    let inline toListV (d : Dictionary<'k, 'v>) =
+        d |> toSeqV |> Seq.toList
+
     let inline toArray (d : Dictionary<'k, 'v>) =
         d |> toSeq |> Seq.toArray
+
+    let inline toArrayV (d : Dictionary<'k, 'v>) =
+        d |> toSeqV |> Seq.toArray
 
     let inline toMap (d : Dictionary<'k, 'v>) =
         d |> toSeq |> Map.ofSeq
@@ -242,7 +241,6 @@ module SymDict =
     let inline clear (d : SymbolDict<'v>) =
         d.Clear()
 
-
     let inline map (f : Symbol -> 'a -> 'b) (d : SymbolDict<'a>) =
         let result = SymbolDict()
         for (KeyValue(k,v)) in d do
@@ -267,10 +265,21 @@ module SymDict =
 
     let inline tryFind (key : Symbol) (d : SymbolDict<'v>) =
         match d.TryGetValue key with
-            | (true, v) -> Some v
-            | _ -> None
+        | (true, v) -> Some v
+        | _ -> None
+
+    let inline tryFindV (key : Symbol) (d : SymbolDict<'v>) =
+        let mutable value = Unchecked.defaultof<_>
+        if d.TryGetValue(key, &value) then ValueSome value
+        else ValueNone
 
     let inline ofSeq (elements : seq<Symbol * 'v>) =
+        let result = SymbolDict()
+        for (k,v) in elements do
+            result.Add(k,v)
+        result
+
+    let inline ofSeqV (elements : seq<struct(Symbol * 'v)>) =
         let result = SymbolDict()
         for (k,v) in elements do
             result.Add(k,v)
@@ -279,8 +288,14 @@ module SymDict =
     let inline ofList (elements : list<Symbol * 'v>) =
         ofSeq elements
 
+    let inline ofListV (elements : list<struct(Symbol * 'v)>) =
+        ofSeqV elements
+
     let inline ofArray (elements : (Symbol * 'v)[]) =
         ofSeq elements
+
+    let inline ofArrayV (elements : (struct(Symbol * 'v))[]) =
+        ofSeqV elements
 
     let inline ofMap (elements : Map<Symbol, 'v>) =
         elements |> Map.toSeq |> ofSeq
@@ -288,11 +303,59 @@ module SymDict =
     let inline toSeq (d : SymbolDict<'v>) =
         d |> Seq.map (fun (KeyValue(k,v)) -> k,v)
 
+    let inline toSeqV (d : SymbolDict<'v>) =
+        d |> Seq.map (fun (KeyValue(k,v)) -> struct (k,v))
+
     let inline toList (d : SymbolDict<'v>) =
         d |> toSeq |> Seq.toList
 
+    let inline toListV (d : SymbolDict<'v>) =
+        d |> toSeqV |> Seq.toList
+
     let inline toArray (d : SymbolDict<'v>) =
-        d |> toSeq |> Seq.toArray  
+        d |> toSeq |> Seq.toArray
+
+    let inline toArrayV (d : SymbolDict<'v>) =
+        d |> toSeqV |> Seq.toArray
 
     let inline toMap (elements : SymbolDict<'v>) =
         elements |> toSeq |> Map.ofSeq
+
+
+[<AutoOpen>]
+module CSharpCollectionExtensions =
+    open System
+    open System.Runtime.CompilerServices
+    open System.Collections.Generic
+    open System.Runtime.InteropServices
+
+    type Dictionary<'Key, 'Value> with
+        member inline x.TryFind(key : 'Key) : 'Value option = Dictionary.tryFind key x
+        member inline x.TryFindV(key : 'Key) : 'Value voption = Dictionary.tryFindV key x
+
+    type Dict<'Key, 'Value> with
+        member inline x.TryFind(key : 'Key) : 'Value option = Dict.tryFind key x
+        member inline x.TryFindV(key : 'Key) : 'Value voption = Dict.tryFindV key x
+
+    type SymbolDict<'Value> with
+        member inline x.TryFind(key : Symbol) : 'Value option = SymDict.tryFind key x
+        member inline x.TryFindV(key : Symbol) : 'Value voption = SymDict.tryFindV key x
+
+    type public DictionaryExtensions =
+
+        [<Obsolete("Broken. Use IDictionary.TryPop instead.")>]
+        [<Extension>]
+        static member TryRemove(x : Dictionary<'a,'b>, k,[<Out>] r: byref<'b>) =
+            match x.TryGetValue k with
+            | (true,v) -> r <- v; true
+            | _ -> false
+
+        [<Obsolete("Use IDictionary.GetCreate instead.")>]
+        [<Extension>]
+        static member GetOrAdd(x : Dictionary<'a,'b>, k : 'a, creator : 'a -> 'b) =
+            match x.TryGetValue k with
+            | (true,v) -> v
+            | _ ->
+                let v = creator k
+                x.Add(k,v) |> ignore
+                v
