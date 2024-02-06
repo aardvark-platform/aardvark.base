@@ -1,3 +1,7 @@
+### 5.2.29
+* Fixed color parsing to be independent of the current culture (regression in 5.2.27)
+* Added more value variants for Dictionary, Dict, and SymbolDict functions
+
 ### 5.2.28
 * Added Brewer color schemes
 * Added String.replace
