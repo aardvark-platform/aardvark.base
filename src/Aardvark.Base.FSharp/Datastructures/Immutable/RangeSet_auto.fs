@@ -202,6 +202,13 @@ type RangeSet1i internal (store : MapExt<int32, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1i(newStore)
 
+    /// Returns the union of the set with the given set.
+    member inline x.Union(other : RangeSet1i) =
+        let mutable res = x
+        for r in other do
+            res <- res.Add r
+        res
+
     /// Returns the intersection of the set with the given range.
     member x.Intersect(r : Range1i) =
         if r.Max < r.Min then
@@ -223,14 +230,26 @@ type RangeSet1i internal (store : MapExt<int32, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1i(newStore)
 
-    /// Returns whether the given value is contained in the range set.
-    member x.Contains(v : int32) =
+    member private x.TryFindLeftBoundary(v : int32) =
         let struct (l, s, _) = MapExt.neighboursV v store
         match s with
-        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | ValueSome (i, k) -> if k = HalfRangeKind.Left then ValueSome i else ValueNone
         | _ ->
             match l with
-            | ValueSome (_, HalfRangeKind.Left) -> true
+            | ValueSome (i, HalfRangeKind.Left) -> ValueSome i
+            | _ -> ValueNone
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : int32) =
+        x.TryFindLeftBoundary v |> ValueOption.isSome
+
+    /// Returns whether the given range is contained in the set.
+    member x.Contains(r : Range1i) =
+        if r.Max < r.Min then false
+        elif r.Min = r.Max then x.Contains r.Min
+        else
+            match x.TryFindLeftBoundary r.Min, x.TryFindLeftBoundary r.Max with
+            | ValueSome l, ValueSome r -> l = r
             | _ -> false
 
     /// Returns the number of disjoint ranges in the set.
@@ -435,6 +454,9 @@ module RangeSet1i =
     /// Removes the given range from the set.
     let inline remove (range : Range1i) (set : RangeSet1i) = set.Remove range
 
+    /// Returns the union of two sets.
+    let inline union (l : RangeSet1i) (r : RangeSet1i) = l.Union r
+
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1i) (set : RangeSet1i) = set.Intersect range
 
@@ -443,6 +465,9 @@ module RangeSet1i =
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : int32) (set : RangeSet1i) = set.Contains value
+
+    /// Returns whether the given range is contained in the set.
+    let inline containsRange (range : Range1i) (set : RangeSet1i) = set.Contains range
 
     /// Returns the number of disjoint ranges in the set.
     let inline count (set : RangeSet1i) = set.Count
@@ -630,6 +655,13 @@ type RangeSet1ui internal (store : MapExt<uint32, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1ui(newStore)
 
+    /// Returns the union of the set with the given set.
+    member inline x.Union(other : RangeSet1ui) =
+        let mutable res = x
+        for r in other do
+            res <- res.Add r
+        res
+
     /// Returns the intersection of the set with the given range.
     member x.Intersect(r : Range1ui) =
         if r.Max < r.Min then
@@ -651,14 +683,26 @@ type RangeSet1ui internal (store : MapExt<uint32, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1ui(newStore)
 
-    /// Returns whether the given value is contained in the range set.
-    member x.Contains(v : uint32) =
+    member private x.TryFindLeftBoundary(v : uint32) =
         let struct (l, s, _) = MapExt.neighboursV v store
         match s with
-        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | ValueSome (i, k) -> if k = HalfRangeKind.Left then ValueSome i else ValueNone
         | _ ->
             match l with
-            | ValueSome (_, HalfRangeKind.Left) -> true
+            | ValueSome (i, HalfRangeKind.Left) -> ValueSome i
+            | _ -> ValueNone
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : uint32) =
+        x.TryFindLeftBoundary v |> ValueOption.isSome
+
+    /// Returns whether the given range is contained in the set.
+    member x.Contains(r : Range1ui) =
+        if r.Max < r.Min then false
+        elif r.Min = r.Max then x.Contains r.Min
+        else
+            match x.TryFindLeftBoundary r.Min, x.TryFindLeftBoundary r.Max with
+            | ValueSome l, ValueSome r -> l = r
             | _ -> false
 
     /// Returns the number of disjoint ranges in the set.
@@ -863,6 +907,9 @@ module RangeSet1ui =
     /// Removes the given range from the set.
     let inline remove (range : Range1ui) (set : RangeSet1ui) = set.Remove range
 
+    /// Returns the union of two sets.
+    let inline union (l : RangeSet1ui) (r : RangeSet1ui) = l.Union r
+
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1ui) (set : RangeSet1ui) = set.Intersect range
 
@@ -871,6 +918,9 @@ module RangeSet1ui =
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : uint32) (set : RangeSet1ui) = set.Contains value
+
+    /// Returns whether the given range is contained in the set.
+    let inline containsRange (range : Range1ui) (set : RangeSet1ui) = set.Contains range
 
     /// Returns the number of disjoint ranges in the set.
     let inline count (set : RangeSet1ui) = set.Count
@@ -1058,6 +1108,13 @@ type RangeSet1l internal (store : MapExt<int64, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1l(newStore)
 
+    /// Returns the union of the set with the given set.
+    member inline x.Union(other : RangeSet1l) =
+        let mutable res = x
+        for r in other do
+            res <- res.Add r
+        res
+
     /// Returns the intersection of the set with the given range.
     member x.Intersect(r : Range1l) =
         if r.Max < r.Min then
@@ -1079,14 +1136,26 @@ type RangeSet1l internal (store : MapExt<int64, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1l(newStore)
 
-    /// Returns whether the given value is contained in the range set.
-    member x.Contains(v : int64) =
+    member private x.TryFindLeftBoundary(v : int64) =
         let struct (l, s, _) = MapExt.neighboursV v store
         match s with
-        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | ValueSome (i, k) -> if k = HalfRangeKind.Left then ValueSome i else ValueNone
         | _ ->
             match l with
-            | ValueSome (_, HalfRangeKind.Left) -> true
+            | ValueSome (i, HalfRangeKind.Left) -> ValueSome i
+            | _ -> ValueNone
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : int64) =
+        x.TryFindLeftBoundary v |> ValueOption.isSome
+
+    /// Returns whether the given range is contained in the set.
+    member x.Contains(r : Range1l) =
+        if r.Max < r.Min then false
+        elif r.Min = r.Max then x.Contains r.Min
+        else
+            match x.TryFindLeftBoundary r.Min, x.TryFindLeftBoundary r.Max with
+            | ValueSome l, ValueSome r -> l = r
             | _ -> false
 
     /// Returns the number of disjoint ranges in the set.
@@ -1291,6 +1360,9 @@ module RangeSet1l =
     /// Removes the given range from the set.
     let inline remove (range : Range1l) (set : RangeSet1l) = set.Remove range
 
+    /// Returns the union of two sets.
+    let inline union (l : RangeSet1l) (r : RangeSet1l) = l.Union r
+
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1l) (set : RangeSet1l) = set.Intersect range
 
@@ -1299,6 +1371,9 @@ module RangeSet1l =
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : int64) (set : RangeSet1l) = set.Contains value
+
+    /// Returns whether the given range is contained in the set.
+    let inline containsRange (range : Range1l) (set : RangeSet1l) = set.Contains range
 
     /// Returns the number of disjoint ranges in the set.
     let inline count (set : RangeSet1l) = set.Count
@@ -1486,6 +1561,13 @@ type RangeSet1ul internal (store : MapExt<uint64, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1ul(newStore)
 
+    /// Returns the union of the set with the given set.
+    member inline x.Union(other : RangeSet1ul) =
+        let mutable res = x
+        for r in other do
+            res <- res.Add r
+        res
+
     /// Returns the intersection of the set with the given range.
     member x.Intersect(r : Range1ul) =
         if r.Max < r.Min then
@@ -1507,14 +1589,26 @@ type RangeSet1ul internal (store : MapExt<uint64, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             RangeSet1ul(newStore)
 
-    /// Returns whether the given value is contained in the range set.
-    member x.Contains(v : uint64) =
+    member private x.TryFindLeftBoundary(v : uint64) =
         let struct (l, s, _) = MapExt.neighboursV v store
         match s with
-        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | ValueSome (i, k) -> if k = HalfRangeKind.Left then ValueSome i else ValueNone
         | _ ->
             match l with
-            | ValueSome (_, HalfRangeKind.Left) -> true
+            | ValueSome (i, HalfRangeKind.Left) -> ValueSome i
+            | _ -> ValueNone
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : uint64) =
+        x.TryFindLeftBoundary v |> ValueOption.isSome
+
+    /// Returns whether the given range is contained in the set.
+    member x.Contains(r : Range1ul) =
+        if r.Max < r.Min then false
+        elif r.Min = r.Max then x.Contains r.Min
+        else
+            match x.TryFindLeftBoundary r.Min, x.TryFindLeftBoundary r.Max with
+            | ValueSome l, ValueSome r -> l = r
             | _ -> false
 
     /// Returns the number of disjoint ranges in the set.
@@ -1719,6 +1813,9 @@ module RangeSet1ul =
     /// Removes the given range from the set.
     let inline remove (range : Range1ul) (set : RangeSet1ul) = set.Remove range
 
+    /// Returns the union of two sets.
+    let inline union (l : RangeSet1ul) (r : RangeSet1ul) = l.Union r
+
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1ul) (set : RangeSet1ul) = set.Intersect range
 
@@ -1727,6 +1824,9 @@ module RangeSet1ul =
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : uint64) (set : RangeSet1ul) = set.Contains value
+
+    /// Returns whether the given range is contained in the set.
+    let inline containsRange (range : Range1ul) (set : RangeSet1ul) = set.Contains range
 
     /// Returns the number of disjoint ranges in the set.
     let inline count (set : RangeSet1ul) = set.Count

@@ -216,6 +216,13 @@ type __rangeset__ internal (store : MapExt<__ltype__, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             __rangeset__(newStore)
 
+    /// Returns the union of the set with the given set.
+    member inline x.Union(other : __rangeset__) =
+        let mutable res = x
+        for r in other do
+            res <- res.Add r
+        res
+
     /// Returns the intersection of the set with the given range.
     member x.Intersect(r : __range__) =
         if r.Max < r.Min then
@@ -237,14 +244,26 @@ type __rangeset__ internal (store : MapExt<__ltype__, HalfRangeKind>) =
             assert (newStore.Count % 2 = 0 || MapExt.maxValue newStore = HalfRangeKind.Left)
             __rangeset__(newStore)
 
-    /// Returns whether the given value is contained in the range set.
-    member x.Contains(v : __ltype__) =
+    member private x.TryFindLeftBoundary(v : __ltype__) =
         let struct (l, s, _) = MapExt.neighboursV v store
         match s with
-        | ValueSome (_, k) -> k = HalfRangeKind.Left
+        | ValueSome (i, k) -> if k = HalfRangeKind.Left then ValueSome i else ValueNone
         | _ ->
             match l with
-            | ValueSome (_, HalfRangeKind.Left) -> true
+            | ValueSome (i, HalfRangeKind.Left) -> ValueSome i
+            | _ -> ValueNone
+
+    /// Returns whether the given value is contained in the range set.
+    member x.Contains(v : __ltype__) =
+        x.TryFindLeftBoundary v |> ValueOption.isSome
+
+    /// Returns whether the given range is contained in the set.
+    member x.Contains(r : __range__) =
+        if r.Max < r.Min then false
+        elif r.Min = r.Max then x.Contains r.Min
+        else
+            match x.TryFindLeftBoundary r.Min, x.TryFindLeftBoundary r.Max with
+            | ValueSome l, ValueSome r -> l = r
             | _ -> false
 
     /// Returns the number of disjoint ranges in the set.
@@ -449,6 +468,9 @@ module __rangeset__ =
     /// Removes the given range from the set.
     let inline remove (range : __range__) (set : __rangeset__) = set.Remove range
 
+    /// Returns the union of two sets.
+    let inline union (l : __rangeset__) (r : __rangeset__) = l.Union r
+
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : __range__) (set : __rangeset__) = set.Intersect range
 
@@ -457,6 +479,9 @@ module __rangeset__ =
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : __ltype__) (set : __rangeset__) = set.Contains value
+
+    /// Returns whether the given range is contained in the set.
+    let inline containsRange (range : __range__) (set : __rangeset__) = set.Contains range
 
     /// Returns the number of disjoint ranges in the set.
     let inline count (set : __rangeset__) = set.Count

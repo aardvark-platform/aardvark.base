@@ -205,6 +205,21 @@ module RangeSetTests =
         let actual = RangeSet1l.ofList ranges
         actual |> should equal expected
 
+    [<Theory>]
+    let ``[RangeSet] Contains Range`` (maxValue : bool) =
+        let set = RangeSet1l.ofList [ Range1l(-3L, -2L); Range1l(1L, 4L); Range1l(6L, 8L); Range1l(10L, if maxValue then Int64.MaxValue else 30L)]
+
+        set |> RangeSet1l.containsRange (Range1l(-3L, -2L)) |> should be True
+        set |> RangeSet1l.containsRange (Range1l(-3L, -3L)) |> should be True
+        set |> RangeSet1l.containsRange (Range1l(-3L, -2L)) |> should be True
+        set |> RangeSet1l.containsRange (Range1l(-2L, -2L)) |> should be True
+
+        set |> RangeSet1l.containsRange (Range1l(2L, 3L)) |> should be True
+        set |> RangeSet1l.containsRange (Range1l(3L, 3L)) |> should be True
+
+        set |> RangeSet1l.containsRange (Range1l(-2L, 3L)) |> should be False
+
+        set |> RangeSet1l.containsRange (Range1l(20L, Int64.MaxValue)) |> should equal maxValue
 
 module RangeSetBenchmarks =
     open BenchmarkDotNet.Attributes;
