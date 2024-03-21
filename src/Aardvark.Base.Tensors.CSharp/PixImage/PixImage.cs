@@ -205,6 +205,9 @@ namespace Aardvark.Base
 
         #region PgmPixLoader
 
+        /// <summary>
+        /// Loader for saving PGM images. Reading is not supported.
+        /// </summary>
         private class PgmPixLoader : IPixLoader
         {
             public string Name { get; }
@@ -214,18 +217,14 @@ namespace Aardvark.Base
                 Name = "Aardvark PGM";
             }
 
-            public PixImage LoadFromFile(string filename)
-                => throw new ImageLoadException($"{Name} loader does not support loading from files.");
+            public PixImage LoadFromFile(string filename) => null;
 
-            public PixImage LoadFromStream(Stream stream)
-                => throw new ImageLoadException($"{Name} loader does not support loading from streams.");
+            public PixImage LoadFromStream(Stream stream) => null;
 
             public void SaveToFile(string filename, PixImage image, PixSaveParams saveParams)
             {
-                using (var stream = File.OpenWrite(filename))
-                {
-                    SaveToStream(stream, image, saveParams);
-                }
+                using var stream = File.OpenWrite(filename);
+                SaveToStream(stream, image, saveParams);
             }
 
             public void SaveToStream(Stream stream, PixImage image, PixSaveParams saveParams)
@@ -245,11 +244,9 @@ namespace Aardvark.Base
                 stream.Write(img.Volume.Data, 0, img.Volume.Data.Length);
             }
 
-            public PixImageInfo GetInfoFromFile(string filename)
-                => throw new ImageLoadException($"{Name} loader does not support retrieving info from files.");
+            public PixImageInfo GetInfoFromFile(string filename) => null;
 
-            public PixImageInfo GetInfoFromStream(Stream stream)
-                => throw new ImageLoadException($"{Name} loader does not support retrieving info from streams.");
+            public PixImageInfo GetInfoFromStream(Stream stream) => null;
         }
 
         #endregion
