@@ -285,6 +285,10 @@ module PixLoaderTests =
         priorities.Count |> should equal count
         priorities.Get(PixImageDevil.Loader) |> should equal 1337
 
+        PixImage.AddLoader(PixImageDevil.Loader)
+        let priorities = PixImage.GetLoadersWithPriority()
+        priorities.Get(PixImageDevil.Loader) |> should equal 1338
+
         PixImage.RemoveLoader(PixImageSharp.Loader)
         PixImage.RemoveLoader(PixImageDevil.Loader)
         PixImage.GetLoaders() |> Seq.length |> should equal (count - 2)

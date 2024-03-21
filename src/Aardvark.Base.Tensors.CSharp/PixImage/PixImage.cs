@@ -275,7 +275,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Adds a PixImage loader.
         /// Assigns a priority that is greater than the highest priority among existing loaders, resulting in a LIFO order.
-        /// If the loader already exists, the priority is not modified.
+        /// If the loader already exists, the priority is modified.
         /// </summary>
         /// <param name="loader">The loader to add.</param>
         public static void AddLoader(IPixLoader loader)
