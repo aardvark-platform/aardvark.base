@@ -1218,7 +1218,6 @@ namespace Aardvark.Base
         public static __type__ Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<__ftype__>.Parse, __type__.Setter);

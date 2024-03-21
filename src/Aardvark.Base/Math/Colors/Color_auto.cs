@@ -1671,7 +1671,6 @@ namespace Aardvark.Base
         public static C3b Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<byte>.Parse, C3b.Setter);
@@ -3946,7 +3945,6 @@ namespace Aardvark.Base
         public static C3us Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<ushort>.Parse, C3us.Setter);
@@ -6144,7 +6142,6 @@ namespace Aardvark.Base
         public static C3ui Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<uint>.Parse, C3ui.Setter);
@@ -8217,7 +8214,6 @@ namespace Aardvark.Base
         public static C3f Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<float>.Parse, C3f.Setter);
@@ -10327,7 +10323,6 @@ namespace Aardvark.Base
         public static C3d Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<double>.Parse, C3d.Setter);
@@ -12957,7 +12952,6 @@ namespace Aardvark.Base
         public static C4b Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<byte>.Parse, C4b.Setter);
@@ -15516,7 +15510,6 @@ namespace Aardvark.Base
         public static C4us Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<ushort>.Parse, C4us.Setter);
@@ -17980,7 +17973,6 @@ namespace Aardvark.Base
         public static C4ui Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<uint>.Parse, C4ui.Setter);
@@ -20234,7 +20226,6 @@ namespace Aardvark.Base
         public static C4f Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<float>.Parse, C4f.Setter);
@@ -22528,7 +22519,6 @@ namespace Aardvark.Base
         public static C4d Parse(string s)
             => Parse(new Text(s));
 
-        [Obsolete("Weird overload with level, call NestedBracketSplit() manually instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d Parse(Text t, int bracketLevel = 1)
             => t.NestedBracketSplit(bracketLevel, Text<double>.Parse, C4d.Setter);
