@@ -20,6 +20,7 @@
     <EmbeddedResource Include="data\test.jpg" />
     <Compile Include="TrafoTests.fs" />
     <Compile Include="TensorTests.fs" />
+    <Compile Include="TensorMathTests.fs" />
     <Compile Include="PixTests.fs" />
     <Compile Include="SVDTests.fs" />
     <Compile Include="CachesTest.fs" />
