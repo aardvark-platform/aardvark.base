@@ -3,13 +3,13 @@
   "isRoot": true,
   "tools": {
     "paket": {
-      "version": "7.2.1",
+      "version": "8.0.3",
       "commands": [
         "paket"
       ]
     },
     "aardpack": {
-      "version": "1.0.19",
+      "version": "1.0.21",
       "commands": [
         "aardpack"
       ]

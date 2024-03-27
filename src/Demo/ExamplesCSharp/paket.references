@@ -1,7 +1,4 @@
-FSharp.Core
-Aardvark.Build
-FsPickler
-Aardvark.Base.TypeProviders
-FSharp.Data.Adaptive
+group Demo
+
 CSharp.Data.Adaptive
 System.Reactive

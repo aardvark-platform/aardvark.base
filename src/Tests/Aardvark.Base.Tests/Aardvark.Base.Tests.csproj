@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\..\bin\Debug</OutputPath>
@@ -13,7 +13,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-	<RunWorkingDirectory>$(OutputPath)\net6.0</RunWorkingDirectory>
+	<RunWorkingDirectory>$(OutputPath)\net8.0</RunWorkingDirectory>
 	<GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
   <ItemGroup>

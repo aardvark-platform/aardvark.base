@@ -1,3 +1,4 @@
+group CodeGenerator
+
 Microsoft.NETFramework.ReferenceAssemblies
-Aardvark.Build
 Microsoft.CodeAnalysis.CSharp

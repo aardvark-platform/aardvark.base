@@ -16,9 +16,14 @@
   <ItemGroup>
 	<Compile Remove="**\*_template.cs" />
 	<Compile Remove="**\*_generator.cs" />
+	<Compile Remove="Properties\**" />
   </ItemGroup>
   <ItemGroup>
 	<None Include="**\*_template.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base.Tensors.CSharp\Aardvark.Base.Tensors.CSharp.csproj" />
@@ -27,9 +32,6 @@
       <Project>{c90c041e-e076-4bbc-bbcd-b29367f649a2}</Project>
       <Name>Aardvark.Base</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
