@@ -14,7 +14,7 @@ using System.Runtime.Intrinsics.X86;
 using System.Runtime.Intrinsics;
 #endif
 
-using aardbase = Aardvark.Base;
+using Aardbase = Aardvark.Base;
 
 namespace Aardvark.Base
 {
@@ -2173,10 +2173,10 @@ namespace Aardvark.Base
         {
             //# var posTiny = ft.IsReal ? "Constant<" + ftype + ">.PositiveTinyValue" : "0";
             //# var negTiny = ft.IsReal ? "Constant<" + ftype + ">.NegativeTinyValue" : "0";
-            DirFlags flags = aardbase.DirFlags.None;
+            DirFlags flags = Aardbase.DirFlags.None;
             //# fields.ForEach(f => {
-            if (v.__f__ > __posTiny__) flags |= aardbase.DirFlags.Positive__f__;
-            if (v.__f__ < __negTiny__) flags |= aardbase.DirFlags.Negative__f__;
+            if (v.__f__ > __posTiny__) flags |= Aardbase.DirFlags.Positive__f__;
+            if (v.__f__ < __negTiny__) flags |= Aardbase.DirFlags.Negative__f__;
             //# });
             return flags;
         }
