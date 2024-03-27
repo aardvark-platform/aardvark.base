@@ -172,164 +172,189 @@ module TypeInfo =
     let TList = { simpleType = typeof<list<int>>.GetGenericTypeDefinition() }
     let TSeq = { simpleType = typeof<seq<int>>.GetGenericTypeDefinition() }
 
-    let private typeInfo t = { simpleType = t } :> ITypeInfo
+    let inline private typeInfo t = { simpleType = t } :> ITypeInfo
 
     let VectorFields = Set.ofList ['X'; 'Y'; 'Z'; 'W']
 
     [<AutoOpen>]
     module Patterns =
-        
-        let (|Bool|_|) (t : Type) = 
-            if t = typeof<bool> then Some Bool
-            else None
 
-        let (|Byte|_|) (t : Type) = 
-            if t = typeof<byte> then Some Byte
-            else None
+        [<return: Struct>]
+        let inline (|Bool|_|) (t : Type) =
+            if t = typeof<bool> then ValueSome ()
+            else ValueNone
 
-        let (|SByte|_|) (t : Type) = 
-            if t = typeof<sbyte> then Some SByte
-            else None
+        [<return: Struct>]
+        let inline (|Byte|_|) (t : Type) =
+            if t = typeof<byte> then ValueSome ()
+            else ValueNone
 
-        let (|Int16|_|) (t : Type) = 
-            if t = typeof<int16> then Some Int16
-            else None
+        [<return: Struct>]
+        let inline (|SByte|_|) (t : Type) =
+            if t = typeof<sbyte> then ValueSome ()
+            else ValueNone
 
-        let (|UInt16|_|) (t : Type) = 
-            if t = typeof<uint16> then Some UInt16
-            else None
+        [<return: Struct>]
+        let inline (|Int16|_|) (t : Type) =
+            if t = typeof<int16> then ValueSome ()
+            else ValueNone
 
-        let (|Int32|_|) (t : Type) = 
-            if t = typeof<int32> then Some Int32
-            else None
+        [<return: Struct>]
+        let inline (|UInt16|_|) (t : Type) =
+            if t = typeof<uint16> then ValueSome ()
+            else ValueNone
 
-        let (|UInt32|_|) (t : Type) = 
-            if t = typeof<uint32> then Some UInt32
-            else None
+        [<return: Struct>]
+        let inline (|Int32|_|) (t : Type) =
+            if t = typeof<int32> then ValueSome ()
+            else ValueNone
 
-        let (|UInt64|_|) (t : Type) = 
-            if t = typeof<uint64> then Some UInt64
-            else None
+        [<return: Struct>]
+        let inline (|UInt32|_|) (t : Type) =
+            if t = typeof<uint32> then ValueSome ()
+            else ValueNone
 
-        let (|Int64|_|) (t : Type) = 
-            if t = typeof<int64> then Some Int64
-            else None
+        [<return: Struct>]
+        let inline (|UInt64|_|) (t : Type) =
+            if t = typeof<uint64> then ValueSome ()
+            else ValueNone
 
-        let (|IntPtr|_|) (t : Type) = 
-            if t = typeof<IntPtr> then Some IntPtr
-            else None
+        [<return: Struct>]
+        let inline (|Int64|_|) (t : Type) =
+            if t = typeof<int64> then ValueSome ()
+            else ValueNone
 
-        let (|Float32|_|) (t : Type) = 
-            if t = typeof<float32> then Some Float32
-            else None
+        [<return: Struct>]
+        let inline (|IntPtr|_|) (t : Type) =
+            if t = typeof<IntPtr> then ValueSome ()
+            else ValueNone
 
-        let (|Float64|_|) (t : Type) = 
-            if t = typeof<float> then Some Float64
-            else None
+        [<return: Struct>]
+        let inline (|Float32|_|) (t : Type) =
+            if t = typeof<float32> then ValueSome ()
+            else ValueNone
 
+        [<return: Struct>]
+        let inline (|Float64|_|) (t : Type) =
+            if t = typeof<float> then ValueSome ()
+            else ValueNone
 
-        let (|Decimal|_|) (t : Type) = 
-            if t = typeof<decimal> then Some Decimal
-            else None
+        [<return: Struct>]
+        let inline (|Decimal|_|) (t : Type) =
+            if t = typeof<decimal> then ValueSome ()
+            else ValueNone
 
+        [<return: Struct>]
+        let inline (|Char|_|) (t : Type) =
+            if t = typeof<char> then ValueSome ()
+            else ValueNone
 
-        let (|Char|_|) (t : Type) = 
-            if t = typeof<char> then Some Char
-            else None
+        [<return: Struct>]
+        let inline (|Unit|_|) (t : Type) =
+            if t = typeof<unit> then ValueSome ()
+            else ValueNone
 
-        let (|Unit|_|) (t : Type) = 
-            if t = typeof<unit> then Some Unit
-            else None
+        [<return: Struct>]
+        let inline (|String|_|) (t : Type) =
+            if t = typeof<string> then ValueSome ()
+            else ValueNone
 
-        let (|String|_|) (t : Type) = 
-            if t = typeof<string> then Some String
-            else None
+        [<return: Struct>]
+        let inline (|Enum|_|) (t : Type) =
+            if t.IsEnum then ValueSome ()
+            else ValueNone
 
-        let (|Enum|_|) (t : Type) =
-            if t.IsEnum then Some Enum
-            else None
-
-        let (|Integral|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|Integral|_|) (t : Type) =
             if Set.contains (typeInfo t) IntegralTypes then
-                Some Integral
+                ValueSome ()
             else
-                None
+                ValueNone
 
-        let (|Fractional|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|Fractional|_|) (t : Type) =
             if Set.contains (typeInfo t) FractionalTypes then
-                Some Fractional
+                ValueSome ()
             else
-                None
+                ValueNone
 
-        let (|Num|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|Num|_|) (t : Type) =
             if Set.contains (typeInfo t) NumTypes then
-                Some Num
+                ValueSome ()
             else
-                None
+                ValueNone
 
-
-
-        let (|Vector|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|Vector|_|) (t : Type) =
             if Set.contains (typeInfo t) VectorTypes then
-                Some Vector
+                ValueSome ()
             else
-                None
+                ValueNone
 
-        let (|Color|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|Color|_|) (t : Type) =
             if Set.contains (typeInfo t) ColorTypes then
-                Some ()
+                ValueSome ()
             else
-                None
+                ValueNone
 
-        let (|Matrix|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|Matrix|_|) (t : Type) =
             if Set.contains (typeInfo t) MatrixTypes then
-                Some Matrix
+                ValueSome ()
             else
-                None
+                ValueNone
 
-        let (|VectorOf|_|) (t : Type) =
-            let v = VectorTypes |> Set.filter (fun vi -> vi.Type.Name = t.Name) |> Seq.tryFind (fun _ -> true)
-            match v with
-                | Some(v) -> let vt = v |> unbox<VectorType>
-                             VectorOf(vt.dimension, vt.baseType.Type) |> Some
-                | None -> None
-
-        let (|ColorOf|_|) (t : Type) =
-            ColorTypes
-            |> Seq.tryFind (fun ti -> ti.Type.Name = t.Name)
-            |> Option.map (fun t ->
+        [<return: Struct>]
+        let inline (|VectorOf|_|) (t : Type) =
+            VectorTypes
+            |> Seq.tryFindV (fun vi -> vi.Type.Name = t.Name)
+            |> ValueOption.map (fun t ->
                 let vt = unbox<VectorType> t
                 vt.dimension, vt.baseType.Type
             )
 
-        let (|MatrixOf|_|) (t : Type) =
-            let v = MatrixTypes |> Set.filter (fun vi -> vi.Type.Name = t.Name) |> Seq.tryFind (fun _ -> true)
-            match v with
-                | Some(v) -> let vt = v |> unbox<MatrixType>
-                             MatrixOf(vt.dimension, vt.baseType.Type) |> Some
-                | None -> None
+        [<return: Struct>]
+        let inline (|ColorOf|_|) (t : Type) =
+            ColorTypes
+            |> Seq.tryFindV (fun ti -> ti.Type.Name = t.Name)
+            |> ValueOption.map (fun t ->
+                let vt = unbox<VectorType> t
+                vt.dimension, vt.baseType.Type
+            )
 
-        let (|Ref|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|MatrixOf|_|) (t : Type) =
+            MatrixTypes
+            |> Seq.tryFindV (fun vi -> vi.Type.Name = t.Name)
+            |> ValueOption.map (fun t ->
+                let mt = unbox<MatrixType> t
+                mt.dimension, mt.baseType.Type
+            )
+
+        [<return: Struct>]
+        let inline (|Ref|_|) (t : Type) =
             if t.IsGenericType && t.GetGenericTypeDefinition() = TRef.simpleType then
-                Ref(t.GetGenericArguments().[0]) |> Some
+                ValueSome <| t.GetGenericArguments().[0]
             else
-                None
+                ValueNone
 
-        let (|List|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|List|_|) (t : Type) =
             if t.IsGenericType && t.GetGenericTypeDefinition() = TList.simpleType then
-                List(t.GetGenericArguments().[0]) |> Some
+                ValueSome <| t.GetGenericArguments().[0]
             else
-                None
+                ValueNone
 
-        let (|Seq|_|) (t : Type) =
+        [<return: Struct>]
+        let inline (|Seq|_|) (t : Type) =
             if t.IsGenericType && t.GetGenericTypeDefinition() = TSeq.simpleType then
-                Seq(t.GetGenericArguments().[0]) |> Some
+                ValueSome <| t.GetGenericArguments().[0]
             else
-                None
+                ValueNone
 
-        let (|SeqOf|_|) (t : Type) =
-            if t.IsGenericType && t.GetGenericTypeDefinition() = TSeq.simpleType then
-                SeqOf(t.GetGenericArguments().[0]) |> Some
-            else
-                None
+        [<Obsolete("Use Seq instead.")>]
+        [<return: Struct>]
+        let (|SeqOf|_|) = (|Seq|_|)
 

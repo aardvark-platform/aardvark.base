@@ -165,23 +165,25 @@ module Arrays =
         let toFixed<'d, 'a when 'd :> INatural> (l : seq<'a>) =
             Arr<'d, 'a>(l)
 
+    [<return: Struct>]
     let (|FixedArrayType|_|) (t : Type) =
         if t.IsGenericType && t.GetGenericTypeDefinition() = typedefof<Arr<Z, int>> then
             let targs = t.GetGenericArguments()
-            FixedArrayType(getSize targs.[0], targs.[1]) |> Some
+            ValueSome (getSize targs.[0], targs.[1])
         else
-            None
+            ValueNone
 
+    [<return: Struct>]
     let (|FixedArray|_|) (o : obj) =
         let t = o.GetType()
         match t with
-            | FixedArrayType(_,content) ->
-                let store = t.GetProperty("Data").GetValue(o) |> unbox<Array>
-                let result = Array.create store.Length null
-                for i in 0..store.Length-1 do
-                    result.[i] <- store.GetValue(i)
+        | FixedArrayType(_,content) ->
+            let store = t.GetProperty("Data").GetValue(o) |> unbox<Array>
+            let result = Array.create store.Length null
+            for i in 0..store.Length-1 do
+                result.[i] <- store.GetValue(i)
 
-                FixedArray(content, result) |> Some
+            ValueSome (content, result)
 
-            | _ -> None
+        | _ -> ValueNone
 

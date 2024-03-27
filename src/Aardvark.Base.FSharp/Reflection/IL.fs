@@ -395,398 +395,458 @@ module Disassembler =
 
 
     module Patterns =
-        
-        let (|Nop|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Nop then Some()
-            else None
 
-        let (|Break|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Break then Some()
-            else None
+        [<return: Struct>]
+        let inline (|Nop|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Nop then ValueSome()
+            else ValueNone
 
-        let (|Dup|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Dup then Some()
-            else None
+        [<return: Struct>]
+        let inline (|Break|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Break then ValueSome()
+            else ValueNone
 
-        let (|Pop|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Pop then Some()
-            else None
+        [<return: Struct>]
+        let inline (|Dup|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Dup then ValueSome()
+            else ValueNone
 
-        let (|Ldarg|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldarg then Some(unbox<int> i.Operand)
-            elif i.Code = OpCodes.Ldarg_0 then Some 0
-            elif i.Code = OpCodes.Ldarg_1 then Some 1
-            elif i.Code = OpCodes.Ldarg_2 then Some 2
-            elif i.Code = OpCodes.Ldarg_3 then Some 3
-            elif i.Code = OpCodes.Ldarg_S then Some(unbox<int> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Pop|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Pop then ValueSome()
+            else ValueNone
 
-        let (|Starg|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Starg_S then Some(unbox<int> i.Operand)
-            elif i.Code = OpCodes.Starg then Some(unbox<int> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Ldarg|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldarg then ValueSome(unbox<int> i.Operand)
+            elif i.Code = OpCodes.Ldarg_0 then ValueSome 0
+            elif i.Code = OpCodes.Ldarg_1 then ValueSome 1
+            elif i.Code = OpCodes.Ldarg_2 then ValueSome 2
+            elif i.Code = OpCodes.Ldarg_3 then ValueSome 3
+            elif i.Code = OpCodes.Ldarg_S then ValueSome(unbox<int> i.Operand)
+            else ValueNone
 
-        let (|Ldarga|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldarga then Some(unbox<int> i.Operand)
-            elif i.Code = OpCodes.Ldarga_S then Some(unbox<int> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Starg|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Starg_S then ValueSome(unbox<int> i.Operand)
+            elif i.Code = OpCodes.Starg then ValueSome(unbox<int> i.Operand)
+            else ValueNone
 
-        let (|Ldloc|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldloc then Some (unbox<int> i.Operand)
-            elif i.Code = OpCodes.Ldloc_S then Some (unbox<int> i.Operand)
-            elif i.Code = OpCodes.Ldloc_0 then Some 0
-            elif i.Code = OpCodes.Ldloc_1 then Some 1
-            elif i.Code = OpCodes.Ldloc_2 then Some 2
-            elif i.Code = OpCodes.Ldloc_3 then Some 3
-            else None
+        [<return: Struct>]
+        let inline (|Ldarga|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldarga then ValueSome(unbox<int> i.Operand)
+            elif i.Code = OpCodes.Ldarga_S then ValueSome(unbox<int> i.Operand)
+            else ValueNone
 
-        let (|LdlocA|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldloca then Some (unbox<int> i.Operand)
-            elif i.Code = OpCodes.Ldloca_S then Some (unbox<int> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Ldloc|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldloc then ValueSome (unbox<int> i.Operand)
+            elif i.Code = OpCodes.Ldloc_S then ValueSome (unbox<int> i.Operand)
+            elif i.Code = OpCodes.Ldloc_0 then ValueSome 0
+            elif i.Code = OpCodes.Ldloc_1 then ValueSome 1
+            elif i.Code = OpCodes.Ldloc_2 then ValueSome 2
+            elif i.Code = OpCodes.Ldloc_3 then ValueSome 3
+            else ValueNone
 
-        let (|Stloc|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Stloc then Some (unbox<int> i.Operand)
-            elif i.Code = OpCodes.Stloc_S then Some (unbox<int> i.Operand)
-            elif i.Code = OpCodes.Stloc_0 then Some 0
-            elif i.Code = OpCodes.Stloc_1 then Some 1
-            elif i.Code = OpCodes.Stloc_2 then Some 2
-            elif i.Code = OpCodes.Stloc_3 then Some 3
-            else None
+        [<return: Struct>]
+        let inline (|LdlocA|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldloca then ValueSome (unbox<int> i.Operand)
+            elif i.Code = OpCodes.Ldloca_S then ValueSome (unbox<int> i.Operand)
+            else ValueNone
 
-        let (|Ldfld|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldfld then Some (unbox<FieldInfo> i.Operand)
-            elif i.Code = OpCodes.Ldsfld then Some (unbox<FieldInfo> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Stloc|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Stloc then ValueSome (unbox<int> i.Operand)
+            elif i.Code = OpCodes.Stloc_S then ValueSome (unbox<int> i.Operand)
+            elif i.Code = OpCodes.Stloc_0 then ValueSome 0
+            elif i.Code = OpCodes.Stloc_1 then ValueSome 1
+            elif i.Code = OpCodes.Stloc_2 then ValueSome 2
+            elif i.Code = OpCodes.Stloc_3 then ValueSome 3
+            else ValueNone
 
-        let (|LdfldA|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldflda then Some (unbox<FieldInfo> i.Operand)
-            elif i.Code = OpCodes.Ldsflda then Some (unbox<FieldInfo> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Ldfld|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldfld then ValueSome (unbox<FieldInfo> i.Operand)
+            elif i.Code = OpCodes.Ldsfld then ValueSome (unbox<FieldInfo> i.Operand)
+            else ValueNone
 
-        let (|Stfld|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Stfld then Some (unbox<FieldInfo> i.Operand)
-            elif i.Code = OpCodes.Stsfld then Some (unbox<FieldInfo> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|LdfldA|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldflda then ValueSome (unbox<FieldInfo> i.Operand)
+            elif i.Code = OpCodes.Ldsflda then ValueSome (unbox<FieldInfo> i.Operand)
+            else ValueNone
 
-        let (|LdIndirect|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldind_I then Some(ValueType.NativeInt)
-            elif i.Code = OpCodes.Ldind_I1 then Some(ValueType.Int8)
-            elif i.Code = OpCodes.Ldind_U1 then Some(ValueType.UInt8)
-            elif i.Code = OpCodes.Ldind_I2 then Some(ValueType.Int16)
-            elif i.Code = OpCodes.Ldind_U2 then Some(ValueType.UInt16)
-            elif i.Code = OpCodes.Ldind_I4 then Some(ValueType.Int32)
-            elif i.Code = OpCodes.Ldind_U4 then Some(ValueType.UInt32)
-            elif i.Code = OpCodes.Ldind_I8 then Some(ValueType.Int64)
+        [<return: Struct>]
+        let inline (|Stfld|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Stfld then ValueSome (unbox<FieldInfo> i.Operand)
+            elif i.Code = OpCodes.Stsfld then ValueSome (unbox<FieldInfo> i.Operand)
+            else ValueNone
 
-            elif i.Code = OpCodes.Ldind_R4 then Some(ValueType.Float32)
-            elif i.Code = OpCodes.Ldind_R8 then Some(ValueType.Float64)
-            elif i.Code = OpCodes.Ldind_Ref then Some(ValueType.Object)
-            else None
+        [<return: Struct>]
+        let inline (|LdIndirect|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldind_I then ValueSome(ValueType.NativeInt)
+            elif i.Code = OpCodes.Ldind_I1 then ValueSome(ValueType.Int8)
+            elif i.Code = OpCodes.Ldind_U1 then ValueSome(ValueType.UInt8)
+            elif i.Code = OpCodes.Ldind_I2 then ValueSome(ValueType.Int16)
+            elif i.Code = OpCodes.Ldind_U2 then ValueSome(ValueType.UInt16)
+            elif i.Code = OpCodes.Ldind_I4 then ValueSome(ValueType.Int32)
+            elif i.Code = OpCodes.Ldind_U4 then ValueSome(ValueType.UInt32)
+            elif i.Code = OpCodes.Ldind_I8 then ValueSome(ValueType.Int64)
 
-        let (|StIndirect|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Stind_I then Some(ValueType.NativeInt)
-            elif i.Code = OpCodes.Stind_I1 then Some(ValueType.Int8)
-            elif i.Code = OpCodes.Stind_I2 then Some(ValueType.Int16)
-            elif i.Code = OpCodes.Stind_I4 then Some(ValueType.Int32)
-            elif i.Code = OpCodes.Stind_I8 then Some(ValueType.Int64)
-            elif i.Code = OpCodes.Stind_R4 then Some(ValueType.Float32)
-            elif i.Code = OpCodes.Stind_R8 then Some(ValueType.Float64)
-            elif i.Code = OpCodes.Stind_Ref then Some(ValueType.Object)
-            else None
+            elif i.Code = OpCodes.Ldind_R4 then ValueSome(ValueType.Float32)
+            elif i.Code = OpCodes.Ldind_R8 then ValueSome(ValueType.Float64)
+            elif i.Code = OpCodes.Ldind_Ref then ValueSome(ValueType.Object)
+            else ValueNone
 
-        let (|CpObj|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Cpobj then Some(unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|StIndirect|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Stind_I then ValueSome(ValueType.NativeInt)
+            elif i.Code = OpCodes.Stind_I1 then ValueSome(ValueType.Int8)
+            elif i.Code = OpCodes.Stind_I2 then ValueSome(ValueType.Int16)
+            elif i.Code = OpCodes.Stind_I4 then ValueSome(ValueType.Int32)
+            elif i.Code = OpCodes.Stind_I8 then ValueSome(ValueType.Int64)
+            elif i.Code = OpCodes.Stind_R4 then ValueSome(ValueType.Float32)
+            elif i.Code = OpCodes.Stind_R8 then ValueSome(ValueType.Float64)
+            elif i.Code = OpCodes.Stind_Ref then ValueSome(ValueType.Object)
+            else ValueNone
 
-        let (|LdObj|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldobj then Some(unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|CpObj|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Cpobj then ValueSome(unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|StObj|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Stobj then Some(unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|LdObj|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldobj then ValueSome(unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|NewObj|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Newobj then Some (unbox<ConstructorInfo> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|StObj|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Stobj then ValueSome(unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|InitObj|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Initobj then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|NewObj|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Newobj then ValueSome (unbox<ConstructorInfo> i.Operand)
+            else ValueNone
 
-        let (|CastClass|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Castclass then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|InitObj|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Initobj then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|IsInstance|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Isinst then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|CastClass|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Castclass then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|Unbox|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Unbox then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|IsInstance|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Isinst then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|UnboxAny|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Unbox_Any then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Unbox|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Unbox then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|Box|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Box then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|UnboxAny|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Unbox_Any then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|NewArr|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Newarr then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Box|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Box then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|Ldlen|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldlen then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|NewArr|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Newarr then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|Ldelem|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldelem then Some(unbox<Type> i.Operand)
-            elif i.Code = OpCodes.Ldelem_I1 then Some typeof<int8>
-            elif i.Code = OpCodes.Ldelem_U1 then Some typeof<uint8>
-            elif i.Code = OpCodes.Ldelem_I2 then Some typeof<int16>
-            elif i.Code = OpCodes.Ldelem_U2 then Some typeof<uint16>
-            elif i.Code = OpCodes.Ldelem_I4 then Some typeof<int32>
-            elif i.Code = OpCodes.Ldelem_U4 then Some typeof<uint32>
-            elif i.Code = OpCodes.Ldelem_I8 then Some typeof<int64>
-            elif i.Code = OpCodes.Ldelem_R4 then Some typeof<float32>
-            elif i.Code = OpCodes.Ldelem_R8 then Some typeof<float>
-            elif i.Code = OpCodes.Ldelem_I then Some typeof<nativeint>
-            elif i.Code = OpCodes.Ldelem_Ref then Some typeof<obj>
-            else None
+        [<return: Struct>]
+        let inline (|Ldlen|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldlen then ValueSome ()
+            else ValueNone
 
-        let (|LdelemA|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldelema then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Ldelem|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldelem then ValueSome(unbox<Type> i.Operand)
+            elif i.Code = OpCodes.Ldelem_I1 then ValueSome typeof<int8>
+            elif i.Code = OpCodes.Ldelem_U1 then ValueSome typeof<uint8>
+            elif i.Code = OpCodes.Ldelem_I2 then ValueSome typeof<int16>
+            elif i.Code = OpCodes.Ldelem_U2 then ValueSome typeof<uint16>
+            elif i.Code = OpCodes.Ldelem_I4 then ValueSome typeof<int32>
+            elif i.Code = OpCodes.Ldelem_U4 then ValueSome typeof<uint32>
+            elif i.Code = OpCodes.Ldelem_I8 then ValueSome typeof<int64>
+            elif i.Code = OpCodes.Ldelem_R4 then ValueSome typeof<float32>
+            elif i.Code = OpCodes.Ldelem_R8 then ValueSome typeof<float>
+            elif i.Code = OpCodes.Ldelem_I then ValueSome typeof<nativeint>
+            elif i.Code = OpCodes.Ldelem_Ref then ValueSome typeof<obj>
+            else ValueNone
 
-        let (|Stelem|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Stelem then Some(unbox<Type> i.Operand)
-            elif i.Code = OpCodes.Stelem_I1 then Some typeof<int8>
-            elif i.Code = OpCodes.Stelem_I2 then Some typeof<int16>
-            elif i.Code = OpCodes.Stelem_I4 then Some typeof<int32>
-            elif i.Code = OpCodes.Stelem_I8 then Some typeof<int64>
-            elif i.Code = OpCodes.Stelem_R4 then Some typeof<float32>
-            elif i.Code = OpCodes.Stelem_R8 then Some typeof<float>
-            elif i.Code = OpCodes.Stelem_I then Some typeof<nativeint>
-            elif i.Code = OpCodes.Stelem_Ref then Some typeof<obj>
-            else None
+        [<return: Struct>]
+        let inline (|LdelemA|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldelema then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        
-        let (|Add|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Add then Some ()
-            elif i.Code = OpCodes.Add_Ovf then Some ()
-            elif i.Code = OpCodes.Add_Ovf_Un then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Stelem|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Stelem then ValueSome(unbox<Type> i.Operand)
+            elif i.Code = OpCodes.Stelem_I1 then ValueSome typeof<int8>
+            elif i.Code = OpCodes.Stelem_I2 then ValueSome typeof<int16>
+            elif i.Code = OpCodes.Stelem_I4 then ValueSome typeof<int32>
+            elif i.Code = OpCodes.Stelem_I8 then ValueSome typeof<int64>
+            elif i.Code = OpCodes.Stelem_R4 then ValueSome typeof<float32>
+            elif i.Code = OpCodes.Stelem_R8 then ValueSome typeof<float>
+            elif i.Code = OpCodes.Stelem_I then ValueSome typeof<nativeint>
+            elif i.Code = OpCodes.Stelem_Ref then ValueSome typeof<obj>
+            else ValueNone
 
-        let (|Sub|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Sub then Some ()
-            elif i.Code = OpCodes.Sub_Ovf then Some ()
-            elif i.Code = OpCodes.Sub_Ovf_Un then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Add|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Add then ValueSome ()
+            elif i.Code = OpCodes.Add_Ovf then ValueSome ()
+            elif i.Code = OpCodes.Add_Ovf_Un then ValueSome ()
+            else ValueNone
 
-        let (|Mul|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Mul then Some ()
-            elif i.Code = OpCodes.Mul_Ovf then Some ()
-            elif i.Code = OpCodes.Mul_Ovf_Un then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Sub|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Sub then ValueSome ()
+            elif i.Code = OpCodes.Sub_Ovf then ValueSome ()
+            elif i.Code = OpCodes.Sub_Ovf_Un then ValueSome ()
+            else ValueNone
 
-        let (|Div|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Div then Some ()
-            elif i.Code = OpCodes.Div_Un then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Mul|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Mul then ValueSome ()
+            elif i.Code = OpCodes.Mul_Ovf then ValueSome ()
+            elif i.Code = OpCodes.Mul_Ovf_Un then ValueSome ()
+            else ValueNone
 
-        let (|Rem|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Rem then Some ()
-            elif i.Code = OpCodes.Rem_Un then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Div|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Div then ValueSome ()
+            elif i.Code = OpCodes.Div_Un then ValueSome ()
+            else ValueNone
 
-        let (|And|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.And then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Rem|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Rem then ValueSome ()
+            elif i.Code = OpCodes.Rem_Un then ValueSome ()
+            else ValueNone
 
-        let (|Or|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Or then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|And|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.And then ValueSome ()
+            else ValueNone
 
-        let (|Xor|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Xor then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Or|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Or then ValueSome ()
+            else ValueNone
 
-        let (|Shl|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Shl then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Xor|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Xor then ValueSome ()
+            else ValueNone
 
-        let (|Shr|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Shr then Some ()
-            elif i.Code = OpCodes.Shr_Un then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Shl|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Shl then ValueSome ()
+            else ValueNone
 
-        let (|Neg|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Neg then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Shr|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Shr then ValueSome ()
+            elif i.Code = OpCodes.Shr_Un then ValueSome ()
+            else ValueNone
 
-        let (|Not|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Not then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Neg|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Neg then ValueSome ()
+            else ValueNone
 
-        let (|Conv|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Conv_I1 then Some ValueType.Int8
-            elif i.Code = OpCodes.Conv_U1 then Some ValueType.UInt8
-            elif i.Code = OpCodes.Conv_I2 then Some ValueType.Int16
-            elif i.Code = OpCodes.Conv_U2 then Some ValueType.UInt16
-            elif i.Code = OpCodes.Conv_I4 then Some ValueType.Int32
-            elif i.Code = OpCodes.Conv_U4 then Some ValueType.UInt32
-            elif i.Code = OpCodes.Conv_I8 then Some ValueType.Int64
-            elif i.Code = OpCodes.Conv_U8 then Some ValueType.UInt64
-            elif i.Code = OpCodes.Conv_R4 then Some ValueType.Float32
-            elif i.Code = OpCodes.Conv_R8 then Some ValueType.Float64
-            elif i.Code = OpCodes.Conv_I then Some ValueType.NativeInt
-            elif i.Code = OpCodes.Conv_U then Some ValueType.UNativeInt
-            elif i.Code = OpCodes.Conv_R_Un then Some ValueType.Float32
-            else None
+        [<return: Struct>]
+        let inline (|Not|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Not then ValueSome ()
+            else ValueNone
 
-        let (|ConvChecked|_|) (i : RawInstruction) =
-            if i.Code =   OpCodes.Conv_Ovf_I1 then Some ValueType.Int8
-            elif i.Code = OpCodes.Conv_Ovf_U1 then Some ValueType.UInt8
-            elif i.Code = OpCodes.Conv_Ovf_I2 then Some ValueType.Int16
-            elif i.Code = OpCodes.Conv_Ovf_U2 then Some ValueType.UInt16
-            elif i.Code = OpCodes.Conv_Ovf_I4 then Some ValueType.Int32
-            elif i.Code = OpCodes.Conv_Ovf_U4 then Some ValueType.UInt32
-            elif i.Code = OpCodes.Conv_Ovf_I8 then Some ValueType.Int64
-            elif i.Code = OpCodes.Conv_Ovf_U8 then Some ValueType.UInt64
-            elif i.Code = OpCodes.Conv_Ovf_I then Some ValueType.NativeInt
-            elif i.Code = OpCodes.Conv_Ovf_U then Some ValueType.UNativeInt
+        [<return: Struct>]
+        let inline (|Conv|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Conv_I1 then ValueSome ValueType.Int8
+            elif i.Code = OpCodes.Conv_U1 then ValueSome ValueType.UInt8
+            elif i.Code = OpCodes.Conv_I2 then ValueSome ValueType.Int16
+            elif i.Code = OpCodes.Conv_U2 then ValueSome ValueType.UInt16
+            elif i.Code = OpCodes.Conv_I4 then ValueSome ValueType.Int32
+            elif i.Code = OpCodes.Conv_U4 then ValueSome ValueType.UInt32
+            elif i.Code = OpCodes.Conv_I8 then ValueSome ValueType.Int64
+            elif i.Code = OpCodes.Conv_U8 then ValueSome ValueType.UInt64
+            elif i.Code = OpCodes.Conv_R4 then ValueSome ValueType.Float32
+            elif i.Code = OpCodes.Conv_R8 then ValueSome ValueType.Float64
+            elif i.Code = OpCodes.Conv_I then ValueSome ValueType.NativeInt
+            elif i.Code = OpCodes.Conv_U then ValueSome ValueType.UNativeInt
+            elif i.Code = OpCodes.Conv_R_Un then ValueSome ValueType.Float32
+            else ValueNone
+
+        [<return: Struct>]
+        let inline (|ConvChecked|_|) (i : RawInstruction) =
+            if i.Code =   OpCodes.Conv_Ovf_I1 then ValueSome ValueType.Int8
+            elif i.Code = OpCodes.Conv_Ovf_U1 then ValueSome ValueType.UInt8
+            elif i.Code = OpCodes.Conv_Ovf_I2 then ValueSome ValueType.Int16
+            elif i.Code = OpCodes.Conv_Ovf_U2 then ValueSome ValueType.UInt16
+            elif i.Code = OpCodes.Conv_Ovf_I4 then ValueSome ValueType.Int32
+            elif i.Code = OpCodes.Conv_Ovf_U4 then ValueSome ValueType.UInt32
+            elif i.Code = OpCodes.Conv_Ovf_I8 then ValueSome ValueType.Int64
+            elif i.Code = OpCodes.Conv_Ovf_U8 then ValueSome ValueType.UInt64
+            elif i.Code = OpCodes.Conv_Ovf_I then ValueSome ValueType.NativeInt
+            elif i.Code = OpCodes.Conv_Ovf_U then ValueSome ValueType.UNativeInt
 
             
-            elif i.Code = OpCodes.Conv_Ovf_I1_Un then Some ValueType.Int8
-            elif i.Code = OpCodes.Conv_Ovf_U1_Un then Some ValueType.UInt8
-            elif i.Code = OpCodes.Conv_Ovf_I2_Un then Some ValueType.Int16
-            elif i.Code = OpCodes.Conv_Ovf_U2_Un then Some ValueType.UInt16
-            elif i.Code = OpCodes.Conv_Ovf_I4_Un then Some ValueType.Int32
-            elif i.Code = OpCodes.Conv_Ovf_U4_Un then Some ValueType.UInt32
-            elif i.Code = OpCodes.Conv_Ovf_I8_Un then Some ValueType.Int64
-            elif i.Code = OpCodes.Conv_Ovf_U8_Un then Some ValueType.UInt64
-            elif i.Code = OpCodes.Conv_Ovf_I_Un then Some ValueType.NativeInt
-            elif i.Code = OpCodes.Conv_Ovf_U_Un then Some ValueType.UNativeInt
+            elif i.Code = OpCodes.Conv_Ovf_I1_Un then ValueSome ValueType.Int8
+            elif i.Code = OpCodes.Conv_Ovf_U1_Un then ValueSome ValueType.UInt8
+            elif i.Code = OpCodes.Conv_Ovf_I2_Un then ValueSome ValueType.Int16
+            elif i.Code = OpCodes.Conv_Ovf_U2_Un then ValueSome ValueType.UInt16
+            elif i.Code = OpCodes.Conv_Ovf_I4_Un then ValueSome ValueType.Int32
+            elif i.Code = OpCodes.Conv_Ovf_U4_Un then ValueSome ValueType.UInt32
+            elif i.Code = OpCodes.Conv_Ovf_I8_Un then ValueSome ValueType.Int64
+            elif i.Code = OpCodes.Conv_Ovf_U8_Un then ValueSome ValueType.UInt64
+            elif i.Code = OpCodes.Conv_Ovf_I_Un then ValueSome ValueType.NativeInt
+            elif i.Code = OpCodes.Conv_Ovf_U_Un then ValueSome ValueType.UNativeInt
 
-            else None
+            else ValueNone
 
-        let (|RefAnyVal|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Refanyval then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|RefAnyVal|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Refanyval then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|CkFinite|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ckfinite then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|CkFinite|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ckfinite then ValueSome ()
+            else ValueNone
 
-        let (|MkRefAny|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Mkrefany then Some (unbox<Type> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|MkRefAny|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Mkrefany then ValueSome (unbox<Type> i.Operand)
+            else ValueNone
 
-        let (|LdNull|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldnull then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|LdNull|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldnull then ValueSome ()
+            else ValueNone
 
-        let (|LdConst|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldc_I4 then i.Operand |> unbox |> Int32 |> Some
-            elif i.Code = OpCodes.Ldc_I4_S then i.Operand |> unbox<int8> |> int |> Int32 |> Some
-            elif i.Code = OpCodes.Ldc_I8 then i.Operand |> unbox |> Int64 |> Some
-            elif i.Code = OpCodes.Ldc_R4 then i.Operand |> unbox |> Float32 |> Some
-            elif i.Code = OpCodes.Ldc_R8 then i.Operand |> unbox |> Float64 |> Some
+        [<return: Struct>]
+        let inline (|LdConst|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldc_I4 then i.Operand |> unbox |> Int32 |> ValueSome
+            elif i.Code = OpCodes.Ldc_I4_S then i.Operand |> unbox<int8> |> int |> Int32 |> ValueSome
+            elif i.Code = OpCodes.Ldc_I8 then i.Operand |> unbox |> Int64 |> ValueSome
+            elif i.Code = OpCodes.Ldc_R4 then i.Operand |> unbox |> Float32 |> ValueSome
+            elif i.Code = OpCodes.Ldc_R8 then i.Operand |> unbox |> Float64 |> ValueSome
 
-            elif i.Code = OpCodes.Ldc_I4_0 then Some (Int32 0)
-            elif i.Code = OpCodes.Ldc_I4_1 then Some (Int32 1)
-            elif i.Code = OpCodes.Ldc_I4_2 then Some (Int32 2)
-            elif i.Code = OpCodes.Ldc_I4_3 then Some (Int32 3)
-            elif i.Code = OpCodes.Ldc_I4_4 then Some (Int32 4)
-            elif i.Code = OpCodes.Ldc_I4_5 then Some (Int32 5)
-            elif i.Code = OpCodes.Ldc_I4_6 then Some (Int32 6)
-            elif i.Code = OpCodes.Ldc_I4_7 then Some (Int32 7)
-            elif i.Code = OpCodes.Ldc_I4_8 then Some (Int32 8)
-            elif i.Code = OpCodes.Ldc_I4_M1 then Some (Int32 -1)
+            elif i.Code = OpCodes.Ldc_I4_0 then ValueSome (Int32 0)
+            elif i.Code = OpCodes.Ldc_I4_1 then ValueSome (Int32 1)
+            elif i.Code = OpCodes.Ldc_I4_2 then ValueSome (Int32 2)
+            elif i.Code = OpCodes.Ldc_I4_3 then ValueSome (Int32 3)
+            elif i.Code = OpCodes.Ldc_I4_4 then ValueSome (Int32 4)
+            elif i.Code = OpCodes.Ldc_I4_5 then ValueSome (Int32 5)
+            elif i.Code = OpCodes.Ldc_I4_6 then ValueSome (Int32 6)
+            elif i.Code = OpCodes.Ldc_I4_7 then ValueSome (Int32 7)
+            elif i.Code = OpCodes.Ldc_I4_8 then ValueSome (Int32 8)
+            elif i.Code = OpCodes.Ldc_I4_M1 then ValueSome (Int32 -1)
 
-            elif i.Code = OpCodes.Ldstr then i.Operand |> unbox<string> |> String |> Some
+            elif i.Code = OpCodes.Ldstr then i.Operand |> unbox<string> |> String |> ValueSome
 
-            else None
+            else ValueNone
 
-        let (|LdToken|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ldtoken then Some (i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|LdToken|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ldtoken then ValueSome (i.Operand)
+            else ValueNone
 
-        let (|ReadOnly|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Readonly then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|ReadOnly|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Readonly then ValueSome ()
+            else ValueNone
 
-        let (|Tail|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Tailcall then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Tail|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Tailcall then ValueSome ()
+            else ValueNone
 
-        let (|ConditionalJump|_|) (i : RawInstruction) =
+        [<return: Struct>]
+        let inline (|ConditionalJump|_|) (i : RawInstruction) =
             if i.Code = OpCodes.Blt || i.Code = OpCodes.Blt_S || i.Code = OpCodes.Blt_Un || i.Code = OpCodes.Blt_Un_S then
-                Some (Less, unbox<int> i.Operand)
+                ValueSome (Less, unbox<int> i.Operand)
 
             elif i.Code = OpCodes.Ble || i.Code = OpCodes.Ble_S || i.Code = OpCodes.Ble_Un || i.Code = OpCodes.Ble_Un_S then
-                Some (LessOrEqual, unbox<int> i.Operand)
+                ValueSome (LessOrEqual, unbox<int> i.Operand)
 
             elif i.Code = OpCodes.Bgt || i.Code = OpCodes.Bgt_S || i.Code = OpCodes.Bgt_Un || i.Code = OpCodes.Bgt_Un_S then
-                Some (Greater, unbox<int> i.Operand)
+                ValueSome (Greater, unbox<int> i.Operand)
 
             elif i.Code = OpCodes.Bge || i.Code = OpCodes.Bge_S || i.Code = OpCodes.Bge_Un || i.Code = OpCodes.Bge_Un_S then
-                Some (GreaterOrEqual, unbox<int> i.Operand)
+                ValueSome (GreaterOrEqual, unbox<int> i.Operand)
 
             elif i.Code = OpCodes.Beq || i.Code = OpCodes.Beq_S then
-                Some (Equal, unbox<int> i.Operand)
+                ValueSome (Equal, unbox<int> i.Operand)
 
             elif i.Code = OpCodes.Bne_Un || i.Code = OpCodes.Bne_Un_S then
-                Some (NotEqual, unbox<int> i.Operand)
+                ValueSome (NotEqual, unbox<int> i.Operand)
 
             elif i.Code = OpCodes.Brfalse || i.Code = OpCodes.Brfalse_S then
-                Some (False, unbox<int> i.Operand)
+                ValueSome (False, unbox<int> i.Operand)
 
             elif i.Code = OpCodes.Brtrue || i.Code = OpCodes.Brtrue_S then
-                Some (True, unbox<int> i.Operand)
+                ValueSome (True, unbox<int> i.Operand)
             else
-                None
+                ValueNone
 
-        let (|Jump|_|) (i : RawInstruction) =
+        [<return: Struct>]
+        let inline (|Jump|_|) (i : RawInstruction) =
             if i.Code = OpCodes.Br || i.Code = OpCodes.Br_S then
-                Some (unbox<int> i.Operand)
+                ValueSome (unbox<int> i.Operand)
             else
-                None
+                ValueNone
 
-        let (|Call|_|) (i : RawInstruction) =
+        [<return: Struct>]
+        let inline (|Call|_|) (i : RawInstruction) =
             if i.Code = OpCodes.Call || i.Code = OpCodes.Callvirt then
-                Some (unbox<MethodBase> i.Operand)
+                ValueSome (unbox<MethodBase> i.Operand)
             else
-                None
+                ValueNone
 
-        let (|CallIndirect|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Calli then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|CallIndirect|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Calli then ValueSome ()
+            else ValueNone
 
-        let (|Ret|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Ret then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Ret|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Ret then ValueSome ()
+            else ValueNone
 
-        let (|Switch|_|) (i : RawInstruction) =
+        [<return: Struct>]
+        let inline (|Switch|_|) (i : RawInstruction) =
             if i.Code = OpCodes.Switch then
-                Some (unbox<int[]> i.Operand)
-            else None
+                ValueSome (unbox<int[]> i.Operand)
+            else ValueNone
 
-        let (|Throw|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Throw then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|Throw|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Throw then ValueSome ()
+            else ValueNone
 
-        let (|EndFinally|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Endfinally then Some ()
-            else None
+        [<return: Struct>]
+        let inline (|EndFinally|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Endfinally then ValueSome ()
+            else ValueNone
 
-        let (|Leave|_|) (i : RawInstruction) =
-            if i.Code = OpCodes.Leave then Some (unbox<int> i.Operand)
-            else None
+        [<return: Struct>]
+        let inline (|Leave|_|) (i : RawInstruction) =
+            if i.Code = OpCodes.Leave then ValueSome (unbox<int> i.Operand)
+            else ValueNone
 
 
     let read (m : MethodBase) =

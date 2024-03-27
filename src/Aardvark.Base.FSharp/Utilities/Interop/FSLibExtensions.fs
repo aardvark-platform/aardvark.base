@@ -75,6 +75,18 @@ module Prelude =
 
             res
 
+        let inline tryFindV predicate (source: seq<'T>) =
+            use e = source.GetEnumerator()
+            let mutable res = ValueNone
+
+            while (ValueOption.isNone res && e.MoveNext()) do
+                let c = e.Current
+
+                if predicate c then
+                    res <- ValueSome c
+
+            res
+
         open System.Collections
         open System.Collections.Generic
 

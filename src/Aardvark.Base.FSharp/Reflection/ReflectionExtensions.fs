@@ -441,21 +441,21 @@ module ReflectionHelpers =
 module ReflectionPatterns =
     open Microsoft.FSharp.Quotations
     open QuotationReflectionHelpers
+    open System.Text.RegularExpressions
 
-    let private typePrefixPattern = System.Text.RegularExpressions.Regex @"^.*\.(?<methodName>.*)$"
-    let (|Method|_|)  (mi : MethodInfo) =
-        let args = mi.GetParameters() |> Seq.map(fun p -> p.ParameterType)
-        let parameters = if mi.IsStatic then
-                            args
-                            else
-                            seq { yield mi.DeclaringType; yield! args }
+    let private typePrefixPattern = Regex(@"^.*\.(?<methodName>.*)$", RegexOptions.Compiled)
 
-        let m = typePrefixPattern.Match mi.Name
+    let (|Method|) (mi : MethodInfo) =
+        let parameters =
+            let p = mi.GetParameters() |> Array.toList |> List.map _.ParameterType
+            if mi.IsStatic then p else mi.DeclaringType :: p
+
         let name =
+            let m = typePrefixPattern.Match mi.Name
             if m.Success then m.Groups.["methodName"].Value
             else mi.Name
 
-        Method (name, parameters |> Seq.toList) |> Some
+        (name, parameters)
 
     let private compareMethods (template : MethodInfo) (m : MethodInfo) =
         if template.IsGenericMethod && m.IsGenericMethod then
@@ -463,26 +463,25 @@ module ReflectionPatterns =
                 let targs = template.GetGenericArguments() |> Array.toList
                 let margs = m.GetGenericArguments() |> Array.toList
 
-                let zip = List.zip targs margs
+                let args =
+                    List.zip targs margs
+                    |> List.filter (fst >> _.IsGenericParameter)
+                    |> List.map snd
 
-                let args = zip |> List.filter(fun (l,r) -> l.IsGenericParameter) |> List.map (fun (_,a) -> a)
-
-                Some args
+                ValueSome args
             else
-                None
+                ValueNone
+
         elif template = m then
-            Some []
+            ValueSome []
         else
-            None          
+            ValueNone
 
+    [<return: Struct>]
     let (|MethodQuote|_|) (e : Expr) (mi : MethodInfo) =
-        let m = tryGetMethodInfo e
-        match m with
-            | Some m -> match compareMethods m mi with
-                            | Some a -> MethodQuote(a) |> Some
-                            | None -> None
-            | _ -> None
+        match tryGetMethodInfo e with
+        | Some m -> compareMethods m mi
+        | _ -> ValueNone
 
-
-    let (|Create|_|) (c : ConstructorInfo) =
-        Create(c.DeclaringType, c.GetParameters() |> Seq.toList) |> Some
+    let (|Create|) (c : ConstructorInfo) =
+        (c.DeclaringType, c.GetParameters() |> Seq.toList)

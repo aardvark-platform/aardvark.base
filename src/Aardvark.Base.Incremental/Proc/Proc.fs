@@ -7,22 +7,25 @@ open System.Runtime.CompilerServices
 open Aardvark.Base
 
 [<AutoOpen>]
-module private Utilities = 
-    let (|CancelExn|_|) (e : exn) =
-        match e with
-            | :? System.OperationCanceledException
-            | :? TaskCanceledException ->
-                Some()
-            | _ ->
-                None
+module private Utilities =
 
-    let (|AggregateExn|_|) (e : exn) =
+    [<return: Struct>]
+    let inline (|CancelExn|_|) (e : exn) =
         match e with
-            | :? System.AggregateException as e ->
-                let l = e.InnerExceptions |> Seq.toList
-                Some l
-            | _ ->
-                None
+        | :? System.OperationCanceledException
+        | :? TaskCanceledException ->
+            ValueSome()
+        | _ ->
+            ValueNone
+
+    [<return: Struct>]
+    let inline (|AggregateExn|_|) (e : exn) =
+        match e with
+        | :? System.AggregateException as e ->
+            let l = e.InnerExceptions |> Seq.toList
+            ValueSome l
+        | _ ->
+            ValueNone
 
 type ProcState =
     {

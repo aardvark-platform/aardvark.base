@@ -25,6 +25,7 @@
     <Compile Include="RangeSet.fs" />
     <None Include="Tuples_template.fs" />
     <Compile Include="Tuples_auto.fs" />
+    <Compile Include="ActivePatterns.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -157,10 +157,11 @@ module Weak =
                                                 | _ -> false 
                     | _ -> false
  
-    let (|Strong|_|) (weak : Weak<'a>) = 
+    [<return: Struct>]
+    let inline (|Strong|_|) (weak : Weak<'a>) = 
         match weak.TryGetTarget() with
-            | (true,v) -> Some(v)
-            | _ -> None
+        | (true, v) -> ValueSome v
+        | _ -> ValueNone
         
 
     
