@@ -420,27 +420,26 @@ module Ag =
                     let v = ctor.Invoke([||])
                     Some v
             )
-                
-        let (|SynMethod|_|) (mi : MethodInfo) =
+
+        let isSynMethod (mi : MethodInfo) =
             let pars = mi.GetParameters()
             if pars.Length = 2 && mi.ReturnType <> typeof<System.Void> && mi.ReturnType <> typeof<unit> then
                 if pars.[1].ParameterType.IsAssignableFrom typeof<Scope> then
-                    Some(mi.Name, mi)
+                    true
                 else
-                    None
-            else    
-                None
+                    false
+            else
+                false
 
-        let (|InhMethod|_|) (mi : MethodInfo) =
+        let isInhMethod (mi : MethodInfo) =
             let pars = mi.GetParameters()
             if pars.Length = 2 && (mi.ReturnType = typeof<System.Void> || mi.ReturnType = typeof<unit>) then
                 if pars.[1].ParameterType.IsAssignableFrom typeof<Scope> then
-                    Some(mi.Name, mi)
+                    true
                 else
-                    None
-            else    
-                None
-        
+                    false
+            else
+                false
 
         type RuleTable() = 
             let all =
@@ -480,26 +479,16 @@ module Ag =
 
             let synRules : Dictionary<string, MethodInfo[]> =
                 all
-                |> Seq.choose (function 
-                    | SynMethod(name, mi) -> 
-                        Some (name, mi)
-                    | _ ->
-                        None
-                )
-                |> Seq.groupBy fst
-                |> Seq.map (fun (g, meths) -> g, meths |> Seq.map snd |> Seq.toArray)
+                |> Seq.filter isSynMethod
+                |> Seq.groupBy _.Name
+                |> Seq.map (fun (g, meths) -> g, meths |> Seq.toArray)
                 |> Dictionary.ofSeq
-            
+
             let inhRules : Dictionary<string, MethodInfo[]> =
                 all
-                |> Seq.choose (function 
-                    | InhMethod(name, mi) -> 
-                        Some (name, mi)
-                    | _ ->
-                        None
-                )
-                |> Seq.groupBy fst
-                |> Seq.map (fun (g, meths) -> g, meths |> Seq.map snd |> Seq.toArray)
+                |> Seq.filter isInhMethod
+                |> Seq.groupBy _.Name
+                |> Seq.map (fun (g, meths) -> g, meths |> Seq.toArray)
                 |> Dictionary.ofSeq
 
             let synCache = ConcurrentDict(Dict<string * Type * Type, option<SynMethod>>())
