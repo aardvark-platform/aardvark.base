@@ -10,7 +10,7 @@ module Prelude =
 
     let inc (a:byref<int>) = a <- a + 1
     let dec (a:byref<int>) = a <- a - 1
-    
+
     let inline isNull (a : 'a) =
         match a with
             | null -> true
@@ -27,24 +27,23 @@ module Prelude =
             (Map.empty, input) ||> Seq.fold union
 
     module Seq =
-        let iter' (f : 'a -> 'b) (s : seq<'a>) = 
+        let inline iter' ([<InlineIfLambda>] f : 'a -> 'b) (s : seq<'a>) =
             for i in s do
-                f i |> ignore 
+                f i |> ignore
 
-        let repeat (n : int) (f : unit -> unit) =
+        let inline repeat (n : int) ([<InlineIfLambda>] f : unit -> unit) =
             for i in 1..n do
                 f()
 
-        let repeat' (n : int) (f : unit -> 'a) =
+        let inline repeat' (n : int) ([<InlineIfLambda>] f : unit -> 'a) =
             for i in 1..n do
                 f() |> ignore
 
-        let partition (f : 'a -> bool) (xs : seq<'a>) = 
+        let inline partition ([<InlineIfLambda>] f : 'a -> bool) (xs : seq<'a>) =
             let xs = xs |> Seq.map (fun a -> f a, a) |> Seq.cache
-
             (xs |> Seq.filter (fun (r,v) -> not r) |> Seq.map snd, xs |> Seq.filter (fun (r,v) -> r) |> Seq.map snd)
 
-        let chooseOption (f : 'a -> Option<'b>) (xs : seq<Option<'a>>) : seq<Option<'b>> =
+        let inline chooseOption ([<InlineIfLambda>] f : 'a -> Option<'b>) (xs : seq<Option<'a>>) : seq<Option<'b>> =
             seq {
                 for x in xs do
                     match x with
@@ -52,21 +51,23 @@ module Prelude =
                      | Some x -> yield f x
             }
 
+        [<Obsolete("Use Seq.exists instead.")>]
         let forany (f : 'a -> bool) (s : seq<'a>) =
-            let e = s.GetEnumerator()
-            let mutable r = false
-            while not r && e.MoveNext() do
-                if f e.Current then
-                    r <- true
-            e.Dispose()
-            r
+            Seq.exists f s
 
-        let foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
-            ((0, state), source) ||> Seq.fold (fun (i, state) x ->
-                (i + 1), folder i state x
-            ) |> snd
+        let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
+            use e = source.GetEnumerator()
+            let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt folder
+            let mutable state = state
+            let mutable i = 0
 
-        let inline tryPickV chooser (source : seq<'T>) =
+            while e.MoveNext() do
+                state <- f.Invoke(0, state, e.Current)
+                i <- i + 1
+
+            state
+
+        let inline tryPickV ([<InlineIfLambda>] chooser) (source : seq<'T>) =
             use e = source.GetEnumerator()
             let mutable res = ValueNone
 
@@ -75,7 +76,7 @@ module Prelude =
 
             res
 
-        let inline tryFindV predicate (source: seq<'T>) =
+        let inline tryFindV ([<InlineIfLambda>] predicate) (source: seq<'T>) =
             use e = source.GetEnumerator()
             let mutable res = ValueNone
 
@@ -140,27 +141,36 @@ module Prelude =
         let partition (f : 'a -> bool) (source : list<'a>) = 
             partitionAcc f source (System.Collections.Generic.List()) (System.Collections.Generic.List())
 
-        let foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (list : 'T list) =
-            ((0, state), list) ||> List.fold (fun (i, state) x ->
-                (i + 1), folder i state x
-            ) |> snd
+        let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (list : 'T list) =
+            match list with
+            | [] -> state
+            | _ ->
+                let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt(folder)
+                let mutable acc = state
+                let mutable i = 0
+
+                for x in list do
+                    acc <- f.Invoke(i, acc, x)
+                    i <- i + 1
+
+                acc
 
     module Array =
-        let rec private forany' (f : 'a -> bool) (index : int) (a : 'a[]) =
-            if index >= a.Length then false
-            else
-                if f a.[index] then true
-                else forany' f (index + 1) a
 
+        [<Obsolete("Use Array.exists instead.")>]
         let forany (f : 'a -> bool) (a : 'a[]) =
-            forany' f 0 a
+            Array.exists f a
 
-        let foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
-            ((0, state), array) ||> Array.fold (fun (i, state) x ->
-                (i + 1), folder i state x
-            ) |> snd
+        let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
+            let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt(folder)
+            let mutable state = state
 
-        let binarySearch (compare : 'T -> int) (array : 'T[]) =
+            for i = 0 to array.Length - 1 do
+                state <- f.Invoke(i, state, array.[i])
+
+            state
+
+        let inline binarySearch ([<InlineIfLambda>] compare : 'T -> int) (array : 'T[]) =
             let rec search (a : int) (b : int) =
                 if a <= b then
                     let i = (a + b) / 2
@@ -174,7 +184,7 @@ module Prelude =
 
             search 0 (array.Length - 1)
 
-        let inline tryPickV chooser (array : _[]) =
+        let inline tryPickV ([<InlineIfLambda>] chooser) (array : _[]) =
             let rec loop i =
                 if i >= array.Length then
                     ValueNone
@@ -192,11 +202,6 @@ module Prelude =
         let inline dispose v = (^a : (member Dispose : unit -> unit) v)
 
     module Option =
-        let inline defaultValue (fallback : 'a) (option : Option<'a>) = 
-            match option with
-             | Some value ->  value
-             | None -> fallback
-
         let inline toValueOption (value : 'T option) =
             match value with Some x -> ValueSome x | _ -> ValueNone
 

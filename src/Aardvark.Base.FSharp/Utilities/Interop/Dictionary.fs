@@ -25,15 +25,17 @@ module Dictionary =
         d.Clear()
 
     let inline map (f : 'k -> 'a -> 'b) (d : Dictionary<'k, 'a>) =
+        let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
         let result = Dictionary()
         for (KeyValue(k,v)) in d do
-            result.[k] <- f k v
+            result.[k] <- f.Invoke(k, v)
         result
 
     let inline mapKeys (f : 'k -> 'a -> 'b) (d : Dictionary<'k, 'a>) =
+        let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
         let result = Dictionary()
         for (KeyValue(k,v)) in d do
-            result.[f k v] <- v
+            result.[f.Invoke(k, v)] <- v
         result
 
     let inline union (dicts : #seq<Dictionary<'k, 'v>>) =
@@ -145,15 +147,17 @@ module Dict =
         #endif
 
     let inline map (f : 'k -> 'a -> 'b) (d : Dict<'k, 'a>) =
+        let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
         let result = Dict()
         for (KeyValue(k,v)) in d do
-            result.[k] <- f k v
+            result.[k] <- f.Invoke(k, v)
         result
 
     let inline mapKeys (f : 'k -> 'a -> 'b) (d : Dict<'k, 'a>) =
+        let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
         let result = Dict()
         for (KeyValue(k,v)) in d do
-            result.[f k v] <- v
+            result.[f.Invoke(k, v)] <- v
         result
 
     let inline union (dicts : #seq<Dict<'k, 'v>>) =
@@ -242,15 +246,17 @@ module SymDict =
         d.Clear()
 
     let inline map (f : Symbol -> 'a -> 'b) (d : SymbolDict<'a>) =
+        let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
         let result = SymbolDict()
         for (KeyValue(k,v)) in d do
-            result.[k] <-  f k v
+            result.[k] <-  f.Invoke(k, v)
         result
 
     let inline mapKeys (f : Symbol -> 'a -> Symbol) (d : SymbolDict<'a>) =
+        let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
         let result = SymbolDict()
         for (KeyValue(k,v)) in d do
-            result.[f k v] <- v
+            result.[f.Invoke(k, v)] <- v
         result
 
     let inline union (dicts : #seq<SymbolDict<'v>>) =

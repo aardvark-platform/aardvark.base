@@ -59,26 +59,28 @@ module Arrays =
 
     [<ReflectedDefinition>]
     module Arr =
-        let map (f : 'a -> 'b) (a : Arr<'d, 'a>) : Arr<'d, 'b> =
+        let inline map ([<InlineIfLambda>] f : 'a -> 'b) (a : Arr<'d, 'a>) : Arr<'d, 'b> =
             let result = Array.zeroCreate a.Length
             for i in 0..a.Length-1 do
                 result.[i] <- f a.[i]
             Arr<'d,'b>(result)
 
-        let fold (f : 's -> 'a -> 's) (seed : 's) (a : Arr<'d, 'a>) : 's =
+        let inline fold (f : 's -> 'a -> 's) (seed : 's) (a : Arr<'d, 'a>) : 's =
+            let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
             let mutable result = seed
             for i in 0..a.Length-1 do
-                result <- f result a.[i]
+                result <- f.Invoke(result, a.[i])
             result
 
-        let foldBack (f : 'a -> 's -> 's) (seed : 's) (a : Arr<'d, 'a>) : 's =
+        let inline foldBack (f : 'a -> 's -> 's) (seed : 's) (a : Arr<'d, 'a>) : 's =
+            let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
             let mutable result = seed
             for i in 1..a.Length do
                 let i = a.Length-i
-                result <- f a.[i] result
+                result <- f.Invoke(a.[i], result)
             result
 
-        let inline sumBy (f : 'a -> 'b) (arr : Arr<'d, 'a>)=
+        let inline sumBy ([<InlineIfLambda>] f : 'a -> 'b) (arr : Arr<'d, 'a>)=
             fold (fun s v -> s + (f v)) GenericValues.zero arr
 
         let inline sum (arr : Arr<'d, 'a>)=
@@ -96,13 +98,13 @@ module Arrays =
         
         let empty<'d, 'a when 'd :> INatural> : FixedList<'d, 'a> = { storage = Arr<'d, 'a>(); Count = 0 } 
 
-        let map (f : 'a -> 'b) (l : FixedList<'d, 'a>) : FixedList<'d, 'b> =
+        let inline map ([<InlineIfLambda>] f : 'a -> 'b) (l : FixedList<'d, 'a>) : FixedList<'d, 'b> =
             let result = Arr<'d, 'b>()
             for i in 0..l.Count-1 do
                 result.[i] <- f l.storage.[i]
             { storage =result; Count = l.Count } 
 
-        let choose (f : 'a -> Option<'b>) (l : FixedList<'d, 'a>) : FixedList<'d, 'b> =
+        let inline choose ([<InlineIfLambda>] f : 'a -> Option<'b>) (l : FixedList<'d, 'a>) : FixedList<'d, 'b> =
             let result = Arr<'d, 'b>()
             let mutable count = 0
 
@@ -115,19 +117,21 @@ module Arrays =
 
             { storage = result; Count = count } 
 
-        let fold (acc : 'a -> 'b -> 'a) (seed : 'a) (l : FixedList<'d, 'b>) : 'a =
+        let inline fold (acc : 'a -> 'b -> 'a) (seed : 'a) (l : FixedList<'d, 'b>) : 'a =
+            let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt acc
             let mutable result = seed
             for i in 0..l.Count-1 do
-                result <- acc result l.storage.[i]
+                result <- f.Invoke(result, l.storage.[i])
             result
 
-        let foldBack (acc : 'b -> 'a -> 'a) (seed : 'a) (l : FixedList<'d, 'b>) : 'a =
+        let inline foldBack (acc : 'b -> 'a -> 'a) (seed : 'a) (l : FixedList<'d, 'b>) : 'a =
+            let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt acc
             let mutable result = seed
             for i in 1..l.Count do
-                result <- acc l.storage.[i - l.Count] result
+                result <- f.Invoke(l.storage.[i - l.Count], result)
             result
 
-        let inline sumBy (f : 'a -> 'b) (l : FixedList<'d, 'a>) : 'b =
+        let inline sumBy ([<InlineIfLambda>] f : 'a -> 'b) (l : FixedList<'d, 'a>) : 'b =
             let mutable result = GenericValues.zero
             for i in 0..l.Count-1 do
                 result <- result + f l.storage.[i]
@@ -139,7 +143,7 @@ module Arrays =
                 result <- result + l.storage.[i]
             result
 
-        let filter (l : FixedList<'d, 'a>) (condition : 'a -> bool) : FixedList<'d, 'a> =
+        let inline filter ([<InlineIfLambda>] condition : 'a -> bool) (l : FixedList<'d, 'a>) : FixedList<'d, 'a> =
             let result = Arr<'d, 'a>()
             let mutable count = 0
 

@@ -16,7 +16,7 @@ module HashSet =
     let inline clear (h : HashSet<_>) =
         h.Clear()
 
-    let inline map f (h : HashSet<_>) =
+    let inline map ([<InlineIfLambda>] f) (h : HashSet<_>) =
         let r = HashSet()
         for v in h do r.Add (f v) |> ignore
         r

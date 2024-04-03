@@ -14,13 +14,13 @@ module CSharpList =
 
     let inline map (f : 'a -> 'b) (l : List<'a>) = l.Map f
 
-    let collect (f : 'a -> seq<'b>) (l : List<'a>) =
+    let inline collect ([<InlineIfLambda>] f : 'a -> seq<'b>) (l : List<'a>) =
         let res = List()
         for e in l do
             res.AddRange (f e)
         res
 
-    let choose (f : 'a -> Option<'b>) (l : List<'a>) =
+    let inline choose ([<InlineIfLambda>] f : 'a -> Option<'b>) (l : List<'a>) =
         let res = List()
         for e in l do
             match f e with
@@ -29,7 +29,7 @@ module CSharpList =
 
         res
 
-    let filter (f : 'a -> bool) (l : List<'a>) =
+    let inline filter ([<InlineIfLambda>] f : 'a -> bool) (l : List<'a>) =
         let res = List()
         for e in l do
             if f e then res.Add e
@@ -50,13 +50,14 @@ module CSharpList =
 
     let inline count (l : List<'a>) = l.Count
 
-    let iter (f : 'a -> unit) (l : List<'a>) =
+    let inline iter ([<InlineIfLambda>] f : 'a -> unit) (l : List<'a>) =
         for i in 0..l.Count-1 do
             f l.[i]
 
-    let iteri (f : int -> 'a -> unit) (l : List<'a>) =
+    let inline iteri (f : int -> 'a -> unit) (l : List<'a>) =
+        let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt f
         for i in 0..l.Count-1 do
-            f i l.[i]
+            f.Invoke(i, l.[i])
 
 
     let empty<'a> : List<'a> = List()
