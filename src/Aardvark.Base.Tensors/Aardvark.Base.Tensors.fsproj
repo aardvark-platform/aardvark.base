@@ -13,22 +13,22 @@
     <OutputPath>..\..\bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="paket.references" />
-    <None Include="NativeTensorGenerator.fsx" />
-    <Compile Include="NativeTensorGenerated.fs" />
-    <Compile Include="NativeTensorExtensions.fs" />
-    <None Include="TensorUtilitiesGenerator.fsx" />
-    <Compile Include="TensorUtilitiesGenerated.fs" />
-    <Compile Include="TensorMath.fs" />
-    <Compile Include="PixImageErrorMetric.fs" />
-    <Compile Include="PixImageCube.fs" />
-    <Compile Include="ImageTrafo.fs" />
-    <Compile Include="Tensors.fs" />
+    <None Include="Native\NativeTensorGenerator.fsx" />
+    <Compile Include="Native\NativeTensorGenerated.fs" />
+    <Compile Include="Native\NativeTensorExtensions.fs" />
+    <None Include="Extensions\TensorUtilitiesGenerator.fsx" />
+    <Compile Include="Extensions\TensorUtilitiesGenerated.fs" />
+    <Compile Include="Extensions\TensorMath.fs" />
+    <Compile Include="Extensions\TensorSlicing.fs" />
+    <Compile Include="PixImage\PixImageErrorMetric.fs" />
+    <Compile Include="PixImage\PixImageCube.fs" />
+    <Compile Include="PixImage\ImageTrafo.fs" />
+    <Compile Include="PixImage\PixImageImageSharp.fs" />
     <Compile Include="Algorithms\QR.fs" />
     <Compile Include="Algorithms\SVD.fs" />
     <Compile Include="Algorithms\Solver.fs" />
     <None Include="Algorithms\Generator.fsx" />
-    <Compile Include="PixImageImageSharp.fs" />
+    <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
