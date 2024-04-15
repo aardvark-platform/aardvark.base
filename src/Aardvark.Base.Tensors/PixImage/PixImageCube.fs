@@ -55,92 +55,6 @@ module FSharpPixImageCubeExtensions =
     module PixImageCube =
 
         module Trafo =
-            let private figureOutComposeOp () =
-
-                let v = Volume<byte>(V3i.III * 10)
-
-                let direct = Array.zeroCreate 8
-                for o0 in 0..7 do
-                    direct.[o0] <- v.Transformed(unbox o0).Info
-
-                for o0 in 0..7 do
-                    for o1 in 0..7 do
-                        let nv = v.Transformed(unbox o0).Transformed(unbox o1).Info
-
-                        let res = direct |> Array.findIndex (fun di -> di.Equals(nv))
-
-                        printfn "(ImageTrafo.%A, ImageTrafo.%A), ImageTrafo.%A" (unbox<ImageTrafo> o0) (unbox<ImageTrafo> o1) (unbox<ImageTrafo> res)
-
-            let private composeTable =
-                Dictionary.ofList [
-                    (ImageTrafo.Identity, ImageTrafo.Identity), ImageTrafo.Identity
-                    (ImageTrafo.Identity, ImageTrafo.Rot90), ImageTrafo.Rot90
-                    (ImageTrafo.Identity, ImageTrafo.Rot180), ImageTrafo.Rot180
-                    (ImageTrafo.Identity, ImageTrafo.Rot270), ImageTrafo.Rot270
-                    (ImageTrafo.Identity, ImageTrafo.MirrorX), ImageTrafo.MirrorX
-                    (ImageTrafo.Identity, ImageTrafo.Transpose), ImageTrafo.Transpose
-                    (ImageTrafo.Identity, ImageTrafo.MirrorY), ImageTrafo.MirrorY
-                    (ImageTrafo.Identity, ImageTrafo.Transverse), ImageTrafo.Transverse
-                    (ImageTrafo.Rot90, ImageTrafo.Identity), ImageTrafo.Rot90
-                    (ImageTrafo.Rot90, ImageTrafo.Rot90), ImageTrafo.Rot180
-                    (ImageTrafo.Rot90, ImageTrafo.Rot180), ImageTrafo.Rot270
-                    (ImageTrafo.Rot90, ImageTrafo.Rot270), ImageTrafo.Identity
-                    (ImageTrafo.Rot90, ImageTrafo.MirrorX), ImageTrafo.Transverse
-                    (ImageTrafo.Rot90, ImageTrafo.Transpose), ImageTrafo.MirrorX
-                    (ImageTrafo.Rot90, ImageTrafo.MirrorY), ImageTrafo.Transpose
-                    (ImageTrafo.Rot90, ImageTrafo.Transverse), ImageTrafo.MirrorY
-                    (ImageTrafo.Rot180, ImageTrafo.Identity), ImageTrafo.Rot180
-                    (ImageTrafo.Rot180, ImageTrafo.Rot90), ImageTrafo.Rot270
-                    (ImageTrafo.Rot180, ImageTrafo.Rot180), ImageTrafo.Identity
-                    (ImageTrafo.Rot180, ImageTrafo.Rot270), ImageTrafo.Rot90
-                    (ImageTrafo.Rot180, ImageTrafo.MirrorX), ImageTrafo.MirrorY
-                    (ImageTrafo.Rot180, ImageTrafo.Transpose), ImageTrafo.Transverse
-                    (ImageTrafo.Rot180, ImageTrafo.MirrorY), ImageTrafo.MirrorX
-                    (ImageTrafo.Rot180, ImageTrafo.Transverse), ImageTrafo.Transpose
-                    (ImageTrafo.Rot270, ImageTrafo.Identity), ImageTrafo.Rot270
-                    (ImageTrafo.Rot270, ImageTrafo.Rot90), ImageTrafo.Identity
-                    (ImageTrafo.Rot270, ImageTrafo.Rot180), ImageTrafo.Rot90
-                    (ImageTrafo.Rot270, ImageTrafo.Rot270), ImageTrafo.Rot180
-                    (ImageTrafo.Rot270, ImageTrafo.MirrorX), ImageTrafo.Transpose
-                    (ImageTrafo.Rot270, ImageTrafo.Transpose), ImageTrafo.MirrorY
-                    (ImageTrafo.Rot270, ImageTrafo.MirrorY), ImageTrafo.Transverse
-                    (ImageTrafo.Rot270, ImageTrafo.Transverse), ImageTrafo.MirrorX
-                    (ImageTrafo.MirrorX, ImageTrafo.Identity), ImageTrafo.MirrorX
-                    (ImageTrafo.MirrorX, ImageTrafo.Rot90), ImageTrafo.Transpose
-                    (ImageTrafo.MirrorX, ImageTrafo.Rot180), ImageTrafo.MirrorY
-                    (ImageTrafo.MirrorX, ImageTrafo.Rot270), ImageTrafo.Transverse
-                    (ImageTrafo.MirrorX, ImageTrafo.MirrorX), ImageTrafo.Identity
-                    (ImageTrafo.MirrorX, ImageTrafo.Transpose), ImageTrafo.Rot90
-                    (ImageTrafo.MirrorX, ImageTrafo.MirrorY), ImageTrafo.Rot180
-                    (ImageTrafo.MirrorX, ImageTrafo.Transverse), ImageTrafo.Rot270
-                    (ImageTrafo.Transpose, ImageTrafo.Identity), ImageTrafo.Transpose
-                    (ImageTrafo.Transpose, ImageTrafo.Rot90), ImageTrafo.MirrorY
-                    (ImageTrafo.Transpose, ImageTrafo.Rot180), ImageTrafo.Transverse
-                    (ImageTrafo.Transpose, ImageTrafo.Rot270), ImageTrafo.MirrorX
-                    (ImageTrafo.Transpose, ImageTrafo.MirrorX), ImageTrafo.Rot270
-                    (ImageTrafo.Transpose, ImageTrafo.Transpose), ImageTrafo.Identity
-                    (ImageTrafo.Transpose, ImageTrafo.MirrorY), ImageTrafo.Rot90
-                    (ImageTrafo.Transpose, ImageTrafo.Transverse), ImageTrafo.Rot180
-                    (ImageTrafo.MirrorY, ImageTrafo.Identity), ImageTrafo.MirrorY
-                    (ImageTrafo.MirrorY, ImageTrafo.Rot90), ImageTrafo.Transverse
-                    (ImageTrafo.MirrorY, ImageTrafo.Rot180), ImageTrafo.MirrorX
-                    (ImageTrafo.MirrorY, ImageTrafo.Rot270), ImageTrafo.Transpose
-                    (ImageTrafo.MirrorY, ImageTrafo.MirrorX), ImageTrafo.Rot180
-                    (ImageTrafo.MirrorY, ImageTrafo.Transpose), ImageTrafo.Rot270
-                    (ImageTrafo.MirrorY, ImageTrafo.MirrorY), ImageTrafo.Identity
-                    (ImageTrafo.MirrorY, ImageTrafo.Transverse), ImageTrafo.Rot90
-                    (ImageTrafo.Transverse, ImageTrafo.Identity), ImageTrafo.Transverse
-                    (ImageTrafo.Transverse, ImageTrafo.Rot90), ImageTrafo.MirrorX
-                    (ImageTrafo.Transverse, ImageTrafo.Rot180), ImageTrafo.Transpose
-                    (ImageTrafo.Transverse, ImageTrafo.Rot270), ImageTrafo.MirrorY
-                    (ImageTrafo.Transverse, ImageTrafo.MirrorX), ImageTrafo.Rot90
-                    (ImageTrafo.Transverse, ImageTrafo.Transpose), ImageTrafo.Rot180
-                    (ImageTrafo.Transverse, ImageTrafo.MirrorY), ImageTrafo.Rot270
-                    (ImageTrafo.Transverse, ImageTrafo.Transverse), ImageTrafo.Identity
-                ]
-
-            let private composeTrafo (l : ImageTrafo) (r : ImageTrafo) =
-                composeTable.[(l,r)]
 
             let private identity =
                 Map.ofList [
@@ -155,7 +69,7 @@ module FSharpPixImageCubeExtensions =
             let private compose (l : Map<CubeSide, CubeSide * ImageTrafo>) (r : Map<CubeSide, CubeSide * ImageTrafo>) : Map<CubeSide, CubeSide * ImageTrafo> =
                 l |> Map.map (fun s (ts, lt) ->
                     match Map.tryFind ts r with
-                        | Some (fs, rt) -> fs, composeTrafo lt rt
+                        | Some (fs, rt) -> fs, ImageTrafo.compose lt rt
                         | None -> ts, lt
                 )
 

@@ -20,9 +20,9 @@
     <Compile Include="Extensions\TensorUtilitiesGenerated.fs" />
     <Compile Include="Extensions\TensorMath.fs" />
     <Compile Include="Extensions\TensorSlicing.fs" />
+    <Compile Include="PixImage\ImageTrafo.fs" />
     <Compile Include="PixImage\PixImageErrorMetric.fs" />
     <Compile Include="PixImage\PixImageCube.fs" />
-    <Compile Include="PixImage\ImageTrafo.fs" />
     <Compile Include="PixImage\PixImageImageSharp.fs" />
     <Compile Include="Algorithms\QR.fs" />
     <Compile Include="Algorithms\SVD.fs" />

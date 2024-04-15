@@ -225,29 +225,9 @@ module private ImageSharpHelpers =
         )
         res
 
-    let getSize (trafo : ImageTrafo) (w : int) (h : int) =
-        match trafo with
-        | ImageTrafo.Transpose -> V2i(h, w)
-        | ImageTrafo.Transverse -> V2i(h, w)
-        | ImageTrafo.Rot90 -> V2i(h, w)
-        | ImageTrafo.Rot270 -> V2i(h, w)
-        | _ -> V2i(w,h)
-
     let usingTransformed<'T> (fmt : Col.Format) (w : int) (h : int) (trafo : ImageTrafo) (action : PixImage<'T> -> unit) =
-        let s = getSize trafo w h
-
-        let inv =
-            match trafo with
-            | ImageTrafo.Identity   -> ImageTrafo.Identity
-            | ImageTrafo.Rot90      -> ImageTrafo.Rot270
-            | ImageTrafo.Rot180     -> ImageTrafo.Rot180
-            | ImageTrafo.Rot270     -> ImageTrafo.Rot90
-            | ImageTrafo.MirrorX    -> ImageTrafo.MirrorX
-            | ImageTrafo.MirrorY    -> ImageTrafo.MirrorY
-            | ImageTrafo.Transpose  -> ImageTrafo.Transpose
-            | ImageTrafo.Transverse -> ImageTrafo.Transverse
-            | _ -> failwithf "bad image trafo: %A" trafo
-
+        let s = ImageTrafo.transformSize (V2i(w, h)) trafo
+        let inv = ImageTrafo.inverse trafo
         let img = PixImage<'T>(fmt, s)
         let local = unbox<PixImage<'T>>(img.Transformed inv)
         action local
@@ -507,7 +487,8 @@ and [<AbstractClass; Sealed; Extension>] PixImageSharp private() =
         try
             let info = Image.Identify stream
             let trafo = getImageTrafo info
-            PixImageInfo(PixFormat.ByteRGBA, getSize trafo info.Width info.Height)
+            let size = trafo |> ImageTrafo.transformSize (V2i(info.Width, info.Height))
+            PixImageInfo(PixFormat.ByteRGBA, size)
         with _ ->
             null
 
@@ -548,21 +529,9 @@ and [<AbstractClass; Sealed; Extension>] PixImageSharp private() =
                     | None ->
                         if make.ToLower().Contains "canon" then 1.6 else 1.5
 
-                let trafo = getImageTrafo info
-
-                let mutable size = V2i(info.Width, info.Height)
-                match trafo with
-                | ImageTrafo.Transpose
-                | ImageTrafo.Transverse
-                | ImageTrafo.Rot90
-                | ImageTrafo.Rot270 ->
-                    size <- V2i(size.Y, size.X)
-                | _ ->
-                    ()
-
                 try
                     return {
-                        size        = size
+                        size        = info |> getImageTrafo |> ImageTrafo.transformSize (V2i(info.Width, info.Height))
                         cropFactor  = crop
                         make        = make.Trim()
                         model       = model.Trim()
