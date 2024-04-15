@@ -26,12 +26,15 @@
     <None Include="Tuples_template.fs" />
     <Compile Include="Tuples_auto.fs" />
     <Compile Include="ActivePatterns.fs" />
+    <Compile Include="TensorUtilitiesBench.fs" />
+    <Compile Include="TensorMathBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base.Tensors\Aardvark.Base.Tensors.fsproj" />
     <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
+    <ProjectReference Include="..\Aardvark.Base.FSharp.Tests\Aardvark.Base.FSharp.Tests.fsproj" />
   </ItemGroup>
   <Import Project="..\..\..\.paket\Paket.Restore.targets" />
 </Project>

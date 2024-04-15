@@ -17,6 +17,9 @@
     <None Include="NativeTensorGenerator.fsx" />
     <Compile Include="NativeTensorGenerated.fs" />
     <Compile Include="NativeTensorExtensions.fs" />
+    <None Include="TensorUtilitiesGenerator.fsx" />
+    <Compile Include="TensorUtilitiesGenerated.fs" />
+    <Compile Include="TensorMath.fs" />
     <Compile Include="PixImageErrorMetric.fs" />
     <Compile Include="PixImageCube.fs" />
     <Compile Include="ImageTrafo.fs" />

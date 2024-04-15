@@ -7,12 +7,6 @@ open NUnit.Framework
 
 module ``Tensor Math Tests`` =
 
-    type Tensor =
-        | Full = 0
-        | Sub = 1
-        | Window = 2
-
-    let mutable rnd = Unchecked.defaultof<RandomSystem>
     let equalApprox exp = equalWithin 0.0001 exp
 
     module Vector =
@@ -26,147 +20,116 @@ module ``Tensor Math Tests`` =
             if a.S <> b.S then
                 invalidArg "size" "Mismatching size"
 
-            (a.Elements, b.Elements)
-            ||> Seq.iter2 (fun a b -> a |> should equalApprox b)
+            a.ForeachIndex(b.Info, fun i1 i2 ->
+                a.Data.[int i1] |> should equalApprox b.Data.[int i2]
+            )
 
     module Matrix =
+
+        module Ref =
+
+            let map2 (f: 'T1 -> 'T2 -> 'T3) (a: Matrix<'T1>) (b: Matrix<'T2>) =
+                if a.S <> b.S then
+                    invalidArg "size" "Size mismatch"
+
+                let c = Array.zeroCreate a.Data.Length
+                a.ForeachIndex(b.Info, fun i1 i2 ->
+                    c.[int i1] <- f a.Data.[int i1] b.Data.[int i2]
+                )
+                Matrix<'T3>(c, a.Origin, a.S, a.D, a.F)
 
         let inline approxEqual (a: Matrix<'T>) (b: Matrix<'T>) =
             if a.S <> b.S then
                 invalidArg "size" "Mismatching size"
 
-            (a.Elements, b.Elements)
-            ||> Seq.iter2 (fun a b -> a |> should equalApprox b)
+            a.ForeachIndex(b.Info, fun i1 i2 ->
+                a.Data.[int i1] |> should equalApprox b.Data.[int i2]
+            )
 
-    [<Literal>]
     let iterations = 100
-
-    [<AutoOpen>]
-    module Generation =
-        let inline getVectorOfSize (t: Tensor) (n: ^Int) =
-            let n = int n
-
-            match t with
-            | Tensor.Full ->
-                Vector.Create <| Array.init n (ignore >> rnd.UniformDouble)
-
-            | Tensor.Sub ->
-                let arr = Array.init (n + 512) (ignore >> rnd.UniformDouble)
-                let d = 1 + rnd.UniformInt 4
-                let f = rnd.UniformInt (arr.Length - (n - 1) * d)
-                Vector.Create(arr).SubVector(f, n, d)
-
-            | _ ->
-                let arr = Array.init (n + 512) (ignore >> rnd.UniformDouble)
-                let d = 1 + rnd.UniformInt 4
-                let f = rnd.UniformInt ((arr.Length - (n - 1) * d) / d)
-                Vector.Create(arr).SubVectorWindow(f, n, d)
-
-        let getVector (t: Tensor) =
-            getVectorOfSize t (32 + rnd.UniformInt 128)
-
-        let inline getMatrixOfSize (t: Tensor) (s: ^V2i) = 
-            let s = v2i s
-
-            match t with
-            | Tensor.Full ->
-                let arr = Array.init (s.X * s.Y) (ignore >> rnd.UniformDouble)
-                Matrix(arr, s)
-
-            | Tensor.Sub ->
-                let S = s + 256
-                let arr = Array.init (S.X * S.Y) (ignore >> rnd.UniformDouble)
-                let d = 1 + rnd.UniformV2i 4
-                let f = rnd.UniformV2i (S - (s - 1) * d)
-                Matrix(arr, S).SubMatrix(f, s, V2i(d.X, d.Y * S.X))
-
-            | _ ->
-                let S = s + 256
-                let arr = Array.init (S.X * S.Y) (ignore >> rnd.UniformDouble)
-                let d = 1 + rnd.UniformV2i 4
-                let f = rnd.UniformV2i ((S - (s - 1) * d) / d)
-                Matrix(arr, S).SubMatrixWindow(f, s, V2i(d.X, d.Y * S.X))
-
-        let getMatrix (t: Tensor) =
-            getMatrixOfSize t (16 + rnd.UniformV2i 64)
-
-        let inline getMatrixOfHeight (t: Tensor) (h: ^Int) =
-            getMatrixOfSize t (V2i(16 + rnd.UniformInt 64, int h))
+    let oldImpl = false
 
     [<SetUp>]
     let setup() =
-        rnd <- RandomSystem(0)
+        TensorGeneration.init 0
 
     [<Theory>]
-    let ``[Vector] Dot product`` (tensor: Tensor) =
+    let ``[Vector] Dot product`` (tensor: TensorKind) =
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            a.DotProduct(b) |> should equalApprox (Vector.Ref.dot a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.DotProduct(b) else Vector.dot a b
+            r |> should equalApprox (Vector.Ref.dot a b)
 
     [<Theory>]
-    let ``[Vector] Norm2 squared`` (tensor: Tensor) =
+    let ``[Vector] Norm2 squared`` (tensor: TensorKind) =
         let inline ref (v: Vector< ^T>) =
             v.Norm(sqr, LanguagePrimitives.GenericZero< ^T>, (+))
 
         for _ = 1 to iterations do
-            let v = getVector tensor
-            v.NormSquared() |> should equalApprox (ref v)
+            let v = TensorGeneration.getVector tensor
+            let r = if oldImpl then v.NormSquared() else Vector.lengthSquared v
+            r |> should equalApprox (ref v)
 
     [<Theory>]
-    let ``[Vector] Dist1`` (tensor: Tensor) =
+    let ``[Vector] Dist1`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             a.InnerProduct(b, (fun x y -> abs (x - y)), LanguagePrimitives.GenericZero< ^T>, (+))
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            a.Dist1(b) |> should equalApprox (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.Dist1(b) else Vector.distance1 a b
+            r |> should equalApprox (ref a b)
 
     [<Theory>]
-    let ``[Vector] Dist2`` (tensor: Tensor) =
+    let ``[Vector] Dist2`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             sqrt <| a.InnerProduct(b, (fun x y -> sqr (x - y)), LanguagePrimitives.GenericZero< ^T>, (+))
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            a.Dist2(b) |> should equalApprox (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.Dist2(b) else Vector.distance a b
+            r |> should equalApprox (ref a b)
 
     [<Theory>]
-    let ``[Vector] Dist2 squared`` (tensor: Tensor) =
+    let ``[Vector] Dist2 squared`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             a.InnerProduct(b, (fun x y -> sqr (x - y)), LanguagePrimitives.GenericZero< ^T>, (+))
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            a.Dist2Squared(b) |> should equalApprox (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.Dist2Squared(b) else Vector.distanceSquared a b
+            r |> should equalApprox (ref a b)
 
     [<Theory>]
-    let ``[Vector] DistMax`` (tensor: Tensor) =
+    let ``[Vector] DistMax`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             a.InnerProduct(b, (fun x y -> abs (x - y)), LanguagePrimitives.GenericZero< ^T>, max)
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            a.DistMax(b) |> should equalApprox (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.DistMax(b) else Vector.distanceMax a b
+            r |> should equalApprox (ref a b)
 
     [<Theory>]
-    let ``[Vector] Multiply`` (tensor: Tensor) =
+    let ``[Vector] Multiply`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             let a = Array.ofSeq a.Elements
             let b = Array.ofSeq b.Elements
             (a, b) ||> Array.map2 (*) |> Vector.Create
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            Vector.approxEqual (a.Multiply(b)) (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.Multiply(b) else Vector.multiply a b
+            Vector.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Vector] Multiply transposed`` (tensor: Tensor) =
+    let ``[Vector] Multiply transposed`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             let a = Array.ofSeq a.Elements
             let b = Array.ofSeq b.Elements
@@ -181,82 +144,89 @@ module ``Tensor Math Tests`` =
             Matrix.Create(r, b.Length, a.Length)
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            Matrix.approxEqual (a.MultiplyTransposed(b)) (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.MultiplyTransposed(b) else Vector.multiplyTransposed a b
+            Matrix.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Vector] Multiply scalar`` (tensor: Tensor) =
+    let ``[Vector] Multiply scalar`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: ^T) =
             a.Elements |> Array.ofSeq |> Array.map ((*) b) |> Vector.Create
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = rnd.UniformDouble() * 100.0
-            Vector.approxEqual (a.Multiply(b)) (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.rnd.UniformDouble() * 100.0
+            let r = if oldImpl then a.Multiply(b) else Vector.map ((*) b) a
+            Vector.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Vector] Subtract`` (tensor: Tensor) =
+    let ``[Vector] Subtract`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             let a = Array.ofSeq a.Elements
             let b = Array.ofSeq b.Elements
             (a, b) ||> Array.map2 (-) |> Vector.Create
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            Vector.approxEqual (a.Subtract(b)) (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.Subtract(b) else Vector.subtract a b
+            Vector.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Vector] Subtract scalar`` (tensor: Tensor) =
+    let ``[Vector] Subtract scalar`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: ^T) =
             a.Elements |> Array.ofSeq |> Array.map (fun x -> x - b) |> Vector.Create
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = rnd.UniformDouble() * 100.0
-            Vector.approxEqual (a.Subtract(b)) (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.rnd.UniformDouble() * 100.0
+            let r = if oldImpl then a.Subtract(b) else Vector.map (fun a -> a - b) a
+            Vector.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Vector] Add`` (tensor: Tensor) =
+    let ``[Vector] Add`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: Vector< ^T>) =
             let a = Array.ofSeq a.Elements
             let b = Array.ofSeq b.Elements
             (a, b) ||> Array.map2 (+) |> Vector.Create
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = getVectorOfSize tensor a.Size
-            Vector.approxEqual (a.Add(b)) (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.getVectorOfSize tensor a.Size
+            let r = if oldImpl then a.Add(b) else Vector.add a b
+            Vector.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Vector] Add scalar`` (tensor: Tensor) =
+    let ``[Vector] Add scalar`` (tensor: TensorKind) =
         let inline ref (a: Vector< ^T>) (b: ^T) =
             a.Elements |> Array.ofSeq |> Array.map ((+) b) |> Vector.Create
 
         for _ = 1 to iterations do
-            let a = getVector tensor
-            let b = rnd.UniformDouble() * 100.0
-            Vector.approxEqual (a.Add(b)) (ref a b)
+            let a = TensorGeneration.getVector tensor
+            let b = TensorGeneration.rnd.UniformDouble() * 100.0
+            let r = if oldImpl then a.Add(b) else Vector.map ((+) b) a
+            Vector.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Matrix] Transform`` (tensor: Tensor) =
+    let ``[Matrix] Transform`` (tensor: TensorKind) (rowMajor: bool) =
         let inline ref (a: Matrix< ^T>) (b: Vector< ^T>) =
             if a.SX <> b.S then
                 invalidArg "size" "Size mismatch"
 
             Array.init (int a.SY) (fun i ->
-                Vector.Ref.dot (a.Row (int64 i)) b
+                Vector.Ref.dot (a.Row (a.FY + int64 i)) b
             )
             |> Vector.Create
 
         for _ = 1 to iterations do
-            let a = getMatrix tensor
-            let b = getVectorOfSize tensor a.SX
-            Vector.approxEqual (a.Multiply(b)) (ref a b)
+            let a = TensorGeneration.getMatrix tensor rowMajor
+            let b = TensorGeneration.getVectorOfSize tensor a.SX
+            let r = if oldImpl then a.Multiply(b) else Matrix.transform a b
+            Vector.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Matrix] Multiply`` (tensor: Tensor) =
+    let ``[Matrix] Multiply`` (tensor: TensorKind) (rowMajorLeft: bool) (rowMajorRight: bool) =
         let inline ref (a: Matrix< ^T>) (b: Matrix< ^T>) =
             if a.SX <> b.SY then
                 invalidArg "size" "Size mismatch"
@@ -264,61 +234,56 @@ module ``Tensor Math Tests`` =
             let r = Array.zeroCreate (int (b.SX * a.SY))
             for y = 0 to int a.SY - 1 do
                 for x = 0 to int b.SX - 1 do
-                    r.[y * int b.SX + x] <- Vector.Ref.dot (a.Row(int64 y)) (b.Col(int64 x))
+                    r.[y * int b.SX + x] <- Vector.Ref.dot (a.Row(a.FY + int64 y)) (b.Col(b.FX + int64 x))
 
             Matrix(r, V2l(b.SX, a.SY))
 
         for _ = 1 to iterations do
-            let a = getMatrix tensor
-            let b = getMatrixOfHeight tensor a.SX
-            Matrix.approxEqual (a.Multiply(b)) (ref a b)
+            let a = TensorGeneration.getMatrix tensor rowMajorLeft
+            let b = TensorGeneration.getMatrixOfHeight tensor rowMajorRight a.SX
+            let r = if oldImpl then a.Multiply(b) else Matrix.multiply a b
+            Matrix.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Matrix] Subtract`` (tensor: Tensor) =
+    let ``[Matrix] Subtract`` (tensor: TensorKind) (rowMajorLeft: bool) (rowMajorRight: bool) =
         let inline ref (a: Matrix< ^T>) (b: Matrix< ^T>) =
-            if a.S <> b.S then
-                invalidArg "size" "Size mismatch"
-
-            let r = (a.Elements, b.Elements) ||> Seq.map2 (-) |> Array.ofSeq
-            Matrix(r, a.S)
+            Matrix.Ref.map2 (-) a b
 
         for _ = 1 to iterations do
-            let a = getMatrix tensor
-            let b = getMatrixOfSize tensor a.S
-            Matrix.approxEqual (a.Subtract(b)) (ref a b)
+            let a = TensorGeneration.getMatrix tensor rowMajorLeft
+            let b = TensorGeneration.getMatrixOfSize tensor rowMajorRight a.S
+            let r = if oldImpl then a.Subtract(b) else Matrix.subtract a b
+            Matrix.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Matrix] Subtract scalar`` (tensor: Tensor) =
+    let ``[Matrix] Subtract scalar`` (tensor: TensorKind) (rowMajor: bool) =
         let inline ref (a: Matrix< ^T>) (b: ^T) =
-            let r = a.Elements |> Seq.map (fun x -> x - b) |> Array.ofSeq
-            Matrix(r, a.S)
+            a.Map(fun x -> x - b)
 
         for _ = 1 to iterations do
-            let a = getMatrix tensor
-            let b = rnd.UniformDouble() * 100.0
-            Matrix.approxEqual (a.Subtract(b)) (ref a b)
+            let a = TensorGeneration.getMatrix tensor rowMajor
+            let b = TensorGeneration.rnd.UniformDouble() * 100.0
+            let r = if oldImpl then a.Subtract(b) else Matrix.map (fun a -> a - b) a
+            Matrix.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Matrix] Add`` (tensor: Tensor) =
+    let ``[Matrix] Add`` (tensor: TensorKind) (rowMajorLeft: bool) (rowMajorRight: bool) =
         let inline ref (a: Matrix< ^T>) (b: Matrix< ^T>) =
-            if a.S <> b.S then
-                invalidArg "size" "Size mismatch"
-
-            let r = (a.Elements, b.Elements) ||> Seq.map2 (+) |> Array.ofSeq
-            Matrix(r, a.S)
+            Matrix.Ref.map2 (+) a b
 
         for _ = 1 to iterations do
-            let a = getMatrix tensor
-            let b = getMatrixOfSize tensor a.S
-            Matrix.approxEqual (a.Add(b)) (ref a b)
+            let a = TensorGeneration.getMatrix tensor rowMajorLeft
+            let b = TensorGeneration.getMatrixOfSize tensor rowMajorRight a.S
+            let r = if oldImpl then a.Add(b) else Matrix.add a b
+            Matrix.approxEqual r (ref a b)
 
     [<Theory>]
-    let ``[Matrix] Add scalar`` (tensor: Tensor) =
+    let ``[Matrix] Add scalar`` (tensor: TensorKind) (rowMajor: bool) =
         let inline ref (a: Matrix< ^T>) (b: ^T) =
-            let r = a.Elements |> Seq.map ((+) b) |> Array.ofSeq
-            Matrix(r, a.S)
+            a.Map((+) b)
 
         for _ = 1 to iterations do
-            let a = getMatrix tensor
-            let b = rnd.UniformDouble() * 100.0
-            Matrix.approxEqual (a.Add(b)) (ref a b)
+            let a = TensorGeneration.getMatrix tensor rowMajor
+            let b = TensorGeneration.rnd.UniformDouble() * 100.0
+            let r = if oldImpl then a.Add(b) else Matrix.map ((+) b) a
+            Matrix.approxEqual r (ref a b)
