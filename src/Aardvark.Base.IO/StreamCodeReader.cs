@@ -123,6 +123,25 @@ namespace Aardvark.Base.Coder
             where T : struct
         {
             if (count < 1) return 0;
+
+#if NET6_0_OR_GREATER
+            var span = MemoryMarshal.AsBytes(array.AsSpan((int)index, (int)count));
+
+            var sizeOfT = span.Length / array.Length;
+            var bytesToRead = span.Length;
+            var offset = 0;
+
+            do
+            {
+                int finished = base.Read(span);
+                if (finished == 0) break;
+                offset += finished; bytesToRead -= finished;
+                span = span.Slice(offset, bytesToRead);
+            }
+            while (bytesToRead > 0);
+                        
+            return offset / sizeOfT;
+#else
             unsafe
             {
                 var sizeOfT = Marshal.SizeOf(typeof(T));
@@ -152,6 +171,7 @@ namespace Aardvark.Base.Coder
                 }
                 return ((long)(offset / sizeOfT) - index);
             }
+#endif
         }
 
         public long ReadArray<T>(T[,] array, long count)
