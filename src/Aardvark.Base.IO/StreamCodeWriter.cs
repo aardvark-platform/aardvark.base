@@ -10,8 +10,10 @@ namespace Aardvark.Base.Coder
 {
     public partial class StreamCodeWriter : BinaryWriter
     {
+#if !NET6_0_OR_GREATER
         private const int c_bufferSize = 262144;
         private byte[] m_buffer = new byte[c_bufferSize];
+#endif
 
         #region Constructors
 
@@ -106,6 +108,7 @@ namespace Aardvark.Base.Coder
 
         #region Write Arrays and Lists
 
+#if !NET6_0_OR_GREATER
         [StructLayout(LayoutKind.Explicit)]
         struct ByteArrayUnion
         {
@@ -114,6 +117,7 @@ namespace Aardvark.Base.Coder
             [FieldOffset(0)]
             public Array structs;
         }
+#endif
 
         public void WriteArray(byte[] array, long index, long count)
         {
@@ -259,9 +263,11 @@ namespace Aardvark.Base.Coder
         public override void Close()
         {
             base.Close();
+#if! NET6_0_OR_GREATER
             m_buffer = null;
+#endif
         }
 
-        #endregion
+#endregion
     }
 }

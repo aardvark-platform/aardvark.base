@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
 
 namespace Aardvark.Base.Benchmarks
 {
@@ -9,7 +8,9 @@ namespace Aardvark.Base.Benchmarks
         public static void Main(string[] args)
         {
             var cfg = ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator);
-            BenchmarkSwitcher.FromAssembly(typeof(IntegerPowerFloat).Assembly).Run(args, cfg);
+            //BenchmarkSwitcher.FromAssembly(typeof(IntegerPowerFloat).Assembly).Run(args, cfg);
+
+            BenchmarkRunner.Run<StreamWriterReader>(cfg);
 
             //BenchmarkRunner.Run<V4fLength>();
             //BenchmarkRunner.Run<V3fLeng

@@ -10,8 +10,6 @@ namespace Aardvark.Base.Coder
 {
     public partial class StreamCodeReader : BinaryReader
     {
-        private const int c_bufferSize = 262144;
-        // private byte[] m_buffer = new byte[c_bufferSize];
         private byte[] m_guidBuffer = new byte[16]; // own buffer since creator requires 16-byte length
 
         #region Constructors
@@ -101,6 +99,7 @@ namespace Aardvark.Base.Coder
             return (long)Read(array, (int)index, (int)count);
         }
 
+#if !NET6_0_OR_GREATER
         [StructLayout(LayoutKind.Explicit)]
         struct ByteArrayUnion
         {
@@ -119,6 +118,7 @@ namespace Aardvark.Base.Coder
             gcHandle.Free();
             return typeId;
         }
+#endif
 
         public long ReadArray<T>(T[] array, long index, long count)
             where T : struct
@@ -307,7 +307,6 @@ namespace Aardvark.Base.Coder
         public override void Close()
         {
             base.Close();
-            // m_buffer = null;
             m_guidBuffer = null;
         }
 
