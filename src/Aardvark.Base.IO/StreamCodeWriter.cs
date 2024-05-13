@@ -123,6 +123,12 @@ namespace Aardvark.Base.Coder
                     where T : struct
         {
             if (count < 1) return;
+
+#if NET6_0_OR_GREATER
+            var arrSpan = array.AsSpan((int)index, (int)count);
+            var byteSpan = MemoryMarshal.AsBytes(arrSpan);
+            base.Write(byteSpan);
+#else
             unsafe
             {
                 var sizeOfT = Marshal.SizeOf(typeof(T));
@@ -152,6 +158,7 @@ namespace Aardvark.Base.Coder
                     while (count > 0);
                 }
             }
+#endif
         }
 
         public void WriteArray<T>(T[,] array, long count)
