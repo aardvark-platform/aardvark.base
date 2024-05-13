@@ -145,7 +145,7 @@ namespace Aardvark.Base.Coder
 #else
             unsafe
             {
-                var sizeOfT = Marshal.SizeOf(typeof(T));
+                var sizeOfT = Unsafe.SizeOf<T>();
                 var hack = new ByteArrayUnion();
                 hack.structs = array;
 
@@ -181,7 +181,7 @@ namespace Aardvark.Base.Coder
             if (count < 1) return 0;
 
 #if NET6_0_OR_GREATER
-            var sizeOfT = Marshal.SizeOf(typeof(T));
+            var sizeOfT = Unsafe.SizeOf<T>();
             var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
 
             var bytesToRead = span.Length;
@@ -200,7 +200,7 @@ namespace Aardvark.Base.Coder
 #else
             unsafe
             {
-                var sizeOfT = Marshal.SizeOf(typeof(T));
+                var sizeOfT = Unsafe.SizeOf<T>();
                 var hack = new ByteArrayUnion();
                 hack.structs = array;
 
@@ -238,7 +238,7 @@ namespace Aardvark.Base.Coder
         {
             if (count < 1) return 0;
 #if NET6_0_OR_GREATER
-            var sizeOfT = Marshal.SizeOf(typeof(T));
+            var sizeOfT = Unsafe.SizeOf<T>();
             var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
 
             var bytesToRead = span.Length;
@@ -257,7 +257,7 @@ namespace Aardvark.Base.Coder
 #else
             unsafe
             {
-                var sizeOfT = Marshal.SizeOf(typeof(T));
+                var sizeOfT = Unsafe.SizeOf<T>();
                 var hack = new ByteArrayUnion();
                 hack.structs = array;
 
