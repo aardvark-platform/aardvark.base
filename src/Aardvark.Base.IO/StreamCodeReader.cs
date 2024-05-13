@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -178,6 +179,25 @@ namespace Aardvark.Base.Coder
             where T : struct
         {
             if (count < 1) return 0;
+
+#if NET6_0_OR_GREATER
+            var sizeOfT = Marshal.SizeOf(typeof(T));
+            var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
+
+            var bytesToRead = span.Length;
+            var offset = 0;
+
+            do
+            {
+                int finished = base.Read(span);
+                if (finished == 0) break;
+                offset += finished; bytesToRead -= finished;
+                span = span.Slice(offset, bytesToRead);
+            }
+            while (bytesToRead > 0);
+
+            return offset / sizeOfT;
+#else
             unsafe
             {
                 var sizeOfT = Marshal.SizeOf(typeof(T));
@@ -185,11 +205,9 @@ namespace Aardvark.Base.Coder
                 hack.structs = array;
 
                 var bytesToRead = (int)(sizeOfT * count);
-                #if __MonoCS__
-                var skip = 0;
-                #else
+
                 var skip = 2 * 2 * sizeof(int);
-                #endif
+
                 IntPtr byteLen = (IntPtr)(array.Length * sizeOfT + skip);
                 var offset = skip;
 
@@ -212,12 +230,31 @@ namespace Aardvark.Base.Coder
                 }
                 return (long)((offset - skip) / sizeOfT);
             }
+#endif
         }
 
         public long ReadArray<T>(T[, ,] array, long count)
             where T : struct
         {
             if (count < 1) return 0;
+#if NET6_0_OR_GREATER
+            var sizeOfT = Marshal.SizeOf(typeof(T));
+            var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
+
+            var bytesToRead = span.Length;
+            var offset = 0;
+
+            do
+            {
+                int finished = base.Read(span);
+                if (finished == 0) break;
+                offset += finished; bytesToRead -= finished;
+                span = span.Slice(offset, bytesToRead);
+            }
+            while (bytesToRead > 0);
+
+            return offset / sizeOfT;
+#else
             unsafe
             {
                 var sizeOfT = Marshal.SizeOf(typeof(T));
@@ -225,11 +262,9 @@ namespace Aardvark.Base.Coder
                 hack.structs = array;
 
                 var bytesToRead = (int)(sizeOfT * count);
-                #if __MonoCS__
-                var skip = 0;
-                #else
+
                 var skip = 3 * 2 * sizeof(int);
-                #endif
+
                 IntPtr byteLen = (IntPtr)(array.Length * sizeOfT + skip);
                 var offset = skip;
 
@@ -252,6 +287,7 @@ namespace Aardvark.Base.Coder
                 }
                 return (long)((offset - skip) / sizeOfT);
             }
+#endif
         }
 
         public int ReadList<T>(List<T> buffer, int index, int count)
@@ -264,7 +300,7 @@ namespace Aardvark.Base.Coder
             return (int)ReadArray(arrayValue, (long)index, (long)count);
         }
 
-        #endregion
+#endregion
 
         #region Close
 
