@@ -25,13 +25,13 @@ module Dictionary =
         d.Clear()
 
     let inline map (f : 'k -> 'a -> 'b) (d : Dictionary<'k, 'a>) =
-        let result = Dictionary()
+        let result = Dictionary(capacity = d.Count)
         for (KeyValue(k,v)) in d do
             result.[k] <- f k v
         result
 
     let inline mapKeys (f : 'k -> 'a -> 'b) (d : Dictionary<'k, 'a>) =
-        let result = Dictionary()
+        let result = Dictionary(capacity = d.Count)
         for (KeyValue(k,v)) in d do
             result.[f k v] <- v
         result
@@ -75,10 +75,16 @@ module Dictionary =
         ofSeqV elements
 
     let inline ofArray (elements : ('k * 'v)[]) =
-        ofSeq elements
+        let result = Dictionary(capacity = elements.Length)
+        for (k,v) in elements do
+            result.[k] <- v
+        result
 
     let inline ofArrayV (elements : (struct('k * 'v))[]) =
-        ofSeqV elements
+        let result = Dictionary(capacity = elements.Length)
+        for (k,v) in elements do
+            result.[k] <- v
+        result
 
     let inline ofMap (elements : Map<'k, 'v>) =
         elements |> Map.toSeq |> ofSeq
@@ -145,13 +151,13 @@ module Dict =
         #endif
 
     let inline map (f : 'k -> 'a -> 'b) (d : Dict<'k, 'a>) =
-        let result = Dict()
+        let result = Dict(initialCapacity = d.Count)
         for (KeyValue(k,v)) in d do
             result.[k] <- f k v
         result
 
     let inline mapKeys (f : 'k -> 'a -> 'b) (d : Dict<'k, 'a>) =
-        let result = Dict()
+        let result = Dict(initialCapacity = d.Count)
         for (KeyValue(k,v)) in d do
             result.[f k v] <- v
         result
@@ -195,10 +201,16 @@ module Dict =
         ofSeqV elements
 
     let inline ofArray (elements : ('k * 'v)[]) =
-        ofSeq elements
+        let result = Dict(initialCapacity = elements.Length)
+        for (k,v) in elements do
+            result.[k] <- v
+        result
 
     let inline ofArrayV (elements : struct('k * 'v)[]) =
-        ofSeqV elements
+        let result = Dict(initialCapacity = elements.Length)
+        for (k,v) in elements do
+            result.[k] <- v
+        result
 
     let inline ofMap (elements : Map<'k, 'v>) =
         elements |> Map.toSeq |> ofSeq
@@ -242,13 +254,13 @@ module SymDict =
         d.Clear()
 
     let inline map (f : Symbol -> 'a -> 'b) (d : SymbolDict<'a>) =
-        let result = SymbolDict()
+        let result = SymbolDict(initialCapacity = d.Count)
         for (KeyValue(k,v)) in d do
             result.[k] <-  f k v
         result
 
     let inline mapKeys (f : Symbol -> 'a -> Symbol) (d : SymbolDict<'a>) =
-        let result = SymbolDict()
+        let result = SymbolDict(initialCapacity = d.Count)
         for (KeyValue(k,v)) in d do
             result.[f k v] <- v
         result
@@ -276,13 +288,13 @@ module SymDict =
     let inline ofSeq (elements : seq<Symbol * 'v>) =
         let result = SymbolDict()
         for (k,v) in elements do
-            result.Add(k,v)
+            result.[k] <- v
         result
 
     let inline ofSeqV (elements : seq<struct(Symbol * 'v)>) =
         let result = SymbolDict()
         for (k,v) in elements do
-            result.Add(k,v)
+            result.[k] <- v
         result
 
     let inline ofList (elements : list<Symbol * 'v>) =
@@ -292,10 +304,16 @@ module SymDict =
         ofSeqV elements
 
     let inline ofArray (elements : (Symbol * 'v)[]) =
-        ofSeq elements
+        let result = SymbolDict(initialCapacity = elements.Length)
+        for (k,v) in elements do
+            result.[k] <- v
+        result
 
     let inline ofArrayV (elements : (struct(Symbol * 'v))[]) =
-        ofSeqV elements
+        let result = SymbolDict(initialCapacity = elements.Length)
+        for (k,v) in elements do
+            result.[k] <- v
+        result
 
     let inline ofMap (elements : Map<Symbol, 'v>) =
         elements |> Map.toSeq |> ofSeq
