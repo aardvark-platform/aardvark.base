@@ -15,7 +15,7 @@ module Strings =
     let partRx = Regex @"([A-Z][a-z0-9]*)[_]*"
 
     /// checks whether pattern is contained in str
-    let contains pattern (str : string) = str.Contains pattern
+    let contains (pattern: string) (str: string) = str.Contains pattern
 
     let toLower (str : string) = str.ToLower()
     let toUpper (str : string) = str.ToUpper()

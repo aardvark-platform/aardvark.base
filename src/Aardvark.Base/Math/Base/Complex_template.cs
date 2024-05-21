@@ -317,113 +317,96 @@ namespace Aardvark.Base
 
         #region Static methods for F# core and Aardvark library support
 
-        /// <summary>
-        /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Acos(__ct__ x)
             => x.Acos();
 
-        /// <summary>
-        /// Returns the cosine of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Acosh(__ct__ x)
+            => x.Acosh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cos(__ct__ x)
             => x.Cos();
 
-        /// <summary>
-        /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cosh(__ct__ x)
             => x.Cosh();
 
-        /// <summary>
-        /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Asin(__ct__ x)
             => x.Asin();
 
-        /// <summary>
-        /// Returns the sine of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Asinh(__ct__ x)
+            => x.Asinh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sin(__ct__ x)
             => x.Sin();
 
-        /// <summary>
-        /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sinh(__ct__ x)
             => x.Sinh();
 
-        /// <summary>
-        /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Atan(__ct__ x)
             => x.Atan();
 
-        /// <summary>
-        /// Returns the tangent of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Atanh(__ct__ x)
+            => x.Atanh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Tan(__ct__ x)
             => x.Tan();
 
-        /// <summary>
-        /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Tanh(__ct__ x)
             => x.Tanh();
 
-        /// <summary>
-        /// Returns the square root of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sqrt(__ct__ x)
             => x.Sqrt();
 
-        /// <summary>
-        /// Returns e raised to the power of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Cbrt(__ct__ x)
+            => x.Cbrt();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Exp(__ct__ x)
             => x.Exp();
 
-        /// <summary>
-        /// Returns the natural logarithm of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log(__ct__ x)
             => x.Log();
 
-        /// <summary>
-        /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ct__ Log2(__ct__ x)
+            => x.Log2();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log10(__ct__ x)
             => x.Log10();
 
-        /// <summary>
-        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ DivideByInt(__ct__ x, int y)

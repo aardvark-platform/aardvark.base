@@ -12,18 +12,96 @@ module FSharpMath =
 
         // We only support float and float32 based types for exp2, since we have to ensure that the return type matches the input type.
         // Fun.PowerOfTwo does not have that property for integers generally, e.g. Fun.PowerOfTwo : int64 -> uint64.
+        // In .NET 7+ some of these functions already exist, so we must avoid generating those overloads via ifdefs.
+        // Otherwise, we'd get compiler errors due to ambiguous calls.
+        [<Sealed; AbstractClass>]
         type Exp2() =
-            static member inline Exp2(x : float)   = Fun.PowerOfTwo x
-            static member inline Exp2(x : float32) = Fun.PowerOfTwo x
+#if NET7_0_OR_GREATER
+            class end
+#else
+            static member inline Exp2(x: float)   : float   = Fun.PowerOfTwo x
+            static member inline Exp2(x: float32) : float32 = Fun.PowerOfTwo x
+#endif
 
-            static member inline Exp2(x : V2d) = Fun.PowerOfTwo x
-            static member inline Exp2(x : V3d) = Fun.PowerOfTwo x
-            static member inline Exp2(x : V4d) = Fun.PowerOfTwo x
+        [<Sealed; AbstractClass>]
+        type Log2() =
+#if NET7_0_OR_GREATER
+            class end
+#else
+            static member inline Log2(x: float)   : float   = Fun.Log2 x
+            static member inline Log2(x: float32) : float32 = Fun.Log2 x
+#endif
 
-            static member inline Exp2(x : V2f) = Fun.PowerOfTwo x
-            static member inline Exp2(x : V3f) = Fun.PowerOfTwo x
-            static member inline Exp2(x : V4f) = Fun.PowerOfTwo x
+        [<Sealed; AbstractClass>]
+        type Acosh() =
+#if NET7_0_OR_GREATER
+            class end
+#else
+            static member inline Acosh(x: float)   : float   = Fun.Acosh x
+            static member inline Acosh(x: float32) : float32 = Fun.Acosh x
+#endif
 
+        [<Sealed; AbstractClass>]
+        type Asinh() =
+#if NET7_0_OR_GREATER
+            class end
+#else
+            static member inline Asinh(x: float)   : float   = Fun.Asinh x
+            static member inline Asinh(x: float32) : float32 = Fun.Asinh x
+#endif
+
+        [<Sealed; AbstractClass>]
+        type Atanh() =
+#if NET7_0_OR_GREATER
+            class end
+#else
+            static member inline Atanh(x: float)   : float   = Fun.Atanh x
+            static member inline Atanh(x: float32) : float32 = Fun.Atanh x
+#endif
+
+        [<Sealed; AbstractClass>]
+        type Cbrt() =
+#if NET7_0_OR_GREATER
+            class end
+#else
+            static member inline Cbrt(x: float)   : float   = Fun.Cbrt x
+            static member inline Cbrt(x: float32) : float32 = Fun.Cbrt x
+#endif
+
+        [<Sealed; AbstractClass>]
+        type Lerp() =
+            static member inline Lerp(a: int8, b: int8, t: float)         : int8    = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: int8, b: int8, t: float32)       : int8    = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint8, b: uint8, t: float)       : uint8   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint8, b: uint8, t: float32)     : uint8   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: int16, b: int16, t: float)       : int16   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: int16, b: int16, t: float32)     : int16   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint16, b: uint16, t: float)     : uint16  = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint16, b: uint16, t: float32)   : uint16  = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: int32, b: int32, t: float)       : int32   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: int32, b: int32, t: float32)     : int32   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint32, b: uint32, t: float)     : uint32  = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint32, b: uint32, t: float32)   : uint32  = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: int64, b: int64, t: float)       : int64   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: int64, b: int64, t: float32)     : int64   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint64, b: uint64, t: float)     : uint64  = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: uint64, b: uint64, t: float32)   : uint64  = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: decimal, b: decimal, t: decimal) : decimal = Fun.Lerp(t, a, b)
+#if !NET7_0_OR_GREATER
+            static member inline Lerp(a: float, b: float, t: float)       : float   = Fun.Lerp(t, a, b)
+            static member inline Lerp(a: float32, b: float32, t: float32) : float32 = Fun.Lerp(t, a, b)
+#endif
+
+        [<Sealed; AbstractClass>]
+        type CopySign() =
+#if NET7_0_OR_GREATER
+            class end
+#else
+            static member inline CopySign(value: float, sign: float)     : float   = Fun.CopySign(value, sign)
+            static member inline CopySign(value: float32, sign: float32) : float32 = Fun.CopySign(value, sign)
+#endif
+
+        [<Sealed; AbstractClass>]
         type Comparison() =
             static member inline Min< ^T when ^T : comparison>(a : ^T, b : ^T) = Operators.min a b
 
@@ -55,6 +133,7 @@ module FSharpMath =
             static member inline Max(a : int64, b : V3l) = V3l.Max(b, a)
             static member inline Max(a : int64, b : V4l) = V4l.Max(b, a)
 
+        [<Sealed; AbstractClass>]
         type Saturate() =
             static member inline Saturate(x : sbyte) = x |> max 0y |> min 1y
             static member inline Saturate(x : int16) = x |> max 0s |> min 1s
@@ -72,6 +151,7 @@ module FSharpMath =
             static member inline Saturate(x : float32) = x |> max 0.0f |> min 1.0f
             static member inline Saturate(x : decimal) = x |> max 0m |> min 1m
 
+        [<Sealed; AbstractClass>]
         type Infinity() =
             static member inline IsNaN< ^T when ^T : (member IsNaN : bool)> (x : ^T) : bool =
                 (^T : (member IsNaN : bool) x)
@@ -85,6 +165,7 @@ module FSharpMath =
             static member inline IsNegativeInfinity< ^T when ^T : (member IsNegativeInfinity : bool)> (x : ^T) : bool =
                 (^T : (member IsNegativeInfinity : bool) x)
 
+        [<Sealed; AbstractClass>]
         type InfinityS() =
             static member inline IsNaN< ^T when ^T : (static member IsNaN : ^T -> bool)> (x : ^T) : bool =
                 (^T : (static member IsNaN : ^T -> bool) x)
@@ -147,8 +228,9 @@ module FSharpMath =
         let inline saturateAux (_ : ^Z) (x : ^T) =
             ((^Z or ^T) : (static member Saturate : ^T -> ^T) (x))
 
+        // "Normal" parameter order in constraint because this may resolve to e.g. Single.Lerp(a, b, t) in .NET 7+
         let inline lerpAux (_ : ^Z) (x : ^T) (y : ^T) (t : ^U) =
-            ((^Z or ^T or ^U) : (static member Lerp : ^U * ^T * ^T -> ^T) (t, x, y))
+            ((^Z or ^T or ^U) : (static member Lerp : ^T * ^T * ^U -> ^T) (x, y, t))
 
         let inline invLerpAux (_ : ^Z) (a : ^T) (b : ^T) (y : ^T) =
             ((^Z or ^T or ^U) : (static member InvLerp : ^T * ^T * ^T -> ^U) (y, a, b))
@@ -163,8 +245,8 @@ module FSharpMath =
             ((^Z or ^T or ^U) : (static member Smoothstep : ^U * ^T * ^T -> ^U) (x, edge0, edge1))
 
         // See comment for powAux
-        let inline copysignAux (_ : ^Z) (x : ^T) (y : ^U) =
-            ((^Z or ^T or ^U) : (static member CopySign : ^T * ^U -> ^T) (x, y))
+        let inline copysignAux (_ : ^Z) (value : ^T) (sign : ^U) =
+            ((^Z or ^T or ^U) : (static member CopySign : ^T * ^U -> ^T) (value, sign))
 
         let inline degreesAux (_ : ^Z) (radians : ^T) =
             ((^Z or ^T) : (static member DegreesFromRadians : ^T -> ^T) radians)
@@ -228,26 +310,26 @@ module FSharpMath =
 
     /// Returns the base 2 logarithm of x.
     let inline log2 x =
-        log2Aux Unchecked.defaultof<Fun> x
+        log2Aux Unchecked.defaultof<Helpers.Log2> x
 
     /// Returns the inverse hyperbolic sine of x.
     let inline asinh x =
-        asinhAux Unchecked.defaultof<Fun> x
+        asinhAux Unchecked.defaultof<Helpers.Asinh> x
 
     /// Returns the inverse hyperbolic cosine of x.
     let inline acosh x =
-        acoshAux Unchecked.defaultof<Fun> x
+        acoshAux Unchecked.defaultof<Helpers.Acosh> x
 
     /// Returns the inverse hyperbolic tangent of x.
     let inline atanh x =
-        atanhAux Unchecked.defaultof<Fun> x
+        atanhAux Unchecked.defaultof<Helpers.Atanh> x
 
     /// Returns x^2
     let inline sqr x = x * x
 
     /// Returns the cubic root of x.
     let inline cbrt x =
-        cbrtAux Unchecked.defaultof<Fun> x
+        cbrtAux Unchecked.defaultof<Helpers.Cbrt> x
 
     /// Returns the smaller of x and y.
     let inline min x y = minAux Unchecked.defaultof<Helpers.Comparison> x y
@@ -265,7 +347,7 @@ module FSharpMath =
 
     /// Linearly interpolates between x and y.
     let inline lerp x y t =
-        lerpAux Unchecked.defaultof<Fun> x y t
+        lerpAux Unchecked.defaultof<Helpers.Lerp> x y t
 
     /// Inverse linear interpolation. Computes t of y = a * (1 - t) + b * t.
     let inline invLerp a b y =
@@ -283,9 +365,9 @@ module FSharpMath =
     let inline smoothstep (edge0 : ^T) (edge1 : ^T) (x : ^U) =
         smoothstepAux Unchecked.defaultof<Fun> edge0 edge1 x
 
-    /// Returns a value with the magnitude of x and the sign of y.
-    let inline copysign (x : ^T) (y : ^U) =
-        copysignAux Unchecked.defaultof<Fun> x y
+    /// Returns a value with the magnitude of the first argument and the sign of the second argument.
+    let inline copysign (value : ^T) (sign : ^U) =
+        copysignAux Unchecked.defaultof<Helpers.CopySign> value sign
 
     /// Converts an angle given in radians to degrees.
     let inline degrees (radians : ^T) =

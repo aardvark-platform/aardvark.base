@@ -4,10 +4,10 @@ open System.IO
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module IO =
-    let alterFileName str f = Path.Combine (Path.GetDirectoryName str, f (Path.GetFileName str))
+    let alterFileName (str: string) (f: string -> string) = Path.Combine (Path.GetDirectoryName str, f (Path.GetFileName str))
 
-    let createFileStream path = 
-        if File.Exists path 
+    let createFileStream path =
+        if File.Exists path
         then File.Delete path
         new FileStream(path, FileMode.CreateNew)
 

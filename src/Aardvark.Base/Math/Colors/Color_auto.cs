@@ -1582,9 +1582,16 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b Lerp(C3b a, C3b b, float t)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b Lerp(C3b a, C3b b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b DivideByInt(C3b c, int x)
@@ -3856,9 +3863,16 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us Lerp(C3us a, C3us b, float t)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us Lerp(C3us a, C3us b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us DivideByInt(C3us c, int x)
@@ -6053,9 +6067,16 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui Lerp(C3ui a, C3ui b, float t)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui Lerp(C3ui a, C3ui b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui DivideByInt(C3ui c, int x)
@@ -8125,9 +8146,11 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f Lerp(C3f a, C3f b, float t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f DivideByInt(C3f c, int x)
@@ -10234,9 +10257,11 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d Lerp(C3d a, C3d b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d DivideByInt(C3d c, int x)
@@ -12864,9 +12889,16 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b Lerp(C4b a, C4b b, float t)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b Lerp(C4b a, C4b b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b DivideByInt(C4b c, int x)
@@ -15421,9 +15453,16 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us Lerp(C4us a, C4us b, float t)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us Lerp(C4us a, C4us b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us DivideByInt(C4us c, int x)
@@ -17884,9 +17923,16 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui Lerp(C4ui a, C4ui b, float t)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui Lerp(C4ui a, C4ui b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui DivideByInt(C4ui c, int x)
@@ -20137,9 +20183,11 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f Lerp(C4f a, C4f b, float t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f DivideByInt(C4f c, int x)
@@ -22430,9 +22478,11 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d Lerp(C4d a, C4d b, double t)
+            => Fun.Lerp(t, a, b);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d DivideByInt(C4d c, int x)

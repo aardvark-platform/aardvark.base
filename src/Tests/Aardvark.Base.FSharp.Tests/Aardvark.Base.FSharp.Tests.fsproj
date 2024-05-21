@@ -18,6 +18,7 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="data\test.jpg" />
+    <Compile Include="MathTests.fs" />
     <Compile Include="TrafoTests.fs" />
     <Compile Include="TensorTests.fs" />
     <Compile Include="TensorMathTests.fs" />

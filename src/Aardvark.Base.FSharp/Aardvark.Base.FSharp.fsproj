@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
     <AssemblyName>Aardvark.Base.FSharp</AssemblyName>
     <OutputType>Library</OutputType>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>

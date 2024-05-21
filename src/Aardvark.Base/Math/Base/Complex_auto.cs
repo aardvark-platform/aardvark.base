@@ -305,113 +305,96 @@ namespace Aardvark.Base
 
         #region Static methods for F# core and Aardvark library support
 
-        /// <summary>
-        /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Acos(ComplexF x)
             => x.Acos();
 
-        /// <summary>
-        /// Returns the cosine of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Acosh(ComplexF x)
+            => x.Acosh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cos(ComplexF x)
             => x.Cos();
 
-        /// <summary>
-        /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cosh(ComplexF x)
             => x.Cosh();
 
-        /// <summary>
-        /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Asin(ComplexF x)
             => x.Asin();
 
-        /// <summary>
-        /// Returns the sine of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Asinh(ComplexF x)
+            => x.Asinh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sin(ComplexF x)
             => x.Sin();
 
-        /// <summary>
-        /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sinh(ComplexF x)
             => x.Sinh();
 
-        /// <summary>
-        /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Atan(ComplexF x)
             => x.Atan();
 
-        /// <summary>
-        /// Returns the tangent of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Atanh(ComplexF x)
+            => x.Atanh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Tan(ComplexF x)
             => x.Tan();
 
-        /// <summary>
-        /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Tanh(ComplexF x)
             => x.Tanh();
 
-        /// <summary>
-        /// Returns the square root of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sqrt(ComplexF x)
             => x.Sqrt();
 
-        /// <summary>
-        /// Returns e raised to the power of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Cbrt(ComplexF x)
+            => x.Cbrt();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Exp(ComplexF x)
             => x.Exp();
 
-        /// <summary>
-        /// Returns the natural logarithm of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log(ComplexF x)
             => x.Log();
 
-        /// <summary>
-        /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexF Log2(ComplexF x)
+            => x.Log2();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log10(ComplexF x)
             => x.Log10();
 
-        /// <summary>
-        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF DivideByInt(ComplexF x, int y)
@@ -1340,113 +1323,96 @@ namespace Aardvark.Base
 
         #region Static methods for F# core and Aardvark library support
 
-        /// <summary>
-        /// Returns the angle that is the arc cosine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Acos(ComplexD x)
             => x.Acos();
 
-        /// <summary>
-        /// Returns the cosine of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Acosh(ComplexD x)
+            => x.Acosh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cos(ComplexD x)
             => x.Cos();
 
-        /// <summary>
-        /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cosh(ComplexD x)
             => x.Cosh();
 
-        /// <summary>
-        /// Returns the angle that is the arc sine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Asin(ComplexD x)
             => x.Asin();
 
-        /// <summary>
-        /// Returns the sine of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Asinh(ComplexD x)
+            => x.Asinh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sin(ComplexD x)
             => x.Sin();
 
-        /// <summary>
-        /// Returns the hyperbolic sine of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sinh(ComplexD x)
             => x.Sinh();
 
-        /// <summary>
-        /// Returns the angle that is the arc tangent of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Atan(ComplexD x)
             => x.Atan();
 
-        /// <summary>
-        /// Returns the tangent of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Atanh(ComplexD x)
+            => x.Atanh();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Tan(ComplexD x)
             => x.Tan();
 
-        /// <summary>
-        /// Returns the hyperbolic tangent of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Tanh(ComplexD x)
             => x.Tanh();
 
-        /// <summary>
-        /// Returns the square root of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sqrt(ComplexD x)
             => x.Sqrt();
 
-        /// <summary>
-        /// Returns e raised to the power of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Cbrt(ComplexD x)
+            => x.Cbrt();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Exp(ComplexD x)
             => x.Exp();
 
-        /// <summary>
-        /// Returns the natural logarithm of the complex number <paramref name="x"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log(ComplexD x)
             => x.Log();
 
-        /// <summary>
-        /// Returns the base-10 logarithm of the complex number <paramref name="x"/>.
-        /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ComplexD Log2(ComplexD x)
+            => x.Log2();
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log10(ComplexD x)
             => x.Log10();
 
-        /// <summary>
-        /// Returns the complex number <paramref name="x"/> divided by <paramref name="y"/>.
-        /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD DivideByInt(ComplexD x, int y)

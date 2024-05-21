@@ -1122,9 +1122,14 @@ namespace Aardvark.Base
                 }
             };
 
-        /// <summary>
-        /// Returns the given color, with each element divided by <paramref name="x"/>.
-        /// </summary>
+        //# foreach(var tt in fdtypes) {
+        //# if (ft.IsReal && tt != ft) continue;
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ Lerp(__type__ a, __type__ b, __tt.Name__ t)
+            => Fun.Lerp(t, a, b);
+
+        //#}
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ DivideByInt(__type__ c, int x)

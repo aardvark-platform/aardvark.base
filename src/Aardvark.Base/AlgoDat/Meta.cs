@@ -1157,9 +1157,9 @@ namespace Aardvark.Base
 
             #region Copy sign
             Add("Copy sign",
-                Method("CopySign", false, RealTypes, Tensor("x"), Tensor("y")),
-                Method("CopySign", false, RealTypes, Scalar("x"), Tensor("y")),
-                Method("CopySign", false, RealTypes, Tensor("x"), Scalar("y"))
+                Method("CopySign", false, RealTypes, Tensor("value"), Tensor("sign")),
+                Method("CopySign", false, RealTypes, Scalar("value"), Tensor("sign")),
+                Method("CopySign", false, RealTypes, Tensor("value"), Scalar("sign"))
             );
             #endregion
 
