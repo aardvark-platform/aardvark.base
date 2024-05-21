@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -2271,9 +2272,8 @@ namespace Aardvark.Base
 
             try
             {
-                var type = input.GetType().GetElementType();
-                var typeSize = Marshal.SizeOf(type);
-                var dataSize = length * typeSize;
+                var dataSize = Buffer.ByteLength(input);
+                var typeSize = dataSize / input.Length;
 
                 unsafe
                 {
@@ -2304,9 +2304,8 @@ namespace Aardvark.Base
 
             try
             {
-                var type = target.GetType().GetElementType();
-                var typeSize = Marshal.SizeOf(type);
-                var dataSize = length * typeSize;
+                var dataSize = Buffer.ByteLength(target);
+                var typeSize = dataSize / target.Length;
 
                 unsafe
                 {
@@ -2363,14 +2362,18 @@ namespace Aardvark.Base
         /// <returns>128bit/16byte data hash</returns>
         public static unsafe byte[] ComputeMD5Hash(this Array data)
         {
+            if (data == null) return null;
+            
             var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
+
+            var byteLength = Buffer.ByteLength(data);
             try
             {
                 var ptr = gc.AddrOfPinnedObject();
                 byte[] hash = null;
                 using (var md5 = SHA1.Create())
                 {
-                    using (var s = new UnmanagedMemoryStream((byte*)ptr, data.Length, data.Length,
+                    using (var s = new UnmanagedMemoryStream((byte*)ptr, byteLength, byteLength,
                                FileAccess.Read))
                     {
                         hash = md5.ComputeHash(s);
@@ -2411,14 +2414,17 @@ namespace Aardvark.Base
         /// <returns>160bit/20byte data hash</returns>
         public static unsafe byte[] ComputeSHA1Hash(this Array data)
         {
+            if (data == null) return null;
+            
             var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
+            var byteLength = Buffer.ByteLength(data);
             try
             {
                 var ptr = gc.AddrOfPinnedObject();
                 byte[] hash = null;
                 using (var sha1 = SHA1.Create())
                 {
-                    using (var s = new UnmanagedMemoryStream((byte*)ptr, data.Length, data.Length,
+                    using (var s = new UnmanagedMemoryStream((byte*)ptr, byteLength, byteLength,
                                FileAccess.Read))
                     {
                         hash = sha1.ComputeHash(s);
@@ -2457,14 +2463,17 @@ namespace Aardvark.Base
         /// <returns>256bit/32byte data hash</returns>
         public static unsafe byte[] ComputeSHA256Hash(this Array data)
         {
+            if (data == null) return null;
+            
             var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
+            var byteLength = Buffer.ByteLength(data);
             try
             {
                 var ptr = gc.AddrOfPinnedObject();
                 byte[] hash = null;
                 using (var sha256 = SHA256.Create())
                 {
-                    using (var s = new UnmanagedMemoryStream((byte*)ptr, data.Length, data.Length,
+                    using (var s = new UnmanagedMemoryStream((byte*)ptr, byteLength, byteLength,
                                FileAccess.Read))
                     {
                         hash = sha256.ComputeHash(s);
@@ -2503,14 +2512,17 @@ namespace Aardvark.Base
         /// <returns>512bit/64byte data hash</returns>
         public static unsafe byte[] ComputeSHA512Hash(this Array data)
         {
+            if (data == null) return null;
+            
             var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
+            var byteLength = Buffer.ByteLength(data);
             try
             {
                 var ptr = gc.AddrOfPinnedObject();
                 byte[] hash = null;
                 using (var sha512 = SHA512.Create())
                 {
-                    using (var s = new UnmanagedMemoryStream((byte*)ptr, data.Length, data.Length,
+                    using (var s = new UnmanagedMemoryStream((byte*)ptr, byteLength, byteLength,
                                FileAccess.Read))
                     {
                         hash = sha512.ComputeHash(s);
@@ -2549,20 +2561,26 @@ namespace Aardvark.Base
         public static unsafe uint ComputeAdler32Checksum(this Array data)
         {
             var a = new Adler32();
-            var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
-            try
+
+            if (data != null)
             {
-                var ptr = gc.AddrOfPinnedObject();
-                using (var s = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), data.Length, data.Length,
-                           FileAccess.Read))
+                var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
+                var byteLength = Buffer.ByteLength(data);
+                try
                 {
-                    a.Update(s);
+                    var ptr = gc.AddrOfPinnedObject();
+                    using (var s = new UnmanagedMemoryStream((byte*)ptr.ToPointer(), byteLength, byteLength,
+                               FileAccess.Read))
+                    {
+                        a.Update(s);
+                    }
+                }
+                finally
+                {
+                    gc.Free();
                 }
             }
-            finally
-            {
-                gc.Free();
-            }
+
             return a.Checksum;            
         }
 
