@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -9,8 +10,10 @@ namespace Aardvark.Base.Coder
 {
     public partial class StreamCodeWriter : BinaryWriter
     {
+#if !NET6_0_OR_GREATER
         private const int c_bufferSize = 262144;
         private byte[] m_buffer = new byte[c_bufferSize];
+#endif
 
         #region Constructors
 
@@ -105,6 +108,7 @@ namespace Aardvark.Base.Coder
 
         #region Write Arrays and Lists
 
+#if !NET6_0_OR_GREATER
         [StructLayout(LayoutKind.Explicit)]
         struct ByteArrayUnion
         {
@@ -113,6 +117,7 @@ namespace Aardvark.Base.Coder
             [FieldOffset(0)]
             public Array structs;
         }
+#endif
 
         public void WriteArray(byte[] array, long index, long count)
         {
@@ -123,9 +128,15 @@ namespace Aardvark.Base.Coder
                     where T : struct
         {
             if (count < 1) return;
+
+#if NET6_0_OR_GREATER
+            var arrSpan = array.AsSpan((int)index, (int)count);
+            var byteSpan = MemoryMarshal.AsBytes(arrSpan);
+            base.Write(byteSpan);
+#else
             unsafe
             {
-                var sizeOfT = Marshal.SizeOf(typeof(T));
+                var sizeOfT = Unsafe.SizeOf<T>();
 
                 var hack = new ByteArrayUnion();
                 hack.structs = array;
@@ -152,26 +163,28 @@ namespace Aardvark.Base.Coder
                     while (count > 0);
                 }
             }
+#endif
         }
 
         public void WriteArray<T>(T[,] array, long count)
                     where T : struct
         {
             if (count < 1) return;
+#if NET6_0_OR_GREATER
+            var sizeOfT = Unsafe.SizeOf<T>();
+            var byteSpan = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
+            base.Write(byteSpan);
+#else
             unsafe
             {
-                var sizeOfT = Marshal.SizeOf(typeof(T));
+                var sizeOfT = Unsafe.SizeOf<T>();
 
                 var hack = new ByteArrayUnion();
                 hack.structs = array;
 
                 fixed (byte* pBytes = hack.bytes)
                 {
-                    #if __MonoCS__
-                    long offset = 0;
-                    #else
                     long offset = 2 * 2 * sizeof(int);
-                    #endif
 
                     int itemsPerBlock = c_bufferSize / sizeOfT;
                     do
@@ -191,27 +204,29 @@ namespace Aardvark.Base.Coder
                     while (count > 0);
                 }
             }
+#endif
         }
 
         public void WriteArray<T>(T[, ,] array, long count)
                     where T : struct
         {
             if (count < 1) return;
+#if NET6_0_OR_GREATER
+            var sizeOfT = Unsafe.SizeOf<T>();
+            var byteSpan = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
+            base.Write(byteSpan);
+#else
             unsafe
             {
-                var sizeOfT = Marshal.SizeOf(typeof(T));
+                var sizeOfT = Unsafe.SizeOf<T>();
 
                 var hack = new ByteArrayUnion();
                 hack.structs = array;
 
                 fixed (byte* pBytes = hack.bytes)
                 {
-                    #if __MonoCS__
-                    long offset = 0;
-                    #else
                     long offset = 3 * 2 * sizeof(int);
-                    #endif
-
+                    
                     int itemsPerBlock = c_bufferSize / sizeOfT;
                     do
                     {
@@ -230,6 +245,7 @@ namespace Aardvark.Base.Coder
                     while (count > 0);
                 }
             }
+#endif
         }
 
         public void WriteList<T>(List<T> buffer, int index, int count)
@@ -240,16 +256,18 @@ namespace Aardvark.Base.Coder
             WriteArray(arrayValue, (long)index, (long)count);
         }
 
-        #endregion
+#endregion
 
         #region Close
 
         public override void Close()
         {
             base.Close();
+#if! NET6_0_OR_GREATER
             m_buffer = null;
+#endif
         }
 
-        #endregion
+#endregion
     }
 }
