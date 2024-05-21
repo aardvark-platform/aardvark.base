@@ -6,7 +6,8 @@ namespace Aardvark.Base
     public static class ArrayUnsafeCoerceExtensions
     {
         #region UnsafeCoerce
-
+        
+        [Obsolete("breaks net8.0+")]
         public static IntPtr GetTypeIdUncached<T>()
             where T : struct
         {
@@ -19,6 +20,7 @@ namespace Aardvark.Base
 
         private static FastConcurrentDict<Type, IntPtr> s_typeIds = new FastConcurrentDict<Type, IntPtr>();
 
+        [Obsolete("breaks net8.0+")]
         private static IntPtr GetTypeId<T>()
             where T : struct
         {
@@ -30,6 +32,7 @@ namespace Aardvark.Base
             return typeId;
         }
 
+        [Obsolete("breaks net8.0+")]
         internal static int GetCLRSize(Type t)
         {
             // TODO: somehow make use of sizeof operator -> requires compile time type -> cannot use ILGenerator in .net standard
@@ -38,6 +41,7 @@ namespace Aardvark.Base
             return Marshal.SizeOf(t);
         }
 
+        [Obsolete("breaks net8.0+")]
         internal static TR[] UnsafeCoerce<TR>(this Array input, IntPtr targetId)
             where TR : struct
         {
@@ -63,12 +67,14 @@ namespace Aardvark.Base
         /// Both types must be structs and you may cause memory leaks when the array-byte-sizes are not multiple of each other
         /// WARNING: destroys the original array
         /// </summary>
+        [Obsolete("breaks net8.0+")]
         public static TR[] UnsafeCoerce<TR>(this Array input)
             where TR : struct
         {
             return UnsafeCoerce<TR>(input, GetTypeId<TR>());
         }
 
+        [Obsolete("breaks net8.0+")]
         internal static void UnsafeCoercedApply<TR>(this Array input, Action<TR[]> action, IntPtr targetId)
             where TR : struct
         {
@@ -95,6 +101,7 @@ namespace Aardvark.Base
             gcHandle.Free();
         }
 
+        [Obsolete("breaks net8.0+")]
         public static void UnsafeCoercedApply<TR>(this Array input, Action<TR[]> action)
             where TR : struct
         {
