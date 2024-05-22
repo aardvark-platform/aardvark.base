@@ -32,8 +32,7 @@ namespace Aardvark.Base
             return typeId;
         }
 
-        [Obsolete("breaks net8.0+")]
-        internal static int GetCLRSize(Type t)
+        public static int GetCLRSize(this Type t)
         {
             // TODO: somehow make use of sizeof operator -> requires compile time type -> cannot use ILGenerator in .net standard
             if (t == typeof(char)) return 2; // Marshal.SizeOf = 1

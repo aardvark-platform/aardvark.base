@@ -1,3 +1,7 @@
+### 5.2.31
+* fixed Hash Computations for non-primitive types
+* added `AsByteSpan` extension method for System.Array/string in >=net6.0
+
 ### 5.2.30
 * removed UnsafeCoerce usages and several other net6.0+ fixes
  
