@@ -399,6 +399,20 @@ namespace Aardvark.Base
                     var result = tryInvoke(loaders[i], input);
                     if (isValid(result)) return result;
                 }
+
+                if (loaders.Count == 0)
+                {
+                    errorMessage += " - No loaders available!";
+                }
+                else
+                {
+                    errorMessage += " - Available loaders:" + Environment.NewLine;
+
+                    foreach (var l in loaders)
+                    {
+                        errorMessage += "    - " + l.Name + Environment.NewLine;
+                    }
+                }
             }
 
             throw new ImageLoadException(errorMessage);
