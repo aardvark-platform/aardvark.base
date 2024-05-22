@@ -1,4 +1,4 @@
-framework: netstandard2.0, net472, net8.0, net8.0-windows
+framework: netstandard2.0, net8.0
 storage: none
 source https://api.nuget.org/v3/index.json
 
@@ -7,15 +7,11 @@ nuget Aardvark.Build               ~> 1.0.22
 nuget FSharp.Core                  >= 8.0.0 lowest_matching: true
 nuget System.Collections.Immutable >= 8.0.0 lowest_matching: true
 nuget System.Reflection.Metadata   >= 8.0.0 lowest_matching: true
-nuget System.Drawing.Common        >= 8.0.0 lowest_matching: true
 nuget System.Text.Json             >= 8.0.0 lowest_matching: true
 
 nuget System.Dynamic.Runtime       ~> 4.3.0
 
 nuget Aardvark.Base.TypeProviders  ~> 4.5.15
-
-nuget DevILSharp                   ~> 0.2.20
-nuget SixLabors.ImageSharp         ~> 2.1.7
 
 nuget FSharp.Data.Adaptive         ~> 1.2.0
 nuget CSharp.Data.Adaptive         ~> 1.2.0
@@ -41,7 +37,7 @@ group Demo
     nuget CSharp.Data.Adaptive     ~> 1.2.0
 
 group Test
-    framework: net8.0, net8.0-windows
+    framework: net8.0
     storage: none
     source https://api.nuget.org/v3/index.json
 
