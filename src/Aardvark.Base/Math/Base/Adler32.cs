@@ -149,5 +149,44 @@ namespace Aardvark.Base
             m_checksum = (s2 << 16) | s1;
 
         }
+        
+        
+        /// <summary>
+        /// Updates the checksum with the bytes taken from the array.
+        /// </summary>
+        public void Update(ReadOnlySpan<byte> buffer)
+        {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException("buffer");
+            }
+
+            uint s1 = m_checksum & 0xFFFF;
+            uint s2 = m_checksum >> 16;
+            var offset = 0;
+            var length = buffer.Length;
+            
+            while (length > 0)
+            {
+                // We can defer the modulo operation:
+                // s1 maximally grows from 65521 to 65521 + 255 * 3800
+                // s2 maximally grows by 3800 * median(s1) = 2090079800 < 2^31
+                int n = 3800;
+                if (n > length)  n = length;
+
+                length -= n;
+
+                while (--n >= 0)
+                {
+                    s1 = s1 + (uint)(buffer[offset++] & 0xFF);
+                    s2 = s2 + s1;
+                }
+
+                s1 %= BASE;
+                s2 %= BASE;
+            }
+            m_checksum = (s2 << 16) | s1;
+
+        }
     }
 }

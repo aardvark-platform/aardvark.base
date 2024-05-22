@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -2270,9 +2272,8 @@ namespace Aardvark.Base
 
             try
             {
-                var type = input.GetType().GetElementType();
-                var typeSize = Marshal.SizeOf(type);
-                var dataSize = length * typeSize;
+                var typeSize = input.GetType().GetElementType().GetCLRSize();
+                var dataSize = input.Length * typeSize;
 
                 unsafe
                 {
@@ -2303,9 +2304,8 @@ namespace Aardvark.Base
 
             try
             {
-                var type = target.GetType().GetElementType();
-                var typeSize = Marshal.SizeOf(type);
-                var dataSize = length * typeSize;
+                var typeSize = target.GetType().GetElementType().GetCLRSize();
+                var dataSize = target.Length * typeSize;
 
                 unsafe
                 {
@@ -2338,6 +2338,63 @@ namespace Aardvark.Base
             };
         }
 
+#if NET6_0_OR_GREATER
+        public static Span<byte> AsByteSpan(this Array data)
+        {
+            var elementSize = data.GetType().GetElementType().GetCLRSize();
+            var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(data), data.Length * elementSize);
+            return span;   
+        }
+        
+        public static Span<byte> AsByteSpan<T>(this T[] data) where T : struct
+        {
+            var span = new Span<T>(data);
+            return MemoryMarshal.AsBytes(span);
+        }
+        
+        public static ReadOnlySpan<byte> AsByteSpan(this string data)
+        {
+            return MemoryMarshal.AsBytes(data.AsSpan());
+        }
+#endif
+        
+        internal static unsafe T UseAsStream<T>(this Array data, Func<UnmanagedMemoryStream, T> action)
+        {
+            var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
+            var l = data.GetType().GetElementType().GetCLRSize() * data.Length;
+            try
+            {
+                using (var stream =
+                       new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read))
+                {
+                    return action(stream);
+                }
+            }
+            finally
+            {
+                gc.Free();
+            }
+        }
+       
+        internal static unsafe void UseAsStream(this Array data, Action<UnmanagedMemoryStream> action)
+        {
+            var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
+            var l = data.GetType().GetElementType().GetCLRSize() * data.Length;
+            try
+            {
+                using (var stream =
+                       new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read))
+                {
+                    action(stream);
+                }
+            }
+            finally
+            {
+                gc.Free();
+            }
+        }
+       
+        
         #endregion
 
         #region Hashes
@@ -2348,23 +2405,41 @@ namespace Aardvark.Base
         /// <returns>128bit/16byte data hash</returns>
         public static byte[] ComputeMD5Hash(this byte[] data)
         {
-            using (var md5 = SHA1.Create())
-            { 
-                var bytes = md5.ComputeHash(data);
-                Array.Resize(ref bytes, 16);
-                return bytes;
+#if NET6_0_OR_GREATER
+            var hash = SHA1.HashData(data);
+            Array.Resize(ref hash, 16);
+            return hash;
+#else
+            using (var sha = SHA1.Create())
+            {
+                var hash = sha.ComputeHash(data);
+                Array.Resize(ref hash, 16);
+                return hash;
             }
+#endif
         }
 
+        
+        
         /// <summary>
         /// Computes the MD5 hash of the data array.
         /// </summary>
         /// <returns>128bit/16byte data hash</returns>
         public static byte[] ComputeMD5Hash(this Array data)
         {
-            byte[] hash = null;
-            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeMD5Hash());
+#if NET6_0_OR_GREATER
+            var hash = SHA1.HashData(data.AsByteSpan());
+            Array.Resize(ref hash, 16);
             return hash;
+#else
+            
+            using(var sha = SHA1.Create())
+            {
+                var hash = data.UseAsStream((stream) => sha.ComputeHash(stream));
+                Array.Resize(ref hash, 16);
+                return hash;
+            }
+#endif
         }
 
         /// <summary>
@@ -2373,7 +2448,13 @@ namespace Aardvark.Base
         /// </summary>
         public static byte[] ComputeMD5Hash(this string s)
         {
+#if NET6_0_OR_GREATER
+            var hash = SHA1.HashData(s.AsByteSpan());
+            Array.Resize(ref hash, 16);
+            return hash;
+#else
             return Encoding.Unicode.GetBytes(s).ComputeMD5Hash();
+#endif
         }
 
         /// <summary>
@@ -2382,8 +2463,15 @@ namespace Aardvark.Base
         /// <returns>160bit/20byte data hash</returns>
         public static byte[] ComputeSHA1Hash(this byte[] data)
         {
-            using (var sha1 = SHA1.Create())
-                return sha1.ComputeHash(data);
+#if NET6_0_OR_GREATER
+            return SHA1.HashData(data);
+#else
+            using (var sha = SHA1.Create())
+            {
+                var hash = sha.ComputeHash(data);
+                return hash;
+            }
+#endif
         }
 
         /// <summary>
@@ -2392,9 +2480,15 @@ namespace Aardvark.Base
         /// <returns>160bit/20byte data hash</returns>
         public static byte[] ComputeSHA1Hash(this Array data)
         {
-            byte[] hash = null;
-            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeSHA1Hash());
-            return hash;
+#if NET6_0_OR_GREATER
+            return SHA1.HashData(data.AsByteSpan());
+#else
+            using(var sha = SHA1.Create())
+            {
+                return data.UseAsStream((stream) => sha.ComputeHash(stream));
+            }
+#endif
+            
         }
 
         /// <summary>
@@ -2403,7 +2497,11 @@ namespace Aardvark.Base
         /// </summary>
         public static byte[] ComputeSHA1Hash(this string s)
         {
+#if NET6_0_OR_GREATER
+            return SHA1.HashData(s.AsByteSpan());
+#else
             return Encoding.Unicode.GetBytes(s).ComputeSHA1Hash();
+#endif
         }
 
         /// <summary>
@@ -2412,8 +2510,15 @@ namespace Aardvark.Base
         /// <returns>256bit/32byte data hash</returns>
         public static byte[] ComputeSHA256Hash(this byte[] data)
         {
-            using (var sha256 = SHA256.Create())
-                return sha256.ComputeHash(data);
+#if NET6_0_OR_GREATER
+            return SHA256.HashData(data);
+#else
+            using (var sha = SHA256.Create())
+            {
+                var hash = sha.ComputeHash(data);
+                return hash;
+            }
+#endif
         }
 
         /// <summary>
@@ -2422,9 +2527,14 @@ namespace Aardvark.Base
         /// <returns>256bit/32byte data hash</returns>
         public static byte[] ComputeSHA256Hash(this Array data)
         {
-            byte[] hash = null;
-            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeSHA256Hash());
-            return hash;
+#if NET6_0_OR_GREATER
+            return SHA256.HashData(data.AsByteSpan());
+#else
+            using(var sha = SHA256.Create())
+            {
+                return data.UseAsStream((stream) => sha.ComputeHash(stream));
+            }
+#endif
         }
 
         /// <summary>
@@ -2433,7 +2543,11 @@ namespace Aardvark.Base
         /// <returns>256bit/32byte data hash</returns>
         public static byte[] ComputeSHA256Hash(this string s)
         {
+#if NET6_0_OR_GREATER
+            return SHA256.HashData(s.AsByteSpan());
+#else
             return Encoding.Unicode.GetBytes(s).ComputeSHA256Hash();
+#endif
         }
 
         /// <summary>
@@ -2442,8 +2556,15 @@ namespace Aardvark.Base
         /// <returns>512bit/64byte data hash</returns>
         public static byte[] ComputeSHA512Hash(this byte[] data)
         {
-            using (var sha512 = SHA512.Create())
-                return sha512.ComputeHash(data);
+#if NET6_0_OR_GREATER
+            return SHA512.HashData(data);
+#else
+            using (var sha = SHA512.Create())
+            {
+                var hash = sha.ComputeHash(data);
+                return hash;
+            }
+#endif
         }
 
         /// <summary>
@@ -2452,9 +2573,14 @@ namespace Aardvark.Base
         /// <returns>512bit/64byte data hash</returns>
         public static byte[] ComputeSHA512Hash(this Array data)
         {
-            byte[] hash = null;
-            data.UnsafeCoercedApply<byte>(array => hash = array.ComputeSHA512Hash());
-            return hash;
+#if NET6_0_OR_GREATER
+            return SHA512.HashData(data.AsByteSpan());
+#else
+            using(var sha = SHA512.Create())
+            {
+                return data.UseAsStream((stream) => sha.ComputeHash(stream));
+            }
+#endif
         }
 
         /// <summary>
@@ -2463,7 +2589,11 @@ namespace Aardvark.Base
         /// <returns>512bit/64byte data hash</returns>
         public static byte[] ComputeSHA512Hash(this string s)
         {
+#if NET6_0_OR_GREATER
+            return SHA512.HashData(s.AsByteSpan());
+#else
             return Encoding.Unicode.GetBytes(s).ComputeSHA512Hash();
+#endif
         }
 
         /// <summary>
@@ -2482,7 +2612,14 @@ namespace Aardvark.Base
         public static uint ComputeAdler32Checksum(this Array data)
         {
             var a = new Adler32();
-            data.UnsafeCoercedApply<byte>(array => a.Update(array));
+            if (data != null)
+            {
+#if NET6_0_OR_GREATER
+                a.Update(data.AsByteSpan());
+#else
+                data.UseAsStream((stream) => a.Update(stream));
+#endif
+            }
             return a.Checksum;            
         }
 
@@ -2491,7 +2628,14 @@ namespace Aardvark.Base
         /// </summary>
         public static uint ComputeAdler32Checksum(this string s)
         {
-            return Encoding.Unicode.GetBytes(s).ComputeAdler32Checksum();
+            var a = new Adler32();
+            
+#if NET6_0_OR_GREATER
+            a.Update(s.AsByteSpan());
+#else
+            a.Update(Encoding.Unicode.GetBytes(s));
+#endif
+            return a.Checksum;
         }
 
         #endregion

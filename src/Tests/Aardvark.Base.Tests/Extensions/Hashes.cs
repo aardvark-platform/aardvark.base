@@ -16,6 +16,17 @@ namespace Aardvark.Tests.Extensions
         {
             var floats = new float[10].SetByIndex(i => i);
 
+
+            var inty = new int[20].SetByIndex(i => i);
+            var v2iy = new V2i[10].SetByIndex(i => new V2i(2 * i, 2 * i + 1));
+
+            var intHash = inty.ComputeSHA1Hash().ToHex();
+            var v2iHash = v2iy.ComputeSHA1Hash().ToHex();
+            
+            Assert.IsTrue(intHash == v2iHash);
+            
+            
+            
             var md5 = floats.ComputeMD5Hash();
             Report.Line("MD5: {0}", md5.ToHex());
             Assert.IsTrue(md5.Length == 16);

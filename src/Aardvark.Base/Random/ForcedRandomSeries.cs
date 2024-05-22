@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using System.Runtime.InteropServices;
+using System;
 
 namespace Aardvark.Base
 {
@@ -28,7 +30,9 @@ namespace Aardvark.Base
             if (matrixSize * matrixSize * 8 != bytes.Length)
                 throw new InvalidDataException("Forced Random series data has invalid length.");
 
-            return bytes.UnsafeCoerce<V2i>();
+            var dst = new V2i[bytes.Length / 8];
+            bytes.AsSpan().CopyTo(MemoryMarshal.AsBytes(dst.AsSpan()));
+            return dst;
         }
 
         /// <summary>
