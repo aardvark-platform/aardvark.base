@@ -41,14 +41,14 @@ group Test
     storage: none
     source https://api.nuget.org/v3/index.json
 
-    nuget NUnit                    ~> 3.13.3
-    nuget FsUnit                   ~> 5.4.0
-    nuget FsCheck                  ~> 2.16.4
-    nuget FsCheck.NUnit            ~> 2.16.4
+    nuget NUnit                    ~> 3.14.0
+    nuget FsUnit                   ~> 5.6.1
+    nuget FsCheck                  ~> 2.16.6
+    nuget FsCheck.NUnit            ~> 2.16.6
     nuget NUnit3TestAdapter        ~> 4.5.0
-    nuget Microsoft.NET.Test.Sdk   ~> 17.7.2
-    nuget Expecto                  ~> 10.1.0
-    nuget Expecto.FsCheck          ~> 10.1.0
-    nuget YoloDev.Expecto.TestSdk  ~> 0.14.2
+    nuget Microsoft.NET.Test.Sdk   ~> 17.9.0
+    nuget Expecto                  ~> 10.2.1
+    nuget Expecto.FsCheck          ~> 10.2.1
+    nuget YoloDev.Expecto.TestSdk  ~> 0.14.3
 
-    nuget BenchmarkDotNet          ~> 0.13.9
+    nuget BenchmarkDotNet          ~> 0.13.12

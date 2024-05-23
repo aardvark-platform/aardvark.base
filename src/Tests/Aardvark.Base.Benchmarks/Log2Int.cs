@@ -229,7 +229,7 @@ namespace Aardvark.Base.Benchmarks
             for(int i = 1; i < 1000; i++)
             {
                 var a = Fun.Log2Int((float)i); // aardvark bithack
-                var b = (int)Fun.Log2(i).Floor();
+                var b = (int)Math.Log2(i).Floor();
                 Assert.AreEqual(a, b);
             }
         }
@@ -241,7 +241,7 @@ namespace Aardvark.Base.Benchmarks
             {
                 var v = i / 1000f;
                 var a = Fun.Log2Int(v); // aardvark bithack
-                var b = (int)Fun.Log2(v).Floor();
+                var b = (int)Math.Log2(v).Floor();
                 Assert.AreEqual(a, b);
             }
         }
@@ -252,7 +252,7 @@ namespace Aardvark.Base.Benchmarks
             for(int i = 1; i < 1000; i++)
             {
                 var a = Fun.Log2Int((double)i); // aardvark bithack
-                var b = (int)Fun.Log2(i).Floor();
+                var b = (int)Math.Log2(i).Floor();
                 Assert.AreEqual(a, b);
             }
         }
@@ -264,7 +264,7 @@ namespace Aardvark.Base.Benchmarks
             {
                 var v = i / 1000.0;
                 var a = Fun.Log2Int(v); // aardvark bithack
-                var b = (int)Fun.Log2(v).Floor();
+                var b = (int)Math.Log2(v).Floor();
                 Assert.AreEqual(a, b);
             }
         }
@@ -275,7 +275,7 @@ namespace Aardvark.Base.Benchmarks
             for (int i = 1; i < 1000; i++)
             {
                 var a = System.Numerics.BitOperations.Log2((uint)i);
-                var b = (int)Fun.Log2(i).Floor();
+                var b = (int)Math.Log2(i).Floor();
                 Assert.AreEqual(a, b);
             }
         }
@@ -286,7 +286,7 @@ namespace Aardvark.Base.Benchmarks
             for (int i = 1; i < 1000; i++)
             {
                 var a = Log2Int_Bithack_Unsafe(i);
-                var b = (int)Fun.Log2(i).Floor();
+                var b = (int)Math.Log2(i).Floor();
                 Assert.AreEqual(a, b);
             }
         }
@@ -297,7 +297,7 @@ namespace Aardvark.Base.Benchmarks
             for (int i = 1; i < 1000; i++)
             {
                 var a = Log2Int_Bithack_Cmp(i);
-                var b = (int)Fun.Log2(i).Floor();
+                var b = (int)Math.Log2(i).Floor();
                 Assert.AreEqual(a, b);
             }
         }
@@ -308,7 +308,7 @@ namespace Aardvark.Base.Benchmarks
             for (int i = 1; i < 1000; i++)
             {
                 var a = Fun.Log2CeilingInt((float)i); // aardvark bithack
-                var b = (int)Fun.Log2(i).Ceiling();
+                var b = (int)Math.Log2(i).Ceiling();
                 Assert.AreEqual(a, b);
             }
         }
@@ -320,7 +320,7 @@ namespace Aardvark.Base.Benchmarks
             {
                 var v = i / 1000f;
                 var a = Fun.Log2CeilingInt(v); // aardvark bithack
-                var b = (int)Fun.Log2(v).Ceiling();
+                var b = (int)Math.Log2(v).Ceiling();
                 Assert.AreEqual(a, b);
             }
         }
@@ -331,7 +331,7 @@ namespace Aardvark.Base.Benchmarks
             for (int i = 1; i < 1000; i++)
             {
                 var a = Fun.Log2CeilingInt((double)i); // aardvark bithack
-                var b = (int)Fun.Log2(i).Ceiling();
+                var b = (int)Math.Log2(i).Ceiling();
                 Assert.AreEqual(a, b);
             }
         }
@@ -343,7 +343,7 @@ namespace Aardvark.Base.Benchmarks
             {
                 var v = i / 1000.0;
                 var a = Fun.Log2CeilingInt(v); // aardvark bithack
-                var b = (int)Fun.Log2(v).Ceiling();
+                var b = (int)Math.Log2(v).Ceiling();
                 Assert.AreEqual(a, b);
             }
         }
