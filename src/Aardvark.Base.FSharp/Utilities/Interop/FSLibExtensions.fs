@@ -407,6 +407,45 @@ module NiceUtilities =
                     | (true, v) -> Some v
                     | _ -> None
 
+[<AutoOpen>]
+module EnumExtensions =
+
+    module Enum =
+
+        /// Converts the given value to an enumeration type.
+        /// The input value must be an enumeration type or convertible to the underlying target enumeration type.
+        /// If the value is not defined for the target enumeration, an InvalidCastException is thrown.
+        let inline convert< ^Value, ^Enum when ^Enum :> Enum
+                                           and ^Enum : struct
+                                           and ^Enum : (new : unit -> ^Enum)> (value: ^Value) : ^Enum =
+            let tSrc = typeof< ^Value>
+            let tDst = typeof< ^Enum>
+            let tDstBase = Enum.GetUnderlyingType tDst
+
+            let cast: ^Enum =
+                if tSrc = tDst || tSrc = tDstBase || (tSrc.IsEnum && Enum.GetUnderlyingType tSrc = tDstBase) then
+                    unbox< ^Enum> value
+                else
+                    if tDstBase = typeof<int8> then unbox< ^Enum> <| Convert.ToSByte value
+                    elif tDstBase = typeof<uint8> then unbox< ^Enum> <| Convert.ToByte value
+                    elif tDstBase = typeof<int16> then unbox< ^Enum> <| Convert.ToInt16 value
+                    elif tDstBase = typeof<uint16> then unbox< ^Enum> <| Convert.ToUInt16 value
+                    elif tDstBase = typeof<int32> then unbox< ^Enum> <| Convert.ToInt32 value
+                    elif tDstBase = typeof<uint32> then unbox< ^Enum> <| Convert.ToUInt32 value
+                    elif tDstBase = typeof<int64> then unbox< ^Enum> <| Convert.ToInt64 value
+                    elif tDstBase = typeof<uint64> then unbox< ^Enum> <| Convert.ToUInt64 value
+                    else
+                        failwithf "Unknown underlying type %A for enumeration" tDstBase
+
+#if NET6_0_OR_GREATER
+            if not <| Enum.IsDefined cast then
+#else
+            if not <| Enum.IsDefined(typeof< ^Enum>, cast) then
+#endif
+                raise <| InvalidCastException($"Value {value} is invalid for enumeration type {typeof< ^Enum>}.")
+
+            cast
+
 module ConversionHelpers =
 
     [<Obsolete("Use LookupTable.lookupTable' instead.")>]
@@ -417,6 +456,7 @@ module ConversionHelpers =
     let lookupTable (l : list<'a * 'b>) : ('a -> 'b) =
         LookupTable.lookupTable l
 
+    [<Obsolete("Use Enum.convert instead.")>]
     let inline convertEnum< ^a, ^b when ^a : (static member op_Explicit : ^a -> int)> (fmt : ^a) : ^b =
         let v = int fmt
         if Enum.IsDefined(typeof< ^b >, v) then
