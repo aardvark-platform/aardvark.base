@@ -81,10 +81,10 @@ module Arrays =
             result
 
         let inline sumBy ([<InlineIfLambda>] f : 'a -> 'b) (arr : Arr<'d, 'a>)=
-            fold (fun s v -> s + (f v)) GenericValues.zero arr
+            fold (fun s v -> s + (f v)) LanguagePrimitives.GenericZero arr
 
         let inline sum (arr : Arr<'d, 'a>)=
-            fold (+) GenericValues.zero arr
+            fold (+) LanguagePrimitives.GenericZero arr
 
         let ofList (l : list<'a>) : Arr<'d, 'a> =
             Arr(l)
@@ -95,14 +95,14 @@ module Arrays =
     [<ReflectedDefinition>]
     module ArrList =
 
-        
-        let empty<'d, 'a when 'd :> INatural> : FixedList<'d, 'a> = { storage = Arr<'d, 'a>(); Count = 0 } 
+
+        let empty<'d, 'a when 'd :> INatural> : FixedList<'d, 'a> = { storage = Arr<'d, 'a>(); Count = 0 }
 
         let inline map ([<InlineIfLambda>] f : 'a -> 'b) (l : FixedList<'d, 'a>) : FixedList<'d, 'b> =
             let result = Arr<'d, 'b>()
             for i in 0..l.Count-1 do
                 result.[i] <- f l.storage.[i]
-            { storage =result; Count = l.Count } 
+            { storage =result; Count = l.Count }
 
         let inline choose ([<InlineIfLambda>] f : 'a -> Option<'b>) (l : FixedList<'d, 'a>) : FixedList<'d, 'b> =
             let result = Arr<'d, 'b>()
@@ -110,12 +110,12 @@ module Arrays =
 
             for i in 0..l.Count-1 do
                 match f l.[i] with
-                    | Some v ->  
+                    | Some v ->
                         result.[count] <- v
                         count <- count + 1
                     | None -> ()
 
-            { storage = result; Count = count } 
+            { storage = result; Count = count }
 
         let inline fold (acc : 'a -> 'b -> 'a) (seed : 'a) (l : FixedList<'d, 'b>) : 'a =
             let f = OptimizedClosures.FSharpFunc<_, _, _>.Adapt acc
@@ -132,13 +132,13 @@ module Arrays =
             result
 
         let inline sumBy ([<InlineIfLambda>] f : 'a -> 'b) (l : FixedList<'d, 'a>) : 'b =
-            let mutable result = GenericValues.zero
+            let mutable result = LanguagePrimitives.GenericZero
             for i in 0..l.Count-1 do
                 result <- result + f l.storage.[i]
             result
 
         let inline sum (l : FixedList<'d, 'a>) : 'a =
-            let mutable result = GenericValues.zero
+            let mutable result = LanguagePrimitives.GenericZero
             for i in 0..l.Count-1 do
                 result <- result + l.storage.[i]
             result
@@ -148,14 +148,14 @@ module Arrays =
             let mutable count = 0
 
             for i in 0..l.Count-1 do
-                if condition l.[i] then 
+                if condition l.[i] then
                     result.[count] <- l.storage.[i]
                     count <- count + 1
 
-            { storage = result; Count = count } 
+            { storage = result; Count = count }
 
         let ofArr (a : Arr<'d, 'a>) =
-            { storage = a; Count = a.Length } 
+            { storage = a; Count = a.Length }
 
     module List =
         let toFixed<'d, 'a when 'd :> INatural> (l : list<'a>) =

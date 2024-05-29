@@ -13,8 +13,8 @@ module Prelude =
 
     let inline isNull (a : 'a) =
         match a with
-            | null -> true
-            | _ -> false
+        | null -> true
+        | _ -> false
 
     module Map =
         let union (l : Map<'k, 'v>) (r : Map<'k, 'v>) =
@@ -94,14 +94,14 @@ module Prelude =
         let atMost (n : int) (s : seq<'a>) : seq<'a> =
             let newEnumerator() =
                 let input = s.GetEnumerator()
-                let remaining = ref n
+                let mutable remaining = n
                 { new IEnumerator<'a> with
-                    member x.MoveNext() = 
-                        remaining := !remaining - 1
-                        !remaining >= 0 && input.MoveNext()
+                    member x.MoveNext() =
+                        remaining <- remaining - 1
+                        remaining >= 0 && input.MoveNext()
                     member x.Current : obj = input.Current :> obj
                     member x.Dispose() = input.Dispose()
-                    member x.Reset() = input.Reset(); remaining := n
+                    member x.Reset() = input.Reset(); remaining <- n
                     member x.Current : 'a = input.Current
                 }
 
@@ -111,7 +111,7 @@ module Prelude =
             }
 
 
-    module List = 
+    module List =
 
         //Experimental Results show that this implementation is faster than all other ones maintaining the list's order
         let rec private partitionAcc (f : 'a -> bool) (source : list<'a>) (l : System.Collections.Generic.List<'a>) (r : System.Collections.Generic.List<'a>) =
@@ -136,9 +136,9 @@ module Prelude =
                         partitionAcc f xs l r
                     else
                         r.Add(x)
-                        partitionAcc f xs l r   
+                        partitionAcc f xs l r
 
-        let partition (f : 'a -> bool) (source : list<'a>) = 
+        let partition (f : 'a -> bool) (source : list<'a>) =
             partitionAcc f source (System.Collections.Generic.List()) (System.Collections.Generic.List())
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (list : 'T list) =
@@ -194,7 +194,7 @@ module Prelude =
                     | res -> res
 
             loop 0
-    
+
     module Disposable =
 
         let empty = { new IDisposable with member x.Dispose() = () }
@@ -213,10 +213,6 @@ module Prelude =
     module ValueOptionOperators =
         let inline fstv (struct (x, _)) = x
         let inline sndv (struct (_, y)) = y
-    
-    type Async with
-        static member AwaitTask(t : System.Threading.Tasks.Task) =
-            t |> Async.AwaitIAsyncResult |> Async.Ignore
 
     type nativeptr<'T when 'T : unmanaged> with
         member ptr.Value
@@ -270,7 +266,7 @@ module Prelude =
             new System.IO.UnmanagedMemoryStream(cast ptr, l,l, FileAccess.ReadWrite) :> _
 
         module Operators =
-    
+
             let ( &+ ) (ptr : nativeptr<'a>) (count : int) =
                 ptr |> step count
 
@@ -288,14 +284,19 @@ module Prelude =
         static member inline MemoryCopy(source : nativeint, destination : nativeint, destinationSizeInBytes : int64, sourceBytesToCopy : int64) =
             Buffer.MemoryCopy(source.ToPointer(), destination.ToPointer(), destinationSizeInBytes, sourceBytesToCopy)
 
+
+    type Result<'T> = Result<'T, string>
+
     (* Error datastructure *)
-    type Error<'a> = Success of 'a
-                   | Error of string
+    [<Obsolete("Use Result<'T> instead.")>]
+    type Error<'T> =
+        | Success of 'T
+        | Error of string
 
     (* Either left or right *)
-    type Either<'a,'b> = Left of 'a 
-                       | Right of 'b
-
+    type Either<'a,'b> =
+        | Left of 'a
+        | Right of 'b
 
     let toFunc (f : 'a -> 'b) : Func<'a, 'b> =
         Func<'a, 'b>(f)
@@ -310,19 +311,15 @@ module Prelude =
     let uncurry (f : 'a -> 'b -> 'c) = fun (a,b) -> f a b
     let curry (f : 'a * 'b -> 'c) = fun a b -> f (a,b)
 
-    let schönfinkel = curry
-    let deschönfinkel = uncurry
+    [<AutoOpen>]
+    module ReferenceEquality =
+        let inline private refequals<'a when 'a : not struct> (a : 'a) (b : 'a) = Object.ReferenceEquals(a,b)
 
-    let frege = curry
-    let unfrege = uncurry
+        /// Reference equality
+        let inline (==) (a : 'a) (b : 'a) = refequals a b
 
-    let ಠ_ಠ str = failwith str
-
-    let inline private refequals<'a when 'a : not struct> (a : 'a) (b : 'a) = Object.ReferenceEquals(a,b)
-
-    let inline (==) (a : 'a) (b : 'a) = refequals a b
-    let inline (!=) (a : 'a) (b : 'a) = refequals a b |> not
-
+        /// Reference inequality
+        let inline (!=) (a : 'a) (b : 'a) = refequals a b |> not
 
     let inline flip f a b = f b a
 
@@ -333,18 +330,18 @@ module CSharpInterop =
 
     open System.Runtime.CompilerServices
 
-    type public FSharpFuncUtil = 
+    type public FSharpFuncUtil =
 
-        [<Extension>] 
+        [<Extension>]
         static member ToFSharpFunc<'a,'b> (func:System.Converter<'a,'b>) = fun x -> func.Invoke(x)
 
-        [<Extension>] 
+        [<Extension>]
         static member ToFSharpFunc<'a,'b> (func:System.Func<'a,'b>) = fun x -> func.Invoke(x)
 
-        [<Extension>] 
+        [<Extension>]
         static member ToFSharpFunc<'a,'b,'c> (func:System.Func<'a,'b,'c>) = fun x y -> func.Invoke(x,y)
 
-        [<Extension>] 
+        [<Extension>]
         static member ToFSharpFunc<'a,'b,'c,'d> (func:System.Func<'a,'b,'c,'d>) = fun x y z -> func.Invoke(x,y,z)
 
         static member Create<'a,'b> (func:System.Func<'a,'b>) = FSharpFuncUtil.ToFSharpFunc func
@@ -356,6 +353,7 @@ module CSharpInterop =
 module GenericValues =
     open System.Reflection
 
+    [<Obsolete("Use LanguagePrimitives.GenericZero instead.")>]
     let inline zero< ^a when ^a : (static member (-) : ^a -> ^a -> ^a)> : ^a =
         let t = typeof< ^a>
         let pi = t.GetProperty("Zero", BindingFlags.Static ||| BindingFlags.Public)
@@ -364,12 +362,6 @@ module GenericValues =
         if not (isNull pi) then pi.GetValue(null) |> unbox
         elif not (isNull fi) then fi.GetValue(null) |> unbox
         else Unchecked.defaultof< ^a>
-
-module Caching =
-
-    let memoTable = System.Collections.Concurrent.ConcurrentDictionary<obj,obj>()
-    let cacheFunction (f : 'a -> 'b) (a : 'a) :  'b =
-        memoTable.GetOrAdd((a,f) :> obj, fun (o:obj) -> f a :> obj)  |> unbox<'b>
 
 [<AutoOpen>]
 module NiceUtilities =
