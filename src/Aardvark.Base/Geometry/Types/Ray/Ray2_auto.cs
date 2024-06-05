@@ -317,7 +317,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct FastRay2f
+    public readonly partial struct FastRay2f
     {
         [DataMember]
         public readonly Ray2f Ray;
@@ -844,7 +844,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct FastRay2d
+    public readonly partial struct FastRay2d
     {
         [DataMember]
         public readonly Ray2d Ray;

@@ -33,7 +33,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct Oblique__type__ : IEquatable<Oblique__type__>
+    public readonly struct Oblique__type__ : IEquatable<Oblique__type__>
     {
         [DataMember]
         public readonly __v3t__ Origin;

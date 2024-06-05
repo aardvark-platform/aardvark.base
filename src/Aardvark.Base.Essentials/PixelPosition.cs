@@ -11,7 +11,7 @@ namespace Aardvark.Base
     /// An integral pixel position relative to specified bounds.
     /// The x-axis goes from left to right and y-axis from top to bottom.
     /// </summary>
-    public struct PixelPosition
+    public readonly struct PixelPosition
     {
         /// <summary>
         /// X goes from left to right and y from top to bottom.

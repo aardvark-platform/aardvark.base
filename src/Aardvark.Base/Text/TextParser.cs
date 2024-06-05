@@ -128,7 +128,7 @@ namespace Aardvark.Base
     /// </summary>
     /// <typeparam name="TPar">Parser class containing static state variables.</typeparam>
     /// <typeparam name="TNode">Node class for building parse trees.</typeparam>
-    public struct Case<TPar, TNode>
+    public readonly struct Case<TPar, TNode>
         where TPar : TextParser<TPar>
     {
         public readonly Func<TPar, TNode, State<TPar, TNode>> MatchedFun;
@@ -366,7 +366,7 @@ namespace Aardvark.Base
     /// Case represents a state transition of a generic recursive descent parser.
     /// </summary>
     /// <typeparam name="TNode">Node class for building parse trees.</typeparam>
-    public struct ParserCase<TNode>
+    public readonly struct ParserCase<TNode>
     {
         public readonly Func<TextParser, TNode, ParserState<TNode>> MatchedFun;
         public readonly Func<TextParser, TNode, Text, Text> AdjustFun;
@@ -1333,7 +1333,7 @@ namespace Aardvark.Base
 
     #region CSharpString TextParser Extension
 
-    internal struct Esc
+    internal readonly struct Esc
     {
         public readonly string Pattern;
         public readonly Func<string, char> EscFun;

@@ -2542,7 +2542,7 @@ namespace Aardvark.Base
     #region Cell, Cell2d
 
     [JsonConverter(typeof(Converter))]
-    public partial struct Cell2d
+    public readonly partial struct Cell2d
     {
         private class Converter : JsonConverter<Cell2d>
         {
@@ -2645,7 +2645,7 @@ namespace Aardvark.Base
     }
 
     [JsonConverter(typeof(Converter))]
-    public partial struct Cell
+    public readonly partial struct Cell
     {
         private class Converter : JsonConverter<Cell>
         {
@@ -4946,7 +4946,7 @@ namespace Aardvark.Base
     #region Trafos
 
     [JsonConverter(typeof(Converter))]
-    public partial struct Trafo2d
+    public readonly partial struct Trafo2d
     {
         private class Converter : JsonConverter<Trafo2d>
         {
@@ -4972,7 +4972,7 @@ namespace Aardvark.Base
     }
 
     [JsonConverter(typeof(Converter))]
-    public partial struct Trafo2f
+    public readonly partial struct Trafo2f
     {
         private class Converter : JsonConverter<Trafo2f>
         {
@@ -4998,7 +4998,7 @@ namespace Aardvark.Base
     }
 
     [JsonConverter(typeof(Converter))]
-    public partial struct Trafo3d
+    public readonly partial struct Trafo3d
     {
         private class Converter : JsonConverter<Trafo3d>
         {
@@ -5024,7 +5024,7 @@ namespace Aardvark.Base
     }
 
     [JsonConverter(typeof(Converter))]
-    public partial struct Trafo3f
+    public readonly partial struct Trafo3f
     {
         private class Converter : JsonConverter<Trafo3f>
         {

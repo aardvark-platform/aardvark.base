@@ -16,7 +16,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct ObliqueCone3f : IEquatable<ObliqueCone3f>
+    public readonly struct ObliqueCone3f : IEquatable<ObliqueCone3f>
     {
         [DataMember]
         public readonly V3f Origin;
@@ -357,7 +357,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public struct ObliqueCone3d : IEquatable<ObliqueCone3d>
+    public readonly struct ObliqueCone3d : IEquatable<ObliqueCone3d>
     {
         [DataMember]
         public readonly V3d Origin;

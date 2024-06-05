@@ -1058,7 +1058,7 @@ namespace Aardvark.Base
         #endregion
     }
 
-    public struct Rx
+    public readonly struct Rx
     {
         public readonly string Pattern;
         public readonly Regex Regex;
@@ -1116,7 +1116,7 @@ namespace Aardvark.Base
     /// that have been parsed in Length, and an error value of the parse
     /// operation.
     /// </summary>
-    public struct ParsedValue<T>
+    public readonly struct ParsedValue<T>
     {
         public readonly ParseError Error;
         public readonly T Value;

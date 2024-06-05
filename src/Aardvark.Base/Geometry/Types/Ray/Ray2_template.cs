@@ -333,7 +333,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Fast__ray2t__
+    public readonly partial struct Fast__ray2t__
     {
         [DataMember]
         public readonly __ray2t__ Ray;

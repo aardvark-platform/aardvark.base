@@ -121,7 +121,7 @@
     /// This struct provides properties for a particular World-Ellipsoid. 
     /// It is defined by ist two radii: "a" and "b".
     /// </summary>
-    public struct GeoEllipsoid
+    public readonly struct GeoEllipsoid
     {
         public readonly double A;
         public readonly double B;

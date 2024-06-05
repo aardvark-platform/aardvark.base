@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace Aardvark.Base
 {
-    public struct Symbol : IEquatable<Symbol>, IComparable<Symbol>, IComparable
+    public readonly struct Symbol : IEquatable<Symbol>, IComparable<Symbol>, IComparable
     {
         public readonly int Id;
 
@@ -120,7 +120,7 @@ namespace Aardvark.Base
     /// a type at compile time. This can be used in Dicts
     /// to associate each key with a value type.
     /// </summary>
-    public struct TypedSymbol<T> : ITypedSymbol
+    public readonly struct TypedSymbol<T> : ITypedSymbol
     {
         public readonly Symbol Symbol;
 

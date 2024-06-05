@@ -16,7 +16,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Trafo2f : IEquatable<Trafo2f>
+    public readonly partial struct Trafo2f : IEquatable<Trafo2f>
     {
         [DataMember]
         public readonly M33f Forward;
@@ -501,7 +501,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Trafo3f : IEquatable<Trafo3f>
+    public readonly partial struct Trafo3f : IEquatable<Trafo3f>
     {
         [DataMember]
         public readonly M44f Forward;
@@ -1584,7 +1584,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Trafo2d : IEquatable<Trafo2d>
+    public readonly partial struct Trafo2d : IEquatable<Trafo2d>
     {
         [DataMember]
         public readonly M33d Forward;
@@ -2069,7 +2069,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct Trafo3d : IEquatable<Trafo3d>
+    public readonly partial struct Trafo3d : IEquatable<Trafo3d>
     {
         [DataMember]
         public readonly M44d Forward;

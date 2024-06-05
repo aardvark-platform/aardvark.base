@@ -8,7 +8,7 @@ namespace Aardvark.Base
 {
     #region IndexedValue
 
-    public struct IndexedValue<T>
+    public readonly struct IndexedValue<T>
     {
         public readonly int Index;
         public readonly T Value;
@@ -27,7 +27,7 @@ namespace Aardvark.Base
 
     #region ComparableIndexedValue
 
-    public struct ComparableIndexedValue<T> : IComparable<ComparableIndexedValue<T>>
+    public readonly struct ComparableIndexedValue<T> : IComparable<ComparableIndexedValue<T>>
         where T : IComparable<T>
     {
         public readonly int Index;

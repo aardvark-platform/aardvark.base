@@ -112,7 +112,7 @@ namespace Aardvark.Base
                 ).Classify;
         }
 
-        private struct Classifier<T>
+        private readonly struct Classifier<T>
         {
 			private readonly WeakClassifier<T>[] m_weakClassifiers;
 
@@ -135,7 +135,7 @@ namespace Aardvark.Base
                 => m_weakClassifiers.Sum(c => c.Alpha * (c.Classifier(x) ? +1 : -1));
         }
 
-        private struct WeightedExample<T>
+        private readonly struct WeightedExample<T>
         {
             public readonly double Weight;
             public readonly T Example;
@@ -147,7 +147,7 @@ namespace Aardvark.Base
             }
         }
 
-        private struct WeakClassifier<T>
+        private readonly struct WeakClassifier<T>
         {
             public readonly double Alpha;
             public readonly Func<T, bool> Classifier;

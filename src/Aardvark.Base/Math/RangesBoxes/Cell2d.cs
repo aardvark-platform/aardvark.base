@@ -11,7 +11,7 @@ namespace Aardvark.Base
     /// A 2^Exponent sized square positioned at (X,Y) * 2^Exponent.
     /// </summary>
     [DataContract]
-    public partial struct Cell2d : IEquatable<Cell2d>
+    public readonly partial struct Cell2d : IEquatable<Cell2d>
     {
         /// <summary>
         /// Unit cell (0, 0, 0) -> Box2d[(0.0, 0.0), (1.0, 1.0)]

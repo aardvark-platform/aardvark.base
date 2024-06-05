@@ -6,7 +6,7 @@ namespace Aardvark.Base
     /// Position (x,y) in normalized device coordinates.
     /// The canonical view volume is defined as [(-1, -1, 0), (+1, +1, 1)].
     /// </summary>
-    public struct Ndc2d
+    public readonly struct Ndc2d
     {
         /// <summary>
         /// Normalized device coordinates.
@@ -57,7 +57,7 @@ namespace Aardvark.Base
     /// Position (xyz) in normalized device coordinates.
     /// The canonical view volume is defined as [(-1, -1, 0), (+1, +1, 1)].
     /// </summary>
-    public struct Ndc3d
+    public readonly struct Ndc3d
     {
         /// <summary>
         /// Normalized device coordinates.

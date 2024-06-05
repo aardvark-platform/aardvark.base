@@ -49,7 +49,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __type__ : IEquatable<__type__>
+    public readonly partial struct __type__ : IEquatable<__type__>
     {
         [DataMember]
         public readonly __mmmt__ Forward;

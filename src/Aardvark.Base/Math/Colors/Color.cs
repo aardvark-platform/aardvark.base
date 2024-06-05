@@ -1493,7 +1493,7 @@ namespace Aardvark.Base
     /// </summary>
     [DataContract]
     [Serializable]
-    public struct PixFormat : IEquatable<PixFormat>
+    public readonly struct PixFormat : IEquatable<PixFormat>
     {
         [DataMember]
         public readonly Type Type;

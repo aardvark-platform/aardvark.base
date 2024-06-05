@@ -7,7 +7,7 @@ namespace Aardvark.Base
     // zp     R02 R12 R22     (P.Z      T.X)
 
     [Obsolete]
-    public struct CameraExtrinsics
+    public readonly struct CameraExtrinsics
     {
         /// <summary>
         /// Camera to world rotation.
@@ -71,7 +71,7 @@ namespace Aardvark.Base
     }
 
     [Obsolete]
-    public struct CameraIntrinsics
+    public readonly struct CameraIntrinsics
     {
         public readonly V2d FocalLength;                     // 2    (fx, fy)    1.0 == Fun.Max(size.X, size.Y)
         public readonly V2d PrincipalPoint;                  // 2    (cx, cy)    [0..1], [0..1]

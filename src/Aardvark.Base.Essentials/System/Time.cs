@@ -4,7 +4,7 @@ namespace Aardvark.Base
 {
     /// <summary>
     /// </summary>
-    public struct TimeValue
+    public readonly struct TimeValue
     {
         /// <summary>
         /// </summary>

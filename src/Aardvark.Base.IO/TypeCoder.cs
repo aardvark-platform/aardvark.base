@@ -9,7 +9,7 @@ namespace Aardvark.Base.Coder
     /// This associates a type with a reading function and a writing
     /// action for the type.
     /// </summary>
-    public struct TypeReaderAndWriter
+    public readonly struct TypeReaderAndWriter
     {
         public readonly Type Type;
         public readonly Func<IReadingCoder, object> Reader;
