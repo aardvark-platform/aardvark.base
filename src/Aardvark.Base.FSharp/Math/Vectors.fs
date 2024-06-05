@@ -213,7 +213,7 @@ module Vec =
         let lengthSquaredWorking () =
             let a : float32 = lengthSquared V3f.One
             let a : float = lengthSquared V3d.One
-            let a : float = lengthSquared V3i.One
+            let a : int = lengthSquared V3i.One
             ()
 
         let normalizeWorking () =

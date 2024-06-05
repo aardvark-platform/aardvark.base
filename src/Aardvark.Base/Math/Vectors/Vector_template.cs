@@ -850,7 +850,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the squared length of the vector.
         /// </summary>
-        public __ctype__ LengthSquared
+        public __ftype__ LengthSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return /*# fields.ForEach(f => { */__f__ * __f__ /*# }, add); */; }
@@ -1880,7 +1880,7 @@ namespace Aardvark.Base
         /// Returns the squared length of the vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ctype__ LengthSquared(__vtype__ v)
+        public static __ftype__ LengthSquared(__vtype__ v)
             => v.LengthSquared;
 
         /// <summary>
