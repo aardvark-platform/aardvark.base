@@ -5,7 +5,7 @@ namespace Aardvark.Base
 {
     public class EventSourceSlim<T> : IEvent<T>
     {
-        private Subject<T> m_subject;
+        private readonly Subject<T> m_subject;
         private T m_latest;
         public EventSourceSlim(T defaultValue)
         {
@@ -121,11 +121,11 @@ namespace Aardvark.Base
     /// </summary>
     public class EventSource<T> : IEvent<T>, IEventEmitter<T>
     {
-        private ThreadLocal<bool> m_currentThreadDoesNotOwnLock = new ThreadLocal<bool>(() => true);
+        private readonly ThreadLocal<bool> m_currentThreadDoesNotOwnLock = new ThreadLocal<bool>(() => true);
         private SpinLock m_lock = new SpinLock(true);
         private T m_latest;
         private Awaitable<T> m_awaitable = new Awaitable<T>();
-        private Lazy<Subject<T>> m_eventStream = new Lazy<Subject<T>>();
+        private readonly Lazy<Subject<T>> m_eventStream = new Lazy<Subject<T>>();
 
         /// <summary>
         /// Creates an EventSource with default initial value.

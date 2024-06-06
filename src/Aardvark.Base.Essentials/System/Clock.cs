@@ -17,7 +17,7 @@ namespace Aardvark.Base
         private int m_frequency;
         private int m_minimalUpdateTime;
         private CancellationTokenSource m_source;
-        private Dictionary<Action, DateTime> m_lastTime;
+        private readonly Dictionary<Action, DateTime> m_lastTime;
 
         #region Constructors
 
@@ -184,7 +184,7 @@ namespace Aardvark.Base
 
         private struct FutureAwaiter : IAwaiter<TimeValue>
         {
-            private FutureAwaitable m_future;
+            private readonly FutureAwaitable m_future;
             private Action m_continuation;
 
             public FutureAwaiter(FutureAwaitable f)
@@ -253,8 +253,8 @@ namespace Aardvark.Base
 
         private class FutureAwaitable : IAwaitable<TimeValue>
         {
-            private Clock m_time;
-            private int m_timeOut;
+            private readonly Clock m_time;
+            private readonly int m_timeOut;
 
             public FutureAwaitable(Clock time, int timeout = 0)
             {

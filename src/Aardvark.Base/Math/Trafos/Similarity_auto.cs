@@ -10,7 +10,7 @@ namespace Aardvark.Base
     #region Similarity2f
 
     /// <summary>
-    /// Represents a Similarity Transformation in 2D that is composed of a 
+    /// Represents a Similarity Transformation in 2D that is composed of a
     /// Uniform Scale and a subsequent Euclidean transformation (2D rotation Rot and a subsequent translation by a 2D vector Trans).
     /// This is an angle preserving Transformation.
     /// </summary>
@@ -26,7 +26,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the rotational component of this <see cref="Similarity2f"/> transformation.
         /// </summary>
-        public Rot2f Rot
+        public readonly Rot2f Rot
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Rot; }
@@ -35,7 +35,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the translational component of this <see cref="Similarity2f"/> transformation.
         /// </summary>
-        public V2f Trans
+        public readonly V2f Trans
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Trans; }
@@ -154,7 +154,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Similarity transformation.
         /// [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        public Similarity2f Inverse
+        public readonly Similarity2f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -577,19 +577,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Similarity2f other)
+        public readonly bool Equals(Similarity2f other)
             => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Similarity2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Scale, Euclidean);
         }
@@ -706,7 +706,7 @@ namespace Aardvark.Base
     #region Similarity3f
 
     /// <summary>
-    /// Represents a Similarity Transformation in 3D that is composed of a 
+    /// Represents a Similarity Transformation in 3D that is composed of a
     /// Uniform Scale and a subsequent Euclidean transformation (3D rotation Rot and a subsequent translation by a 3D vector Trans).
     /// This is an angle preserving Transformation.
     /// </summary>
@@ -722,7 +722,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the rotational component of this <see cref="Similarity3f"/> transformation.
         /// </summary>
-        public Rot3f Rot
+        public readonly Rot3f Rot
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Rot; }
@@ -731,7 +731,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the translational component of this <see cref="Similarity3f"/> transformation.
         /// </summary>
-        public V3f Trans
+        public readonly V3f Trans
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Trans; }
@@ -849,7 +849,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a new version of this Similarity transformation with a normalized rotation quaternion.
         /// </summary>
-        public Similarity3f Normalized
+        public readonly Similarity3f Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Similarity3f(Scale, Euclidean.Normalized);
@@ -859,7 +859,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Similarity transformation.
         /// [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        public Similarity3f Inverse
+        public readonly Similarity3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1265,7 +1265,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1273,7 +1273,7 @@ namespace Aardvark.Base
             => new Similarity3f(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians), V3f.Zero);
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1407,19 +1407,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Similarity3f other)
+        public readonly bool Equals(Similarity3f other)
             => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Similarity3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Scale, Euclidean);
         }
@@ -1556,7 +1556,7 @@ namespace Aardvark.Base
     #region Similarity2d
 
     /// <summary>
-    /// Represents a Similarity Transformation in 2D that is composed of a 
+    /// Represents a Similarity Transformation in 2D that is composed of a
     /// Uniform Scale and a subsequent Euclidean transformation (2D rotation Rot and a subsequent translation by a 2D vector Trans).
     /// This is an angle preserving Transformation.
     /// </summary>
@@ -1572,7 +1572,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the rotational component of this <see cref="Similarity2d"/> transformation.
         /// </summary>
-        public Rot2d Rot
+        public readonly Rot2d Rot
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Rot; }
@@ -1581,7 +1581,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the translational component of this <see cref="Similarity2d"/> transformation.
         /// </summary>
-        public V2d Trans
+        public readonly V2d Trans
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Trans; }
@@ -1700,7 +1700,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Similarity transformation.
         /// [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        public Similarity2d Inverse
+        public readonly Similarity2d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -2123,19 +2123,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Similarity2d other)
+        public readonly bool Equals(Similarity2d other)
             => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Similarity2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Scale, Euclidean);
         }
@@ -2252,7 +2252,7 @@ namespace Aardvark.Base
     #region Similarity3d
 
     /// <summary>
-    /// Represents a Similarity Transformation in 3D that is composed of a 
+    /// Represents a Similarity Transformation in 3D that is composed of a
     /// Uniform Scale and a subsequent Euclidean transformation (3D rotation Rot and a subsequent translation by a 3D vector Trans).
     /// This is an angle preserving Transformation.
     /// </summary>
@@ -2268,7 +2268,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the rotational component of this <see cref="Similarity3d"/> transformation.
         /// </summary>
-        public Rot3d Rot
+        public readonly Rot3d Rot
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Rot; }
@@ -2277,7 +2277,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the translational component of this <see cref="Similarity3d"/> transformation.
         /// </summary>
-        public V3d Trans
+        public readonly V3d Trans
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Euclidean.Trans; }
@@ -2395,7 +2395,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a new version of this Similarity transformation with a normalized rotation quaternion.
         /// </summary>
-        public Similarity3d Normalized
+        public readonly Similarity3d Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Similarity3d(Scale, Euclidean.Normalized);
@@ -2405,7 +2405,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Similarity transformation.
         /// [1/Scale, Rot^T,-Rot^T Trans/Scale]
         /// </summary>
-        public Similarity3d Inverse
+        public readonly Similarity3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -2811,7 +2811,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2819,7 +2819,7 @@ namespace Aardvark.Base
             => new Similarity3d(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians), V3d.Zero);
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2953,19 +2953,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Scale, Euclidean);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Similarity3d other)
+        public readonly bool Equals(Similarity3d other)
             => Scale.Equals(other.Scale) && Euclidean.Equals(other.Euclidean);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Similarity3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Scale, Euclidean);
         }

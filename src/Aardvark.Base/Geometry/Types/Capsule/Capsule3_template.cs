@@ -90,25 +90,25 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0;
         }
 
-        public __line3t__ Axis
+        public readonly __line3t__ Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __line3t__(P0, P1);
         }
 
-        public __cylinder3t__ Cylider
+        public readonly __cylinder3t__ Cylider
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __cylinder3t__(P0, P1, Radius);
@@ -118,7 +118,7 @@ namespace Aardvark.Base
 
         #region __iboundingbox__ Members
 
-        public __box3t__ BoundingBox3__tc__
+        public readonly __box3t__ BoundingBox3__tc__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __box3t__(new __sphere3t__(P0, Radius).BoundingBox3__tc__, new __sphere3t__(P1, Radius).BoundingBox3__tc__);
@@ -129,19 +129,19 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -10,7 +10,7 @@ namespace Aardvark.Base
     /// </summary>
     public class PseudoRandomSeries : IRandomSeries
     {
-        IRandomUniform m_rnd;
+        readonly IRandomUniform m_rnd;
 
         public PseudoRandomSeries(IRandomUniform rnd)
         {

@@ -8,8 +8,8 @@ namespace Aardvark.Base
     {
         public class UtilizationView : IProbe<double>
         {
-            private Stopwatch m_stopwatch = new Stopwatch();
-            private Func<TimeSpan> m_baseValue;
+            private readonly Stopwatch m_stopwatch = new Stopwatch();
+            private readonly Func<TimeSpan> m_baseValue;
 
             private UtilizationView(Func<TimeSpan> baseValue)
             {
@@ -34,8 +34,8 @@ namespace Aardvark.Base
 
         public class RatePerSecondView : IProbe<double>
         {
-            private IProbe m_counter;
-            private Stopwatch m_stopwatch = new Stopwatch();
+            private readonly IProbe m_counter;
+            private readonly Stopwatch m_stopwatch = new Stopwatch();
             private double m_lastValue;
             private long m_lastTicks;
             private double m_result;
@@ -84,7 +84,7 @@ namespace Aardvark.Base
 
         public class RatioView : IProbe<double>
         {
-            private Func<double> m_f;
+            private readonly Func<double> m_f;
 
             public RatioView(IProbe nominator, IProbe denominator)
             {
@@ -110,7 +110,7 @@ namespace Aardvark.Base
 
         public class SumView : IProbe<double>
         {
-            private Func<double> m_f;
+            private readonly Func<double> m_f;
 
             public SumView(IProbe one, params IProbe[] others)
             {
@@ -137,7 +137,7 @@ namespace Aardvark.Base
 
         public class SubtractView : IProbe<double>
         {
-            private Func<double> m_f;
+            private readonly Func<double> m_f;
 
             public SubtractView(IProbe one, params IProbe[] others)
             {
@@ -164,7 +164,7 @@ namespace Aardvark.Base
 
         public class MultiplyView : IProbe<double>
         {
-            private Func<double> m_f;
+            private readonly Func<double> m_f;
 
             public MultiplyView(IProbe one, IProbe other)
             {
@@ -189,7 +189,7 @@ namespace Aardvark.Base
 
         public class MinView : IProbe<double>
         {
-            private Func<double> m_f;
+            private readonly Func<double> m_f;
 
             public MinView(IProbe one, params IProbe[] others)
             {
@@ -216,7 +216,7 @@ namespace Aardvark.Base
 
         public class MaxView : IProbe<double>
         {
-            private Func<double> m_f;
+            private readonly Func<double> m_f;
 
             public MaxView(IProbe one, params IProbe[] others)
             {
@@ -243,7 +243,7 @@ namespace Aardvark.Base
 
         public class AvgView : IProbe<double>
         {
-            private Func<double> m_f;
+            private readonly Func<double> m_f;
 
             public AvgView(IProbe one, params IProbe[] others)
             {

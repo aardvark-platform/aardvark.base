@@ -6,9 +6,9 @@ namespace Aardvark.Base
 {
     public static partial class Telemetry
     {
-        private static Dictionary<string, IProbe> s_namedProbes
+        private static readonly Dictionary<string, IProbe> s_namedProbes
             = new Dictionary<string, IProbe>();
-        private static Dictionary<string, Func<IEnumerable<TimingStats>>> s_providersForTimingStats
+        private static readonly Dictionary<string, Func<IEnumerable<TimingStats>>> s_providersForTimingStats
             = new Dictionary<string, Func<IEnumerable<TimingStats>>>();
 
         public static Tuple<string, IProbe>[] NamedProbes

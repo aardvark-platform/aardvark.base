@@ -4,10 +4,10 @@ using System.Linq;
 
 namespace Aardvark.Base
 {
-    public struct SymmetricMatrix<T>
+    public readonly struct SymmetricMatrix<T>
     {
-        private T[] m_data;
-        private long m_size;
+        private readonly T[] m_data;
+        private readonly long m_size;
 
         #region Constructors
 
@@ -179,9 +179,9 @@ namespace Aardvark.Base
 
         #region Reference-Structures/Classes
 
-        public struct Edge : IComparable<Edge>
+        public readonly struct Edge : IComparable<Edge>
         {
-            private AbstractGraph<TVertex, TCost> m_graph;
+            private readonly AbstractGraph<TVertex, TCost> m_graph;
             public readonly int Index0;
             public readonly int Index1;
 
@@ -236,8 +236,8 @@ namespace Aardvark.Base
 
         protected class UnionFind
         {
-            private List<TVertex> m_nodes;
-            private int[] m_parent;
+            private readonly List<TVertex> m_nodes;
+            private readonly int[] m_parent;
 
             #region Constructors
 
@@ -285,12 +285,12 @@ namespace Aardvark.Base
 
         public class Tree
         {
-            private AbstractGraph<TVertex, TCost> m_graph;
+            private readonly AbstractGraph<TVertex, TCost> m_graph;
 
-            private List<Tup<int, int>> m_edges;
+            private readonly List<Tup<int, int>> m_edges;
 
             private int m_edgeCount;
-            private bool[] m_visited;
+            private readonly bool[] m_visited;
 
             #region Constructors
 
@@ -430,10 +430,10 @@ namespace Aardvark.Base
 
         public class Tour
         {
-            private AbstractGraph<TVertex, TCost> m_graph;
-            private int[] m_permutation;
+            private readonly AbstractGraph<TVertex, TCost> m_graph;
+            private readonly int[] m_permutation;
             private bool m_2optImproved;
-            private bool m_circular;
+            private readonly bool m_circular;
 
             #region Constructors
 
@@ -541,10 +541,10 @@ namespace Aardvark.Base
             #endregion
         }
 
-        public struct Vertex
+        public readonly struct Vertex
         {
-            private AbstractGraph<TVertex, TCost> m_graph;
-            private int m_index;
+            private readonly AbstractGraph<TVertex, TCost> m_graph;
+            private readonly int m_index;
 
             #region Constructors
 
@@ -1020,7 +1020,7 @@ namespace Aardvark.Base
 
     internal static class GraphHelpers
     {
-        private static Dictionary<Type, Func<object, object, object>> m_additions = new Dictionary<Type, Func<object, object, object>>()
+        private static readonly Dictionary<Type, Func<object, object, object>> m_additions = new Dictionary<Type, Func<object, object, object>>()
         {
             {typeof(int), (a,b) => (int)a + (int)b},
             {typeof(uint), (a,b) => (uint)a + (uint)b},

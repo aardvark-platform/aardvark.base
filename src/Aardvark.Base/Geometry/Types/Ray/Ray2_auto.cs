@@ -81,7 +81,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A ray is valid if its direction is non-zero.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction != V2f.Zero;
@@ -90,7 +90,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A ray is invalid if its direction is zero.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction == V2f.Zero;
@@ -99,25 +99,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if either the origin or the direction contains any NaN value.
         /// </summary>
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Origin.AnyNaN || Direction.AnyNaN;
         }
 
-        public Line2f Line2f
+        public readonly Line2f Line2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Line2f(Origin, Origin + Direction);
         }
 
-        public Plane2f Plane2f
+        public readonly Plane2f Plane2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane2f(new V2f(-Direction.Y, Direction.X), Origin); // Direction.Rot90
         }
 
-        public Ray2f Reversed
+        public readonly Ray2f Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Ray2f(Origin, -Direction);
@@ -131,14 +131,14 @@ namespace Aardvark.Base
         /// Gets the point on the ray that is t * direction from origin.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f GetPointOnRay(float t) => (Origin + Direction * t);
+        public readonly V2f GetPointOnRay(float t) => (Origin + Direction * t);
 
         /// <summary>
         /// Gets segment on the ray starting at range.Min * direction from origin
         /// and ending at range.Max * direction from origin.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Line2f GetLine2fOnRay(Range1f range)
+        public readonly Line2f GetLine2fOnRay(Range1f range)
             => new Line2f(Origin + Direction * range.Min, Origin + Direction * range.Max);
 
         /// <summary>
@@ -146,14 +146,14 @@ namespace Aardvark.Base
         /// and ending at tMax * direction from origin.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Line2f GetLine2fOnRay(float tMin, float tMax)
+        public readonly Line2f GetLine2fOnRay(float tMin, float tMax)
             => new Line2f(Origin + Direction * tMin, Origin + Direction * tMax);
 
         /// <summary>
-        /// Gets the t for a point p on this ray. 
+        /// Gets the t for a point p on this ray.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetT(V2f p)
+        public readonly float GetT(V2f p)
         {
             var v = p - Origin;
             return (Direction.X.Abs() > Direction.Y.Abs())
@@ -166,17 +166,17 @@ namespace Aardvark.Base
         /// Ray direction must be normalized (length 1).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f GetClosestPointOnRay(V2f p)
+        public readonly V2f GetClosestPointOnRay(V2f p)
             => Origin + Direction * Direction.Dot(p - Origin);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetDistanceToRay(V2f p)
+        public readonly float GetDistanceToRay(V2f p)
         {
             var f = GetClosestPointOnRay(p);
             return (f - p).Length;
         }
 
-        public V2f Intersect(Ray2f r)
+        public readonly V2f Intersect(Ray2f r)
         {
             V2f a = r.Origin - Origin;
             if (a.Abs().AllSmaller(Constant<float>.PositiveTinyValue))
@@ -189,7 +189,7 @@ namespace Aardvark.Base
                 return V2f.NaN;
         }
 
-        public V2f Intersect(V2f dirVector)
+        public readonly V2f Intersect(V2f dirVector)
         {
             if (Origin.Abs().AllSmaller(Constant<float>.PositiveTinyValue))
                 return Origin; // Early exit when rays have same origin
@@ -206,7 +206,7 @@ namespace Aardvark.Base
         /// The direction vectors of the input rays have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float AngleBetweenFast(Ray2f r)
+        public readonly float AngleBetweenFast(Ray2f r)
             => Direction.AngleBetweenFast(r.Direction);
 
         /// <summary>
@@ -214,7 +214,7 @@ namespace Aardvark.Base
         /// The direction vectors of the input rays have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float AngleBetween(Ray2f r)
+        public readonly float AngleBetween(Ray2f r)
             => Direction.AngleBetween(r.Direction);
 
         /// <summary>
@@ -222,7 +222,7 @@ namespace Aardvark.Base
         /// The magnitude is equal to the float size of the triangle the ray + direction and p.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetPointSide(V2f p) => Direction.Dot90(p - Origin);
+        public readonly float GetPointSide(V2f p) => Direction.Dot90(p - Origin);
 
         #endregion
 
@@ -237,7 +237,7 @@ namespace Aardvark.Base
             => !((a.Origin == b.Origin) && (a.Direction == b.Direction));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LexicalCompare(Ray2f other)
+        public readonly int LexicalCompare(Ray2f other)
         {
             var cmp = Origin.LexicalCompare(other.Origin);
             if (cmp != 0) return cmp;
@@ -253,18 +253,18 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>Hash-code.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Origin, Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Ray2f other)
+        public readonly bool Equals(Ray2f other)
             => Origin.Equals(other.Origin) && Direction.Equals(other.Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Ray2f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -278,7 +278,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2f
 
-        public Box2f BoundingBox2f
+        public readonly Box2f BoundingBox2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Box2f.FromPoints(Origin, Direction + Origin);
@@ -608,7 +608,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A ray is valid if its direction is non-zero.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction != V2d.Zero;
@@ -617,7 +617,7 @@ namespace Aardvark.Base
         /// <summary>
         /// A ray is invalid if its direction is zero.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction == V2d.Zero;
@@ -626,25 +626,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if either the origin or the direction contains any NaN value.
         /// </summary>
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Origin.AnyNaN || Direction.AnyNaN;
         }
 
-        public Line2d Line2d
+        public readonly Line2d Line2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Line2d(Origin, Origin + Direction);
         }
 
-        public Plane2d Plane2d
+        public readonly Plane2d Plane2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane2d(new V2d(-Direction.Y, Direction.X), Origin); // Direction.Rot90
         }
 
-        public Ray2d Reversed
+        public readonly Ray2d Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Ray2d(Origin, -Direction);
@@ -658,14 +658,14 @@ namespace Aardvark.Base
         /// Gets the point on the ray that is t * direction from origin.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d GetPointOnRay(double t) => (Origin + Direction * t);
+        public readonly V2d GetPointOnRay(double t) => (Origin + Direction * t);
 
         /// <summary>
         /// Gets segment on the ray starting at range.Min * direction from origin
         /// and ending at range.Max * direction from origin.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Line2d GetLine2dOnRay(Range1d range)
+        public readonly Line2d GetLine2dOnRay(Range1d range)
             => new Line2d(Origin + Direction * range.Min, Origin + Direction * range.Max);
 
         /// <summary>
@@ -673,14 +673,14 @@ namespace Aardvark.Base
         /// and ending at tMax * direction from origin.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Line2d GetLine2dOnRay(double tMin, double tMax)
+        public readonly Line2d GetLine2dOnRay(double tMin, double tMax)
             => new Line2d(Origin + Direction * tMin, Origin + Direction * tMax);
 
         /// <summary>
-        /// Gets the t for a point p on this ray. 
+        /// Gets the t for a point p on this ray.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetT(V2d p)
+        public readonly double GetT(V2d p)
         {
             var v = p - Origin;
             return (Direction.X.Abs() > Direction.Y.Abs())
@@ -693,17 +693,17 @@ namespace Aardvark.Base
         /// Ray direction must be normalized (length 1).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d GetClosestPointOnRay(V2d p)
+        public readonly V2d GetClosestPointOnRay(V2d p)
             => Origin + Direction * Direction.Dot(p - Origin);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetDistanceToRay(V2d p)
+        public readonly double GetDistanceToRay(V2d p)
         {
             var f = GetClosestPointOnRay(p);
             return (f - p).Length;
         }
 
-        public V2d Intersect(Ray2d r)
+        public readonly V2d Intersect(Ray2d r)
         {
             V2d a = r.Origin - Origin;
             if (a.Abs().AllSmaller(Constant<double>.PositiveTinyValue))
@@ -716,7 +716,7 @@ namespace Aardvark.Base
                 return V2d.NaN;
         }
 
-        public V2d Intersect(V2d dirVector)
+        public readonly V2d Intersect(V2d dirVector)
         {
             if (Origin.Abs().AllSmaller(Constant<double>.PositiveTinyValue))
                 return Origin; // Early exit when rays have same origin
@@ -733,7 +733,7 @@ namespace Aardvark.Base
         /// The direction vectors of the input rays have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double AngleBetweenFast(Ray2d r)
+        public readonly double AngleBetweenFast(Ray2d r)
             => Direction.AngleBetweenFast(r.Direction);
 
         /// <summary>
@@ -741,7 +741,7 @@ namespace Aardvark.Base
         /// The direction vectors of the input rays have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double AngleBetween(Ray2d r)
+        public readonly double AngleBetween(Ray2d r)
             => Direction.AngleBetween(r.Direction);
 
         /// <summary>
@@ -749,7 +749,7 @@ namespace Aardvark.Base
         /// The magnitude is equal to the double size of the triangle the ray + direction and p.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetPointSide(V2d p) => Direction.Dot90(p - Origin);
+        public readonly double GetPointSide(V2d p) => Direction.Dot90(p - Origin);
 
         #endregion
 
@@ -764,7 +764,7 @@ namespace Aardvark.Base
             => !((a.Origin == b.Origin) && (a.Direction == b.Direction));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int LexicalCompare(Ray2d other)
+        public readonly int LexicalCompare(Ray2d other)
         {
             var cmp = Origin.LexicalCompare(other.Origin);
             if (cmp != 0) return cmp;
@@ -780,18 +780,18 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>Hash-code.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Origin, Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Ray2d other)
+        public readonly bool Equals(Ray2d other)
             => Origin.Equals(other.Origin) && Direction.Equals(other.Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Ray2d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Origin, Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -805,7 +805,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d
 
-        public Box2d BoundingBox2d
+        public readonly Box2d BoundingBox2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Box2d.FromPoints(Origin, Direction + Origin);

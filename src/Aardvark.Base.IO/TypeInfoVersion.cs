@@ -62,13 +62,13 @@ namespace Aardvark.Base.Coder
             }
         }
 
-        private static Dictionary<Type, List<Type>> s_oldTypeListOfType =
+        private static readonly Dictionary<Type, List<Type>> s_oldTypeListOfType =
             new Dictionary<Type, List<Type>>();
 
-        private static Dictionary<Type, (string, Action<Convertible, Convertible>)>
+        private static readonly Dictionary<Type, (string, Action<Convertible, Convertible>)>
             s_conversionOfTargetType
             = new Dictionary<Type, (string, Action<Convertible, Convertible>)>();
 
-        private static object s_lock = new object();
+        private static readonly object s_lock = new object();
     }
 }

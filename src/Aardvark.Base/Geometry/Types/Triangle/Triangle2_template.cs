@@ -31,7 +31,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the area of the triangle.
         /// </summary>
-        public __ftype__ Area
+        public readonly __ftype__ Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.Area(this);
@@ -40,7 +40,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the triangle is degenerated, i.e. its area is zero.
         /// </summary>
-        public bool IsDegenerated
+        public readonly bool IsDegenerated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.IsDegenerated(this);
@@ -51,7 +51,7 @@ namespace Aardvark.Base
         /// counter-clockwise winding order, and a positive value if it has a clockwise winding-order.
         /// The magnitude is twice the area of the triangle.
         /// </summary>
-        public __ftype__ WindingOrder
+        public readonly __ftype__ WindingOrder
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.WindingOrder(this);
@@ -61,7 +61,7 @@ namespace Aardvark.Base
 
         #region CircumCircle
 
-        public __circle2t__ CircumCircle
+        public readonly __circle2t__ CircumCircle
         {
             get
             {
@@ -70,7 +70,7 @@ namespace Aardvark.Base
             }
         }
 
-        public __circle2t__ CircumCircleSquared
+        public readonly __circle2t__ CircumCircleSquared
         {
             get
             {
@@ -141,7 +141,7 @@ namespace Aardvark.Base
 
         #region __iboundingcircle2t__ Members
 
-        public __circle2t__ BoundingCircle2__tc__
+        public readonly __circle2t__ BoundingCircle2__tc__
         {
             get
             {

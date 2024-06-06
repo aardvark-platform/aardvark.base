@@ -80,55 +80,55 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public float Height
+        public readonly float Height
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P0 - P1).Length;
         }
 
-        public V3f Center
+        public readonly V3f Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P0 + P1) * 0.5f;
         }
 
-        public Line3f Axis
+        public readonly Line3f Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Line3f(P0, P1);
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0;
         }
 
-        public Circle3f Circle0
+        public readonly Circle3f Circle0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Circle3f(P0, (P0 - P1).Normalized, Radius);
         }
 
-        public Circle3f Circle1
+        public readonly Circle3f Circle1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Circle3f(P1, (P1 - P0).Normalized, Radius);
         }
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * ConstantF.PiTimesTwo * (Radius + Height);
         }
 
-        public float Volume
+        public readonly float Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius * ConstantF.Pi * Height;
@@ -151,20 +151,20 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(P0, P1, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Cylinder3f other) =>
+        public readonly bool Equals(Cylinder3f other) =>
             P0.Equals(other.P0) &&
             P1.Equals(other.P1) &&
             Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Cylinder3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -186,7 +186,7 @@ namespace Aardvark.Base
         /// P0 has height 0.0, P1 has height 1.0
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetHeight(V3f p)
+        public readonly float GetHeight(V3f p)
         {
             var dir = (P1 - P0).Normalized;
             var pp = p.GetClosestPointOn(new Ray3f(P0, dir));
@@ -196,7 +196,7 @@ namespace Aardvark.Base
         /// Get circle at a specific height
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Circle3f GetCircle(float height)
+        public readonly Circle3f GetCircle(float height)
         {
             var dir = (P1 - P0).Normalized;
             return new Circle3f(P0 + height * dir, dir, Radius);
@@ -206,7 +206,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box3f(Circle0.BoundingBox3f, Circle1.BoundingBox3f);
@@ -306,55 +306,55 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public double Height
+        public readonly double Height
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P0 - P1).Length;
         }
 
-        public V3d Center
+        public readonly V3d Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P0 + P1) * 0.5;
         }
 
-        public Line3d Axis
+        public readonly Line3d Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Line3d(P0, P1);
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0;
         }
 
-        public Circle3d Circle0
+        public readonly Circle3d Circle0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Circle3d(P0, (P0 - P1).Normalized, Radius);
         }
 
-        public Circle3d Circle1
+        public readonly Circle3d Circle1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Circle3d(P1, (P1 - P0).Normalized, Radius);
         }
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Constant.PiTimesTwo * (Radius + Height);
         }
 
-        public double Volume
+        public readonly double Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius * Constant.Pi * Height;
@@ -377,20 +377,20 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(P0, P1, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Cylinder3d other) =>
+        public readonly bool Equals(Cylinder3d other) =>
             P0.Equals(other.P0) &&
             P1.Equals(other.P1) &&
             Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Cylinder3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -412,7 +412,7 @@ namespace Aardvark.Base
         /// P0 has height 0.0, P1 has height 1.0
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetHeight(V3d p)
+        public readonly double GetHeight(V3d p)
         {
             var dir = (P1 - P0).Normalized;
             var pp = p.GetClosestPointOn(new Ray3d(P0, dir));
@@ -422,7 +422,7 @@ namespace Aardvark.Base
         /// Get circle at a specific height
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Circle3d GetCircle(double height)
+        public readonly Circle3d GetCircle(double height)
         {
             var dir = (P1 - P0).Normalized;
             return new Circle3d(P0 + height * dir, dir, Radius);
@@ -432,7 +432,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box3d(Circle0.BoundingBox3d, Circle1.BoundingBox3d);

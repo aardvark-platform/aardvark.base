@@ -134,7 +134,7 @@ namespace Aardvark.Base
         private static int primeCapacity;
         private static int[] primeArray = new int[c_initialPrimeCount];
         private static double[] primeInverseArray = new double[c_initialPrimeCount];
-        private static bool[] isPrimeArray;
-        private static int[] primeLogIndexArray = new int[64];
+        private static readonly bool[] isPrimeArray;
+        private static readonly int[] primeLogIndexArray = new int[64];
     }
 }

@@ -35,11 +35,11 @@ namespace Aardvark.Base
 
             public static readonly Info Aardvark = new Info(1, Handedness.Right, Axis.Z);
 
-            public bool IsAardvark => Equals(Aardvark);
+            public readonly bool IsAardvark => Equals(Aardvark);
 
-            public override int GetHashCode() => HashCode.GetCombined(UnitScale, Handedness, UpVector);
+            public override readonly int GetHashCode() => HashCode.GetCombined(UnitScale, Handedness, UpVector);
 
-            public override bool Equals(object other) => (other is Info o)
+            public override readonly bool Equals(object other) => (other is Info o)
             ? UnitScale.Equals(o.UnitScale) && (Handedness == o.Handedness) && (UpVector == o.UpVector)
             : false;
 
@@ -51,7 +51,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a transformation from the specified coordinate system  
+        /// Creates a transformation from the specified coordinate system
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
         public static Trafo3d ToAardvark(double scale, Handedness hand, Axis up)
@@ -68,26 +68,26 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a transformation from the specified coordinate system  
+        /// Creates a transformation from the specified coordinate system
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
         public static Trafo3d ToAardvark(this Info from)
             => ToAardvark(from.UnitScale, from.Handedness, from.UpVector);
 
         /// <summary>
-        /// Creates a transformation from the specified coordinate system  
+        /// Creates a transformation from the specified coordinate system
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
         public static Trafo3d ToAardvark(Handedness hand, Axis up) => ToAardvark(1, hand, up);
 
         /// <summary>
-        /// Creates a transformation from the specified coordinate system  
+        /// Creates a transformation from the specified coordinate system
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
         public static Trafo3d ToAardvark(Axis up) => ToAardvark(1, Handedness.Right, up);
 
         /// <summary>
-        /// Creates a transformation from the specified coordinate system  
+        /// Creates a transformation from the specified coordinate system
         /// to the aardvark coordinate system (Meters, Right-Handed, Z-Up).
         /// </summary>
         public static Trafo3d ToAardvark(Handedness hand) => ToAardvark(1, hand, Axis.Z);
@@ -122,7 +122,7 @@ namespace Aardvark.Base
                 return Trafo3d.Identity;
 
             var axis = (from == Axis.X || to == Axis.X) ?
-                          (from == Axis.Y || to == Axis.Y) ? 
+                          (from == Axis.Y || to == Axis.Y) ?
                               Axis.Z : Axis.Y : Axis.X;
 
             var rotation = axis == Axis.X ? new M44d(1, 0, 0, 0,  0, 0,-s, 0,  0, s, 0, 0,  0, 0, 0, 1) :
@@ -160,7 +160,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the handedness of the given transformation matrix that is assumed to be row-major.
         /// A right-handed coodinate system is given when
-        /// (X cross Y) dot Z is positive, 
+        /// (X cross Y) dot Z is positive,
         /// otherwise left-handed.
         /// </summary>
         public static CoordinateSystem.Handedness Handedness(this M44d mat)

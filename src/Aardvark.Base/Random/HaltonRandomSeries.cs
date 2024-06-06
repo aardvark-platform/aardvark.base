@@ -28,7 +28,7 @@ namespace Aardvark.Base
                 return m_randomUniform.UniformDouble();
         }
 
-	    private double [] m_haltonStateArray;
-        private IRandomUniform m_randomUniform;
+	    private readonly double [] m_haltonStateArray;
+        private readonly IRandomUniform m_randomUniform;
     }
 }

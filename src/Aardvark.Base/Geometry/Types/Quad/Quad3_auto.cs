@@ -18,7 +18,7 @@ namespace Aardvark.Base
         /// Returns the area when projected onto a plane normal to the area
         /// weighted average normal of the triangles (P0,P1,P2) and (P0,P2,P3).
         /// </summary>
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -28,7 +28,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool IsDegenerated
+        public readonly bool IsDegenerated
         {
             get
             {
@@ -40,7 +40,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3f Normal
+        public readonly V3f Normal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -69,7 +69,7 @@ namespace Aardvark.Base
         /// Returns the area when projected onto a plane normal to the area
         /// weighted average normal of the triangles (P0,P1,P2) and (P0,P2,P3).
         /// </summary>
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -79,7 +79,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool IsDegenerated
+        public readonly bool IsDegenerated
         {
             get
             {
@@ -91,7 +91,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3d Normal
+        public readonly V3d Normal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get

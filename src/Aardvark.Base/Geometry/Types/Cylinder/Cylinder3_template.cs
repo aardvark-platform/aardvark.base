@@ -96,55 +96,55 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public __ftype__ Height
+        public readonly __ftype__ Height
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P0 - P1).Length;
         }
 
-        public __v3t__ Center
+        public readonly __v3t__ Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P0 + P1) * __half__;
         }
 
-        public __line3t__ Axis
+        public readonly __line3t__ Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __line3t__(P0, P1);
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0;
         }
 
-        public __circle3t__ Circle0
+        public readonly __circle3t__ Circle0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __circle3t__(P0, (P0 - P1).Normalized, Radius);
         }
 
-        public __circle3t__ Circle1
+        public readonly __circle3t__ Circle1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __circle3t__(P1, (P1 - P0).Normalized, Radius);
         }
 
-        public __ftype__ Area
+        public readonly __ftype__ Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * __constant__.PiTimesTwo * (Radius + Height);
         }
 
-        public __ftype__ Volume
+        public readonly __ftype__ Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius * __constant__.Pi * Height;
@@ -167,20 +167,20 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(P0, P1, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other) =>
+        public readonly bool Equals(__type__ other) =>
             P0.Equals(other.P0) &&
             P1.Equals(other.P1) &&
             Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -202,7 +202,7 @@ namespace Aardvark.Base
         /// P0 has height 0.0, P1 has height 1.0
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ftype__ GetHeight(__v3t__ p)
+        public readonly __ftype__ GetHeight(__v3t__ p)
         {
             var dir = (P1 - P0).Normalized;
             var pp = p.GetClosestPointOn(new __ray3t__(P0, dir));
@@ -212,7 +212,7 @@ namespace Aardvark.Base
         /// Get circle at a specific height
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __circle3t__ GetCircle(__ftype__ height)
+        public readonly __circle3t__ GetCircle(__ftype__ height)
         {
             var dir = (P1 - P0).Normalized;
             return new __circle3t__(P0 + height * dir, dir, Radius);
@@ -222,7 +222,7 @@ namespace Aardvark.Base
 
         #region __iboundingbox__ Members
 
-        public __box3t__ BoundingBox3__tc__
+        public readonly __box3t__ BoundingBox3__tc__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __box3t__(Circle0.BoundingBox3__tc__, Circle1.BoundingBox3__tc__);

@@ -31,7 +31,7 @@ namespace Aardvark.Base.Coder
     /// </summary>
     public static partial class TypeCoder
     {
-        static Dictionary<Type, Action<IWritingCoder, Type, object>> s_genericWriterMap =
+        static readonly Dictionary<Type, Action<IWritingCoder, Type, object>> s_genericWriterMap =
                                 new Dictionary<Type, Action<IWritingCoder, Type, object>>
         {
             { typeof(List<>),       (c,t,o) => { var v = (IList)o; c.Code(t, ref v); } },
@@ -47,7 +47,7 @@ namespace Aardvark.Base.Coder
             { typeof(HashSet<>),    (c,t,o) => { c.CodeHashSet(t, ref o); } },
         };
 
-        static Dictionary<Type, Func<IReadingCoder, Type, object>> s_genericReaderMap =
+        static readonly Dictionary<Type, Func<IReadingCoder, Type, object>> s_genericReaderMap =
                                 new Dictionary<Type, Func<IReadingCoder, Type, object>>
         {
             { typeof(List<>),       (c,t) => { var v = default(IList); c.Code(t, ref v); return v; } },

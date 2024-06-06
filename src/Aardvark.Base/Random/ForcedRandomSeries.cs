@@ -10,12 +10,12 @@ namespace Aardvark.Base
     public class ForcedRandomSeries : IRandomSeries
     {
         V2i m_index = V2i.OO;
-        V2i[] m_series;
-        int m_matrixSize; 
-        double m_norm;
-        IRandomUniform m_rnd;
+        readonly V2i[] m_series;
+        readonly int m_matrixSize;
+        readonly double m_norm;
+        readonly IRandomUniform m_rnd;
         V2i m_seed;
-        bool m_jitter;
+        readonly bool m_jitter;
 
         /// <summary>
         /// Reads a file that contains a raw V2i binary array as V2i[].

@@ -21,8 +21,8 @@ namespace Aardvark.Base.Coder
         #region private fields
 
         private long m_position;
-        private long m_totalLength;
-        private SubStream[] m_streams;
+        private readonly long m_totalLength;
+        private readonly SubStream[] m_streams;
 
         #endregion
 

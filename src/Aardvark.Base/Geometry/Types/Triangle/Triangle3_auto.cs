@@ -16,7 +16,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the area of the triangle.
         /// </summary>
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.Area(this);
@@ -25,7 +25,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the triangle is degenerated, i.e. its area is zero.
         /// </summary>
-        public bool IsDegenerated
+        public readonly bool IsDegenerated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.IsDegenerated(this);
@@ -34,7 +34,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the normal of the triangle.
         /// </summary>
-        public V3f Normal
+        public readonly V3f Normal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.Normal(this);
@@ -43,7 +43,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the plane that contains the points of the triangle.
         /// </summary>
-        public Plane3f Plane
+        public readonly Plane3f Plane
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.Plane(this);
@@ -56,7 +56,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the bounding sphere of the triangle.
         /// </summary>
-        public Sphere3f BoundingSphere3f
+        public readonly Sphere3f BoundingSphere3f
         {
             get
             {
@@ -182,7 +182,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the area of the triangle.
         /// </summary>
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.Area(this);
@@ -191,7 +191,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the triangle is degenerated, i.e. its area is zero.
         /// </summary>
-        public bool IsDegenerated
+        public readonly bool IsDegenerated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.IsDegenerated(this);
@@ -200,7 +200,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the normal of the triangle.
         /// </summary>
-        public V3d Normal
+        public readonly V3d Normal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.Normal(this);
@@ -209,7 +209,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the plane that contains the points of the triangle.
         /// </summary>
-        public Plane3d Plane
+        public readonly Plane3d Plane
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Triangle.Plane(this);
@@ -222,7 +222,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the bounding sphere of the triangle.
         /// </summary>
-        public Sphere3d BoundingSphere3d
+        public readonly Sphere3d BoundingSphere3d
         {
             get
             {

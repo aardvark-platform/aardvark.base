@@ -127,18 +127,18 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f GetVector(float alpha)
+        public readonly V2f GetVector(float alpha)
             => Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f GetPoint(float alpha)
+        public readonly V2f GetPoint(float alpha)
             => Center + Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         /// <summary>
         /// Perform the supplied action for each of count vectors from the center
-        /// of the ellipse to the circumference. 
+        /// of the ellipse to the circumference.
         /// </summary>
-        public void ForEachVector(int count, Action<int, V2f> index_vector_act)
+        public readonly void ForEachVector(int count, Action<int, V2f> index_vector_act)
         {
             float d = ConstantF.PiTimesTwo / count;
             float a = Fun.Sin(d * 0.5f).Square() * 2, b = Fun.Sin(d); // init trig. recurrence
@@ -156,7 +156,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Get count points on the circumference of the ellipse.
         /// </summary>
-        public V2f[] GetPoints(int count)
+        public readonly V2f[] GetPoints(int count)
         {
             var array = new V2f[count];
             var c = Center;
@@ -183,21 +183,21 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(Center, Axis0, Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Ellipse2f other) =>
+        public readonly bool Equals(Ellipse2f other) =>
             Center.Equals(other.Center) &&
             Axis0.Equals(other.Axis0) &&
             Axis1.Equals(other.Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Ellipse2f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Axis0, Axis1);
         }
@@ -360,18 +360,18 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f GetVector(float alpha)
+        public readonly V3f GetVector(float alpha)
             => Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f GetPoint(float alpha)
+        public readonly V3f GetPoint(float alpha)
             => Center + Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         /// <summary>
         /// Perform the supplied action for each of count vectors from the center
-        /// of the ellipse to the circumference. 
+        /// of the ellipse to the circumference.
         /// </summary>
-        public void ForEachVector(int count, Action<int, V3f> index_vector_act)
+        public readonly void ForEachVector(int count, Action<int, V3f> index_vector_act)
         {
             float d = ConstantF.PiTimesTwo / count;
             float a = Fun.Sin(d * 0.5f).Square() * 2, b = Fun.Sin(d); // init trig. recurrence
@@ -389,7 +389,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Get count points on the circumference of the ellipse.
         /// </summary>
-        public V3f[] GetPoints(int count)
+        public readonly V3f[] GetPoints(int count)
         {
             var array = new V3f[count];
             var c = Center;
@@ -417,22 +417,22 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(Center, Normal, Axis0, Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Ellipse3f other) =>
+        public readonly bool Equals(Ellipse3f other) =>
             Center.Equals(other.Center) &&
             Normal.Equals(other.Normal) &&
             Axis0.Equals(other.Axis0) &&
             Axis1.Equals(other.Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Ellipse3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Center, Normal, Axis0, Axis1);
         }
@@ -593,18 +593,18 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d GetVector(double alpha)
+        public readonly V2d GetVector(double alpha)
             => Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d GetPoint(double alpha)
+        public readonly V2d GetPoint(double alpha)
             => Center + Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         /// <summary>
         /// Perform the supplied action for each of count vectors from the center
-        /// of the ellipse to the circumference. 
+        /// of the ellipse to the circumference.
         /// </summary>
-        public void ForEachVector(int count, Action<int, V2d> index_vector_act)
+        public readonly void ForEachVector(int count, Action<int, V2d> index_vector_act)
         {
             double d = Constant.PiTimesTwo / count;
             double a = Fun.Sin(d * 0.5).Square() * 2, b = Fun.Sin(d); // init trig. recurrence
@@ -622,7 +622,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Get count points on the circumference of the ellipse.
         /// </summary>
-        public V2d[] GetPoints(int count)
+        public readonly V2d[] GetPoints(int count)
         {
             var array = new V2d[count];
             var c = Center;
@@ -649,21 +649,21 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(Center, Axis0, Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Ellipse2d other) =>
+        public readonly bool Equals(Ellipse2d other) =>
             Center.Equals(other.Center) &&
             Axis0.Equals(other.Axis0) &&
             Axis1.Equals(other.Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Ellipse2d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Axis0, Axis1);
         }
@@ -826,18 +826,18 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d GetVector(double alpha)
+        public readonly V3d GetVector(double alpha)
             => Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d GetPoint(double alpha)
+        public readonly V3d GetPoint(double alpha)
             => Center + Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         /// <summary>
         /// Perform the supplied action for each of count vectors from the center
-        /// of the ellipse to the circumference. 
+        /// of the ellipse to the circumference.
         /// </summary>
-        public void ForEachVector(int count, Action<int, V3d> index_vector_act)
+        public readonly void ForEachVector(int count, Action<int, V3d> index_vector_act)
         {
             double d = Constant.PiTimesTwo / count;
             double a = Fun.Sin(d * 0.5).Square() * 2, b = Fun.Sin(d); // init trig. recurrence
@@ -855,7 +855,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Get count points on the circumference of the ellipse.
         /// </summary>
-        public V3d[] GetPoints(int count)
+        public readonly V3d[] GetPoints(int count)
         {
             var array = new V3d[count];
             var c = Center;
@@ -883,22 +883,22 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(Center, Normal, Axis0, Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Ellipse3d other) =>
+        public readonly bool Equals(Ellipse3d other) =>
             Center.Equals(other.Center) &&
             Normal.Equals(other.Normal) &&
             Axis0.Equals(other.Axis0) &&
             Axis1.Equals(other.Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Ellipse3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Center, Normal, Axis0, Axis1);
         }

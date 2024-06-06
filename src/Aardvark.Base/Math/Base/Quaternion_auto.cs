@@ -155,7 +155,7 @@ namespace Aardvark.Base
         public V3f V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f(X, Y, Z); }
+            readonly get { return new V3f(X, Y, Z); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { X = value.X; Y = value.Y; Z = value.Z; }
         }
@@ -163,7 +163,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the squared norm (or squared length) of this <see cref="QuaternionF"/>.
         /// </summary>
-        public float NormSquared
+        public readonly float NormSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => W * W + X * X + Y * Y + Z * Z;
@@ -172,7 +172,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the norm (or length) of this <see cref="QuaternionF"/>.
         /// </summary>
-        public float Norm
+        public readonly float Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => NormSquared.Sqrt();
@@ -181,7 +181,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets normalized (unit) quaternion from this <see cref="QuaternionF"/>
         /// </summary>
-        public QuaternionF Normalized
+        public readonly QuaternionF Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -196,7 +196,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this <see cref="QuaternionF"/>.
         /// The zero quaternion is returned, if this quaternion is zero.
         /// </summary>
-        public QuaternionF Inverse
+        public readonly QuaternionF Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -211,7 +211,7 @@ namespace Aardvark.Base
         /// Gets the conjugate of this <see cref="QuaternionF"/>.
         /// For unit quaternions this is the same as its inverse.
         /// </summary>
-        public QuaternionF Conjugated
+        public readonly QuaternionF Conjugated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new QuaternionF(W, -V);
@@ -220,7 +220,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this <see cref="QuaternionF"/> is zero.
         /// </summary>
-        public bool IsZero
+        public readonly bool IsZero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (W == 0) && (X == 0) && (Y == 0) && (Z == 0);
@@ -234,7 +234,7 @@ namespace Aardvark.Base
         /// Gets a <see cref="QuaternionF"/> with (0, (0, 0, 0)).
         /// </summary>
         public static QuaternionF Zero
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new QuaternionF(0);
         }
@@ -252,7 +252,7 @@ namespace Aardvark.Base
         /// Gets the identity <see cref="QuaternionF"/> with (1, (0, 0, 0)).
         /// </summary>
         public static QuaternionF Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new QuaternionF(1, 0, 0, 0);
         }
@@ -463,7 +463,7 @@ namespace Aardvark.Base
         public unsafe float this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &W) { return ptr[i]; }
             }
@@ -478,19 +478,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(W, X, Y, Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(QuaternionF other)
+        public readonly bool Equals(QuaternionF other)
             => W.Equals(other.W) && X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is QuaternionF o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", W, X, Y, Z);
         }
@@ -574,7 +574,7 @@ namespace Aardvark.Base
             q.Z = -q.Z;
         }
 
-        /// <summary> 
+        /// <summary>
         /// Returns the dot product of two <see cref="QuaternionF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -832,7 +832,7 @@ namespace Aardvark.Base
         public V3d V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d(X, Y, Z); }
+            readonly get { return new V3d(X, Y, Z); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { X = value.X; Y = value.Y; Z = value.Z; }
         }
@@ -840,7 +840,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the squared norm (or squared length) of this <see cref="QuaternionD"/>.
         /// </summary>
-        public double NormSquared
+        public readonly double NormSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => W * W + X * X + Y * Y + Z * Z;
@@ -849,7 +849,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the norm (or length) of this <see cref="QuaternionD"/>.
         /// </summary>
-        public double Norm
+        public readonly double Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => NormSquared.Sqrt();
@@ -858,7 +858,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets normalized (unit) quaternion from this <see cref="QuaternionD"/>
         /// </summary>
-        public QuaternionD Normalized
+        public readonly QuaternionD Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -873,7 +873,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this <see cref="QuaternionD"/>.
         /// The zero quaternion is returned, if this quaternion is zero.
         /// </summary>
-        public QuaternionD Inverse
+        public readonly QuaternionD Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -888,7 +888,7 @@ namespace Aardvark.Base
         /// Gets the conjugate of this <see cref="QuaternionD"/>.
         /// For unit quaternions this is the same as its inverse.
         /// </summary>
-        public QuaternionD Conjugated
+        public readonly QuaternionD Conjugated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new QuaternionD(W, -V);
@@ -897,7 +897,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this <see cref="QuaternionD"/> is zero.
         /// </summary>
-        public bool IsZero
+        public readonly bool IsZero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (W == 0) && (X == 0) && (Y == 0) && (Z == 0);
@@ -911,7 +911,7 @@ namespace Aardvark.Base
         /// Gets a <see cref="QuaternionD"/> with (0, (0, 0, 0)).
         /// </summary>
         public static QuaternionD Zero
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new QuaternionD(0);
         }
@@ -929,7 +929,7 @@ namespace Aardvark.Base
         /// Gets the identity <see cref="QuaternionD"/> with (1, (0, 0, 0)).
         /// </summary>
         public static QuaternionD Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new QuaternionD(1, 0, 0, 0);
         }
@@ -1140,7 +1140,7 @@ namespace Aardvark.Base
         public unsafe double this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &W) { return ptr[i]; }
             }
@@ -1155,19 +1155,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(W, X, Y, Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(QuaternionD other)
+        public readonly bool Equals(QuaternionD other)
             => W.Equals(other.W) && X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is QuaternionD o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", W, X, Y, Z);
         }
@@ -1251,7 +1251,7 @@ namespace Aardvark.Base
             q.Z = -q.Z;
         }
 
-        /// <summary> 
+        /// <summary>
         /// Returns the dot product of two <see cref="QuaternionD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

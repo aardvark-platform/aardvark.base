@@ -18,19 +18,19 @@ namespace Aardvark.Base
             get => new Ellipse3f(V3f.NaN, V3f.Zero, V3f.NaN, V3f.NaN);
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal != V3f.Zero;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V3f.Zero;
         }
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Vec.Cross(Axis0, Axis1).Length * ConstantF.Pi;
@@ -49,19 +49,19 @@ namespace Aardvark.Base
             get => new Ellipse3d(V3d.NaN, V3d.Zero, V3d.NaN, V3d.NaN);
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal != V3d.Zero;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V3d.Zero;
         }
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Vec.Cross(Axis0, Axis1).Length * Constant.Pi;

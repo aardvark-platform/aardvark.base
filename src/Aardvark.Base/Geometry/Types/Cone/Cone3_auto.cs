@@ -233,13 +233,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction != V3f.Zero;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction == V3f.Zero;
@@ -262,18 +262,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction, Angle);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Origin, Direction, Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Cone3f other)
+        public readonly bool Equals(Cone3f other)
             => Origin.Equals(other.Origin) && Direction.Equals(other.Direction) && Angle.Equals(other.Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Cone3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Origin, Direction, Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -291,9 +291,9 @@ namespace Aardvark.Base
         /// if zero, point is located on cone
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetDistance(V3f point) => Vec.Distance(point, GetClosestPoint(point));
+        public readonly float GetDistance(V3f point) => Vec.Distance(point, GetClosestPoint(point));
 
-        public Circle3f GetCircle(float height)
+        public readonly Circle3f GetCircle(float height)
         {
             //circle along axis
             var dirLength = height;
@@ -303,16 +303,16 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ray3f GetAxis() => new Ray3f(Origin, Direction);
+        public readonly Ray3f GetAxis() => new Ray3f(Origin, Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetHeight(V3f position)
+        public readonly float GetHeight(V3f position)
             => new Ray3f(Origin, Direction).GetTOfProjectedPoint(position);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetRadius(float height) => height * Angle.Sin() / Angle.Cos();
+        public readonly float GetRadius(float height) => height * Angle.Sin() / Angle.Cos();
 
-        public V3f GetClosestPoint(V3f point)
+        public readonly V3f GetClosestPoint(V3f point)
         {
             var ray = new Ray3f(Origin, Direction);
             var cp = point.GetClosestPointOn(ray);
@@ -574,13 +574,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction != V3d.Zero;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction == V3d.Zero;
@@ -603,18 +603,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction, Angle);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Origin, Direction, Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Cone3d other)
+        public readonly bool Equals(Cone3d other)
             => Origin.Equals(other.Origin) && Direction.Equals(other.Direction) && Angle.Equals(other.Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Cone3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Origin, Direction, Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -632,9 +632,9 @@ namespace Aardvark.Base
         /// if zero, point is located on cone
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetDistance(V3d point) => Vec.Distance(point, GetClosestPoint(point));
+        public readonly double GetDistance(V3d point) => Vec.Distance(point, GetClosestPoint(point));
 
-        public Circle3d GetCircle(double height)
+        public readonly Circle3d GetCircle(double height)
         {
             //circle along axis
             var dirLength = height;
@@ -644,16 +644,16 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ray3d GetAxis() => new Ray3d(Origin, Direction);
+        public readonly Ray3d GetAxis() => new Ray3d(Origin, Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetHeight(V3d position)
+        public readonly double GetHeight(V3d position)
             => new Ray3d(Origin, Direction).GetTOfProjectedPoint(position);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetRadius(double height) => height * Angle.Sin() / Angle.Cos();
+        public readonly double GetRadius(double height) => height * Angle.Sin() / Angle.Cos();
 
-        public V3d GetClosestPoint(V3d point)
+        public readonly V3d GetClosestPoint(V3d point)
         {
             var ray = new Ray3d(Origin, Direction);
             var cp = point.GetClosestPointOn(ray);

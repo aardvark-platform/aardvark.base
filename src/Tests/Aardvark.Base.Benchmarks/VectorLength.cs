@@ -10,7 +10,7 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class V4fLength
     {
-        V4f[] arr = new V4f[1000000];
+        readonly V4f[] arr = new V4f[1000000];
 
         //[GlobalSetup]
         public V4fLength()
@@ -49,7 +49,7 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class V3fLength
     {
-        V3f[] arr = new V3f[1000000];
+        readonly V3f[] arr = new V3f[1000000];
 
         //[GlobalSetup]
         public V3fLength()
@@ -88,7 +88,7 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class V2fLength
     {
-        V2f[] arr = new V2f[1000000];
+        readonly V2f[] arr = new V2f[1000000];
 
         //[GlobalSetup]
         public V2fLength()

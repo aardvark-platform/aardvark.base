@@ -13,11 +13,11 @@ namespace Aardvark.Base.Coder
     public partial class NewXmlReadingCoder
         : BaseReadingCoder, IReadingCoder, IDisposable
     {
-        private Stack<State> m_stateStack;
+        private readonly Stack<State> m_stateStack;
         private State m_state;
-        private int m_coderVersion;
-        private Stream m_stream;
-        private bool m_disposeStream;
+        private readonly int m_coderVersion;
+        private readonly Stream m_stream;
+        private readonly bool m_disposeStream;
         private string m_fileName;
 
         #region Constructors
@@ -74,14 +74,14 @@ namespace Aardvark.Base.Coder
                 Item = node; Index = index;
             }
 
-            public bool Valid { get { return Index >= 0; } }
+            public readonly bool Valid { get { return Index >= 0; } }
 
             public void Advance()
             {
                 Index = Item.NextSubIndex<XmlItem>(Index);
             }
 
-            public XmlItem Current
+            public readonly XmlItem Current
             {
                 get { return Item[Index] as XmlItem; }
             }
@@ -693,12 +693,12 @@ namespace Aardvark.Base.Coder
     public partial class XmlReadingCoder
         : BaseReadingCoder, IReadingCoder, IDisposable
     {
-        private Stack<State> m_stateStack;
+        private readonly Stack<State> m_stateStack;
         private State m_state;
-        private Stream m_stream;
+        private readonly Stream m_stream;
         private string m_fileName;
         private readonly int m_coderVersion;
-        private bool m_disposeStream = false;
+        private readonly bool m_disposeStream = false;
 
         #region Constructors
 
@@ -751,17 +751,17 @@ namespace Aardvark.Base.Coder
 
             public bool Valid
             {
-                get { return m_valid; }
+                readonly get { return m_valid; }
                 set { m_valid = value; }
             }
             public XElement Element
             {
-                get { return m_element; }
+                readonly get { return m_element; }
                 set { m_element = value; }
             }
             public IEnumerator<XElement> Enumerator
             {
-                get { return m_enumerator; }
+                readonly get { return m_enumerator; }
                 set
                 {
                     m_enumerator = value;
@@ -1534,7 +1534,7 @@ namespace Aardvark.Base.Coder
             items.ForEach(s => { v.Add(creator(s)); });
         }
 
-        static char[] s_itemSeparator = new[] { ',' };
+        static readonly char[] s_itemSeparator = new[] { ',' };
 
         internal void CodeArray<T>(ref T[] v, Func<string, T> fromString)
         {

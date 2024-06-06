@@ -13,12 +13,12 @@ namespace Aardvark.Base.Coder
     public partial class BinaryWritingCoder
         : BaseWritingCoder, IWritingCoder, IDisposable
     {
-        private StreamCodeWriter m_writer;
+        private readonly StreamCodeWriter m_writer;
         private string m_fileName;
         private long m_size = 0;
-        private long m_sizePosition = 0;
-        private long m_startPosition = 0;
-        private bool m_disposeStream;
+        private readonly long m_sizePosition = 0;
+        private readonly long m_startPosition = 0;
+        private readonly bool m_disposeStream;
 
         #region Constructors
 

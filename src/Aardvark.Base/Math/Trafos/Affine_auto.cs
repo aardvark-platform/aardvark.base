@@ -91,7 +91,7 @@ namespace Aardvark.Base
         /// Gets the identity transformation.
         /// </summary>
         public static Affine2f Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Affine2f(M22f.Identity);
         }
@@ -103,7 +103,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is valid, i.e. if the linear map is invertible.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Linear.Invertible;
@@ -112,7 +112,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is invalid, i.e. if the linear map is singular.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !IsValid;
@@ -121,7 +121,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this affine transformation.
         /// </summary>
-        public Affine2f Inverse
+        public readonly Affine2f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -155,7 +155,7 @@ namespace Aardvark.Base
         {
             return new V3f(
                 a.Linear.M00 * v.X + a.Linear.M01 * v.Y + a.Trans.X * v.Z, 
-                a.Linear.M10 * v.X + a.Linear.M11 * v.Y + a.Trans.Y * v.Z, 
+                a.Linear.M10 * v.X + a.Linear.M11 * v.Y + a.Trans.Y * v.Z,
                 v.Z);
         }
 
@@ -352,7 +352,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Affine2f a0, Affine2f a1)
-            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans);
 
         /// <summary>
         /// Checks whether two <see cref="Affine2f"/> transformations are different.
@@ -528,19 +528,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Linear, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Affine2f other)
+        public readonly bool Equals(Affine2f other)
             => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Affine2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
         }
@@ -748,7 +748,7 @@ namespace Aardvark.Base
         /// Gets the identity transformation.
         /// </summary>
         public static Affine3f Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Affine3f(M33f.Identity);
         }
@@ -760,7 +760,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is valid, i.e. if the linear map is invertible.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Linear.Invertible;
@@ -769,7 +769,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is invalid, i.e. if the linear map is singular.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !IsValid;
@@ -778,7 +778,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this affine transformation.
         /// </summary>
-        public Affine3f Inverse
+        public readonly Affine3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -813,7 +813,7 @@ namespace Aardvark.Base
             return new V4f(
                 a.Linear.M00 * v.X + a.Linear.M01 * v.Y + a.Linear.M02 * v.Z + a.Trans.X * v.W, 
                 a.Linear.M10 * v.X + a.Linear.M11 * v.Y + a.Linear.M12 * v.Z + a.Trans.Y * v.W, 
-                a.Linear.M20 * v.X + a.Linear.M21 * v.Y + a.Linear.M22 * v.Z + a.Trans.Z * v.W, 
+                a.Linear.M20 * v.X + a.Linear.M21 * v.Y + a.Linear.M22 * v.Z + a.Trans.Z * v.W,
                 v.W);
         }
 
@@ -1041,7 +1041,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Affine3f a0, Affine3f a1)
-            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans);
 
         /// <summary>
         /// Checks whether two <see cref="Affine3f"/> transformations are different.
@@ -1186,7 +1186,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1194,7 +1194,7 @@ namespace Aardvark.Base
             => new Affine3f(M33f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1332,19 +1332,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Linear, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Affine3f other)
+        public readonly bool Equals(Affine3f other)
             => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Affine3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
         }
@@ -1556,7 +1556,7 @@ namespace Aardvark.Base
         /// Gets the identity transformation.
         /// </summary>
         public static Affine2d Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Affine2d(M22d.Identity);
         }
@@ -1568,7 +1568,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is valid, i.e. if the linear map is invertible.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Linear.Invertible;
@@ -1577,7 +1577,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is invalid, i.e. if the linear map is singular.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !IsValid;
@@ -1586,7 +1586,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this affine transformation.
         /// </summary>
-        public Affine2d Inverse
+        public readonly Affine2d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1620,7 +1620,7 @@ namespace Aardvark.Base
         {
             return new V3d(
                 a.Linear.M00 * v.X + a.Linear.M01 * v.Y + a.Trans.X * v.Z, 
-                a.Linear.M10 * v.X + a.Linear.M11 * v.Y + a.Trans.Y * v.Z, 
+                a.Linear.M10 * v.X + a.Linear.M11 * v.Y + a.Trans.Y * v.Z,
                 v.Z);
         }
 
@@ -1817,7 +1817,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Affine2d a0, Affine2d a1)
-            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans);
 
         /// <summary>
         /// Checks whether two <see cref="Affine2d"/> transformations are different.
@@ -1993,19 +1993,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Linear, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Affine2d other)
+        public readonly bool Equals(Affine2d other)
             => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Affine2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
         }
@@ -2213,7 +2213,7 @@ namespace Aardvark.Base
         /// Gets the identity transformation.
         /// </summary>
         public static Affine3d Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Affine3d(M33d.Identity);
         }
@@ -2225,7 +2225,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is valid, i.e. if the linear map is invertible.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Linear.Invertible;
@@ -2234,7 +2234,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is invalid, i.e. if the linear map is singular.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !IsValid;
@@ -2243,7 +2243,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this affine transformation.
         /// </summary>
-        public Affine3d Inverse
+        public readonly Affine3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -2278,7 +2278,7 @@ namespace Aardvark.Base
             return new V4d(
                 a.Linear.M00 * v.X + a.Linear.M01 * v.Y + a.Linear.M02 * v.Z + a.Trans.X * v.W, 
                 a.Linear.M10 * v.X + a.Linear.M11 * v.Y + a.Linear.M12 * v.Z + a.Trans.Y * v.W, 
-                a.Linear.M20 * v.X + a.Linear.M21 * v.Y + a.Linear.M22 * v.Z + a.Trans.Z * v.W, 
+                a.Linear.M20 * v.X + a.Linear.M21 * v.Y + a.Linear.M22 * v.Z + a.Trans.Z * v.W,
                 v.W);
         }
 
@@ -2506,7 +2506,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(Affine3d a0, Affine3d a1)
-            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans);
 
         /// <summary>
         /// Checks whether two <see cref="Affine3d"/> transformations are different.
@@ -2651,7 +2651,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2659,7 +2659,7 @@ namespace Aardvark.Base
             => new Affine3d(M33d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2797,19 +2797,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Linear, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Affine3d other)
+        public readonly bool Equals(Affine3d other)
             => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Affine3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
         }

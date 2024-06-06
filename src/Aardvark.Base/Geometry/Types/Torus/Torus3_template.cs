@@ -82,19 +82,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public __circle3t__ MajorCircle
+        public readonly __circle3t__ MajorCircle
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => GetMajorCircle();
         }
 
-        public __ftype__ Area
+        public readonly __ftype__ Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 4 * __constant__.PiSquared * MajorRadius * MinorRadius;
         }
 
-        public __ftype__ Volume
+        public readonly __ftype__ Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * __constant__.PiSquared * MajorRadius * MinorRadius * MinorRadius;
@@ -105,9 +105,9 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __circle3t__ GetMajorCircle() => new __circle3t__(Position, Direction, MajorRadius);
+        public readonly __circle3t__ GetMajorCircle() => new __circle3t__(Position, Direction, MajorRadius);
 
-        public __circle3t__ GetMinorCircle(__ftype__ angle)
+        public readonly __circle3t__ GetMinorCircle(__ftype__ angle)
         {
             var c = GetMajorCircle();
             var p = c.GetPoint(angle);
@@ -116,7 +116,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ftype__ GetMinimalDistance(__v3t__ p) => GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
+        public readonly __ftype__ GetMinimalDistance(__v3t__ p) => GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
 
         public static __ftype__ GetMinimalDistance(__v3t__ p, __v3t__ position, __v3t__ direction, __ftype__ majorRadius, __ftype__ minorRadius)
         {
@@ -153,21 +153,21 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Position, Direction, MajorRadius, MinorRadius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Position, Direction, MajorRadius, MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other) =>
+        public readonly bool Equals(__type__ other) =>
             Position.Equals(other.Position) &&
             Direction.Equals(other.Direction) &&
             MajorRadius.Equals(other.MajorRadius) &&
             MinorRadius.Equals(other.MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Position, Direction, MajorRadius, MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -186,7 +186,7 @@ namespace Aardvark.Base
 
         #region __iboundingbox3t__ Members
 
-        __box3t__ __iboundingbox3t__.BoundingBox3__tc__
+        readonly __box3t__ __iboundingbox3t__.BoundingBox3__tc__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => GetMajorCircle().BoundingBox3__tc__.EnlargedBy(MinorRadius);

@@ -9,7 +9,7 @@ namespace Aardvark.Base
     {
         public class Env : DynamicObject, IEnumerable<NamedProbe>
         {
-            private Dictionary<string, NamedProbe> m_probes =
+            private readonly Dictionary<string, NamedProbe> m_probes =
                 new Dictionary<string, NamedProbe>();
 
             public void SetMember(string name, IProbe probe)

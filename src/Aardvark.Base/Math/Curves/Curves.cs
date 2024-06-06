@@ -395,8 +395,8 @@ namespace Aardvark.Base
 
     public class CurvePoints<T>
     {
-        private double[] m_params;
-        private T[] m_items;
+        private readonly double[] m_params;
+        private readonly T[] m_items;
         private Range1i m_indexes;
 
         public CurvePoints(double[] parameters, T[] items)

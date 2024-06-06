@@ -31,7 +31,7 @@ namespace Aardvark.Base.Coder
     {
         public string Key { get; private set; }
         public object Value { get; private set; }
-        public override string ToString() { return string.Format("{0} -> {1}", Key, Value); }
+        public override readonly string ToString() { return string.Format("{0} -> {1}", Key, Value); }
 
         public Annotation(string key, object value)
             : this()
@@ -41,11 +41,11 @@ namespace Aardvark.Base.Coder
         }
     }
 
-    internal struct Annotated<T>
+    internal readonly struct Annotated<T>
     {
-        private T m_value;
-        private IEnumerable<Annotation> m_tags;
-        private static IEnumerable<Annotation> s_empty = new Annotation[0];
+        private readonly T m_value;
+        private readonly IEnumerable<Annotation> m_tags;
+        private static readonly IEnumerable<Annotation> s_empty = new Annotation[0];
 
         public Annotated(T value)
         {

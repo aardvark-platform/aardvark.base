@@ -7,9 +7,9 @@ namespace Aardvark.Base
 {
     public class TextLogTarget : ILogTarget
     {
-        private object m_lock;
+        private readonly object m_lock;
         private ReportState m_state;
-        private Dictionary<int, ReportState> m_stateTable;
+        private readonly Dictionary<int, ReportState> m_stateTable;
         public Action<int, LogType, int, string> WriteAct;
         private int m_width = 80;
         private int m_maxIndent = 40;

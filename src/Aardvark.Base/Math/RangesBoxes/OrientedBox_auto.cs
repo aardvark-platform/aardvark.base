@@ -71,9 +71,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Box2f AxisAlignedBox => Box.Transformed((M33f)Trafo);
+        public readonly Box2f AxisAlignedBox => Box.Transformed((M33f)Trafo);
 
-        public V2f[] Corners
+        public readonly V2f[] Corners
         {
             get
             {
@@ -82,7 +82,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2f[] CornersCCW
+        public readonly V2f[] CornersCCW
         {
             get
             {
@@ -162,9 +162,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Box3f AxisAlignedBox => Box.Transformed((M44f)Trafo);
+        public readonly Box3f AxisAlignedBox => Box.Transformed((M44f)Trafo);
 
-        public V3f[] Corners
+        public readonly V3f[] Corners
         {
             get
             {
@@ -244,9 +244,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Box2d AxisAlignedBox => Box.Transformed((M33d)Trafo);
+        public readonly Box2d AxisAlignedBox => Box.Transformed((M33d)Trafo);
 
-        public V2d[] Corners
+        public readonly V2d[] Corners
         {
             get
             {
@@ -255,7 +255,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2d[] CornersCCW
+        public readonly V2d[] CornersCCW
         {
             get
             {
@@ -335,9 +335,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Box3d AxisAlignedBox => Box.Transformed((M44d)Trafo);
+        public readonly Box3d AxisAlignedBox => Box.Transformed((M44d)Trafo);
 
-        public V3d[] Corners
+        public readonly V3d[] Corners
         {
             get
             {

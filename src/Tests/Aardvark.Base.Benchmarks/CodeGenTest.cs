@@ -24,7 +24,7 @@ namespace Aardvark.Base.Benchmarks
             W = w;
         }
 
-        public float Length_Ref
+        public readonly float Length_Ref
         {
             get { return MathF.Sqrt(X * X + Y * Y + Z * Z + W * W); }
         }
@@ -56,12 +56,12 @@ namespace Aardvark.Base.Benchmarks
             return MathF.Sqrt(l2);
         }
 
-        public float Length_Sse_V2
+        public readonly float Length_Sse_V2
         {
             get { return Length_Sse_V2_Helper(this); }
         }
 
-        public float Length_Sse_V3
+        public readonly float Length_Sse_V3
         {
             get 
             {
@@ -82,7 +82,7 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class CodeGenTests
     {
-        MyVector4[] arr = new MyVector4[1000000];
+        readonly MyVector4[] arr = new MyVector4[1000000];
 
         //[GlobalSetup]
         public CodeGenTests()

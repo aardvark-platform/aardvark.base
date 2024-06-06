@@ -5,7 +5,7 @@ namespace Aardvark.Base
     public class CameraViewRaw : ICameraView
     {
         private Trafo3d m_trafo = Trafo3d.ViewTrafo(V3d.Zero, V3d.XAxis, V3d.ZAxis, -V3d.YAxis);
-        private EventSource<Trafo3d> m_trafoChanges;
+        private readonly EventSource<Trafo3d> m_trafoChanges;
 
         public CameraViewRaw()
         {

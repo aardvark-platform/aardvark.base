@@ -43,7 +43,7 @@ namespace Aardvark.Base
         /// </summary>
         public static readonly T NegativeTinyValue;
 
-        private static volatile float floatStore;
+        private static readonly float floatStore;
 
         static Constant()
         {

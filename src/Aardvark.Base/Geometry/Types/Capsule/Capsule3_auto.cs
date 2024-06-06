@@ -74,25 +74,25 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0;
         }
 
-        public Line3f Axis
+        public readonly Line3f Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Line3f(P0, P1);
         }
 
-        public Cylinder3f Cylider
+        public readonly Cylinder3f Cylider
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Cylinder3f(P0, P1, Radius);
@@ -102,7 +102,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box3f(new Sphere3f(P0, Radius).BoundingBox3f, new Sphere3f(P1, Radius).BoundingBox3f);
@@ -113,19 +113,19 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Capsule3f other)
+        public readonly bool Equals(Capsule3f other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Capsule3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -206,25 +206,25 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0;
         }
 
-        public Line3d Axis
+        public readonly Line3d Axis
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Line3d(P0, P1);
         }
 
-        public Cylinder3d Cylider
+        public readonly Cylinder3d Cylider
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Cylinder3d(P0, P1, Radius);
@@ -234,7 +234,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box3d(new Sphere3d(P0, Radius).BoundingBox3d, new Sphere3d(P1, Radius).BoundingBox3d);
@@ -245,19 +245,19 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Capsule3d other)
+        public readonly bool Equals(Capsule3d other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Capsule3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -181,7 +181,7 @@ namespace Aardvark.Base
         public __v3t__ V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new __v3t__(X, Y, Z); }
+            readonly get { return new __v3t__(X, Y, Z); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { X = value.X; Y = value.Y; Z = value.Z; }
         }
@@ -189,7 +189,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the squared norm (or squared length) of this <see cref="__type__"/>.
         /// </summary>
-        public __ftype__ NormSquared
+        public readonly __ftype__ NormSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => /*# qfields.ForEach(f => {*/__f__ * __f__/*# }, add);*/;
@@ -198,7 +198,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the norm (or length) of this <see cref="__type__"/>.
         /// </summary>
-        public __ftype__ Norm
+        public readonly __ftype__ Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => NormSquared.Sqrt();
@@ -207,7 +207,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets normalized (unit) quaternion from this <see cref="__type__"/>
         /// </summary>
-        public __type__ Normalized
+        public readonly __type__ Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -222,7 +222,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this <see cref="__type__"/>.
         /// The zero quaternion is returned, if this quaternion is zero.
         /// </summary>
-        public __type__ Inverse
+        public readonly __type__ Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -237,7 +237,7 @@ namespace Aardvark.Base
         /// Gets the conjugate of this <see cref="__type__"/>.
         /// For unit quaternions this is the same as its inverse.
         /// </summary>
-        public __type__ Conjugated
+        public readonly __type__ Conjugated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(W, -V);
@@ -246,7 +246,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this <see cref="__type__"/> is zero.
         /// </summary>
-        public bool IsZero
+        public readonly bool IsZero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => /*# qfields.ForEach(f => {*/(__f__ == 0)/*# }, and);*/;
@@ -260,7 +260,7 @@ namespace Aardvark.Base
         /// Gets a <see cref="__type__"/> with (0, (0, 0, 0)).
         /// </summary>
         public static __type__ Zero
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(0);
         }
@@ -278,7 +278,7 @@ namespace Aardvark.Base
         /// Gets the identity <see cref="__type__"/> with (1, (0, 0, 0)).
         /// </summary>
         public static __type__ Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(1, 0, 0, 0);
         }
@@ -486,7 +486,7 @@ namespace Aardvark.Base
         public unsafe __ftype__ this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (__ftype__* ptr = __getptr__) { return ptr[i]; }
             }
@@ -501,19 +501,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(W, X, Y, Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => /*# qfields.ForEach(f => {*/__f__.Equals(other.__f__)/*# }, and);*/;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", W, X, Y, Z);
         }
@@ -597,7 +597,7 @@ namespace Aardvark.Base
             q.Z = -q.Z;
         }
 
-        /// <summary> 
+        /// <summary>
         /// Returns the dot product of two <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

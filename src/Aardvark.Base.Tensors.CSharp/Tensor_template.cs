@@ -42,7 +42,7 @@ namespace Aardvark.Base
     //#     var ttnl = ttn.ToLower();
     //#     var ttsub1nl = ttsub1n.ToLower();
     //#     var ttsub2nl = ttsub2n.ToLower();
-    //#     var dt = tt.DataType; var dtn = dt.Name; 
+    //#     var dt = tt.DataType; var dtn = dt.Name;
     //#     var vt = tt.ViewType; var vtn = vt.Name;
     //#     var dvtn = dt == vt ? dtn : dtn + ", " + vtn;
     //#     var d = tt.Dim;
@@ -362,27 +362,27 @@ namespace Aardvark.Base
         /// <summary>
         /// Return the rank or dimension of the the __ttnl__ (__d__).
         /// </summary>
-        public int Rank { get { return __d__; } }
+        public readonly int Rank { get { return __d__; } }
 
         /// <summary>
         /// Total number of element in the __ttnl__.
         /// </summary>
         //# if (d == 1) {
-        public long Count { get { return Size; } }
+        public readonly long Count { get { return Size; } }
         //# } else {
-        public long Count { get { return /*# ifa.ForEach((f) => {*/ Size.__f__/*# }, mul);*/; } }
+        public readonly long Count { get { return /*# ifa.ForEach((f) => {*/ Size.__f__/*# }, mul);*/; } }
         //# }
 
         /// <summary>
         /// End (one step beyond the last element in all dimensions).
         /// </summary>
-        public __itn__ End { get { return First + Size; } }
+        public readonly __itn__ End { get { return First + Size; } }
 
         //# for (int di = 0; di < (1 << d); di++) {
         //#     var pnt = d.Range().Select(i => (di & (1 << i)) == 0 ? "O" : "I").Join();
         //#     var arg = d.Range().Select(i => "First." + ifa[i] + ((di & (1 << i)) == 0 ? "" : " + Size." + ifa[i])).Join(", ");
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ __pnt__ { get { return /*# if (di == 0) {*/First;/*#}
+        public readonly __itn__ __pnt__ { get { return /*# if (di == 0) {*/First;/*#}
                                                     else if (di == (1 << d) - 1) {*/First + Size;/*#}
                                                     else {*/new __itn__(__arg__);/*#}*/ } }
         //# }
@@ -391,73 +391,73 @@ namespace Aardvark.Base
         /// Size
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ S { get { return Size; } set { Size = value; } }
+        public __itn__ S { readonly get { return Size; } set { Size = value; } }
 
         /// <summary>
         /// Delta
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ D { get { return Delta; } set { Delta = value; } }
+        public __itn__ D { readonly get { return Delta; } set { Delta = value; } }
 
         /// <summary>
         /// First
         /// </summary>
         //# if (d == 1) {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ F { get { return First; } set { Origin -= Delta * (value - First); First = value; } }
+        public __itn__ F { readonly get { return First; } set { Origin -= Delta * (value - First); First = value; } }
         //# } else {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ F { get { return First; } set { Origin -= Delta.Dot(value - First); First = value; } }
+        public __itn__ F { readonly get { return First; } set { Origin -= Delta.Dot(value - First); First = value; } }
         //# }
 
         /// <summary>
         /// End (one step beyond the last element in all dimensions).
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ E { get { return First + Size; } }
+        public readonly __itn__ E { get { return First + Size; } }
 
         //# if (d == 1) {
         /// <summary>
         /// Cummulative delta for all elements up to this dimension.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long DS { get { return Delta * Size; } }
+        public readonly long DS { get { return Delta * Size; } }
 
         /// <summary>
         /// Size
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long SX { get { return Size; } set { Size = value; } }
+        public long SX { readonly get { return Size; } set { Size = value; } }
 
         /// <summary>
         /// Delta
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long DX { get { return Delta; } set { Delta = value; } }
+        public long DX { readonly get { return Delta; } set { Delta = value; } }
 
         /// <summary>
         /// First
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long FX { get { return First; } set { Origin -= Delta * (value - First); First = value; } }
+        public long FX { readonly get { return First; } set { Origin -= Delta * (value - First); First = value; } }
 
         /// <summary>
         /// End (one step beyond the last element).
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long EX { get { return First + Size; } }
+        public readonly long EX { get { return First + Size; } }
 
         /// <summary>
         /// Cummulative delta for all elements up to this dimension.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long DSX { get { return Delta * Size; } }
+        public readonly long DSX { get { return Delta * Size; } }
 
         /// <summary>
         /// Jump
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long JX { get { return Delta; } }
+        public readonly long JX { get { return Delta; } }
 
 
         //# } // (d == 1)
@@ -467,7 +467,7 @@ namespace Aardvark.Base
         /// Size.__f__
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long S__f__ { get { return Size.__f__; } set { Size.__f__ = value; } }
+        public long S__f__ { readonly get { return Size.__f__; } set { Size.__f__ = value; } }
 
         //# } // foreach
         //# foreach (var f in ifa) {
@@ -475,7 +475,7 @@ namespace Aardvark.Base
         /// Delta.__f__
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long D__f__ { get { return Delta.__f__; } set { Delta.__f__ = value; } }
+        public long D__f__ { readonly get { return Delta.__f__; } set { Delta.__f__ = value; } }
 
         //# } // foreach
         //# foreach (var f in ifa) {
@@ -485,17 +485,17 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public long F__f__
         {
-            get { return First.__f__; }
+            readonly get { return First.__f__; }
             set { Origin -= Delta.__f__ * (value - First.__f__); First.__f__ = value; }
         }
 
         //# } // foreach
         //# foreach (var f in ifa) {
         /// <summary>
-        /// End in dimension __f__ (one step beyond the last element). 
+        /// End in dimension __f__ (one step beyond the last element).
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long E__f__
+        public readonly long E__f__
         {
             get { return First.__f__ + Size.__f__; }
         }
@@ -506,7 +506,7 @@ namespace Aardvark.Base
         /// Cummulative delta for all elements up to this dimension.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long DS__f__ { get { return Size.__f__ * Delta.__f__; } }
+        public readonly long DS__f__ { get { return Size.__f__ * Delta.__f__; } }
 
         //# } // foreach
         //# ifa.ForEach((f, i) => { var f1 = i > 0 ? Meta.VecFields[i-1] : "";
@@ -515,9 +515,9 @@ namespace Aardvark.Base
         /// between elements in dimension __f__.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long J__f__ { get { return Delta.__f__/*# if (i > 0) { */ - Size.__f1__ * Delta.__f1__/*# } */; } }
+        public readonly long J__f__ { get { return Delta.__f__/*# if (i > 0) { */ - Size.__f1__ * Delta.__f1__/*# } */; } }
 
-        public long GetJ__f__(__itn__ size)
+        public readonly long GetJ__f__(__itn__ size)
         {
             return Delta.__f__/*# if (i > 0) { */ - size.__f1__ * Delta.__f1__/*# } */;
         }
@@ -531,9 +531,9 @@ namespace Aardvark.Base
         /// in dimension __f0__.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long J__f2____f0__ { get { return Delta.__f2__/*# if (f1 != f2) { */ - Size.__f1__ * Delta.__f1__/*# } */; } }
+        public readonly long J__f2____f0__ { get { return Delta.__f2__/*# if (f1 != f2) { */ - Size.__f1__ * Delta.__f1__/*# } */; } }
 
-        public long GetJ__f2____f0__(__itn__ size)
+        public readonly long GetJ__f2____f0__(__itn__ size)
         {
             return Delta.__f2__/*# if (f1 != f2) { */ - size.__f1__ * Delta.__f1__/*# } */;
         }
@@ -544,10 +544,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Return the index of the first element in the underlying data array.
         /// </summary>
-        public long FirstIndex { get { return Index(First); } }
+        public readonly long FirstIndex { get { return Index(First); } }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long OriginIndex { get { return Origin; } set { Origin = value; } }
+        public long OriginIndex { readonly get { return Origin; } set { Origin = value; } }
 
         /// <summary>
         /// Get or set the size of the tensor in each dimension as an
@@ -556,7 +556,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public long[] SizeArray
         {
-            get { return new long[] { /*# ifa.ForEach((f) => { */S__f__/*# }, comma); */ }; }
+            readonly get { return new long[] { /*# ifa.ForEach((f) => { */S__f__/*# }, comma); */ }; }
             set { /*# ifa.ForEach((f, i) => { */S__f__ = value[__i__]; /*# }); */ }
         }
 
@@ -567,7 +567,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public long[] DeltaArray
         {
-            get { return new long[] { /*# ifa.ForEach((f) => { */D__f__/*# }, comma); */ }; }
+            readonly get { return new long[] { /*# ifa.ForEach((f) => { */D__f__/*# }, comma); */ }; }
             set { /*# ifa.ForEach((f, i) => { */D__f__ = value[__i__]; /*# }); */ }
         }
 
@@ -578,7 +578,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public long[] FirstArray
         {
-            get { return new long[] { /*# ifa.ForEach((f) => { */F__f__/*# }, comma); */ }; }
+            readonly get { return new long[] { /*# ifa.ForEach((f) => { */F__f__/*# }, comma); */ }; }
             set { /*# ifa.ForEach((f, i) => { */F__f__ = value[__i__]; /*# }); */ }
         }
 
@@ -589,7 +589,7 @@ namespace Aardvark.Base
         /// order.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public IEnumerable<long> Indices__f__
+        public readonly IEnumerable<long> Indices__f__
         {
             get
             {
@@ -608,7 +608,7 @@ namespace Aardvark.Base
         /// coordinate being the inner loop.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public IEnumerable<long> Indices__f2____f1__
+        public readonly IEnumerable<long> Indices__f2____f1__
         {
             get
             {
@@ -632,7 +632,7 @@ namespace Aardvark.Base
         /// coordinate being the inner loop.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public IEnumerable<long> Indices__f3____f2____f1__
+        public readonly IEnumerable<long> Indices__f3____f2____f1__
         {
             get
             {
@@ -659,7 +659,7 @@ namespace Aardvark.Base
         /// coordinate being the inner loop.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public IEnumerable<long> Indices__f4____f3____f2____f1__
+        public readonly IEnumerable<long> Indices__f4____f3____f2____f1__
         {
             get
             {
@@ -678,7 +678,7 @@ namespace Aardvark.Base
         //# });
         //# } // (d > 3)
         //# if (d == 2) {
-        public __ttn__Info Transposed
+        public readonly __ttn__Info Transposed
         {
             get { return new __ttn__Info(Origin, Size.YX, Delta.YX, First.YX); }
         }
@@ -690,37 +690,37 @@ namespace Aardvark.Base
 
         //# if (d == 1) {
         /// <summary>
-        /// Calculate element index for underlying data array. 
+        /// Calculate element index for underlying data array.
         /// </summary>
-        public long Index(long coord) { return Origin + coord * Delta; }
+        public readonly long Index(long coord) { return Origin + coord * Delta; }
 
         //# }
         //# if (d > 1) {
-        public long Dv(/*# iaa.ForEach(a => { */long d__a__/*# }, comma); */)
+        public readonly long Dv(/*# iaa.ForEach(a => { */long d__a__/*# }, comma); */)
         {
             return /*# iaa.ForEach(ifa, (a, f) => {*/d__a__ * Delta.__f__/*# }, add);*/;
         }
 
         /// <summary>
-        /// Calculate element index for underlying data array. 
+        /// Calculate element index for underlying data array.
         /// </summary>
-        public long Index(/*# iaa.ForEach(a => { */long __a__/*# }, comma); */) 
+        public readonly long Index(/*# iaa.ForEach(a => { */long __a__/*# }, comma); */)
         {
             return Origin + /*# iaa.ForEach(ifa, (a, f) => {*/__a__ * Delta.__f__/*# }, add);*/;
         }
 
         /// <summary>
-        /// Calculate element index for underlying data array. 
+        /// Calculate element index for underlying data array.
         /// </summary>
-        public long Index(__itn__ v)
+        public readonly long Index(__itn__ v)
         {
             return Origin + /*# ifa.ForEach(f => {*/v.__f__ * Delta.__f__/*# }, add);*/;
         }
 
         /// <summary>
-        /// Calculate element index for underlying data array. 
+        /// Calculate element index for underlying data array.
         /// </summary>
-        public long Index(__iitn__ v)
+        public readonly long Index(__iitn__ v)
         {
             return Origin + /*# ifa.ForEach(f => {*/v.__f__ * Delta.__f__/*# }, add);*/;
         }
@@ -729,13 +729,13 @@ namespace Aardvark.Base
         #endregion
 
         #region Interpretation and Parts
-       
+
         /// <summary>
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(__itn__ begin, __itn__ size)
+        public readonly __ttn__Info Sub__ttn__Window(__itn__ begin, __itn__ size)
         {
             return new __ttn__Info(Origin, size, Delta, begin);
         }
@@ -745,7 +745,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__Info Sub__ttn__(__itn__ begin, __itn__ size)
+        public readonly __ttn__Info Sub__ttn__(__itn__ begin, __itn__ size)
         {
             return new __ttn__Info(Index(begin), size, Delta);
         }
@@ -755,7 +755,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(__iitn__ begin, __iitn__ size)
+        public readonly __ttn__Info Sub__ttn__Window(__iitn__ begin, __iitn__ size)
         {
             return new __ttn__Info(Origin, (__itn__)size, Delta, (__itn__)begin);
         }
@@ -765,7 +765,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__Info Sub__ttn__(__iitn__ begin, __iitn__ size)
+        public readonly __ttn__Info Sub__ttn__(__iitn__ begin, __iitn__ size)
         {
             return new __ttn__Info(Index((__itn__)begin), (__itn__)size, Delta);
         }
@@ -775,7 +775,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(__itn__ begin, __itn__ size, __itn__ delta)
+        public readonly __ttn__Info Sub__ttn__Window(__itn__ begin, __itn__ size, __itn__ delta)
         {
             return new __ttn__Info(Origin, size, delta, begin);
         }
@@ -785,7 +785,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__Info Sub__ttn__(__itn__ begin, __itn__ size, __itn__ delta)
+        public readonly __ttn__Info Sub__ttn__(__itn__ begin, __itn__ size, __itn__ delta)
         {
             return new __ttn__Info(Index(begin), size, delta);
         }
@@ -795,7 +795,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(__iitn__ begin, __iitn__ size, __iitn__ delta)
+        public readonly __ttn__Info Sub__ttn__Window(__iitn__ begin, __iitn__ size, __iitn__ delta)
         {
             return new __ttn__Info(Origin, (__itn__)size, (__itn__)delta, (__itn__)begin);
         }
@@ -805,7 +805,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__Info Sub__ttn__(__iitn__ begin, __iitn__ size, __iitn__ delta)
+        public readonly __ttn__Info Sub__ttn__(__iitn__ begin, __iitn__ size, __iitn__ delta)
         {
             return new __ttn__Info(Index((__itn__)begin), (__itn__)size, (__itn__)delta);
         }
@@ -815,7 +815,7 @@ namespace Aardvark.Base
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(__itn__ begin, __itn__ size, __itn__ delta, __itn__ first)
+        public readonly __ttn__Info Sub__ttn__Window(__itn__ begin, __itn__ size, __itn__ delta, __itn__ first)
         {
             return new __ttn__Info(Index(begin), size, delta) { F = first };
         }
@@ -824,7 +824,7 @@ namespace Aardvark.Base
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(__iitn__ begin, __iitn__ size, __iitn__ delta, __iitn__ first)
+        public readonly __ttn__Info Sub__ttn__Window(__iitn__ begin, __iitn__ size, __iitn__ delta, __iitn__ first)
         {
             return new __ttn__Info(Index((__itn__)begin), (__itn__)size, (__itn__)delta)
                             { F = (__itn__)first };
@@ -835,7 +835,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(
+        public readonly __ttn__Info Sub__ttn__Window(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */)
         {
@@ -848,7 +848,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__Info Sub__ttn__(
+        public readonly __ttn__Info Sub__ttn__(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */)
         {
@@ -862,7 +862,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__Info Sub__ttn__Window(
+        public readonly __ttn__Info Sub__ttn__Window(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long delta__f__/*# }, comma); */)
@@ -877,7 +877,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__Info Sub__ttn__(
+        public readonly __ttn__Info Sub__ttn__(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long delta__f__/*# }, comma); */)
@@ -892,7 +892,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __vectn__ with zero as first coordinates.
         /// </summary>
-        public __vectn__Info Sub__vectn__(__itn__ begin, long size, long delta)
+        public readonly __vectn__Info Sub__vectn__(__itn__ begin, long size, long delta)
         {
             return new __vectn__Info(Index(begin), size, delta);
         }
@@ -902,7 +902,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __vectn__ with zero as first coordinates.
         /// </summary>
-        public __vectn__Info Sub__vectn__(__iitn__ begin, long size, long delta)
+        public readonly __vectn__Info Sub__vectn__(__iitn__ begin, long size, long delta)
         {
             return new __vectn__Info(Index(begin), size, delta);
         }
@@ -913,7 +913,7 @@ namespace Aardvark.Base
         /// the whole matrix can be viewed as a single vector.
         /// This methods returns a __vectn__ with zero as first coordinates.
         /// </summary>
-        public __vectn__Info As__vectn__()
+        public readonly __vectn__Info As__vectn__()
         {
             if (JY != 0)
                 throw new Exception("cannot represent this matrix as vector");
@@ -934,7 +934,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttsub1nl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttsub1n__Info __fn____winstr__(long __a__)
+        public readonly __ttsub1n__Info __fn____winstr__(long __a__)
         {
             return new __ttsub1n__Info(Index(/*# ifa.ForEach((f,i) => { var ff = i != ai ? "F" + f : a; */__ff__/*# }, comma);
                             */), S.__fa__, D.__fa__)/*# if (win) { */
@@ -950,7 +950,7 @@ namespace Aardvark.Base
         /// without gaps, the whole volume can be viewed as a single vector.
         /// This methods returns a __vectn__ with zero as first coordinates.
         /// </summary>
-        public __vectn__Info As__vectn__()
+        public readonly __vectn__Info As__vectn__()
         {
             if (JX != 0 || JY != 0)
                 throw new Exception("cannot represent this volume as vector");
@@ -962,7 +962,7 @@ namespace Aardvark.Base
         /// they can be merged, and the volume can be viewed as a matrix.
         /// This methods returns a __mattn__ with zero as first coordinates.
         /// </summary>
-        public __mattn__Info As__mattn__XYxZ()
+        public readonly __mattn__Info As__mattn__XYxZ()
         {
             if (JY != 0)
                 throw new Exception("cannot represent this volume as matrix");
@@ -974,7 +974,7 @@ namespace Aardvark.Base
         /// they can be merged, and the volume can be viewed as a matrix.
         /// This methods returns a __mattn__ with zero as first coordinates.
         /// </summary>
-        public __mattn__Info As__mattn__XxYZ()
+        public readonly __mattn__Info As__mattn__XxYZ()
         {
             if (JZ != 0)
                 throw new Exception("cannot represent this volume as matrix");
@@ -986,7 +986,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __mattn__ with zero as first coordinates.
         /// </summary>
-        public __mattn__Info Sub__mattn__(__itn__ origin, V2l size, V2l delta)
+        public readonly __mattn__Info Sub__mattn__(__itn__ origin, V2l size, V2l delta)
         {
             return new __mattn__Info(Index(origin), size, delta);
         }
@@ -996,7 +996,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __mattn__ with zero as first coordinates.
         /// </summary>
-        public __mattn__Info Sub__mattn__(__iitn__ origin, V2i size, V2l delta)
+        public readonly __mattn__Info Sub__mattn__(__iitn__ origin, V2i size, V2l delta)
         {
             return new __mattn__Info(Index(origin), (V2l)size, delta);
         }
@@ -1006,7 +1006,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __mattn__ with zero as first coordinates.
         /// </summary>
-        public __mattn__Info Sub__mattn__(
+        public readonly __mattn__Info Sub__mattn__(
                 long bx, long by, long bz,
                 long sx, long sy, long dx, long dy)
         {
@@ -1020,7 +1020,7 @@ namespace Aardvark.Base
         /// without gaps, the whole volume can be viewed as a single vector.
         /// This methods returns a __vectn__ with zero as first coordinates.
         /// </summary>
-        public __vectn__Info As__vectn__()
+        public readonly __vectn__Info As__vectn__()
         {
             if (JX != 0 || JY != 0 || JZ != 0)
                 throw new Exception("cannot represent this tensor4 as vector");
@@ -1041,7 +1041,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttsub1nl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttsub1n__Info Sub__fa____ttsub1n____winstr__(long __a__)
+        public readonly __ttsub1n__Info Sub__fa____ttsub1n____winstr__(long __a__)
         {
             return new __ttsub1n__Info(Index(/*# ifa.ForEach((f,i) => { var ff = i != ai ? "F" + f : a; */__ff__/*# }, comma);
                             */), S.__fa__, D.__fa__)/*# if (win) { */ { F = F.__fa__ }/*# } */;
@@ -1057,7 +1057,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttnl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttn__Info Sub__fa____ttsub1n__AsReadOnly__ttn____winstr__(long __a__, long size__a__)
+        public readonly __ttn__Info Sub__fa____ttsub1n__AsReadOnly__ttn____winstr__(long __a__, long size__a__)
         {
             return new __ttn__Info(Index(/*# ifa.ForEach((f,i) => { var ff = i != ai ? "F" + f : a; */__ff__/*# }, comma);
                             */), new __itn__(/*# ifa.ForEach((f,i) => { var ff = i != ai ? "S" + f : "size" + a; */__ff__/*# }, comma);
@@ -1082,7 +1082,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttnl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttn__Info Sub__fa____ttsub2n__AsReadOnly__ttn____winstr__(long __a__, long __b__, long size__a__, long size__b__)
+        public readonly __ttn__Info Sub__fa____ttsub2n__AsReadOnly__ttn____winstr__(long __a__, long __b__, long size__a__, long size__b__)
         {
             return new __ttn__Info(Index(/*# ifa.ForEach((f,i) => { var ff = i == ai ? a : i == bi ? b : "F" + f; */__ff__/*# }, comma);
                             */), new __itn__(/*# ifa.ForEach((f,i) => { var ff = i == ai ? "size" + a : i == bi ? "size" + b : "S" + f; */__ff__/*# }, comma);
@@ -1097,7 +1097,7 @@ namespace Aardvark.Base
 
         #region Actions for each Element
 
-        public void ForeachIndex(Action<long> i_action)
+        public readonly void ForeachIndex(Action<long> i_action)
         {
             //# Loop("", true, () => {
                     i_action(i);
@@ -1105,7 +1105,7 @@ namespace Aardvark.Base
         }
 
         //# { var i_action = ""; iaa.ForEach(a => i_action += a + "_"); i_action += "i_action";
-        public void ForeachIndex(Action</*# iaa.ForEach(f => {*/long/*# }, comma);*/, long> __i_action__)
+        public readonly void ForeachIndex(Action</*# iaa.ForEach(f => {*/long/*# }, comma);*/, long> __i_action__)
         {
             //# Loop("", true, () => {
                     __i_action__(/*# iaa.ForEach(a => {*/__a__/*# }, comma);*/, i);
@@ -1113,7 +1113,7 @@ namespace Aardvark.Base
         }
         //# } // var i_action
 
-        public void ForeachCoord(Action<__itn__> v_action)
+        public readonly void ForeachCoord(Action<__itn__> v_action)
         {
             //# if (d == 1) {
             //# Loop("", true, () => {
@@ -1126,7 +1126,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public void ForeachIndex(__ttn__Info t1, Action<long, long> i_i1_act)
+        public readonly void ForeachIndex(__ttn__Info t1, Action<long, long> i_i1_act)
         {
             //# LoopN("", true, true, 2, 0, ix => { var i1 = ix ? "i1" : "i";
                         i_i1_act(i, __i1__);
@@ -1145,7 +1145,7 @@ namespace Aardvark.Base
         /// are also fed into the supplied action.
         /// </summary>
         //# var elementAct = (crd ? a + "_" : "") + (idx ? istr : "") + "elementAct";
-        public void Foreach__f____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# } */
+        public readonly void Foreach__f____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# } */
                 Action</*# if (crd) { */long/*# if (idx) { */, /*# }} if (idx) { */long/*# for (int i1 = 1; i1 < itc; i1++) { */, long/*# }} */> __elementAct__)
         {
             long i = FirstIndex/*# for (int i1 = 1; i1 < itc; i1++) { */, i__i1__ = t__i1__.FirstIndex/*# } */;
@@ -1173,7 +1173,7 @@ namespace Aardvark.Base
         //# var preLineAct = (crd ? a2 + "_" : "") + "preLineAct";
         //# var elementAct = (crd ? a2 + "_" + a1 + "_" : "") + (idx ? istr : "") + "elementAct";
         //# var postLineAct = (crd ? a2 + "_" : "") + "postLineAct";
-        public void Foreach__f2____f1____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# } */
+        public readonly void Foreach__f2____f1____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# } */
                 /*# if (pre) { */Action/*# if (crd) { */<long>/*# } */ __preLineAct__,
                 /*# } */Action</*# if (crd) { */long, long/*# if (idx) { */, /*# }} if (idx) { */long/*# for (int i1 = 1; i1 < itc; i1++) { */, long/*# }} */> __elementAct__/*# if (post) { */,
                 Action/*# if (crd) { */<long>/*# } */ __postLineAct__/*# } */)
@@ -1224,7 +1224,7 @@ namespace Aardvark.Base
         //# var elementAct = (crd ? a3 + "_" + a2 + "_" + a1 + "_" : "") + (idx ? istr : "") + "elementAct";
         //# var postLineAct = (crd ? a3 + "_" + a2 + "_" : "") + "postLineAct";
         //# var postPlaneAct = (crd ? a3 + "_" : "") + "postPlaneAct";
-        public void Foreach__f3____f2____f1____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# } if (pre) { */
+        public readonly void Foreach__f3____f2____f1____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# } if (pre) { */
                 Action/*# if (crd) { */<long>/*# } */ __prePlaneAct__,
                 Action/*# if (crd) { */<long, long>/*# } */ __preLineAct__,/*# } */
                 Action</*# if (crd) { */long, long, long/*# if (idx) { */, /*# }} if (idx) { */long/*# for (int i1 = 1; i1 < itc; i1++) { */, long/*# }} */> __elementAct__/*# if (post) { */,
@@ -1292,7 +1292,7 @@ namespace Aardvark.Base
         //# var postLineAct = (crd ? a4 + "_" + a3 + "_" + a2 + "_" : "") + "postLineAct";
         //# var postPlaneAct = (crd ? a4 + "_" + a3 + "_" : "") + "postPlaneAct";
         //# var postVolumeAct = (crd ? a4 + "_" : "") + "postVolumeAct";
-        public void Foreach__f4____f3____f2____f1____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# }  if (pre) { */
+        public readonly void Foreach__f4____f3____f2____f1____idxstr__(/*# for (int i1 = 1; i1 < itc; i1++) { */__ttn__Info t__i1__, /*# }  if (pre) { */
                 Action/*# if (crd) { */<long>/*# } */ __preVolumeAct__,
                 Action/*# if (crd) { */<long, long>/*# } */ __prePlaneAct__,
                 Action/*# if (crd) { */<long, long, long>/*# } */ __preLineAct__,/*# } */
@@ -1355,39 +1355,39 @@ namespace Aardvark.Base
 
         #region Checking
 
-        public void CheckMatchingSize(__ttn__Info t1)
+        public readonly void CheckMatchingSize(__ttn__Info t1)
         {
             if (Size != t1.Size) throw new ArgumentException("size mismatch");
         }
 
-        public void CheckMatchingSize(__ttn__Info t1, __ttn__Info t2)
+        public readonly void CheckMatchingSize(__ttn__Info t1, __ttn__Info t2)
         {
             CheckMatchingSize(t1); CheckMatchingSize(t2);
         }
 
-        public void CheckMatchingSize(__ttn__Info t1, __ttn__Info t2, __ttn__Info t3)
+        public readonly void CheckMatchingSize(__ttn__Info t1, __ttn__Info t2, __ttn__Info t3)
         {
             CheckMatchingSize(t1); CheckMatchingSize(t2); CheckMatchingSize(t3);
         }
 
-        public bool HasMatchingLayout(__ttn__Info t1)
+        public readonly bool HasMatchingLayout(__ttn__Info t1)
         {
             return First == t1.First && Origin == t1.Origin && Delta == t1.Delta;
         }
 
-        public bool HasMatchingLayout(__ttn__Info t1, __ttn__Info t2)
+        public readonly bool HasMatchingLayout(__ttn__Info t1, __ttn__Info t2)
         {
             return HasMatchingLayout(t1) && HasMatchingLayout(t2);
         }
 
-        public bool HasMatchingLayout(__ttn__Info t1, __ttn__Info t2, __ttn__Info t3)
+        public readonly bool HasMatchingLayout(__ttn__Info t1, __ttn__Info t2, __ttn__Info t3)
         {
             return HasMatchingLayout(t1) && HasMatchingLayout(t2) && HasMatchingLayout(t3);
         }
 
         #endregion
     }
-        
+
     #endregion
 
     //# } // dt == vt
@@ -1465,7 +1465,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Construct from data array without copying.
         /// </summary>
-        public __ttn__(__dtn__[] data) 
+        public __ttn__(__dtn__[] data)
             : this(data, new __ttn__Info(data.Length))
         { }
 
@@ -1546,7 +1546,7 @@ namespace Aardvark.Base
         public __ttn__(long origin, __itn__ size, __itn__ delta)
             : this(new __dtn__[size/*# if (d > 1) {*/.X * size.Y/*# }
                                            if (d > 2) {*/ * size.Z/*# }
-                                              if (d > 3) {*/ * size.W/*# }                                                                   
+                                              if (d > 3) {*/ * size.W/*# }
                                                                    */],
                    new __ttn__Info(origin, size, delta))
         { }
@@ -1558,20 +1558,20 @@ namespace Aardvark.Base
         /// <summary>
         /// Return the rank or dimension of the __ttnl__ (__d__).
         /// </summary>
-        public int Rank { get { return Info.Rank; } }
+        public readonly int Rank { get { return Info.Rank; } }
 
-        public long Origin { get { return Info.Origin; } set { Info.Origin = value; } }
+        public long Origin { readonly get { return Info.Origin; } set { Info.Origin = value; } }
 
-        public __itn__ Size { get { return Info.Size; } set { Info.Size = value; } }
+        public __itn__ Size { readonly get { return Info.Size; } set { Info.Size = value; } }
 
-        public __itn__ Delta { get { return Info.Delta; } set { Info.Delta = value; } }
+        public __itn__ Delta { readonly get { return Info.Delta; } set { Info.Delta = value; } }
 
-        public __itn__ First { get { return Info.First; } set { Info.First = value; } }
+        public __itn__ First { readonly get { return Info.First; } set { Info.First = value; } }
 
         //# if (dt != vt) {
         public TensorAccessors<__dtn__, __vtn__> Accessors
         {
-            get
+            readonly get
             {
                 return new TensorAccessors<__dtn__, __vtn__>()
                                 { Getter = Getter, Setter = Setter };
@@ -1583,59 +1583,59 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the __ttnl__ has a data array.
         /// </summary>
-        public bool IsValid { get { return Data != null; } }
+        public readonly bool IsValid { get { return Data != null; } }
 
         /// <summary>
         /// Returns true if the __ttnl__ does not have a data array.
         /// </summary>
-        public bool IsInvalid { get { return Data == null; } }
+        public readonly bool IsInvalid { get { return Data == null; } }
 
         /// <summary>
         /// Total number of element in the matrix.
         /// </summary>
-        public long Count { get { return Info.Count; } }
+        public readonly long Count { get { return Info.Count; } }
 
         /// <summary>
         /// One step beyond the last element.
         /// </summary>
-        public __itn__ End { get { return Info.E; } }
+        public readonly __itn__ End { get { return Info.E; } }
 
         //# for (int di = 0; di < (1 << d); di++) {
         //#     var pnt = d.Range().Select(i => (di & (1 << i)) == 0 ? "O" : "I").Join();
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ __pnt__ { get { return Info.__pnt__; } }
+        public readonly __itn__ __pnt__ { get { return Info.__pnt__; } }
         //# }
 
         /// <summary>
         /// Size
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ S { get { return Info.S; } set { Info.S = value; } }
+        public __itn__ S { readonly get { return Info.S; } set { Info.S = value; } }
 
         /// <summary>
         /// Delta
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ D { get { return Info.D; } set { Info.D = value; } }
+        public __itn__ D { readonly get { return Info.D; } set { Info.D = value; } }
 
         /// <summary>
         /// First
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ F { get { return Info.F; } set { Info.F = value; } }
+        public __itn__ F { readonly get { return Info.F; } set { Info.F = value; } }
 
         /// <summary>
         /// End: one step beyond the last element.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public __itn__ E { get { return Info.E; } }
+        public readonly __itn__ E { get { return Info.E; } }
 
         //# if (d == 1) {
         /// <summary>
         /// Cummulative delta for all elements up to this dimension.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long DS { get { return Info.D; } }
+        public readonly long DS { get { return Info.D; } }
 
         //# }
         //# foreach (var f in ifa) {
@@ -1643,7 +1643,7 @@ namespace Aardvark.Base
         /// Size in dimension __f__.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long S__f__ { get { return Info.S__f__; } set { Info.S__f__ = value; } }
+        public long S__f__ { readonly get { return Info.S__f__; } set { Info.S__f__ = value; } }
 
         //# } // foreach
         //# foreach (var f in ifa) {
@@ -1651,7 +1651,7 @@ namespace Aardvark.Base
         /// Delta in dimension __f__.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long D__f__ { get { return Info.D__f__; } set { Info.D__f__ = value; } }
+        public long D__f__ { readonly get { return Info.D__f__; } set { Info.D__f__ = value; } }
 
         //# } // foreach
         //# foreach (var f in ifa) {
@@ -1659,7 +1659,7 @@ namespace Aardvark.Base
         /// First in dimension __f__.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long F__f__ { get { return Info.F__f__; } set { Info.F__f__ = value; } }
+        public long F__f__ { readonly get { return Info.F__f__; } set { Info.F__f__ = value; } }
 
         //# } // foreach
         //# foreach (var f in ifa) {
@@ -1667,7 +1667,7 @@ namespace Aardvark.Base
         /// End in dimension __f__ (one step beyond the last element).
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long E__f__ { get { return Info.E__f__; } }
+        public readonly long E__f__ { get { return Info.E__f__; } }
 
         //# } // foreach
         //# foreach (var f in ifa) {
@@ -1676,7 +1676,7 @@ namespace Aardvark.Base
         /// in dimension __f__.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long J__f__ { get { return Info.J__f__; } }
+        public readonly long J__f__ { get { return Info.J__f__; } }
 
         //# } // foreach
         //# foreach (var f in ifa) {
@@ -1684,16 +1684,16 @@ namespace Aardvark.Base
         /// Cummulative delta for all elements up to this dimension.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public long DS__f__ { get { return Info.DS__f__; } }
+        public readonly long DS__f__ { get { return Info.DS__f__; } }
 
         //# } // foreach
         /// <summary>
         /// Return the index of the first element in the underlying
         /// data array.
         /// </summary>
-        public long FirstIndex { get { return Info.FirstIndex; } }
+        public readonly long FirstIndex { get { return Info.FirstIndex; } }
 
-        public long OriginIndex { get { return Info.Origin; } set { Info.Origin = value; } }
+        public long OriginIndex { readonly get { return Info.Origin; } set { Info.Origin = value; } }
 
         /// <summary>
         /// Get or set the size of the tensor in each dimension as an
@@ -1702,7 +1702,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public long[] SizeArray
         {
-            get { return Info.SizeArray; }
+            readonly get { return Info.SizeArray; }
             set { Info.SizeArray = value; }
         }
 
@@ -1713,7 +1713,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public long[] DeltaArray
         {
-            get { return Info.DeltaArray; }
+            readonly get { return Info.DeltaArray; }
             set { Info.DeltaArray = value; }
         }
 
@@ -1724,14 +1724,14 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public long[] FirstArray
         {
-            get { return Info.FirstArray; }
+            readonly get { return Info.FirstArray; }
             set { Info.FirstArray = value; }
         }
 
         /// <summary>
         /// Yields all elemnts ordered by index.
         /// </summary>
-        public IEnumerable<__vtn__> Elements
+        public readonly IEnumerable<__vtn__> Elements
         {
             get
             {
@@ -1745,7 +1745,7 @@ namespace Aardvark.Base
         /// Return the type of the underlying data array.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Type ArrayType
+        public readonly Type ArrayType
         {
             get { return typeof(__dtn__[]); }
         }
@@ -1756,7 +1756,7 @@ namespace Aardvark.Base
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public Array Array
         {
-            get { return Data; }
+            readonly get { return Data; }
             set { Data = (__dtn__[])value; }
         }
 
@@ -1764,7 +1764,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a matrix that represents a view on the same data with flipped coordinates.
         /// </summary>
-        public __ttn__<__dvtn__> Transposed
+        public readonly __ttn__<__dvtn__> Transposed
         {
             get
             {
@@ -1783,7 +1783,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Get/Set element at specified coordinate.
         /// </summary>
-        public __vtn__ this[__itn__ v]
+        public readonly __vtn__ this[__itn__ v]
         {
             get
             {
@@ -1807,14 +1807,14 @@ namespace Aardvark.Base
                 Setter(Data, Info.Origin
                        + /*# ifa.ForEach(f =>
                              { */v.__f__ * Info.Delta.__f__/*# }, add); */, value);
-                //# }            
+                //# }
             }
         }
 
         /// <summary>
         /// Get/Set element at specified coordinate.
         /// </summary>
-        public __vtn__ this[__iitn__ v]
+        public readonly __vtn__ this[__iitn__ v]
         {
             get
             {
@@ -1838,14 +1838,14 @@ namespace Aardvark.Base
                 Setter(Data, Info.Origin
                        + /*# ifa.ForEach(f =>
                              { */(long)v.__f__ * Info.Delta.__f__/*# }, add); */, value);
-                //# }            
+                //# }
             }
         }
 
         /// <summary>
         /// Get/Set element at the specified index in the underlying data array.
         /// </summary>
-        public __vtn__ this[long index]
+        public readonly __vtn__ this[long index]
         {
             get
             {
@@ -1861,7 +1861,7 @@ namespace Aardvark.Base
                 Data[index] = value;
                 //# } else {
                 Setter(Data, index, value);
-                //# }            
+                //# }
             }
         }
 
@@ -1869,7 +1869,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Get/Set element at specified coordinates.
         /// </summary>
-        public __vtn__ this[/*# iaa.ForEach(a => { */long __a__/*# }, comma); */]
+        public readonly __vtn__ this[/*# iaa.ForEach(a => { */long __a__/*# }, comma); */]
         {
             get
             {
@@ -1893,14 +1893,14 @@ namespace Aardvark.Base
                 Setter(Data, Info.Origin
                        + /*# iaa.ForEach(ideltas, (a, di) =>
                              { */__a__ * Info.__di__/*# }, add); */, value);
-                //# }            
+                //# }
             }
         }
-        
+
         /// <summary>
         /// Get/Set element at specified coordinates.
         /// </summary>
-        public __vtn__ this[/*# iaa.ForEach(a => { */int __a__/*# }, comma); */]
+        public readonly __vtn__ this[/*# iaa.ForEach(a => { */int __a__/*# }, comma); */]
         {
             get
             {
@@ -1924,7 +1924,7 @@ namespace Aardvark.Base
                 Setter(Data, Info.Origin
                        + /*# iaa.ForEach(ideltas, (a, di) =>
                              { */(long)__a__ * Info.__di__/*# }, add); */, value);
-                //# }            
+                //# }
             }
         }
 
@@ -1932,24 +1932,24 @@ namespace Aardvark.Base
 
         #region Actions for each Element
 
-        public void ForeachIndex(Action<long> i_action)
+        public readonly void ForeachIndex(Action<long> i_action)
         {
             Info.ForeachIndex(i_action);
         }
 
         //# { var i_action = ""; iaa.ForEach(a => i_action += a + "_"); i_action += "i_action";
-        public void ForeachIndex(Action</*# iaa.ForEach(f => {*/long/*# }, comma);*/, long> __i_action__)
+        public readonly void ForeachIndex(Action</*# iaa.ForEach(f => {*/long/*# }, comma);*/, long> __i_action__)
         {
             Info.ForeachIndex(__i_action__);
         }
         //# } // var i_action
 
-        public void ForeachCoord(Action<__itn__> v_action)
+        public readonly void ForeachCoord(Action<__itn__> v_action)
         {
             Info.ForeachCoord(v_action);
         }
 
-        public void ForeachIndex(__ttn__Info t1, Action<long, long> i_i1_act)
+        public readonly void ForeachIndex(__ttn__Info t1, Action<long, long> i_i1_act)
         {
             Info.ForeachIndex(t1, i_i1_act);
         }
@@ -1965,13 +1965,13 @@ namespace Aardvark.Base
         /// are also fed into the supplied action.
         /// </summary>
         //# var elementAct = (crd ? a + "_" : "") + (idx ? "i_" : "") + "elementAct";
-        public void Foreach__f____idxstr__(
+        public readonly void Foreach__f____idxstr__(
                 Action</*# if (crd) { */long/*# if (idx) { */, /*# }} if (idx) { */long/*# } */> __elementAct__)
         {
             Info.Foreach__f____idxstr__(__elementAct__);
         }
 
-        //# } // crd        
+        //# } // crd
         //# });
         //# ifa.ForEach(iaa, (f2,a2) => {
         //# ifa.ForEach(iaa, (f1,a1) => { if (f1 != f2) {
@@ -1990,7 +1990,7 @@ namespace Aardvark.Base
         //# var preLineAct = (crd ? a2 + "_" : "") + "preLineAct";
         //# var elementAct = (crd ? a2 + "_" + a1 + "_" : "") + (idx ? "i_" : "") + "elementAct";
         //# var postLineAct = (crd ? a2 + "_" : "") + "postLineAct";
-        public void Foreach__f2____f1____idxstr__(
+        public readonly void Foreach__f2____f1____idxstr__(
                 /*# if (pre) { */Action/*# if (crd) { */<long>/*# } */ __preLineAct__,
                 /*# } */Action</*# if (crd) { */long, long/*# if (idx) { */, /*# }} if (idx) { */long/*# } */> __elementAct__/*# if (post) { */,
                 Action/*# if (crd) { */<long>/*# } */ __postLineAct__/*# } */)
@@ -2031,7 +2031,7 @@ namespace Aardvark.Base
         //# var elementAct = (crd ? a3 + "_" + a2 + "_" + a1 + "_" : "") + (idx ? "i_" : "") + "elementAct";
         //# var postLineAct = (crd ? a3 + "_" + a2 + "_" : "") + "postLineAct";
         //# var postPlaneAct = (crd ? a3 + "_" : "") + "postPlaneAct";
-        public void Foreach__f3____f2____f1____idxstr__(/*# if (pre) { */
+        public readonly void Foreach__f3____f2____f1____idxstr__(/*# if (pre) { */
                 Action/*# if (crd) { */<long>/*# } */ __prePlaneAct__,
                 Action/*# if (crd) { */<long, long>/*# } */ __preLineAct__,/*# } */
                 Action</*# if (crd) { */long, long, long/*# if (idx) { */, /*# }} if (idx) { */long/*# } */> __elementAct__/*# if (post) { */,
@@ -2080,7 +2080,7 @@ namespace Aardvark.Base
         //# var postLineAct = (crd ? a4 + "_" + a3 + "_" + a2 + "_" : "") + "postLineAct";
         //# var postPlaneAct = (crd ? a4 + "_" + a3 + "_" : "") + "postPlaneAct";
         //# var postVolumeAct = (crd ? a4 + "_" : "") + "postVolumeAct";
-        public void Foreach__f4____f3____f2____f1____idxstr__(/*# if (pre) { */
+        public readonly void Foreach__f4____f3____f2____f1____idxstr__(/*# if (pre) { */
                 Action/*# if (crd) { */<long>/*# } */ __preVolumeAct__,
                 Action/*# if (crd) { */<long, long>/*# } */ __prePlaneAct__,
                 Action/*# if (crd) { */<long, long, long>/*# } */ __preLineAct__,/*# } */
@@ -2119,7 +2119,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__itn__ begin, __itn__ size)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__itn__ begin, __itn__ size)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__Window(begin, size))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2131,7 +2131,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn____pt1__(__itn__ begin, __itn__ size)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn____pt1__(__itn__ begin, __itn__ size)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__(begin, size))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2143,7 +2143,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__iitn__ begin, __iitn__ size)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__iitn__ begin, __iitn__ size)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__Window(begin, size))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2155,7 +2155,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn____pt1__(__iitn__ begin, __iitn__ size)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn____pt1__(__iitn__ begin, __iitn__ size)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__(begin, size))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2167,7 +2167,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__itn__ begin, __itn__ size, __itn__ delta)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__itn__ begin, __itn__ size, __itn__ delta)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__Window(begin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2179,7 +2179,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn____pt1__(__itn__ begin, __itn__ size, __itn__ delta)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn____pt1__(__itn__ begin, __itn__ size, __itn__ delta)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__(begin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2191,7 +2191,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__iitn__ begin, __iitn__ size, __iitn__ delta)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__iitn__ begin, __iitn__ size, __iitn__ delta)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__Window(begin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2203,19 +2203,19 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn____pt1__(__iitn__ begin, __iitn__ size, __iitn__ delta)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn____pt1__(__iitn__ begin, __iitn__ size, __iitn__ delta)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__(begin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
                                     { Getter = Getter, Setter = Setter }/*# } */;
         }
 
-        //# if (d > 1) {  
+        //# if (d > 1) {
         /// <summary>
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__itn__ begin, __itn__ size, __itn__ delta, __itn__ first)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__itn__ begin, __itn__ size, __itn__ delta, __itn__ first)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__Window(begin, size, delta, first))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2226,7 +2226,7 @@ namespace Aardvark.Base
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__iitn__ begin, __iitn__ size, __iitn__ delta, __iitn__ first)
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(__iitn__ begin, __iitn__ size, __iitn__ delta, __iitn__ first)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__ttn__Window(begin, size, delta, first))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2238,7 +2238,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */)
         {
@@ -2254,7 +2254,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn____pt1__(
+        public readonly __ttn__<__dvt1tn__> Sub__ttn____pt1__(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */)
         {
@@ -2270,7 +2270,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This method retains the coordinates of the parent __ttn__.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(
+        public readonly __ttn__<__dvt1tn__> Sub__ttn__Window__pt1__(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long delta__f__/*# }, comma); */)
@@ -2288,7 +2288,7 @@ namespace Aardvark.Base
         /// are reflected in the corresponding part of the parent.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__ttn____pt1__(
+        public readonly __ttn__<__dvt1tn__> Sub__ttn____pt1__(
                 /*# ifa.ForEach(f => { */long begin__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long size__f__/*# }, comma); */,
                 /*# ifa.ForEach(f => { */long delta__f__/*# }, comma); */)
@@ -2310,7 +2310,7 @@ namespace Aardvark.Base
         /// without gaps, the whole volume can be viewed as a single vector.
         //# }
         /// </summary>
-        public __vectn__<__dvt1tn__> As__vectn____pt1__()
+        public readonly __vectn__<__dvt1tn__> As__vectn____pt1__()
         {
             return new __vectn__<__dvt1tn__>(Data, Info.As__vectn__())/*#
                             if (dt != vt && pt1 == "") { */
@@ -2321,7 +2321,7 @@ namespace Aardvark.Base
         /// A SubVector does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __vectn__<__dvt1tn__> Sub__vectn____pt1__(__itn__ origin, long size, long delta)
+        public readonly __vectn__<__dvt1tn__> Sub__vectn____pt1__(__itn__ origin, long size, long delta)
         {
             return new __vectn__<__dvt1tn__>(Data, Info.Sub__vectn__(origin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2332,7 +2332,7 @@ namespace Aardvark.Base
         /// A SubVector does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __vectn__<__dvt1tn__> Sub__vectn____pt1__(__iitn__ origin, long size, long delta)
+        public readonly __vectn__<__dvt1tn__> Sub__vectn____pt1__(__iitn__ origin, long size, long delta)
         {
             return new __vectn__<__dvt1tn__>(Data, Info.Sub__vectn__(origin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2352,7 +2352,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttsub1nl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttsub1n__<__dvt1tn__> __fn____winstr____pt1__(long __a__)
+        public readonly __ttsub1n__<__dvt1tn__> __fn____winstr____pt1__(long __a__)
         {
             return new __ttsub1n__<__dvt1tn__>(Data, Info.__fn____winstr__(__a__))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2367,7 +2367,7 @@ namespace Aardvark.Base
         /// If the lines of the volume are stored consecutively without gaps,
         /// they can be merged, and the volume can be viewed as a matrix.
         /// </summary>
-        public __mattn__<__dvt1tn__> As__mattn__XYxZ__pt1__()
+        public readonly __mattn__<__dvt1tn__> As__mattn__XYxZ__pt1__()
         {
             return new __mattn__<__dvt1tn__>(Data, Info.As__mattn__XYxZ())/*#
                             if (dt != vt && pt1 == "") { */
@@ -2378,7 +2378,7 @@ namespace Aardvark.Base
         /// If the planes of the volume are stored consecutively without gaps,
         /// they can be merged, and the volume can be viewed as a matrix.
         /// </summary>
-        public __mattn__<__dvt1tn__> As__mattn__XxYZ__pt1__()
+        public readonly __mattn__<__dvt1tn__> As__mattn__XxYZ__pt1__()
         {
             return new __mattn__<__dvt1tn__>(Data, Info.As__mattn__XxYZ())/*#
                             if (dt != vt && pt1 == "") { */
@@ -2389,7 +2389,7 @@ namespace Aardvark.Base
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __mattn__<__dvt1tn__> Sub__mattn____pt1__(__itn__ origin, V2l size, V2l delta)
+        public readonly __mattn__<__dvt1tn__> Sub__mattn____pt1__(__itn__ origin, V2l size, V2l delta)
         {
             return new __mattn__<__dvt1tn__>(Data, Info.Sub__mattn__(origin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2400,7 +2400,7 @@ namespace Aardvark.Base
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __mattn__<__dvt1tn__> Sub__mattn____pt1__(__iitn__ origin, V2i size, V2l delta)
+        public readonly __mattn__<__dvt1tn__> Sub__mattn____pt1__(__iitn__ origin, V2i size, V2l delta)
         {
             return new __mattn__<__dvt1tn__>(Data, Info.Sub__mattn__(origin, size, delta))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2411,7 +2411,7 @@ namespace Aardvark.Base
         /// A Sub__ttn__ does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public __mattn__<__dvt1tn__> Sub__mattn____pt1__(
+        public readonly __mattn__<__dvt1tn__> Sub__mattn____pt1__(
                 long beginX, long beginY, long beginZ,
                 long sizeX, long sizeY, long deltaX, long deltaY)
         {
@@ -2435,7 +2435,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttsub1nl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttsub1n__<__dvt1tn__> Sub__fa____ttsub1n____winstr____pt1__(long __a__)
+        public readonly __ttsub1n__<__dvt1tn__> Sub__fa____ttsub1n____winstr____pt1__(long __a__)
         {
             return new __ttsub1n__<__dvt1tn__>(Data, Info.Sub__fa____ttsub1n____winstr__(__a__))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2452,7 +2452,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttsub1nl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__fa____ttsub1n__AsReadOnly__ttn____winstr____pt1__(long __a__, long size__a__)
+        public readonly __ttn__<__dvt1tn__> Sub__fa____ttsub1n__AsReadOnly__ttn____winstr____pt1__(long __a__, long size__a__)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__fa____ttsub1n__AsReadOnly__ttn____winstr__(__a__, size__a__))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2475,7 +2475,7 @@ namespace Aardvark.Base
         /// This methods returns a __ttnl__ with zero as first coordinates.
         //# }
         /// </summary>
-        public __ttn__<__dvt1tn__> Sub__fa____ttsub2n__AsReadOnly__ttn____winstr____pt1__(long __a__, long __b__, long size__a__, long size__b__)
+        public readonly __ttn__<__dvt1tn__> Sub__fa____ttsub2n__AsReadOnly__ttn____winstr____pt1__(long __a__, long __b__, long size__a__, long size__b__)
         {
             return new __ttn__<__dvt1tn__>(Data, Info.Sub__fa____ttsub2n__AsReadOnly__ttn____winstr__(__a__, __b__, size__a__, size__b__))/*#
                             if (dt != vt && pt1 == "") { */
@@ -2495,7 +2495,7 @@ namespace Aardvark.Base
         /// Elementwise copy.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvtn__> Copy()
+        public readonly __ttn__<__dvtn__> Copy()
         {
             //# if (dt != vt) {
             return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info) { Getter = Getter, Setter = Setter }.Set(this);
@@ -2508,7 +2508,7 @@ namespace Aardvark.Base
         /// Elementwise copy.
         /// This method retains the coordinates of the original __ttn__.
         /// </summary>
-        public __ttn__<__dvtn__> CopyWindow()
+        public readonly __ttn__<__dvtn__> CopyWindow()
         {
             return new __ttn__<__dvtn__>(Info.S)
                     { F = F, /*# if (dt != vt) { */Getter = Getter, Setter = Setter/*# } */ }.Set(this);
@@ -2518,7 +2518,7 @@ namespace Aardvark.Base
         /// Elementwise copy with function application.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<T1> Map<T1>(Func<__vtn__, T1> fun)
+        public readonly __ttn__<T1> Map<T1>(Func<__vtn__, T1> fun)
         {
             return new __ttn__<T1>(Info.S).SetMap(this, fun);
         }
@@ -2527,18 +2527,18 @@ namespace Aardvark.Base
         /// Elementwise copy with function application.
         /// This method retains the coordinates of the original __ttn__.
         /// </summary>
-        public __ttn__<T1> MapWindow<T1>(Func<__vtn__, T1> fun)
+        public readonly __ttn__<T1> MapWindow<T1>(Func<__vtn__, T1> fun)
         {
             return new __ttn__<T1>(Info.S) { F = F }.SetMap(this, fun);
         }
 
         //# if (dt != vt) {
-        public __ttn__<__vtn__> CopyView()
+        public readonly __ttn__<__vtn__> CopyView()
         {
             return new __ttn__<__vtn__>(Info.S).Set(this);
         }
 
-        public __ttn__<__vtn__> CopyViewWindow()
+        public readonly __ttn__<__vtn__> CopyViewWindow()
         {
             return new __ttn__<__vtn__>(Info.S) { F = F }.Set(this);
         }
@@ -2547,7 +2547,7 @@ namespace Aardvark.Base
         /// Elementwise copy with function application.
         /// This methods returns a __ttn__ with zero as first coordinates.
         /// </summary>
-        public __ttn__<__dvtn__> Map(Func<__vtn__, __vtn__> fun)
+        public readonly __ttn__<__dvtn__> Map(Func<__vtn__, __vtn__> fun)
         {
             return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info) { Getter = Getter, Setter = Setter }.SetMap(this, fun);
         }
@@ -2556,7 +2556,7 @@ namespace Aardvark.Base
         /// Elementwise copy with function application.
         /// This method retains the complete layout of the original __ttn__.
         /// </summary>
-        public __ttn__<__dvtn__> MapWindow(Func<__vtn__, __vtn__> fun)
+        public readonly __ttn__<__dvtn__> MapWindow(Func<__vtn__, __vtn__> fun)
         {
             return new __ttn__<__dvtn__>(new Td[Data.LongLength], Info)
                         { F = F, Getter = Getter, Setter = Setter }.SetMap(this, fun);
@@ -2568,7 +2568,7 @@ namespace Aardvark.Base
         /// Returns a tensor repeated in each dimension by the specified
         /// count.
         /// </summary>
-        public __ttn__<__dvtn__> Repeated(__itn__ count)
+        public readonly __ttn__<__dvtn__> Repeated(__itn__ count)
         {
             var size = Size;
             count *= size;
@@ -2596,7 +2596,7 @@ namespace Aardvark.Base
         /// The value of the elements is given to fun.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> Apply(Func<__vtn__, __vtn__> element_elementFun)
+        public readonly __ttn__<__dvtn__> Apply(Func<__vtn__, __vtn__> element_elementFun)
         {
             long i = FirstIndex;
             if (Info.JX == 1)
@@ -2630,7 +2630,7 @@ namespace Aardvark.Base
         /// elements of the original __ttnl__ and the supplied __ttnl__.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> Apply<__t1t__>(
+        public readonly __ttn__<__dvtn__> Apply<__t1t__>(
                 __ttn__<__t1t__> t1, Func<__vtn__, T1, __vtn__> element_element1_elementFun)
         {
             //# LoopN("", false, dt == vt && !t1v, 2, 0, ix => { var t1ix = ix ? t1i1 : t1i;
@@ -2643,14 +2643,14 @@ namespace Aardvark.Base
             return this;
         }
 
-        //# }); // t1v        
+        //# }); // t1v
         //# if (d > 1) {
         /// <summary>
         /// Apply the supplied function on the elements of the __ttnl__.
         /// The value of the elements is given to fun.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> ApplyByCoord(Func<__vtn__, __itn__, __vtn__> element_crd_elementFun)
+        public readonly __ttn__<__dvtn__> ApplyByCoord(Func<__vtn__, __itn__, __vtn__> element_crd_elementFun)
         {
             long i = FirstIndex; __itn__ vi;
             if (Info.JX == 1)
@@ -2695,7 +2695,7 @@ namespace Aardvark.Base
         /// Set each element to the value of a function of the element coords.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> ApplyByCoord(Func<__vtn__, /*# iaa.ForEach(a => { */long/*# }, comma); */, __vtn__> fun)
+        public readonly __ttn__<__dvtn__> ApplyByCoord(Func<__vtn__, /*# iaa.ForEach(a => { */long/*# }, comma); */, __vtn__> fun)
         {
             long i = FirstIndex;
             if (Info.JX == 1)
@@ -2727,7 +2727,7 @@ namespace Aardvark.Base
         /// Sets all elements to the supplied value.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> Set(__vtn__ v)
+        public readonly __ttn__<__dvtn__> Set(__vtn__ v)
         {
             //# Loop("", false, () => {
                     //# if (dt == vt) {
@@ -2744,7 +2744,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>this</returns>
         //# { string fun = "elementFun"; riaa.ForEach(a => { fun = a + "_" + fun; });
-        public __ttn__<__dvtn__> SetByCoord(Func</*# iaa.ForEach(a => { */long/*# }, comma); */, __vtn__> __fun__)
+        public readonly __ttn__<__dvtn__> SetByCoord(Func</*# iaa.ForEach(a => { */long/*# }, comma); */, __vtn__> __fun__)
         {
             //# Loop("", false, () => {
                     //# if (dt == vt) {
@@ -2762,7 +2762,7 @@ namespace Aardvark.Base
         /// Set each element to the value of a function of the element coords.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByCoord(Func<__itn__, __vtn__> crd_elementFun)
+        public readonly __ttn__<__dvtn__> SetByCoord(Func<__itn__, __vtn__> crd_elementFun)
         {
             //# Loop("", false, () => {
                     //# if (dt == vt) {
@@ -2778,7 +2778,7 @@ namespace Aardvark.Base
         /// Set each element to the value of a function of the element coords.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByCoord</*# r1iaa.ForEach(a => { */T__a__/*# }, comma); */>(
+        public readonly __ttn__<__dvtn__> SetByCoord</*# r1iaa.ForEach(a => { */T__a__/*# }, comma); */>(
                 //# r1iaa.ForEach((a, i) => {
                 Func</*# riaa.Take(i+1).ForEach(fa => { */long/*# }, comma); */, /*# riaa.Take(i+1).ForEach(fa => { */T__fa__/*# }, comma); */> __a__Fun,
                 //# });
@@ -2834,7 +2834,7 @@ namespace Aardvark.Base
         /// __ttnl__.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex(Func<long, __vtn__> index_elementFun)
+        public readonly __ttn__<__dvtn__> SetByIndex(Func<long, __vtn__> index_elementFun)
         {
             //# Loop("", false, () => {
                     //# if (dt == vt) {
@@ -2853,7 +2853,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="it1"></param>
         /// <returns></returns>
-        public __ttn__<__dvtn__> Set(I__ttn__<__vtn__> it1)
+        public readonly __ttn__<__dvtn__> Set(I__ttn__<__vtn__> it1)
         {
             if (it1 is __ttn__<__vtn__>) return Set((__ttn__<__vtn__>)it1);
             //# Loop("", false, () => {
@@ -2871,7 +2871,7 @@ namespace Aardvark.Base
         /// Copy all elements from another __ttnl__.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> Set/*# if (t1v) {*/<T1>/*# }*/(__ttn__</*# if (t1v) {*/T1, /*# }*/__vtn__> t1)
+        public readonly __ttn__<__dvtn__> Set/*# if (t1v) {*/<T1>/*# }*/(__ttn__</*# if (t1v) {*/T1, /*# }*/__vtn__> t1)
         {
             //# LoopN("", false, dt == vt && !t1v, 2, 0, ix => { var t1ix = ix ? t1i1 : t1i;
                         //# if (dt == vt) {
@@ -2888,7 +2888,7 @@ namespace Aardvark.Base
         /// the elements of the supplied __ttnl__.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetMap<__t1t__>(
+        public readonly __ttn__<__dvtn__> SetMap<__t1t__>(
                 __ttn__<__t1t__> t1, Func<T1, __vtn__> element1_elementFun)
         {
             //# LoopN("", false, dt == vt && !t1v, 2, 0, ix => { var t1ix = ix ? t1i1 : t1i;
@@ -2908,7 +2908,7 @@ namespace Aardvark.Base
         /// __ttnl__.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex<__t1t__>(
+        public readonly __ttn__<__dvtn__> SetByIndex<__t1t__>(
                 __ttn__<__t1t__> t1, Func<long, __vtn__> index1_elementFun)
         {
             //# LoopN("", false, dt == vt && !t1v, 2, 0, ix => { var i1 = ix ? "i1" : "i";
@@ -2929,7 +2929,7 @@ namespace Aardvark.Base
         /// corresponding pairs of elements of the two supplied tensors.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetMap2<__t1t__, __t2t__>(
+        public readonly __ttn__<__dvtn__> SetMap2<__t1t__, __t2t__>(
                     __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
                     Func<T1, T2, __vtn__> element1_element2_elementFun)
         {
@@ -2952,7 +2952,7 @@ namespace Aardvark.Base
         /// __ttnl__.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex<__t1t__, __t2t__>(
+        public readonly __ttn__<__dvtn__> SetByIndex<__t1t__, __t2t__>(
                 __ttn__<__t1t__> t1, __ttn__<__t2t__> t2,
                 Func<long, long, __vtn__> index1_index2_elementFun)
         {
@@ -2977,7 +2977,7 @@ namespace Aardvark.Base
         /// corresponding triples of elements of the three supplied tensors.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetMap3<__t1t__, __t2t__, __t3t__>(
+        public readonly __ttn__<__dvtn__> SetMap3<__t1t__, __t2t__, __t3t__>(
                 __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
                 Func<T1, T2, T3, __vtn__> element1_element2_element3_elementFun)
         {
@@ -3001,7 +3001,7 @@ namespace Aardvark.Base
         /// __ttnl__.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetByIndex<__t1t__, __t2t__, __t3t__>(
+        public readonly __ttn__<__dvtn__> SetByIndex<__t1t__, __t2t__, __t3t__>(
                 __ttn__<__t1t__> t1, __ttn__<__t2t__> t2, __ttn__<__t3t__> t3,
                 Func<long, long, long, __vtn__> index1_index2_index3_elementFun)
         {
@@ -3022,7 +3022,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Set the __ttnl__ to be the convolution of the supplied image and filter tensors.
         /// </summary>
-        public __ttn__<__dvtn__> SetConvolution<Ti, Tf, Tm, Ts>(
+        public readonly __ttn__<__dvtn__> SetConvolution<Ti, Tf, Tm, Ts>(
                 __ttn__<Ti> image, __ttn__<Tf> filter, Func<Ti, Tf, Tm> mulFun,
                 Ts bias, Func<Ts, Tm, Ts> sumFun, Func<Ts, __vtn__> castFun)
         {
@@ -3040,7 +3040,7 @@ namespace Aardvark.Base
         /// Set the matrix to be the outer product of the two supplied vectors.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetOuterProduct<__txt__, __tyt__>(
+        public readonly __ttn__<__dvtn__> SetOuterProduct<__txt__, __tyt__>(
                     __vectn__<__txt__> tx, __vectn__<__tyt__> ty,
                     Func<Tx, Ty, __vtn__> fun)
         {
@@ -3084,7 +3084,7 @@ namespace Aardvark.Base
         /// Set the volume to be the outer product of the three supplied vectors.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetOuterProduct<__txt__, __tyt__, __tzt__>(
+        public readonly __ttn__<__dvtn__> SetOuterProduct<__txt__, __tyt__, __tzt__>(
                     __vectn__<__txt__> tx, __vectn__<__tyt__> ty, __vectn__<__tzt__> tz,
                     Func<Tx, Ty, Tz, __vtn__> fun)
         {
@@ -3134,7 +3134,7 @@ namespace Aardvark.Base
         /// four supplied vectors.
         /// </summary>
         /// <returns>this</returns>
-        public __ttn__<__dvtn__> SetOuterProduct<__txt__, __tyt__, __tzt__, __twt__>(
+        public readonly __ttn__<__dvtn__> SetOuterProduct<__txt__, __tyt__, __tzt__, __twt__>(
                     __vectn__<__txt__> tx, __vectn__<__tyt__> ty, __vectn__<__tzt__> tz, __vectn__<__twt__> tw,
                     Func<Tx, Ty, Tz, Tw, __vtn__> fun)
         {
@@ -3183,7 +3183,7 @@ namespace Aardvark.Base
         #region Scalar Methods and Functions
 
         //# foreach (var hasBreak in new[] { false, true }) {
-        public Tr Norm<Tr, Ti>(
+        public readonly Tr Norm<Tr, Ti>(
                 Func<__vtn__, Ti> elementFun, Tr bias, Func<Tr, Ti, Tr> sumFun/*# if (hasBreak) { */, Func<Tr, bool> breakIfTrueFun/*# } */)
         {
             Tr result = bias;
@@ -3196,7 +3196,7 @@ namespace Aardvark.Base
             return result;
         }
 
-        public Tr Norm<Tr, Ti>(Func<__vtn__, /*# iaa.ForEach(a => {*/long/*# }, comma);*/, Ti> elementFun,
+        public readonly Tr Norm<Tr, Ti>(Func<__vtn__, /*# iaa.ForEach(a => {*/long/*# }, comma);*/, Ti> elementFun,
                 Tr bias, Func<Tr, Ti, Tr> sumFun/*# if (hasBreak) { */, Func<Tr, bool> breakIfTrueFun/*# } */)
         {
             Tr result = bias;
@@ -3210,7 +3210,7 @@ namespace Aardvark.Base
         }
 
         //# if (d > 1) {
-        public Tr Norm<Tr, Ti>(Func<__vtn__, __itn__, Ti> elementFun,
+        public readonly Tr Norm<Tr, Ti>(Func<__vtn__, __itn__, Ti> elementFun,
                 Tr bias, Func<Tr, Ti, Tr> sumFun/*# if (hasBreak) { */, Func<Tr, bool> breakIfTrueFun/*# } */)
         {
             Tr result = bias;
@@ -3225,7 +3225,7 @@ namespace Aardvark.Base
 
         //# }
         //# bools.ForEach(t1v => { var t1t = tnt(1, t1v); var t1i = tni(1, t1v); var t1i1 = tnin(1, t1v);
-        public Ts InnerProduct<__t1t__, Tm, Ts>(
+        public readonly Ts InnerProduct<__t1t__, Tm, Ts>(
             __ttn__<__t1t__> t1,
             Func<__vtn__, T1, Tm> mulFun, Ts bias, Func<Ts, Tm, Ts> sumFun/*# if (hasBreak) { */, Func<Ts, bool> breakIfTrueFun/*# } */)
         {
@@ -3376,7 +3376,7 @@ namespace Aardvark.Base
         }
 
         //# }); });
-        //# } // d == 2 
+        //# } // d == 2
         //# if (d == 3) {
         //# bools.ForEach(txv => { var txt = tdt(1, txv);
         //# bools.ForEach(tyv => { var tyt = tdt(2, tyv);
@@ -3384,7 +3384,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Create a new volume as the outer product of the three supplied vectors.
         /// </summary>
-        public __ttn__<__dvtn__> CreateOuterProduct<__txt__, __tyt__, __tzt__>(
+        public readonly __ttn__<__dvtn__> CreateOuterProduct<__txt__, __tyt__, __tzt__>(
                     __vectn__<__txt__> tx, __vectn__<__tyt__> ty, __vectn__<__tzt__> tz,
                     Func<Tx, Ty, Tz, __vtn__> fun)
         {
@@ -3404,7 +3404,7 @@ namespace Aardvark.Base
         /// Create a new four-dimensional tensor as the outer product of the
         /// four supplied vectors.
         /// </summary>
-        public __ttn__<__dvtn__> CreateOuterProduct<__txt__, __tyt__, __tzt__, __twt__>(
+        public readonly __ttn__<__dvtn__> CreateOuterProduct<__txt__, __tyt__, __tzt__, __twt__>(
                     __vectn__<__txt__> tx, __vectn__<__tyt__> ty, __vectn__<__tzt__> tz, __vectn__<__twt__> tw,
                     Func<Tx, Ty, Tz, Tw, __vtn__> fun)
         {
@@ -3426,7 +3426,7 @@ namespace Aardvark.Base
         /// supplied the returned value is the same as the indexer
         /// of the vector. No bounds checking is performed.
         /// </summary>
-        public TRes SampleRaw2<TRes>(
+        public readonly TRes SampleRaw2<TRes>(
                 double x,
                 Func<double, __vtn__, __vtn__, TRes> ipl)
         {
@@ -3439,7 +3439,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample2Clamped<TRes>(
+        public readonly TRes Sample2Clamped<TRes>(
                 double x,
                 Func<double, __vtn__, __vtn__, TRes> ipl)
         {
@@ -3452,7 +3452,7 @@ namespace Aardvark.Base
         /// supplied the returned value is the same as the indexer
         /// of the vector.
         /// </summary>
-        public TRes Sample2<TRes>(
+        public readonly TRes Sample2<TRes>(
                 double x,
                 Func<double, __vtn__, __vtn__, TRes> ipl,
                 Func<long, long, long, long, Tup2<long>> index_min_max_delta_indexFun)
@@ -3467,7 +3467,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes SampleRaw4<T1, TRes>(
+        public readonly TRes SampleRaw4<T1, TRes>(
                 double x,
                 Func<double, Tup4<T1>> ipl,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, Tup4<T1>, TRes> smp)
@@ -3482,7 +3482,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample4Clamped<T1, TRes>(
+        public readonly TRes Sample4Clamped<T1, TRes>(
                 double x,
                 Func<double, Tup4<T1>> ipl,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, Tup4<T1>, TRes> smp)
@@ -3490,7 +3490,7 @@ namespace Aardvark.Base
             return Sample4(x, ipl, smp, Tensor.Index4SamplesClamped);
         }
 
-        public TRes Sample4<T1, TRes>(
+        public readonly TRes Sample4<T1, TRes>(
                 double x,
                 Func<double, Tup4<T1>> ipl,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, Tup4<T1>, TRes> smp,
@@ -3507,7 +3507,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes SampleRaw6<T1, TRes>(
+        public readonly TRes SampleRaw6<T1, TRes>(
                 double x,
                 Func<double, Tup6<T1>> ipl,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, __vtn__, __vtn__, Tup6<T1>, TRes> smp)
@@ -3522,7 +3522,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample6Clamped<T1, TRes>(
+        public readonly TRes Sample6Clamped<T1, TRes>(
                 double x,
                 Func<double, Tup6<T1>> ipl,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, __vtn__, __vtn__, Tup6<T1>, TRes> smp)
@@ -3530,7 +3530,7 @@ namespace Aardvark.Base
             return Sample6(x, ipl, smp, Tensor.Index6SamplesClamped);
         }
 
-        public TRes Sample6<T1, TRes>(
+        public readonly TRes Sample6<T1, TRes>(
                 double x,
                 Func<double, Tup6<T1>> ipl,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, __vtn__, __vtn__, Tup6<T1>, TRes> smp,
@@ -3549,7 +3549,7 @@ namespace Aardvark.Base
 
         //# }
         //# if (d == 2) {
-        public TRes SampleRaw4<T1, TRes>(
+        public readonly TRes SampleRaw4<T1, TRes>(
                 V2d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, TRes> yipl)
@@ -3564,7 +3564,7 @@ namespace Aardvark.Base
         /// of the matrix, i.e. pixel centers are assumed to be on
         /// integer coordinates. No bounds checking is performed.
         /// </summary>
-        public TRes SampleRaw4<T1, TRes>(
+        public readonly TRes SampleRaw4<T1, TRes>(
                 double x, double y,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, TRes> yipl)
@@ -3581,7 +3581,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample4Clamped<T1, TRes>(
+        public readonly TRes Sample4Clamped<T1, TRes>(
                 V2d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, TRes> yipl)
@@ -3590,7 +3590,7 @@ namespace Aardvark.Base
                            Tensor.Index2SamplesClamped, Tensor.Index2SamplesClamped);
         }
 
-        public TRes Sample4Clamped<T1, TRes>(
+        public readonly TRes Sample4Clamped<T1, TRes>(
                 double x, double y,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, TRes> yipl)
@@ -3599,7 +3599,7 @@ namespace Aardvark.Base
                            Tensor.Index2SamplesClamped, Tensor.Index2SamplesClamped);
         }
 
-        public TRes Sample4<T1, TRes>(
+        public readonly TRes Sample4<T1, TRes>(
                 V2d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, TRes> yipl,
@@ -3618,7 +3618,7 @@ namespace Aardvark.Base
         /// of the matrix, i.e. pixel centers are assumed to be on
         /// integer coordinates.
         /// </summary>
-        public TRes Sample4<T1, TRes>(
+        public readonly TRes Sample4<T1, TRes>(
                 double x, double y,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, TRes> yipl,
@@ -3641,7 +3641,7 @@ namespace Aardvark.Base
         }
 
         //# foreach (var clampFun in new[] { false, true }) {
-        public void SetScaled4<T1/*# if (clampFun) { */, T2/*# } */>(Matrix<__dvtn__> sourceMat,
+        public readonly void SetScaled4<T1/*# if (clampFun) { */, T2/*# } */>(Matrix<__dvtn__> sourceMat,
                 double xScale, double yScale, double xShift, double yShift,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1/*# if (clampFun) { */, T2/*# }
@@ -3690,7 +3690,7 @@ namespace Aardvark.Base
         }
 
         //# } // clampFun
-        public TRes Sample4<T1, TRes>(
+        public readonly TRes Sample4<T1, TRes>(
                 Tup2<long> dx, Tup2<long> dy, double xf, double yf,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, TRes> yipl)
@@ -3704,7 +3704,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes SampleRaw16<T1, T2, T3, TRes>(
+        public readonly TRes SampleRaw16<T1, T2, T3, TRes>(
                 V2d v,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -3713,8 +3713,8 @@ namespace Aardvark.Base
         {
             return SampleRaw16(v.X, v.Y, xipl, yipl, xsmp, ysmp);
         }
-   
-        public TRes SampleRaw16<T1, T2, T3, TRes>(
+
+        public readonly TRes SampleRaw16<T1, T2, T3, TRes>(
                 double x, double y,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -3739,7 +3739,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample16Clamped<T1, T2, T3, TRes>(
+        public readonly TRes Sample16Clamped<T1, T2, T3, TRes>(
                 V2d v,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -3750,7 +3750,7 @@ namespace Aardvark.Base
                             Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped);
         }
 
-        public TRes Sample16Clamped<T1, T2, T3, TRes>(
+        public readonly TRes Sample16Clamped<T1, T2, T3, TRes>(
                 double x, double y,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -3761,7 +3761,7 @@ namespace Aardvark.Base
                             Tensor.Index4SamplesClamped, Tensor.Index4SamplesClamped);
         }
 
-        public TRes Sample16<T1, T2, T3, TRes>(
+        public readonly TRes Sample16<T1, T2, T3, TRes>(
                 V2d v,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -3774,8 +3774,8 @@ namespace Aardvark.Base
                             index_min_max_delta_xIndexFun,
                             index_min_max_delta_yIndexFun);
         }
-        
-        public TRes Sample16<T1, T2, T3, TRes>(
+
+        public readonly TRes Sample16<T1, T2, T3, TRes>(
                 double x, double y,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -3805,7 +3805,7 @@ namespace Aardvark.Base
         }
 
         //# foreach (var clampFun in new[] { false, true }) {
-        public void SetScaled16<T1,T2, T3/*# if (clampFun) { */, T4/*# } */>(Matrix<__dvtn__> sourceMat,
+        public readonly void SetScaled16<T1,T2, T3/*# if (clampFun) { */, T4/*# } */>(Matrix<__dvtn__> sourceMat,
                 double xScale, double yScale, double xShift, double yShift,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -3856,7 +3856,7 @@ namespace Aardvark.Base
         }
 
         //# } // clampFun
-        public TRes Sample16<T1, T2, T3, TRes>(
+        public readonly TRes Sample16<T1, T2, T3, TRes>(
                 Tup4<long> dx, Tup4<long> dy, Tup4<T1> wx, Tup4<T2> wy,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, Tup4<T1>, T3> xsmp,
                 FuncRef1<T3, T3, T3, T3, Tup4<T2>, TRes> ysmp)
@@ -3874,7 +3874,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes SampleRaw36<T1, T2, T3, TRes>(
+        public readonly TRes SampleRaw36<T1, T2, T3, TRes>(
                 V2d v,
                 Func<double, Tup6<T1>> xipl,
                 Func<double, Tup6<T2>> yipl,
@@ -3884,7 +3884,7 @@ namespace Aardvark.Base
             return SampleRaw36(v.X, v.Y, xipl, yipl, xsmp, ysmp);
         }
 
-        public TRes SampleRaw36<T1, T2, T3, TRes>(
+        public readonly TRes SampleRaw36<T1, T2, T3, TRes>(
                 double x, double y,
                 Func<double, Tup6<T1>> xipl,
                 Func<double, Tup6<T2>> yipl,
@@ -3914,7 +3914,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample36Clamped<T1, T2, T3, TRes>(
+        public readonly TRes Sample36Clamped<T1, T2, T3, TRes>(
                 V2d v,
                 Func<double, Tup6<T1>> xipl,
                 Func<double, Tup6<T2>> yipl,
@@ -3925,7 +3925,7 @@ namespace Aardvark.Base
                             Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped);
         }
 
-        public TRes Sample36Clamped<T1, T2, T3, TRes>(
+        public readonly TRes Sample36Clamped<T1, T2, T3, TRes>(
                 double x, double y,
                 Func<double, Tup6<T1>> xipl,
                 Func<double, Tup6<T2>> yipl,
@@ -3936,7 +3936,7 @@ namespace Aardvark.Base
                             Tensor.Index6SamplesClamped, Tensor.Index6SamplesClamped);
         }
 
-        public TRes Sample36<T1, T2, T3, TRes>(
+        public readonly TRes Sample36<T1, T2, T3, TRes>(
                 V2d v,
                 Func<double, Tup6<T1>> xipl,
                 Func<double, Tup6<T2>> yipl,
@@ -3950,7 +3950,7 @@ namespace Aardvark.Base
                             index_min_max_delta_yIndexFun);
         }
 
-        public TRes Sample36<T1, T2, T3, TRes>(
+        public readonly TRes Sample36<T1, T2, T3, TRes>(
                 double x, double y,
                 Func<double, Tup6<T1>> xipl,
                 Func<double, Tup6<T2>> yipl,
@@ -3984,7 +3984,7 @@ namespace Aardvark.Base
         }
 
         //# foreach (var clampFun in new[] { false, true }) {
-        public void SetScaled36<T1, T2, T3/*# if (clampFun) { */, T4/*# } */>(Matrix<__dvtn__> sourceMat,
+        public readonly void SetScaled36<T1, T2, T3/*# if (clampFun) { */, T4/*# } */>(Matrix<__dvtn__> sourceMat,
                 double xScale, double yScale, double xShift, double yShift,
                 Func<double, Tup6<T1>> xipl,
                 Func<double, Tup6<T2>> yipl,
@@ -4039,8 +4039,8 @@ namespace Aardvark.Base
         }
 
         //# } // clampFun
-        public TRes Sample36<T1, T2, T3, TRes>(
-                Tup6<long> dx, Tup6<long> dy, Tup6<T1> wx, Tup6<T2> wy, 
+        public readonly TRes Sample36<T1, T2, T3, TRes>(
+                Tup6<long> dx, Tup6<long> dy, Tup6<T1> wx, Tup6<T2> wy,
                 FuncRef1<__vtn__, __vtn__, __vtn__, __vtn__, __vtn__, __vtn__, Tup6<T1>, T3> xsmp,
                 FuncRef1<T3, T3, T3, T3, T3, T3, Tup6<T2>, TRes> ysmp)
         {
@@ -4064,7 +4064,7 @@ namespace Aardvark.Base
         //# if (d == 3) {
 
 
-        public TRes SampleRaw8<T1, T2, TRes>(
+        public readonly TRes SampleRaw8<T1, T2, TRes>(
                 V3d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4080,7 +4080,7 @@ namespace Aardvark.Base
         /// of the volume, i.e. voxel centers are assumed to be on
         /// integer coordinates. No bounds checking is performed.
         /// </summary>
-        public TRes SampleRaw8<T1, T2, TRes>(
+        public readonly TRes SampleRaw8<T1, T2, TRes>(
                 double x, double y, double z,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4104,7 +4104,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample8Clamped<T1, T2, TRes>(
+        public readonly TRes Sample8Clamped<T1, T2, TRes>(
                 V3d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4116,7 +4116,7 @@ namespace Aardvark.Base
                            Tensor.Index2SamplesClamped);
         }
 
-        public TRes Sample8Clamped<T1, T2, TRes>(
+        public readonly TRes Sample8Clamped<T1, T2, TRes>(
                 double x, double y, double z,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4128,7 +4128,7 @@ namespace Aardvark.Base
                            Tensor.Index2SamplesClamped);
         }
 
-        public TRes Sample8<T1, T2, TRes>(
+        public readonly TRes Sample8<T1, T2, TRes>(
                 V3d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4142,7 +4142,7 @@ namespace Aardvark.Base
                            index_min_max_delta_yIndexFun,
                            index_min_max_delta_zIndexFun);
         }
-   
+
         /// <summary>
         /// Sample the volume using 8 samples and the supplied
         /// interpolation functions. If only integer coordintes are
@@ -4150,7 +4150,7 @@ namespace Aardvark.Base
         /// of the volume, i.e. voxel centers are assumed to be on
         /// integer coordinates.
         /// </summary>
-        public TRes Sample8<T1, T2, TRes>(
+        public readonly TRes Sample8<T1, T2, TRes>(
                 double x, double y, double z,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4179,7 +4179,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes SampleRaw64<T1, T2, T3, T4, T5, TRes>(
+        public readonly TRes SampleRaw64<T1, T2, T3, T4, T5, TRes>(
                 V3d v,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -4190,8 +4190,8 @@ namespace Aardvark.Base
         {
             return SampleRaw64(v.X, v.Y, v.Z, xipl, yipl, zipl, xsmp, ysmp, zsmp);
         }
-            
-        public TRes SampleRaw64<T1, T2, T3, T4, T5, TRes>(
+
+        public readonly TRes SampleRaw64<T1, T2, T3, T4, T5, TRes>(
                 double x, double y, double z,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -4247,7 +4247,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample64Clamped<T1, T2, T3, T4, T5, TRes>(
+        public readonly TRes Sample64Clamped<T1, T2, T3, T4, T5, TRes>(
                 V3d v,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -4262,7 +4262,7 @@ namespace Aardvark.Base
                             Tensor.Index4SamplesClamped);
         }
 
-        public TRes Sample64Clamped<T1, T2, T3, T4, T5, TRes>(
+        public readonly TRes Sample64Clamped<T1, T2, T3, T4, T5, TRes>(
                 double x, double y, double z,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -4276,8 +4276,8 @@ namespace Aardvark.Base
                             Tensor.Index4SamplesClamped,
                             Tensor.Index4SamplesClamped);
         }
-        
-        public TRes Sample64<T1, T2, T3, T4, T5, TRes>(
+
+        public readonly TRes Sample64<T1, T2, T3, T4, T5, TRes>(
                 V3d v,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -4295,7 +4295,7 @@ namespace Aardvark.Base
                             index_min_max_delta_zIndexFun);
         }
 
-        public TRes Sample64<T1, T2, T3, T4, T5, TRes>(
+        public readonly TRes Sample64<T1, T2, T3, T4, T5, TRes>(
                 double x, double y, double z,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,
@@ -4355,7 +4355,7 @@ namespace Aardvark.Base
 
         //# } // d == 3
         //# if (d == 4) {
-        public TRes SampleRaw16<T1, T2, T3, TRes>(
+        public readonly TRes SampleRaw16<T1, T2, T3, TRes>(
                 V4d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4364,7 +4364,7 @@ namespace Aardvark.Base
         {
             return SampleRaw16(v.X, v.Y, v.Z, v.W, xipl, yipl, zipl, wipl);
         }
-            
+
         /// <summary>
         /// Sample the tensor4 using 16 samples and the supplied
         /// interpolation functions. If only integer coordinates are
@@ -4372,7 +4372,7 @@ namespace Aardvark.Base
         /// of the tensor4, i.e. voxel centers are assumed to be on
         /// integer coordinates. No bounds checking is performed.
         /// </summary>
-        public TRes SampleRaw16<T1, T2, T3, TRes>(
+        public readonly TRes SampleRaw16<T1, T2, T3, TRes>(
                 double x, double y, double z, double w,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4407,7 +4407,7 @@ namespace Aardvark.Base
             //# }
         }
 
-        public TRes Sample16Clamped<T1, T2, T3, TRes>(
+        public readonly TRes Sample16Clamped<T1, T2, T3, TRes>(
                 V4d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4418,8 +4418,8 @@ namespace Aardvark.Base
                             Tensor.Index2SamplesClamped, Tensor.Index2SamplesClamped,
                             Tensor.Index2SamplesClamped, Tensor.Index2SamplesClamped);
         }
-            
-        public TRes Sample16Clamped<T1, T2, T3, TRes>(
+
+        public readonly TRes Sample16Clamped<T1, T2, T3, TRes>(
                 double x, double y, double z, double w,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4431,7 +4431,7 @@ namespace Aardvark.Base
                             Tensor.Index2SamplesClamped, Tensor.Index2SamplesClamped);
         }
 
-        public TRes Sample16<T1, T2, T3, TRes>(
+        public readonly TRes Sample16<T1, T2, T3, TRes>(
                 V4d v,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4448,7 +4448,7 @@ namespace Aardvark.Base
                             index_min_max_delta_zIndexFun,
                             index_min_max_delta_wIndexFun);
         }
-            
+
         /// <summary>
         /// Sample the tensor4 using 16 neighbouring samples and the
         /// supplied interpolation functions and border handling functions.
@@ -4456,7 +4456,7 @@ namespace Aardvark.Base
         /// the same as the indexer of the tensor4, i.e. voxel centers are
         /// assumed to be on integer coordinates.
         /// </summary>
-        public TRes Sample16<T1, T2, T3, TRes>(
+        public readonly TRes Sample16<T1, T2, T3, TRes>(
                 double x, double y, double z, double w,
                 Func<double, __vtn__, __vtn__, T1> xipl,
                 Func<double, T1, T1, T2> yipl,
@@ -4507,7 +4507,7 @@ namespace Aardvark.Base
         /// Draws a horizontal line. The parameters x0, x1, and y are rounded
         /// to the nearest integer coordinates.
         /// </summary>
-        public void SetLineX(double x0, double x1, double y, __vtn__ value)
+        public readonly void SetLineX(double x0, double x1, double y, __vtn__ value)
         {
             SetLineX((long)(x0 + 0.5), (long)(x1 + 0.5), (long)(y + 0.5), value);
         }
@@ -4516,7 +4516,7 @@ namespace Aardvark.Base
         /// Draws a vertical line. The parameters x, y0, and y1 are rounded
         /// to the nearest integer coordinates.
         /// </summary>
-        public void SetLineY(double x, double y0, double y1, __vtn__ value)
+        public readonly void SetLineY(double x, double y0, double y1, __vtn__ value)
         {
             SetLineY((long)(x + 0.5), (long)(y0 + 0.5), (long)(y1 + 0.5), value);
         }
@@ -4524,7 +4524,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a horizontal line.
         /// </summary>
-        public void SetLineX(long x0, long x1, long y, __vtn__ value)
+        public readonly void SetLineX(long x0, long x1, long y, __vtn__ value)
         {
             long xmin = Fun.Max(Fun.Min(x0, x1), Info.First.X);
             long xmax = Fun.Min(Fun.Max(x0, x1), Info.First.X + Info.Size.X - 1);
@@ -4535,7 +4535,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a vertical line.
         /// </summary>
-        public void SetLineY(long x, long y0, long y1, __vtn__ value)
+        public readonly void SetLineY(long x, long y0, long y1, __vtn__ value)
         {
             long ymin = Fun.Max(Fun.Min(y0, y1), Info.First.Y);
             long ymax = Fun.Min(Fun.Max(y0, y1), Info.First.Y + Info.Size.Y - 1);
@@ -4547,7 +4547,7 @@ namespace Aardvark.Base
         /// Draws a rectangular frame. The corner positions are
         /// rounded to the nearest integer coordinates.
         /// </summary>
-        public void SetRectangle(V2d p0, V2d p1, __vtn__ value)
+        public readonly void SetRectangle(V2d p0, V2d p1, __vtn__ value)
         {
             SetRectangle((long)(p0.X + 0.5), (long)(p0.Y + 0.5),
                          (long)(p1.X + 0.5), (long)(p1.Y + 0.5), value);
@@ -4556,7 +4556,7 @@ namespace Aardvark.Base
         /// Draws a rectangular frame. The parameters x0, x1, y0, and y1 are
         /// rounded to the nearest integer coordinates.
         /// </summary>
-        public void SetRectangle(double x0, double y0, double x1, double y1, __vtn__ value)
+        public readonly void SetRectangle(double x0, double y0, double x1, double y1, __vtn__ value)
         {
             SetRectangle((long)(x0 + 0.5), (long)(y0 + 0.5),
                          (long)(x1 + 0.5), (long)(y1 + 0.5), value);
@@ -4565,7 +4565,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a rectangular frame given the coordinates of two opposing corners.
         /// </summary>
-        public void SetRectangle(V2i p0, V2i p1, __vtn__ value)
+        public readonly void SetRectangle(V2i p0, V2i p1, __vtn__ value)
         {
             SetRectangle((long)p0.X, (long)p0.Y, (long)p1.X, (long)p1.Y, value);
         }
@@ -4573,7 +4573,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a rectangular frame given the coordinates of two opposing corners.
         /// </summary>
-        public void SetRectangle(V2l v0, V2l v1, __vtn__ value)
+        public readonly void SetRectangle(V2l v0, V2l v1, __vtn__ value)
         {
             SetRectangle(v0.X, v0.Y, v1.X, v1.Y, value);
         }
@@ -4581,7 +4581,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a rectangular frame given the coordinates of two opposing corners.
         /// </summary>
-        public void SetRectangle(long x0, long y0, long x1, long y1, __vtn__ value)
+        public readonly void SetRectangle(long x0, long y0, long x1, long y1, __vtn__ value)
         {
             long ymin = Fun.Min(y0, y1), ymax = Fun.Max(y0, y1);
             SetLineX(x0, x1, ymin, value);
@@ -4594,7 +4594,7 @@ namespace Aardvark.Base
         /// Sets the supplied rectangle and its interior to the supplied value.
         /// Note that the coordinates are rounded to the nearest integer coordinate.
         /// </summary>
-        public void SetRectangleFilled(V2d p0, V2d p1, __vtn__ value)
+        public readonly void SetRectangleFilled(V2d p0, V2d p1, __vtn__ value)
         {
             SetRectangleFilled((long)(p0.X + 0.5), (long)(p0.Y + 0.5),
                                (long)(p1.X + 0.5), (long)(p1.Y + 0.5), value);
@@ -4604,7 +4604,7 @@ namespace Aardvark.Base
         /// Sets the supplied rectangle and its interior to the supplied value.
         /// Note that the coordinates are rounded to the nearest integer coordinate.
         /// </summary>
-        public void SetRectangleFilled(double x0, double y0, double x1, double y1, __vtn__ value)
+        public readonly void SetRectangleFilled(double x0, double y0, double x1, double y1, __vtn__ value)
         {
             SetRectangleFilled((long)(x0 + 0.5), (long)(y0 + 0.5),
                                (long)(x1 + 0.5), (long)(y1 + 0.5), value);
@@ -4614,7 +4614,7 @@ namespace Aardvark.Base
         /// Sets the supplied rectangle given by its minimal and maximal pixel
         /// position vectors and its interior to the supplied value.
         /// </summary>
-        public void SetRectangleFilled(V2i p0, V2i p1, __vtn__ value)
+        public readonly void SetRectangleFilled(V2i p0, V2i p1, __vtn__ value)
         {
             SetRectangleFilled((long)p0.X, (long)p0.Y, (long)p1.X, (long)p1.Y, value);
         }
@@ -4623,7 +4623,7 @@ namespace Aardvark.Base
         /// Sets the supplied rectangle given by its minimal and maximal pixel
         /// position vectors and its interior to the supplied value.
         /// </summary>
-        public void SetRectangleFilled(V2l p0, V2l p1, __vtn__ value)
+        public readonly void SetRectangleFilled(V2l p0, V2l p1, __vtn__ value)
         {
             SetRectangleFilled(p0.X, p0.Y, p1.X, p1.Y, value);
         }
@@ -4632,7 +4632,7 @@ namespace Aardvark.Base
         /// Sets the supplied rectangle given by its minimal and maximal pixel
         /// coordinates and its interior to the supplied value.
         /// </summary>
-        public void SetRectangleFilled(long x0, long y0, long x1, long y1, __vtn__ value)
+        public readonly void SetRectangleFilled(long x0, long y0, long x1, long y1, __vtn__ value)
         {
             long xmin = Fun.Max(Fun.Min(x0, x1), Info.First.X);
             long xmax = Fun.Min(Fun.Max(x0, x1), Info.First.X + Info.Size.X - 1);
@@ -4645,9 +4645,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Draws a vertical/horizontal cross around p. 
+        /// Draws a vertical/horizontal cross around p.
         /// </summary>
-        public void SetCross(V2d p, double radius, __vtn__ value)
+        public readonly void SetCross(V2d p, double radius, __vtn__ value)
         {
             SetCross((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
@@ -4655,7 +4655,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a vertical/horizontal cross around [x,y].
         /// </summary>
-        public void SetCross(double x, double y, double radius, __vtn__ value)
+        public readonly void SetCross(double x, double y, double radius, __vtn__ value)
         {
             SetCross((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
         }
@@ -4663,7 +4663,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a vertical/horizontal cross around p.
         /// </summary>
-        public void SetCross(V2i p, int radius, __vtn__ value)
+        public readonly void SetCross(V2i p, int radius, __vtn__ value)
         {
             SetCross((long)p.X, (long)p.Y, (long)radius, value);
         }
@@ -4671,7 +4671,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a vertical/horizontal cross around p.
         /// </summary>
-        public void SetCross(V2l p, long radius, __vtn__ value)
+        public readonly void SetCross(V2l p, long radius, __vtn__ value)
         {
             SetCross(p.X, p.Y, radius, value);
         }
@@ -4679,7 +4679,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Draws a vertical/horizontal cross around [x, y].
         /// </summary>
-        public void SetCross(long x, long y, long radius, __vtn__ value)
+        public readonly void SetCross(long x, long y, long radius, __vtn__ value)
         {
             SetLineX(x - radius, x + radius, y, value);
             SetLineY(x, y - radius, y + radius, value);
@@ -4689,7 +4689,7 @@ namespace Aardvark.Base
         /// Draws a X-style cross around [x, y]. Note that radius
         /// is the horizontal/vertical distance of the corner.
         /// </summary>
-        public void SetCrossX(V2d p, double radius, __vtn__ value)
+        public readonly void SetCrossX(V2d p, double radius, __vtn__ value)
         {
             SetCrossX((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
@@ -4698,7 +4698,7 @@ namespace Aardvark.Base
         /// Draws a X-style cross around [x, y]. Note that radius
         /// is the horizontal/vertical distance of the corner.
         /// </summary>
-        public void SetCrossX(double x, double y, double radius, __vtn__ value)
+        public readonly void SetCrossX(double x, double y, double radius, __vtn__ value)
         {
             SetCrossX((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
         }
@@ -4707,7 +4707,7 @@ namespace Aardvark.Base
         /// Draws a X-style cross around [x, y]. Note that radius
         /// is the horizontal/vertical distance of the corner.
         /// </summary>
-        public void SetCrossX(V2i p, int radius, __vtn__ value)
+        public readonly void SetCrossX(V2i p, int radius, __vtn__ value)
         {
             SetCrossX((long)p.X, (long)p.Y, (long)radius, value);
         }
@@ -4716,7 +4716,7 @@ namespace Aardvark.Base
         /// Draws a X-style cross around [x, y]. Note that radius
         /// is the horizontal/vertical distance of the corner.
         /// </summary>
-        public void SetCrossX(V2l p, long radius, __vtn__ value)
+        public readonly void SetCrossX(V2l p, long radius, __vtn__ value)
         {
             SetCrossX(p.X, p.Y, radius, value);
         }
@@ -4725,91 +4725,91 @@ namespace Aardvark.Base
         /// Draws a X-style cross around [x, y]. Note that radius
         /// is the horizontal/vertical distance of the corner.
         /// </summary>
-        public void SetCrossX(long x, long y, long radius, __vtn__ value)
+        public readonly void SetCrossX(long x, long y, long radius, __vtn__ value)
         {
             SetLine(x - radius, y - radius, x + radius, y + radius, value);
             SetLine(x + radius, y - radius, x - radius, y + radius, value);
         }
 
-        public void SetSquare(
+        public readonly void SetSquare(
                 V2d p, double radius, __vtn__ value)
         {
             SetSquare((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetSquare(
+        public readonly void SetSquare(
                 double x, double y, double radius, __vtn__ value)
         {
             SetSquare((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetSquare(
+        public readonly void SetSquare(
                 V2i p, int radius, __vtn__ value)
         {
             SetSquare((long)p.X, (long)p.Y, (long)radius, value);
         }
 
-        public void SetSquare(
+        public readonly void SetSquare(
                 V2l p, long radius, __vtn__ value)
         {
             SetSquare(p.X, p.Y, radius, value);
         }
 
-        public void SetSquare(
+        public readonly void SetSquare(
                 long x, long y, long radius, __vtn__ value)
         {
             SetRectangle(x - radius, y - radius, x + radius, y + radius, value);
         }
 
-        public void SetSquareFilled(
+        public readonly void SetSquareFilled(
                 V2d p, double radius, __vtn__ value)
         {
             SetSquareFilled((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetSquareFilled(
+        public readonly void SetSquareFilled(
                 double x, double y, double radius, __vtn__ value)
         {
             SetSquareFilled((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetSquareFilled(
+        public readonly void SetSquareFilled(
                 V2i p, int radius, __vtn__ value)
         {
             SetSquareFilled((long)p.X, (long)p.Y, (long)radius, value);
         }
 
-        public void SetSquareFilled(
+        public readonly void SetSquareFilled(
                 V2l p, long radius, __vtn__ value)
         {
             SetSquareFilled(p.X, p.Y, radius, value);
         }
 
-        public void SetSquareFilled(
+        public readonly void SetSquareFilled(
                 long x, long y, long radius, __vtn__ value)
         {
             SetRectangleFilled(x - radius, y - radius, x + radius, y + radius, value);
         }
 
-        public void SetLine(
+        public readonly void SetLine(
                 V2d p0, V2d p1, __vtn__ value)
         {
             SetLine((long)(p0.X + 0.5), (long)(p0.Y + 0.5), (long)(p1.X + 0.5), (long)(p1.Y + 0.5), value);
         }
 
-        public void SetLine(
+        public readonly void SetLine(
                 double x0, double y0, double x1, double y1, __vtn__ value)
         {
             SetLine((long)(x0 + 0.5), (long)(y0 + 0.5), (long)(x1 + 0.5), (long)(y1 + 0.5), value);
         }
 
-        public void SetLine(
+        public readonly void SetLine(
                 V2i p0, V2i p1, __vtn__ value)
         {
             SetLine((long)p0.X, (long)p0.Y, (long)p1.X, (long)p1.Y, value);
         }
 
-        public void SetLine(
+        public readonly void SetLine(
                 V2l p0, V2l p1, __vtn__ value)
         {
             SetLine(p0.X, p0.Y, p1.X, p1.Y, value);
@@ -4818,7 +4818,7 @@ namespace Aardvark.Base
         /// <summary>
         ///  Bresenham Line Algorithm
         /// </summary>
-        public void SetLine(
+        public readonly void SetLine(
                 long x0, long y0, long x1, long y1, __vtn__ value)
         {
             //-- Trivial Cases
@@ -4897,7 +4897,7 @@ namespace Aardvark.Base
         /// Set all pixels whose square region is intersected by the line from p0 to p1
         /// to the supplied value. Does not perform any bounds checks.
         /// </summary>
-        public void SetLineAllTouchedRaw(V2d p0, V2d p1, __vtn__ value)
+        public readonly void SetLineAllTouchedRaw(V2d p0, V2d p1, __vtn__ value)
         {
             SetLineAllTouchedRaw(p0.X, p0.Y, p1.X, p1.Y, value);
         }
@@ -4906,7 +4906,7 @@ namespace Aardvark.Base
         /// Set all pixels whose square region is intersected by the line from (x0,y0) to (x1,y1)
         /// to the supplied value. Does not perform any bounds checks.
         /// </summary>
-        public void SetLineAllTouchedRaw(double x0, double y0, double x1, double y1, __vtn__ value)
+        public readonly void SetLineAllTouchedRaw(double x0, double y0, double x1, double y1, __vtn__ value)
         {
             var ix = (long)Fun.Floor(x0);
             var iy = (long)Fun.Floor(y0);
@@ -4942,31 +4942,31 @@ namespace Aardvark.Base
             while (t < len);
         }
 
-        public void SetCircle(
+        public readonly void SetCircle(
                 V2d p, double radius, __vtn__ value)
         {
             SetCircle((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetCircle(
+        public readonly void SetCircle(
                 double x, double y, double radius, __vtn__ value)
         {
             SetCircle((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetCircle(
+        public readonly void SetCircle(
                 V2i p, int radius, __vtn__ value)
         {
             SetCircle((long)p.X, (long)p.Y, (long)radius, value);
         }
 
-        public void SetCircle(
+        public readonly void SetCircle(
                 V2l p, long radius, __vtn__ value)
         {
             SetCircle(p.X, p.Y, radius, value);
         }
 
-        public void SetCircle(
+        public readonly void SetCircle(
                 long x, long y, long radius, __vtn__ value)
         {
             long f = 1 - radius;
@@ -5029,31 +5029,31 @@ namespace Aardvark.Base
             }
         }
 
-        public void SetCircleFilled(
+        public readonly void SetCircleFilled(
                 V2d p, double radius, __vtn__ value)
         {
             SetCircleFilled((long)(p.X + 0.5), (long)(p.Y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetCircleFilled(
+        public readonly void SetCircleFilled(
                 double x, double y, double radius, __vtn__ value)
         {
             SetCircleFilled((long)(x + 0.5), (long)(y + 0.5), (long)(radius + 0.5), value);
         }
 
-        public void SetCircleFilled(
+        public readonly void SetCircleFilled(
                 V2i p, int radius, __vtn__ value)
         {
             SetCircleFilled((long)p.X, (long)p.Y, (long)radius, value);
         }
 
-        public void SetCircleFilled(
+        public readonly void SetCircleFilled(
                 V2l p, long radius, __vtn__ value)
         {
             SetCircleFilled(p.X, p.Y, radius, value);
         }
 
-        public void SetCircleFilled(
+        public readonly void SetCircleFilled(
                 long x0, long y0, long radius, __vtn__ value)
         {
             long x = radius;
@@ -5138,7 +5138,7 @@ namespace Aardvark.Base
         //# var polygon = hasVertexArray ? "vertexArray[polygon[" : "polygon[";
         //# var q = hasVertexArray ? "]]" : "]";
         //# var pt = hasVertexArray ? "int" : "V2d";
-        public void SetMonotonePolygonFilledRaw(
+        public readonly void SetMonotonePolygonFilledRaw(
                 __pt__[] polygon,/*# if (hasVertexArray) { */ V2d[] vertexArray,/*# } */
                 __vtn__ value,
                 Winding winding = Winding.CCW,
@@ -5246,25 +5246,25 @@ namespace Aardvark.Base
         /// <summary>
         /// Dimension of the generic __ttn__.
         /// </summary>
-        public __itn__ Dim { get { return Info.Size; } }
+        public readonly __itn__ Dim { get { return Info.Size; } }
 
-        public object GetValue(/*# iaa.ForEach(a => { */long __a__/*# }, comma); */)
+        public readonly object GetValue(/*# iaa.ForEach(a => { */long __a__/*# }, comma); */)
         {
             return (object)this[/*# iaa.ForEach(a => { */__a__/*# }, comma); */];
         }
 
-        public void SetValue(object value, /*# iaa.ForEach(a => { */long __a__/*# }, comma); */)
+        public readonly void SetValue(object value, /*# iaa.ForEach(a => { */long __a__/*# }, comma); */)
         {
             this[/*# iaa.ForEach(a => { */__a__/*# }, comma); */] = (__vtn__)value;
         }
 
         //# if (d > 1) {
-        public object GetValue(__itn__ v)
+        public readonly object GetValue(__itn__ v)
         {
             return (object)this[v];
         }
 
-        public void SetValue(object value, __itn__ v)
+        public readonly void SetValue(object value, __itn__ v)
         {
             this[v] = (__vtn__)value;
         }

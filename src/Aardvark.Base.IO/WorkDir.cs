@@ -165,7 +165,7 @@ namespace Aardvark.Base.Coder
         private const string c_workDirNameEnvVariable = "AARDVARK_WORKDIR";
         private static string s_workDirName = null;
 
-        private static string[] s_fallbackWorkDirNames =
+        private static readonly string[] s_fallbackWorkDirNames =
         {
             @"C:\Aardwork",
             @"C:\Data\Aardwork",

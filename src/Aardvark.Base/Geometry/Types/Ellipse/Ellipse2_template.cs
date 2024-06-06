@@ -18,19 +18,19 @@ namespace Aardvark.Base
 
     public partial struct __type__ : IValidity
     {
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public __ftype__ Area
+        public readonly __ftype__ Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Abs(Axis0.X * Axis1.Y - Axis0.Y * Axis1.X) * __pi__;

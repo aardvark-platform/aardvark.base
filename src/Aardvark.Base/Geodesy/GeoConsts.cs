@@ -5,14 +5,14 @@
     /// </summary>
     public class GeoDatum
     {
-        private double m_dx;
-        private double m_dy;
-        private double m_dz;
+        private readonly double m_dx;
+        private readonly double m_dy;
+        private readonly double m_dz;
 
-        private double m_rx;
-        private double m_ry;
-        private double m_rz;
-        private double m_ds;
+        private readonly double m_rx;
+        private readonly double m_ry;
+        private readonly double m_rz;
+        private readonly double m_ds;
 
         /// <summary>
         /// Constructs geodetic datum.

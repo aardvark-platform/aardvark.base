@@ -8,7 +8,7 @@ namespace Aardvark.Base
 {
     public static class HardwareThread
     {
-        private static Dictionary<int, ProcessThread> s_pts = new Dictionary<int, ProcessThread>();
+        private static readonly Dictionary<int, ProcessThread> s_pts = new Dictionary<int, ProcessThread>();
         private static SpinLock s_ptsLock = new SpinLock();
 
         public static ProcessThread GetProcessThread(int tid)

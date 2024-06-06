@@ -17,15 +17,15 @@ namespace Aardvark.Base
     public class V3fCoder
     {
         // private uint m_raster;
-        private uint m_r2Sub1;
-        private double m_doubleRaster;
-        private double m_invDoubleRaster;
-        private uint m_edgeBasis;
-        private uint m_cornerBasis;
+        private readonly uint m_r2Sub1;
+        private readonly double m_doubleRaster;
+        private readonly double m_invDoubleRaster;
+        private readonly uint m_edgeBasis;
+        private readonly uint m_cornerBasis;
         #if V3FCODER_DECODE_TABLE
         private double[] m_unWarpTable;
         #endif
-        private double m_dRp05;
+        private readonly double m_dRp05;
 
         #region Constructor
 
@@ -158,7 +158,7 @@ namespace Aardvark.Base
         const double c_piOver4 = Constant.Pi * 0.25;
         const double c_4OverPi = 4.0 / Constant.Pi;
 
-        private static V3fCoder[] s_coderForBits =
+        private static readonly V3fCoder[] s_coderForBits =
             new V3fCoder[33];
 
         static V3fCoder()

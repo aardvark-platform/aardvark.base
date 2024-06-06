@@ -145,7 +145,7 @@ namespace Aardvark.Base
         public V3f V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f(X, Y, Z); }
+            readonly get { return new V3f(X, Y, Z); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { X = value.X; Y = value.Y; Z = value.Z; }
         }
@@ -154,7 +154,7 @@ namespace Aardvark.Base
         /// Gets the squared norm (or squared length) of this <see cref="Rot3f"/>.
         /// May not be exactly 1, due to numerical inaccuracy.
         /// </summary>
-        public float NormSquared
+        public readonly float NormSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => W * W + X * X + Y * Y + Z * Z;
@@ -162,9 +162,9 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Gets the norm (or length) of this <see cref="Rot3f"/>.
-        /// May not be exactly 1, due to numerical inaccuracy. 
+        /// May not be exactly 1, due to numerical inaccuracy.
         /// </summary>
-        public float Norm
+        public readonly float Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => NormSquared.Sqrt();
@@ -173,7 +173,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets normalized (unit) quaternion from this <see cref="Rot3f"/>
         /// </summary>
-        public Rot3f Normalized
+        public readonly Rot3f Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -187,7 +187,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Rot3f"/> transformation.
         /// </summary>
-        public Rot3f Inverse
+        public readonly Rot3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -544,7 +544,7 @@ namespace Aardvark.Base
         #endregion
 
         #region Static Creators
-        
+
         /// <summary>
         /// Creates a <see cref="Rot3f"/> transformation from an orthonormal basis.
         /// </summary>
@@ -691,7 +691,7 @@ namespace Aardvark.Base
             => FromM44f(trafo.Forward, epsilon);
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> transformation representing a rotation around 
+        /// Creates a <see cref="Rot3f"/> transformation representing a rotation around
         /// an axis by an angle in radians.
         /// The axis vector has to be normalized.
         /// </summary>
@@ -705,7 +705,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> transformation representing a rotation around 
+        /// Creates a <see cref="Rot3f"/> transformation representing a rotation around
         /// an axis by an angle in degrees.
         /// The axis vector has to be normalized.
         /// </summary>
@@ -783,7 +783,7 @@ namespace Aardvark.Base
             => RotationZ(angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -807,7 +807,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -975,7 +975,7 @@ namespace Aardvark.Base
         public unsafe float this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &W) { return ptr[i]; }
             }
@@ -990,19 +990,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(W, V);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Rot3f other)
+        public readonly bool Equals(Rot3f other)
             => Rot.Distance(this, other) == 0;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Rot3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", W, V);
         }
@@ -1020,7 +1020,7 @@ namespace Aardvark.Base
     {
         #region Dot
 
-        /// <summary> 
+        /// <summary>
         /// Returns the dot product of two <see cref="Rot3f"/> unit quaternions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1439,7 +1439,7 @@ namespace Aardvark.Base
         public V3d V
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d(X, Y, Z); }
+            readonly get { return new V3d(X, Y, Z); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { X = value.X; Y = value.Y; Z = value.Z; }
         }
@@ -1448,7 +1448,7 @@ namespace Aardvark.Base
         /// Gets the squared norm (or squared length) of this <see cref="Rot3d"/>.
         /// May not be exactly 1, due to numerical inaccuracy.
         /// </summary>
-        public double NormSquared
+        public readonly double NormSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => W * W + X * X + Y * Y + Z * Z;
@@ -1456,9 +1456,9 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Gets the norm (or length) of this <see cref="Rot3d"/>.
-        /// May not be exactly 1, due to numerical inaccuracy. 
+        /// May not be exactly 1, due to numerical inaccuracy.
         /// </summary>
-        public double Norm
+        public readonly double Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => NormSquared.Sqrt();
@@ -1467,7 +1467,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets normalized (unit) quaternion from this <see cref="Rot3d"/>
         /// </summary>
-        public Rot3d Normalized
+        public readonly Rot3d Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1481,7 +1481,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Rot3d"/> transformation.
         /// </summary>
-        public Rot3d Inverse
+        public readonly Rot3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1838,7 +1838,7 @@ namespace Aardvark.Base
         #endregion
 
         #region Static Creators
-        
+
         /// <summary>
         /// Creates a <see cref="Rot3d"/> transformation from an orthonormal basis.
         /// </summary>
@@ -1985,7 +1985,7 @@ namespace Aardvark.Base
             => FromM44d(trafo.Forward, epsilon);
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> transformation representing a rotation around 
+        /// Creates a <see cref="Rot3d"/> transformation representing a rotation around
         /// an axis by an angle in radians.
         /// The axis vector has to be normalized.
         /// </summary>
@@ -1999,7 +1999,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> transformation representing a rotation around 
+        /// Creates a <see cref="Rot3d"/> transformation representing a rotation around
         /// an axis by an angle in degrees.
         /// The axis vector has to be normalized.
         /// </summary>
@@ -2077,7 +2077,7 @@ namespace Aardvark.Base
             => RotationZ(angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2101,7 +2101,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2269,7 +2269,7 @@ namespace Aardvark.Base
         public unsafe double this[int i]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &W) { return ptr[i]; }
             }
@@ -2284,19 +2284,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(W, V);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Rot3d other)
+        public readonly bool Equals(Rot3d other)
             => Rot.Distance(this, other) == 0;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Rot3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", W, V);
         }
@@ -2314,7 +2314,7 @@ namespace Aardvark.Base
     {
         #region Dot
 
-        /// <summary> 
+        /// <summary>
         /// Returns the dot product of two <see cref="Rot3d"/> unit quaternions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

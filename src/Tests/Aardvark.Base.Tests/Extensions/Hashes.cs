@@ -124,7 +124,7 @@ namespace Aardvark.Tests.Extensions
                 }
             }
 
-            private static Dictionary<Type, int> _sizeCache = new Dictionary<Type, int>();
+            private static readonly Dictionary<Type, int> _sizeCache = new Dictionary<Type, int>();
             public static int SizeOf(Type type)
             {
                 return _sizeCache.GetCreate(type, t =>

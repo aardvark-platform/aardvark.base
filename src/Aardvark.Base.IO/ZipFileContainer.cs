@@ -26,9 +26,9 @@ namespace Aardvark.Base.Coder.Legacy
 
         private string[] m_ZipFileNames = new string[0];
         private WeakReference[] m_ZipFileStreams = new WeakReference[0];
-        private SymbolDict<SubFileHeader> m_Files = new SymbolDict<SubFileHeader>();
-        private SymbolSet m_Directories = new SymbolSet();
-        private bool m_contentCaseSensitive = false;
+        private readonly SymbolDict<SubFileHeader> m_Files = new SymbolDict<SubFileHeader>();
+        private readonly SymbolSet m_Directories = new SymbolSet();
+        private readonly bool m_contentCaseSensitive = false;
 
         #endregion
 

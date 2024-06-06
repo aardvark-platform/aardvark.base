@@ -8,10 +8,10 @@ namespace Aardvark.Base
     /// </summary>
     public class SubRange<T> : IList<T>
     {
-        private IList<T> m_base;
-        private int m_start;
-        private int m_count;
-        private int m_stop;
+        private readonly IList<T> m_base;
+        private readonly int m_start;
+        private readonly int m_count;
+        private readonly int m_stop;
 
         #region Constructor
 

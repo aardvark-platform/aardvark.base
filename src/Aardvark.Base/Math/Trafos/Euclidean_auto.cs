@@ -11,7 +11,7 @@ namespace Aardvark.Base
     #region Euclidean2f
 
     /// <summary>
-    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 2D that is composed of a 
+    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 2D that is composed of a
     /// 2D rotation Rot and a subsequent translation by a 2D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
@@ -118,7 +118,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Euclidean transformation.
         /// [Rot^T,-Rot^T Trans]
         /// </summary>
-        public Euclidean2f Inverse
+        public readonly Euclidean2f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -350,7 +350,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Euclidean2f FromM33f(M33f m, float epsilon = 1e-5f) 
+        public static Euclidean2f FromM33f(M33f m, float epsilon = 1e-5f)
         {
             if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -494,19 +494,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Rot, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Euclidean2f other)
+        public readonly bool Equals(Euclidean2f other)
             => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Euclidean2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Rot, Trans);
         }
@@ -623,7 +623,7 @@ namespace Aardvark.Base
     #region Euclidean3f
 
     /// <summary>
-    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 3D that is composed of a 
+    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 3D that is composed of a
     /// 3D rotation Rot and a subsequent translation by a 3D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
@@ -728,7 +728,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a new version of this Euclidean transformation with a normalized rotation quaternion.
         /// </summary>
-        public Euclidean3f Normalized
+        public readonly Euclidean3f Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Euclidean3f(Rot.Normalized, Trans);
@@ -738,7 +738,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Euclidean transformation.
         /// [Rot^T,-Rot^T Trans]
         /// </summary>
-        public Euclidean3f Inverse
+        public readonly Euclidean3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1002,7 +1002,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Euclidean3f FromM44f(M44f m, float epsilon = 1e-5f) 
+        public static Euclidean3f FromM44f(M44f m, float epsilon = 1e-5f)
         {
             if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -1109,7 +1109,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1117,7 +1117,7 @@ namespace Aardvark.Base
             => new Euclidean3f(Rot3f.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1238,19 +1238,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Rot, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Euclidean3f other)
+        public readonly bool Equals(Euclidean3f other)
             => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Euclidean3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Rot, Trans);
         }
@@ -1387,7 +1387,7 @@ namespace Aardvark.Base
     #region Euclidean2d
 
     /// <summary>
-    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 2D that is composed of a 
+    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 2D that is composed of a
     /// 2D rotation Rot and a subsequent translation by a 2D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
@@ -1494,7 +1494,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Euclidean transformation.
         /// [Rot^T,-Rot^T Trans]
         /// </summary>
-        public Euclidean2d Inverse
+        public readonly Euclidean2d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1726,7 +1726,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Euclidean2d FromM33d(M33d m, double epsilon = 1e-12) 
+        public static Euclidean2d FromM33d(M33d m, double epsilon = 1e-12)
         {
             if (!(m.M20.IsTiny(epsilon) && m.M21.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -1870,19 +1870,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Rot, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Euclidean2d other)
+        public readonly bool Equals(Euclidean2d other)
             => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Euclidean2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Rot, Trans);
         }
@@ -1999,7 +1999,7 @@ namespace Aardvark.Base
     #region Euclidean3d
 
     /// <summary>
-    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 3D that is composed of a 
+    /// Represents a Rigid Transformation (or Rigid Body Transformation) in 3D that is composed of a
     /// 3D rotation Rot and a subsequent translation by a 3D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
@@ -2104,7 +2104,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a new version of this Euclidean transformation with a normalized rotation quaternion.
         /// </summary>
-        public Euclidean3d Normalized
+        public readonly Euclidean3d Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Euclidean3d(Rot.Normalized, Trans);
@@ -2114,7 +2114,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Euclidean transformation.
         /// [Rot^T,-Rot^T Trans]
         /// </summary>
-        public Euclidean3d Inverse
+        public readonly Euclidean3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -2378,7 +2378,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Euclidean3d FromM44d(M44d m, double epsilon = 1e-12) 
+        public static Euclidean3d FromM44d(M44d m, double epsilon = 1e-12)
         {
             if (!(m.M30.IsTiny(epsilon) && m.M31.IsTiny(epsilon) && m.M32.IsTiny(epsilon)))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -2485,7 +2485,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2493,7 +2493,7 @@ namespace Aardvark.Base
             => new Euclidean3d(Rot3d.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2614,19 +2614,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Rot, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Euclidean3d other)
+        public readonly bool Equals(Euclidean3d other)
             => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Euclidean3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Rot, Trans);
         }

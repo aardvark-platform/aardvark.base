@@ -26,7 +26,7 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class TransformV3d
     {
-        V3d[] arr = new V3d[100000];
+        readonly V3d[] arr = new V3d[100000];
 
         M44d trafo = M44d.RotationX(Constant.Pi);
         Euclidean3d euclidean = Euclidean3d.RotationX(Constant.Pi);

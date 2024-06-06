@@ -75,7 +75,7 @@ namespace Aardvark.Base.Coder
         /// Note that all types that are in this set need to implement IAwakeable
         /// and call CreateNewGuidSymbol in the Awake method.
         /// </summary>
-        private static SymbolDict<int> s_lastMapCodedVersionMap = new SymbolDict<int>
+        private static readonly SymbolDict<int> s_lastMapCodedVersionMap = new SymbolDict<int>
         {
             { "KdTreeSet", 3 },
             { "SphereSet", 3 },

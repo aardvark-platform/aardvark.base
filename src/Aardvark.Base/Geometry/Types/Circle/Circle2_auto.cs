@@ -135,37 +135,37 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0 || float.IsNaN(Radius) || Center.IsNaN;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0 && !Center.IsNaN;
         }
 
-        public float RadiusSquared
+        public readonly float RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius;
         }
 
-        public float Circumference
+        public readonly float Circumference
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * Radius * ConstantF.Pi;
         }
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius * ConstantF.Pi;
         }
 
-        public Box2f InscribedSquare
+        public readonly Box2f InscribedSquare
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -192,18 +192,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Circle2f other)
+        public readonly bool Equals(Circle2f other)
             => Center.Equals(other.Center) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Circle2f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2f Members
 
-        public Box2f BoundingBox2f
+        public readonly Box2f BoundingBox2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box2f(
@@ -362,37 +362,37 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0 || double.IsNaN(Radius) || Center.IsNaN;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0 && !Center.IsNaN;
         }
 
-        public double RadiusSquared
+        public readonly double RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius;
         }
 
-        public double Circumference
+        public readonly double Circumference
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * Radius * Constant.Pi;
         }
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius * Constant.Pi;
         }
 
-        public Box2d InscribedSquare
+        public readonly Box2d InscribedSquare
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -419,18 +419,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Circle2d other)
+        public readonly bool Equals(Circle2d other)
             => Center.Equals(other.Center) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Circle2d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         /// <summary>
@@ -447,7 +447,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d Members
 
-        public Box2d BoundingBox2d
+        public readonly Box2d BoundingBox2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box2d(

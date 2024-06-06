@@ -87,13 +87,13 @@ namespace Aardvark.Base
         //# }
     {
         //# if (wrapped) {
-        private __nctype____tpar__ m_dict;
+        private readonly __nctype____tpar__ m_dict;
         //# } else { // !wrapped
-        //# if (concurrent) { 
+        //# if (concurrent) {
         private long m_version;
         //# }
         //# if (fun) {
-        private Func<__tkey__, __itype__> m_hfun;
+        private readonly Func<__tkey__, __itype__> m_hfun;
         //# }
         private __uitype__ m_capacity;
         private __NextHashItem__[] m_firstArray;
@@ -102,7 +102,7 @@ namespace Aardvark.Base
         private __uitype__ m_increaseThreshold;
         private __uitype__ m_decreaseThreshold;
         //# if (hasValue) {
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         //# }
         private __itype__ m_freeIndex;
         private int m_capacityIndex;
@@ -736,7 +736,7 @@ namespace Aardvark.Base
         /// to the __type__.
         /// </summary>
         public __rtype__ __tryPrefix__Add(__tkey__ key/*#
-                if (hasHashPar) { */, __itype__ hash/*# } 
+                if (hasHashPar) { */, __itype__ hash/*# }
                 if (hasValue) { */, __tvalue__ value/*# } */)
         {
             //# if (wrapped) {
@@ -1275,7 +1275,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(__tkey__ key)
@@ -1285,9 +1285,9 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ m_dict;/*# if (hasKey) { */
-            TKey m_key;/*# } */
-            __itype__ m_hash;
+            readonly __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ m_dict;/*# if (hasKey) { */
+            readonly TKey m_key;/*# } */
+            readonly __itype__ m_hash;
             __itype__ m_extraIndex;
             TValue m_current;
 
@@ -1300,11 +1300,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -1844,7 +1844,7 @@ namespace Aardvark.Base
         {
             return new __ctype____tpar__(this);
         }
-        
+
         //# }
         //# if (isSym && hasValue) {
         public void Add<TType>(TypedSymbol<TType> key, TType value)
@@ -1966,7 +1966,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */>
         {
-            __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ m_dict;
+            readonly __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ m_dict;
             __itype__ m_index;
             __itype__ m_extraIndex;
             /*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */ m_current;
@@ -1979,11 +1979,11 @@ namespace Aardvark.Base
                 m_current = default(/*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */);
             }
 
-            public /*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */ Current => m_current;
+            public readonly /*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */ Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {

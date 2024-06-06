@@ -277,31 +277,31 @@ namespace Aardvark.Base.Coder
         private bool m_initialized = false;
         private SpinLock m_spinLock = new SpinLock();
 
-        private Dictionary<(string, string), Action<Convertible, Convertible>>
+        private readonly Dictionary<(string, string), Action<Convertible, Convertible>>
             m_actionMap = new Dictionary<(string, string), Action<Convertible, Convertible>>();
 
-        private Dictionary<(string, string), Annotation[]>
+        private readonly Dictionary<(string, string), Annotation[]>
             m_annotationsMap = new Dictionary<(string, string), Annotation[]>();
 
-        private Dictionary<string, Dictionary<string, RoutingEntry>>
+        private readonly Dictionary<string, Dictionary<string, RoutingEntry>>
             m_routingMap = new Dictionary<string, Dictionary<string, RoutingEntry>>();
 
-        private Dictionary<(string, string), int>
+        private readonly Dictionary<(string, string), int>
             m_weightMap = new Dictionary<(string, string), int>();
 
-        private Dictionary<string, List<Func<string, Convertible>>>
+        private readonly Dictionary<string, List<Func<string, Convertible>>>
             m_fileExtensionsMap = new Dictionary<string, List<Func<string, Convertible>>>();
 
-        private Dictionary<string, List<Func<Convertible>>>
+        private readonly Dictionary<string, List<Func<Convertible>>>
             m_rawConvertiblesMap = new Dictionary<string, List<Func<Convertible>>>();
 
-        private Dictionary<string, List<Func<Convertible>>>
+        private readonly Dictionary<string, List<Func<Convertible>>>
             m_creatorsMap = new Dictionary<string, List<Func<Convertible>>>();
 
-        private Dictionary<string, List<string>>
+        private readonly Dictionary<string, List<string>>
             m_resourcesMap = new Dictionary<string, List<string>>();
 
-        private List<string> m_availableResources = new List<string>();
+        private readonly List<string> m_availableResources = new List<string>();
 
         #endregion
 

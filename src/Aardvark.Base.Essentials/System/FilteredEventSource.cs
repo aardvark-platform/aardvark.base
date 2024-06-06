@@ -6,7 +6,7 @@ namespace Aardvark.Base
     /// </summary>
     public class FilteredEventSource<T> : EventSource<T>
     {
-        private Func<T, bool> m_predicate;
+        private readonly Func<T, bool> m_predicate;
 
         /// <summary>
         /// </summary>

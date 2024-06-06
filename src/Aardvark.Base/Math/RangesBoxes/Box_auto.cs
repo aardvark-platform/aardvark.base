@@ -408,7 +408,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -417,7 +417,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -426,7 +426,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -435,7 +435,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -444,7 +444,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -458,18 +458,18 @@ namespace Aardvark.Base
         public byte Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (byte)(Max - Min); }
+            readonly get { return (byte)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (byte)(Min + value); }
         }
 
-        public byte Center
+        public readonly byte Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (byte)((Min + Max) / 2); }
         }
 
-        public IEnumerable<byte> Elements
+        public readonly IEnumerable<byte> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -488,7 +488,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b EnlargedBy(byte increment)
+        public readonly Range1b EnlargedBy(byte increment)
         {
             return new Range1b((byte)(Min - increment), (byte)(Max + increment));
         }
@@ -497,7 +497,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b EnlargedBy(byte deltaMin, byte deltaMax)
+        public readonly Range1b EnlargedBy(byte deltaMin, byte deltaMax)
         {
             return new Range1b((byte)(Min - deltaMin), (byte)(Max + deltaMax));
         }
@@ -506,7 +506,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b ShrunkBy(byte delta)
+        public readonly Range1b ShrunkBy(byte delta)
         {
             return new Range1b((byte)(Min + delta), (byte)(Max - delta));
         }
@@ -515,7 +515,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b ShrunkBy(byte deltaMin, byte deltaMax)
+        public readonly Range1b ShrunkBy(byte deltaMin, byte deltaMax)
         {
             return new Range1b((byte)(Min + deltaMin), (byte)(Max - deltaMax));
         }
@@ -568,7 +568,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte Clamped(byte x)
+        public readonly byte Clamped(byte x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -578,7 +578,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b SplitRight(byte splitValue)
+        public readonly Range1b SplitRight(byte splitValue)
         {
             if (splitValue > Max) return Range1b.Invalid;
             if (splitValue <= Min) return this;
@@ -589,7 +589,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b SplitLeft(byte splitValue)
+        public readonly Range1b SplitLeft(byte splitValue)
         {
             if (splitValue < Min) return Range1b.Invalid;
             if (splitValue >= Max) return this;
@@ -600,7 +600,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b ExtendedBy(Range1b range)
+        public readonly Range1b ExtendedBy(Range1b range)
         {
             return new Range1b(
                             range.Min < Min ? range.Min : Min,
@@ -611,7 +611,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1b ExtendedBy(byte value)
+        public readonly Range1b ExtendedBy(byte value)
         {
             return new Range1b(
                             value < Min ? value : Min,
@@ -642,7 +642,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(byte value)
+        public readonly bool Contains(byte value)
         {
             return value >= Min && value <= Max;
         }
@@ -651,7 +651,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1b b)
+        public readonly bool Contains(Range1b b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -660,7 +660,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1b range)
+        public readonly bool Intersects(Range1b range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -671,7 +671,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1b range, byte eps)
+        public readonly bool Intersects(Range1b range, byte eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -735,24 +735,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1b other)
+        public readonly bool Equals(Range1b other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1b o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -795,7 +795,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -803,7 +803,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -1400,7 +1400,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -1409,7 +1409,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -1418,7 +1418,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -1427,7 +1427,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -1436,7 +1436,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -1450,18 +1450,18 @@ namespace Aardvark.Base
         public sbyte Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (sbyte)(Max - Min); }
+            readonly get { return (sbyte)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (sbyte)(Min + value); }
         }
 
-        public sbyte Center
+        public readonly sbyte Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (sbyte)((Min + Max) / 2); }
         }
 
-        public IEnumerable<sbyte> Elements
+        public readonly IEnumerable<sbyte> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1480,7 +1480,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb EnlargedBy(sbyte increment)
+        public readonly Range1sb EnlargedBy(sbyte increment)
         {
             return new Range1sb((sbyte)(Min - increment), (sbyte)(Max + increment));
         }
@@ -1489,7 +1489,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb EnlargedBy(sbyte deltaMin, sbyte deltaMax)
+        public readonly Range1sb EnlargedBy(sbyte deltaMin, sbyte deltaMax)
         {
             return new Range1sb((sbyte)(Min - deltaMin), (sbyte)(Max + deltaMax));
         }
@@ -1498,7 +1498,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb ShrunkBy(sbyte delta)
+        public readonly Range1sb ShrunkBy(sbyte delta)
         {
             return new Range1sb((sbyte)(Min + delta), (sbyte)(Max - delta));
         }
@@ -1507,7 +1507,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb ShrunkBy(sbyte deltaMin, sbyte deltaMax)
+        public readonly Range1sb ShrunkBy(sbyte deltaMin, sbyte deltaMax)
         {
             return new Range1sb((sbyte)(Min + deltaMin), (sbyte)(Max - deltaMax));
         }
@@ -1560,7 +1560,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public sbyte Clamped(sbyte x)
+        public readonly sbyte Clamped(sbyte x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -1570,7 +1570,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb SplitRight(sbyte splitValue)
+        public readonly Range1sb SplitRight(sbyte splitValue)
         {
             if (splitValue > Max) return Range1sb.Invalid;
             if (splitValue <= Min) return this;
@@ -1581,7 +1581,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb SplitLeft(sbyte splitValue)
+        public readonly Range1sb SplitLeft(sbyte splitValue)
         {
             if (splitValue < Min) return Range1sb.Invalid;
             if (splitValue >= Max) return this;
@@ -1592,7 +1592,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb ExtendedBy(Range1sb range)
+        public readonly Range1sb ExtendedBy(Range1sb range)
         {
             return new Range1sb(
                             range.Min < Min ? range.Min : Min,
@@ -1603,7 +1603,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1sb ExtendedBy(sbyte value)
+        public readonly Range1sb ExtendedBy(sbyte value)
         {
             return new Range1sb(
                             value < Min ? value : Min,
@@ -1634,7 +1634,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(sbyte value)
+        public readonly bool Contains(sbyte value)
         {
             return value >= Min && value <= Max;
         }
@@ -1643,7 +1643,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1sb b)
+        public readonly bool Contains(Range1sb b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -1652,7 +1652,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1sb range)
+        public readonly bool Intersects(Range1sb range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -1663,7 +1663,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1sb range, sbyte eps)
+        public readonly bool Intersects(Range1sb range, sbyte eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -1727,24 +1727,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1sb other)
+        public readonly bool Equals(Range1sb other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1sb o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -1787,7 +1787,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -1795,7 +1795,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -2392,7 +2392,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -2401,7 +2401,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -2410,7 +2410,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -2419,7 +2419,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -2428,7 +2428,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -2442,18 +2442,18 @@ namespace Aardvark.Base
         public short Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (short)(Max - Min); }
+            readonly get { return (short)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (short)(Min + value); }
         }
 
-        public short Center
+        public readonly short Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (short)((Min + Max) / 2); }
         }
 
-        public IEnumerable<short> Elements
+        public readonly IEnumerable<short> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -2472,7 +2472,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s EnlargedBy(short increment)
+        public readonly Range1s EnlargedBy(short increment)
         {
             return new Range1s((short)(Min - increment), (short)(Max + increment));
         }
@@ -2481,7 +2481,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s EnlargedBy(short deltaMin, short deltaMax)
+        public readonly Range1s EnlargedBy(short deltaMin, short deltaMax)
         {
             return new Range1s((short)(Min - deltaMin), (short)(Max + deltaMax));
         }
@@ -2490,7 +2490,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s ShrunkBy(short delta)
+        public readonly Range1s ShrunkBy(short delta)
         {
             return new Range1s((short)(Min + delta), (short)(Max - delta));
         }
@@ -2499,7 +2499,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s ShrunkBy(short deltaMin, short deltaMax)
+        public readonly Range1s ShrunkBy(short deltaMin, short deltaMax)
         {
             return new Range1s((short)(Min + deltaMin), (short)(Max - deltaMax));
         }
@@ -2552,7 +2552,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public short Clamped(short x)
+        public readonly short Clamped(short x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -2562,7 +2562,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s SplitRight(short splitValue)
+        public readonly Range1s SplitRight(short splitValue)
         {
             if (splitValue > Max) return Range1s.Invalid;
             if (splitValue <= Min) return this;
@@ -2573,7 +2573,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s SplitLeft(short splitValue)
+        public readonly Range1s SplitLeft(short splitValue)
         {
             if (splitValue < Min) return Range1s.Invalid;
             if (splitValue >= Max) return this;
@@ -2584,7 +2584,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s ExtendedBy(Range1s range)
+        public readonly Range1s ExtendedBy(Range1s range)
         {
             return new Range1s(
                             range.Min < Min ? range.Min : Min,
@@ -2595,7 +2595,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1s ExtendedBy(short value)
+        public readonly Range1s ExtendedBy(short value)
         {
             return new Range1s(
                             value < Min ? value : Min,
@@ -2626,7 +2626,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(short value)
+        public readonly bool Contains(short value)
         {
             return value >= Min && value <= Max;
         }
@@ -2635,7 +2635,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1s b)
+        public readonly bool Contains(Range1s b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -2644,7 +2644,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1s range)
+        public readonly bool Intersects(Range1s range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -2655,7 +2655,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1s range, short eps)
+        public readonly bool Intersects(Range1s range, short eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -2719,24 +2719,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1s other)
+        public readonly bool Equals(Range1s other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1s o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -2779,7 +2779,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -2787,7 +2787,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -3384,7 +3384,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -3393,7 +3393,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -3402,7 +3402,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -3411,7 +3411,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -3420,7 +3420,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -3434,18 +3434,18 @@ namespace Aardvark.Base
         public ushort Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (ushort)(Max - Min); }
+            readonly get { return (ushort)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (ushort)(Min + value); }
         }
 
-        public ushort Center
+        public readonly ushort Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (ushort)((Min + Max) / 2); }
         }
 
-        public IEnumerable<ushort> Elements
+        public readonly IEnumerable<ushort> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -3464,7 +3464,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us EnlargedBy(ushort increment)
+        public readonly Range1us EnlargedBy(ushort increment)
         {
             return new Range1us((ushort)(Min - increment), (ushort)(Max + increment));
         }
@@ -3473,7 +3473,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us EnlargedBy(ushort deltaMin, ushort deltaMax)
+        public readonly Range1us EnlargedBy(ushort deltaMin, ushort deltaMax)
         {
             return new Range1us((ushort)(Min - deltaMin), (ushort)(Max + deltaMax));
         }
@@ -3482,7 +3482,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us ShrunkBy(ushort delta)
+        public readonly Range1us ShrunkBy(ushort delta)
         {
             return new Range1us((ushort)(Min + delta), (ushort)(Max - delta));
         }
@@ -3491,7 +3491,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us ShrunkBy(ushort deltaMin, ushort deltaMax)
+        public readonly Range1us ShrunkBy(ushort deltaMin, ushort deltaMax)
         {
             return new Range1us((ushort)(Min + deltaMin), (ushort)(Max - deltaMax));
         }
@@ -3544,7 +3544,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort Clamped(ushort x)
+        public readonly ushort Clamped(ushort x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -3554,7 +3554,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us SplitRight(ushort splitValue)
+        public readonly Range1us SplitRight(ushort splitValue)
         {
             if (splitValue > Max) return Range1us.Invalid;
             if (splitValue <= Min) return this;
@@ -3565,7 +3565,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us SplitLeft(ushort splitValue)
+        public readonly Range1us SplitLeft(ushort splitValue)
         {
             if (splitValue < Min) return Range1us.Invalid;
             if (splitValue >= Max) return this;
@@ -3576,7 +3576,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us ExtendedBy(Range1us range)
+        public readonly Range1us ExtendedBy(Range1us range)
         {
             return new Range1us(
                             range.Min < Min ? range.Min : Min,
@@ -3587,7 +3587,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1us ExtendedBy(ushort value)
+        public readonly Range1us ExtendedBy(ushort value)
         {
             return new Range1us(
                             value < Min ? value : Min,
@@ -3618,7 +3618,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(ushort value)
+        public readonly bool Contains(ushort value)
         {
             return value >= Min && value <= Max;
         }
@@ -3627,7 +3627,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1us b)
+        public readonly bool Contains(Range1us b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -3636,7 +3636,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1us range)
+        public readonly bool Intersects(Range1us range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -3647,7 +3647,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1us range, ushort eps)
+        public readonly bool Intersects(Range1us range, ushort eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -3711,24 +3711,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1us other)
+        public readonly bool Equals(Range1us other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1us o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -3771,7 +3771,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -3779,7 +3779,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -4376,7 +4376,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -4385,7 +4385,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -4394,7 +4394,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -4403,7 +4403,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -4412,7 +4412,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -4426,18 +4426,18 @@ namespace Aardvark.Base
         public int Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public int Center
+        public readonly int Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
         }
 
-        public IEnumerable<int> Elements
+        public readonly IEnumerable<int> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -4456,7 +4456,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i EnlargedBy(int increment)
+        public readonly Range1i EnlargedBy(int increment)
         {
             return new Range1i((Min - increment), (Max + increment));
         }
@@ -4465,7 +4465,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i EnlargedBy(int deltaMin, int deltaMax)
+        public readonly Range1i EnlargedBy(int deltaMin, int deltaMax)
         {
             return new Range1i((Min - deltaMin), (Max + deltaMax));
         }
@@ -4474,7 +4474,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i ShrunkBy(int delta)
+        public readonly Range1i ShrunkBy(int delta)
         {
             return new Range1i((Min + delta), (Max - delta));
         }
@@ -4483,7 +4483,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i ShrunkBy(int deltaMin, int deltaMax)
+        public readonly Range1i ShrunkBy(int deltaMin, int deltaMax)
         {
             return new Range1i((Min + deltaMin), (Max - deltaMax));
         }
@@ -4536,7 +4536,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Clamped(int x)
+        public readonly int Clamped(int x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -4546,7 +4546,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i SplitRight(int splitValue)
+        public readonly Range1i SplitRight(int splitValue)
         {
             if (splitValue > Max) return Range1i.Invalid;
             if (splitValue <= Min) return this;
@@ -4557,7 +4557,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i SplitLeft(int splitValue)
+        public readonly Range1i SplitLeft(int splitValue)
         {
             if (splitValue < Min) return Range1i.Invalid;
             if (splitValue >= Max) return this;
@@ -4568,7 +4568,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i ExtendedBy(Range1i range)
+        public readonly Range1i ExtendedBy(Range1i range)
         {
             return new Range1i(
                             range.Min < Min ? range.Min : Min,
@@ -4579,7 +4579,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1i ExtendedBy(int value)
+        public readonly Range1i ExtendedBy(int value)
         {
             return new Range1i(
                             value < Min ? value : Min,
@@ -4610,7 +4610,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(int value)
+        public readonly bool Contains(int value)
         {
             return value >= Min && value <= Max;
         }
@@ -4619,7 +4619,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1i b)
+        public readonly bool Contains(Range1i b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -4628,7 +4628,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1i range)
+        public readonly bool Intersects(Range1i range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -4639,7 +4639,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1i range, int eps)
+        public readonly bool Intersects(Range1i range, int eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -4703,24 +4703,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1i other)
+        public readonly bool Equals(Range1i other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -4763,7 +4763,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -4771,7 +4771,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -5368,7 +5368,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -5377,7 +5377,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -5386,7 +5386,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -5395,7 +5395,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -5404,7 +5404,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -5418,18 +5418,18 @@ namespace Aardvark.Base
         public uint Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (uint)(Max - Min); }
+            readonly get { return (uint)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (uint)(Min + value); }
         }
 
-        public uint Center
+        public readonly uint Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (uint)((Min + Max) / 2); }
         }
 
-        public IEnumerable<uint> Elements
+        public readonly IEnumerable<uint> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -5448,7 +5448,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui EnlargedBy(uint increment)
+        public readonly Range1ui EnlargedBy(uint increment)
         {
             return new Range1ui((uint)(Min - increment), (uint)(Max + increment));
         }
@@ -5457,7 +5457,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui EnlargedBy(uint deltaMin, uint deltaMax)
+        public readonly Range1ui EnlargedBy(uint deltaMin, uint deltaMax)
         {
             return new Range1ui((uint)(Min - deltaMin), (uint)(Max + deltaMax));
         }
@@ -5466,7 +5466,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui ShrunkBy(uint delta)
+        public readonly Range1ui ShrunkBy(uint delta)
         {
             return new Range1ui((uint)(Min + delta), (uint)(Max - delta));
         }
@@ -5475,7 +5475,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui ShrunkBy(uint deltaMin, uint deltaMax)
+        public readonly Range1ui ShrunkBy(uint deltaMin, uint deltaMax)
         {
             return new Range1ui((uint)(Min + deltaMin), (uint)(Max - deltaMax));
         }
@@ -5528,7 +5528,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint Clamped(uint x)
+        public readonly uint Clamped(uint x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -5538,7 +5538,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui SplitRight(uint splitValue)
+        public readonly Range1ui SplitRight(uint splitValue)
         {
             if (splitValue > Max) return Range1ui.Invalid;
             if (splitValue <= Min) return this;
@@ -5549,7 +5549,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui SplitLeft(uint splitValue)
+        public readonly Range1ui SplitLeft(uint splitValue)
         {
             if (splitValue < Min) return Range1ui.Invalid;
             if (splitValue >= Max) return this;
@@ -5560,7 +5560,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui ExtendedBy(Range1ui range)
+        public readonly Range1ui ExtendedBy(Range1ui range)
         {
             return new Range1ui(
                             range.Min < Min ? range.Min : Min,
@@ -5571,7 +5571,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ui ExtendedBy(uint value)
+        public readonly Range1ui ExtendedBy(uint value)
         {
             return new Range1ui(
                             value < Min ? value : Min,
@@ -5602,7 +5602,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(uint value)
+        public readonly bool Contains(uint value)
         {
             return value >= Min && value <= Max;
         }
@@ -5611,7 +5611,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1ui b)
+        public readonly bool Contains(Range1ui b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -5620,7 +5620,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1ui range)
+        public readonly bool Intersects(Range1ui range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -5631,7 +5631,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1ui range, uint eps)
+        public readonly bool Intersects(Range1ui range, uint eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -5695,24 +5695,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1ui other)
+        public readonly bool Equals(Range1ui other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1ui o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -5755,7 +5755,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -5763,7 +5763,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -6360,7 +6360,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -6369,7 +6369,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -6378,7 +6378,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -6387,7 +6387,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -6396,7 +6396,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -6410,18 +6410,18 @@ namespace Aardvark.Base
         public long Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (long)(Max - Min); }
+            readonly get { return (long)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (long)(Min + value); }
         }
 
-        public long Center
+        public readonly long Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (long)((Min + Max) / 2); }
         }
 
-        public IEnumerable<long> Elements
+        public readonly IEnumerable<long> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6440,7 +6440,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l EnlargedBy(long increment)
+        public readonly Range1l EnlargedBy(long increment)
         {
             return new Range1l((long)(Min - increment), (long)(Max + increment));
         }
@@ -6449,7 +6449,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l EnlargedBy(long deltaMin, long deltaMax)
+        public readonly Range1l EnlargedBy(long deltaMin, long deltaMax)
         {
             return new Range1l((long)(Min - deltaMin), (long)(Max + deltaMax));
         }
@@ -6458,7 +6458,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l ShrunkBy(long delta)
+        public readonly Range1l ShrunkBy(long delta)
         {
             return new Range1l((long)(Min + delta), (long)(Max - delta));
         }
@@ -6467,7 +6467,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l ShrunkBy(long deltaMin, long deltaMax)
+        public readonly Range1l ShrunkBy(long deltaMin, long deltaMax)
         {
             return new Range1l((long)(Min + deltaMin), (long)(Max - deltaMax));
         }
@@ -6520,7 +6520,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public long Clamped(long x)
+        public readonly long Clamped(long x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -6530,7 +6530,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l SplitRight(long splitValue)
+        public readonly Range1l SplitRight(long splitValue)
         {
             if (splitValue > Max) return Range1l.Invalid;
             if (splitValue <= Min) return this;
@@ -6541,7 +6541,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l SplitLeft(long splitValue)
+        public readonly Range1l SplitLeft(long splitValue)
         {
             if (splitValue < Min) return Range1l.Invalid;
             if (splitValue >= Max) return this;
@@ -6552,7 +6552,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l ExtendedBy(Range1l range)
+        public readonly Range1l ExtendedBy(Range1l range)
         {
             return new Range1l(
                             range.Min < Min ? range.Min : Min,
@@ -6563,7 +6563,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1l ExtendedBy(long value)
+        public readonly Range1l ExtendedBy(long value)
         {
             return new Range1l(
                             value < Min ? value : Min,
@@ -6594,7 +6594,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(long value)
+        public readonly bool Contains(long value)
         {
             return value >= Min && value <= Max;
         }
@@ -6603,7 +6603,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1l b)
+        public readonly bool Contains(Range1l b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -6612,7 +6612,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1l range)
+        public readonly bool Intersects(Range1l range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -6623,7 +6623,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1l range, long eps)
+        public readonly bool Intersects(Range1l range, long eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -6687,24 +6687,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1l other)
+        public readonly bool Equals(Range1l other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -6747,7 +6747,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -6755,7 +6755,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -7352,7 +7352,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -7361,7 +7361,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -7370,7 +7370,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -7379,7 +7379,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -7388,7 +7388,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -7402,18 +7402,18 @@ namespace Aardvark.Base
         public ulong Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (ulong)(Max - Min); }
+            readonly get { return (ulong)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (ulong)(Min + value); }
         }
 
-        public ulong Center
+        public readonly ulong Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (ulong)((Min + Max) / 2); }
         }
 
-        public IEnumerable<ulong> Elements
+        public readonly IEnumerable<ulong> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -7432,7 +7432,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul EnlargedBy(ulong increment)
+        public readonly Range1ul EnlargedBy(ulong increment)
         {
             return new Range1ul((ulong)(Min - increment), (ulong)(Max + increment));
         }
@@ -7441,7 +7441,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul EnlargedBy(ulong deltaMin, ulong deltaMax)
+        public readonly Range1ul EnlargedBy(ulong deltaMin, ulong deltaMax)
         {
             return new Range1ul((ulong)(Min - deltaMin), (ulong)(Max + deltaMax));
         }
@@ -7450,7 +7450,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul ShrunkBy(ulong delta)
+        public readonly Range1ul ShrunkBy(ulong delta)
         {
             return new Range1ul((ulong)(Min + delta), (ulong)(Max - delta));
         }
@@ -7459,7 +7459,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul ShrunkBy(ulong deltaMin, ulong deltaMax)
+        public readonly Range1ul ShrunkBy(ulong deltaMin, ulong deltaMax)
         {
             return new Range1ul((ulong)(Min + deltaMin), (ulong)(Max - deltaMax));
         }
@@ -7512,7 +7512,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ulong Clamped(ulong x)
+        public readonly ulong Clamped(ulong x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -7522,7 +7522,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul SplitRight(ulong splitValue)
+        public readonly Range1ul SplitRight(ulong splitValue)
         {
             if (splitValue > Max) return Range1ul.Invalid;
             if (splitValue <= Min) return this;
@@ -7533,7 +7533,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul SplitLeft(ulong splitValue)
+        public readonly Range1ul SplitLeft(ulong splitValue)
         {
             if (splitValue < Min) return Range1ul.Invalid;
             if (splitValue >= Max) return this;
@@ -7544,7 +7544,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul ExtendedBy(Range1ul range)
+        public readonly Range1ul ExtendedBy(Range1ul range)
         {
             return new Range1ul(
                             range.Min < Min ? range.Min : Min,
@@ -7555,7 +7555,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1ul ExtendedBy(ulong value)
+        public readonly Range1ul ExtendedBy(ulong value)
         {
             return new Range1ul(
                             value < Min ? value : Min,
@@ -7586,7 +7586,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(ulong value)
+        public readonly bool Contains(ulong value)
         {
             return value >= Min && value <= Max;
         }
@@ -7595,7 +7595,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1ul b)
+        public readonly bool Contains(Range1ul b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -7604,7 +7604,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1ul range)
+        public readonly bool Intersects(Range1ul range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -7615,7 +7615,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1ul range, ulong eps)
+        public readonly bool Intersects(Range1ul range, ulong eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -7679,24 +7679,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1ul other)
+        public readonly bool Equals(Range1ul other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1ul o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -7739,7 +7739,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -7747,7 +7747,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -8344,7 +8344,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -8353,7 +8353,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -8362,7 +8362,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -8371,7 +8371,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -8380,7 +8380,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -8394,18 +8394,18 @@ namespace Aardvark.Base
         public float Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (float)(Max - Min); }
+            readonly get { return (float)(Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (float)(Min + value); }
         }
 
-        public float Center
+        public readonly float Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (float)((Min + Max) / 2); }
         }
 
-        public IEnumerable<float> Elements
+        public readonly IEnumerable<float> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -8424,7 +8424,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f EnlargedBy(float increment)
+        public readonly Range1f EnlargedBy(float increment)
         {
             return new Range1f((float)(Min - increment), (float)(Max + increment));
         }
@@ -8433,7 +8433,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f EnlargedBy(float deltaMin, float deltaMax)
+        public readonly Range1f EnlargedBy(float deltaMin, float deltaMax)
         {
             return new Range1f((float)(Min - deltaMin), (float)(Max + deltaMax));
         }
@@ -8442,7 +8442,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f ShrunkBy(float delta)
+        public readonly Range1f ShrunkBy(float delta)
         {
             return new Range1f((float)(Min + delta), (float)(Max - delta));
         }
@@ -8451,7 +8451,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f ShrunkBy(float deltaMin, float deltaMax)
+        public readonly Range1f ShrunkBy(float deltaMin, float deltaMax)
         {
             return new Range1f((float)(Min + deltaMin), (float)(Max - deltaMax));
         }
@@ -8504,7 +8504,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Clamped(float x)
+        public readonly float Clamped(float x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -8514,7 +8514,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Lerp(float x)
+        public readonly float Lerp(float x)
         {
             return Fun.Lerp(x, Min, Max);
         }
@@ -8523,7 +8523,7 @@ namespace Aardvark.Base
         /// Performs the inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float InvLerp(float x)
+        public readonly float InvLerp(float x)
         {
             return Fun.InvLerp(x, Min, Max);
         }
@@ -8533,7 +8533,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f SplitRight(float splitValue)
+        public readonly Range1f SplitRight(float splitValue)
         {
             if (splitValue > Max) return Range1f.Invalid;
             if (splitValue <= Min) return this;
@@ -8544,7 +8544,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f SplitLeft(float splitValue)
+        public readonly Range1f SplitLeft(float splitValue)
         {
             if (splitValue < Min) return Range1f.Invalid;
             if (splitValue >= Max) return this;
@@ -8555,7 +8555,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f ExtendedBy(Range1f range)
+        public readonly Range1f ExtendedBy(Range1f range)
         {
             return new Range1f(
                             range.Min < Min ? range.Min : Min,
@@ -8566,7 +8566,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1f ExtendedBy(float value)
+        public readonly Range1f ExtendedBy(float value)
         {
             return new Range1f(
                             value < Min ? value : Min,
@@ -8597,7 +8597,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(float value)
+        public readonly bool Contains(float value)
         {
             return value >= Min && value <= Max;
         }
@@ -8606,7 +8606,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1f b)
+        public readonly bool Contains(Range1f b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -8615,7 +8615,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1f range)
+        public readonly bool Intersects(Range1f range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -8626,7 +8626,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1f range, float eps)
+        public readonly bool Intersects(Range1f range, float eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -8690,24 +8690,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1f other)
+        public readonly bool Equals(Range1f other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -8750,7 +8750,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -8758,7 +8758,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -9355,7 +9355,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min >= Max; }
@@ -9364,7 +9364,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -9373,7 +9373,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min <= Max; }
@@ -9382,7 +9382,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min > Max; }
@@ -9391,7 +9391,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -9405,18 +9405,18 @@ namespace Aardvark.Base
         public double Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public double Center
+        public readonly double Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
         }
 
-        public IEnumerable<double> Elements
+        public readonly IEnumerable<double> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9435,7 +9435,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d EnlargedBy(double increment)
+        public readonly Range1d EnlargedBy(double increment)
         {
             return new Range1d((Min - increment), (Max + increment));
         }
@@ -9444,7 +9444,7 @@ namespace Aardvark.Base
         /// Return range enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d EnlargedBy(double deltaMin, double deltaMax)
+        public readonly Range1d EnlargedBy(double deltaMin, double deltaMax)
         {
             return new Range1d((Min - deltaMin), (Max + deltaMax));
         }
@@ -9453,7 +9453,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d ShrunkBy(double delta)
+        public readonly Range1d ShrunkBy(double delta)
         {
             return new Range1d((Min + delta), (Max - delta));
         }
@@ -9462,7 +9462,7 @@ namespace Aardvark.Base
         /// Return range shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d ShrunkBy(double deltaMin, double deltaMax)
+        public readonly Range1d ShrunkBy(double deltaMin, double deltaMax)
         {
             return new Range1d((Min + deltaMin), (Max - deltaMax));
         }
@@ -9515,7 +9515,7 @@ namespace Aardvark.Base
         /// Return the value in the Range that is closest to the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Clamped(double x)
+        public readonly double Clamped(double x)
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
@@ -9525,7 +9525,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Lerp(double x)
+        public readonly double Lerp(double x)
         {
             return Fun.Lerp(x, Min, Max);
         }
@@ -9534,7 +9534,7 @@ namespace Aardvark.Base
         /// Performs the inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double InvLerp(double x)
+        public readonly double InvLerp(double x)
         {
             return Fun.InvLerp(x, Min, Max);
         }
@@ -9544,7 +9544,7 @@ namespace Aardvark.Base
         /// Returns the range with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d SplitRight(double splitValue)
+        public readonly Range1d SplitRight(double splitValue)
         {
             if (splitValue > Max) return Range1d.Invalid;
             if (splitValue <= Min) return this;
@@ -9555,7 +9555,7 @@ namespace Aardvark.Base
         /// Returns the range with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d SplitLeft(double splitValue)
+        public readonly Range1d SplitLeft(double splitValue)
         {
             if (splitValue < Min) return Range1d.Invalid;
             if (splitValue >= Max) return this;
@@ -9566,7 +9566,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d ExtendedBy(Range1d range)
+        public readonly Range1d ExtendedBy(Range1d range)
         {
             return new Range1d(
                             range.Min < Min ? range.Min : Min,
@@ -9577,7 +9577,7 @@ namespace Aardvark.Base
         /// Returns the range extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Range1d ExtendedBy(double value)
+        public readonly Range1d ExtendedBy(double value)
         {
             return new Range1d(
                             value < Min ? value : Min,
@@ -9608,7 +9608,7 @@ namespace Aardvark.Base
         /// Returns true if the range contains the given value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(double value)
+        public readonly bool Contains(double value)
         {
             return value >= Min && value <= Max;
         }
@@ -9617,7 +9617,7 @@ namespace Aardvark.Base
         /// Returns true if the range completely contains the given range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Range1d b)
+        public readonly bool Contains(Range1d b)
         {
             return b.Min >= Min && b.Max <= Max;
         }
@@ -9626,7 +9626,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1d range)
+        public readonly bool Intersects(Range1d range)
         {
             if (Min >= range.Max) return false;
             if (Max <= range.Min) return false;
@@ -9637,7 +9637,7 @@ namespace Aardvark.Base
         /// Checks if 2 ranges intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Range1d range, double eps)
+        public readonly bool Intersects(Range1d range, double eps)
         {
             if (Min - eps >= range.Max) return false;
             if (Max + eps <= range.Min) return false;
@@ -9701,24 +9701,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Range1d other)
+        public readonly bool Equals(Range1d other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Range1d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -9761,7 +9761,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -9769,7 +9769,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp) + betweenB
@@ -10309,7 +10309,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -10318,7 +10318,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -10327,7 +10327,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -10336,7 +10336,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max); }
@@ -10345,7 +10345,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -10358,7 +10358,7 @@ namespace Aardvark.Base
         public int Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.X; }
+            readonly get { return Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.X = value; }
         }
@@ -10370,7 +10370,7 @@ namespace Aardvark.Base
         public int Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X; }
+            readonly get { return Max.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = value; }
         }
@@ -10382,7 +10382,7 @@ namespace Aardvark.Base
         public int Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.Y; }
+            readonly get { return Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.Y = value; }
         }
@@ -10394,7 +10394,7 @@ namespace Aardvark.Base
         public int Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y; }
+            readonly get { return Max.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = value; }
         }
@@ -10406,12 +10406,12 @@ namespace Aardvark.Base
         public V2i Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V2i Center
+        public readonly V2i Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -10421,12 +10421,12 @@ namespace Aardvark.Base
         public int SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1i RangeX
+        public readonly Range1i RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1i(Min.X, Max.X); }
@@ -10436,12 +10436,12 @@ namespace Aardvark.Base
         public int SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1i RangeY
+        public readonly Range1i RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1i(Min.Y, Max.Y); }
@@ -10450,7 +10450,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY > SizeX ? 1 : 0; }
@@ -10459,22 +10459,22 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY < SizeX ? 1 : 0; }
         }
 
-        public int Area
+        public readonly int Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeX * SizeY; }
         }
 
-        public V2i OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V2i IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2i(Max.X, Min.Y); } }
-        public V2i OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2i(Min.X, Max.Y); } }
-        public V2i II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V2i OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V2i IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2i(Max.X, Min.Y); } }
+        public readonly V2i OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2i(Min.X, Max.Y); } }
+        public readonly V2i II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -10484,7 +10484,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i EnlargedBy(V2i increment)
+        public readonly Box2i EnlargedBy(V2i increment)
         {
             return new Box2i((Min - increment), (Max + increment));
         }
@@ -10493,7 +10493,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i EnlargedBy(V2i deltaMin, V2i deltaMax)
+        public readonly Box2i EnlargedBy(V2i deltaMin, V2i deltaMax)
         {
             return new Box2i((Min - deltaMin), (Max + deltaMax));
         }
@@ -10502,7 +10502,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i ShrunkBy(V2i delta)
+        public readonly Box2i ShrunkBy(V2i delta)
         {
             return new Box2i((Min + delta), (Max - delta));
         }
@@ -10511,7 +10511,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i ShrunkBy(V2i deltaMin, V2i deltaMax)
+        public readonly Box2i ShrunkBy(V2i deltaMin, V2i deltaMax)
         {
             return new Box2i((Min + deltaMin), (Max - deltaMax));
         }
@@ -10560,7 +10560,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i EnlargedBy(int delta)
+        public readonly Box2i EnlargedBy(int delta)
         {
             return new Box2i(
                     new V2i(Min.X - delta, Min.Y - delta),
@@ -10571,7 +10571,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i ShrunkBy(int delta)
+        public readonly Box2i ShrunkBy(int delta)
         {
             return new Box2i(
                     new V2i(Min.X + delta, Min.Y + delta),
@@ -10582,7 +10582,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i EnlargedBy(
+        public readonly Box2i EnlargedBy(
                 int deltaMinX, int deltaMaxX, 
                 int deltaMinY, int deltaMaxY)
         {
@@ -10595,7 +10595,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i ShrunkBy(
+        public readonly Box2i ShrunkBy(
                 int deltaMinX, int deltaMaxX, 
                 int deltaMinY, int deltaMaxY)
         {
@@ -10656,7 +10656,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2i Clamped(V2i p)
+        public readonly V2i Clamped(V2i p)
         {
             return new V2i(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -10668,7 +10668,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitRight(V2i splitValue)
+        public readonly Box2i SplitRight(V2i splitValue)
         {
             var result = new Box2i(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -10680,7 +10680,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitLeft(V2i splitValue)
+        public readonly Box2i SplitLeft(V2i splitValue)
         {
             var result = new Box2i(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -10692,7 +10692,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitRight(int splitAtX)
+        public readonly Box2i SplitRight(int splitAtX)
         {
             if (splitAtX > Max.X) return Box2i.Invalid;
             if (splitAtX <= Min.X) return this;
@@ -10703,7 +10703,7 @@ namespace Aardvark.Base
         /// Returns a box with Max.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitLeft(int splitAtX)
+        public readonly Box2i SplitLeft(int splitAtX)
         {
             if (splitAtX < Min.X) return Box2i.Invalid;
             if (splitAtX >= Max.X) return this;
@@ -10714,7 +10714,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitTop(int splitAtY)
+        public readonly Box2i SplitTop(int splitAtY)
         {
             if (splitAtY > Max.Y) return Box2i.Invalid;
             if (splitAtY <= Min.Y) return this;
@@ -10725,7 +10725,7 @@ namespace Aardvark.Base
         /// Returns the box with Max.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitBottom(int splitAtY)
+        public readonly Box2i SplitBottom(int splitAtY)
         {
             if (splitAtY < Min.Y) return Box2i.Invalid;
             if (splitAtY >= Max.Y) return this;
@@ -10733,28 +10733,28 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitLeftBottom(V2i splitAt)
+        public readonly Box2i SplitLeftBottom(V2i splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y < Min.Y) return Box2i.Invalid;
             return new Box2i(Min, splitAt);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitRightBottom(V2i splitAt)
+        public readonly Box2i SplitRightBottom(V2i splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y < Min.Y) return Box2i.Invalid;
             return new Box2i(new V2i(splitAt.X, Min.Y), new V2i(Max.X, splitAt.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitLeftTop(V2i splitAt)
+        public readonly Box2i SplitLeftTop(V2i splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y > Max.Y) return Box2i.Invalid;
             return new Box2i(new V2i(Min.X, splitAt.Y), new V2i(splitAt.X, Max.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i SplitRightTop(V2i splitAt)
+        public readonly Box2i SplitRightTop(V2i splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y > Max.Y) return Box2i.Invalid;
             return new Box2i(splitAt, Max);
@@ -10764,7 +10764,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i ExtendedBy(Box2i b)
+        public readonly Box2i ExtendedBy(Box2i b)
         {
             return new Box2i(
                     new V2i(
@@ -10779,7 +10779,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i ExtendedBy(V2i v)
+        public readonly Box2i ExtendedBy(V2i v)
         {
             return new Box2i(
                     new V2i(
@@ -10842,7 +10842,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V2i p)
+        public readonly bool Contains(V2i p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -10854,7 +10854,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box2i b)
+        public readonly bool Contains(Box2i b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -10879,7 +10879,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2i box)
+        public readonly bool Intersects(Box2i box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -10892,7 +10892,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2i box, V2i eps)
+        public readonly bool Intersects(Box2i box, V2i eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -10905,7 +10905,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2i box, int eps)
+        public readonly bool Intersects(Box2i box, int eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -10927,7 +10927,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V2i p0)
+        public readonly Box.Flags OutsideFlags(V2i p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -10942,7 +10942,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box2i b)
+        public readonly Box.Flags OutsideFlags(Box2i b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -10957,7 +10957,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V2i v, out V2i vMin, out V2i vMax)
+        public readonly void GetMinMaxInDirection(V2i v, out V2i vMin, out V2i vMax)
         {
             vMin = V2i.MinValue;
             vMax = V2i.MaxValue;
@@ -11029,24 +11029,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box2i other)
+        public readonly bool Equals(Box2i other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box2i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -11089,7 +11089,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -11097,7 +11097,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -11213,7 +11213,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i Translated(V2i shift)
+        public readonly Box2i Translated(V2i shift)
         {
             return IsInvalid ? Box2i.Invalid
                              : new Box2i(Min + shift, Max + shift);
@@ -11224,7 +11224,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i Scaled(V2i factor)
+        public readonly Box2i Scaled(V2i factor)
         {
             return IsInvalid ? Box2i.Invalid
                              : new Box2i(Min * factor, Max * factor);
@@ -11235,9 +11235,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box2d Transformed(M33d trafo)
+        public readonly Box2d Transformed(M33d trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
             var t = new V2d(trafo.M02, trafo.M12);
             var res = new Box2d(t, t);
             double av, bv;
@@ -11261,7 +11261,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d Transformed(Trafo2d trafo)
+        public readonly Box2d Transformed(Trafo2d trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -11277,7 +11277,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2i Corner(int index)
+        public readonly V2i Corner(int index)
         {
             return
                 new V2i(
@@ -11291,7 +11291,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2i[] ComputeCorners()
+        public readonly V2i[] ComputeCorners()
         {
             return new V2i[] {
                 Min,
@@ -11303,7 +11303,7 @@ namespace Aardvark.Base
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2i[] ComputeCornersCCW()
+        public readonly V2i[] ComputeCornersCCW()
         {
             return new V2i[] {
                 Min,
@@ -11316,7 +11316,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V2i> Corners
+        public readonly IEnumerable<V2i> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -11340,7 +11340,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns all points from [Min,Max[ with X-Variable in the outer loop.
         /// </summary>
-        public IEnumerable<V2i> EnumerateInsidePoints()
+        public readonly IEnumerable<V2i> EnumerateInsidePoints()
         {
             var p = new V2i();
             for (p.X = Min.X; p.X < Max.X; p.X++)
@@ -11352,7 +11352,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2i Members
 
-        public Box2i BoundingBox2i
+        public readonly Box2i BoundingBox2i
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -11362,7 +11362,7 @@ namespace Aardvark.Base
 
         #region IBoundingCircle2d Members
 
-        public Circle2d BoundingCircle2d
+        public readonly Circle2d BoundingCircle2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
@@ -11372,7 +11372,7 @@ namespace Aardvark.Base
 
         #region ISize2i Members
 
-        public V2i Size2i
+        public readonly V2i Size2i
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }
@@ -11840,7 +11840,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -11849,7 +11849,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -11858,7 +11858,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -11867,7 +11867,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max); }
@@ -11876,7 +11876,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -11889,7 +11889,7 @@ namespace Aardvark.Base
         public long Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.X; }
+            readonly get { return Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.X = value; }
         }
@@ -11901,7 +11901,7 @@ namespace Aardvark.Base
         public long Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X; }
+            readonly get { return Max.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = value; }
         }
@@ -11913,7 +11913,7 @@ namespace Aardvark.Base
         public long Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.Y; }
+            readonly get { return Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.Y = value; }
         }
@@ -11925,7 +11925,7 @@ namespace Aardvark.Base
         public long Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y; }
+            readonly get { return Max.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = value; }
         }
@@ -11937,12 +11937,12 @@ namespace Aardvark.Base
         public V2l Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V2l Center
+        public readonly V2l Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -11952,12 +11952,12 @@ namespace Aardvark.Base
         public long SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1l RangeX
+        public readonly Range1l RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1l(Min.X, Max.X); }
@@ -11967,12 +11967,12 @@ namespace Aardvark.Base
         public long SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1l RangeY
+        public readonly Range1l RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1l(Min.Y, Max.Y); }
@@ -11981,7 +11981,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY > SizeX ? 1 : 0; }
@@ -11990,22 +11990,22 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY < SizeX ? 1 : 0; }
         }
 
-        public long Area
+        public readonly long Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeX * SizeY; }
         }
 
-        public V2l OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V2l IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2l(Max.X, Min.Y); } }
-        public V2l OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2l(Min.X, Max.Y); } }
-        public V2l II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V2l OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V2l IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2l(Max.X, Min.Y); } }
+        public readonly V2l OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2l(Min.X, Max.Y); } }
+        public readonly V2l II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -12015,7 +12015,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l EnlargedBy(V2l increment)
+        public readonly Box2l EnlargedBy(V2l increment)
         {
             return new Box2l((Min - increment), (Max + increment));
         }
@@ -12024,7 +12024,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l EnlargedBy(V2l deltaMin, V2l deltaMax)
+        public readonly Box2l EnlargedBy(V2l deltaMin, V2l deltaMax)
         {
             return new Box2l((Min - deltaMin), (Max + deltaMax));
         }
@@ -12033,7 +12033,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l ShrunkBy(V2l delta)
+        public readonly Box2l ShrunkBy(V2l delta)
         {
             return new Box2l((Min + delta), (Max - delta));
         }
@@ -12042,7 +12042,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l ShrunkBy(V2l deltaMin, V2l deltaMax)
+        public readonly Box2l ShrunkBy(V2l deltaMin, V2l deltaMax)
         {
             return new Box2l((Min + deltaMin), (Max - deltaMax));
         }
@@ -12091,7 +12091,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l EnlargedBy(long delta)
+        public readonly Box2l EnlargedBy(long delta)
         {
             return new Box2l(
                     new V2l(Min.X - delta, Min.Y - delta),
@@ -12102,7 +12102,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l ShrunkBy(long delta)
+        public readonly Box2l ShrunkBy(long delta)
         {
             return new Box2l(
                     new V2l(Min.X + delta, Min.Y + delta),
@@ -12113,7 +12113,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l EnlargedBy(
+        public readonly Box2l EnlargedBy(
                 long deltaMinX, long deltaMaxX, 
                 long deltaMinY, long deltaMaxY)
         {
@@ -12126,7 +12126,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l ShrunkBy(
+        public readonly Box2l ShrunkBy(
                 long deltaMinX, long deltaMaxX, 
                 long deltaMinY, long deltaMaxY)
         {
@@ -12187,7 +12187,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2l Clamped(V2l p)
+        public readonly V2l Clamped(V2l p)
         {
             return new V2l(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -12199,7 +12199,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitRight(V2l splitValue)
+        public readonly Box2l SplitRight(V2l splitValue)
         {
             var result = new Box2l(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -12211,7 +12211,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitLeft(V2l splitValue)
+        public readonly Box2l SplitLeft(V2l splitValue)
         {
             var result = new Box2l(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -12223,7 +12223,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitRight(long splitAtX)
+        public readonly Box2l SplitRight(long splitAtX)
         {
             if (splitAtX > Max.X) return Box2l.Invalid;
             if (splitAtX <= Min.X) return this;
@@ -12234,7 +12234,7 @@ namespace Aardvark.Base
         /// Returns a box with Max.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitLeft(long splitAtX)
+        public readonly Box2l SplitLeft(long splitAtX)
         {
             if (splitAtX < Min.X) return Box2l.Invalid;
             if (splitAtX >= Max.X) return this;
@@ -12245,7 +12245,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitTop(long splitAtY)
+        public readonly Box2l SplitTop(long splitAtY)
         {
             if (splitAtY > Max.Y) return Box2l.Invalid;
             if (splitAtY <= Min.Y) return this;
@@ -12256,7 +12256,7 @@ namespace Aardvark.Base
         /// Returns the box with Max.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitBottom(long splitAtY)
+        public readonly Box2l SplitBottom(long splitAtY)
         {
             if (splitAtY < Min.Y) return Box2l.Invalid;
             if (splitAtY >= Max.Y) return this;
@@ -12264,28 +12264,28 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitLeftBottom(V2l splitAt)
+        public readonly Box2l SplitLeftBottom(V2l splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y < Min.Y) return Box2l.Invalid;
             return new Box2l(Min, splitAt);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitRightBottom(V2l splitAt)
+        public readonly Box2l SplitRightBottom(V2l splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y < Min.Y) return Box2l.Invalid;
             return new Box2l(new V2l(splitAt.X, Min.Y), new V2l(Max.X, splitAt.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitLeftTop(V2l splitAt)
+        public readonly Box2l SplitLeftTop(V2l splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y > Max.Y) return Box2l.Invalid;
             return new Box2l(new V2l(Min.X, splitAt.Y), new V2l(splitAt.X, Max.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l SplitRightTop(V2l splitAt)
+        public readonly Box2l SplitRightTop(V2l splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y > Max.Y) return Box2l.Invalid;
             return new Box2l(splitAt, Max);
@@ -12295,7 +12295,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l ExtendedBy(Box2l b)
+        public readonly Box2l ExtendedBy(Box2l b)
         {
             return new Box2l(
                     new V2l(
@@ -12310,7 +12310,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l ExtendedBy(V2l v)
+        public readonly Box2l ExtendedBy(V2l v)
         {
             return new Box2l(
                     new V2l(
@@ -12373,7 +12373,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V2l p)
+        public readonly bool Contains(V2l p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -12385,7 +12385,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box2l b)
+        public readonly bool Contains(Box2l b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -12410,7 +12410,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2l box)
+        public readonly bool Intersects(Box2l box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -12423,7 +12423,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2l box, V2l eps)
+        public readonly bool Intersects(Box2l box, V2l eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -12436,7 +12436,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2l box, long eps)
+        public readonly bool Intersects(Box2l box, long eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -12458,7 +12458,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V2l p0)
+        public readonly Box.Flags OutsideFlags(V2l p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -12473,7 +12473,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box2l b)
+        public readonly Box.Flags OutsideFlags(Box2l b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -12488,7 +12488,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V2l v, out V2l vMin, out V2l vMax)
+        public readonly void GetMinMaxInDirection(V2l v, out V2l vMin, out V2l vMax)
         {
             vMin = V2l.MinValue;
             vMax = V2l.MaxValue;
@@ -12560,24 +12560,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box2l other)
+        public readonly bool Equals(Box2l other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box2l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -12620,7 +12620,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -12628,7 +12628,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -12744,7 +12744,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l Translated(V2l shift)
+        public readonly Box2l Translated(V2l shift)
         {
             return IsInvalid ? Box2l.Invalid
                              : new Box2l(Min + shift, Max + shift);
@@ -12755,7 +12755,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l Scaled(V2l factor)
+        public readonly Box2l Scaled(V2l factor)
         {
             return IsInvalid ? Box2l.Invalid
                              : new Box2l(Min * factor, Max * factor);
@@ -12766,9 +12766,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box2d Transformed(M33d trafo)
+        public readonly Box2d Transformed(M33d trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
             var t = new V2d(trafo.M02, trafo.M12);
             var res = new Box2d(t, t);
             double av, bv;
@@ -12792,7 +12792,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d Transformed(Trafo2d trafo)
+        public readonly Box2d Transformed(Trafo2d trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -12808,7 +12808,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2l Corner(int index)
+        public readonly V2l Corner(int index)
         {
             return
                 new V2l(
@@ -12822,7 +12822,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2l[] ComputeCorners()
+        public readonly V2l[] ComputeCorners()
         {
             return new V2l[] {
                 Min,
@@ -12834,7 +12834,7 @@ namespace Aardvark.Base
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2l[] ComputeCornersCCW()
+        public readonly V2l[] ComputeCornersCCW()
         {
             return new V2l[] {
                 Min,
@@ -12847,7 +12847,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V2l> Corners
+        public readonly IEnumerable<V2l> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -12871,7 +12871,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns all points from [Min,Max[ with X-Variable in the outer loop.
         /// </summary>
-        public IEnumerable<V2l> EnumerateInsidePoints()
+        public readonly IEnumerable<V2l> EnumerateInsidePoints()
         {
             var p = new V2l();
             for (p.X = Min.X; p.X < Max.X; p.X++)
@@ -12883,7 +12883,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2l Members
 
-        public Box2l BoundingBox2l
+        public readonly Box2l BoundingBox2l
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -12893,7 +12893,7 @@ namespace Aardvark.Base
 
         #region IBoundingCircle2d Members
 
-        public Circle2d BoundingCircle2d
+        public readonly Circle2d BoundingCircle2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
@@ -12903,7 +12903,7 @@ namespace Aardvark.Base
 
         #region ISize2l Members
 
-        public V2l Size2l
+        public readonly V2l Size2l
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }
@@ -13371,7 +13371,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -13380,7 +13380,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -13389,7 +13389,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -13398,7 +13398,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
@@ -13407,7 +13407,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -13420,7 +13420,7 @@ namespace Aardvark.Base
         public float Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.X; }
+            readonly get { return Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.X = value; }
         }
@@ -13432,7 +13432,7 @@ namespace Aardvark.Base
         public float Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X; }
+            readonly get { return Max.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = value; }
         }
@@ -13444,7 +13444,7 @@ namespace Aardvark.Base
         public float Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.Y; }
+            readonly get { return Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.Y = value; }
         }
@@ -13456,7 +13456,7 @@ namespace Aardvark.Base
         public float Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y; }
+            readonly get { return Max.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = value; }
         }
@@ -13468,12 +13468,12 @@ namespace Aardvark.Base
         public V2f Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V2f Center
+        public readonly V2f Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -13483,12 +13483,12 @@ namespace Aardvark.Base
         public float SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1f RangeX
+        public readonly Range1f RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1f(Min.X, Max.X); }
@@ -13498,12 +13498,12 @@ namespace Aardvark.Base
         public float SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1f RangeY
+        public readonly Range1f RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1f(Min.Y, Max.Y); }
@@ -13512,7 +13512,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY > SizeX ? 1 : 0; }
@@ -13521,22 +13521,22 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY < SizeX ? 1 : 0; }
         }
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeX * SizeY; }
         }
 
-        public V2f OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V2f IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2f(Max.X, Min.Y); } }
-        public V2f OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2f(Min.X, Max.Y); } }
-        public V2f II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V2f OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V2f IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2f(Max.X, Min.Y); } }
+        public readonly V2f OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2f(Min.X, Max.Y); } }
+        public readonly V2f II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -13546,7 +13546,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f EnlargedBy(V2f increment)
+        public readonly Box2f EnlargedBy(V2f increment)
         {
             return new Box2f((Min - increment), (Max + increment));
         }
@@ -13555,7 +13555,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f EnlargedBy(V2f deltaMin, V2f deltaMax)
+        public readonly Box2f EnlargedBy(V2f deltaMin, V2f deltaMax)
         {
             return new Box2f((Min - deltaMin), (Max + deltaMax));
         }
@@ -13564,7 +13564,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ShrunkBy(V2f delta)
+        public readonly Box2f ShrunkBy(V2f delta)
         {
             return new Box2f((Min + delta), (Max - delta));
         }
@@ -13573,7 +13573,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ShrunkBy(V2f deltaMin, V2f deltaMax)
+        public readonly Box2f ShrunkBy(V2f deltaMin, V2f deltaMax)
         {
             return new Box2f((Min + deltaMin), (Max - deltaMax));
         }
@@ -13622,7 +13622,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f EnlargedBy(float delta)
+        public readonly Box2f EnlargedBy(float delta)
         {
             return new Box2f(
                     new V2f(Min.X - delta, Min.Y - delta),
@@ -13633,7 +13633,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ShrunkBy(float delta)
+        public readonly Box2f ShrunkBy(float delta)
         {
             return new Box2f(
                     new V2f(Min.X + delta, Min.Y + delta),
@@ -13644,7 +13644,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f EnlargedBy(
+        public readonly Box2f EnlargedBy(
                 float deltaMinX, float deltaMaxX, 
                 float deltaMinY, float deltaMaxY)
         {
@@ -13657,7 +13657,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ShrunkBy(
+        public readonly Box2f ShrunkBy(
                 float deltaMinX, float deltaMaxX, 
                 float deltaMinY, float deltaMaxY)
         {
@@ -13714,7 +13714,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ScaledFromCenterBy(float factor)
+        public readonly Box2f ScaledFromCenterBy(float factor)
         {
             var size = Size;
             var increment = (size * factor - size) / 2;
@@ -13725,7 +13725,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ScaledFromCenterBy(V2f vectorFactor)
+        public readonly Box2f ScaledFromCenterBy(V2f vectorFactor)
         {
             var size = Size;
             var increment = (size * vectorFactor - size) / 2;
@@ -13737,7 +13737,7 @@ namespace Aardvark.Base
         /// measured with respect to the box diagonal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f EnlargedByRelativeEps(float eps)
+        public readonly Box2f EnlargedByRelativeEps(float eps)
         {
             return EnlargedBy(eps * Size.Length);
         }
@@ -13760,7 +13760,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f Clamped(V2f p)
+        public readonly V2f Clamped(V2f p)
         {
             return new V2f(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -13771,7 +13771,7 @@ namespace Aardvark.Base
         /// Returns the squared distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double DistanceSquared(V2f p)
+        public readonly double DistanceSquared(V2f p)
         {
             return 
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -13782,7 +13782,7 @@ namespace Aardvark.Base
         /// Returns the distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Distance(V2f p)
+        public readonly double Distance(V2f p)
         {
             return Fun.Sqrt(
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -13794,7 +13794,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f Lerp(float x)
+        public readonly V2f Lerp(float x)
         {
             return Fun.Lerp(x, Min, Max);
         }
@@ -13803,7 +13803,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f Lerp(V2f p)
+        public readonly V2f Lerp(V2f p)
         {
             return new V2f(
                         Fun.Lerp(p.X, Min.X, Max.X), 
@@ -13814,7 +13814,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f Lerp(float x, float y)
+        public readonly V2f Lerp(float x, float y)
         {
             return new V2f(
                          Fun.Lerp(x, Min.X, Max.X), 
@@ -13825,7 +13825,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f InvLerp(V2f p)
+        public readonly V2f InvLerp(V2f p)
         {
             return new V2f(
                         Fun.InvLerp(p.X, Min.X, Max.X), 
@@ -13836,7 +13836,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f InvLerp(float x, float y)
+        public readonly V2f InvLerp(float x, float y)
         {
             return new V2f(
                         Fun.InvLerp(x, Min.X, Max.X), 
@@ -13847,7 +13847,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitRight(V2f splitValue)
+        public readonly Box2f SplitRight(V2f splitValue)
         {
             var result = new Box2f(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -13859,7 +13859,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitLeft(V2f splitValue)
+        public readonly Box2f SplitLeft(V2f splitValue)
         {
             var result = new Box2f(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -13871,7 +13871,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitRight(float splitAtX)
+        public readonly Box2f SplitRight(float splitAtX)
         {
             if (splitAtX > Max.X) return Box2f.Invalid;
             if (splitAtX <= Min.X) return this;
@@ -13882,7 +13882,7 @@ namespace Aardvark.Base
         /// Returns a box with Max.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitLeft(float splitAtX)
+        public readonly Box2f SplitLeft(float splitAtX)
         {
             if (splitAtX < Min.X) return Box2f.Invalid;
             if (splitAtX >= Max.X) return this;
@@ -13893,7 +13893,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitTop(float splitAtY)
+        public readonly Box2f SplitTop(float splitAtY)
         {
             if (splitAtY > Max.Y) return Box2f.Invalid;
             if (splitAtY <= Min.Y) return this;
@@ -13904,7 +13904,7 @@ namespace Aardvark.Base
         /// Returns the box with Max.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitBottom(float splitAtY)
+        public readonly Box2f SplitBottom(float splitAtY)
         {
             if (splitAtY < Min.Y) return Box2f.Invalid;
             if (splitAtY >= Max.Y) return this;
@@ -13912,28 +13912,28 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitLeftBottom(V2f splitAt)
+        public readonly Box2f SplitLeftBottom(V2f splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y < Min.Y) return Box2f.Invalid;
             return new Box2f(Min, splitAt);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitRightBottom(V2f splitAt)
+        public readonly Box2f SplitRightBottom(V2f splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y < Min.Y) return Box2f.Invalid;
             return new Box2f(new V2f(splitAt.X, Min.Y), new V2f(Max.X, splitAt.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitLeftTop(V2f splitAt)
+        public readonly Box2f SplitLeftTop(V2f splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y > Max.Y) return Box2f.Invalid;
             return new Box2f(new V2f(Min.X, splitAt.Y), new V2f(splitAt.X, Max.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f SplitRightTop(V2f splitAt)
+        public readonly Box2f SplitRightTop(V2f splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y > Max.Y) return Box2f.Invalid;
             return new Box2f(splitAt, Max);
@@ -13943,7 +13943,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ExtendedBy(Box2f b)
+        public readonly Box2f ExtendedBy(Box2f b)
         {
             return new Box2f(
                     new V2f(
@@ -13958,7 +13958,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f ExtendedBy(V2f v)
+        public readonly Box2f ExtendedBy(V2f v)
         {
             return new Box2f(
                     new V2f(
@@ -14021,7 +14021,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V2f p)
+        public readonly bool Contains(V2f p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -14033,7 +14033,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box2f b)
+        public readonly bool Contains(Box2f b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -14058,7 +14058,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2f box)
+        public readonly bool Intersects(Box2f box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -14071,7 +14071,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2f box, V2f eps)
+        public readonly bool Intersects(Box2f box, V2f eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -14084,7 +14084,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2f box, float eps)
+        public readonly bool Intersects(Box2f box, float eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -14106,7 +14106,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V2f p0)
+        public readonly Box.Flags OutsideFlags(V2f p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -14121,7 +14121,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box2f b)
+        public readonly Box.Flags OutsideFlags(Box2f b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -14136,7 +14136,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V2f v, out V2f vMin, out V2f vMax)
+        public readonly void GetMinMaxInDirection(V2f v, out V2f vMin, out V2f vMax)
         {
             vMin = V2f.MinValue;
             vMax = V2f.MaxValue;
@@ -14208,24 +14208,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box2f other)
+        public readonly bool Equals(Box2f other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -14268,7 +14268,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -14276,7 +14276,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -14392,7 +14392,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f Translated(V2f shift)
+        public readonly Box2f Translated(V2f shift)
         {
             return IsInvalid ? Box2f.Invalid
                              : new Box2f(Min + shift, Max + shift);
@@ -14403,7 +14403,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f Scaled(V2f factor)
+        public readonly Box2f Scaled(V2f factor)
         {
             return IsInvalid ? Box2f.Invalid
                              : new Box2f(Min * factor, Max * factor);
@@ -14414,9 +14414,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box2f Transformed(M33f trafo)
+        public readonly Box2f Transformed(M33f trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
             var t = new V2f(trafo.M02, trafo.M12);
             var res = new Box2f(t, t);
             float av, bv;
@@ -14440,7 +14440,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f Transformed(Trafo2f trafo)
+        public readonly Box2f Transformed(Trafo2f trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -14456,7 +14456,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f Corner(int index)
+        public readonly V2f Corner(int index)
         {
             return
                 new V2f(
@@ -14470,7 +14470,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f[] ComputeCorners()
+        public readonly V2f[] ComputeCorners()
         {
             return new V2f[] {
                 Min,
@@ -14482,7 +14482,7 @@ namespace Aardvark.Base
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f[] ComputeCornersCCW()
+        public readonly V2f[] ComputeCornersCCW()
         {
             return new V2f[] {
                 Min,
@@ -14495,7 +14495,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V2f> Corners
+        public readonly IEnumerable<V2f> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -14520,7 +14520,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2f Members
 
-        public Box2f BoundingBox2f
+        public readonly Box2f BoundingBox2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -14530,7 +14530,7 @@ namespace Aardvark.Base
 
         #region IBoundingCircle2f Members
 
-        public Circle2f BoundingCircle2f
+        public readonly Circle2f BoundingCircle2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Circle2f.Invalid : new Circle2f(Center, 0.5f * Size.Length);
@@ -14540,7 +14540,7 @@ namespace Aardvark.Base
 
         #region ISize2f Members
 
-        public V2f Size2f
+        public readonly V2f Size2f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }
@@ -15008,7 +15008,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -15017,7 +15017,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -15026,7 +15026,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -15035,7 +15035,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
@@ -15044,7 +15044,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -15057,7 +15057,7 @@ namespace Aardvark.Base
         public double Left
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.X; }
+            readonly get { return Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.X = value; }
         }
@@ -15069,7 +15069,7 @@ namespace Aardvark.Base
         public double Right
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X; }
+            readonly get { return Max.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = value; }
         }
@@ -15081,7 +15081,7 @@ namespace Aardvark.Base
         public double Top
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Min.Y; }
+            readonly get { return Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Min.Y = value; }
         }
@@ -15093,7 +15093,7 @@ namespace Aardvark.Base
         public double Bottom
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y; }
+            readonly get { return Max.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = value; }
         }
@@ -15105,12 +15105,12 @@ namespace Aardvark.Base
         public V2d Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V2d Center
+        public readonly V2d Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -15120,12 +15120,12 @@ namespace Aardvark.Base
         public double SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1d RangeX
+        public readonly Range1d RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1d(Min.X, Max.X); }
@@ -15135,12 +15135,12 @@ namespace Aardvark.Base
         public double SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1d RangeY
+        public readonly Range1d RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1d(Min.Y, Max.Y); }
@@ -15149,7 +15149,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY > SizeX ? 1 : 0; }
@@ -15158,22 +15158,22 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeY < SizeX ? 1 : 0; }
         }
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return SizeX * SizeY; }
         }
 
-        public V2d OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V2d IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2d(Max.X, Min.Y); } }
-        public V2d OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2d(Min.X, Max.Y); } }
-        public V2d II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V2d OO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V2d IO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2d(Max.X, Min.Y); } }
+        public readonly V2d OI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V2d(Min.X, Max.Y); } }
+        public readonly V2d II { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -15183,7 +15183,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d EnlargedBy(V2d increment)
+        public readonly Box2d EnlargedBy(V2d increment)
         {
             return new Box2d((Min - increment), (Max + increment));
         }
@@ -15192,7 +15192,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d EnlargedBy(V2d deltaMin, V2d deltaMax)
+        public readonly Box2d EnlargedBy(V2d deltaMin, V2d deltaMax)
         {
             return new Box2d((Min - deltaMin), (Max + deltaMax));
         }
@@ -15201,7 +15201,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ShrunkBy(V2d delta)
+        public readonly Box2d ShrunkBy(V2d delta)
         {
             return new Box2d((Min + delta), (Max - delta));
         }
@@ -15210,7 +15210,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ShrunkBy(V2d deltaMin, V2d deltaMax)
+        public readonly Box2d ShrunkBy(V2d deltaMin, V2d deltaMax)
         {
             return new Box2d((Min + deltaMin), (Max - deltaMax));
         }
@@ -15259,7 +15259,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d EnlargedBy(double delta)
+        public readonly Box2d EnlargedBy(double delta)
         {
             return new Box2d(
                     new V2d(Min.X - delta, Min.Y - delta),
@@ -15270,7 +15270,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ShrunkBy(double delta)
+        public readonly Box2d ShrunkBy(double delta)
         {
             return new Box2d(
                     new V2d(Min.X + delta, Min.Y + delta),
@@ -15281,7 +15281,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d EnlargedBy(
+        public readonly Box2d EnlargedBy(
                 double deltaMinX, double deltaMaxX, 
                 double deltaMinY, double deltaMaxY)
         {
@@ -15294,7 +15294,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ShrunkBy(
+        public readonly Box2d ShrunkBy(
                 double deltaMinX, double deltaMaxX, 
                 double deltaMinY, double deltaMaxY)
         {
@@ -15351,7 +15351,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ScaledFromCenterBy(double factor)
+        public readonly Box2d ScaledFromCenterBy(double factor)
         {
             var size = Size;
             var increment = (size * factor - size) / 2;
@@ -15362,7 +15362,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ScaledFromCenterBy(V2d vectorFactor)
+        public readonly Box2d ScaledFromCenterBy(V2d vectorFactor)
         {
             var size = Size;
             var increment = (size * vectorFactor - size) / 2;
@@ -15374,7 +15374,7 @@ namespace Aardvark.Base
         /// measured with respect to the box diagonal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d EnlargedByRelativeEps(double eps)
+        public readonly Box2d EnlargedByRelativeEps(double eps)
         {
             return EnlargedBy(eps * Size.Length);
         }
@@ -15397,7 +15397,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d Clamped(V2d p)
+        public readonly V2d Clamped(V2d p)
         {
             return new V2d(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -15408,7 +15408,7 @@ namespace Aardvark.Base
         /// Returns the squared distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double DistanceSquared(V2d p)
+        public readonly double DistanceSquared(V2d p)
         {
             return 
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -15419,7 +15419,7 @@ namespace Aardvark.Base
         /// Returns the distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Distance(V2d p)
+        public readonly double Distance(V2d p)
         {
             return Fun.Sqrt(
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -15431,7 +15431,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d Lerp(double x)
+        public readonly V2d Lerp(double x)
         {
             return Fun.Lerp(x, Min, Max);
         }
@@ -15440,7 +15440,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d Lerp(V2d p)
+        public readonly V2d Lerp(V2d p)
         {
             return new V2d(
                         Fun.Lerp(p.X, Min.X, Max.X), 
@@ -15451,7 +15451,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d Lerp(double x, double y)
+        public readonly V2d Lerp(double x, double y)
         {
             return new V2d(
                          Fun.Lerp(x, Min.X, Max.X), 
@@ -15462,7 +15462,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d InvLerp(V2d p)
+        public readonly V2d InvLerp(V2d p)
         {
             return new V2d(
                         Fun.InvLerp(p.X, Min.X, Max.X), 
@@ -15473,7 +15473,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d InvLerp(double x, double y)
+        public readonly V2d InvLerp(double x, double y)
         {
             return new V2d(
                         Fun.InvLerp(x, Min.X, Max.X), 
@@ -15484,7 +15484,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitRight(V2d splitValue)
+        public readonly Box2d SplitRight(V2d splitValue)
         {
             var result = new Box2d(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -15496,7 +15496,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitLeft(V2d splitValue)
+        public readonly Box2d SplitLeft(V2d splitValue)
         {
             var result = new Box2d(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -15508,7 +15508,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitRight(double splitAtX)
+        public readonly Box2d SplitRight(double splitAtX)
         {
             if (splitAtX > Max.X) return Box2d.Invalid;
             if (splitAtX <= Min.X) return this;
@@ -15519,7 +15519,7 @@ namespace Aardvark.Base
         /// Returns a box with Max.X clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitLeft(double splitAtX)
+        public readonly Box2d SplitLeft(double splitAtX)
         {
             if (splitAtX < Min.X) return Box2d.Invalid;
             if (splitAtX >= Max.X) return this;
@@ -15530,7 +15530,7 @@ namespace Aardvark.Base
         /// Returns the box with Min.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitTop(double splitAtY)
+        public readonly Box2d SplitTop(double splitAtY)
         {
             if (splitAtY > Max.Y) return Box2d.Invalid;
             if (splitAtY <= Min.Y) return this;
@@ -15541,7 +15541,7 @@ namespace Aardvark.Base
         /// Returns the box with Max.Y clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitBottom(double splitAtY)
+        public readonly Box2d SplitBottom(double splitAtY)
         {
             if (splitAtY < Min.Y) return Box2d.Invalid;
             if (splitAtY >= Max.Y) return this;
@@ -15549,28 +15549,28 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitLeftBottom(V2d splitAt)
+        public readonly Box2d SplitLeftBottom(V2d splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y < Min.Y) return Box2d.Invalid;
             return new Box2d(Min, splitAt);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitRightBottom(V2d splitAt)
+        public readonly Box2d SplitRightBottom(V2d splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y < Min.Y) return Box2d.Invalid;
             return new Box2d(new V2d(splitAt.X, Min.Y), new V2d(Max.X, splitAt.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitLeftTop(V2d splitAt)
+        public readonly Box2d SplitLeftTop(V2d splitAt)
         {
             if (splitAt.X < Min.X || splitAt.Y > Max.Y) return Box2d.Invalid;
             return new Box2d(new V2d(Min.X, splitAt.Y), new V2d(splitAt.X, Max.Y));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d SplitRightTop(V2d splitAt)
+        public readonly Box2d SplitRightTop(V2d splitAt)
         {
             if (splitAt.X > Max.X || splitAt.Y > Max.Y) return Box2d.Invalid;
             return new Box2d(splitAt, Max);
@@ -15580,7 +15580,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ExtendedBy(Box2d b)
+        public readonly Box2d ExtendedBy(Box2d b)
         {
             return new Box2d(
                     new V2d(
@@ -15595,7 +15595,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d ExtendedBy(V2d v)
+        public readonly Box2d ExtendedBy(V2d v)
         {
             return new Box2d(
                     new V2d(
@@ -15658,7 +15658,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V2d p)
+        public readonly bool Contains(V2d p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -15670,7 +15670,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box2d b)
+        public readonly bool Contains(Box2d b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -15695,7 +15695,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2d box)
+        public readonly bool Intersects(Box2d box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -15708,7 +15708,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2d box, V2d eps)
+        public readonly bool Intersects(Box2d box, V2d eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -15721,7 +15721,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box2d box, double eps)
+        public readonly bool Intersects(Box2d box, double eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -15743,7 +15743,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V2d p0)
+        public readonly Box.Flags OutsideFlags(V2d p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -15758,7 +15758,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box2d b)
+        public readonly Box.Flags OutsideFlags(Box2d b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -15773,7 +15773,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V2d v, out V2d vMin, out V2d vMax)
+        public readonly void GetMinMaxInDirection(V2d v, out V2d vMin, out V2d vMax)
         {
             vMin = V2d.MinValue;
             vMax = V2d.MaxValue;
@@ -15845,24 +15845,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box2d other)
+        public readonly bool Equals(Box2d other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -15905,7 +15905,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -15913,7 +15913,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -16029,7 +16029,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d Translated(V2d shift)
+        public readonly Box2d Translated(V2d shift)
         {
             return IsInvalid ? Box2d.Invalid
                              : new Box2d(Min + shift, Max + shift);
@@ -16040,7 +16040,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d Scaled(V2d factor)
+        public readonly Box2d Scaled(V2d factor)
         {
             return IsInvalid ? Box2d.Invalid
                              : new Box2d(Min * factor, Max * factor);
@@ -16051,9 +16051,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box2d Transformed(M33d trafo)
+        public readonly Box2d Transformed(M33d trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
             var t = new V2d(trafo.M02, trafo.M12);
             var res = new Box2d(t, t);
             double av, bv;
@@ -16077,7 +16077,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d Transformed(Trafo2d trafo)
+        public readonly Box2d Transformed(Trafo2d trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -16093,7 +16093,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d Corner(int index)
+        public readonly V2d Corner(int index)
         {
             return
                 new V2d(
@@ -16107,7 +16107,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d[] ComputeCorners()
+        public readonly V2d[] ComputeCorners()
         {
             return new V2d[] {
                 Min,
@@ -16119,7 +16119,7 @@ namespace Aardvark.Base
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d[] ComputeCornersCCW()
+        public readonly V2d[] ComputeCornersCCW()
         {
             return new V2d[] {
                 Min,
@@ -16132,7 +16132,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V2d> Corners
+        public readonly IEnumerable<V2d> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -16157,7 +16157,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d Members
 
-        public Box2d BoundingBox2d
+        public readonly Box2d BoundingBox2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -16167,7 +16167,7 @@ namespace Aardvark.Base
 
         #region IBoundingCircle2d Members
 
-        public Circle2d BoundingCircle2d
+        public readonly Circle2d BoundingCircle2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Circle2d.Invalid : new Circle2d(Center, 0.5 * Size.Length);
@@ -16177,7 +16177,7 @@ namespace Aardvark.Base
 
         #region ISize2d Members
 
-        public V2d Size2d
+        public readonly V2d Size2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }
@@ -16649,7 +16649,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -16658,7 +16658,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -16667,7 +16667,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -16676,7 +16676,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max); }
@@ -16685,7 +16685,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -16699,12 +16699,12 @@ namespace Aardvark.Base
         public V3i Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V3i Center
+        public readonly V3i Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -16714,12 +16714,12 @@ namespace Aardvark.Base
         public int SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1i RangeX
+        public readonly Range1i RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1i(Min.X, Max.X); }
@@ -16729,12 +16729,12 @@ namespace Aardvark.Base
         public int SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1i RangeY
+        public readonly Range1i RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1i(Min.Y, Max.Y); }
@@ -16744,12 +16744,12 @@ namespace Aardvark.Base
         public int SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Z - Min.Z; }
+            readonly get { return Max.Z - Min.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Z = Min.Z + value; }
         }
 
-        public Range1i RangeZ
+        public readonly Range1i RangeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1i(Min.Z, Max.Z); }
@@ -16758,7 +16758,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -16774,7 +16774,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -16787,7 +16787,7 @@ namespace Aardvark.Base
             }
         }
 
-        public int SurfaceArea
+        public readonly int SurfaceArea
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -16797,7 +16797,7 @@ namespace Aardvark.Base
             }
         }
 
-        public int Volume
+        public readonly int Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -16807,14 +16807,14 @@ namespace Aardvark.Base
             }
         }
 
-        public V3i OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V3i IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Max.X, Min.Y, Min.Z); } }
-        public V3i OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Min.X, Max.Y, Min.Z); } }
-        public V3i IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Max.X, Max.Y, Min.Z); } }
-        public V3i OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Min.X, Min.Y, Max.Z); } }
-        public V3i IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Max.X, Min.Y, Max.Z); } }
-        public V3i OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Min.X, Max.Y, Max.Z); } }
-        public V3i III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V3i OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V3i IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Max.X, Min.Y, Min.Z); } }
+        public readonly V3i OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Min.X, Max.Y, Min.Z); } }
+        public readonly V3i IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Max.X, Max.Y, Min.Z); } }
+        public readonly V3i OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Min.X, Min.Y, Max.Z); } }
+        public readonly V3i IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Max.X, Min.Y, Max.Z); } }
+        public readonly V3i OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3i(Min.X, Max.Y, Max.Z); } }
+        public readonly V3i III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -16824,7 +16824,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i EnlargedBy(V3i increment)
+        public readonly Box3i EnlargedBy(V3i increment)
         {
             return new Box3i((Min - increment), (Max + increment));
         }
@@ -16833,7 +16833,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i EnlargedBy(V3i deltaMin, V3i deltaMax)
+        public readonly Box3i EnlargedBy(V3i deltaMin, V3i deltaMax)
         {
             return new Box3i((Min - deltaMin), (Max + deltaMax));
         }
@@ -16842,7 +16842,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i ShrunkBy(V3i delta)
+        public readonly Box3i ShrunkBy(V3i delta)
         {
             return new Box3i((Min + delta), (Max - delta));
         }
@@ -16851,7 +16851,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i ShrunkBy(V3i deltaMin, V3i deltaMax)
+        public readonly Box3i ShrunkBy(V3i deltaMin, V3i deltaMax)
         {
             return new Box3i((Min + deltaMin), (Max - deltaMax));
         }
@@ -16900,7 +16900,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i EnlargedBy(int delta)
+        public readonly Box3i EnlargedBy(int delta)
         {
             return new Box3i(
                     new V3i(Min.X - delta, Min.Y - delta, Min.Z - delta),
@@ -16911,7 +16911,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i ShrunkBy(int delta)
+        public readonly Box3i ShrunkBy(int delta)
         {
             return new Box3i(
                     new V3i(Min.X + delta, Min.Y + delta, Min.Z + delta),
@@ -16922,7 +16922,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i EnlargedBy(
+        public readonly Box3i EnlargedBy(
                 int deltaMinX, int deltaMaxX, 
                 int deltaMinY, int deltaMaxY, 
                 int deltaMinZ, int deltaMaxZ)
@@ -16936,7 +16936,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i ShrunkBy(
+        public readonly Box3i ShrunkBy(
                 int deltaMinX, int deltaMaxX, 
                 int deltaMinY, int deltaMaxY, 
                 int deltaMinZ, int deltaMaxZ)
@@ -17004,7 +17004,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3i Clamped(V3i p)
+        public readonly V3i Clamped(V3i p)
         {
             return new V3i(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -17017,7 +17017,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i SplitRight(V3i splitValue)
+        public readonly Box3i SplitRight(V3i splitValue)
         {
             var result = new Box3i(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -17030,7 +17030,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i SplitLeft(V3i splitValue)
+        public readonly Box3i SplitLeft(V3i splitValue)
         {
             var result = new Box3i(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -17043,7 +17043,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i ExtendedBy(Box3i b)
+        public readonly Box3i ExtendedBy(Box3i b)
         {
             return new Box3i(
                     new V3i(
@@ -17060,7 +17060,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i ExtendedBy(V3i v)
+        public readonly Box3i ExtendedBy(V3i v)
         {
             return new Box3i(
                     new V3i(
@@ -17137,7 +17137,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V3i p)
+        public readonly bool Contains(V3i p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -17150,7 +17150,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box3i b)
+        public readonly bool Contains(Box3i b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -17177,7 +17177,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3i box)
+        public readonly bool Intersects(Box3i box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -17192,7 +17192,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3i box, V3i eps)
+        public readonly bool Intersects(Box3i box, V3i eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -17207,7 +17207,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3i box, int eps)
+        public readonly bool Intersects(Box3i box, int eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -17231,7 +17231,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V3i p0)
+        public readonly Box.Flags OutsideFlags(V3i p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -17248,7 +17248,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box3i b)
+        public readonly Box.Flags OutsideFlags(Box3i b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -17265,7 +17265,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V3i v, out V3i vMin, out V3i vMax)
+        public readonly void GetMinMaxInDirection(V3i v, out V3i vMin, out V3i vMax)
         {
             vMin = V3i.MinValue;
             vMax = V3i.MaxValue;
@@ -17347,24 +17347,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box3i other)
+        public readonly bool Equals(Box3i other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box3i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -17407,7 +17407,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -17415,7 +17415,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -17497,7 +17497,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i Translated(V3i shift)
+        public readonly Box3i Translated(V3i shift)
         {
             return IsInvalid ? Box3i.Invalid
                              : new Box3i(Min + shift, Max + shift);
@@ -17508,7 +17508,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i Scaled(V3i factor)
+        public readonly Box3i Scaled(V3i factor)
         {
             return IsInvalid ? Box3i.Invalid
                              : new Box3i(Min * factor, Max * factor);
@@ -17519,9 +17519,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box3d Transformed(M44d trafo)
+        public readonly Box3d Transformed(M44d trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             double av, bv;
@@ -17565,7 +17565,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d Transformed(Trafo3d trafo)
+        public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -17581,7 +17581,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3i Corner(int index)
+        public readonly V3i Corner(int index)
         {
             return
                 new V3i(
@@ -17596,7 +17596,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3i[] ComputeCorners()
+        public readonly V3i[] ComputeCorners()
         {
             return new V3i[] {
                 Min,
@@ -17614,7 +17614,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V3i> Corners
+        public readonly IEnumerable<V3i> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17635,15 +17635,15 @@ namespace Aardvark.Base
         #region Swizzle methods
 
         // TODO: Implement for other dimensions
-        public Range1i X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1i(Min.X, Max.X); } }
-        public Range1i Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1i(Min.Y, Max.Y); } }
-        public Range1i Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1i(Min.Z, Max.Z); } }
-        public Box2i XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.XY, Max.XY); } }
-        public Box2i XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.XZ, Max.XZ); } }
-        public Box2i YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.YX, Max.YX); } }
-        public Box2i YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.YZ, Max.YZ); } }
-        public Box2i ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.ZX, Max.ZX); } }
-        public Box2i ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.ZY, Max.ZY); } }
+        public readonly Range1i X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1i(Min.X, Max.X); } }
+        public readonly Range1i Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1i(Min.Y, Max.Y); } }
+        public readonly Range1i Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1i(Min.Z, Max.Z); } }
+        public readonly Box2i XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.XY, Max.XY); } }
+        public readonly Box2i XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.XZ, Max.XZ); } }
+        public readonly Box2i YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.YX, Max.YX); } }
+        public readonly Box2i YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.YZ, Max.YZ); } }
+        public readonly Box2i ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.ZX, Max.ZX); } }
+        public readonly Box2i ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2i(Min.ZY, Max.ZY); } }
 
         #endregion
 
@@ -17652,7 +17652,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns all points from [Min,Max[ with X-Variable in the outer loop.
         /// </summary>
-        public IEnumerable<V3i> EnumerateInsidePoints()
+        public readonly IEnumerable<V3i> EnumerateInsidePoints()
         {
             var p = new V3i();
             for (p.X = Min.X; p.X < Max.X; p.X++)
@@ -17665,7 +17665,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3i Members
 
-        public Box3i BoundingBox3i
+        public readonly Box3i BoundingBox3i
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -17675,7 +17675,7 @@ namespace Aardvark.Base
 
         #region IBoundingSphere3d Members
 
-        public Sphere3d BoundingSphere3d
+        public readonly Sphere3d BoundingSphere3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
@@ -17685,7 +17685,7 @@ namespace Aardvark.Base
 
         #region ISize3i Members
 
-        public V3i Size3i
+        public readonly V3i Size3i
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }
@@ -18537,7 +18537,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -18546,7 +18546,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -18555,7 +18555,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -18564,7 +18564,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max); }
@@ -18573,7 +18573,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -18587,12 +18587,12 @@ namespace Aardvark.Base
         public V3l Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V3l Center
+        public readonly V3l Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -18602,12 +18602,12 @@ namespace Aardvark.Base
         public long SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1l RangeX
+        public readonly Range1l RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1l(Min.X, Max.X); }
@@ -18617,12 +18617,12 @@ namespace Aardvark.Base
         public long SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1l RangeY
+        public readonly Range1l RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1l(Min.Y, Max.Y); }
@@ -18632,12 +18632,12 @@ namespace Aardvark.Base
         public long SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Z - Min.Z; }
+            readonly get { return Max.Z - Min.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Z = Min.Z + value; }
         }
 
-        public Range1l RangeZ
+        public readonly Range1l RangeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1l(Min.Z, Max.Z); }
@@ -18646,7 +18646,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -18662,7 +18662,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -18675,7 +18675,7 @@ namespace Aardvark.Base
             }
         }
 
-        public long SurfaceArea
+        public readonly long SurfaceArea
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -18685,7 +18685,7 @@ namespace Aardvark.Base
             }
         }
 
-        public long Volume
+        public readonly long Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -18695,14 +18695,14 @@ namespace Aardvark.Base
             }
         }
 
-        public V3l OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V3l IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Max.X, Min.Y, Min.Z); } }
-        public V3l OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Min.X, Max.Y, Min.Z); } }
-        public V3l IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Max.X, Max.Y, Min.Z); } }
-        public V3l OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Min.X, Min.Y, Max.Z); } }
-        public V3l IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Max.X, Min.Y, Max.Z); } }
-        public V3l OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Min.X, Max.Y, Max.Z); } }
-        public V3l III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V3l OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V3l IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Max.X, Min.Y, Min.Z); } }
+        public readonly V3l OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Min.X, Max.Y, Min.Z); } }
+        public readonly V3l IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Max.X, Max.Y, Min.Z); } }
+        public readonly V3l OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Min.X, Min.Y, Max.Z); } }
+        public readonly V3l IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Max.X, Min.Y, Max.Z); } }
+        public readonly V3l OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3l(Min.X, Max.Y, Max.Z); } }
+        public readonly V3l III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -18712,7 +18712,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l EnlargedBy(V3l increment)
+        public readonly Box3l EnlargedBy(V3l increment)
         {
             return new Box3l((Min - increment), (Max + increment));
         }
@@ -18721,7 +18721,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l EnlargedBy(V3l deltaMin, V3l deltaMax)
+        public readonly Box3l EnlargedBy(V3l deltaMin, V3l deltaMax)
         {
             return new Box3l((Min - deltaMin), (Max + deltaMax));
         }
@@ -18730,7 +18730,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l ShrunkBy(V3l delta)
+        public readonly Box3l ShrunkBy(V3l delta)
         {
             return new Box3l((Min + delta), (Max - delta));
         }
@@ -18739,7 +18739,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l ShrunkBy(V3l deltaMin, V3l deltaMax)
+        public readonly Box3l ShrunkBy(V3l deltaMin, V3l deltaMax)
         {
             return new Box3l((Min + deltaMin), (Max - deltaMax));
         }
@@ -18788,7 +18788,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l EnlargedBy(long delta)
+        public readonly Box3l EnlargedBy(long delta)
         {
             return new Box3l(
                     new V3l(Min.X - delta, Min.Y - delta, Min.Z - delta),
@@ -18799,7 +18799,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l ShrunkBy(long delta)
+        public readonly Box3l ShrunkBy(long delta)
         {
             return new Box3l(
                     new V3l(Min.X + delta, Min.Y + delta, Min.Z + delta),
@@ -18810,7 +18810,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l EnlargedBy(
+        public readonly Box3l EnlargedBy(
                 long deltaMinX, long deltaMaxX, 
                 long deltaMinY, long deltaMaxY, 
                 long deltaMinZ, long deltaMaxZ)
@@ -18824,7 +18824,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l ShrunkBy(
+        public readonly Box3l ShrunkBy(
                 long deltaMinX, long deltaMaxX, 
                 long deltaMinY, long deltaMaxY, 
                 long deltaMinZ, long deltaMaxZ)
@@ -18892,7 +18892,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l Clamped(V3l p)
+        public readonly V3l Clamped(V3l p)
         {
             return new V3l(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -18905,7 +18905,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l SplitRight(V3l splitValue)
+        public readonly Box3l SplitRight(V3l splitValue)
         {
             var result = new Box3l(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -18918,7 +18918,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l SplitLeft(V3l splitValue)
+        public readonly Box3l SplitLeft(V3l splitValue)
         {
             var result = new Box3l(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -18931,7 +18931,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l ExtendedBy(Box3l b)
+        public readonly Box3l ExtendedBy(Box3l b)
         {
             return new Box3l(
                     new V3l(
@@ -18948,7 +18948,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l ExtendedBy(V3l v)
+        public readonly Box3l ExtendedBy(V3l v)
         {
             return new Box3l(
                     new V3l(
@@ -19025,7 +19025,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V3l p)
+        public readonly bool Contains(V3l p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -19038,7 +19038,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box3l b)
+        public readonly bool Contains(Box3l b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -19065,7 +19065,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3l box)
+        public readonly bool Intersects(Box3l box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -19080,7 +19080,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3l box, V3l eps)
+        public readonly bool Intersects(Box3l box, V3l eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -19095,7 +19095,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3l box, long eps)
+        public readonly bool Intersects(Box3l box, long eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -19119,7 +19119,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V3l p0)
+        public readonly Box.Flags OutsideFlags(V3l p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -19136,7 +19136,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box3l b)
+        public readonly Box.Flags OutsideFlags(Box3l b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -19153,7 +19153,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V3l v, out V3l vMin, out V3l vMax)
+        public readonly void GetMinMaxInDirection(V3l v, out V3l vMin, out V3l vMax)
         {
             vMin = V3l.MinValue;
             vMax = V3l.MaxValue;
@@ -19235,24 +19235,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box3l other)
+        public readonly bool Equals(Box3l other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box3l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -19295,7 +19295,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -19303,7 +19303,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -19385,7 +19385,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l Translated(V3l shift)
+        public readonly Box3l Translated(V3l shift)
         {
             return IsInvalid ? Box3l.Invalid
                              : new Box3l(Min + shift, Max + shift);
@@ -19396,7 +19396,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l Scaled(V3l factor)
+        public readonly Box3l Scaled(V3l factor)
         {
             return IsInvalid ? Box3l.Invalid
                              : new Box3l(Min * factor, Max * factor);
@@ -19407,9 +19407,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box3d Transformed(M44d trafo)
+        public readonly Box3d Transformed(M44d trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             double av, bv;
@@ -19453,7 +19453,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d Transformed(Trafo3d trafo)
+        public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -19469,7 +19469,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l Corner(int index)
+        public readonly V3l Corner(int index)
         {
             return
                 new V3l(
@@ -19484,7 +19484,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l[] ComputeCorners()
+        public readonly V3l[] ComputeCorners()
         {
             return new V3l[] {
                 Min,
@@ -19502,7 +19502,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V3l> Corners
+        public readonly IEnumerable<V3l> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -19523,15 +19523,15 @@ namespace Aardvark.Base
         #region Swizzle methods
 
         // TODO: Implement for other dimensions
-        public Range1l X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1l(Min.X, Max.X); } }
-        public Range1l Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1l(Min.Y, Max.Y); } }
-        public Range1l Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1l(Min.Z, Max.Z); } }
-        public Box2l XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.XY, Max.XY); } }
-        public Box2l XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.XZ, Max.XZ); } }
-        public Box2l YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.YX, Max.YX); } }
-        public Box2l YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.YZ, Max.YZ); } }
-        public Box2l ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.ZX, Max.ZX); } }
-        public Box2l ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.ZY, Max.ZY); } }
+        public readonly Range1l X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1l(Min.X, Max.X); } }
+        public readonly Range1l Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1l(Min.Y, Max.Y); } }
+        public readonly Range1l Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1l(Min.Z, Max.Z); } }
+        public readonly Box2l XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.XY, Max.XY); } }
+        public readonly Box2l XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.XZ, Max.XZ); } }
+        public readonly Box2l YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.YX, Max.YX); } }
+        public readonly Box2l YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.YZ, Max.YZ); } }
+        public readonly Box2l ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.ZX, Max.ZX); } }
+        public readonly Box2l ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2l(Min.ZY, Max.ZY); } }
 
         #endregion
 
@@ -19540,7 +19540,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns all points from [Min,Max[ with X-Variable in the outer loop.
         /// </summary>
-        public IEnumerable<V3l> EnumerateInsidePoints()
+        public readonly IEnumerable<V3l> EnumerateInsidePoints()
         {
             var p = new V3l();
             for (p.X = Min.X; p.X < Max.X; p.X++)
@@ -19553,7 +19553,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3l Members
 
-        public Box3l BoundingBox3l
+        public readonly Box3l BoundingBox3l
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -19563,7 +19563,7 @@ namespace Aardvark.Base
 
         #region IBoundingSphere3d Members
 
-        public Sphere3d BoundingSphere3d
+        public readonly Sphere3d BoundingSphere3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
@@ -19573,7 +19573,7 @@ namespace Aardvark.Base
 
         #region ISize3l Members
 
-        public V3l Size3l
+        public readonly V3l Size3l
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }
@@ -20425,7 +20425,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -20434,7 +20434,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -20443,7 +20443,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -20452,7 +20452,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
@@ -20461,7 +20461,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -20475,12 +20475,12 @@ namespace Aardvark.Base
         public V3f Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V3f Center
+        public readonly V3f Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -20490,12 +20490,12 @@ namespace Aardvark.Base
         public float SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1f RangeX
+        public readonly Range1f RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1f(Min.X, Max.X); }
@@ -20505,12 +20505,12 @@ namespace Aardvark.Base
         public float SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1f RangeY
+        public readonly Range1f RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1f(Min.Y, Max.Y); }
@@ -20520,12 +20520,12 @@ namespace Aardvark.Base
         public float SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Z - Min.Z; }
+            readonly get { return Max.Z - Min.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Z = Min.Z + value; }
         }
 
-        public Range1f RangeZ
+        public readonly Range1f RangeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1f(Min.Z, Max.Z); }
@@ -20534,7 +20534,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20550,7 +20550,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20563,7 +20563,7 @@ namespace Aardvark.Base
             }
         }
 
-        public float SurfaceArea
+        public readonly float SurfaceArea
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20573,7 +20573,7 @@ namespace Aardvark.Base
             }
         }
 
-        public float Volume
+        public readonly float Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20583,14 +20583,14 @@ namespace Aardvark.Base
             }
         }
 
-        public V3f OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V3f IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Max.X, Min.Y, Min.Z); } }
-        public V3f OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Min.X, Max.Y, Min.Z); } }
-        public V3f IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Max.X, Max.Y, Min.Z); } }
-        public V3f OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Min.X, Min.Y, Max.Z); } }
-        public V3f IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Max.X, Min.Y, Max.Z); } }
-        public V3f OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Min.X, Max.Y, Max.Z); } }
-        public V3f III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V3f OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V3f IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Max.X, Min.Y, Min.Z); } }
+        public readonly V3f OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Min.X, Max.Y, Min.Z); } }
+        public readonly V3f IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Max.X, Max.Y, Min.Z); } }
+        public readonly V3f OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Min.X, Min.Y, Max.Z); } }
+        public readonly V3f IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Max.X, Min.Y, Max.Z); } }
+        public readonly V3f OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3f(Min.X, Max.Y, Max.Z); } }
+        public readonly V3f III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -20600,7 +20600,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f EnlargedBy(V3f increment)
+        public readonly Box3f EnlargedBy(V3f increment)
         {
             return new Box3f((Min - increment), (Max + increment));
         }
@@ -20609,7 +20609,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f EnlargedBy(V3f deltaMin, V3f deltaMax)
+        public readonly Box3f EnlargedBy(V3f deltaMin, V3f deltaMax)
         {
             return new Box3f((Min - deltaMin), (Max + deltaMax));
         }
@@ -20618,7 +20618,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ShrunkBy(V3f delta)
+        public readonly Box3f ShrunkBy(V3f delta)
         {
             return new Box3f((Min + delta), (Max - delta));
         }
@@ -20627,7 +20627,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ShrunkBy(V3f deltaMin, V3f deltaMax)
+        public readonly Box3f ShrunkBy(V3f deltaMin, V3f deltaMax)
         {
             return new Box3f((Min + deltaMin), (Max - deltaMax));
         }
@@ -20676,7 +20676,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f EnlargedBy(float delta)
+        public readonly Box3f EnlargedBy(float delta)
         {
             return new Box3f(
                     new V3f(Min.X - delta, Min.Y - delta, Min.Z - delta),
@@ -20687,7 +20687,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ShrunkBy(float delta)
+        public readonly Box3f ShrunkBy(float delta)
         {
             return new Box3f(
                     new V3f(Min.X + delta, Min.Y + delta, Min.Z + delta),
@@ -20698,7 +20698,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f EnlargedBy(
+        public readonly Box3f EnlargedBy(
                 float deltaMinX, float deltaMaxX, 
                 float deltaMinY, float deltaMaxY, 
                 float deltaMinZ, float deltaMaxZ)
@@ -20712,7 +20712,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ShrunkBy(
+        public readonly Box3f ShrunkBy(
                 float deltaMinX, float deltaMaxX, 
                 float deltaMinY, float deltaMaxY, 
                 float deltaMinZ, float deltaMaxZ)
@@ -20776,7 +20776,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ScaledFromCenterBy(float factor)
+        public readonly Box3f ScaledFromCenterBy(float factor)
         {
             var size = Size;
             var increment = (size * factor - size) / 2;
@@ -20787,7 +20787,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ScaledFromCenterBy(V3f vectorFactor)
+        public readonly Box3f ScaledFromCenterBy(V3f vectorFactor)
         {
             var size = Size;
             var increment = (size * vectorFactor - size) / 2;
@@ -20799,7 +20799,7 @@ namespace Aardvark.Base
         /// measured with respect to the box diagonal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f EnlargedByRelativeEps(float eps)
+        public readonly Box3f EnlargedByRelativeEps(float eps)
         {
             return EnlargedBy(eps * Size.Length);
         }
@@ -20822,7 +20822,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f Clamped(V3f p)
+        public readonly V3f Clamped(V3f p)
         {
             return new V3f(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -20834,7 +20834,7 @@ namespace Aardvark.Base
         /// Returns the squared distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double DistanceSquared(V3f p)
+        public readonly double DistanceSquared(V3f p)
         {
             return 
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -20846,7 +20846,7 @@ namespace Aardvark.Base
         /// Returns the distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Distance(V3f p)
+        public readonly double Distance(V3f p)
         {
             return Fun.Sqrt(
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -20859,7 +20859,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f Lerp(float x)
+        public readonly V3f Lerp(float x)
         {
             return Fun.Lerp(x, Min, Max);
         }
@@ -20868,7 +20868,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f Lerp(V3f p)
+        public readonly V3f Lerp(V3f p)
         {
             return new V3f(
                         Fun.Lerp(p.X, Min.X, Max.X), 
@@ -20880,7 +20880,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f Lerp(float x, float y, float z)
+        public readonly V3f Lerp(float x, float y, float z)
         {
             return new V3f(
                          Fun.Lerp(x, Min.X, Max.X), 
@@ -20892,7 +20892,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f InvLerp(V3f p)
+        public readonly V3f InvLerp(V3f p)
         {
             return new V3f(
                         Fun.InvLerp(p.X, Min.X, Max.X), 
@@ -20904,7 +20904,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f InvLerp(float x, float y, float z)
+        public readonly V3f InvLerp(float x, float y, float z)
         {
             return new V3f(
                         Fun.InvLerp(x, Min.X, Max.X), 
@@ -20916,7 +20916,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f SplitRight(V3f splitValue)
+        public readonly Box3f SplitRight(V3f splitValue)
         {
             var result = new Box3f(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -20929,7 +20929,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f SplitLeft(V3f splitValue)
+        public readonly Box3f SplitLeft(V3f splitValue)
         {
             var result = new Box3f(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -20942,7 +20942,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ExtendedBy(Box3f b)
+        public readonly Box3f ExtendedBy(Box3f b)
         {
             return new Box3f(
                     new V3f(
@@ -20959,7 +20959,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f ExtendedBy(V3f v)
+        public readonly Box3f ExtendedBy(V3f v)
         {
             return new Box3f(
                     new V3f(
@@ -21036,7 +21036,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V3f p)
+        public readonly bool Contains(V3f p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -21049,7 +21049,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box3f b)
+        public readonly bool Contains(Box3f b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -21076,7 +21076,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3f box)
+        public readonly bool Intersects(Box3f box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -21091,7 +21091,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3f box, V3f eps)
+        public readonly bool Intersects(Box3f box, V3f eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -21106,7 +21106,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3f box, float eps)
+        public readonly bool Intersects(Box3f box, float eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -21130,7 +21130,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V3f p0)
+        public readonly Box.Flags OutsideFlags(V3f p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -21147,7 +21147,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box3f b)
+        public readonly Box.Flags OutsideFlags(Box3f b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -21164,7 +21164,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V3f v, out V3f vMin, out V3f vMax)
+        public readonly void GetMinMaxInDirection(V3f v, out V3f vMin, out V3f vMax)
         {
             vMin = V3f.MinValue;
             vMax = V3f.MaxValue;
@@ -21246,24 +21246,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box3f other)
+        public readonly bool Equals(Box3f other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -21306,7 +21306,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -21314,7 +21314,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -21396,7 +21396,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f Translated(V3f shift)
+        public readonly Box3f Translated(V3f shift)
         {
             return IsInvalid ? Box3f.Invalid
                              : new Box3f(Min + shift, Max + shift);
@@ -21407,7 +21407,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f Scaled(V3f factor)
+        public readonly Box3f Scaled(V3f factor)
         {
             return IsInvalid ? Box3f.Invalid
                              : new Box3f(Min * factor, Max * factor);
@@ -21418,9 +21418,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box3f Transformed(M44f trafo)
+        public readonly Box3f Transformed(M44f trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
             var t = new V3f(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3f(t, t);
             float av, bv;
@@ -21464,7 +21464,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f Transformed(Trafo3f trafo)
+        public readonly Box3f Transformed(Trafo3f trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -21480,7 +21480,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f Corner(int index)
+        public readonly V3f Corner(int index)
         {
             return
                 new V3f(
@@ -21495,7 +21495,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f[] ComputeCorners()
+        public readonly V3f[] ComputeCorners()
         {
             return new V3f[] {
                 Min,
@@ -21513,7 +21513,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V3f> Corners
+        public readonly IEnumerable<V3f> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -21534,15 +21534,15 @@ namespace Aardvark.Base
         #region Swizzle methods
 
         // TODO: Implement for other dimensions
-        public Range1f X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1f(Min.X, Max.X); } }
-        public Range1f Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1f(Min.Y, Max.Y); } }
-        public Range1f Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1f(Min.Z, Max.Z); } }
-        public Box2f XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.XY, Max.XY); } }
-        public Box2f XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.XZ, Max.XZ); } }
-        public Box2f YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.YX, Max.YX); } }
-        public Box2f YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.YZ, Max.YZ); } }
-        public Box2f ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.ZX, Max.ZX); } }
-        public Box2f ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.ZY, Max.ZY); } }
+        public readonly Range1f X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1f(Min.X, Max.X); } }
+        public readonly Range1f Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1f(Min.Y, Max.Y); } }
+        public readonly Range1f Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1f(Min.Z, Max.Z); } }
+        public readonly Box2f XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.XY, Max.XY); } }
+        public readonly Box2f XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.XZ, Max.XZ); } }
+        public readonly Box2f YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.YX, Max.YX); } }
+        public readonly Box2f YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.YZ, Max.YZ); } }
+        public readonly Box2f ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.ZX, Max.ZX); } }
+        public readonly Box2f ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2f(Min.ZY, Max.ZY); } }
 
         #endregion
 
@@ -21552,7 +21552,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -21562,7 +21562,7 @@ namespace Aardvark.Base
 
         #region IBoundingSphere3f Members
 
-        public Sphere3f BoundingSphere3f
+        public readonly Sphere3f BoundingSphere3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Sphere3f.Invalid : new Sphere3f(Center, 0.5f * Size.Length);
@@ -21572,7 +21572,7 @@ namespace Aardvark.Base
 
         #region ISize3f Members
 
-        public V3f Size3f
+        public readonly V3f Size3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }
@@ -22424,7 +22424,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid or has a zero volume.
         /// </summary>
-        public bool IsEmpty
+        public readonly bool IsEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreaterOrEqual(Max); }
@@ -22433,7 +22433,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box has a non-zero volume.
         /// </summary>
-        public bool IsNonEmpty
+        public readonly bool IsNonEmpty
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !IsEmpty; }
@@ -22442,7 +22442,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is valid.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AllSmallerOrEqual(Max); }
@@ -22451,7 +22451,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is invalid.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Min.AnyGreater(Max) || Min.IsNaN || Max.IsNaN; }
@@ -22460,7 +22460,7 @@ namespace Aardvark.Base
         /// <summary>
         /// True if the box is infinite.
         /// </summary>
-        public bool IsInfinite
+        public readonly bool IsInfinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this == Infinite; }
@@ -22474,12 +22474,12 @@ namespace Aardvark.Base
         public V3d Size
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return (Max - Min); }
+            readonly get { return (Max - Min); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max = (Min + value); }
         }
 
-        public V3d Center
+        public readonly V3d Center
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return ((Min + Max) / 2); }
@@ -22489,12 +22489,12 @@ namespace Aardvark.Base
         public double SizeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.X - Min.X; }
+            readonly get { return Max.X - Min.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.X = Min.X + value; }
         }
 
-        public Range1d RangeX
+        public readonly Range1d RangeX
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1d(Min.X, Max.X); }
@@ -22504,12 +22504,12 @@ namespace Aardvark.Base
         public double SizeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Y - Min.Y; }
+            readonly get { return Max.Y - Min.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Y = Min.Y + value; }
         }
 
-        public Range1d RangeY
+        public readonly Range1d RangeY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1d(Min.Y, Max.Y); }
@@ -22519,12 +22519,12 @@ namespace Aardvark.Base
         public double SizeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Max.Z - Min.Z; }
+            readonly get { return Max.Z - Min.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Max.Z = Min.Z + value; }
         }
 
-        public Range1d RangeZ
+        public readonly Range1d RangeZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Range1d(Min.Z, Max.Z); }
@@ -22533,7 +22533,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the longest dimension of the box.
         /// </summary>
-        public int MajorDim
+        public readonly int MajorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -22549,7 +22549,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index of the shortest dimension of the box.
         /// </summary>
-        public int MinorDim
+        public readonly int MinorDim
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -22562,7 +22562,7 @@ namespace Aardvark.Base
             }
         }
 
-        public double SurfaceArea
+        public readonly double SurfaceArea
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -22572,7 +22572,7 @@ namespace Aardvark.Base
             }
         }
 
-        public double Volume
+        public readonly double Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -22582,14 +22582,14 @@ namespace Aardvark.Base
             }
         }
 
-        public V3d OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
-        public V3d IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Max.X, Min.Y, Min.Z); } }
-        public V3d OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Min.X, Max.Y, Min.Z); } }
-        public V3d IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Max.X, Max.Y, Min.Z); } }
-        public V3d OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Min.X, Min.Y, Max.Z); } }
-        public V3d IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Max.X, Min.Y, Max.Z); } }
-        public V3d OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Min.X, Max.Y, Max.Z); } }
-        public V3d III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
+        public readonly V3d OOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Min; } }
+        public readonly V3d IOO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Max.X, Min.Y, Min.Z); } }
+        public readonly V3d OIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Min.X, Max.Y, Min.Z); } }
+        public readonly V3d IIO { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Max.X, Max.Y, Min.Z); } }
+        public readonly V3d OOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Min.X, Min.Y, Max.Z); } }
+        public readonly V3d IOI { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Max.X, Min.Y, Max.Z); } }
+        public readonly V3d OII { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new V3d(Min.X, Max.Y, Max.Z); } }
+        public readonly V3d III { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return Max; } }
 
         #endregion
 
@@ -22599,7 +22599,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d EnlargedBy(V3d increment)
+        public readonly Box3d EnlargedBy(V3d increment)
         {
             return new Box3d((Min - increment), (Max + increment));
         }
@@ -22608,7 +22608,7 @@ namespace Aardvark.Base
         /// Return box enlarged by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d EnlargedBy(V3d deltaMin, V3d deltaMax)
+        public readonly Box3d EnlargedBy(V3d deltaMin, V3d deltaMax)
         {
             return new Box3d((Min - deltaMin), (Max + deltaMax));
         }
@@ -22617,7 +22617,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ShrunkBy(V3d delta)
+        public readonly Box3d ShrunkBy(V3d delta)
         {
             return new Box3d((Min + delta), (Max - delta));
         }
@@ -22626,7 +22626,7 @@ namespace Aardvark.Base
         /// Return box shrunk by the supplied values.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ShrunkBy(V3d deltaMin, V3d deltaMax)
+        public readonly Box3d ShrunkBy(V3d deltaMin, V3d deltaMax)
         {
             return new Box3d((Min + deltaMin), (Max - deltaMax));
         }
@@ -22675,7 +22675,7 @@ namespace Aardvark.Base
         /// Returns a box enlarged by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d EnlargedBy(double delta)
+        public readonly Box3d EnlargedBy(double delta)
         {
             return new Box3d(
                     new V3d(Min.X - delta, Min.Y - delta, Min.Z - delta),
@@ -22686,7 +22686,7 @@ namespace Aardvark.Base
         /// Returns a box shrunk by the specified value in all directions.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ShrunkBy(double delta)
+        public readonly Box3d ShrunkBy(double delta)
         {
             return new Box3d(
                     new V3d(Min.X + delta, Min.Y + delta, Min.Z + delta),
@@ -22697,7 +22697,7 @@ namespace Aardvark.Base
         /// Returns the box enlarged by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d EnlargedBy(
+        public readonly Box3d EnlargedBy(
                 double deltaMinX, double deltaMaxX, 
                 double deltaMinY, double deltaMaxY, 
                 double deltaMinZ, double deltaMaxZ)
@@ -22711,7 +22711,7 @@ namespace Aardvark.Base
         /// Returns the box shrunk by the specified values (paddings).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ShrunkBy(
+        public readonly Box3d ShrunkBy(
                 double deltaMinX, double deltaMaxX, 
                 double deltaMinY, double deltaMaxY, 
                 double deltaMinZ, double deltaMaxZ)
@@ -22775,7 +22775,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ScaledFromCenterBy(double factor)
+        public readonly Box3d ScaledFromCenterBy(double factor)
         {
             var size = Size;
             var increment = (size * factor - size) / 2;
@@ -22786,7 +22786,7 @@ namespace Aardvark.Base
         /// Return box scaled by the supplied factor around its center.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ScaledFromCenterBy(V3d vectorFactor)
+        public readonly Box3d ScaledFromCenterBy(V3d vectorFactor)
         {
             var size = Size;
             var increment = (size * vectorFactor - size) / 2;
@@ -22798,7 +22798,7 @@ namespace Aardvark.Base
         /// measured with respect to the box diagonal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d EnlargedByRelativeEps(double eps)
+        public readonly Box3d EnlargedByRelativeEps(double eps)
         {
             return EnlargedBy(eps * Size.Length);
         }
@@ -22821,7 +22821,7 @@ namespace Aardvark.Base
         /// Return the point in the Box that is closest to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d Clamped(V3d p)
+        public readonly V3d Clamped(V3d p)
         {
             return new V3d(
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
@@ -22833,7 +22833,7 @@ namespace Aardvark.Base
         /// Returns the squared distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double DistanceSquared(V3d p)
+        public readonly double DistanceSquared(V3d p)
         {
             return 
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -22845,7 +22845,7 @@ namespace Aardvark.Base
         /// Returns the distance to the supplied point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Distance(V3d p)
+        public readonly double Distance(V3d p)
         {
             return Fun.Sqrt(
                 (p.X < Min.X ? (Min.X - p.X) * (Min.X - p.X) : (p.X > Max.X ? (p.X - Max.X) * (p.X - Max.X) : 0.0)) + 
@@ -22858,7 +22858,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d Lerp(double x)
+        public readonly V3d Lerp(double x)
         {
             return Fun.Lerp(x, Min, Max);
         }
@@ -22867,7 +22867,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d Lerp(V3d p)
+        public readonly V3d Lerp(V3d p)
         {
             return new V3d(
                         Fun.Lerp(p.X, Min.X, Max.X), 
@@ -22879,7 +22879,7 @@ namespace Aardvark.Base
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d Lerp(double x, double y, double z)
+        public readonly V3d Lerp(double x, double y, double z)
         {
             return new V3d(
                          Fun.Lerp(x, Min.X, Max.X), 
@@ -22891,7 +22891,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d InvLerp(V3d p)
+        public readonly V3d InvLerp(V3d p)
         {
             return new V3d(
                         Fun.InvLerp(p.X, Min.X, Max.X), 
@@ -22903,7 +22903,7 @@ namespace Aardvark.Base
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d InvLerp(double x, double y, double z)
+        public readonly V3d InvLerp(double x, double y, double z)
         {
             return new V3d(
                         Fun.InvLerp(x, Min.X, Max.X), 
@@ -22915,7 +22915,7 @@ namespace Aardvark.Base
         /// Returns the box with Min value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d SplitRight(V3d splitValue)
+        public readonly Box3d SplitRight(V3d splitValue)
         {
             var result = new Box3d(Min, Max);
             if (splitValue.X > result.Min.X) result.Min.X = splitValue.X;
@@ -22928,7 +22928,7 @@ namespace Aardvark.Base
         /// Returns the box with Max value clamped to splitValue.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d SplitLeft(V3d splitValue)
+        public readonly Box3d SplitLeft(V3d splitValue)
         {
             var result = new Box3d(Min, Max);
             if (splitValue.X < result.Max.X) result.Max.X = splitValue.X;
@@ -22941,7 +22941,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ExtendedBy(Box3d b)
+        public readonly Box3d ExtendedBy(Box3d b)
         {
             return new Box3d(
                     new V3d(
@@ -22958,7 +22958,7 @@ namespace Aardvark.Base
         /// Returns the box extended to contain the supplied value.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d ExtendedBy(V3d v)
+        public readonly Box3d ExtendedBy(V3d v)
         {
             return new Box3d(
                     new V3d(
@@ -23035,7 +23035,7 @@ namespace Aardvark.Base
         /// Returns true if the box contains the given point.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(V3d p)
+        public readonly bool Contains(V3d p)
         {
             return
                 p.X >= Min.X && p.X <= Max.X && 
@@ -23048,7 +23048,7 @@ namespace Aardvark.Base
         /// A box contains itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Contains(Box3d b)
+        public readonly bool Contains(Box3d b)
         {
             return
                 b.Min.X >= Min.X && b.Max.X <= Max.X && 
@@ -23075,7 +23075,7 @@ namespace Aardvark.Base
         /// A box intersects itself.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3d box)
+        public readonly bool Intersects(Box3d box)
         {
             if (Min.X >= box.Max.X) return false;
             if (Max.X <= box.Min.X) return false;
@@ -23090,7 +23090,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3d box, V3d eps)
+        public readonly bool Intersects(Box3d box, V3d eps)
         {
             if (Min.X - eps.X >= box.Max.X) return false;
             if (Max.X + eps.X <= box.Min.X) return false;
@@ -23105,7 +23105,7 @@ namespace Aardvark.Base
         /// Returns true if 2 boxes intersect each other with tolerance parameter.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Intersects(Box3d box, double eps)
+        public readonly bool Intersects(Box3d box, double eps)
         {
             if (Min.X - eps >= box.Max.X) return false;
             if (Max.X + eps <= box.Min.X) return false;
@@ -23129,7 +23129,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>All outside Flags</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(V3d p0)
+        public readonly Box.Flags OutsideFlags(V3d p0)
         {
             Box.Flags bf = Box.Flags.None;
             if (p0.X < Min.X) bf |= Box.Flags.MinX;
@@ -23146,7 +23146,7 @@ namespace Aardvark.Base
         /// of the box.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box.Flags OutsideFlags(Box3d b)
+        public readonly Box.Flags OutsideFlags(Box3d b)
         {
             Box.Flags bf = Box.Flags.None;
             if (b.Min.X < Min.X) bf |= Box.Flags.MinX;
@@ -23163,7 +23163,7 @@ namespace Aardvark.Base
         /// supplied direction vector v.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void GetMinMaxInDirection(V3d v, out V3d vMin, out V3d vMax)
+        public readonly void GetMinMaxInDirection(V3d v, out V3d vMin, out V3d vMax)
         {
             vMin = V3d.MinValue;
             vMax = V3d.MaxValue;
@@ -23245,24 +23245,24 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Min, Max);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Box3d other)
+        public readonly bool Equals(Box3d other)
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
-        public override bool Equals(object obj) =>
+        public override readonly bool Equals(object obj) =>
             (obj is Box3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
@@ -23305,7 +23305,7 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -23313,7 +23313,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
@@ -23395,7 +23395,7 @@ namespace Aardvark.Base
         #region Transforms
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d Translated(V3d shift)
+        public readonly Box3d Translated(V3d shift)
         {
             return IsInvalid ? Box3d.Invalid
                              : new Box3d(Min + shift, Max + shift);
@@ -23406,7 +23406,7 @@ namespace Aardvark.Base
         /// A negative scale factor will resut in an invalid box!
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d Scaled(V3d factor)
+        public readonly Box3d Scaled(V3d factor)
         {
             return IsInvalid ? Box3d.Invalid
                              : new Box3d(Min * factor, Max * factor);
@@ -23417,9 +23417,9 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
-        public Box3d Transformed(M44d trafo)
+        public readonly Box3d Transformed(M44d trafo)
         {
-            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid; 
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
             var t = new V3d(trafo.M03, trafo.M13, trafo.M23);
             var res = new Box3d(t, t);
             double av, bv;
@@ -23463,7 +23463,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d Transformed(Trafo3d trafo)
+        public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
         }
@@ -23479,7 +23479,7 @@ namespace Aardvark.Base
         /// coordinate, and bit 2 enumerates the z coordinate.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d Corner(int index)
+        public readonly V3d Corner(int index)
         {
             return
                 new V3d(
@@ -23494,7 +23494,7 @@ namespace Aardvark.Base
         /// constructed as in the method <see cref="Corner"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d[] ComputeCorners()
+        public readonly V3d[] ComputeCorners()
         {
             return new V3d[] {
                 Min,
@@ -23512,7 +23512,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Enumeration of the corners of the box.
         /// </summary>
-        public IEnumerable<V3d> Corners
+        public readonly IEnumerable<V3d> Corners
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -23533,15 +23533,15 @@ namespace Aardvark.Base
         #region Swizzle methods
 
         // TODO: Implement for other dimensions
-        public Range1d X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1d(Min.X, Max.X); } }
-        public Range1d Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1d(Min.Y, Max.Y); } }
-        public Range1d Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1d(Min.Z, Max.Z); } }
-        public Box2d XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.XY, Max.XY); } }
-        public Box2d XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.XZ, Max.XZ); } }
-        public Box2d YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.YX, Max.YX); } }
-        public Box2d YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.YZ, Max.YZ); } }
-        public Box2d ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.ZX, Max.ZX); } }
-        public Box2d ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.ZY, Max.ZY); } }
+        public readonly Range1d X { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1d(Min.X, Max.X); } }
+        public readonly Range1d Y { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1d(Min.Y, Max.Y); } }
+        public readonly Range1d Z { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Range1d(Min.Z, Max.Z); } }
+        public readonly Box2d XY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.XY, Max.XY); } }
+        public readonly Box2d XZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.XZ, Max.XZ); } }
+        public readonly Box2d YX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.YX, Max.YX); } }
+        public readonly Box2d YZ { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.YZ, Max.YZ); } }
+        public readonly Box2d ZX { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.ZX, Max.ZX); } }
+        public readonly Box2d ZY { [MethodImpl(MethodImplOptions.AggressiveInlining)] get { return new Box2d(Min.ZY, Max.ZY); } }
 
         #endregion
 
@@ -23551,7 +23551,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return this; }
@@ -23561,7 +23561,7 @@ namespace Aardvark.Base
 
         #region IBoundingSphere3d Members
 
-        public Sphere3d BoundingSphere3d
+        public readonly Sphere3d BoundingSphere3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => IsInvalid ? Sphere3d.Invalid : new Sphere3d(Center, 0.5 * Size.Length);
@@ -23571,7 +23571,7 @@ namespace Aardvark.Base
 
         #region ISize3d Members
 
-        public V3d Size3d
+        public readonly V3d Size3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Size; }

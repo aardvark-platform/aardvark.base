@@ -54,7 +54,7 @@ namespace Aardvark.Base
         public Tup(/*# tc.ForEach(i => { */T__i__ e__i__/*# }, comma); */)
         {/*# tc.ForEach(i => { */ E__i__ = e__i__;/*# }); */ }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("(/*# tc.ForEach(i => { */{__i__}/*# }, comma); */)", /*# tc.ForEach(i => { */E__i__/*# }, comma); */);
         }

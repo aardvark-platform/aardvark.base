@@ -47,7 +47,7 @@ namespace Aardvark.Base
             Key = Symbol.Create(key.ToString()); Value = value;
         }
 
-        public void WriteTo(StreamWriter writer, int indent = 0)
+        public readonly void WriteTo(StreamWriter writer, int indent = 0)
         {
             writer.Write(Key.ToString()); writer.Write("=\"");
             writer.Write(Value.ToString()); writer.Write('"');

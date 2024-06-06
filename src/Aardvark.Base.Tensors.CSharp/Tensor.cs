@@ -349,23 +349,23 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return m_data != null; } }
-        public bool IsInvalid { get { return m_data == null; } }
+        public readonly bool IsValid { get { return m_data != null; } }
+        public readonly bool IsInvalid { get { return m_data == null; } }
 
         /// <summary>
         /// Underlying data array. Not exclusively owned by the tensor.
         /// </summary>
-        public T[] Data { get { return m_data; } }
+        public readonly T[] Data { get { return m_data; } }
 
         /// <summary>
         /// Origin index in the unerlying data array.
         /// </summary>
-        public long Origin { get { return m_origin; } set { m_origin = value; }  }
+        public long Origin { readonly get { return m_origin; } set { m_origin = value; }  }
 
         /// <summary>
         /// The total number of contravariant and covariant indices.
         /// </summary>
-        public int Rank { get { return m_rank; } }
+        public readonly int Rank { get { return m_rank; } }
 
         /// <summary>
         /// Length is copied out and in, emulating a value property.
@@ -373,11 +373,11 @@ namespace Aardvark.Base
         /// </summary>
         public long[] Size
         {
-            get { return m_size.Copy(); }
+            readonly get { return m_size.Copy(); }
             set { m_size = value.Copy(); m_rank = m_size.Length; }
         }
 
-        public long Count
+        public readonly long Count
         {
             get
             {
@@ -392,7 +392,7 @@ namespace Aardvark.Base
         /// </summary>
         public long[] Delta
         {
-            get { return m_delta.Copy(); }
+            readonly get { return m_delta.Copy(); }
             set
             {
                 if (m_delta.Length != m_rank)
@@ -401,17 +401,17 @@ namespace Aardvark.Base
             }
         }
 
-        public long OriginIndex { get { return m_origin; } set { m_origin = value; } }
+        public long OriginIndex { readonly get { return m_origin; } set { m_origin = value; } }
 
         public long[] SizeArray
         {
-            get { return Size; }
+            readonly get { return Size; }
             set { Size = value; }
         }
 
         public long[] DeltaArray
         {
-            get { return Delta; }
+            readonly get { return Delta; }
             set { Delta = value; }
         }
 
@@ -424,20 +424,20 @@ namespace Aardvark.Base
         /// <summary>
         /// Rank
         /// </summary>
-        public int R { get { return m_rank; } }
+        public readonly int R { get { return m_rank; } }
         /// <summary>
         /// Length
         /// </summary>
-        public long[] L { get { return m_size; } }
+        public readonly long[] L { get { return m_size; } }
         /// <summary>
         /// Delta
         /// </summary>
-        public long[] D { get { return m_delta; } }
+        public readonly long[] D { get { return m_delta; } }
 
         /// <summary>
         /// Yields all elemnts ordered by index.
         /// </summary>
-        public IEnumerable<T> Elements
+        public readonly IEnumerable<T> Elements
         {
             get
             {
@@ -450,14 +450,14 @@ namespace Aardvark.Base
             }
         }
 
-        public Type ArrayType
+        public readonly Type ArrayType
         {
             get { return typeof(T[]); }
         }
 
         public Array Array
         {
-            get { return m_data; }
+            readonly get { return m_data; }
             set { m_data = (T[])value; }
         }
 
@@ -465,27 +465,31 @@ namespace Aardvark.Base
 
         #region Indexers
 
-        public T this[Vector<int> vi]
+        public readonly T this[Vector<int> vi]
         {
             get { return m_data[Index(vi)]; }
+
             set { m_data[Index(vi)] = value; }
         }
 
-        public T this[Vector<long> vi]
+        public readonly T this[Vector<long> vi]
         {
             get { return m_data[Index(vi)]; }
+
             set { m_data[Index(vi)] = value; }
         }
 
-        public T this[params int[] vi]
+        public readonly T this[params int[] vi]
         {
             get { return m_data[Index(vi)]; }
+
             set { m_data[Index(vi)] = value; }
         }
 
-        public T this[params long[] vi]
+        public readonly T this[params long[] vi]
         {
             get { return m_data[Index(vi)]; }
+
             set { m_data[Index(vi)] = value; }
         }
 
@@ -493,14 +497,14 @@ namespace Aardvark.Base
 
         #region Indexing Helper Methods
 
-        public long[] Init()
+        public readonly long[] Init()
         {
             var ve = new long[R];
             for (int r = 0; r < R; r++)
                 ve[r] = Origin + DLR(r);
             return ve;
         }
-        public long Next(long i, ref long[] ve)
+        public readonly long Next(long i, ref long[] ve)
         {
             for (int r = 1; r < R; r++)
             {
@@ -513,7 +517,7 @@ namespace Aardvark.Base
             return i;
         }
 
-        public long Next(long i, ref long[] ve, ref long[] vi)
+        public readonly long Next(long i, ref long[] ve, ref long[] vi)
         {
             for (int r = 1; r < R; r++)
             {
@@ -532,19 +536,19 @@ namespace Aardvark.Base
         /// <summary>
         /// Cummulative delta for all elements in dimension r.
         /// </summary>
-        public long DLR(int r) { return m_size[r] * m_delta[r]; }
+        public readonly long DLR(int r) { return m_size[r] * m_delta[r]; }
 
         /// <summary>
         /// Skip this many elements in the underlying data array when
         /// stepping between subtensors of rank r (required: r > 0).
         /// </summary>
-        public long SR(int r) { return m_delta[r] - m_size[r - 1] * m_delta[r - 1]; }
+        public readonly long SR(int r) { return m_delta[r] - m_size[r - 1] * m_delta[r - 1]; }
 
         /// <summary>
         /// Calculate element index for underlying data array. 
         /// </summary>
         /// <param name="vi"></param>
-        public long Index(Vector<int> vi)
+        public readonly long Index(Vector<int> vi)
         {
             var i = Origin;
             for (long r = 0; r < R; r++) i += vi[r] * D[r];
@@ -555,7 +559,7 @@ namespace Aardvark.Base
         /// Calculate element index for underlying data array. 
         /// </summary>
         /// <param name="vi"></param>
-        public long Index(Vector<long> vi)
+        public readonly long Index(Vector<long> vi)
         {
             var i = Origin;
             for (long r = 0; r < R; r++) i += vi[r] * D[r];
@@ -565,7 +569,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculate element index for underlying data array. 
         /// </summary>
-        public long Index(params int[] vi)
+        public readonly long Index(params int[] vi)
         {
             var i = Origin;
             for (long r = 0; r < R; r++) i += vi[r] * D[r];
@@ -575,7 +579,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Calculate element index for underlying data array. 
         /// </summary>
-        public long Index(params long[] vi)
+        public readonly long Index(params long[] vi)
         {
             var i = Origin;
             for (long r = 0; r < R; r++) i += vi[r] * D[r];
@@ -588,7 +592,7 @@ namespace Aardvark.Base
         /// A SubVector does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public Vector<T> SubVector(long[] origin, long size, long delta)
+        public readonly Vector<T> SubVector(long[] origin, long size, long delta)
         {
             return new Vector<T>(m_data, Index(origin), size, delta);
         }
@@ -597,7 +601,7 @@ namespace Aardvark.Base
         /// A SubMatrix does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public Matrix<T> SubMatrix(long[] origin, V2l size, V2l delta)
+        public readonly Matrix<T> SubMatrix(long[] origin, V2l size, V2l delta)
         {
             return new Matrix<T>(m_data, Index(origin), size, delta);
         }
@@ -606,7 +610,7 @@ namespace Aardvark.Base
         /// A SubVolume does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public Volume<T> SubVolume(long[] origin, V3l size, V3l delta)
+        public readonly Volume<T> SubVolume(long[] origin, V3l size, V3l delta)
         {
             return new Volume<T>(m_data, Index(origin), size, delta);
         }
@@ -615,7 +619,7 @@ namespace Aardvark.Base
         /// A SubTensor does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public Tensor<T> SubTensor(long[] origin, long[] size)
+        public readonly Tensor<T> SubTensor(long[] origin, long[] size)
         {
             return new Tensor<T>(m_data, Index(origin), size, m_delta);
         }
@@ -624,7 +628,7 @@ namespace Aardvark.Base
         /// A SubTensor does not copy any data, and thus any operations on it
         /// are reflected in the corresponding part of the parent.
         /// </summary>
-        public Tensor<T> SubTensor(
+        public readonly Tensor<T> SubTensor(
                 long[] origin, long[] size, long[] delta
                 )
         {
@@ -637,7 +641,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Elementwise copy.
         /// </summary>
-        public Tensor<T> Copy()
+        public readonly Tensor<T> Copy()
         {
             return new Tensor<T>(L).Set(this);
         }
@@ -645,7 +649,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Elementwise copy with function application.
         /// </summary>
-        public Tensor<Tr> Copy<Tr>(Func<T, Tr> fun)
+        public readonly Tensor<Tr> Copy<Tr>(Func<T, Tr> fun)
         {
             return new Tensor<Tr>(L).Set(this, fun);
         }
@@ -653,7 +657,7 @@ namespace Aardvark.Base
 
         #region Manipulation Methods
 
-        public Tensor<T> Set(ITensor<T> t)
+        public readonly Tensor<T> Set(ITensor<T> t)
         {
             var ve = Init(); var vi = new long[R];
             long i = Origin;
@@ -667,7 +671,7 @@ namespace Aardvark.Base
             return this;
         }
 
-        public Tensor<T> Set<T1>(ITensor<T1> t, Func<T1,T> fun)
+        public readonly Tensor<T> Set<T1>(ITensor<T1> t, Func<T1,T> fun)
         {
             var ve = Init(); var vi = new long[R];
             long i = Origin;
@@ -685,7 +689,7 @@ namespace Aardvark.Base
         /// Set each element to the value of a function of the element coords.
         /// </summary>
         /// <returns>this</returns>
-        public Tensor<T> SetByCoord(Func<long[], T> fun)
+        public readonly Tensor<T> SetByCoord(Func<long[], T> fun)
         {
             var ve = Init(); var vi = new long[R];
             long i = Origin;
@@ -699,7 +703,7 @@ namespace Aardvark.Base
             return this;
         }
 
-        public Tensor<T> SetByIndex<T1>(Tensor<T1> t1, Func<long, T> fun)
+        public readonly Tensor<T> SetByIndex<T1>(Tensor<T1> t1, Func<long, T> fun)
         {
             var ve = Init(); var ve1 = t1.Init();
             long i = Origin, i1 = t1.Origin;
@@ -717,7 +721,7 @@ namespace Aardvark.Base
         /// Copy all elements from another tensor.
         /// </summary>
         /// <returns>this</returns>
-        public Tensor<T> Set(Tensor<T> t1)
+        public readonly Tensor<T> Set(Tensor<T> t1)
         {
             var ve = Init(); var ve1 = t1.Init();
             long i = Origin, i1 = t1.Origin;
@@ -736,7 +740,7 @@ namespace Aardvark.Base
         /// the elements of the supplied tensor.
         /// </summary>
         /// <returns>this</returns>
-        public Tensor<T> Set<T1>(Tensor<T1> t1, Func<T1, T> fun)
+        public readonly Tensor<T> Set<T1>(Tensor<T1> t1, Func<T1, T> fun)
         {
             var ve = Init(); var ve1 = t1.Init();
             long i = Origin, i1 = t1.Origin;
@@ -755,7 +759,7 @@ namespace Aardvark.Base
         /// corresponding pairs of elements of the two supplied tensors.
         /// </summary>
         /// <returns>this</returns>
-        public Tensor<T> Set<T1, T2>(
+        public readonly Tensor<T> Set<T1, T2>(
                 Tensor<T1> t1, Tensor<T2> t2, Func<T1, T2, T> fun)
         {
             var ve = Init(); var ve1 = t1.Init(); var ve2 = t2.Init();
@@ -776,7 +780,7 @@ namespace Aardvark.Base
         /// corresponding triples of elements of the three supplied tensors.
         /// </summary>
         /// <returns>this</returns>
-        public Tensor<T> Set<T1, T2, T3>(
+        public readonly Tensor<T> Set<T1, T2, T3>(
                 Tensor<T1> t1, Tensor<T2> t2, Tensor<T3> t3,
                 Func<T1, T2, T3, T> fun)
         {
@@ -838,9 +842,9 @@ namespace Aardvark.Base
 
         #region ITensor
 
-        public long[] Dim { get { return m_size; } }
+        public readonly long[] Dim { get { return m_size; } }
 
-        public object GetValue(params long[] v)
+        public readonly object GetValue(params long[] v)
         {
             return (object)this[v];
         }
@@ -883,7 +887,7 @@ namespace Aardvark.Base
 
     public partial struct Matrix<Td>
     {
-        public TRes Sample4<T1, TRes>(
+        public readonly TRes Sample4<T1, TRes>(
                 long d0, Tup4<long> d1, Tup4<T1> w,
                 FuncRef1<Td, Td, Td, Td, Tup4<T1>, TRes> smp) =>
             smp(Data[d0 + d1.E0], Data[d0 + d1.E1],Data[d0 + d1.E2], Data[d0 + d1.E3], ref w);
@@ -892,14 +896,14 @@ namespace Aardvark.Base
     public partial struct Matrix<Td, Tv>
     {
 
-        public TRes Sample4<T1, TRes>(
+        public readonly TRes Sample4<T1, TRes>(
                 long d0, Tup4<long> d1, Tup4<T1> w,
                 FuncRef1<Tv, Tv, Tv, Tv, Tup4<T1>, TRes> smp) =>
             smp(Getter(Data, d0 + d1.E0), Getter(Data, d0 + d1.E1),
                 Getter(Data, d0 + d1.E2), Getter(Data, d0 + d1.E3), ref w);
 
 
-        public void SetScaled16InDevelopment<T1, T2, T3>(Matrix<Td, Tv> sourceMat,
+        public readonly void SetScaled16InDevelopment<T1, T2, T3>(Matrix<Td, Tv> sourceMat,
                 double xScale, double yScale, double xShift, double yShift,
                 Func<double, Tup4<T1>> xipl,
                 Func<double, Tup4<T2>> yipl,

@@ -66,19 +66,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Circle3f MajorCircle
+        public readonly Circle3f MajorCircle
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => GetMajorCircle();
         }
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 4 * ConstantF.PiSquared * MajorRadius * MinorRadius;
         }
 
-        public float Volume
+        public readonly float Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * ConstantF.PiSquared * MajorRadius * MinorRadius * MinorRadius;
@@ -89,9 +89,9 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Circle3f GetMajorCircle() => new Circle3f(Position, Direction, MajorRadius);
+        public readonly Circle3f GetMajorCircle() => new Circle3f(Position, Direction, MajorRadius);
 
-        public Circle3f GetMinorCircle(float angle)
+        public readonly Circle3f GetMinorCircle(float angle)
         {
             var c = GetMajorCircle();
             var p = c.GetPoint(angle);
@@ -100,7 +100,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float GetMinimalDistance(V3f p) => GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
+        public readonly float GetMinimalDistance(V3f p) => GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
 
         public static float GetMinimalDistance(V3f p, V3f position, V3f direction, float majorRadius, float minorRadius)
         {
@@ -137,21 +137,21 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Position, Direction, MajorRadius, MinorRadius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Position, Direction, MajorRadius, MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Torus3f other) =>
+        public readonly bool Equals(Torus3f other) =>
             Position.Equals(other.Position) &&
             Direction.Equals(other.Direction) &&
             MajorRadius.Equals(other.MajorRadius) &&
             MinorRadius.Equals(other.MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Torus3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Position, Direction, MajorRadius, MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -170,7 +170,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        Box3f IBoundingBox3f.BoundingBox3f
+        readonly Box3f IBoundingBox3f.BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => GetMajorCircle().BoundingBox3f.EnlargedBy(MinorRadius);
@@ -257,19 +257,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Circle3d MajorCircle
+        public readonly Circle3d MajorCircle
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => GetMajorCircle();
         }
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 4 * Constant.PiSquared * MajorRadius * MinorRadius;
         }
 
-        public double Volume
+        public readonly double Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * Constant.PiSquared * MajorRadius * MinorRadius * MinorRadius;
@@ -280,9 +280,9 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Circle3d GetMajorCircle() => new Circle3d(Position, Direction, MajorRadius);
+        public readonly Circle3d GetMajorCircle() => new Circle3d(Position, Direction, MajorRadius);
 
-        public Circle3d GetMinorCircle(double angle)
+        public readonly Circle3d GetMinorCircle(double angle)
         {
             var c = GetMajorCircle();
             var p = c.GetPoint(angle);
@@ -291,7 +291,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double GetMinimalDistance(V3d p) => GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
+        public readonly double GetMinimalDistance(V3d p) => GetMinimalDistance(p, Position, Direction, MajorRadius, MinorRadius);
 
         public static double GetMinimalDistance(V3d p, V3d position, V3d direction, double majorRadius, double minorRadius)
         {
@@ -328,21 +328,21 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Position, Direction, MajorRadius, MinorRadius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Position, Direction, MajorRadius, MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Torus3d other) =>
+        public readonly bool Equals(Torus3d other) =>
             Position.Equals(other.Position) &&
             Direction.Equals(other.Direction) &&
             MajorRadius.Equals(other.MajorRadius) &&
             MinorRadius.Equals(other.MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Torus3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Position, Direction, MajorRadius, MinorRadius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -361,7 +361,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        Box3d IBoundingBox3d.BoundingBox3d
+        readonly Box3d IBoundingBox3d.BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => GetMajorCircle().BoundingBox3d.EnlargedBy(MinorRadius);

@@ -8,15 +8,15 @@ namespace Aardvark.Base
     /// </summary>
     public class PerlinNoise
 	{
-		private int m_PrimeOne;
-		private int m_PrimeTwo;
-		private int m_PrimeThree;
+		private readonly int m_PrimeOne;
+		private readonly int m_PrimeTwo;
+		private readonly int m_PrimeThree;
 		private int m_maxX;
 		private int m_maxY;
 		// private int m_maxZ;
 		float[] m_lookup;
 
-		private Func<float,float,float,float> m_interpolate;
+		private readonly Func<float,float,float,float> m_interpolate;
 
 		#region Constructors
 		/// <summary>

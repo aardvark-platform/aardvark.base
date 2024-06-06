@@ -50,7 +50,7 @@ namespace Aardvark.Base
     //#     var type = typeArray[pc] + dt;
     //#     var name = nameArray[pc];
     //#     var isPoly = pc == 1;
-    //#     var scale = scaleArray[pc]; 
+    //#     var scale = scaleArray[pc];
     //#
     //# foreach (var isIndexed in new[] { false, true }) {
     //#     if (isIndexed && !isPoly) continue;
@@ -131,7 +131,7 @@ namespace Aardvark.Base
         public __type__(IEnumerable<__tvec__> points)
             : this(points.ToArray())
         { }
-        
+
         /// <summary>
         /// Creates a polygon from the points of a pointArray that
         /// are selected by an index array.
@@ -168,24 +168,24 @@ namespace Aardvark.Base
 
         public static readonly __type__ Invalid = new __type__(null, 0);
 
-        public bool IsValid => m_pointArray != null;
-
-        public bool IsInvalid => m_pointArray == null;
-
         #endregion
 
         #region Properties
+
+        public readonly bool IsValid => m_pointArray != null;
+
+        public readonly bool IsInvalid => m_pointArray == null;
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount => m_pointCount;
+        public readonly int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
         /// </summary>
-        public IEnumerable<__tvec__> Points
+        public readonly IEnumerable<__tvec__> Points
         {
             get { for (int pi = 0; pi < m_pointCount; pi++) yield return m_pointArray[pi]; }
         }
@@ -197,7 +197,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the polygons point array.
         /// </summary>
-        public __tvec__[] GetPointArray()
+        public readonly __tvec__[] GetPointArray()
         {
             var pc = m_pointCount;
             var pa = new __tvec__[pc];
@@ -208,7 +208,7 @@ namespace Aardvark.Base
         /// <summary>
         /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
-        public __tvec__[] GetPointArrayWithRepeatedFirstPoint()
+        public readonly __tvec__[] GetPointArrayWithRepeatedFirstPoint()
         {
             var pc = m_pointCount;
             var pa = new __tvec__[pc + 1];
@@ -220,7 +220,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<__tvec__, T> point_copyFun)
+        public readonly T[] GetPointArray<T>(Func<__tvec__, T> point_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -231,7 +231,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<__tvec__, int, T> point_index_copyFun)
+        public readonly T[] GetPointArray<T>(Func<__tvec__, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -246,7 +246,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the index-th point of this polygon.
         /// </summary>
-        public __tvec__ this[int index]
+        public readonly __tvec__ this[int index]
         {
             get { return m_pointArray[index]; }
             set { m_pointArray[index] = value; }
@@ -259,7 +259,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public __tvec__ Edge(int index)
+        public readonly __tvec__ Edge(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -269,7 +269,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public IEnumerable<__tvec__> Edges
+        public readonly IEnumerable<__tvec__> Edges
         {
             get
             {
@@ -289,7 +289,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public __tline__ EdgeLine(int index)
+        public readonly __tline__ EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -299,7 +299,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public IEnumerable<__tline__> EdgeLines
+        public readonly IEnumerable<__tline__> EdgeLines
         {
             get
             {
@@ -320,7 +320,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public __tvec__[] GetEdgeArray()
+        public readonly __tvec__[] GetEdgeArray()
         {
             var pc = m_pointCount;
             if (pc < 2) return new __tvec__[0];
@@ -340,7 +340,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public __tline__[] GetEdgeLineArray()
+        public readonly __tline__[] GetEdgeLineArray()
         {
             var pc = PointCount;
             if (pc < 2) return new __tline__[0];
@@ -364,7 +364,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns copy of polygon. Same as Map(p => p).
         /// </summary>
-        public __type__ Copy()
+        public readonly __type__ Copy()
         {
             return new __type__(m_pointArray.Copy());
         }
@@ -372,7 +372,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
-        public __type__ Map(Func<__tvec__, __tvec__> point_fun)
+        public readonly __type__ Map(Func<__tvec__, __tvec__> point_fun)
         {
             var pc = m_pointCount;
             __tvec__[] opa = m_pointArray, npa = new __tvec__[pc];
@@ -381,9 +381,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets copy with reversed order of vertices. 
+        /// Gets copy with reversed order of vertices.
         /// </summary>
-        public __type__ Reversed
+        public readonly __type__ Reversed
         {
             get
             {
@@ -395,9 +395,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reverses order of vertices in-place. 
+        /// Reverses order of vertices in-place.
         /// </summary>
-        public void Reverse()
+        public readonly void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -425,13 +425,13 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
         {
             if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
@@ -439,10 +439,10 @@ namespace Aardvark.Base
             return true;
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
@@ -462,7 +462,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Bounding box of polygon.
         /// </summary>
-        public __tbox__ Bounding__tbox__
+        public readonly __tbox__ Bounding__tbox__
         {
             get { return new __tbox__(m_pointArray, 0, m_pointCount); }
         }
@@ -500,12 +500,12 @@ namespace Aardvark.Base
     #region __indextype__
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct __indextype__ : IValidity, IPolygon<__tvec__>
+    public readonly partial struct __indextype__ : IValidity, IPolygon<__tvec__>
     {
-        private int m_pointCount;
-        private int m_firstIndex;
-        private int[] m_indexArray;
-        private __tvec__[] m_pointArray;
+        private readonly int m_pointCount;
+        private readonly int m_firstIndex;
+        private readonly int[] m_indexArray;
+        private readonly __tvec__[] m_pointArray;
 
         #region Constructors
 
@@ -837,7 +837,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied __plane__. The method should
-        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// work with all non-selfintersecting polygons. Returns all parts of
         /// the polygon that are at the positive side of the __plane__.
         /// </summary>
         public static __type__ ConvexClipped(
@@ -864,7 +864,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of __plane__s (defined
-        /// as __tplane__s), i.e. all parts of the polygon that are at the positive 
+        /// as __tplane__s), i.e. all parts of the polygon that are at the positive
         /// side of the __plane__s.
         /// </summary>
         public static __type__ ConvexClipped(
@@ -953,18 +953,18 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         //# if (pc > 2) {
         //# pc.ForEach(i => { foreach (var j in new[] { (i + 1) % pc, (i + pcsub1) % pc }) {
         /// <summary>
         /// Edge P__j__ - P__i__
         /// </summary>
-        public __tvec__ Edge__i____j__ { get { return P__j__ - P__i__; } }
+        public readonly __tvec__ Edge__i____j__ { get { return P__j__ - P__i__; } }
         //# } });
 
-        public IEnumerable<__tvec__> Edges
+        public readonly IEnumerable<__tvec__> Edges
         {
             get
             {
@@ -974,7 +974,7 @@ namespace Aardvark.Base
             }
         }
 
-        public __tvec__[] EdgeArray
+        public readonly __tvec__[] EdgeArray
         {
             get
             {
@@ -986,7 +986,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<__tline__> EdgeLines
+        public readonly IEnumerable<__tline__> EdgeLines
         {
             get
             {
@@ -996,7 +996,7 @@ namespace Aardvark.Base
             }
         }
 
-        public __tline__[] EdgeLineArray
+        public readonly __tline__[] EdgeLineArray
         {
             get
             {
@@ -1008,7 +1008,7 @@ namespace Aardvark.Base
             }
         }
 
-        public __tline__ GetEdgeLine(int index)
+        public readonly __tline__ GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -1019,7 +1019,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public __tvec__ GetEdge(int index)
+        public readonly __tvec__ GetEdge(int index)
         {
             switch (index)
             {
@@ -1031,18 +1031,18 @@ namespace Aardvark.Base
         }
 
         //# pc.ForEach(i => { foreach (var j in new[] { (i + 1) % pc, (i + pcsub1) % pc }) {
-        public __tline__ Line__i____j__ { get { return new __tline__(P__i__, P__j__); } }
+        public readonly __tline__ Line__i____j__ { get { return new __tline__(P__i__, P__j__); } }
         //# } });
 
         //# } // pc > 2
-        public int PointCount { get { return __pc__; } }
+        public readonly int PointCount { get { return __pc__; } }
 
-        public IEnumerable<__tvec__> Points
+        public readonly IEnumerable<__tvec__> Points
         {
             get { /*# pc.ForEach(i => { */yield return P__i__/*# }, Sep("; ")); */; }
         }
 
-        public __type__ Reversed
+        public readonly __type__ Reversed
         {
             get { return new __type__(/*# pc.ForEach(i => { var j = pcsub1 - i; */P__j__/*# }, Sep(", ")); */); }
         }
@@ -1053,7 +1053,7 @@ namespace Aardvark.Base
 
         public __tvec__ this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -1079,14 +1079,14 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public __type__ Copy(Func<__tvec__, __tvec__> point_copyFun)
+        public readonly __type__ Copy(Func<__tvec__, __tvec__> point_copyFun)
         {
             return new __type__(/*# pc.ForEach(i => { */point_copyFun(P__i__)/*# }, Sep(", ")); */);
         }
 
         //# for (int od = 2; od < 4; od++) { if (d == od) continue;
         //#     var otype = typeArray[pc] + od + "d"; var otvec = "V" + od + "d";
-        public __otype__ To__otype__(Func<__tvec__, __otvec__> point_copyFun)
+        public readonly __otype__ To__otype__(Func<__tvec__, __otvec__> point_copyFun)
         {
             return new __otype__(/*# pc.ForEach(i => { */point_copyFun(P__i__)/*# }, Sep(", ")); */);
         }
@@ -1108,19 +1108,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(/*# pc.ForEach(i => { */P__i__/*# }, Sep(", ")); */);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => /*# pc.ForEach(i => { */P__i__.Equals(other.P__i__)/*# }, Sep(" && ")); */;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is __type__ o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             //# var format = "["; pc.ForEach(i => format += "{" + i + "}", () => format += ", "); format += "]";
             return string.Format(CultureInfo.InvariantCulture, "__format__", /*# pc.ForEach(i => { */P__i__/*# }, Sep(", ")); */);
@@ -1136,7 +1136,7 @@ namespace Aardvark.Base
 
         #region IBounding__tbox__ Members
 
-        public __tbox__ Bounding__tbox__
+        public readonly __tbox__ Bounding__tbox__
         {
             get
             {

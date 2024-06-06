@@ -37,7 +37,7 @@ namespace Aardvark.Base
         // is in the interval [0, 2^31-1]
         public int UniformInt() => Generator.Next();
 
-        public static ThreadLocal<byte[]> s_buffer4 = new ThreadLocal<byte[]>(() => new byte[4]);
+        private static readonly ThreadLocal<byte[]> s_buffer4 = new ThreadLocal<byte[]>(() => new byte[4]);
         /// <summary>
         /// Returns a uniformly distributed uint in the interval [0, 2^63-1].
         /// Constructed using 16 bits of each of two random integers.
@@ -49,7 +49,7 @@ namespace Aardvark.Base
             return BitConverter.ToUInt32(array, 0);
         }
 
-        public static ThreadLocal<byte[]> s_buffer8 = new ThreadLocal<byte[]>(() => new byte[8]);
+        private static readonly ThreadLocal<byte[]> s_buffer8 = new ThreadLocal<byte[]>(() => new byte[8]);
         /// <summary>
         /// Returns a uniformly distributed long in the interval [0, 2^63-1].
         /// </summary>

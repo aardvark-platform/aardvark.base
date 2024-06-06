@@ -192,9 +192,9 @@ namespace Aardvark.Base.Coder
             return s_methodCodeT.MakeGenericMethod(t);
         }
 
-        private static MethodInfo s_methodCodeT;
-        private static MethodInfo s_methodCodeArrayOfT;
-        private static MethodInfo s_methodCodeListOfT;
+        private static readonly MethodInfo s_methodCodeT;
+        private static readonly MethodInfo s_methodCodeArrayOfT;
+        private static readonly MethodInfo s_methodCodeListOfT;
 
         static FieldCoderExtensions()
         {

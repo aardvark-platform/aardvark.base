@@ -22,12 +22,12 @@ namespace Aardvark.Rendering
             Variable,
             Mixed,
         }
-        private Http.Verb m_verb;
-        private string m_route;
-        private Action<HttpServerRequestInfo> m_handler;
+        private readonly Http.Verb m_verb;
+        private readonly string m_route;
+        private readonly Action<HttpServerRequestInfo> m_handler;
 
-        private string[] m_tokens;
-        private Mode[] m_modes;
+        private readonly string[] m_tokens;
+        private readonly Mode[] m_modes;
 
         public Action<HttpServerRequestInfo> Handler { get { return m_handler; } }
         public string Route { get { return m_route; } }
@@ -104,7 +104,7 @@ namespace Aardvark.Rendering
 
     public class HttpServer2Dispatcher
     {
-        private List<HttpServer2Route> m_routes = new List<HttpServer2Route>();
+        private readonly List<HttpServer2Route> m_routes = new List<HttpServer2Route>();
 
         public void AddRoutes(params HttpServer2Route[] routes)
         {
@@ -145,7 +145,7 @@ namespace Aardvark.Rendering
         private string m_head;
         private string m_route;
         private Http.Verb m_verb;
-        private Dictionary<string, string> m_query = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> m_query = new Dictionary<string, string>();
 
         public string Head
         {
@@ -201,9 +201,9 @@ namespace Aardvark.Rendering
 
     public class HttpServerDispatcher
     {
-        private Dictionary<string, List<Func<HttpServerRequestInfo, bool>>> m_handlers =
+        private readonly Dictionary<string, List<Func<HttpServerRequestInfo, bool>>> m_handlers =
             new Dictionary<string, List<Func<HttpServerRequestInfo, bool>>>();
-        private Dictionary<string, List<HttpServerDispatcher>> m_dispatchers =
+        private readonly Dictionary<string, List<HttpServerDispatcher>> m_dispatchers =
             new Dictionary<string, List<HttpServerDispatcher>>();
 
         public void Register(Func<HttpServerRequestInfo, bool> handler)
@@ -450,13 +450,13 @@ namespace Aardvark.Rendering
     public class HttpServer
     {
         private static string s_defaultPrefix = null;
-        private HttpListener m_listener = new HttpListener();
-        private HttpServerDispatcher m_dispatcher = new HttpServerDispatcher();
+        private readonly HttpListener m_listener = new HttpListener();
+        private readonly HttpServerDispatcher m_dispatcher = new HttpServerDispatcher();
         private HttpServer2Dispatcher m_dispatcher2 = null;
 
         private volatile bool m_isRunning = false;
         private volatile bool m_stop = false;
-        private object m_lock = new object();
+        private readonly object m_lock = new object();
 
         public void SwitchToNewStyle()
         {
@@ -656,7 +656,7 @@ namespace Aardvark.Rendering
             });
         }
 
-        private static string s_notFoundReply =
+        private static readonly string s_notFoundReply =
             new XElement("html",
                 new XElement("body",
                     new XElement("div", "Not found!"),

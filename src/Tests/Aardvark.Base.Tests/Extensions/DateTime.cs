@@ -188,12 +188,12 @@ namespace Aardvark.Tests.Extensions
             Report.Line("ComputeJulianDayRaw: {0}ms", sw5.Elapsed.TotalMilliseconds);
         }
 
-        static Stopwatch sw0 = new Stopwatch();
-        static Stopwatch sw1 = new Stopwatch();
-        static Stopwatch sw2 = new Stopwatch();
-        static Stopwatch sw3 = new Stopwatch();
-        static Stopwatch sw4 = new Stopwatch();
-        static Stopwatch sw5 = new Stopwatch();
+        static readonly Stopwatch sw0 = new Stopwatch();
+        static readonly Stopwatch sw1 = new Stopwatch();
+        static readonly Stopwatch sw2 = new Stopwatch();
+        static readonly Stopwatch sw3 = new Stopwatch();
+        static readonly Stopwatch sw4 = new Stopwatch();
+        static readonly Stopwatch sw5 = new Stopwatch();
         static int warpup = 10000;
 
         static void TestDate(DateTime date)

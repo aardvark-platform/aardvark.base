@@ -24,19 +24,19 @@ namespace Aardvark.Base
             get => new __type__(__v3t__.NaN, __v3t__.Zero, __v3t__.NaN, __v3t__.NaN);
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal != __v3t__.Zero;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == __v3t__.Zero;
         }
 
-        public __ftype__ Area
+        public readonly __ftype__ Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Vec.Cross(Axis0, Axis1).Length * __pi__;

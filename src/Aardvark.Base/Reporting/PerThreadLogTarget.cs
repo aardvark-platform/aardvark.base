@@ -5,7 +5,7 @@ namespace Aardvark.Base
     public class PerThreadLogTarget : ILogTarget
     {
         private volatile ILogTarget[] m_targetArray;
-        Func<int, ILogTarget> m_targetCreator;
+        readonly Func<int, ILogTarget> m_targetCreator;
 
         #region Constructor
 

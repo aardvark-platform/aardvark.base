@@ -13,11 +13,11 @@ namespace Aardvark.Base.Coder
     {
         private Type m_type;
         private string m_name;
-        private string m_xmlName;
-        private int m_version;
+        private readonly string m_xmlName;
+        private readonly int m_version;
         private Option m_options;
         private Dictionary<int, TypeInfo> m_versionMap;
-        private Func<object> m_creator;
+        private readonly Func<object> m_creator;
         private object m_typeOptions;
 
         public Type ProxyType;  // if this != null m_creator must create a proxy object
@@ -175,16 +175,16 @@ namespace Aardvark.Base.Coder
 
         #region Private Static Members
 
-        private static object s_lock = new object();
+        private static readonly object s_lock = new object();
 
         private static readonly Dictionary<int, TypeInfo> s_emptyVersionMap
                 = new Dictionary<int, TypeInfo>();
 
-        private static Dictionary<Type, TypeInfo> s_ofType =
+        private static readonly Dictionary<Type, TypeInfo> s_ofType =
             new Dictionary<Type, TypeInfo>();
-        private static Dictionary<string, TypeInfo> s_ofName =
+        private static readonly Dictionary<string, TypeInfo> s_ofName =
             new Dictionary<string, TypeInfo>();
-        private static Dictionary<string, TypeInfo> s_ofXmlName =
+        private static readonly Dictionary<string, TypeInfo> s_ofXmlName =
             new Dictionary<string, TypeInfo>();
 
         #endregion

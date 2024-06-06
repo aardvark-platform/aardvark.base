@@ -13,9 +13,9 @@ namespace Aardvark.Base.Coder
         : BaseWritingCoder, IWritingCoder, IDisposable
     {
         public Stack<XmlItem> m_itemStack;
-        private XmlItem m_item;
-        private Stream m_stream;
-        bool m_disposeStream;
+        private readonly XmlItem m_item;
+        private readonly Stream m_stream;
+        readonly bool m_disposeStream;
         private string m_fileName;
         // bool m_writeRefNumbers;
 
@@ -326,13 +326,13 @@ namespace Aardvark.Base.Coder
     public partial class XmlWritingCoder
         : BaseWritingCoder, IWritingCoder, IDisposable
     {
-        private Stack<XElement> m_elementStack;
+        private readonly Stack<XElement> m_elementStack;
         protected XElement m_element;
-        private XElement m_container;
-        private Stream m_stream;
+        private readonly XElement m_container;
+        private readonly Stream m_stream;
         private string m_fileName;
         bool m_writeRefNumbers;
-        bool m_disposeStream = false;
+        readonly bool m_disposeStream = false;
 
         #region Constructors
 
@@ -1003,7 +1003,7 @@ namespace Aardvark.Base.Coder
             AddValue(value.ToString(CultureInfo.InvariantCulture));
         }
 
-        private static char[] s_stringSplitChars = new[]
+        private static readonly char[] s_stringSplitChars = new[]
         {
             '\0',
             Convert.ToChar(0x19),

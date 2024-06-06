@@ -12,7 +12,7 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class Rot3dTransform
     {
-        V3d[] arr = new V3d[100000];
+        readonly V3d[] arr = new V3d[100000];
         Rot3d rotG = Rot3d.RotationX(Constant.Pi);
         M33d matG = M33d.Identity;
 

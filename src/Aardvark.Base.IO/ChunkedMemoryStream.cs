@@ -6,8 +6,8 @@ namespace Aardvark.Base.Coder
 {
     public class ChunkedMemoryStream : Stream
     {
-        private long m_chunkSize;
-        List<byte[]> m_chunkList;
+        private readonly long m_chunkSize;
+        readonly List<byte[]> m_chunkList;
 
         private long m_position;
         private int m_posChunk;

@@ -1417,7 +1417,7 @@ namespace Aardvark.Base.Sorting
         /// <summary>
         /// Int Leonardo numbers (smooth sort).
         /// </summary>
-        private static int[] LP =
+        private static readonly int[] LP =
         {
             1, 1, 3, 5, 9, 15, 25, 41, 67, 109, 177, 287, 465, 753, 1219,
             1973, 3193, 5167, 8361, 13529, 21891, 35421, 57313, 92735,
@@ -1430,7 +1430,7 @@ namespace Aardvark.Base.Sorting
         /// <summary>
         /// Long Leonardo numbers (smooth sort).
         /// </summary>
-        private static long[] LPLong =
+        private static readonly long[] LPLong =
         {
             1, 1, 3, 5, 9, 15, 25, 41, 67, 109, 177, 287, 465, 753, 1219,
             1973, 3193, 5167, 8361, 13529, 21891, 35421, 57313, 92735,

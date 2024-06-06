@@ -83,7 +83,7 @@ namespace Aardvark.Base
         /// Gets the identity <see cref="__type__"/> transformation.
         /// </summary>
         public static __type__ Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(0);
         }
@@ -95,8 +95,8 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="__type__"/> tranformation.
         /// </summary>
-        public __type__ Inverse
-        { 
+        public readonly __type__ Inverse
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(-Angle);
         }
@@ -357,12 +357,12 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return Angle.GetHashCode();
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}]", Angle);
         }
@@ -376,10 +376,10 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => Rot.Distance(this, other) == 0;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         #endregion

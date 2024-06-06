@@ -148,37 +148,37 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0 || __ftype__.IsNaN(Radius) || Center.IsNaN;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0 && !Center.IsNaN;
         }
 
-        public __ftype__ RadiusSquared
+        public readonly __ftype__ RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius;
         }
 
-        public __ftype__ Circumference
+        public readonly __ftype__ Circumference
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * Radius * __pi__;
         }
 
-        public __ftype__ Area
+        public readonly __ftype__ Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius * __pi__;
         }
 
-        public __box2t__ InscribedSquare
+        public readonly __box2t__ InscribedSquare
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -205,18 +205,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => Center.Equals(other.Center) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Aardvark.Base
 
         #region __iboundingbox__ Members
 
-        public __box2t__ BoundingBox2__tc__
+        public readonly __box2t__ BoundingBox2__tc__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __box2t__(

@@ -29,13 +29,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Border2i Flipped { get { return new Border2i(Max, Min); } }
+        public readonly Border2i Flipped { get { return new Border2i(Max, Min); } }
 
         #endregion
 
         #region Operations
 
-        public Border2l ToBorder2l()
+        public readonly Border2l ToBorder2l()
         {
             return new Border2l(Min.ToV2l(), Max.ToV2l());
         }
@@ -70,13 +70,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Border2l Flipped { get { return new Border2l(Max, Min); } }
+        public readonly Border2l Flipped { get { return new Border2l(Max, Min); } }
 
         #endregion
 
         #region Operations
 
-        public Border2i ToBorder2i()
+        public readonly Border2i ToBorder2i()
         {
             return new Border2i(Min.ToV2i(), Max.ToV2i());
         }

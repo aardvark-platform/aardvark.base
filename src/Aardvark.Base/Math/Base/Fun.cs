@@ -1045,7 +1045,7 @@ namespace Aardvark.Base
             Sub(sum.m_sum);
         }
 
-        public double Value
+        public readonly double Value
         {
             get { return m_sum; }
         }

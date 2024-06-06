@@ -7,7 +7,7 @@ namespace Aardvark.Base
     {
 		#region Non-Generic Array
 
-		public static Dictionary<Type, Func<Array, Array>> CopyFunMap =
+		private static readonly Dictionary<Type, Func<Array, Array>> CopyFunMap =
 			new Dictionary<Type, Func<Array, Array>>
 			{
 				{ typeof(byte[]), a => ((byte[])a).Copy() },
@@ -49,7 +49,7 @@ namespace Aardvark.Base
 			return CopyFunMap[array.GetType()](array);
 		}
 
-		public static Dictionary<Type, Func<Array, object, Array>> CopyFunFunMap =
+		private static readonly Dictionary<Type, Func<Array, object, Array>> CopyFunFunMap =
 			new Dictionary<Type, Func<Array, object, Array>>
 			{
 				{ typeof(byte[]), (a, f) => ((byte[])a).Map((Func<byte,byte>)f) },
@@ -99,7 +99,7 @@ namespace Aardvark.Base
 				return CopyFunMap[arrayType](array);
 		}
 
-		public static Dictionary<Type, Func<Array, int, Array>> ResizedFunMap =
+		private static readonly Dictionary<Type, Func<Array, int, Array>> ResizedFunMap =
 			new Dictionary<Type, Func<Array, int, Array>>
 			{
 				{ typeof(byte[]), (a, s) => ((byte[])a).Resized(s) },
@@ -141,7 +141,7 @@ namespace Aardvark.Base
 			return ResizedFunMap[array.GetType()](array, size);
 		}
 
-		public static Dictionary<Type, Func<Array, int[], int, Array>>
+		private static readonly Dictionary<Type, Func<Array, int[], int, Array>>
 			BackMappedCopyFunMap = new Dictionary<Type, Func<Array, int[], int, Array>>
 			{
 				{ typeof(byte[]), (a,m,c) => ((byte[])a).BackMappedCopy(m, c) },
@@ -186,7 +186,7 @@ namespace Aardvark.Base
             return null;
 		}
 
-		public static Dictionary<Type, Func<Array, int[], int[], int, Array>>
+		private static readonly Dictionary<Type, Func<Array, int[], int[], int, Array>>
 			BackMappedIndexedCopyFunMap = new Dictionary<Type, Func<Array, int[], int[], int, Array>>
 			{
 				{ typeof(byte[]), (a,i,m,c) => ((byte[])a).BackMappedCopy(i, m, c) },
@@ -231,7 +231,7 @@ namespace Aardvark.Base
             return null;
 		}
 
-		public static Dictionary<Type, Action<Array, Array, int[], int>>
+		private static readonly Dictionary<Type, Action<Array, Array, int[], int>>
 			BackMappedCopyToFunMap = new Dictionary<Type, Action<Array, Array, int[], int>>
 			{
 				{ typeof(byte[]), (s,t,m,o) => ((byte[])s).BackMappedCopyTo((byte[])t,m,o) },
@@ -276,10 +276,10 @@ namespace Aardvark.Base
 					source, target, backwardMap, offset);
 			return target;
 		}
-        
 
 
-		public static Dictionary<Type, Action<Array, Array, int, int[], int[], int>>
+
+		private static readonly Dictionary<Type, Action<Array, Array, int, int[], int[], int>>
 			BackMappedGroupCopyToFunMap = new Dictionary<Type, Action<Array, Array, int, int[], int[], int>>
 			{
 				{ typeof(byte[]), (s,t,c,b,f,o) => ((byte[])s).BackMappedGroupCopyTo(b, c, f, (byte[])t, o) },
@@ -300,7 +300,7 @@ namespace Aardvark.Base
 					(source, target, faceCount, faceBackMap, fia, offset);
 		}
 
-		public static Dictionary<Type, Action<Array, long, long>>
+		private static readonly Dictionary<Type, Action<Array, long, long>>
 			SwapFunMap = new Dictionary<Type, Action<Array, long, long>>
 			{
 				{ typeof(byte[]), (a, i, j) => ((byte[])a).Swap(i, j) },
@@ -342,19 +342,19 @@ namespace Aardvark.Base
 			SwapFunMap[array.GetType()](array, i, j);
 		}
 
-		public static Dictionary<Type, Func<Array, int[], int, Func<int, bool>, Array>>
+		private static readonly Dictionary<Type, Func<Array, int[], int, Func<int, bool>, Array>>
 			GroupReversedCopyMap = new Dictionary<Type, Func<Array, int[], int, Func<int, bool>, Array>>
 			{
-				{ typeof(byte[]), (a, g, c, r) => ((byte[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(sbyte[]), (a, g, c, r) => ((sbyte[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(short[]), (a, g, c, r) => ((short[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(ushort[]), (a, g, c, r) => ((ushort[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(int[]), (a, g, c, r) => ((int[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(uint[]), (a, g, c, r) => ((uint[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(long[]), (a, g, c, r) => ((long[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(ulong[]), (a, g, c, r) => ((ulong[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(float[]), (a, g, c, r) => ((float[])a).GroupReversedCopy(g, c, r) }, 
-				{ typeof(double[]), (a, g, c, r) => ((double[])a).GroupReversedCopy(g, c, r) }, 
+				{ typeof(byte[]), (a, g, c, r) => ((byte[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(sbyte[]), (a, g, c, r) => ((sbyte[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(short[]), (a, g, c, r) => ((short[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(ushort[]), (a, g, c, r) => ((ushort[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(int[]), (a, g, c, r) => ((int[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(uint[]), (a, g, c, r) => ((uint[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(long[]), (a, g, c, r) => ((long[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(ulong[]), (a, g, c, r) => ((ulong[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(float[]), (a, g, c, r) => ((float[])a).GroupReversedCopy(g, c, r) },
+				{ typeof(double[]), (a, g, c, r) => ((double[])a).GroupReversedCopy(g, c, r) },
 				{ typeof(C3b[]), (a, g, c, r) => ((C3b[])a).GroupReversedCopy(g, c, r) },
 				{ typeof(C3us[]), (a, g, c, r) => ((C3us[])a).GroupReversedCopy(g, c, r) },
 				{ typeof(C3ui[]), (a, g, c, r) => ((C3ui[])a).GroupReversedCopy(g, c, r) },
@@ -387,19 +387,19 @@ namespace Aardvark.Base
 						array, groupArray, groupCount, reverseMap);
 		}
 
-		public static Dictionary<Type, Action<Array, int[], int, Func<int, bool>>>
+		private static readonly Dictionary<Type, Action<Array, int[], int, Func<int, bool>>>
 			ReverseGroupsMap = new Dictionary<Type, Action<Array, int[], int, Func<int, bool>>>
 			{
-				{ typeof(byte[]), (a, g, c, r) => ((byte[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(sbyte[]), (a, g, c, r) => ((sbyte[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(short[]), (a, g, c, r) => ((short[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(ushort[]), (a, g, c, r) => ((ushort[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(int[]), (a, g, c, r) => ((int[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(uint[]), (a, g, c, r) => ((uint[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(long[]), (a, g, c, r) => ((long[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(ulong[]), (a, g, c, r) => ((ulong[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(float[]), (a, g, c, r) => ((float[])a).ReverseGroups(g, c, r) }, 
-				{ typeof(double[]), (a, g, c, r) => ((double[])a).ReverseGroups(g, c, r) }, 
+				{ typeof(byte[]), (a, g, c, r) => ((byte[])a).ReverseGroups(g, c, r) },
+				{ typeof(sbyte[]), (a, g, c, r) => ((sbyte[])a).ReverseGroups(g, c, r) },
+				{ typeof(short[]), (a, g, c, r) => ((short[])a).ReverseGroups(g, c, r) },
+				{ typeof(ushort[]), (a, g, c, r) => ((ushort[])a).ReverseGroups(g, c, r) },
+				{ typeof(int[]), (a, g, c, r) => ((int[])a).ReverseGroups(g, c, r) },
+				{ typeof(uint[]), (a, g, c, r) => ((uint[])a).ReverseGroups(g, c, r) },
+				{ typeof(long[]), (a, g, c, r) => ((long[])a).ReverseGroups(g, c, r) },
+				{ typeof(ulong[]), (a, g, c, r) => ((ulong[])a).ReverseGroups(g, c, r) },
+				{ typeof(float[]), (a, g, c, r) => ((float[])a).ReverseGroups(g, c, r) },
+				{ typeof(double[]), (a, g, c, r) => ((double[])a).ReverseGroups(g, c, r) },
 				{ typeof(C3b[]), (a, g, c, r) => ((C3b[])a).ReverseGroups(g, c, r) },
 				{ typeof(C3us[]), (a, g, c, r) => ((C3us[])a).ReverseGroups(g, c, r) },
 				{ typeof(C3ui[]), (a, g, c, r) => ((C3ui[])a).ReverseGroups(g, c, r) },

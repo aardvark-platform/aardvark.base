@@ -20,7 +20,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Line1i Reversed { get { return new Line1i(I1, I0); } }
+        public readonly Line1i Reversed { get { return new Line1i(I1, I0); } }
 
         #endregion
     }
@@ -65,7 +65,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Triangle1i Reversed { get { return new Triangle1i(I2, I1, I0); } }
+        public readonly Triangle1i Reversed { get { return new Triangle1i(I2, I1, I0); } }
 
         #endregion
     }
@@ -78,7 +78,7 @@ namespace Aardvark.Base
     {
         #region Properties
 
-        public Quad1i Reversed { get { return new Quad1i(I3, I2, I1, I0); } }
+        public readonly Quad1i Reversed { get { return new Quad1i(I3, I2, I1, I0); } }
 
         #endregion
     }

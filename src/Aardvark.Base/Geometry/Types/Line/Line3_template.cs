@@ -37,7 +37,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public __v3t__ Origin
         {
-            get { return P0; }
+            readonly get { return P0; }
             set { P0 = value; }
         }
 
@@ -47,23 +47,23 @@ namespace Aardvark.Base
         [XmlIgnore]
         public __v3t__ Direction
         {
-            get { return P1 - P0; }
+            readonly get { return P1 - P0; }
             set { P1 = P0 + value; }
         }
 
-        public __ray3t__ __ray3t__ => new __ray3t__(P0, P1 - P0);
+        public readonly __ray3t__ __ray3t__ => new __ray3t__(P0, P1 - P0);
 
-        public bool IsDegenerated => !Direction.Abs().AnyGreater(Constant<__ftype__>.PositiveTinyValue);
+        public readonly bool IsDegenerated => !Direction.Abs().AnyGreater(Constant<__ftype__>.PositiveTinyValue);
 
         #endregion
 
         #region __iboundingsphere__ Members
 
-        public __sphere3t__ BoundingSphere3__tc__ => new __sphere3t__(this.ComputeCentroid(), __half__ * Direction.Length);
+        public readonly __sphere3t__ BoundingSphere3__tc__ => new __sphere3t__(this.ComputeCentroid(), __half__ * Direction.Length);
 
         #endregion
 
-        public __type__ Flipped => new __type__(P1, P0);
+        public readonly __type__ Flipped => new __type__(P1, P0);
     }
 
     #endregion

@@ -156,7 +156,7 @@ namespace Aardvark.Base
         public V3f Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Normal * Distance / Normal.LengthSquared; }
+            readonly get { return Normal * Distance / Normal.LengthSquared; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Distance = Vec.Dot(Normal, value); }
@@ -165,7 +165,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is not the zero-vector.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal != V3f.Zero;
@@ -174,7 +174,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is the zero-vector.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V3f.Zero;
@@ -183,7 +183,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the normalized <see cref="Plane3f"/> as new <see cref="Plane3f"/>.
         /// </summary>
-        public Plane3f Normalized
+        public readonly Plane3f Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -196,7 +196,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the coefficients (a, b, c, d) of the normal equation: ax + by + cz + d = 0
         /// </summary>
-        public V4f Coefficients
+        public readonly V4f Coefficients
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4f(Normal, -Distance);
@@ -230,7 +230,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns <see cref="Plane3f"/> with normal vector in opposing direction.
         /// </summary>
-        public Plane3f Reversed
+        public readonly Plane3f Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3f(-Normal, -Distance);
@@ -241,21 +241,21 @@ namespace Aardvark.Base
         /// IMPORTANT: If the plane is not normalized the returned height is scaled by the magnitued of the plane normal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Height(V3f p)
+        public readonly float Height(V3f p)
             => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Sign(V3f p) => Height(p).Sign();
+        public readonly int Sign(V3f p) => Height(p).Sign();
 
         /// <summary>
         /// Projets the given point x perpendicular on the plane
         /// and returns the nearest point on the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f NearestPoint(V3f x)
+        public readonly V3f NearestPoint(V3f x)
         {
             var p = Point;
             return (x - Normal.Dot(x - p) * Normal);
@@ -266,7 +266,7 @@ namespace Aardvark.Base
         /// transposed matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3f Transformed(Trafo3f trafo) 
+        public readonly Plane3f Transformed(Trafo3f trafo)
         {
             return new Plane3f(
                 new V3f(
@@ -283,7 +283,7 @@ namespace Aardvark.Base
         /// to represent a euclidean transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3f Transformed(M44f trafo)
+        public readonly Plane3f Transformed(M44f trafo)
         {
             var n = trafo.TransformDir(Normal);
             var d = Distance + trafo.C0.Dot(trafo.C3) * Normal.X + trafo.C1.Dot(trafo.C3) * Normal.Y + trafo.C2.Dot(trafo.C3) * Normal.Z;
@@ -294,7 +294,7 @@ namespace Aardvark.Base
         /// Transforms the plane with a given Euclidean3f.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3f Transformed(Euclidean3f trafo)
+        public readonly Plane3f Transformed(Euclidean3f trafo)
         {
             var n1 = trafo.TransformDir(Normal);
             return new Plane3f(n1, Distance + trafo.Trans.Dot(n1));
@@ -317,18 +317,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Plane3f other)
+        public readonly bool Equals(Plane3f other)
             => Normal.Equals(other.Normal) && Distance.Equals(other.Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Plane3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() =>
+        public override readonly string ToString() =>
             string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -345,7 +345,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets entire float space as bounding box.
         /// </summary>
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             get
             {
@@ -478,25 +478,25 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PlaneWithPoint3f Normalized
+        public readonly PlaneWithPoint3f Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlaneWithPoint3f(Normal.Normalized, Point);
         }
 
-        public Plane3f Plane3f
+        public readonly Plane3f Plane3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3f(Normal, Point);
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V3f.Zero;
         }
 
-        public PlaneWithPoint3f Reversed
+        public readonly PlaneWithPoint3f Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlaneWithPoint3f(-Normal, Point);
@@ -516,31 +516,31 @@ namespace Aardvark.Base
         /// The signed height of the supplied point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Height(V3f p) => Vec.Dot(Normal, p - Point);
+        public readonly float Height(V3f p) => Vec.Dot(Normal, p - Point);
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Sign(V3f p) => Height(p).Sign();
+        public readonly int Sign(V3f p) => Height(p).Sign();
 
         #endregion
 
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Normal, Point);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Normal, Point);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(PlaneWithPoint3f other)
+        public readonly bool Equals(PlaneWithPoint3f other)
             => Normal.Equals(other.Normal) && Point.Equals(other.Point);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is PlaneWithPoint3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Point);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -557,7 +557,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets entire float space as bounding box.
         /// </summary>
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             get
             {
@@ -655,7 +655,7 @@ namespace Aardvark.Base
         #region Arithmetics
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ray3f GetRay3f()
+        public readonly Ray3f GetRay3f()
         {
             Plane0.Intersects(Plane1, out Ray3f ray);
             return ray;
@@ -719,37 +719,37 @@ namespace Aardvark.Base
 
         #region Properties
 
-        PlanePair3f Pair01
+        public readonly PlanePair3f Pair01
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3f(Plane0, Plane1);
         }
 
-        PlanePair3f Pair02
+        public readonly PlanePair3f Pair02
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3f(Plane0, Plane2);
         }
 
-        PlanePair3f Pair12
+        public readonly PlanePair3f Pair12
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3f(Plane1, Plane2);
         }
 
-        PlanePair3f Pair10
+        public readonly PlanePair3f Pair10
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3f(Plane1, Plane0);
         }
 
-        PlanePair3f Pair20
+        public readonly PlanePair3f Pair20
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3f(Plane2, Plane0);
         }
 
-        PlanePair3f Pair21
+        public readonly PlanePair3f Pair21
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3f(Plane2, Plane1);
@@ -759,7 +759,7 @@ namespace Aardvark.Base
 
         #region Arithmetics
 
-        public V3f GetPoint()
+        public readonly V3f GetPoint()
         {
             Plane0.Intersects(Plane1, Plane2, out V3f point);
             return point;
@@ -1067,7 +1067,7 @@ namespace Aardvark.Base
         public V3d Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Normal * Distance / Normal.LengthSquared; }
+            readonly get { return Normal * Distance / Normal.LengthSquared; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Distance = Vec.Dot(Normal, value); }
@@ -1076,7 +1076,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is not the zero-vector.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal != V3d.Zero;
@@ -1085,7 +1085,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is the zero-vector.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V3d.Zero;
@@ -1094,7 +1094,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the normalized <see cref="Plane3d"/> as new <see cref="Plane3d"/>.
         /// </summary>
-        public Plane3d Normalized
+        public readonly Plane3d Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1107,7 +1107,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the coefficients (a, b, c, d) of the normal equation: ax + by + cz + d = 0
         /// </summary>
-        public V4d Coefficients
+        public readonly V4d Coefficients
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4d(Normal, -Distance);
@@ -1141,7 +1141,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns <see cref="Plane3d"/> with normal vector in opposing direction.
         /// </summary>
-        public Plane3d Reversed
+        public readonly Plane3d Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3d(-Normal, -Distance);
@@ -1152,21 +1152,21 @@ namespace Aardvark.Base
         /// IMPORTANT: If the plane is not normalized the returned height is scaled by the magnitued of the plane normal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Height(V3d p)
+        public readonly double Height(V3d p)
             => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Sign(V3d p) => Height(p).Sign();
+        public readonly int Sign(V3d p) => Height(p).Sign();
 
         /// <summary>
         /// Projets the given point x perpendicular on the plane
         /// and returns the nearest point on the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d NearestPoint(V3d x)
+        public readonly V3d NearestPoint(V3d x)
         {
             var p = Point;
             return (x - Normal.Dot(x - p) * Normal);
@@ -1177,7 +1177,7 @@ namespace Aardvark.Base
         /// transposed matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3d Transformed(Trafo3d trafo) 
+        public readonly Plane3d Transformed(Trafo3d trafo)
         {
             return new Plane3d(
                 new V3d(
@@ -1194,7 +1194,7 @@ namespace Aardvark.Base
         /// to represent a euclidean transformation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3d Transformed(M44d trafo)
+        public readonly Plane3d Transformed(M44d trafo)
         {
             var n = trafo.TransformDir(Normal);
             var d = Distance + trafo.C0.Dot(trafo.C3) * Normal.X + trafo.C1.Dot(trafo.C3) * Normal.Y + trafo.C2.Dot(trafo.C3) * Normal.Z;
@@ -1205,7 +1205,7 @@ namespace Aardvark.Base
         /// Transforms the plane with a given Euclidean3d.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane3d Transformed(Euclidean3d trafo)
+        public readonly Plane3d Transformed(Euclidean3d trafo)
         {
             var n1 = trafo.TransformDir(Normal);
             return new Plane3d(n1, Distance + trafo.Trans.Dot(n1));
@@ -1228,18 +1228,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Plane3d other)
+        public readonly bool Equals(Plane3d other)
             => Normal.Equals(other.Normal) && Distance.Equals(other.Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Plane3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() =>
+        public override readonly string ToString() =>
             string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1256,7 +1256,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets entire double space as bounding box.
         /// </summary>
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             get
             {
@@ -1389,25 +1389,25 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PlaneWithPoint3d Normalized
+        public readonly PlaneWithPoint3d Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlaneWithPoint3d(Normal.Normalized, Point);
         }
 
-        public Plane3d Plane3d
+        public readonly Plane3d Plane3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3d(Normal, Point);
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V3d.Zero;
         }
 
-        public PlaneWithPoint3d Reversed
+        public readonly PlaneWithPoint3d Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlaneWithPoint3d(-Normal, Point);
@@ -1427,31 +1427,31 @@ namespace Aardvark.Base
         /// The signed height of the supplied point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Height(V3d p) => Vec.Dot(Normal, p - Point);
+        public readonly double Height(V3d p) => Vec.Dot(Normal, p - Point);
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Sign(V3d p) => Height(p).Sign();
+        public readonly int Sign(V3d p) => Height(p).Sign();
 
         #endregion
 
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Normal, Point);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Normal, Point);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(PlaneWithPoint3d other)
+        public readonly bool Equals(PlaneWithPoint3d other)
             => Normal.Equals(other.Normal) && Point.Equals(other.Point);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is PlaneWithPoint3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Point);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1468,7 +1468,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets entire double space as bounding box.
         /// </summary>
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             get
             {
@@ -1566,7 +1566,7 @@ namespace Aardvark.Base
         #region Arithmetics
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Ray3d GetRay3d()
+        public readonly Ray3d GetRay3d()
         {
             Plane0.Intersects(Plane1, out Ray3d ray);
             return ray;
@@ -1630,37 +1630,37 @@ namespace Aardvark.Base
 
         #region Properties
 
-        PlanePair3d Pair01
+        public readonly PlanePair3d Pair01
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3d(Plane0, Plane1);
         }
 
-        PlanePair3d Pair02
+        public readonly PlanePair3d Pair02
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3d(Plane0, Plane2);
         }
 
-        PlanePair3d Pair12
+        public readonly PlanePair3d Pair12
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3d(Plane1, Plane2);
         }
 
-        PlanePair3d Pair10
+        public readonly PlanePair3d Pair10
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3d(Plane1, Plane0);
         }
 
-        PlanePair3d Pair20
+        public readonly PlanePair3d Pair20
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3d(Plane2, Plane0);
         }
 
-        PlanePair3d Pair21
+        public readonly PlanePair3d Pair21
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new PlanePair3d(Plane2, Plane1);
@@ -1670,7 +1670,7 @@ namespace Aardvark.Base
 
         #region Arithmetics
 
-        public V3d GetPoint()
+        public readonly V3d GetPoint()
         {
             Plane0.Intersects(Plane1, Plane2, out V3d point);
             return point;

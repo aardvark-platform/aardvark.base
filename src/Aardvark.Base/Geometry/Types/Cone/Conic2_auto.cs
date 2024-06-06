@@ -36,9 +36,9 @@ namespace Aardvark.Base
         }
 
 
-        public float Discriminant { get { return CXX * CYY - CXY * CXY; } }
+        public readonly float Discriminant { get { return CXX * CYY - CXY * CXY; } }
 
-        public int ConicType
+        public readonly int ConicType
         {
             get
             {
@@ -81,9 +81,9 @@ namespace Aardvark.Base
         }
 
 
-        public double Discriminant { get { return CXX * CYY - CXY * CXY; } }
+        public readonly double Discriminant { get { return CXX * CYY - CXY * CXY; } }
 
-        public int ConicType
+        public readonly int ConicType
         {
             get
             {

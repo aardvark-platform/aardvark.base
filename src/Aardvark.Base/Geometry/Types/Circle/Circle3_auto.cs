@@ -85,31 +85,31 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public float RadiusSquared
+        public readonly float RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius.Square();
         }
 
-        public float Circumference
+        public readonly float Circumference
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * Radius * ConstantF.Pi;
         }
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => RadiusSquared * ConstantF.Pi;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0;
@@ -118,7 +118,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a point on the circumference (AxisU).
         /// </summary>
-        public V3f Point
+        public readonly V3f Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Center + AxisU * Radius;
@@ -127,7 +127,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns an axis aligned vector pointing from the center to the circumference.
         /// </summary>
-        public V3f AxisU
+        public readonly V3f AxisU
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -141,7 +141,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns an axis aligned vector pointing from the center to the circumference.
         /// </summary>
-        public V3f AxisV
+        public readonly V3f AxisV
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -151,13 +151,13 @@ namespace Aardvark.Base
             }
         }
 
-		/// <summary>
-		/// Return an IEnumerable of points on the circle's circumference, optionally repeating the first point as the last.
-		/// </summary>
-		/// <param name="tesselation">number of distinct points to generate. the actual number of points returned depends on the <para>duplicateClosePoint</para> parameter. must be 3 or larger.</param>
-		/// <param name="duplicateClosePoint">if true, the first point is repeated as the last</param>
-		/// <returns>IEnumerable of points on the circle's circumference. if diplicateClosePoint is true, <para>tesselation</para>+1 points are returned.</returns>
-		public IEnumerable<V3f> Points(int tesselation, bool duplicateClosePoint = false)
+        /// <summary>
+        /// Return an IEnumerable of points on the circle's circumference, optionally repeating the first point as the last.
+        /// </summary>
+        /// <param name="tesselation">number of distinct points to generate. the actual number of points returned depends on the <para>duplicateClosePoint</para> parameter. must be 3 or larger.</param>
+        /// <param name="duplicateClosePoint">if true, the first point is repeated as the last</param>
+        /// <returns>IEnumerable of points on the circle's circumference. if diplicateClosePoint is true, <para>tesselation</para>+1 points are returned.</returns>
+        public readonly IEnumerable<V3f> Points(int tesselation, bool duplicateClosePoint = false)
 		{
 			if (tesselation < 3)
 				throw new ArgumentOutOfRangeException("tesselation", "tesselation must be at least 3.");
@@ -172,14 +172,14 @@ namespace Aardvark.Base
 			}
 		}
 
-        public Plane3f Plane
+        public readonly Plane3f Plane
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3f(Normal, Center);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f GetPoint(float angle)
+        public readonly V3f GetPoint(float angle)
             => Center + AxisU * angle.Cos() + AxisV * angle.Sin();
 
         #endregion
@@ -199,18 +199,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Circle3f other)
+        public readonly bool Equals(Circle3f other)
             => Center.Equals(other.Center) && Normal.Equals(other.Normal) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Circle3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Normal, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -224,7 +224,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -334,31 +334,31 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public double RadiusSquared
+        public readonly double RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius.Square();
         }
 
-        public double Circumference
+        public readonly double Circumference
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 2 * Radius * Constant.Pi;
         }
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => RadiusSquared * Constant.Pi;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0;
@@ -367,7 +367,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a point on the circumference (AxisU).
         /// </summary>
-        public V3d Point
+        public readonly V3d Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Center + AxisU * Radius;
@@ -376,7 +376,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns an axis aligned vector pointing from the center to the circumference.
         /// </summary>
-        public V3d AxisU
+        public readonly V3d AxisU
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -390,7 +390,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns an axis aligned vector pointing from the center to the circumference.
         /// </summary>
-        public V3d AxisV
+        public readonly V3d AxisV
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -400,13 +400,13 @@ namespace Aardvark.Base
             }
         }
 
-		/// <summary>
-		/// Return an IEnumerable of points on the circle's circumference, optionally repeating the first point as the last.
-		/// </summary>
-		/// <param name="tesselation">number of distinct points to generate. the actual number of points returned depends on the <para>duplicateClosePoint</para> parameter. must be 3 or larger.</param>
-		/// <param name="duplicateClosePoint">if true, the first point is repeated as the last</param>
-		/// <returns>IEnumerable of points on the circle's circumference. if diplicateClosePoint is true, <para>tesselation</para>+1 points are returned.</returns>
-		public IEnumerable<V3d> Points(int tesselation, bool duplicateClosePoint = false)
+        /// <summary>
+        /// Return an IEnumerable of points on the circle's circumference, optionally repeating the first point as the last.
+        /// </summary>
+        /// <param name="tesselation">number of distinct points to generate. the actual number of points returned depends on the <para>duplicateClosePoint</para> parameter. must be 3 or larger.</param>
+        /// <param name="duplicateClosePoint">if true, the first point is repeated as the last</param>
+        /// <returns>IEnumerable of points on the circle's circumference. if diplicateClosePoint is true, <para>tesselation</para>+1 points are returned.</returns>
+        public readonly IEnumerable<V3d> Points(int tesselation, bool duplicateClosePoint = false)
 		{
 			if (tesselation < 3)
 				throw new ArgumentOutOfRangeException("tesselation", "tesselation must be at least 3.");
@@ -421,14 +421,14 @@ namespace Aardvark.Base
 			}
 		}
 
-        public Plane3d Plane
+        public readonly Plane3d Plane
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3d(Normal, Center);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d GetPoint(double angle)
+        public readonly V3d GetPoint(double angle)
             => Center + AxisU * angle.Cos() + AxisV * angle.Sin();
 
         #endregion
@@ -448,18 +448,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Circle3d other)
+        public readonly bool Equals(Circle3d other)
             => Center.Equals(other.Center) && Normal.Equals(other.Normal) && Radius.Equals(other.Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Circle3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Center, Normal, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -473,7 +473,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get

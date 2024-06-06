@@ -56,7 +56,7 @@ namespace Aardvark.Base
         /// Gets the identity <see cref="Rot2f"/> transformation.
         /// </summary>
         public static Rot2f Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Rot2f(0);
         }
@@ -68,8 +68,8 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Rot2f"/> tranformation.
         /// </summary>
-        public Rot2f Inverse
-        { 
+        public readonly Rot2f Inverse
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Rot2f(-Angle);
         }
@@ -453,12 +453,12 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return Angle.GetHashCode();
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}]", Angle);
         }
@@ -472,10 +472,10 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Rot2f other)
+        public readonly bool Equals(Rot2f other)
             => Rot.Distance(this, other) == 0;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Rot2f o) ? Equals(o) : false;
 
         #endregion
@@ -665,7 +665,7 @@ namespace Aardvark.Base
         /// Gets the identity <see cref="Rot2d"/> transformation.
         /// </summary>
         public static Rot2d Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Rot2d(0);
         }
@@ -677,8 +677,8 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Rot2d"/> tranformation.
         /// </summary>
-        public Rot2d Inverse
-        { 
+        public readonly Rot2d Inverse
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Rot2d(-Angle);
         }
@@ -1062,12 +1062,12 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return Angle.GetHashCode();
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}]", Angle);
         }
@@ -1081,10 +1081,10 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Rot2d other)
+        public readonly bool Equals(Rot2d other)
             => Rot.Distance(this, other) == 0;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Rot2d o) ? Equals(o) : false;
 
         #endregion

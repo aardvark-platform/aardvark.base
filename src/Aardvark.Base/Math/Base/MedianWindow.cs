@@ -13,8 +13,8 @@ namespace Aardvark.Base
         double m_median = 0;
         int m_write = -1;
         int m_count = 0; // for case when buffer is not fully filled
-        double[] m_buffer;
-        int[] m_indices;
+        readonly double[] m_buffer;
+        readonly int[] m_indices;
 
         public MedianWindow(int count)
         {

@@ -37,13 +37,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public double Value
+        public readonly double Value
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (double)Numerator / Denominator; }
         }
 
-        public Fraction Reduced
+        public readonly Fraction Reduced
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -235,18 +235,18 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Fraction other)
+        public readonly bool Equals(Fraction other)
             => Numerator.Equals(other.Numerator) && Denominator.Equals(other.Denominator);
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
             => (obj is Fraction o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return Value.GetHashCode();
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return Numerator + "/" + Denominator;
         }

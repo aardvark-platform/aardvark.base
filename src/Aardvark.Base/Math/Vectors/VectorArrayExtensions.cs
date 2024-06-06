@@ -117,7 +117,7 @@ namespace Aardvark.Base
             return result;
         }
 
-        static Dictionary<Type, Func<Array, int[], Dictionary<int, Line1iPoint>, Array>>
+        static readonly Dictionary<Type, Func<Array, int[], Dictionary<int, Line1iPoint>, Array>>
             s_backwardIndexedLerpMap
             = new Dictionary<Type, Func<Array, int[], Dictionary<int, Line1iPoint>, Array>>
             {
@@ -153,7 +153,7 @@ namespace Aardvark.Base
         }
 
 
-        static Dictionary<Type, Func<Array, int[], Dictionary<int, Line1iPoint>, Array>>
+        static readonly Dictionary<Type, Func<Array, int[], Dictionary<int, Line1iPoint>, Array>>
             s_backwardIndexedNormalMap
             = new Dictionary<Type, Func<Array, int[], Dictionary<int, Line1iPoint>, Array>>
             {
@@ -211,7 +211,7 @@ namespace Aardvark.Base
             }
         }
 
-        private static Dictionary<Type,
+        private static readonly Dictionary<Type,
             Action<Array, IEnumerable<WeightedIndex[]>, Array, int, int>>
                 s_lerpToOffsetMap =
             new Dictionary<Type,
@@ -265,7 +265,7 @@ namespace Aardvark.Base
             return source.LerpTo(weightedIndexArrays, target, offset, length);
         }
 
-        private static Dictionary<Type, Action<Array, IEnumerable<WeightedIndex[]>,
+        private static readonly Dictionary<Type, Action<Array, IEnumerable<WeightedIndex[]>,
                                              Array, int, int>> s_lerpAndNormalizeToOffsetMap =
             new Dictionary<Type, Action<Array, IEnumerable<WeightedIndex[]>, Array, int, int>>
             {

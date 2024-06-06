@@ -17,9 +17,9 @@ namespace Aardvark.Base
 
     public class ShortestPath<T> : IShortestPath<T>
     {
-        private List<T> m_nodes;
-        private List<int>[] m_neighbors;
-        private Func<T, T, float> m_getCostFunc;
+        private readonly List<T> m_nodes;
+        private readonly List<int>[] m_neighbors;
+        private readonly Func<T, T, float> m_getCostFunc;
         private bool[] m_expanded;
         private int[] m_pointers;
         private bool m_cancelTask = false;
@@ -159,7 +159,7 @@ namespace Aardvark.Base
     {
         public class Node
         {
-            private T _item;
+            private readonly T _item;
             private Node _parent;
             private Node _left;
             private Node _right;

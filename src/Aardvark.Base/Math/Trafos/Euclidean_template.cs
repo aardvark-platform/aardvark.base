@@ -44,7 +44,7 @@ namespace Aardvark.Base
     #region __type__
 
     /// <summary>
-    /// Represents a Rigid Transformation (or Rigid Body Transformation) in __n__D that is composed of a 
+    /// Represents a Rigid Transformation (or Rigid Body Transformation) in __n__D that is composed of a
     /// __n__D rotation Rot and a subsequent translation by a __n__D vector Trans.
     /// This is also called an Euclidean Transformation and is a length preserving Transformation.
     /// </summary>
@@ -150,7 +150,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a new version of this Euclidean transformation with a normalized rotation quaternion.
         /// </summary>
-        public __type__ Normalized
+        public readonly __type__ Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(Rot.Normalized, Trans);
@@ -161,7 +161,7 @@ namespace Aardvark.Base
         /// Gets the (multiplicative) inverse of this Euclidean transformation.
         /// [Rot^T,-Rot^T Trans]
         /// </summary>
-        public __type__ Inverse
+        public readonly __type__ Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -377,7 +377,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <exception cref="ArgumentException"></exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ From__mmmt__(__mmmt__ m, __ftype__ epsilon = __eps__) 
+        public static __type__ From__mmmt__(__mmmt__ m, __ftype__ epsilon = __eps__)
         {
             if (!(/*#n.ForEach(j => {*/m.M__n____j__.IsTiny(epsilon)/*# }, and);*/))
                 throw new ArgumentException("Matrix contains perspective components.");
@@ -500,7 +500,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -508,7 +508,7 @@ namespace Aardvark.Base
             => new __type__(__rotnt__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -630,19 +630,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Rot, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => Rot.Equals(other.Rot) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Rot, Trans);
         }

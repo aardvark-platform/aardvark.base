@@ -162,19 +162,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray != null;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray == null;
         }
 
-        public int PlaneCount
+        public readonly int PlaneCount
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
@@ -197,7 +197,7 @@ namespace Aardvark.Base
         #region Override
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             if (PlaneArray == null || PlaneArray.Length == 0) return 0;
             var h = PlaneArray[0].GetHashCode();
@@ -206,7 +206,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
         {
             if (PlaneArray == null || other.PlaneArray == null) return false;
             for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
@@ -214,11 +214,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => PlaneArray != null
                 ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
                 : "[null]"
@@ -239,7 +239,7 @@ namespace Aardvark.Base
 
         #region Transformation
 
-        public __type__ Transformed(__trafo3t__ trafo)
+        public readonly __type__ Transformed(__trafo3t__ trafo)
         {
             int count = PlaneCount;
             var hull = new __type__(count);
@@ -252,7 +252,7 @@ namespace Aardvark.Base
             return hull;
         }
 
-        public void TransformInto(__trafo3t__ trafo, ref __type__ hull)
+        public readonly void TransformInto(__trafo3t__ trafo, ref __type__ hull)
         {
             int count = PlaneCount;
             var invTr = trafo.Backward.Transposed;
@@ -268,11 +268,11 @@ namespace Aardvark.Base
         #region Reversal
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__ Reversed()
+        public readonly __type__ Reversed()
             => new __type__(PlaneArray.Map(p => p.Reversed));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Reverse()
+        public readonly void Reverse()
             => PlaneArray.Apply(p => p.Reversed);
 
         #endregion
@@ -375,12 +375,12 @@ namespace Aardvark.Base
         /// specified by an array of its eight corner vertices, that must
         /// be ordered as returned by the <see pref="corners"/>
         /// call of the axis aligned bounding box. The avaibility of this
-        /// corner array slightly improves the performance of the test. 
+        /// corner array slightly improves the performance of the test.
         /// Note that this is a conservative test, since in some cases
         /// around the edges of the hull it may return true although the
         /// hull does not intersect the box.
         /// </summary>
-        public bool IntersectsAxisAlignedBox(
+        public readonly bool IntersectsAxisAlignedBox(
                 __v3t__[] corners)
         {
             var planes = Hull.PlaneArray;
@@ -402,7 +402,7 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Fast__type__ Transformed(__trafo3t__ trafo)
+        public readonly Fast__type__ Transformed(__trafo3t__ trafo)
         {
             var newFastHull = new Fast__type__()
             {
@@ -413,7 +413,7 @@ namespace Aardvark.Base
             return newFastHull;
         }
 
-        public void TransformInto(__trafo3t__ trafo, ref Fast__type__ fastHull)
+        public readonly void TransformInto(__trafo3t__ trafo, ref Fast__type__ fastHull)
         {
             Hull.TransformInto(trafo, ref fastHull.Hull);
             ComputeMinCornerIndexArrayInto(fastHull.Hull.PlaneArray,

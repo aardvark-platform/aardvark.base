@@ -35,7 +35,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public double Area
+        public readonly double Area
         {
             get
             {

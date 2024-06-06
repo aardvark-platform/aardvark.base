@@ -7,7 +7,7 @@ namespace Aardvark.Base
     {
         private V3d m_sky = V3d.OOI;
         private Trafo3d m_trafo = Trafo3d.ViewTrafo(V3d.Zero, V3d.XAxis, V3d.ZAxis, -V3d.YAxis);
-        private EventSource<Trafo3d> m_trafoChanges = new EventSource<Trafo3d>();
+        private readonly EventSource<Trafo3d> m_trafoChanges = new EventSource<Trafo3d>();
 
         /// <summary>
         /// Sky direction (normalized).

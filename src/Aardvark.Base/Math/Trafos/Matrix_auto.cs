@@ -380,7 +380,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -418,7 +418,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -456,7 +456,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -494,7 +494,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -505,7 +505,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<int, int> element_fun)
+        public readonly M22i Copy(Func<int, int> element_fun)
         {
             return new M22i(
                 element_fun(M00), element_fun(M01), 
@@ -515,7 +515,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<int, int, int, int> element_index0_index1_fun)
+        public readonly M22i Copy(Func<int, int, int, int> element_index0_index1_fun)
         {
             return new M22i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -525,7 +525,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<int, long> element_fun)
+        public readonly M22l Copy(Func<int, long> element_fun)
         {
             return new M22l(
                 element_fun(M00), element_fun(M01), 
@@ -535,7 +535,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<int, int, int, long> element_index0_index1_fun)
+        public readonly M22l Copy(Func<int, int, int, long> element_index0_index1_fun)
         {
             return new M22l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -545,7 +545,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<int, float> element_fun)
+        public readonly M22f Copy(Func<int, float> element_fun)
         {
             return new M22f(
                 element_fun(M00), element_fun(M01), 
@@ -555,7 +555,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<int, int, int, float> element_index0_index1_fun)
+        public readonly M22f Copy(Func<int, int, int, float> element_index0_index1_fun)
         {
             return new M22f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -565,7 +565,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<int, double> element_fun)
+        public readonly M22d Copy(Func<int, double> element_fun)
         {
             return new M22d(
                 element_fun(M00), element_fun(M01), 
@@ -575,14 +575,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<int, int, int, double> element_index0_index1_fun)
+        public readonly M22d Copy(Func<int, int, int, double> element_index0_index1_fun)
         {
             return new M22d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1));
         }
 
-        public int[] ToArray()
+        public readonly int[] ToArray()
         {
             var array = new int[4];
             array[0] = M00;
@@ -694,19 +694,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<int> Elements
+        public readonly IEnumerable<int> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -718,7 +718,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2i> Rows
+        public readonly IEnumerable<V2i> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -728,7 +728,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2i> Columns
+        public readonly IEnumerable<V2i> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -742,7 +742,7 @@ namespace Aardvark.Base
         public V2i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2i( M00,  M01); }
+            readonly get { return new V2i( M00,  M01); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -755,7 +755,7 @@ namespace Aardvark.Base
         public V2i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2i( M10,  M11); }
+            readonly get { return new V2i( M10,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -768,7 +768,7 @@ namespace Aardvark.Base
         public V2i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2i( M00,  M10); }
+            readonly get { return new V2i( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -781,7 +781,7 @@ namespace Aardvark.Base
         public V2i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2i( M01,  M11); }
+            readonly get { return new V2i( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -790,13 +790,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V2i Diagonal
+        public readonly V2i Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2i(M00, M11);
         }
 
-        public V2i AntiDiagonal
+        public readonly V2i AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2i(M01, M10);
@@ -805,7 +805,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public int MinElement
+        public readonly int MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M10, M11);
@@ -814,7 +814,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public int MaxElement
+        public readonly int MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M10, M11);
@@ -823,7 +823,7 @@ namespace Aardvark.Base
         public unsafe int this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[index]; }
             }
@@ -837,7 +837,7 @@ namespace Aardvark.Base
         public unsafe int this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[row * 2 + column]; }
             }
@@ -882,7 +882,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             get
             {
@@ -896,7 +896,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -910,7 +910,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMax
+        public readonly int NormMax
         {
             get
             {
@@ -928,7 +928,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMin
+        public readonly int NormMin
         {
             get
             {
@@ -1584,7 +1584,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01),
@@ -1592,27 +1592,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M22i other)
+        public readonly bool Equals(M22i other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M22i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -1620,7 +1620,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -1645,7 +1645,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M22i Adjoint
+        public readonly M22i Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1659,7 +1659,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public int Trace
+        public readonly int Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 ; }
@@ -1669,7 +1669,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public int Determinant
+        public readonly int Determinant
         {
             get
             {
@@ -1681,7 +1681,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -1691,7 +1691,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -1700,7 +1700,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M22i Transposed
+        public readonly M22i Transposed
         {
             get
             {
@@ -1739,7 +1739,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -1755,7 +1755,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -1769,12 +1769,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -1784,7 +1784,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (int)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -3101,7 +3101,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -3139,7 +3139,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -3177,7 +3177,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -3215,7 +3215,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -3226,7 +3226,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<long, int> element_fun)
+        public readonly M22i Copy(Func<long, int> element_fun)
         {
             return new M22i(
                 element_fun(M00), element_fun(M01), 
@@ -3236,7 +3236,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<long, int, int, int> element_index0_index1_fun)
+        public readonly M22i Copy(Func<long, int, int, int> element_index0_index1_fun)
         {
             return new M22i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -3246,7 +3246,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<long, long> element_fun)
+        public readonly M22l Copy(Func<long, long> element_fun)
         {
             return new M22l(
                 element_fun(M00), element_fun(M01), 
@@ -3256,7 +3256,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<long, int, int, long> element_index0_index1_fun)
+        public readonly M22l Copy(Func<long, int, int, long> element_index0_index1_fun)
         {
             return new M22l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -3266,7 +3266,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<long, float> element_fun)
+        public readonly M22f Copy(Func<long, float> element_fun)
         {
             return new M22f(
                 element_fun(M00), element_fun(M01), 
@@ -3276,7 +3276,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<long, int, int, float> element_index0_index1_fun)
+        public readonly M22f Copy(Func<long, int, int, float> element_index0_index1_fun)
         {
             return new M22f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -3286,7 +3286,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<long, double> element_fun)
+        public readonly M22d Copy(Func<long, double> element_fun)
         {
             return new M22d(
                 element_fun(M00), element_fun(M01), 
@@ -3296,14 +3296,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<long, int, int, double> element_index0_index1_fun)
+        public readonly M22d Copy(Func<long, int, int, double> element_index0_index1_fun)
         {
             return new M22d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1));
         }
 
-        public long[] ToArray()
+        public readonly long[] ToArray()
         {
             var array = new long[4];
             array[0] = M00;
@@ -3415,19 +3415,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<long> Elements
+        public readonly IEnumerable<long> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -3439,7 +3439,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2l> Rows
+        public readonly IEnumerable<V2l> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -3449,7 +3449,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2l> Columns
+        public readonly IEnumerable<V2l> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -3463,7 +3463,7 @@ namespace Aardvark.Base
         public V2l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2l( M00,  M01); }
+            readonly get { return new V2l( M00,  M01); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -3476,7 +3476,7 @@ namespace Aardvark.Base
         public V2l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2l( M10,  M11); }
+            readonly get { return new V2l( M10,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -3489,7 +3489,7 @@ namespace Aardvark.Base
         public V2l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2l( M00,  M10); }
+            readonly get { return new V2l( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -3502,7 +3502,7 @@ namespace Aardvark.Base
         public V2l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2l( M01,  M11); }
+            readonly get { return new V2l( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -3511,13 +3511,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V2l Diagonal
+        public readonly V2l Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2l(M00, M11);
         }
 
-        public V2l AntiDiagonal
+        public readonly V2l AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2l(M01, M10);
@@ -3526,7 +3526,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public long MinElement
+        public readonly long MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M10, M11);
@@ -3535,7 +3535,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public long MaxElement
+        public readonly long MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M10, M11);
@@ -3544,7 +3544,7 @@ namespace Aardvark.Base
         public unsafe long this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[index]; }
             }
@@ -3558,7 +3558,7 @@ namespace Aardvark.Base
         public unsafe long this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[row * 2 + column]; }
             }
@@ -3603,7 +3603,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public long Norm1
+        public readonly long Norm1
         {
             get
             {
@@ -3617,7 +3617,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -3631,7 +3631,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMax
+        public readonly long NormMax
         {
             get
             {
@@ -3649,7 +3649,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMin
+        public readonly long NormMin
         {
             get
             {
@@ -4193,7 +4193,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01),
@@ -4201,27 +4201,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M22l other)
+        public readonly bool Equals(M22l other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M22l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -4229,7 +4229,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -4254,7 +4254,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M22l Adjoint
+        public readonly M22l Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -4268,7 +4268,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public long Trace
+        public readonly long Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 ; }
@@ -4278,7 +4278,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public long Determinant
+        public readonly long Determinant
         {
             get
             {
@@ -4290,7 +4290,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -4300,7 +4300,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -4309,7 +4309,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M22l Transposed
+        public readonly M22l Transposed
         {
             get
             {
@@ -4348,7 +4348,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -4364,7 +4364,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -4378,12 +4378,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -4393,7 +4393,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (long)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -5710,7 +5710,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -5748,7 +5748,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -5786,7 +5786,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -5824,7 +5824,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -5835,7 +5835,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<float, int> element_fun)
+        public readonly M22i Copy(Func<float, int> element_fun)
         {
             return new M22i(
                 element_fun(M00), element_fun(M01), 
@@ -5845,7 +5845,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<float, int, int, int> element_index0_index1_fun)
+        public readonly M22i Copy(Func<float, int, int, int> element_index0_index1_fun)
         {
             return new M22i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -5855,7 +5855,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<float, long> element_fun)
+        public readonly M22l Copy(Func<float, long> element_fun)
         {
             return new M22l(
                 element_fun(M00), element_fun(M01), 
@@ -5865,7 +5865,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<float, int, int, long> element_index0_index1_fun)
+        public readonly M22l Copy(Func<float, int, int, long> element_index0_index1_fun)
         {
             return new M22l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -5875,7 +5875,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<float, float> element_fun)
+        public readonly M22f Copy(Func<float, float> element_fun)
         {
             return new M22f(
                 element_fun(M00), element_fun(M01), 
@@ -5885,7 +5885,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<float, int, int, float> element_index0_index1_fun)
+        public readonly M22f Copy(Func<float, int, int, float> element_index0_index1_fun)
         {
             return new M22f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -5895,7 +5895,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<float, double> element_fun)
+        public readonly M22d Copy(Func<float, double> element_fun)
         {
             return new M22d(
                 element_fun(M00), element_fun(M01), 
@@ -5905,14 +5905,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<float, int, int, double> element_index0_index1_fun)
+        public readonly M22d Copy(Func<float, int, int, double> element_index0_index1_fun)
         {
             return new M22d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1));
         }
 
-        public float[] ToArray()
+        public readonly float[] ToArray()
         {
             var array = new float[4];
             array[0] = M00;
@@ -6067,19 +6067,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<float> Elements
+        public readonly IEnumerable<float> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6091,7 +6091,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2f> Rows
+        public readonly IEnumerable<V2f> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6101,7 +6101,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2f> Columns
+        public readonly IEnumerable<V2f> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6115,7 +6115,7 @@ namespace Aardvark.Base
         public V2f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2f( M00,  M01); }
+            readonly get { return new V2f( M00,  M01); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -6128,7 +6128,7 @@ namespace Aardvark.Base
         public V2f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2f( M10,  M11); }
+            readonly get { return new V2f( M10,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -6141,7 +6141,7 @@ namespace Aardvark.Base
         public V2f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2f( M00,  M10); }
+            readonly get { return new V2f( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -6154,7 +6154,7 @@ namespace Aardvark.Base
         public V2f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2f( M01,  M11); }
+            readonly get { return new V2f( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -6163,13 +6163,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V2f Diagonal
+        public readonly V2f Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2f(M00, M11);
         }
 
-        public V2f AntiDiagonal
+        public readonly V2f AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2f(M01, M10);
@@ -6178,7 +6178,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public float MinElement
+        public readonly float MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M10, M11);
@@ -6187,7 +6187,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public float MaxElement
+        public readonly float MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M10, M11);
@@ -6196,7 +6196,7 @@ namespace Aardvark.Base
         public unsafe float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[index]; }
             }
@@ -6210,7 +6210,7 @@ namespace Aardvark.Base
         public unsafe float this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[row * 2 + column]; }
             }
@@ -6221,7 +6221,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6232,7 +6232,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6243,7 +6243,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6254,7 +6254,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6265,7 +6265,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6276,7 +6276,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6287,7 +6287,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6298,7 +6298,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6309,7 +6309,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6320,7 +6320,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6331,7 +6331,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6342,7 +6342,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6356,7 +6356,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -6365,7 +6365,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -6374,7 +6374,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -6383,7 +6383,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -6392,7 +6392,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -6401,7 +6401,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -6441,7 +6441,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public float Norm1
+        public readonly float Norm1
         {
             get
             {
@@ -6455,7 +6455,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public float Norm2
+        public readonly float Norm2
         {
             get
             {
@@ -6469,7 +6469,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMax
+        public readonly float NormMax
         {
             get
             {
@@ -6487,7 +6487,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMin
+        public readonly float NormMin
         {
             get
             {
@@ -6819,7 +6819,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01),
@@ -6827,27 +6827,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M22f other)
+        public readonly bool Equals(M22f other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M22f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -6855,7 +6855,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -6880,7 +6880,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M22f Adjoint
+        public readonly M22f Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -6894,7 +6894,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public float Trace
+        public readonly float Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 ; }
@@ -6904,7 +6904,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public float Determinant
+        public readonly float Determinant
         {
             get
             {
@@ -6916,7 +6916,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -6926,7 +6926,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -6935,7 +6935,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M22f Transposed
+        public readonly M22f Transposed
         {
             get
             {
@@ -6960,8 +6960,8 @@ namespace Aardvark.Base
         public bool LuInvert()
         {
             M22d dbl = (M22d)this;
-            if(dbl.LuInvert()) 
-            { 
+            if(dbl.LuInvert())
+            {
                 this = (M22f)dbl;
                 return true;
             }
@@ -6972,7 +6972,7 @@ namespace Aardvark.Base
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M22f.Zero is returned.
         /// </summary>
-        public M22f LuInverse()
+        public readonly M22f LuInverse()
         {
             return (M22f)((M22d)this).LuInverse();
         }
@@ -6981,7 +6981,7 @@ namespace Aardvark.Base
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// M22f.Zero is returned.
         /// </summary>
-        public M22f Inverse
+        public readonly M22f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LuInverse();
@@ -7011,7 +7011,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -7027,7 +7027,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -7041,12 +7041,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -7056,7 +7056,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (float)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -8591,7 +8591,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -8629,7 +8629,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -8667,7 +8667,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -8705,7 +8705,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -8716,7 +8716,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<double, int> element_fun)
+        public readonly M22i Copy(Func<double, int> element_fun)
         {
             return new M22i(
                 element_fun(M00), element_fun(M01), 
@@ -8726,7 +8726,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22i Copy(Func<double, int, int, int> element_index0_index1_fun)
+        public readonly M22i Copy(Func<double, int, int, int> element_index0_index1_fun)
         {
             return new M22i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -8736,7 +8736,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<double, long> element_fun)
+        public readonly M22l Copy(Func<double, long> element_fun)
         {
             return new M22l(
                 element_fun(M00), element_fun(M01), 
@@ -8746,7 +8746,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22l Copy(Func<double, int, int, long> element_index0_index1_fun)
+        public readonly M22l Copy(Func<double, int, int, long> element_index0_index1_fun)
         {
             return new M22l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -8756,7 +8756,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<double, float> element_fun)
+        public readonly M22f Copy(Func<double, float> element_fun)
         {
             return new M22f(
                 element_fun(M00), element_fun(M01), 
@@ -8766,7 +8766,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22f Copy(Func<double, int, int, float> element_index0_index1_fun)
+        public readonly M22f Copy(Func<double, int, int, float> element_index0_index1_fun)
         {
             return new M22f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
@@ -8776,7 +8776,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<double, double> element_fun)
+        public readonly M22d Copy(Func<double, double> element_fun)
         {
             return new M22d(
                 element_fun(M00), element_fun(M01), 
@@ -8786,14 +8786,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M22d Copy(Func<double, int, int, double> element_index0_index1_fun)
+        public readonly M22d Copy(Func<double, int, int, double> element_index0_index1_fun)
         {
             return new M22d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1));
         }
 
-        public double[] ToArray()
+        public readonly double[] ToArray()
         {
             var array = new double[4];
             array[0] = M00;
@@ -8948,19 +8948,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<double> Elements
+        public readonly IEnumerable<double> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -8972,7 +8972,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2d> Rows
+        public readonly IEnumerable<V2d> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -8982,7 +8982,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2d> Columns
+        public readonly IEnumerable<V2d> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -8996,7 +8996,7 @@ namespace Aardvark.Base
         public V2d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2d( M00,  M01); }
+            readonly get { return new V2d( M00,  M01); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -9009,7 +9009,7 @@ namespace Aardvark.Base
         public V2d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2d( M10,  M11); }
+            readonly get { return new V2d( M10,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -9022,7 +9022,7 @@ namespace Aardvark.Base
         public V2d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2d( M00,  M10); }
+            readonly get { return new V2d( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -9035,7 +9035,7 @@ namespace Aardvark.Base
         public V2d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2d( M01,  M11); }
+            readonly get { return new V2d( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -9044,13 +9044,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V2d Diagonal
+        public readonly V2d Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2d(M00, M11);
         }
 
-        public V2d AntiDiagonal
+        public readonly V2d AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2d(M01, M10);
@@ -9059,7 +9059,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public double MinElement
+        public readonly double MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M10, M11);
@@ -9068,7 +9068,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public double MaxElement
+        public readonly double MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M10, M11);
@@ -9077,7 +9077,7 @@ namespace Aardvark.Base
         public unsafe double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[index]; }
             }
@@ -9091,7 +9091,7 @@ namespace Aardvark.Base
         public unsafe double this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[row * 2 + column]; }
             }
@@ -9102,7 +9102,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9113,7 +9113,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9124,7 +9124,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9135,7 +9135,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9146,7 +9146,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9157,7 +9157,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9168,7 +9168,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9179,7 +9179,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9190,7 +9190,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9201,7 +9201,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9212,7 +9212,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9223,7 +9223,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9237,7 +9237,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -9246,7 +9246,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -9255,7 +9255,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -9264,7 +9264,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -9273,7 +9273,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -9282,7 +9282,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -9322,7 +9322,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public double Norm1
+        public readonly double Norm1
         {
             get
             {
@@ -9336,7 +9336,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -9350,7 +9350,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMax
+        public readonly double NormMax
         {
             get
             {
@@ -9368,7 +9368,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMin
+        public readonly double NormMin
         {
             get
             {
@@ -9588,7 +9588,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01),
@@ -9596,27 +9596,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M22d other)
+        public readonly bool Equals(M22d other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M22d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -9624,7 +9624,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -9649,7 +9649,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M22d Adjoint
+        public readonly M22d Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -9663,7 +9663,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public double Trace
+        public readonly double Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 ; }
@@ -9673,7 +9673,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public double Determinant
+        public readonly double Determinant
         {
             get
             {
@@ -9685,7 +9685,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -9695,7 +9695,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -9704,7 +9704,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M22d Transposed
+        public readonly M22d Transposed
         {
             get
             {
@@ -9745,7 +9745,7 @@ namespace Aardvark.Base
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M22d.Zero is returned.
         /// </summary>
-        public unsafe M22d LuInverse()
+        public unsafe readonly M22d LuInverse()
         {
             var lu = this;
             M22d res;
@@ -9762,7 +9762,7 @@ namespace Aardvark.Base
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// M22d.Zero is returned.
         /// </summary>
-        public M22d Inverse
+        public readonly M22d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LuInverse();
@@ -9792,7 +9792,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return this[(int)y, (int)x];
             }
@@ -9808,7 +9808,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return this[(int)v.Y, (int)v.X];
             }
@@ -9822,12 +9822,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -9837,7 +9837,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (double)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -11416,7 +11416,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -11456,7 +11456,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -11496,7 +11496,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -11536,7 +11536,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -11549,7 +11549,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<int, int> element_fun)
+        public readonly M23i Copy(Func<int, int> element_fun)
         {
             return new M23i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -11559,7 +11559,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<int, int, int, int> element_index0_index1_fun)
+        public readonly M23i Copy(Func<int, int, int, int> element_index0_index1_fun)
         {
             return new M23i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -11569,7 +11569,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<int, long> element_fun)
+        public readonly M23l Copy(Func<int, long> element_fun)
         {
             return new M23l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -11579,7 +11579,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<int, int, int, long> element_index0_index1_fun)
+        public readonly M23l Copy(Func<int, int, int, long> element_index0_index1_fun)
         {
             return new M23l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -11589,7 +11589,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<int, float> element_fun)
+        public readonly M23f Copy(Func<int, float> element_fun)
         {
             return new M23f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -11599,7 +11599,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<int, int, int, float> element_index0_index1_fun)
+        public readonly M23f Copy(Func<int, int, int, float> element_index0_index1_fun)
         {
             return new M23f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -11609,7 +11609,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<int, double> element_fun)
+        public readonly M23d Copy(Func<int, double> element_fun)
         {
             return new M23d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -11619,14 +11619,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<int, int, int, double> element_index0_index1_fun)
+        public readonly M23d Copy(Func<int, int, int, double> element_index0_index1_fun)
         {
             return new M23d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1), element_index0_index1_fun(M12, 1, 2));
         }
 
-        public int[] ToArray()
+        public readonly int[] ToArray()
         {
             var array = new int[6];
             array[0] = M00;
@@ -11728,19 +11728,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<int> Elements
+        public readonly IEnumerable<int> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -11754,7 +11754,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3i> Rows
+        public readonly IEnumerable<V3i> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -11764,7 +11764,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2i> Columns
+        public readonly IEnumerable<V2i> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -11779,7 +11779,7 @@ namespace Aardvark.Base
         public V3i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M00,  M01,  M02); }
+            readonly get { return new V3i( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -11793,7 +11793,7 @@ namespace Aardvark.Base
         public V3i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M10,  M11,  M12); }
+            readonly get { return new V3i( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -11807,7 +11807,7 @@ namespace Aardvark.Base
         public V2i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2i( M00,  M10); }
+            readonly get { return new V2i( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -11820,7 +11820,7 @@ namespace Aardvark.Base
         public V2i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2i( M01,  M11); }
+            readonly get { return new V2i( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -11833,7 +11833,7 @@ namespace Aardvark.Base
         public V2i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2i( M02,  M12); }
+            readonly get { return new V2i( M02,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -11842,7 +11842,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2i Diagonal
+        public readonly V2i Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2i(M00, M11);
@@ -11851,7 +11851,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public int MinElement
+        public readonly int MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12);
@@ -11860,7 +11860,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public int MaxElement
+        public readonly int MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12);
@@ -11869,7 +11869,7 @@ namespace Aardvark.Base
         public unsafe int this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[index]; }
             }
@@ -11883,7 +11883,7 @@ namespace Aardvark.Base
         public unsafe int this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -11922,7 +11922,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             get
             {
@@ -11936,7 +11936,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -11950,7 +11950,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMax
+        public readonly int NormMax
         {
             get
             {
@@ -11970,7 +11970,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMin
+        public readonly int NormMin
         {
             get
             {
@@ -12635,7 +12635,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -12643,27 +12643,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M23i other)
+        public readonly bool Equals(M23i other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M23i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -12671,7 +12671,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -12731,7 +12731,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -12747,7 +12747,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -12761,12 +12761,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -12776,7 +12776,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (int)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -14157,7 +14157,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -14197,7 +14197,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -14237,7 +14237,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -14277,7 +14277,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -14290,7 +14290,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<long, int> element_fun)
+        public readonly M23i Copy(Func<long, int> element_fun)
         {
             return new M23i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -14300,7 +14300,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<long, int, int, int> element_index0_index1_fun)
+        public readonly M23i Copy(Func<long, int, int, int> element_index0_index1_fun)
         {
             return new M23i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -14310,7 +14310,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<long, long> element_fun)
+        public readonly M23l Copy(Func<long, long> element_fun)
         {
             return new M23l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -14320,7 +14320,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<long, int, int, long> element_index0_index1_fun)
+        public readonly M23l Copy(Func<long, int, int, long> element_index0_index1_fun)
         {
             return new M23l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -14330,7 +14330,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<long, float> element_fun)
+        public readonly M23f Copy(Func<long, float> element_fun)
         {
             return new M23f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -14340,7 +14340,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<long, int, int, float> element_index0_index1_fun)
+        public readonly M23f Copy(Func<long, int, int, float> element_index0_index1_fun)
         {
             return new M23f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -14350,7 +14350,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<long, double> element_fun)
+        public readonly M23d Copy(Func<long, double> element_fun)
         {
             return new M23d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -14360,14 +14360,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<long, int, int, double> element_index0_index1_fun)
+        public readonly M23d Copy(Func<long, int, int, double> element_index0_index1_fun)
         {
             return new M23d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1), element_index0_index1_fun(M12, 1, 2));
         }
 
-        public long[] ToArray()
+        public readonly long[] ToArray()
         {
             var array = new long[6];
             array[0] = M00;
@@ -14469,19 +14469,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<long> Elements
+        public readonly IEnumerable<long> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -14495,7 +14495,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3l> Rows
+        public readonly IEnumerable<V3l> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -14505,7 +14505,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2l> Columns
+        public readonly IEnumerable<V2l> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -14520,7 +14520,7 @@ namespace Aardvark.Base
         public V3l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M00,  M01,  M02); }
+            readonly get { return new V3l( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -14534,7 +14534,7 @@ namespace Aardvark.Base
         public V3l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M10,  M11,  M12); }
+            readonly get { return new V3l( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -14548,7 +14548,7 @@ namespace Aardvark.Base
         public V2l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2l( M00,  M10); }
+            readonly get { return new V2l( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -14561,7 +14561,7 @@ namespace Aardvark.Base
         public V2l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2l( M01,  M11); }
+            readonly get { return new V2l( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -14574,7 +14574,7 @@ namespace Aardvark.Base
         public V2l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2l( M02,  M12); }
+            readonly get { return new V2l( M02,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -14583,7 +14583,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2l Diagonal
+        public readonly V2l Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2l(M00, M11);
@@ -14592,7 +14592,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public long MinElement
+        public readonly long MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12);
@@ -14601,7 +14601,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public long MaxElement
+        public readonly long MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12);
@@ -14610,7 +14610,7 @@ namespace Aardvark.Base
         public unsafe long this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[index]; }
             }
@@ -14624,7 +14624,7 @@ namespace Aardvark.Base
         public unsafe long this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -14663,7 +14663,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public long Norm1
+        public readonly long Norm1
         {
             get
             {
@@ -14677,7 +14677,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -14691,7 +14691,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMax
+        public readonly long NormMax
         {
             get
             {
@@ -14711,7 +14711,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMin
+        public readonly long NormMin
         {
             get
             {
@@ -15264,7 +15264,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -15272,27 +15272,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M23l other)
+        public readonly bool Equals(M23l other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M23l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -15300,7 +15300,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -15360,7 +15360,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -15376,7 +15376,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -15390,12 +15390,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -15405,7 +15405,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (long)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -16786,7 +16786,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -16826,7 +16826,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -16866,7 +16866,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -16906,7 +16906,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -16919,7 +16919,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<float, int> element_fun)
+        public readonly M23i Copy(Func<float, int> element_fun)
         {
             return new M23i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -16929,7 +16929,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<float, int, int, int> element_index0_index1_fun)
+        public readonly M23i Copy(Func<float, int, int, int> element_index0_index1_fun)
         {
             return new M23i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -16939,7 +16939,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<float, long> element_fun)
+        public readonly M23l Copy(Func<float, long> element_fun)
         {
             return new M23l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -16949,7 +16949,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<float, int, int, long> element_index0_index1_fun)
+        public readonly M23l Copy(Func<float, int, int, long> element_index0_index1_fun)
         {
             return new M23l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -16959,7 +16959,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<float, float> element_fun)
+        public readonly M23f Copy(Func<float, float> element_fun)
         {
             return new M23f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -16969,7 +16969,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<float, int, int, float> element_index0_index1_fun)
+        public readonly M23f Copy(Func<float, int, int, float> element_index0_index1_fun)
         {
             return new M23f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -16979,7 +16979,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<float, double> element_fun)
+        public readonly M23d Copy(Func<float, double> element_fun)
         {
             return new M23d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -16989,14 +16989,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<float, int, int, double> element_index0_index1_fun)
+        public readonly M23d Copy(Func<float, int, int, double> element_index0_index1_fun)
         {
             return new M23d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1), element_index0_index1_fun(M12, 1, 2));
         }
 
-        public float[] ToArray()
+        public readonly float[] ToArray()
         {
             var array = new float[6];
             array[0] = M00;
@@ -17141,19 +17141,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<float> Elements
+        public readonly IEnumerable<float> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17167,7 +17167,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3f> Rows
+        public readonly IEnumerable<V3f> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17177,7 +17177,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2f> Columns
+        public readonly IEnumerable<V2f> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17192,7 +17192,7 @@ namespace Aardvark.Base
         public V3f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M00,  M01,  M02); }
+            readonly get { return new V3f( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -17206,7 +17206,7 @@ namespace Aardvark.Base
         public V3f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M10,  M11,  M12); }
+            readonly get { return new V3f( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -17220,7 +17220,7 @@ namespace Aardvark.Base
         public V2f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2f( M00,  M10); }
+            readonly get { return new V2f( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -17233,7 +17233,7 @@ namespace Aardvark.Base
         public V2f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2f( M01,  M11); }
+            readonly get { return new V2f( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -17246,7 +17246,7 @@ namespace Aardvark.Base
         public V2f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2f( M02,  M12); }
+            readonly get { return new V2f( M02,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -17255,7 +17255,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2f Diagonal
+        public readonly V2f Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2f(M00, M11);
@@ -17264,7 +17264,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public float MinElement
+        public readonly float MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12);
@@ -17273,7 +17273,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public float MaxElement
+        public readonly float MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12);
@@ -17282,7 +17282,7 @@ namespace Aardvark.Base
         public unsafe float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[index]; }
             }
@@ -17296,7 +17296,7 @@ namespace Aardvark.Base
         public unsafe float this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -17307,7 +17307,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17318,7 +17318,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17329,7 +17329,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17340,7 +17340,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17351,7 +17351,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17362,7 +17362,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17373,7 +17373,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17384,7 +17384,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17395,7 +17395,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17406,7 +17406,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17417,7 +17417,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17428,7 +17428,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -17442,7 +17442,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -17451,7 +17451,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -17460,7 +17460,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -17469,7 +17469,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -17478,7 +17478,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -17487,7 +17487,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -17521,7 +17521,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public float Norm1
+        public readonly float Norm1
         {
             get
             {
@@ -17535,7 +17535,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public float Norm2
+        public readonly float Norm2
         {
             get
             {
@@ -17549,7 +17549,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMax
+        public readonly float NormMax
         {
             get
             {
@@ -17569,7 +17569,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMin
+        public readonly float NormMin
         {
             get
             {
@@ -17910,7 +17910,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -17918,27 +17918,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M23f other)
+        public readonly bool Equals(M23f other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M23f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -17946,7 +17946,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -18006,7 +18006,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -18022,7 +18022,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -18036,12 +18036,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -18051,7 +18051,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (float)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -19533,7 +19533,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -19573,7 +19573,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -19613,7 +19613,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -19653,7 +19653,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -19666,7 +19666,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<double, int> element_fun)
+        public readonly M23i Copy(Func<double, int> element_fun)
         {
             return new M23i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -19676,7 +19676,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23i Copy(Func<double, int, int, int> element_index0_index1_fun)
+        public readonly M23i Copy(Func<double, int, int, int> element_index0_index1_fun)
         {
             return new M23i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -19686,7 +19686,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<double, long> element_fun)
+        public readonly M23l Copy(Func<double, long> element_fun)
         {
             return new M23l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -19696,7 +19696,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23l Copy(Func<double, int, int, long> element_index0_index1_fun)
+        public readonly M23l Copy(Func<double, int, int, long> element_index0_index1_fun)
         {
             return new M23l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -19706,7 +19706,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<double, float> element_fun)
+        public readonly M23f Copy(Func<double, float> element_fun)
         {
             return new M23f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -19716,7 +19716,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23f Copy(Func<double, int, int, float> element_index0_index1_fun)
+        public readonly M23f Copy(Func<double, int, int, float> element_index0_index1_fun)
         {
             return new M23f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -19726,7 +19726,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<double, double> element_fun)
+        public readonly M23d Copy(Func<double, double> element_fun)
         {
             return new M23d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -19736,14 +19736,14 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M23d Copy(Func<double, int, int, double> element_index0_index1_fun)
+        public readonly M23d Copy(Func<double, int, int, double> element_index0_index1_fun)
         {
             return new M23d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
                 element_index0_index1_fun(M10, 1, 0), element_index0_index1_fun(M11, 1, 1), element_index0_index1_fun(M12, 1, 2));
         }
 
-        public double[] ToArray()
+        public readonly double[] ToArray()
         {
             var array = new double[6];
             array[0] = M00;
@@ -19888,19 +19888,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<double> Elements
+        public readonly IEnumerable<double> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -19914,7 +19914,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3d> Rows
+        public readonly IEnumerable<V3d> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -19924,7 +19924,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V2d> Columns
+        public readonly IEnumerable<V2d> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -19939,7 +19939,7 @@ namespace Aardvark.Base
         public V3d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M00,  M01,  M02); }
+            readonly get { return new V3d( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -19953,7 +19953,7 @@ namespace Aardvark.Base
         public V3d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M10,  M11,  M12); }
+            readonly get { return new V3d( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -19967,7 +19967,7 @@ namespace Aardvark.Base
         public V2d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2d( M00,  M10); }
+            readonly get { return new V2d( M00,  M10); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -19980,7 +19980,7 @@ namespace Aardvark.Base
         public V2d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2d( M01,  M11); }
+            readonly get { return new V2d( M01,  M11); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -19993,7 +19993,7 @@ namespace Aardvark.Base
         public V2d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V2d( M02,  M12); }
+            readonly get { return new V2d( M02,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -20002,7 +20002,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2d Diagonal
+        public readonly V2d Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V2d(M00, M11);
@@ -20011,7 +20011,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public double MinElement
+        public readonly double MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12);
@@ -20020,7 +20020,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public double MaxElement
+        public readonly double MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12);
@@ -20029,7 +20029,7 @@ namespace Aardvark.Base
         public unsafe double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[index]; }
             }
@@ -20043,7 +20043,7 @@ namespace Aardvark.Base
         public unsafe double this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -20054,7 +20054,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20065,7 +20065,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20076,7 +20076,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20087,7 +20087,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20098,7 +20098,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20109,7 +20109,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20120,7 +20120,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20131,7 +20131,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20142,7 +20142,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20153,7 +20153,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20164,7 +20164,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20175,7 +20175,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -20189,7 +20189,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -20198,7 +20198,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -20207,7 +20207,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -20216,7 +20216,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -20225,7 +20225,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -20234,7 +20234,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -20268,7 +20268,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public double Norm1
+        public readonly double Norm1
         {
             get
             {
@@ -20282,7 +20282,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -20296,7 +20296,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMax
+        public readonly double NormMax
         {
             get
             {
@@ -20316,7 +20316,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMin
+        public readonly double NormMin
         {
             get
             {
@@ -20545,7 +20545,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -20553,27 +20553,27 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M23d other)
+        public readonly bool Equals(M23d other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
                 M10.Equals(other.M10) && M11.Equals(other.M11) && M12.Equals(other.M12);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M23d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -20581,7 +20581,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -20641,7 +20641,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return this[(int)y, (int)x];
             }
@@ -20657,7 +20657,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return this[(int)v.Y, (int)v.X];
             }
@@ -20671,12 +20671,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -20686,7 +20686,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (double)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -22247,7 +22247,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -22294,7 +22294,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -22341,7 +22341,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -22388,7 +22388,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -22404,7 +22404,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<int, int> element_fun)
+        public readonly M33i Copy(Func<int, int> element_fun)
         {
             return new M33i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -22415,7 +22415,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<int, int, int, int> element_index0_index1_fun)
+        public readonly M33i Copy(Func<int, int, int, int> element_index0_index1_fun)
         {
             return new M33i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -22426,7 +22426,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<int, long> element_fun)
+        public readonly M33l Copy(Func<int, long> element_fun)
         {
             return new M33l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -22437,7 +22437,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<int, int, int, long> element_index0_index1_fun)
+        public readonly M33l Copy(Func<int, int, int, long> element_index0_index1_fun)
         {
             return new M33l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -22448,7 +22448,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<int, float> element_fun)
+        public readonly M33f Copy(Func<int, float> element_fun)
         {
             return new M33f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -22459,7 +22459,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<int, int, int, float> element_index0_index1_fun)
+        public readonly M33f Copy(Func<int, int, int, float> element_index0_index1_fun)
         {
             return new M33f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -22470,7 +22470,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<int, double> element_fun)
+        public readonly M33d Copy(Func<int, double> element_fun)
         {
             return new M33d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -22481,7 +22481,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<int, int, int, double> element_index0_index1_fun)
+        public readonly M33d Copy(Func<int, int, int, double> element_index0_index1_fun)
         {
             return new M33d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -22492,12 +22492,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M22i UpperLeftM22()
+        public readonly M22i UpperLeftM22()
         {
             return (M22i)this;
         }
 
-        public int[] ToArray()
+        public readonly int[] ToArray()
         {
             var array = new int[9];
             array[0] = M00;
@@ -22726,19 +22726,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<int> Elements
+        public readonly IEnumerable<int> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -22755,7 +22755,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3i> Rows
+        public readonly IEnumerable<V3i> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -22766,7 +22766,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3i> Columns
+        public readonly IEnumerable<V3i> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -22781,7 +22781,7 @@ namespace Aardvark.Base
         public V3i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M00,  M01,  M02); }
+            readonly get { return new V3i( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -22795,7 +22795,7 @@ namespace Aardvark.Base
         public V3i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M10,  M11,  M12); }
+            readonly get { return new V3i( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -22809,7 +22809,7 @@ namespace Aardvark.Base
         public V3i R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M20,  M21,  M22); }
+            readonly get { return new V3i( M20,  M21,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -22823,7 +22823,7 @@ namespace Aardvark.Base
         public V3i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M00,  M10,  M20); }
+            readonly get { return new V3i( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -22837,7 +22837,7 @@ namespace Aardvark.Base
         public V3i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M01,  M11,  M21); }
+            readonly get { return new V3i( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -22851,7 +22851,7 @@ namespace Aardvark.Base
         public V3i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M02,  M12,  M22); }
+            readonly get { return new V3i( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -22861,13 +22861,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V3i Diagonal
+        public readonly V3i Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3i(M00, M11, M22);
         }
 
-        public V3i AntiDiagonal
+        public readonly V3i AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3i(M02, M11, M20);
@@ -22876,7 +22876,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public int MinElement
+        public readonly int MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -22885,7 +22885,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public int MaxElement
+        public readonly int MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -22894,7 +22894,7 @@ namespace Aardvark.Base
         public unsafe int this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[index]; }
             }
@@ -22908,7 +22908,7 @@ namespace Aardvark.Base
         public unsafe int this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -22953,7 +22953,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             get
             {
@@ -22968,7 +22968,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -22983,7 +22983,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMax
+        public readonly int NormMax
         {
             get
             {
@@ -23007,7 +23007,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMin
+        public readonly int NormMin
         {
             get
             {
@@ -23755,7 +23755,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -23764,7 +23764,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M33i other)
+        public readonly bool Equals(M33i other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
@@ -23772,20 +23772,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M33i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -23793,7 +23793,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -23820,7 +23820,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M33i Adjoint
+        public readonly M33i Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -23846,7 +23846,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public int Trace
+        public readonly int Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 ; }
@@ -23856,7 +23856,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public int Determinant
+        public readonly int Determinant
         {
             get
             {
@@ -23875,7 +23875,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -23885,7 +23885,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -23894,7 +23894,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M33i Transposed
+        public readonly M33i Transposed
         {
             get
             {
@@ -23944,7 +23944,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -23960,7 +23960,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -23974,12 +23974,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -23989,7 +23989,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (int)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -25686,7 +25686,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -25733,7 +25733,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -25780,7 +25780,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -25827,7 +25827,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -25843,7 +25843,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<long, int> element_fun)
+        public readonly M33i Copy(Func<long, int> element_fun)
         {
             return new M33i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -25854,7 +25854,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<long, int, int, int> element_index0_index1_fun)
+        public readonly M33i Copy(Func<long, int, int, int> element_index0_index1_fun)
         {
             return new M33i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -25865,7 +25865,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<long, long> element_fun)
+        public readonly M33l Copy(Func<long, long> element_fun)
         {
             return new M33l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -25876,7 +25876,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<long, int, int, long> element_index0_index1_fun)
+        public readonly M33l Copy(Func<long, int, int, long> element_index0_index1_fun)
         {
             return new M33l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -25887,7 +25887,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<long, float> element_fun)
+        public readonly M33f Copy(Func<long, float> element_fun)
         {
             return new M33f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -25898,7 +25898,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<long, int, int, float> element_index0_index1_fun)
+        public readonly M33f Copy(Func<long, int, int, float> element_index0_index1_fun)
         {
             return new M33f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -25909,7 +25909,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<long, double> element_fun)
+        public readonly M33d Copy(Func<long, double> element_fun)
         {
             return new M33d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -25920,7 +25920,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<long, int, int, double> element_index0_index1_fun)
+        public readonly M33d Copy(Func<long, int, int, double> element_index0_index1_fun)
         {
             return new M33d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -25931,12 +25931,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M22l UpperLeftM22()
+        public readonly M22l UpperLeftM22()
         {
             return (M22l)this;
         }
 
-        public long[] ToArray()
+        public readonly long[] ToArray()
         {
             var array = new long[9];
             array[0] = M00;
@@ -26165,19 +26165,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<long> Elements
+        public readonly IEnumerable<long> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -26194,7 +26194,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3l> Rows
+        public readonly IEnumerable<V3l> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -26205,7 +26205,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3l> Columns
+        public readonly IEnumerable<V3l> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -26220,7 +26220,7 @@ namespace Aardvark.Base
         public V3l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M00,  M01,  M02); }
+            readonly get { return new V3l( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -26234,7 +26234,7 @@ namespace Aardvark.Base
         public V3l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M10,  M11,  M12); }
+            readonly get { return new V3l( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -26248,7 +26248,7 @@ namespace Aardvark.Base
         public V3l R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M20,  M21,  M22); }
+            readonly get { return new V3l( M20,  M21,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -26262,7 +26262,7 @@ namespace Aardvark.Base
         public V3l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M00,  M10,  M20); }
+            readonly get { return new V3l( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -26276,7 +26276,7 @@ namespace Aardvark.Base
         public V3l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M01,  M11,  M21); }
+            readonly get { return new V3l( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -26290,7 +26290,7 @@ namespace Aardvark.Base
         public V3l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M02,  M12,  M22); }
+            readonly get { return new V3l( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -26300,13 +26300,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V3l Diagonal
+        public readonly V3l Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3l(M00, M11, M22);
         }
 
-        public V3l AntiDiagonal
+        public readonly V3l AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3l(M02, M11, M20);
@@ -26315,7 +26315,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public long MinElement
+        public readonly long MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -26324,7 +26324,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public long MaxElement
+        public readonly long MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -26333,7 +26333,7 @@ namespace Aardvark.Base
         public unsafe long this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[index]; }
             }
@@ -26347,7 +26347,7 @@ namespace Aardvark.Base
         public unsafe long this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -26392,7 +26392,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public long Norm1
+        public readonly long Norm1
         {
             get
             {
@@ -26407,7 +26407,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -26422,7 +26422,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMax
+        public readonly long NormMax
         {
             get
             {
@@ -26446,7 +26446,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMin
+        public readonly long NormMin
         {
             get
             {
@@ -27068,7 +27068,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -27077,7 +27077,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M33l other)
+        public readonly bool Equals(M33l other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
@@ -27085,20 +27085,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M33l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -27106,7 +27106,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -27133,7 +27133,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M33l Adjoint
+        public readonly M33l Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -27159,7 +27159,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public long Trace
+        public readonly long Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 ; }
@@ -27169,7 +27169,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public long Determinant
+        public readonly long Determinant
         {
             get
             {
@@ -27188,7 +27188,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -27198,7 +27198,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -27207,7 +27207,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M33l Transposed
+        public readonly M33l Transposed
         {
             get
             {
@@ -27257,7 +27257,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -27273,7 +27273,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -27287,12 +27287,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -27302,7 +27302,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (long)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -28999,7 +28999,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -29046,7 +29046,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -29093,7 +29093,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -29140,7 +29140,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -29156,7 +29156,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<float, int> element_fun)
+        public readonly M33i Copy(Func<float, int> element_fun)
         {
             return new M33i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -29167,7 +29167,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<float, int, int, int> element_index0_index1_fun)
+        public readonly M33i Copy(Func<float, int, int, int> element_index0_index1_fun)
         {
             return new M33i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -29178,7 +29178,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<float, long> element_fun)
+        public readonly M33l Copy(Func<float, long> element_fun)
         {
             return new M33l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -29189,7 +29189,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<float, int, int, long> element_index0_index1_fun)
+        public readonly M33l Copy(Func<float, int, int, long> element_index0_index1_fun)
         {
             return new M33l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -29200,7 +29200,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<float, float> element_fun)
+        public readonly M33f Copy(Func<float, float> element_fun)
         {
             return new M33f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -29211,7 +29211,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<float, int, int, float> element_index0_index1_fun)
+        public readonly M33f Copy(Func<float, int, int, float> element_index0_index1_fun)
         {
             return new M33f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -29222,7 +29222,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<float, double> element_fun)
+        public readonly M33d Copy(Func<float, double> element_fun)
         {
             return new M33d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -29233,7 +29233,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<float, int, int, double> element_index0_index1_fun)
+        public readonly M33d Copy(Func<float, int, int, double> element_index0_index1_fun)
         {
             return new M33d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -29244,12 +29244,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M22f UpperLeftM22()
+        public readonly M22f UpperLeftM22()
         {
             return (M22f)this;
         }
 
-        public float[] ToArray()
+        public readonly float[] ToArray()
         {
             var array = new float[9];
             array[0] = M00;
@@ -29516,7 +29516,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -29526,14 +29526,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
             => RotationEuler(
                 rollInDegrees.RadiansFromDegrees(),
-                pitchInDegrees.RadiansFromDegrees(), 
+                pitchInDegrees.RadiansFromDegrees(),
                 yawInDegrees.RadiansFromDegrees());
 
         /// <summary>
@@ -29694,19 +29694,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<float> Elements
+        public readonly IEnumerable<float> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29723,7 +29723,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3f> Rows
+        public readonly IEnumerable<V3f> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29734,7 +29734,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3f> Columns
+        public readonly IEnumerable<V3f> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29749,7 +29749,7 @@ namespace Aardvark.Base
         public V3f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M00,  M01,  M02); }
+            readonly get { return new V3f( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -29763,7 +29763,7 @@ namespace Aardvark.Base
         public V3f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M10,  M11,  M12); }
+            readonly get { return new V3f( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -29777,7 +29777,7 @@ namespace Aardvark.Base
         public V3f R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M20,  M21,  M22); }
+            readonly get { return new V3f( M20,  M21,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -29791,7 +29791,7 @@ namespace Aardvark.Base
         public V3f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M00,  M10,  M20); }
+            readonly get { return new V3f( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -29805,7 +29805,7 @@ namespace Aardvark.Base
         public V3f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M01,  M11,  M21); }
+            readonly get { return new V3f( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -29819,7 +29819,7 @@ namespace Aardvark.Base
         public V3f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M02,  M12,  M22); }
+            readonly get { return new V3f( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -29829,13 +29829,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V3f Diagonal
+        public readonly V3f Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3f(M00, M11, M22);
         }
 
-        public V3f AntiDiagonal
+        public readonly V3f AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3f(M02, M11, M20);
@@ -29844,7 +29844,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public float MinElement
+        public readonly float MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -29853,7 +29853,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public float MaxElement
+        public readonly float MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -29862,7 +29862,7 @@ namespace Aardvark.Base
         public unsafe float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[index]; }
             }
@@ -29876,7 +29876,7 @@ namespace Aardvark.Base
         public unsafe float this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -29887,7 +29887,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29899,7 +29899,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29911,7 +29911,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29923,7 +29923,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29935,7 +29935,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29947,7 +29947,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29959,7 +29959,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29971,7 +29971,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29983,7 +29983,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -29995,7 +29995,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -30007,7 +30007,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -30019,7 +30019,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -30034,7 +30034,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -30043,7 +30043,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -30052,7 +30052,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -30061,7 +30061,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -30070,7 +30070,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -30079,7 +30079,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -30119,7 +30119,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public float Norm1
+        public readonly float Norm1
         {
             get
             {
@@ -30134,7 +30134,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public float Norm2
+        public readonly float Norm2
         {
             get
             {
@@ -30149,7 +30149,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMax
+        public readonly float NormMax
         {
             get
             {
@@ -30173,7 +30173,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMin
+        public readonly float NormMin
         {
             get
             {
@@ -30557,7 +30557,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -30566,7 +30566,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M33f other)
+        public readonly bool Equals(M33f other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
@@ -30574,20 +30574,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M33f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -30595,7 +30595,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -30622,7 +30622,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M33f Adjoint
+        public readonly M33f Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -30648,7 +30648,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public float Trace
+        public readonly float Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 ; }
@@ -30658,7 +30658,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public float Determinant
+        public readonly float Determinant
         {
             get
             {
@@ -30677,7 +30677,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -30687,7 +30687,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -30696,7 +30696,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M33f Transposed
+        public readonly M33f Transposed
         {
             get
             {
@@ -30727,8 +30727,8 @@ namespace Aardvark.Base
         public bool LuInvert()
         {
             M33d dbl = (M33d)this;
-            if(dbl.LuInvert()) 
-            { 
+            if(dbl.LuInvert())
+            {
                 this = (M33f)dbl;
                 return true;
             }
@@ -30739,7 +30739,7 @@ namespace Aardvark.Base
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M33f.Zero is returned.
         /// </summary>
-        public M33f LuInverse()
+        public readonly M33f LuInverse()
         {
             return (M33f)((M33d)this).LuInverse();
         }
@@ -30748,7 +30748,7 @@ namespace Aardvark.Base
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// M33f.Zero is returned.
         /// </summary>
-        public M33f Inverse
+        public readonly M33f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LuInverse();
@@ -30783,7 +30783,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -30799,7 +30799,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -30813,12 +30813,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -30828,7 +30828,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (float)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -32744,7 +32744,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -32791,7 +32791,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -32838,7 +32838,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -32885,7 +32885,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -32901,7 +32901,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<double, int> element_fun)
+        public readonly M33i Copy(Func<double, int> element_fun)
         {
             return new M33i(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -32912,7 +32912,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33i Copy(Func<double, int, int, int> element_index0_index1_fun)
+        public readonly M33i Copy(Func<double, int, int, int> element_index0_index1_fun)
         {
             return new M33i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -32923,7 +32923,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<double, long> element_fun)
+        public readonly M33l Copy(Func<double, long> element_fun)
         {
             return new M33l(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -32934,7 +32934,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33l Copy(Func<double, int, int, long> element_index0_index1_fun)
+        public readonly M33l Copy(Func<double, int, int, long> element_index0_index1_fun)
         {
             return new M33l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -32945,7 +32945,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<double, float> element_fun)
+        public readonly M33f Copy(Func<double, float> element_fun)
         {
             return new M33f(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -32956,7 +32956,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33f Copy(Func<double, int, int, float> element_index0_index1_fun)
+        public readonly M33f Copy(Func<double, int, int, float> element_index0_index1_fun)
         {
             return new M33f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -32967,7 +32967,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<double, double> element_fun)
+        public readonly M33d Copy(Func<double, double> element_fun)
         {
             return new M33d(
                 element_fun(M00), element_fun(M01), element_fun(M02), 
@@ -32978,7 +32978,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M33d Copy(Func<double, int, int, double> element_index0_index1_fun)
+        public readonly M33d Copy(Func<double, int, int, double> element_index0_index1_fun)
         {
             return new M33d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), 
@@ -32989,12 +32989,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M22d UpperLeftM22()
+        public readonly M22d UpperLeftM22()
         {
             return (M22d)this;
         }
 
-        public double[] ToArray()
+        public readonly double[] ToArray()
         {
             var array = new double[9];
             array[0] = M00;
@@ -33261,7 +33261,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -33271,14 +33271,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M33d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
             => RotationEuler(
                 rollInDegrees.RadiansFromDegrees(),
-                pitchInDegrees.RadiansFromDegrees(), 
+                pitchInDegrees.RadiansFromDegrees(),
                 yawInDegrees.RadiansFromDegrees());
 
         /// <summary>
@@ -33439,19 +33439,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<double> Elements
+        public readonly IEnumerable<double> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33468,7 +33468,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3d> Rows
+        public readonly IEnumerable<V3d> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33479,7 +33479,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3d> Columns
+        public readonly IEnumerable<V3d> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33494,7 +33494,7 @@ namespace Aardvark.Base
         public V3d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M00,  M01,  M02); }
+            readonly get { return new V3d( M00,  M01,  M02); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -33508,7 +33508,7 @@ namespace Aardvark.Base
         public V3d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M10,  M11,  M12); }
+            readonly get { return new V3d( M10,  M11,  M12); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -33522,7 +33522,7 @@ namespace Aardvark.Base
         public V3d R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M20,  M21,  M22); }
+            readonly get { return new V3d( M20,  M21,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -33536,7 +33536,7 @@ namespace Aardvark.Base
         public V3d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M00,  M10,  M20); }
+            readonly get { return new V3d( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -33550,7 +33550,7 @@ namespace Aardvark.Base
         public V3d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M01,  M11,  M21); }
+            readonly get { return new V3d( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -33564,7 +33564,7 @@ namespace Aardvark.Base
         public V3d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M02,  M12,  M22); }
+            readonly get { return new V3d( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -33574,13 +33574,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V3d Diagonal
+        public readonly V3d Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3d(M00, M11, M22);
         }
 
-        public V3d AntiDiagonal
+        public readonly V3d AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3d(M02, M11, M20);
@@ -33589,7 +33589,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public double MinElement
+        public readonly double MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -33598,7 +33598,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public double MaxElement
+        public readonly double MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M10, M11, M12, M20, M21, M22);
@@ -33607,7 +33607,7 @@ namespace Aardvark.Base
         public unsafe double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[index]; }
             }
@@ -33621,7 +33621,7 @@ namespace Aardvark.Base
         public unsafe double this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[row * 3 + column]; }
             }
@@ -33632,7 +33632,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33644,7 +33644,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33656,7 +33656,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33668,7 +33668,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33680,7 +33680,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33692,7 +33692,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33704,7 +33704,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33716,7 +33716,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33728,7 +33728,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33740,7 +33740,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33752,7 +33752,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33764,7 +33764,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -33779,7 +33779,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -33788,7 +33788,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -33797,7 +33797,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -33806,7 +33806,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -33815,7 +33815,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -33824,7 +33824,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -33864,7 +33864,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public double Norm1
+        public readonly double Norm1
         {
             get
             {
@@ -33879,7 +33879,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -33894,7 +33894,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMax
+        public readonly double NormMax
         {
             get
             {
@@ -33918,7 +33918,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMin
+        public readonly double NormMin
         {
             get
             {
@@ -34176,7 +34176,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02),
@@ -34185,7 +34185,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M33d other)
+        public readonly bool Equals(M33d other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && 
@@ -34193,20 +34193,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M33d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -34214,7 +34214,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -34241,7 +34241,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M33d Adjoint
+        public readonly M33d Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -34267,7 +34267,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public double Trace
+        public readonly double Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 ; }
@@ -34277,7 +34277,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public double Determinant
+        public readonly double Determinant
         {
             get
             {
@@ -34296,7 +34296,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -34306,7 +34306,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -34315,7 +34315,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M33d Transposed
+        public readonly M33d Transposed
         {
             get
             {
@@ -34362,7 +34362,7 @@ namespace Aardvark.Base
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M33d.Zero is returned.
         /// </summary>
-        public unsafe M33d LuInverse()
+        public unsafe readonly M33d LuInverse()
         {
             var lu = this;
             M33d res;
@@ -34379,7 +34379,7 @@ namespace Aardvark.Base
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// M33d.Zero is returned.
         /// </summary>
-        public M33d Inverse
+        public readonly M33d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LuInverse();
@@ -34414,7 +34414,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return this[(int)y, (int)x];
             }
@@ -34430,7 +34430,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return this[(int)v.Y, (int)v.X];
             }
@@ -34444,12 +34444,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -34459,7 +34459,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (double)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -36425,7 +36425,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -36475,7 +36475,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -36525,7 +36525,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -36575,7 +36575,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -36594,7 +36594,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<int, int> element_fun)
+        public readonly M34i Copy(Func<int, int> element_fun)
         {
             return new M34i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -36605,7 +36605,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<int, int, int, int> element_index0_index1_fun)
+        public readonly M34i Copy(Func<int, int, int, int> element_index0_index1_fun)
         {
             return new M34i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -36616,7 +36616,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<int, long> element_fun)
+        public readonly M34l Copy(Func<int, long> element_fun)
         {
             return new M34l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -36627,7 +36627,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<int, int, int, long> element_index0_index1_fun)
+        public readonly M34l Copy(Func<int, int, int, long> element_index0_index1_fun)
         {
             return new M34l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -36638,7 +36638,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<int, float> element_fun)
+        public readonly M34f Copy(Func<int, float> element_fun)
         {
             return new M34f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -36649,7 +36649,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<int, int, int, float> element_index0_index1_fun)
+        public readonly M34f Copy(Func<int, int, int, float> element_index0_index1_fun)
         {
             return new M34f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -36660,7 +36660,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<int, double> element_fun)
+        public readonly M34d Copy(Func<int, double> element_fun)
         {
             return new M34d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -36671,7 +36671,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<int, int, int, double> element_index0_index1_fun)
+        public readonly M34d Copy(Func<int, int, int, double> element_index0_index1_fun)
         {
             return new M34d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -36679,7 +36679,7 @@ namespace Aardvark.Base
                 element_index0_index1_fun(M20, 2, 0), element_index0_index1_fun(M21, 2, 1), element_index0_index1_fun(M22, 2, 2), element_index0_index1_fun(M23, 2, 3));
         }
 
-        public int[] ToArray()
+        public readonly int[] ToArray()
         {
             var array = new int[12];
             array[0] = M00;
@@ -36870,19 +36870,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<int> Elements
+        public readonly IEnumerable<int> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -36902,7 +36902,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4i> Rows
+        public readonly IEnumerable<V4i> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -36913,7 +36913,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3i> Columns
+        public readonly IEnumerable<V3i> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -36929,7 +36929,7 @@ namespace Aardvark.Base
         public V4i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M00,  M01,  M02,  M03); }
+            readonly get { return new V4i( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -36944,7 +36944,7 @@ namespace Aardvark.Base
         public V4i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M10,  M11,  M12,  M13); }
+            readonly get { return new V4i( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -36959,7 +36959,7 @@ namespace Aardvark.Base
         public V4i R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M20,  M21,  M22,  M23); }
+            readonly get { return new V4i( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -36974,7 +36974,7 @@ namespace Aardvark.Base
         public V3i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M00,  M10,  M20); }
+            readonly get { return new V3i( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -36988,7 +36988,7 @@ namespace Aardvark.Base
         public V3i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M01,  M11,  M21); }
+            readonly get { return new V3i( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -37002,7 +37002,7 @@ namespace Aardvark.Base
         public V3i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M02,  M12,  M22); }
+            readonly get { return new V3i( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -37016,7 +37016,7 @@ namespace Aardvark.Base
         public V3i C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3i( M03,  M13,  M23); }
+            readonly get { return new V3i( M03,  M13,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -37026,7 +37026,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3i Diagonal
+        public readonly V3i Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3i(M00, M11, M22);
@@ -37035,7 +37035,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public int MinElement
+        public readonly int MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -37044,7 +37044,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public int MaxElement
+        public readonly int MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -37053,7 +37053,7 @@ namespace Aardvark.Base
         public unsafe int this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[index]; }
             }
@@ -37067,7 +37067,7 @@ namespace Aardvark.Base
         public unsafe int this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -37106,7 +37106,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             get
             {
@@ -37121,7 +37121,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -37136,7 +37136,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMax
+        public readonly int NormMax
         {
             get
             {
@@ -37163,7 +37163,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMin
+        public readonly int NormMin
         {
             get
             {
@@ -37924,7 +37924,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -37933,7 +37933,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M34i other)
+        public readonly bool Equals(M34i other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -37941,20 +37941,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M34i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -37962,7 +37962,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -38036,7 +38036,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -38052,7 +38052,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -38066,12 +38066,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -38081,7 +38081,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (int)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -39787,7 +39787,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -39837,7 +39837,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -39887,7 +39887,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -39937,7 +39937,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -39956,7 +39956,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<long, int> element_fun)
+        public readonly M34i Copy(Func<long, int> element_fun)
         {
             return new M34i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -39967,7 +39967,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<long, int, int, int> element_index0_index1_fun)
+        public readonly M34i Copy(Func<long, int, int, int> element_index0_index1_fun)
         {
             return new M34i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -39978,7 +39978,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<long, long> element_fun)
+        public readonly M34l Copy(Func<long, long> element_fun)
         {
             return new M34l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -39989,7 +39989,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<long, int, int, long> element_index0_index1_fun)
+        public readonly M34l Copy(Func<long, int, int, long> element_index0_index1_fun)
         {
             return new M34l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -40000,7 +40000,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<long, float> element_fun)
+        public readonly M34f Copy(Func<long, float> element_fun)
         {
             return new M34f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -40011,7 +40011,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<long, int, int, float> element_index0_index1_fun)
+        public readonly M34f Copy(Func<long, int, int, float> element_index0_index1_fun)
         {
             return new M34f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -40022,7 +40022,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<long, double> element_fun)
+        public readonly M34d Copy(Func<long, double> element_fun)
         {
             return new M34d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -40033,7 +40033,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<long, int, int, double> element_index0_index1_fun)
+        public readonly M34d Copy(Func<long, int, int, double> element_index0_index1_fun)
         {
             return new M34d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -40041,7 +40041,7 @@ namespace Aardvark.Base
                 element_index0_index1_fun(M20, 2, 0), element_index0_index1_fun(M21, 2, 1), element_index0_index1_fun(M22, 2, 2), element_index0_index1_fun(M23, 2, 3));
         }
 
-        public long[] ToArray()
+        public readonly long[] ToArray()
         {
             var array = new long[12];
             array[0] = M00;
@@ -40232,19 +40232,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<long> Elements
+        public readonly IEnumerable<long> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -40264,7 +40264,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4l> Rows
+        public readonly IEnumerable<V4l> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -40275,7 +40275,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3l> Columns
+        public readonly IEnumerable<V3l> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -40291,7 +40291,7 @@ namespace Aardvark.Base
         public V4l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M00,  M01,  M02,  M03); }
+            readonly get { return new V4l( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -40306,7 +40306,7 @@ namespace Aardvark.Base
         public V4l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M10,  M11,  M12,  M13); }
+            readonly get { return new V4l( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -40321,7 +40321,7 @@ namespace Aardvark.Base
         public V4l R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M20,  M21,  M22,  M23); }
+            readonly get { return new V4l( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -40336,7 +40336,7 @@ namespace Aardvark.Base
         public V3l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M00,  M10,  M20); }
+            readonly get { return new V3l( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -40350,7 +40350,7 @@ namespace Aardvark.Base
         public V3l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M01,  M11,  M21); }
+            readonly get { return new V3l( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -40364,7 +40364,7 @@ namespace Aardvark.Base
         public V3l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M02,  M12,  M22); }
+            readonly get { return new V3l( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -40378,7 +40378,7 @@ namespace Aardvark.Base
         public V3l C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3l( M03,  M13,  M23); }
+            readonly get { return new V3l( M03,  M13,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -40388,7 +40388,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3l Diagonal
+        public readonly V3l Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3l(M00, M11, M22);
@@ -40397,7 +40397,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public long MinElement
+        public readonly long MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -40406,7 +40406,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public long MaxElement
+        public readonly long MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -40415,7 +40415,7 @@ namespace Aardvark.Base
         public unsafe long this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[index]; }
             }
@@ -40429,7 +40429,7 @@ namespace Aardvark.Base
         public unsafe long this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -40468,7 +40468,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public long Norm1
+        public readonly long Norm1
         {
             get
             {
@@ -40483,7 +40483,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -40498,7 +40498,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMax
+        public readonly long NormMax
         {
             get
             {
@@ -40525,7 +40525,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMin
+        public readonly long NormMin
         {
             get
             {
@@ -41160,7 +41160,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -41169,7 +41169,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M34l other)
+        public readonly bool Equals(M34l other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -41177,20 +41177,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M34l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -41198,7 +41198,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -41272,7 +41272,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -41288,7 +41288,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -41302,12 +41302,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -41317,7 +41317,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (long)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -43023,7 +43023,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -43073,7 +43073,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -43123,7 +43123,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -43173,7 +43173,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -43192,7 +43192,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<float, int> element_fun)
+        public readonly M34i Copy(Func<float, int> element_fun)
         {
             return new M34i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -43203,7 +43203,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<float, int, int, int> element_index0_index1_fun)
+        public readonly M34i Copy(Func<float, int, int, int> element_index0_index1_fun)
         {
             return new M34i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -43214,7 +43214,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<float, long> element_fun)
+        public readonly M34l Copy(Func<float, long> element_fun)
         {
             return new M34l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -43225,7 +43225,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<float, int, int, long> element_index0_index1_fun)
+        public readonly M34l Copy(Func<float, int, int, long> element_index0_index1_fun)
         {
             return new M34l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -43236,7 +43236,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<float, float> element_fun)
+        public readonly M34f Copy(Func<float, float> element_fun)
         {
             return new M34f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -43247,7 +43247,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<float, int, int, float> element_index0_index1_fun)
+        public readonly M34f Copy(Func<float, int, int, float> element_index0_index1_fun)
         {
             return new M34f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -43258,7 +43258,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<float, double> element_fun)
+        public readonly M34d Copy(Func<float, double> element_fun)
         {
             return new M34d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -43269,7 +43269,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<float, int, int, double> element_index0_index1_fun)
+        public readonly M34d Copy(Func<float, int, int, double> element_index0_index1_fun)
         {
             return new M34d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -43277,7 +43277,7 @@ namespace Aardvark.Base
                 element_index0_index1_fun(M20, 2, 0), element_index0_index1_fun(M21, 2, 1), element_index0_index1_fun(M22, 2, 2), element_index0_index1_fun(M23, 2, 3));
         }
 
-        public float[] ToArray()
+        public readonly float[] ToArray()
         {
             var array = new float[12];
             array[0] = M00;
@@ -43458,7 +43458,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -43468,14 +43468,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
             => RotationEuler(
                 rollInDegrees.RadiansFromDegrees(),
-                pitchInDegrees.RadiansFromDegrees(), 
+                pitchInDegrees.RadiansFromDegrees(),
                 yawInDegrees.RadiansFromDegrees());
 
         /// <summary>
@@ -43636,19 +43636,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<float> Elements
+        public readonly IEnumerable<float> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43668,7 +43668,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4f> Rows
+        public readonly IEnumerable<V4f> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43679,7 +43679,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3f> Columns
+        public readonly IEnumerable<V3f> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43695,7 +43695,7 @@ namespace Aardvark.Base
         public V4f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M00,  M01,  M02,  M03); }
+            readonly get { return new V4f( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -43710,7 +43710,7 @@ namespace Aardvark.Base
         public V4f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M10,  M11,  M12,  M13); }
+            readonly get { return new V4f( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -43725,7 +43725,7 @@ namespace Aardvark.Base
         public V4f R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M20,  M21,  M22,  M23); }
+            readonly get { return new V4f( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -43740,7 +43740,7 @@ namespace Aardvark.Base
         public V3f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M00,  M10,  M20); }
+            readonly get { return new V3f( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -43754,7 +43754,7 @@ namespace Aardvark.Base
         public V3f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M01,  M11,  M21); }
+            readonly get { return new V3f( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -43768,7 +43768,7 @@ namespace Aardvark.Base
         public V3f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M02,  M12,  M22); }
+            readonly get { return new V3f( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -43782,7 +43782,7 @@ namespace Aardvark.Base
         public V3f C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3f( M03,  M13,  M23); }
+            readonly get { return new V3f( M03,  M13,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -43792,7 +43792,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3f Diagonal
+        public readonly V3f Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3f(M00, M11, M22);
@@ -43801,7 +43801,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public float MinElement
+        public readonly float MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -43810,7 +43810,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public float MaxElement
+        public readonly float MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -43819,7 +43819,7 @@ namespace Aardvark.Base
         public unsafe float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[index]; }
             }
@@ -43833,7 +43833,7 @@ namespace Aardvark.Base
         public unsafe float this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -43844,7 +43844,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43856,7 +43856,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43868,7 +43868,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43880,7 +43880,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43892,7 +43892,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43904,7 +43904,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43916,7 +43916,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43928,7 +43928,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43940,7 +43940,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43952,7 +43952,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43964,7 +43964,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43976,7 +43976,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -43991,7 +43991,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -44000,7 +44000,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -44009,7 +44009,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -44018,7 +44018,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -44027,7 +44027,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -44036,7 +44036,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -44070,7 +44070,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public float Norm1
+        public readonly float Norm1
         {
             get
             {
@@ -44085,7 +44085,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public float Norm2
+        public readonly float Norm2
         {
             get
             {
@@ -44100,7 +44100,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMax
+        public readonly float NormMax
         {
             get
             {
@@ -44127,7 +44127,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMin
+        public readonly float NormMin
         {
             get
             {
@@ -44524,7 +44524,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -44533,7 +44533,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M34f other)
+        public readonly bool Equals(M34f other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -44541,20 +44541,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M34f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -44562,7 +44562,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -44636,7 +44636,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -44652,7 +44652,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -44666,12 +44666,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -44681,7 +44681,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (float)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -44738,7 +44738,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// NOTE: A left-handed coordinates system transformation is expected,
         /// where the view-space z-axis points in forward direction.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44747,7 +44747,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// NOTE: A right-handed coordinates system transformation is expected, where
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -44755,7 +44755,7 @@ namespace Aardvark.Base
             => -m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// Extracts the translation component of the given transformation matrix, which when given
         /// a model transformation represents the model origin in world position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46506,7 +46506,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -46556,7 +46556,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -46606,7 +46606,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -46656,7 +46656,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -46675,7 +46675,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<double, int> element_fun)
+        public readonly M34i Copy(Func<double, int> element_fun)
         {
             return new M34i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -46686,7 +46686,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34i Copy(Func<double, int, int, int> element_index0_index1_fun)
+        public readonly M34i Copy(Func<double, int, int, int> element_index0_index1_fun)
         {
             return new M34i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -46697,7 +46697,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<double, long> element_fun)
+        public readonly M34l Copy(Func<double, long> element_fun)
         {
             return new M34l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -46708,7 +46708,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34l Copy(Func<double, int, int, long> element_index0_index1_fun)
+        public readonly M34l Copy(Func<double, int, int, long> element_index0_index1_fun)
         {
             return new M34l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -46719,7 +46719,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<double, float> element_fun)
+        public readonly M34f Copy(Func<double, float> element_fun)
         {
             return new M34f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -46730,7 +46730,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34f Copy(Func<double, int, int, float> element_index0_index1_fun)
+        public readonly M34f Copy(Func<double, int, int, float> element_index0_index1_fun)
         {
             return new M34f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -46741,7 +46741,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<double, double> element_fun)
+        public readonly M34d Copy(Func<double, double> element_fun)
         {
             return new M34d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -46752,7 +46752,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M34d Copy(Func<double, int, int, double> element_index0_index1_fun)
+        public readonly M34d Copy(Func<double, int, int, double> element_index0_index1_fun)
         {
             return new M34d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -46760,7 +46760,7 @@ namespace Aardvark.Base
                 element_index0_index1_fun(M20, 2, 0), element_index0_index1_fun(M21, 2, 1), element_index0_index1_fun(M22, 2, 2), element_index0_index1_fun(M23, 2, 3));
         }
 
-        public double[] ToArray()
+        public readonly double[] ToArray()
         {
             var array = new double[12];
             array[0] = M00;
@@ -46941,7 +46941,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -46951,14 +46951,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M34d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
             => RotationEuler(
                 rollInDegrees.RadiansFromDegrees(),
-                pitchInDegrees.RadiansFromDegrees(), 
+                pitchInDegrees.RadiansFromDegrees(),
                 yawInDegrees.RadiansFromDegrees());
 
         /// <summary>
@@ -47119,19 +47119,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<double> Elements
+        public readonly IEnumerable<double> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47151,7 +47151,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4d> Rows
+        public readonly IEnumerable<V4d> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47162,7 +47162,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V3d> Columns
+        public readonly IEnumerable<V3d> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47178,7 +47178,7 @@ namespace Aardvark.Base
         public V4d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M00,  M01,  M02,  M03); }
+            readonly get { return new V4d( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -47193,7 +47193,7 @@ namespace Aardvark.Base
         public V4d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M10,  M11,  M12,  M13); }
+            readonly get { return new V4d( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -47208,7 +47208,7 @@ namespace Aardvark.Base
         public V4d R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M20,  M21,  M22,  M23); }
+            readonly get { return new V4d( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -47223,7 +47223,7 @@ namespace Aardvark.Base
         public V3d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M00,  M10,  M20); }
+            readonly get { return new V3d( M00,  M10,  M20); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -47237,7 +47237,7 @@ namespace Aardvark.Base
         public V3d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M01,  M11,  M21); }
+            readonly get { return new V3d( M01,  M11,  M21); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -47251,7 +47251,7 @@ namespace Aardvark.Base
         public V3d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M02,  M12,  M22); }
+            readonly get { return new V3d( M02,  M12,  M22); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -47265,7 +47265,7 @@ namespace Aardvark.Base
         public V3d C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V3d( M03,  M13,  M23); }
+            readonly get { return new V3d( M03,  M13,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -47275,7 +47275,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3d Diagonal
+        public readonly V3d Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3d(M00, M11, M22);
@@ -47284,7 +47284,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public double MinElement
+        public readonly double MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -47293,7 +47293,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public double MaxElement
+        public readonly double MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23);
@@ -47302,7 +47302,7 @@ namespace Aardvark.Base
         public unsafe double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[index]; }
             }
@@ -47316,7 +47316,7 @@ namespace Aardvark.Base
         public unsafe double this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -47327,7 +47327,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47339,7 +47339,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47351,7 +47351,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47363,7 +47363,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47375,7 +47375,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47387,7 +47387,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47399,7 +47399,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47411,7 +47411,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47423,7 +47423,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47435,7 +47435,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47447,7 +47447,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47459,7 +47459,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -47474,7 +47474,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -47483,7 +47483,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -47492,7 +47492,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -47501,7 +47501,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -47510,7 +47510,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -47519,7 +47519,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -47553,7 +47553,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public double Norm1
+        public readonly double Norm1
         {
             get
             {
@@ -47568,7 +47568,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -47583,7 +47583,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMax
+        public readonly double NormMax
         {
             get
             {
@@ -47610,7 +47610,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMin
+        public readonly double NormMin
         {
             get
             {
@@ -47881,7 +47881,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -47890,7 +47890,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M34d other)
+        public readonly bool Equals(M34d other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -47898,20 +47898,20 @@ namespace Aardvark.Base
                 M20.Equals(other.M20) && M21.Equals(other.M21) && M22.Equals(other.M22) && M23.Equals(other.M23);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M34d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -47919,7 +47919,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -47993,7 +47993,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return this[(int)y, (int)x];
             }
@@ -48009,7 +48009,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return this[(int)v.Y, (int)v.X];
             }
@@ -48023,12 +48023,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -48038,7 +48038,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (double)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -48095,7 +48095,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// NOTE: A left-handed coordinates system transformation is expected,
         /// where the view-space z-axis points in forward direction.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -48104,7 +48104,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// NOTE: A right-handed coordinates system transformation is expected, where
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -48112,7 +48112,7 @@ namespace Aardvark.Base
             => -m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// Extracts the translation component of the given transformation matrix, which when given
         /// a model transformation represents the model origin in world position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -49946,7 +49946,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -50004,7 +50004,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -50062,7 +50062,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -50120,7 +50120,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -50143,7 +50143,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<int, int> element_fun)
+        public readonly M44i Copy(Func<int, int> element_fun)
         {
             return new M44i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -50155,7 +50155,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<int, int, int, int> element_index0_index1_fun)
+        public readonly M44i Copy(Func<int, int, int, int> element_index0_index1_fun)
         {
             return new M44i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -50167,7 +50167,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<int, long> element_fun)
+        public readonly M44l Copy(Func<int, long> element_fun)
         {
             return new M44l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -50179,7 +50179,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<int, int, int, long> element_index0_index1_fun)
+        public readonly M44l Copy(Func<int, int, int, long> element_index0_index1_fun)
         {
             return new M44l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -50191,7 +50191,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<int, float> element_fun)
+        public readonly M44f Copy(Func<int, float> element_fun)
         {
             return new M44f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -50203,7 +50203,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<int, int, int, float> element_index0_index1_fun)
+        public readonly M44f Copy(Func<int, int, int, float> element_index0_index1_fun)
         {
             return new M44f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -50215,7 +50215,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<int, double> element_fun)
+        public readonly M44d Copy(Func<int, double> element_fun)
         {
             return new M44d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -50227,7 +50227,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<int, int, int, double> element_index0_index1_fun)
+        public readonly M44d Copy(Func<int, int, int, double> element_index0_index1_fun)
         {
             return new M44d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -50239,12 +50239,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M33i UpperLeftM33()
+        public readonly M33i UpperLeftM33()
         {
             return (M33i)this;
         }
 
-        public int[] ToArray()
+        public readonly int[] ToArray()
         {
             var array = new int[16];
             array[0] = M00;
@@ -50496,19 +50496,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<int> Elements
+        public readonly IEnumerable<int> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -50532,7 +50532,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4i> Rows
+        public readonly IEnumerable<V4i> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -50544,7 +50544,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4i> Columns
+        public readonly IEnumerable<V4i> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -50560,7 +50560,7 @@ namespace Aardvark.Base
         public V4i R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M00,  M01,  M02,  M03); }
+            readonly get { return new V4i( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50575,7 +50575,7 @@ namespace Aardvark.Base
         public V4i R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M10,  M11,  M12,  M13); }
+            readonly get { return new V4i( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50590,7 +50590,7 @@ namespace Aardvark.Base
         public V4i R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M20,  M21,  M22,  M23); }
+            readonly get { return new V4i( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50605,7 +50605,7 @@ namespace Aardvark.Base
         public V4i R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M30,  M31,  M32,  M33); }
+            readonly get { return new V4i( M30,  M31,  M32,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50620,7 +50620,7 @@ namespace Aardvark.Base
         public V4i C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M00,  M10,  M20,  M30); }
+            readonly get { return new V4i( M00,  M10,  M20,  M30); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50635,7 +50635,7 @@ namespace Aardvark.Base
         public V4i C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M01,  M11,  M21,  M31); }
+            readonly get { return new V4i( M01,  M11,  M21,  M31); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50650,7 +50650,7 @@ namespace Aardvark.Base
         public V4i C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M02,  M12,  M22,  M32); }
+            readonly get { return new V4i( M02,  M12,  M22,  M32); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50665,7 +50665,7 @@ namespace Aardvark.Base
         public V4i C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4i( M03,  M13,  M23,  M33); }
+            readonly get { return new V4i( M03,  M13,  M23,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -50676,13 +50676,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V4i Diagonal
+        public readonly V4i Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4i(M00, M11, M22, M33);
         }
 
-        public V4i AntiDiagonal
+        public readonly V4i AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4i(M03, M12, M21, M30);
@@ -50691,7 +50691,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public int MinElement
+        public readonly int MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -50700,7 +50700,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public int MaxElement
+        public readonly int MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -50709,7 +50709,7 @@ namespace Aardvark.Base
         public unsafe int this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[index]; }
             }
@@ -50723,7 +50723,7 @@ namespace Aardvark.Base
         public unsafe int this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (int* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -50768,7 +50768,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             get
             {
@@ -50784,7 +50784,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -50800,7 +50800,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMax
+        public readonly int NormMax
         {
             get
             {
@@ -50832,7 +50832,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public int NormMin
+        public readonly int NormMin
         {
             get
             {
@@ -51680,7 +51680,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -51690,7 +51690,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M44i other)
+        public readonly bool Equals(M44i other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -51699,20 +51699,20 @@ namespace Aardvark.Base
                 M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M44i o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -51720,7 +51720,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -51749,7 +51749,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M44i Adjoint
+        public readonly M44i Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -51775,7 +51775,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public int Trace
+        public readonly int Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 + M33 ; }
@@ -51785,7 +51785,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public int Determinant
+        public readonly int Determinant
         {
             get
             {
@@ -51816,7 +51816,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -51826,7 +51826,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -51835,7 +51835,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M44i Transposed
+        public readonly M44i Transposed
         {
             get
             {
@@ -51900,7 +51900,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -51916,7 +51916,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -51930,12 +51930,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -51945,7 +51945,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (int)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -53998,7 +53998,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -54056,7 +54056,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -54114,7 +54114,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -54172,7 +54172,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -54195,7 +54195,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<long, int> element_fun)
+        public readonly M44i Copy(Func<long, int> element_fun)
         {
             return new M44i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -54207,7 +54207,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<long, int, int, int> element_index0_index1_fun)
+        public readonly M44i Copy(Func<long, int, int, int> element_index0_index1_fun)
         {
             return new M44i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -54219,7 +54219,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<long, long> element_fun)
+        public readonly M44l Copy(Func<long, long> element_fun)
         {
             return new M44l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -54231,7 +54231,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<long, int, int, long> element_index0_index1_fun)
+        public readonly M44l Copy(Func<long, int, int, long> element_index0_index1_fun)
         {
             return new M44l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -54243,7 +54243,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<long, float> element_fun)
+        public readonly M44f Copy(Func<long, float> element_fun)
         {
             return new M44f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -54255,7 +54255,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<long, int, int, float> element_index0_index1_fun)
+        public readonly M44f Copy(Func<long, int, int, float> element_index0_index1_fun)
         {
             return new M44f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -54267,7 +54267,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<long, double> element_fun)
+        public readonly M44d Copy(Func<long, double> element_fun)
         {
             return new M44d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -54279,7 +54279,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<long, int, int, double> element_index0_index1_fun)
+        public readonly M44d Copy(Func<long, int, int, double> element_index0_index1_fun)
         {
             return new M44d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -54291,12 +54291,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M33l UpperLeftM33()
+        public readonly M33l UpperLeftM33()
         {
             return (M33l)this;
         }
 
-        public long[] ToArray()
+        public readonly long[] ToArray()
         {
             var array = new long[16];
             array[0] = M00;
@@ -54548,19 +54548,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<long> Elements
+        public readonly IEnumerable<long> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -54584,7 +54584,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4l> Rows
+        public readonly IEnumerable<V4l> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -54596,7 +54596,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4l> Columns
+        public readonly IEnumerable<V4l> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -54612,7 +54612,7 @@ namespace Aardvark.Base
         public V4l R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M00,  M01,  M02,  M03); }
+            readonly get { return new V4l( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54627,7 +54627,7 @@ namespace Aardvark.Base
         public V4l R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M10,  M11,  M12,  M13); }
+            readonly get { return new V4l( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54642,7 +54642,7 @@ namespace Aardvark.Base
         public V4l R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M20,  M21,  M22,  M23); }
+            readonly get { return new V4l( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54657,7 +54657,7 @@ namespace Aardvark.Base
         public V4l R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M30,  M31,  M32,  M33); }
+            readonly get { return new V4l( M30,  M31,  M32,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54672,7 +54672,7 @@ namespace Aardvark.Base
         public V4l C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M00,  M10,  M20,  M30); }
+            readonly get { return new V4l( M00,  M10,  M20,  M30); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54687,7 +54687,7 @@ namespace Aardvark.Base
         public V4l C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M01,  M11,  M21,  M31); }
+            readonly get { return new V4l( M01,  M11,  M21,  M31); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54702,7 +54702,7 @@ namespace Aardvark.Base
         public V4l C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M02,  M12,  M22,  M32); }
+            readonly get { return new V4l( M02,  M12,  M22,  M32); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54717,7 +54717,7 @@ namespace Aardvark.Base
         public V4l C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4l( M03,  M13,  M23,  M33); }
+            readonly get { return new V4l( M03,  M13,  M23,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -54728,13 +54728,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V4l Diagonal
+        public readonly V4l Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4l(M00, M11, M22, M33);
         }
 
-        public V4l AntiDiagonal
+        public readonly V4l AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4l(M03, M12, M21, M30);
@@ -54743,7 +54743,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public long MinElement
+        public readonly long MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -54752,7 +54752,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public long MaxElement
+        public readonly long MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -54761,7 +54761,7 @@ namespace Aardvark.Base
         public unsafe long this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[index]; }
             }
@@ -54775,7 +54775,7 @@ namespace Aardvark.Base
         public unsafe long this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (long* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -54820,7 +54820,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public long Norm1
+        public readonly long Norm1
         {
             get
             {
@@ -54836,7 +54836,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -54852,7 +54852,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMax
+        public readonly long NormMax
         {
             get
             {
@@ -54884,7 +54884,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public long NormMin
+        public readonly long NormMin
         {
             get
             {
@@ -55592,7 +55592,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -55602,7 +55602,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M44l other)
+        public readonly bool Equals(M44l other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -55611,20 +55611,20 @@ namespace Aardvark.Base
                 M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M44l o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -55632,7 +55632,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -55661,7 +55661,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M44l Adjoint
+        public readonly M44l Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -55687,7 +55687,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public long Trace
+        public readonly long Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 + M33 ; }
@@ -55697,7 +55697,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public long Determinant
+        public readonly long Determinant
         {
             get
             {
@@ -55728,7 +55728,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -55738,7 +55738,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -55747,7 +55747,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M44l Transposed
+        public readonly M44l Transposed
         {
             get
             {
@@ -55812,7 +55812,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -55828,7 +55828,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -55842,12 +55842,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -55857,7 +55857,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (long)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -57910,7 +57910,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -57968,7 +57968,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -58026,7 +58026,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -58084,7 +58084,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = (double)M00;
             array[index + 1] = (double)M01;
@@ -58107,7 +58107,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<float, int> element_fun)
+        public readonly M44i Copy(Func<float, int> element_fun)
         {
             return new M44i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -58119,7 +58119,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<float, int, int, int> element_index0_index1_fun)
+        public readonly M44i Copy(Func<float, int, int, int> element_index0_index1_fun)
         {
             return new M44i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -58131,7 +58131,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<float, long> element_fun)
+        public readonly M44l Copy(Func<float, long> element_fun)
         {
             return new M44l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -58143,7 +58143,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<float, int, int, long> element_index0_index1_fun)
+        public readonly M44l Copy(Func<float, int, int, long> element_index0_index1_fun)
         {
             return new M44l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -58155,7 +58155,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<float, float> element_fun)
+        public readonly M44f Copy(Func<float, float> element_fun)
         {
             return new M44f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -58167,7 +58167,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<float, int, int, float> element_index0_index1_fun)
+        public readonly M44f Copy(Func<float, int, int, float> element_index0_index1_fun)
         {
             return new M44f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -58179,7 +58179,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<float, double> element_fun)
+        public readonly M44d Copy(Func<float, double> element_fun)
         {
             return new M44d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -58191,7 +58191,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<float, int, int, double> element_index0_index1_fun)
+        public readonly M44d Copy(Func<float, int, int, double> element_index0_index1_fun)
         {
             return new M44d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -58203,12 +58203,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M33f UpperLeftM33()
+        public readonly M33f UpperLeftM33()
         {
             return (M33f)this;
         }
 
-        public float[] ToArray()
+        public readonly float[] ToArray()
         {
             var array = new float[16];
             array[0] = M00;
@@ -58456,7 +58456,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -58466,14 +58466,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44f RotationEulerInDegrees(float rollInDegrees, float pitchInDegrees, float yawInDegrees)
             => RotationEuler(
                 rollInDegrees.RadiansFromDegrees(),
-                pitchInDegrees.RadiansFromDegrees(), 
+                pitchInDegrees.RadiansFromDegrees(),
                 yawInDegrees.RadiansFromDegrees());
 
         /// <summary>
@@ -58640,19 +58640,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<float> Elements
+        public readonly IEnumerable<float> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58676,7 +58676,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4f> Rows
+        public readonly IEnumerable<V4f> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58688,7 +58688,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4f> Columns
+        public readonly IEnumerable<V4f> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58704,7 +58704,7 @@ namespace Aardvark.Base
         public V4f R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M00,  M01,  M02,  M03); }
+            readonly get { return new V4f( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58719,7 +58719,7 @@ namespace Aardvark.Base
         public V4f R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M10,  M11,  M12,  M13); }
+            readonly get { return new V4f( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58734,7 +58734,7 @@ namespace Aardvark.Base
         public V4f R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M20,  M21,  M22,  M23); }
+            readonly get { return new V4f( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58749,7 +58749,7 @@ namespace Aardvark.Base
         public V4f R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M30,  M31,  M32,  M33); }
+            readonly get { return new V4f( M30,  M31,  M32,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58764,7 +58764,7 @@ namespace Aardvark.Base
         public V4f C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M00,  M10,  M20,  M30); }
+            readonly get { return new V4f( M00,  M10,  M20,  M30); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58779,7 +58779,7 @@ namespace Aardvark.Base
         public V4f C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M01,  M11,  M21,  M31); }
+            readonly get { return new V4f( M01,  M11,  M21,  M31); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58794,7 +58794,7 @@ namespace Aardvark.Base
         public V4f C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M02,  M12,  M22,  M32); }
+            readonly get { return new V4f( M02,  M12,  M22,  M32); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58809,7 +58809,7 @@ namespace Aardvark.Base
         public V4f C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4f( M03,  M13,  M23,  M33); }
+            readonly get { return new V4f( M03,  M13,  M23,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -58820,13 +58820,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V4f Diagonal
+        public readonly V4f Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4f(M00, M11, M22, M33);
         }
 
-        public V4f AntiDiagonal
+        public readonly V4f AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4f(M03, M12, M21, M30);
@@ -58835,7 +58835,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public float MinElement
+        public readonly float MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -58844,7 +58844,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public float MaxElement
+        public readonly float MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -58853,7 +58853,7 @@ namespace Aardvark.Base
         public unsafe float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[index]; }
             }
@@ -58867,7 +58867,7 @@ namespace Aardvark.Base
         public unsafe float this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -58878,7 +58878,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58891,7 +58891,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58904,7 +58904,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58917,7 +58917,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58930,7 +58930,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58943,7 +58943,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58956,7 +58956,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58969,7 +58969,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58982,7 +58982,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -58995,7 +58995,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -59008,7 +59008,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -59021,7 +59021,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -59037,7 +59037,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -59046,7 +59046,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -59055,7 +59055,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -59064,7 +59064,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -59073,7 +59073,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -59082,7 +59082,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -59122,7 +59122,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public float Norm1
+        public readonly float Norm1
         {
             get
             {
@@ -59138,7 +59138,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public float Norm2
+        public readonly float Norm2
         {
             get
             {
@@ -59154,7 +59154,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMax
+        public readonly float NormMax
         {
             get
             {
@@ -59186,7 +59186,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public float NormMin
+        public readonly float NormMin
         {
             get
             {
@@ -59630,7 +59630,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -59640,7 +59640,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M44f other)
+        public readonly bool Equals(M44f other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -59649,20 +59649,20 @@ namespace Aardvark.Base
                 M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M44f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -59670,7 +59670,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -59699,7 +59699,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M44f Adjoint
+        public readonly M44f Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -59725,7 +59725,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public float Trace
+        public readonly float Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 + M33 ; }
@@ -59735,7 +59735,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public float Determinant
+        public readonly float Determinant
         {
             get
             {
@@ -59766,7 +59766,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -59776,7 +59776,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -59785,7 +59785,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M44f Transposed
+        public readonly M44f Transposed
         {
             get
             {
@@ -59824,8 +59824,8 @@ namespace Aardvark.Base
         public bool LuInvert()
         {
             M44d dbl = (M44d)this;
-            if(dbl.LuInvert()) 
-            { 
+            if(dbl.LuInvert())
+            {
                 this = (M44f)dbl;
                 return true;
             }
@@ -59836,7 +59836,7 @@ namespace Aardvark.Base
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M44f.Zero is returned.
         /// </summary>
-        public M44f LuInverse()
+        public readonly M44f LuInverse()
         {
             return (M44f)((M44d)this).LuInverse();
         }
@@ -59845,7 +59845,7 @@ namespace Aardvark.Base
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// M44f.Zero is returned.
         /// </summary>
-        public M44f Inverse
+        public readonly M44f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LuInverse();
@@ -59887,7 +59887,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)y, (int)x];
             }
@@ -59903,7 +59903,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return (double)this[(int)v.Y, (int)v.X];
             }
@@ -59917,12 +59917,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -59932,7 +59932,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (float)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -60004,7 +60004,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// NOTE: A left-handed coordinates system transformation is expected,
         /// where the view-space z-axis points in forward direction.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -60013,7 +60013,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// NOTE: A right-handed coordinates system transformation is expected, where
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -60021,7 +60021,7 @@ namespace Aardvark.Base
             => -m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// Extracts the translation component of the given transformation matrix, which when given
         /// a model transformation represents the model origin in world position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -62242,7 +62242,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(int[] array, long index)
+        public readonly void CopyTo(int[] array, long index)
         {
             array[index + 0] = (int)M00;
             array[index + 1] = (int)M01;
@@ -62300,7 +62300,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(long[] array, long index)
+        public readonly void CopyTo(long[] array, long index)
         {
             array[index + 0] = (long)M00;
             array[index + 1] = (long)M01;
@@ -62358,7 +62358,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(float[] array, long index)
+        public readonly void CopyTo(float[] array, long index)
         {
             array[index + 0] = (float)M00;
             array[index + 1] = (float)M01;
@@ -62416,7 +62416,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(double[] array, long index)
+        public readonly void CopyTo(double[] array, long index)
         {
             array[index + 0] = M00;
             array[index + 1] = M01;
@@ -62439,7 +62439,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<double, int> element_fun)
+        public readonly M44i Copy(Func<double, int> element_fun)
         {
             return new M44i(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -62451,7 +62451,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44i Copy(Func<double, int, int, int> element_index0_index1_fun)
+        public readonly M44i Copy(Func<double, int, int, int> element_index0_index1_fun)
         {
             return new M44i(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -62463,7 +62463,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<double, long> element_fun)
+        public readonly M44l Copy(Func<double, long> element_fun)
         {
             return new M44l(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -62475,7 +62475,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44l Copy(Func<double, int, int, long> element_index0_index1_fun)
+        public readonly M44l Copy(Func<double, int, int, long> element_index0_index1_fun)
         {
             return new M44l(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -62487,7 +62487,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<double, float> element_fun)
+        public readonly M44f Copy(Func<double, float> element_fun)
         {
             return new M44f(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -62499,7 +62499,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44f Copy(Func<double, int, int, float> element_index0_index1_fun)
+        public readonly M44f Copy(Func<double, int, int, float> element_index0_index1_fun)
         {
             return new M44f(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -62511,7 +62511,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<double, double> element_fun)
+        public readonly M44d Copy(Func<double, double> element_fun)
         {
             return new M44d(
                 element_fun(M00), element_fun(M01), element_fun(M02), element_fun(M03), 
@@ -62523,7 +62523,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public M44d Copy(Func<double, int, int, double> element_index0_index1_fun)
+        public readonly M44d Copy(Func<double, int, int, double> element_index0_index1_fun)
         {
             return new M44d(
                 element_index0_index1_fun(M00, 0, 0), element_index0_index1_fun(M01, 0, 1), element_index0_index1_fun(M02, 0, 2), element_index0_index1_fun(M03, 0, 3), 
@@ -62535,12 +62535,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public M33d UpperLeftM33()
+        public readonly M33d UpperLeftM33()
         {
             return (M33d)this;
         }
 
-        public double[] ToArray()
+        public readonly double[] ToArray()
         {
             var array = new double[16];
             array[0] = M00;
@@ -62788,7 +62788,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -62798,14 +62798,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static M44d RotationEulerInDegrees(double rollInDegrees, double pitchInDegrees, double yawInDegrees)
             => RotationEuler(
                 rollInDegrees.RadiansFromDegrees(),
-                pitchInDegrees.RadiansFromDegrees(), 
+                pitchInDegrees.RadiansFromDegrees(),
                 yawInDegrees.RadiansFromDegrees());
 
         /// <summary>
@@ -62972,19 +62972,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<double> Elements
+        public readonly IEnumerable<double> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63008,7 +63008,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4d> Rows
+        public readonly IEnumerable<V4d> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63020,7 +63020,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<V4d> Columns
+        public readonly IEnumerable<V4d> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63036,7 +63036,7 @@ namespace Aardvark.Base
         public V4d R0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M00,  M01,  M02,  M03); }
+            readonly get { return new V4d( M00,  M01,  M02,  M03); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63051,7 +63051,7 @@ namespace Aardvark.Base
         public V4d R1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M10,  M11,  M12,  M13); }
+            readonly get { return new V4d( M10,  M11,  M12,  M13); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63066,7 +63066,7 @@ namespace Aardvark.Base
         public V4d R2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M20,  M21,  M22,  M23); }
+            readonly get { return new V4d( M20,  M21,  M22,  M23); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63081,7 +63081,7 @@ namespace Aardvark.Base
         public V4d R3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M30,  M31,  M32,  M33); }
+            readonly get { return new V4d( M30,  M31,  M32,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63096,7 +63096,7 @@ namespace Aardvark.Base
         public V4d C0
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M00,  M10,  M20,  M30); }
+            readonly get { return new V4d( M00,  M10,  M20,  M30); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63111,7 +63111,7 @@ namespace Aardvark.Base
         public V4d C1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M01,  M11,  M21,  M31); }
+            readonly get { return new V4d( M01,  M11,  M21,  M31); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63126,7 +63126,7 @@ namespace Aardvark.Base
         public V4d C2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M02,  M12,  M22,  M32); }
+            readonly get { return new V4d( M02,  M12,  M22,  M32); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63141,7 +63141,7 @@ namespace Aardvark.Base
         public V4d C3
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new V4d( M03,  M13,  M23,  M33); }
+            readonly get { return new V4d( M03,  M13,  M23,  M33); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -63152,13 +63152,13 @@ namespace Aardvark.Base
             }
         }
 
-        public V4d Diagonal
+        public readonly V4d Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4d(M00, M11, M22, M33);
         }
 
-        public V4d AntiDiagonal
+        public readonly V4d AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V4d(M03, M12, M21, M30);
@@ -63167,7 +63167,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public double MinElement
+        public readonly double MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -63176,7 +63176,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public double MaxElement
+        public readonly double MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33);
@@ -63185,7 +63185,7 @@ namespace Aardvark.Base
         public unsafe double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[index]; }
             }
@@ -63199,7 +63199,7 @@ namespace Aardvark.Base
         public unsafe double this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &M00) { return ptr[row * 4 + column]; }
             }
@@ -63210,7 +63210,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyFinite
+        public readonly bool AnyFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63223,7 +63223,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllFinite
+        public readonly bool AllFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63236,7 +63236,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63249,7 +63249,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63262,7 +63262,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63275,7 +63275,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63288,7 +63288,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63301,7 +63301,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63314,7 +63314,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63327,7 +63327,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63340,7 +63340,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63353,7 +63353,7 @@ namespace Aardvark.Base
             }
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63369,7 +63369,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -63378,7 +63378,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -63387,7 +63387,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -63396,7 +63396,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -63405,7 +63405,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -63414,7 +63414,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -63454,7 +63454,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public double Norm1
+        public readonly double Norm1
         {
             get
             {
@@ -63470,7 +63470,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             get
             {
@@ -63486,7 +63486,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMax
+        public readonly double NormMax
         {
             get
             {
@@ -63518,7 +63518,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public double NormMin
+        public readonly double NormMin
         {
             get
             {
@@ -63822,7 +63822,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(
                         HashCode.GetCombined(M00, M01, M02, M03),
@@ -63832,7 +63832,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(M44d other)
+        public readonly bool Equals(M44d other)
         {
             return 
                 M00.Equals(other.M00) && M01.Equals(other.M01) && M02.Equals(other.M02) && M03.Equals(other.M03) && 
@@ -63841,20 +63841,20 @@ namespace Aardvark.Base
                 M30.Equals(other.M30) && M31.Equals(other.M31) && M32.Equals(other.M32) && M33.Equals(other.M33);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is M44d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -63862,7 +63862,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM
@@ -63891,7 +63891,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public M44d Adjoint
+        public readonly M44d Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -63917,7 +63917,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public double Trace
+        public readonly double Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return M00 + M11 + M22 + M33 ; }
@@ -63927,7 +63927,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public double Determinant
+        public readonly double Determinant
         {
             get
             {
@@ -63958,7 +63958,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -63968,7 +63968,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -63977,7 +63977,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public M44d Transposed
+        public readonly M44d Transposed
         {
             get
             {
@@ -64032,7 +64032,7 @@ namespace Aardvark.Base
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, M44d.Zero is returned.
         /// </summary>
-        public unsafe M44d LuInverse()
+        public unsafe readonly M44d LuInverse()
         {
             var lu = this;
             M44d res;
@@ -64049,7 +64049,7 @@ namespace Aardvark.Base
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// M44d.Zero is returned.
         /// </summary>
-        public M44d Inverse
+        public readonly M44d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LuInverse();
@@ -64091,7 +64091,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return this[(int)y, (int)x];
             }
@@ -64107,7 +64107,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return this[(int)v.Y, (int)v.X];
             }
@@ -64121,12 +64121,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -64136,7 +64136,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (double)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -64208,7 +64208,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// NOTE: A left-handed coordinates system transformation is expected,
         /// where the view-space z-axis points in forward direction.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64217,7 +64217,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// NOTE: A right-handed coordinates system transformation is expected, where
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64225,7 +64225,7 @@ namespace Aardvark.Base
             => -m.R2.XYZ.Normalized;
 
         /// <summary>
-        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// Extracts the translation component of the given transformation matrix, which when given
         /// a model transformation represents the model origin in world position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64235,7 +64235,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Builds a hull from the given view-projection transformation matrix (left, right, bottom, top, near, far).
         /// The view volume is assumed to be [-1, -1, -1] [1, 1, 1].
-        /// The normals of the hull planes point to the outside and are normalized. 
+        /// The normals of the hull planes point to the outside and are normalized.
         /// A point inside the visual hull will has negative height to all planes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

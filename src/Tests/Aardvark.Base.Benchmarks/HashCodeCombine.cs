@@ -221,11 +221,11 @@ namespace SomeApp
             return sum;
         }
 
-        public struct MyM44d
+        public readonly struct MyM44d
         {
 
 #pragma warning disable CS0649
-            double x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15;
+            readonly double x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15;
 #pragma warning restore CS0649
 
             public int CustomHashCode()
@@ -236,10 +236,10 @@ namespace SomeApp
             }
         }
 
-        public struct MyV4d
+        public readonly struct MyV4d
         {
 #pragma warning disable CS0649
-            double x0, x1, x2, x3;
+            readonly double x0, x1, x2, x3;
 #pragma warning restore CS0649
 
             public int CustomHashCode()

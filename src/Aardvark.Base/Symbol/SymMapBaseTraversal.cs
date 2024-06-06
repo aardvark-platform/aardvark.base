@@ -228,7 +228,7 @@ namespace Aardvark.Base
             m_out = debugOutput;
         }
 
-        private TextWriter m_out = null;
+        private readonly TextWriter m_out = null;
 
         public List<SymMapBase> Collect(string typenameToCollect)
         {
@@ -282,7 +282,7 @@ namespace Aardvark.Base
             return m;
         }
 
-        private SymMapBase m_root;
+        private readonly SymMapBase m_root;
         private string m_name;
         private List<SymMapBase> m_result;
         private Dictionary<SymMapBase, int> m_visited;

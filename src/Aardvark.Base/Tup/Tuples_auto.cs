@@ -273,7 +273,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1)
         { E0 = e0; E1 = e1; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1})", E0, E1);
         }
@@ -307,7 +307,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2)
         { E0 = e0; E1 = e1; E2 = e2; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2})", E0, E1, E2);
         }
@@ -346,7 +346,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2, T3 e3)
         { E0 = e0; E1 = e1; E2 = e2; E3 = e3; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2}, {3})", E0, E1, E2, E3);
         }
@@ -390,7 +390,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4)
         { E0 = e0; E1 = e1; E2 = e2; E3 = e3; E4 = e4; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2}, {3}, {4})", E0, E1, E2, E3, E4);
         }
@@ -439,7 +439,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5)
         { E0 = e0; E1 = e1; E2 = e2; E3 = e3; E4 = e4; E5 = e5; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2}, {3}, {4}, {5})", E0, E1, E2, E3, E4, E5);
         }
@@ -493,7 +493,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5, T6 e6)
         { E0 = e0; E1 = e1; E2 = e2; E3 = e3; E4 = e4; E5 = e5; E6 = e6; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2}, {3}, {4}, {5}, {6})", E0, E1, E2, E3, E4, E5, E6);
         }
@@ -552,7 +552,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5, T6 e6, T7 e7)
         { E0 = e0; E1 = e1; E2 = e2; E3 = e3; E4 = e4; E5 = e5; E6 = e6; E7 = e7; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7})", E0, E1, E2, E3, E4, E5, E6, E7);
         }
@@ -616,7 +616,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5, T6 e6, T7 e7, T8 e8)
         { E0 = e0; E1 = e1; E2 = e2; E3 = e3; E4 = e4; E5 = e5; E6 = e6; E7 = e7; E8 = e8; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8})", E0, E1, E2, E3, E4, E5, E6, E7, E8);
         }
@@ -685,7 +685,7 @@ namespace Aardvark.Base
         public Tup(T0 e0, T1 e1, T2 e2, T3 e3, T4 e4, T5 e5, T6 e6, T7 e7, T8 e8, T9 e9)
         { E0 = e0; E1 = e1; E2 = e2; E3 = e3; E4 = e4; E5 = e5; E6 = e6; E7 = e7; E8 = e8; E9 = e9; }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format("({0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9})", E0, E1, E2, E3, E4, E5, E6, E7, E8, E9);
         }

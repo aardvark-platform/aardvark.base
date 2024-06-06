@@ -82,7 +82,7 @@ namespace Aardvark.Base
         public Polygon2f(IEnumerable<V2f> points)
             : this(points.ToArray())
         { }
-        
+
         /// <summary>
         /// Creates a polygon from the points of a pointArray that
         /// are selected by an index array.
@@ -119,24 +119,24 @@ namespace Aardvark.Base
 
         public static readonly Polygon2f Invalid = new Polygon2f(null, 0);
 
-        public bool IsValid => m_pointArray != null;
-
-        public bool IsInvalid => m_pointArray == null;
-
         #endregion
 
         #region Properties
+
+        public readonly bool IsValid => m_pointArray != null;
+
+        public readonly bool IsInvalid => m_pointArray == null;
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount => m_pointCount;
+        public readonly int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
         /// </summary>
-        public IEnumerable<V2f> Points
+        public readonly IEnumerable<V2f> Points
         {
             get { for (int pi = 0; pi < m_pointCount; pi++) yield return m_pointArray[pi]; }
         }
@@ -148,7 +148,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the polygons point array.
         /// </summary>
-        public V2f[] GetPointArray()
+        public readonly V2f[] GetPointArray()
         {
             var pc = m_pointCount;
             var pa = new V2f[pc];
@@ -159,7 +159,7 @@ namespace Aardvark.Base
         /// <summary>
         /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
-        public V2f[] GetPointArrayWithRepeatedFirstPoint()
+        public readonly V2f[] GetPointArrayWithRepeatedFirstPoint()
         {
             var pc = m_pointCount;
             var pa = new V2f[pc + 1];
@@ -171,7 +171,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V2f, T> point_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V2f, T> point_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -182,7 +182,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V2f, int, T> point_index_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V2f, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -197,7 +197,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the index-th point of this polygon.
         /// </summary>
-        public V2f this[int index]
+        public readonly V2f this[int index]
         {
             get { return m_pointArray[index]; }
             set { m_pointArray[index] = value; }
@@ -210,7 +210,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V2f Edge(int index)
+        public readonly V2f Edge(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -220,7 +220,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public IEnumerable<V2f> Edges
+        public readonly IEnumerable<V2f> Edges
         {
             get
             {
@@ -240,7 +240,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line2f EdgeLine(int index)
+        public readonly Line2f EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -250,7 +250,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public IEnumerable<Line2f> EdgeLines
+        public readonly IEnumerable<Line2f> EdgeLines
         {
             get
             {
@@ -271,7 +271,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V2f[] GetEdgeArray()
+        public readonly V2f[] GetEdgeArray()
         {
             var pc = m_pointCount;
             if (pc < 2) return new V2f[0];
@@ -291,7 +291,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line2f[] GetEdgeLineArray()
+        public readonly Line2f[] GetEdgeLineArray()
         {
             var pc = PointCount;
             if (pc < 2) return new Line2f[0];
@@ -315,7 +315,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns copy of polygon. Same as Map(p => p).
         /// </summary>
-        public Polygon2f Copy()
+        public readonly Polygon2f Copy()
         {
             return new Polygon2f(m_pointArray.Copy());
         }
@@ -323,7 +323,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
-        public Polygon2f Map(Func<V2f, V2f> point_fun)
+        public readonly Polygon2f Map(Func<V2f, V2f> point_fun)
         {
             var pc = m_pointCount;
             V2f[] opa = m_pointArray, npa = new V2f[pc];
@@ -332,9 +332,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets copy with reversed order of vertices. 
+        /// Gets copy with reversed order of vertices.
         /// </summary>
-        public Polygon2f Reversed
+        public readonly Polygon2f Reversed
         {
             get
             {
@@ -346,9 +346,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reverses order of vertices in-place. 
+        /// Reverses order of vertices in-place.
         /// </summary>
-        public void Reverse()
+        public readonly void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -376,13 +376,13 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Polygon2f other)
+        public readonly bool Equals(Polygon2f other)
         {
             if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
@@ -390,10 +390,10 @@ namespace Aardvark.Base
             return true;
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Polygon2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
@@ -413,7 +413,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Bounding box of polygon.
         /// </summary>
-        public Box2f BoundingBox2f
+        public readonly Box2f BoundingBox2f
         {
             get { return new Box2f(m_pointArray, 0, m_pointCount); }
         }
@@ -965,7 +965,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied line. The method should
-        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// work with all non-selfintersecting polygons. Returns all parts of
         /// the polygon that are at the positive side of the line.
         /// </summary>
         public static Polygon2f ConvexClipped(
@@ -992,7 +992,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of lines (defined
-        /// as Plane2fs), i.e. all parts of the polygon that are at the positive 
+        /// as Plane2fs), i.e. all parts of the polygon that are at the positive
         /// side of the lines.
         /// </summary>
         public static Polygon2f ConvexClipped(
@@ -1038,12 +1038,12 @@ namespace Aardvark.Base
     #region IndexPolygon2f
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct IndexPolygon2f : IValidity, IPolygon<V2f>
+    public readonly partial struct IndexPolygon2f : IValidity, IPolygon<V2f>
     {
-        private int m_pointCount;
-        private int m_firstIndex;
-        private int[] m_indexArray;
-        private V2f[] m_pointArray;
+        private readonly int m_pointCount;
+        private readonly int m_firstIndex;
+        private readonly int[] m_indexArray;
+        private readonly V2f[] m_pointArray;
 
         #region Constructors
 
@@ -1247,17 +1247,17 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
-        public int PointCount { get { return 2; } }
+        public readonly int PointCount { get { return 2; } }
 
-        public IEnumerable<V2f> Points
+        public readonly IEnumerable<V2f> Points
         {
             get { yield return P0; yield return P1; }
         }
 
-        public Line2f Reversed
+        public readonly Line2f Reversed
         {
             get { return new Line2f(P1, P0); }
         }
@@ -1268,7 +1268,7 @@ namespace Aardvark.Base
 
         public V2f this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -1292,12 +1292,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Line2f Copy(Func<V2f, V2f> point_copyFun)
+        public readonly Line2f Copy(Func<V2f, V2f> point_copyFun)
         {
             return new Line2f(point_copyFun(P0), point_copyFun(P1));
         }
 
-        public Line3d ToLine3d(Func<V2f, V3d> point_copyFun)
+        public readonly Line3d ToLine3d(Func<V2f, V3d> point_copyFun)
         {
             return new Line3d(point_copyFun(P0), point_copyFun(P1));
         }
@@ -1318,19 +1318,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Line2f other)
+        public readonly bool Equals(Line2f other)
             => P0.Equals(other.P0) && P1.Equals(other.P1);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Line2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", P0, P1);
         }
@@ -1345,7 +1345,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2f Members
 
-        public Box2f BoundingBox2f
+        public readonly Box2f BoundingBox2f
         {
             get
             {
@@ -1909,35 +1909,35 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V2f Edge01 { get { return P1 - P0; } }
+        public readonly V2f Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P2 - P0
         /// </summary>
-        public V2f Edge02 { get { return P2 - P0; } }
+        public readonly V2f Edge02 { get { return P2 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V2f Edge12 { get { return P2 - P1; } }
+        public readonly V2f Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V2f Edge10 { get { return P0 - P1; } }
+        public readonly V2f Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P0 - P2
         /// </summary>
-        public V2f Edge20 { get { return P0 - P2; } }
+        public readonly V2f Edge20 { get { return P0 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V2f Edge21 { get { return P1 - P2; } }
+        public readonly V2f Edge21 { get { return P1 - P2; } }
 
-        public IEnumerable<V2f> Edges
+        public readonly IEnumerable<V2f> Edges
         {
             get
             {
@@ -1947,7 +1947,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2f[] EdgeArray
+        public readonly V2f[] EdgeArray
         {
             get
             {
@@ -1959,7 +1959,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line2f> EdgeLines
+        public readonly IEnumerable<Line2f> EdgeLines
         {
             get
             {
@@ -1969,7 +1969,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2f[] EdgeLineArray
+        public readonly Line2f[] EdgeLineArray
         {
             get
             {
@@ -1981,7 +1981,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2f GetEdgeLine(int index)
+        public readonly Line2f GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -1992,7 +1992,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V2f GetEdge(int index)
+        public readonly V2f GetEdge(int index)
         {
             switch (index)
             {
@@ -2003,21 +2003,21 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line2f Line01 { get { return new Line2f(P0, P1); } }
-        public Line2f Line02 { get { return new Line2f(P0, P2); } }
-        public Line2f Line12 { get { return new Line2f(P1, P2); } }
-        public Line2f Line10 { get { return new Line2f(P1, P0); } }
-        public Line2f Line20 { get { return new Line2f(P2, P0); } }
-        public Line2f Line21 { get { return new Line2f(P2, P1); } }
+        public readonly Line2f Line01 { get { return new Line2f(P0, P1); } }
+        public readonly Line2f Line02 { get { return new Line2f(P0, P2); } }
+        public readonly Line2f Line12 { get { return new Line2f(P1, P2); } }
+        public readonly Line2f Line10 { get { return new Line2f(P1, P0); } }
+        public readonly Line2f Line20 { get { return new Line2f(P2, P0); } }
+        public readonly Line2f Line21 { get { return new Line2f(P2, P1); } }
 
-        public int PointCount { get { return 3; } }
+        public readonly int PointCount { get { return 3; } }
 
-        public IEnumerable<V2f> Points
+        public readonly IEnumerable<V2f> Points
         {
             get { yield return P0; yield return P1; yield return P2; }
         }
 
-        public Triangle2f Reversed
+        public readonly Triangle2f Reversed
         {
             get { return new Triangle2f(P2, P1, P0); }
         }
@@ -2028,7 +2028,7 @@ namespace Aardvark.Base
 
         public V2f this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -2054,12 +2054,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Triangle2f Copy(Func<V2f, V2f> point_copyFun)
+        public readonly Triangle2f Copy(Func<V2f, V2f> point_copyFun)
         {
             return new Triangle2f(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
 
-        public Triangle3d ToTriangle3d(Func<V2f, V3d> point_copyFun)
+        public readonly Triangle3d ToTriangle3d(Func<V2f, V3d> point_copyFun)
         {
             return new Triangle3d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
@@ -2080,19 +2080,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Triangle2f other)
+        public readonly bool Equals(Triangle2f other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Triangle2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, P2);
         }
@@ -2107,7 +2107,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2f Members
 
-        public Box2f BoundingBox2f
+        public readonly Box2f BoundingBox2f
         {
             get
             {
@@ -2700,43 +2700,43 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V2f Edge01 { get { return P1 - P0; } }
+        public readonly V2f Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P3 - P0
         /// </summary>
-        public V2f Edge03 { get { return P3 - P0; } }
+        public readonly V2f Edge03 { get { return P3 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V2f Edge12 { get { return P2 - P1; } }
+        public readonly V2f Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V2f Edge10 { get { return P0 - P1; } }
+        public readonly V2f Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P3 - P2
         /// </summary>
-        public V2f Edge23 { get { return P3 - P2; } }
+        public readonly V2f Edge23 { get { return P3 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V2f Edge21 { get { return P1 - P2; } }
+        public readonly V2f Edge21 { get { return P1 - P2; } }
         /// <summary>
         /// Edge P0 - P3
         /// </summary>
-        public V2f Edge30 { get { return P0 - P3; } }
+        public readonly V2f Edge30 { get { return P0 - P3; } }
         /// <summary>
         /// Edge P2 - P3
         /// </summary>
-        public V2f Edge32 { get { return P2 - P3; } }
+        public readonly V2f Edge32 { get { return P2 - P3; } }
 
-        public IEnumerable<V2f> Edges
+        public readonly IEnumerable<V2f> Edges
         {
             get
             {
@@ -2747,7 +2747,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2f[] EdgeArray
+        public readonly V2f[] EdgeArray
         {
             get
             {
@@ -2760,7 +2760,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line2f> EdgeLines
+        public readonly IEnumerable<Line2f> EdgeLines
         {
             get
             {
@@ -2771,7 +2771,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2f[] EdgeLineArray
+        public readonly Line2f[] EdgeLineArray
         {
             get
             {
@@ -2784,7 +2784,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2f GetEdgeLine(int index)
+        public readonly Line2f GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -2796,7 +2796,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V2f GetEdge(int index)
+        public readonly V2f GetEdge(int index)
         {
             switch (index)
             {
@@ -2808,23 +2808,23 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line2f Line01 { get { return new Line2f(P0, P1); } }
-        public Line2f Line03 { get { return new Line2f(P0, P3); } }
-        public Line2f Line12 { get { return new Line2f(P1, P2); } }
-        public Line2f Line10 { get { return new Line2f(P1, P0); } }
-        public Line2f Line23 { get { return new Line2f(P2, P3); } }
-        public Line2f Line21 { get { return new Line2f(P2, P1); } }
-        public Line2f Line30 { get { return new Line2f(P3, P0); } }
-        public Line2f Line32 { get { return new Line2f(P3, P2); } }
+        public readonly Line2f Line01 { get { return new Line2f(P0, P1); } }
+        public readonly Line2f Line03 { get { return new Line2f(P0, P3); } }
+        public readonly Line2f Line12 { get { return new Line2f(P1, P2); } }
+        public readonly Line2f Line10 { get { return new Line2f(P1, P0); } }
+        public readonly Line2f Line23 { get { return new Line2f(P2, P3); } }
+        public readonly Line2f Line21 { get { return new Line2f(P2, P1); } }
+        public readonly Line2f Line30 { get { return new Line2f(P3, P0); } }
+        public readonly Line2f Line32 { get { return new Line2f(P3, P2); } }
 
-        public int PointCount { get { return 4; } }
+        public readonly int PointCount { get { return 4; } }
 
-        public IEnumerable<V2f> Points
+        public readonly IEnumerable<V2f> Points
         {
             get { yield return P0; yield return P1; yield return P2; yield return P3; }
         }
 
-        public Quad2f Reversed
+        public readonly Quad2f Reversed
         {
             get { return new Quad2f(P3, P2, P1, P0); }
         }
@@ -2835,7 +2835,7 @@ namespace Aardvark.Base
 
         public V2f this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -2863,12 +2863,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Quad2f Copy(Func<V2f, V2f> point_copyFun)
+        public readonly Quad2f Copy(Func<V2f, V2f> point_copyFun)
         {
             return new Quad2f(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
 
-        public Quad3d ToQuad3d(Func<V2f, V3d> point_copyFun)
+        public readonly Quad3d ToQuad3d(Func<V2f, V3d> point_copyFun)
         {
             return new Quad3d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
@@ -2889,19 +2889,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2, P3);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Quad2f other)
+        public readonly bool Equals(Quad2f other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2) && P3.Equals(other.P3);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Quad2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
         }
@@ -2916,7 +2916,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2f Members
 
-        public Box2f BoundingBox2f
+        public readonly Box2f BoundingBox2f
         {
             get
             {
@@ -3559,7 +3559,7 @@ namespace Aardvark.Base
         public Polygon3f(IEnumerable<V3f> points)
             : this(points.ToArray())
         { }
-        
+
         /// <summary>
         /// Creates a polygon from the points of a pointArray that
         /// are selected by an index array.
@@ -3596,24 +3596,24 @@ namespace Aardvark.Base
 
         public static readonly Polygon3f Invalid = new Polygon3f(null, 0);
 
-        public bool IsValid => m_pointArray != null;
-
-        public bool IsInvalid => m_pointArray == null;
-
         #endregion
 
         #region Properties
+
+        public readonly bool IsValid => m_pointArray != null;
+
+        public readonly bool IsInvalid => m_pointArray == null;
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount => m_pointCount;
+        public readonly int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
         /// </summary>
-        public IEnumerable<V3f> Points
+        public readonly IEnumerable<V3f> Points
         {
             get { for (int pi = 0; pi < m_pointCount; pi++) yield return m_pointArray[pi]; }
         }
@@ -3625,7 +3625,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the polygons point array.
         /// </summary>
-        public V3f[] GetPointArray()
+        public readonly V3f[] GetPointArray()
         {
             var pc = m_pointCount;
             var pa = new V3f[pc];
@@ -3636,7 +3636,7 @@ namespace Aardvark.Base
         /// <summary>
         /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
-        public V3f[] GetPointArrayWithRepeatedFirstPoint()
+        public readonly V3f[] GetPointArrayWithRepeatedFirstPoint()
         {
             var pc = m_pointCount;
             var pa = new V3f[pc + 1];
@@ -3648,7 +3648,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V3f, T> point_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V3f, T> point_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -3659,7 +3659,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V3f, int, T> point_index_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V3f, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -3674,7 +3674,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the index-th point of this polygon.
         /// </summary>
-        public V3f this[int index]
+        public readonly V3f this[int index]
         {
             get { return m_pointArray[index]; }
             set { m_pointArray[index] = value; }
@@ -3687,7 +3687,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V3f Edge(int index)
+        public readonly V3f Edge(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -3697,7 +3697,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public IEnumerable<V3f> Edges
+        public readonly IEnumerable<V3f> Edges
         {
             get
             {
@@ -3717,7 +3717,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line3f EdgeLine(int index)
+        public readonly Line3f EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -3727,7 +3727,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public IEnumerable<Line3f> EdgeLines
+        public readonly IEnumerable<Line3f> EdgeLines
         {
             get
             {
@@ -3748,7 +3748,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V3f[] GetEdgeArray()
+        public readonly V3f[] GetEdgeArray()
         {
             var pc = m_pointCount;
             if (pc < 2) return new V3f[0];
@@ -3768,7 +3768,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line3f[] GetEdgeLineArray()
+        public readonly Line3f[] GetEdgeLineArray()
         {
             var pc = PointCount;
             if (pc < 2) return new Line3f[0];
@@ -3792,7 +3792,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns copy of polygon. Same as Map(p => p).
         /// </summary>
-        public Polygon3f Copy()
+        public readonly Polygon3f Copy()
         {
             return new Polygon3f(m_pointArray.Copy());
         }
@@ -3800,7 +3800,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
-        public Polygon3f Map(Func<V3f, V3f> point_fun)
+        public readonly Polygon3f Map(Func<V3f, V3f> point_fun)
         {
             var pc = m_pointCount;
             V3f[] opa = m_pointArray, npa = new V3f[pc];
@@ -3809,9 +3809,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets copy with reversed order of vertices. 
+        /// Gets copy with reversed order of vertices.
         /// </summary>
-        public Polygon3f Reversed
+        public readonly Polygon3f Reversed
         {
             get
             {
@@ -3823,9 +3823,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reverses order of vertices in-place. 
+        /// Reverses order of vertices in-place.
         /// </summary>
-        public void Reverse()
+        public readonly void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -3853,13 +3853,13 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Polygon3f other)
+        public readonly bool Equals(Polygon3f other)
         {
             if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
@@ -3867,10 +3867,10 @@ namespace Aardvark.Base
             return true;
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Polygon3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
@@ -3890,7 +3890,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Bounding box of polygon.
         /// </summary>
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             get { return new Box3f(m_pointArray, 0, m_pointCount); }
         }
@@ -4442,7 +4442,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied plane. The method should
-        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// work with all non-selfintersecting polygons. Returns all parts of
         /// the polygon that are at the positive side of the plane.
         /// </summary>
         public static Polygon3f ConvexClipped(
@@ -4469,7 +4469,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of planes (defined
-        /// as Plane3fs), i.e. all parts of the polygon that are at the positive 
+        /// as Plane3fs), i.e. all parts of the polygon that are at the positive
         /// side of the planes.
         /// </summary>
         public static Polygon3f ConvexClipped(
@@ -4516,12 +4516,12 @@ namespace Aardvark.Base
     #region IndexPolygon3f
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct IndexPolygon3f : IValidity, IPolygon<V3f>
+    public readonly partial struct IndexPolygon3f : IValidity, IPolygon<V3f>
     {
-        private int m_pointCount;
-        private int m_firstIndex;
-        private int[] m_indexArray;
-        private V3f[] m_pointArray;
+        private readonly int m_pointCount;
+        private readonly int m_firstIndex;
+        private readonly int[] m_indexArray;
+        private readonly V3f[] m_pointArray;
 
         #region Constructors
 
@@ -4725,17 +4725,17 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
-        public int PointCount { get { return 2; } }
+        public readonly int PointCount { get { return 2; } }
 
-        public IEnumerable<V3f> Points
+        public readonly IEnumerable<V3f> Points
         {
             get { yield return P0; yield return P1; }
         }
 
-        public Line3f Reversed
+        public readonly Line3f Reversed
         {
             get { return new Line3f(P1, P0); }
         }
@@ -4746,7 +4746,7 @@ namespace Aardvark.Base
 
         public V3f this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -4770,12 +4770,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Line3f Copy(Func<V3f, V3f> point_copyFun)
+        public readonly Line3f Copy(Func<V3f, V3f> point_copyFun)
         {
             return new Line3f(point_copyFun(P0), point_copyFun(P1));
         }
 
-        public Line2d ToLine2d(Func<V3f, V2d> point_copyFun)
+        public readonly Line2d ToLine2d(Func<V3f, V2d> point_copyFun)
         {
             return new Line2d(point_copyFun(P0), point_copyFun(P1));
         }
@@ -4796,19 +4796,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Line3f other)
+        public readonly bool Equals(Line3f other)
             => P0.Equals(other.P0) && P1.Equals(other.P1);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Line3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", P0, P1);
         }
@@ -4823,7 +4823,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             get
             {
@@ -5387,35 +5387,35 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V3f Edge01 { get { return P1 - P0; } }
+        public readonly V3f Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P2 - P0
         /// </summary>
-        public V3f Edge02 { get { return P2 - P0; } }
+        public readonly V3f Edge02 { get { return P2 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V3f Edge12 { get { return P2 - P1; } }
+        public readonly V3f Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V3f Edge10 { get { return P0 - P1; } }
+        public readonly V3f Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P0 - P2
         /// </summary>
-        public V3f Edge20 { get { return P0 - P2; } }
+        public readonly V3f Edge20 { get { return P0 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V3f Edge21 { get { return P1 - P2; } }
+        public readonly V3f Edge21 { get { return P1 - P2; } }
 
-        public IEnumerable<V3f> Edges
+        public readonly IEnumerable<V3f> Edges
         {
             get
             {
@@ -5425,7 +5425,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3f[] EdgeArray
+        public readonly V3f[] EdgeArray
         {
             get
             {
@@ -5437,7 +5437,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line3f> EdgeLines
+        public readonly IEnumerable<Line3f> EdgeLines
         {
             get
             {
@@ -5447,7 +5447,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3f[] EdgeLineArray
+        public readonly Line3f[] EdgeLineArray
         {
             get
             {
@@ -5459,7 +5459,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3f GetEdgeLine(int index)
+        public readonly Line3f GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -5470,7 +5470,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V3f GetEdge(int index)
+        public readonly V3f GetEdge(int index)
         {
             switch (index)
             {
@@ -5481,21 +5481,21 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line3f Line01 { get { return new Line3f(P0, P1); } }
-        public Line3f Line02 { get { return new Line3f(P0, P2); } }
-        public Line3f Line12 { get { return new Line3f(P1, P2); } }
-        public Line3f Line10 { get { return new Line3f(P1, P0); } }
-        public Line3f Line20 { get { return new Line3f(P2, P0); } }
-        public Line3f Line21 { get { return new Line3f(P2, P1); } }
+        public readonly Line3f Line01 { get { return new Line3f(P0, P1); } }
+        public readonly Line3f Line02 { get { return new Line3f(P0, P2); } }
+        public readonly Line3f Line12 { get { return new Line3f(P1, P2); } }
+        public readonly Line3f Line10 { get { return new Line3f(P1, P0); } }
+        public readonly Line3f Line20 { get { return new Line3f(P2, P0); } }
+        public readonly Line3f Line21 { get { return new Line3f(P2, P1); } }
 
-        public int PointCount { get { return 3; } }
+        public readonly int PointCount { get { return 3; } }
 
-        public IEnumerable<V3f> Points
+        public readonly IEnumerable<V3f> Points
         {
             get { yield return P0; yield return P1; yield return P2; }
         }
 
-        public Triangle3f Reversed
+        public readonly Triangle3f Reversed
         {
             get { return new Triangle3f(P2, P1, P0); }
         }
@@ -5506,7 +5506,7 @@ namespace Aardvark.Base
 
         public V3f this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -5532,12 +5532,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Triangle3f Copy(Func<V3f, V3f> point_copyFun)
+        public readonly Triangle3f Copy(Func<V3f, V3f> point_copyFun)
         {
             return new Triangle3f(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
 
-        public Triangle2d ToTriangle2d(Func<V3f, V2d> point_copyFun)
+        public readonly Triangle2d ToTriangle2d(Func<V3f, V2d> point_copyFun)
         {
             return new Triangle2d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
@@ -5558,19 +5558,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Triangle3f other)
+        public readonly bool Equals(Triangle3f other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Triangle3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, P2);
         }
@@ -5585,7 +5585,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             get
             {
@@ -6178,43 +6178,43 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V3f Edge01 { get { return P1 - P0; } }
+        public readonly V3f Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P3 - P0
         /// </summary>
-        public V3f Edge03 { get { return P3 - P0; } }
+        public readonly V3f Edge03 { get { return P3 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V3f Edge12 { get { return P2 - P1; } }
+        public readonly V3f Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V3f Edge10 { get { return P0 - P1; } }
+        public readonly V3f Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P3 - P2
         /// </summary>
-        public V3f Edge23 { get { return P3 - P2; } }
+        public readonly V3f Edge23 { get { return P3 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V3f Edge21 { get { return P1 - P2; } }
+        public readonly V3f Edge21 { get { return P1 - P2; } }
         /// <summary>
         /// Edge P0 - P3
         /// </summary>
-        public V3f Edge30 { get { return P0 - P3; } }
+        public readonly V3f Edge30 { get { return P0 - P3; } }
         /// <summary>
         /// Edge P2 - P3
         /// </summary>
-        public V3f Edge32 { get { return P2 - P3; } }
+        public readonly V3f Edge32 { get { return P2 - P3; } }
 
-        public IEnumerable<V3f> Edges
+        public readonly IEnumerable<V3f> Edges
         {
             get
             {
@@ -6225,7 +6225,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3f[] EdgeArray
+        public readonly V3f[] EdgeArray
         {
             get
             {
@@ -6238,7 +6238,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line3f> EdgeLines
+        public readonly IEnumerable<Line3f> EdgeLines
         {
             get
             {
@@ -6249,7 +6249,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3f[] EdgeLineArray
+        public readonly Line3f[] EdgeLineArray
         {
             get
             {
@@ -6262,7 +6262,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3f GetEdgeLine(int index)
+        public readonly Line3f GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -6274,7 +6274,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V3f GetEdge(int index)
+        public readonly V3f GetEdge(int index)
         {
             switch (index)
             {
@@ -6286,23 +6286,23 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line3f Line01 { get { return new Line3f(P0, P1); } }
-        public Line3f Line03 { get { return new Line3f(P0, P3); } }
-        public Line3f Line12 { get { return new Line3f(P1, P2); } }
-        public Line3f Line10 { get { return new Line3f(P1, P0); } }
-        public Line3f Line23 { get { return new Line3f(P2, P3); } }
-        public Line3f Line21 { get { return new Line3f(P2, P1); } }
-        public Line3f Line30 { get { return new Line3f(P3, P0); } }
-        public Line3f Line32 { get { return new Line3f(P3, P2); } }
+        public readonly Line3f Line01 { get { return new Line3f(P0, P1); } }
+        public readonly Line3f Line03 { get { return new Line3f(P0, P3); } }
+        public readonly Line3f Line12 { get { return new Line3f(P1, P2); } }
+        public readonly Line3f Line10 { get { return new Line3f(P1, P0); } }
+        public readonly Line3f Line23 { get { return new Line3f(P2, P3); } }
+        public readonly Line3f Line21 { get { return new Line3f(P2, P1); } }
+        public readonly Line3f Line30 { get { return new Line3f(P3, P0); } }
+        public readonly Line3f Line32 { get { return new Line3f(P3, P2); } }
 
-        public int PointCount { get { return 4; } }
+        public readonly int PointCount { get { return 4; } }
 
-        public IEnumerable<V3f> Points
+        public readonly IEnumerable<V3f> Points
         {
             get { yield return P0; yield return P1; yield return P2; yield return P3; }
         }
 
-        public Quad3f Reversed
+        public readonly Quad3f Reversed
         {
             get { return new Quad3f(P3, P2, P1, P0); }
         }
@@ -6313,7 +6313,7 @@ namespace Aardvark.Base
 
         public V3f this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -6341,12 +6341,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Quad3f Copy(Func<V3f, V3f> point_copyFun)
+        public readonly Quad3f Copy(Func<V3f, V3f> point_copyFun)
         {
             return new Quad3f(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
 
-        public Quad2d ToQuad2d(Func<V3f, V2d> point_copyFun)
+        public readonly Quad2d ToQuad2d(Func<V3f, V2d> point_copyFun)
         {
             return new Quad2d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
@@ -6367,19 +6367,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2, P3);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Quad3f other)
+        public readonly bool Equals(Quad3f other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2) && P3.Equals(other.P3);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Quad3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
         }
@@ -6394,7 +6394,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             get
             {
@@ -7037,7 +7037,7 @@ namespace Aardvark.Base
         public Polygon2d(IEnumerable<V2d> points)
             : this(points.ToArray())
         { }
-        
+
         /// <summary>
         /// Creates a polygon from the points of a pointArray that
         /// are selected by an index array.
@@ -7074,24 +7074,24 @@ namespace Aardvark.Base
 
         public static readonly Polygon2d Invalid = new Polygon2d(null, 0);
 
-        public bool IsValid => m_pointArray != null;
-
-        public bool IsInvalid => m_pointArray == null;
-
         #endregion
 
         #region Properties
+
+        public readonly bool IsValid => m_pointArray != null;
+
+        public readonly bool IsInvalid => m_pointArray == null;
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount => m_pointCount;
+        public readonly int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
         /// </summary>
-        public IEnumerable<V2d> Points
+        public readonly IEnumerable<V2d> Points
         {
             get { for (int pi = 0; pi < m_pointCount; pi++) yield return m_pointArray[pi]; }
         }
@@ -7103,7 +7103,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the polygons point array.
         /// </summary>
-        public V2d[] GetPointArray()
+        public readonly V2d[] GetPointArray()
         {
             var pc = m_pointCount;
             var pa = new V2d[pc];
@@ -7114,7 +7114,7 @@ namespace Aardvark.Base
         /// <summary>
         /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
-        public V2d[] GetPointArrayWithRepeatedFirstPoint()
+        public readonly V2d[] GetPointArrayWithRepeatedFirstPoint()
         {
             var pc = m_pointCount;
             var pa = new V2d[pc + 1];
@@ -7126,7 +7126,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V2d, T> point_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V2d, T> point_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -7137,7 +7137,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V2d, int, T> point_index_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V2d, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -7152,7 +7152,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the index-th point of this polygon.
         /// </summary>
-        public V2d this[int index]
+        public readonly V2d this[int index]
         {
             get { return m_pointArray[index]; }
             set { m_pointArray[index] = value; }
@@ -7165,7 +7165,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V2d Edge(int index)
+        public readonly V2d Edge(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -7175,7 +7175,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public IEnumerable<V2d> Edges
+        public readonly IEnumerable<V2d> Edges
         {
             get
             {
@@ -7195,7 +7195,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line2d EdgeLine(int index)
+        public readonly Line2d EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -7205,7 +7205,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public IEnumerable<Line2d> EdgeLines
+        public readonly IEnumerable<Line2d> EdgeLines
         {
             get
             {
@@ -7226,7 +7226,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V2d[] GetEdgeArray()
+        public readonly V2d[] GetEdgeArray()
         {
             var pc = m_pointCount;
             if (pc < 2) return new V2d[0];
@@ -7246,7 +7246,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line2d[] GetEdgeLineArray()
+        public readonly Line2d[] GetEdgeLineArray()
         {
             var pc = PointCount;
             if (pc < 2) return new Line2d[0];
@@ -7270,7 +7270,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns copy of polygon. Same as Map(p => p).
         /// </summary>
-        public Polygon2d Copy()
+        public readonly Polygon2d Copy()
         {
             return new Polygon2d(m_pointArray.Copy());
         }
@@ -7278,7 +7278,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
-        public Polygon2d Map(Func<V2d, V2d> point_fun)
+        public readonly Polygon2d Map(Func<V2d, V2d> point_fun)
         {
             var pc = m_pointCount;
             V2d[] opa = m_pointArray, npa = new V2d[pc];
@@ -7287,9 +7287,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets copy with reversed order of vertices. 
+        /// Gets copy with reversed order of vertices.
         /// </summary>
-        public Polygon2d Reversed
+        public readonly Polygon2d Reversed
         {
             get
             {
@@ -7301,9 +7301,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reverses order of vertices in-place. 
+        /// Reverses order of vertices in-place.
         /// </summary>
-        public void Reverse()
+        public readonly void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -7331,13 +7331,13 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Polygon2d other)
+        public readonly bool Equals(Polygon2d other)
         {
             if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
@@ -7345,10 +7345,10 @@ namespace Aardvark.Base
             return true;
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Polygon2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
@@ -7368,7 +7368,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Bounding box of polygon.
         /// </summary>
-        public Box2d BoundingBox2d
+        public readonly Box2d BoundingBox2d
         {
             get { return new Box2d(m_pointArray, 0, m_pointCount); }
         }
@@ -7920,7 +7920,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied line. The method should
-        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// work with all non-selfintersecting polygons. Returns all parts of
         /// the polygon that are at the positive side of the line.
         /// </summary>
         public static Polygon2d ConvexClipped(
@@ -7947,7 +7947,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of lines (defined
-        /// as Plane2ds), i.e. all parts of the polygon that are at the positive 
+        /// as Plane2ds), i.e. all parts of the polygon that are at the positive
         /// side of the lines.
         /// </summary>
         public static Polygon2d ConvexClipped(
@@ -7993,12 +7993,12 @@ namespace Aardvark.Base
     #region IndexPolygon2d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct IndexPolygon2d : IValidity, IPolygon<V2d>
+    public readonly partial struct IndexPolygon2d : IValidity, IPolygon<V2d>
     {
-        private int m_pointCount;
-        private int m_firstIndex;
-        private int[] m_indexArray;
-        private V2d[] m_pointArray;
+        private readonly int m_pointCount;
+        private readonly int m_firstIndex;
+        private readonly int[] m_indexArray;
+        private readonly V2d[] m_pointArray;
 
         #region Constructors
 
@@ -8202,17 +8202,17 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
-        public int PointCount { get { return 2; } }
+        public readonly int PointCount { get { return 2; } }
 
-        public IEnumerable<V2d> Points
+        public readonly IEnumerable<V2d> Points
         {
             get { yield return P0; yield return P1; }
         }
 
-        public Line2d Reversed
+        public readonly Line2d Reversed
         {
             get { return new Line2d(P1, P0); }
         }
@@ -8223,7 +8223,7 @@ namespace Aardvark.Base
 
         public V2d this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -8247,12 +8247,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Line2d Copy(Func<V2d, V2d> point_copyFun)
+        public readonly Line2d Copy(Func<V2d, V2d> point_copyFun)
         {
             return new Line2d(point_copyFun(P0), point_copyFun(P1));
         }
 
-        public Line3d ToLine3d(Func<V2d, V3d> point_copyFun)
+        public readonly Line3d ToLine3d(Func<V2d, V3d> point_copyFun)
         {
             return new Line3d(point_copyFun(P0), point_copyFun(P1));
         }
@@ -8273,19 +8273,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Line2d other)
+        public readonly bool Equals(Line2d other)
             => P0.Equals(other.P0) && P1.Equals(other.P1);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Line2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", P0, P1);
         }
@@ -8300,7 +8300,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d Members
 
-        public Box2d BoundingBox2d
+        public readonly Box2d BoundingBox2d
         {
             get
             {
@@ -8864,35 +8864,35 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V2d Edge01 { get { return P1 - P0; } }
+        public readonly V2d Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P2 - P0
         /// </summary>
-        public V2d Edge02 { get { return P2 - P0; } }
+        public readonly V2d Edge02 { get { return P2 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V2d Edge12 { get { return P2 - P1; } }
+        public readonly V2d Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V2d Edge10 { get { return P0 - P1; } }
+        public readonly V2d Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P0 - P2
         /// </summary>
-        public V2d Edge20 { get { return P0 - P2; } }
+        public readonly V2d Edge20 { get { return P0 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V2d Edge21 { get { return P1 - P2; } }
+        public readonly V2d Edge21 { get { return P1 - P2; } }
 
-        public IEnumerable<V2d> Edges
+        public readonly IEnumerable<V2d> Edges
         {
             get
             {
@@ -8902,7 +8902,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2d[] EdgeArray
+        public readonly V2d[] EdgeArray
         {
             get
             {
@@ -8914,7 +8914,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line2d> EdgeLines
+        public readonly IEnumerable<Line2d> EdgeLines
         {
             get
             {
@@ -8924,7 +8924,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2d[] EdgeLineArray
+        public readonly Line2d[] EdgeLineArray
         {
             get
             {
@@ -8936,7 +8936,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2d GetEdgeLine(int index)
+        public readonly Line2d GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -8947,7 +8947,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V2d GetEdge(int index)
+        public readonly V2d GetEdge(int index)
         {
             switch (index)
             {
@@ -8958,21 +8958,21 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line2d Line01 { get { return new Line2d(P0, P1); } }
-        public Line2d Line02 { get { return new Line2d(P0, P2); } }
-        public Line2d Line12 { get { return new Line2d(P1, P2); } }
-        public Line2d Line10 { get { return new Line2d(P1, P0); } }
-        public Line2d Line20 { get { return new Line2d(P2, P0); } }
-        public Line2d Line21 { get { return new Line2d(P2, P1); } }
+        public readonly Line2d Line01 { get { return new Line2d(P0, P1); } }
+        public readonly Line2d Line02 { get { return new Line2d(P0, P2); } }
+        public readonly Line2d Line12 { get { return new Line2d(P1, P2); } }
+        public readonly Line2d Line10 { get { return new Line2d(P1, P0); } }
+        public readonly Line2d Line20 { get { return new Line2d(P2, P0); } }
+        public readonly Line2d Line21 { get { return new Line2d(P2, P1); } }
 
-        public int PointCount { get { return 3; } }
+        public readonly int PointCount { get { return 3; } }
 
-        public IEnumerable<V2d> Points
+        public readonly IEnumerable<V2d> Points
         {
             get { yield return P0; yield return P1; yield return P2; }
         }
 
-        public Triangle2d Reversed
+        public readonly Triangle2d Reversed
         {
             get { return new Triangle2d(P2, P1, P0); }
         }
@@ -8983,7 +8983,7 @@ namespace Aardvark.Base
 
         public V2d this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -9009,12 +9009,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Triangle2d Copy(Func<V2d, V2d> point_copyFun)
+        public readonly Triangle2d Copy(Func<V2d, V2d> point_copyFun)
         {
             return new Triangle2d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
 
-        public Triangle3d ToTriangle3d(Func<V2d, V3d> point_copyFun)
+        public readonly Triangle3d ToTriangle3d(Func<V2d, V3d> point_copyFun)
         {
             return new Triangle3d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
@@ -9035,19 +9035,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Triangle2d other)
+        public readonly bool Equals(Triangle2d other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Triangle2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, P2);
         }
@@ -9062,7 +9062,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d Members
 
-        public Box2d BoundingBox2d
+        public readonly Box2d BoundingBox2d
         {
             get
             {
@@ -9655,43 +9655,43 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V2d Edge01 { get { return P1 - P0; } }
+        public readonly V2d Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P3 - P0
         /// </summary>
-        public V2d Edge03 { get { return P3 - P0; } }
+        public readonly V2d Edge03 { get { return P3 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V2d Edge12 { get { return P2 - P1; } }
+        public readonly V2d Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V2d Edge10 { get { return P0 - P1; } }
+        public readonly V2d Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P3 - P2
         /// </summary>
-        public V2d Edge23 { get { return P3 - P2; } }
+        public readonly V2d Edge23 { get { return P3 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V2d Edge21 { get { return P1 - P2; } }
+        public readonly V2d Edge21 { get { return P1 - P2; } }
         /// <summary>
         /// Edge P0 - P3
         /// </summary>
-        public V2d Edge30 { get { return P0 - P3; } }
+        public readonly V2d Edge30 { get { return P0 - P3; } }
         /// <summary>
         /// Edge P2 - P3
         /// </summary>
-        public V2d Edge32 { get { return P2 - P3; } }
+        public readonly V2d Edge32 { get { return P2 - P3; } }
 
-        public IEnumerable<V2d> Edges
+        public readonly IEnumerable<V2d> Edges
         {
             get
             {
@@ -9702,7 +9702,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V2d[] EdgeArray
+        public readonly V2d[] EdgeArray
         {
             get
             {
@@ -9715,7 +9715,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line2d> EdgeLines
+        public readonly IEnumerable<Line2d> EdgeLines
         {
             get
             {
@@ -9726,7 +9726,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2d[] EdgeLineArray
+        public readonly Line2d[] EdgeLineArray
         {
             get
             {
@@ -9739,7 +9739,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line2d GetEdgeLine(int index)
+        public readonly Line2d GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -9751,7 +9751,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V2d GetEdge(int index)
+        public readonly V2d GetEdge(int index)
         {
             switch (index)
             {
@@ -9763,23 +9763,23 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line2d Line01 { get { return new Line2d(P0, P1); } }
-        public Line2d Line03 { get { return new Line2d(P0, P3); } }
-        public Line2d Line12 { get { return new Line2d(P1, P2); } }
-        public Line2d Line10 { get { return new Line2d(P1, P0); } }
-        public Line2d Line23 { get { return new Line2d(P2, P3); } }
-        public Line2d Line21 { get { return new Line2d(P2, P1); } }
-        public Line2d Line30 { get { return new Line2d(P3, P0); } }
-        public Line2d Line32 { get { return new Line2d(P3, P2); } }
+        public readonly Line2d Line01 { get { return new Line2d(P0, P1); } }
+        public readonly Line2d Line03 { get { return new Line2d(P0, P3); } }
+        public readonly Line2d Line12 { get { return new Line2d(P1, P2); } }
+        public readonly Line2d Line10 { get { return new Line2d(P1, P0); } }
+        public readonly Line2d Line23 { get { return new Line2d(P2, P3); } }
+        public readonly Line2d Line21 { get { return new Line2d(P2, P1); } }
+        public readonly Line2d Line30 { get { return new Line2d(P3, P0); } }
+        public readonly Line2d Line32 { get { return new Line2d(P3, P2); } }
 
-        public int PointCount { get { return 4; } }
+        public readonly int PointCount { get { return 4; } }
 
-        public IEnumerable<V2d> Points
+        public readonly IEnumerable<V2d> Points
         {
             get { yield return P0; yield return P1; yield return P2; yield return P3; }
         }
 
-        public Quad2d Reversed
+        public readonly Quad2d Reversed
         {
             get { return new Quad2d(P3, P2, P1, P0); }
         }
@@ -9790,7 +9790,7 @@ namespace Aardvark.Base
 
         public V2d this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -9818,12 +9818,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Quad2d Copy(Func<V2d, V2d> point_copyFun)
+        public readonly Quad2d Copy(Func<V2d, V2d> point_copyFun)
         {
             return new Quad2d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
 
-        public Quad3d ToQuad3d(Func<V2d, V3d> point_copyFun)
+        public readonly Quad3d ToQuad3d(Func<V2d, V3d> point_copyFun)
         {
             return new Quad3d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
@@ -9844,19 +9844,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2, P3);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Quad2d other)
+        public readonly bool Equals(Quad2d other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2) && P3.Equals(other.P3);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Quad2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
         }
@@ -9871,7 +9871,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox2d Members
 
-        public Box2d BoundingBox2d
+        public readonly Box2d BoundingBox2d
         {
             get
             {
@@ -10514,7 +10514,7 @@ namespace Aardvark.Base
         public Polygon3d(IEnumerable<V3d> points)
             : this(points.ToArray())
         { }
-        
+
         /// <summary>
         /// Creates a polygon from the points of a pointArray that
         /// are selected by an index array.
@@ -10551,24 +10551,24 @@ namespace Aardvark.Base
 
         public static readonly Polygon3d Invalid = new Polygon3d(null, 0);
 
-        public bool IsValid => m_pointArray != null;
-
-        public bool IsInvalid => m_pointArray == null;
-
         #endregion
 
         #region Properties
+
+        public readonly bool IsValid => m_pointArray != null;
+
+        public readonly bool IsInvalid => m_pointArray == null;
 
         /// <summary>
         /// The number of points in the polygon. If this is 0, the polygon
         /// is invalid.
         /// </summary>
-        public int PointCount => m_pointCount;
+        public readonly int PointCount => m_pointCount;
 
         /// <summary>
         /// Enumerates points.
         /// </summary>
-        public IEnumerable<V3d> Points
+        public readonly IEnumerable<V3d> Points
         {
             get { for (int pi = 0; pi < m_pointCount; pi++) yield return m_pointArray[pi]; }
         }
@@ -10580,7 +10580,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the polygons point array.
         /// </summary>
-        public V3d[] GetPointArray()
+        public readonly V3d[] GetPointArray()
         {
             var pc = m_pointCount;
             var pa = new V3d[pc];
@@ -10591,7 +10591,7 @@ namespace Aardvark.Base
         /// <summary>
         /// [P0, P1, P2] -> [P0, P1, P2, P0].
         /// </summary>
-        public V3d[] GetPointArrayWithRepeatedFirstPoint()
+        public readonly V3d[] GetPointArrayWithRepeatedFirstPoint()
         {
             var pc = m_pointCount;
             var pa = new V3d[pc + 1];
@@ -10603,7 +10603,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V3d, T> point_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V3d, T> point_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -10614,7 +10614,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a transformed copy of the polygons point array.
         /// </summary>
-        public T[] GetPointArray<T>(Func<V3d, int, T> point_index_copyFun)
+        public readonly T[] GetPointArray<T>(Func<V3d, int, T> point_index_copyFun)
         {
             var pc = m_pointCount;
             var pa = new T[pc];
@@ -10629,7 +10629,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the index-th point of this polygon.
         /// </summary>
-        public V3d this[int index]
+        public readonly V3d this[int index]
         {
             get { return m_pointArray[index]; }
             set { m_pointArray[index] = value; }
@@ -10642,7 +10642,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as vector (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V3d Edge(int index)
+        public readonly V3d Edge(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -10652,7 +10652,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public IEnumerable<V3d> Edges
+        public readonly IEnumerable<V3d> Edges
         {
             get
             {
@@ -10672,7 +10672,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Index-th edge as line segment (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line3d EdgeLine(int index)
+        public readonly Line3d EdgeLine(int index)
         {
             var p0 = m_pointArray[index++];
             var p1 = m_pointArray[index < m_pointCount ? index : 0];
@@ -10682,7 +10682,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public IEnumerable<Line3d> EdgeLines
+        public readonly IEnumerable<Line3d> EdgeLines
         {
             get
             {
@@ -10703,7 +10703,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as vectors (edgeEndPos - edgeBeginPos).
         /// </summary>
-        public V3d[] GetEdgeArray()
+        public readonly V3d[] GetEdgeArray()
         {
             var pc = m_pointCount;
             if (pc < 2) return new V3d[0];
@@ -10723,7 +10723,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Edges as line segments (edgeBeginPos, edgeEndPos).
         /// </summary>
-        public Line3d[] GetEdgeLineArray()
+        public readonly Line3d[] GetEdgeLineArray()
         {
             var pc = PointCount;
             if (pc < 2) return new Line3d[0];
@@ -10747,7 +10747,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns copy of polygon. Same as Map(p => p).
         /// </summary>
-        public Polygon3d Copy()
+        public readonly Polygon3d Copy()
         {
             return new Polygon3d(m_pointArray.Copy());
         }
@@ -10755,7 +10755,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns transformed copy of this polygon.
         /// </summary>
-        public Polygon3d Map(Func<V3d, V3d> point_fun)
+        public readonly Polygon3d Map(Func<V3d, V3d> point_fun)
         {
             var pc = m_pointCount;
             V3d[] opa = m_pointArray, npa = new V3d[pc];
@@ -10764,9 +10764,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets copy with reversed order of vertices. 
+        /// Gets copy with reversed order of vertices.
         /// </summary>
-        public Polygon3d Reversed
+        public readonly Polygon3d Reversed
         {
             get
             {
@@ -10778,9 +10778,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reverses order of vertices in-place. 
+        /// Reverses order of vertices in-place.
         /// </summary>
-        public void Reverse()
+        public readonly void Reverse()
         {
             var pa = m_pointArray;
             for (int pi = 0, pj = m_pointCount - 1; pi < pj; pi++, pj--)
@@ -10808,13 +10808,13 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return m_pointArray.GetCombinedHashCode(m_pointCount);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Polygon3d other)
+        public readonly bool Equals(Polygon3d other)
         {
             if (m_pointCount != other.m_pointCount) return false;
             for (int pi = 0; pi < m_pointCount; pi++)
@@ -10822,10 +10822,10 @@ namespace Aardvark.Base
             return true;
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Polygon3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture,
                 "[{0}]", Points.Select(x => x.ToString()).Join(", ")
@@ -10845,7 +10845,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Bounding box of polygon.
         /// </summary>
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             get { return new Box3d(m_pointArray, 0, m_pointCount); }
         }
@@ -11397,7 +11397,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Clip the supplied polygon at the supplied plane. The method should
-        /// work with all non-selfintersecting polygons. Returns all parts of 
+        /// work with all non-selfintersecting polygons. Returns all parts of
         /// the polygon that are at the positive side of the plane.
         /// </summary>
         public static Polygon3d ConvexClipped(
@@ -11424,7 +11424,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the convex polygon clipped by the set of planes (defined
-        /// as Plane3ds), i.e. all parts of the polygon that are at the positive 
+        /// as Plane3ds), i.e. all parts of the polygon that are at the positive
         /// side of the planes.
         /// </summary>
         public static Polygon3d ConvexClipped(
@@ -11471,12 +11471,12 @@ namespace Aardvark.Base
     #region IndexPolygon3d
 
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct IndexPolygon3d : IValidity, IPolygon<V3d>
+    public readonly partial struct IndexPolygon3d : IValidity, IPolygon<V3d>
     {
-        private int m_pointCount;
-        private int m_firstIndex;
-        private int[] m_indexArray;
-        private V3d[] m_pointArray;
+        private readonly int m_pointCount;
+        private readonly int m_firstIndex;
+        private readonly int[] m_indexArray;
+        private readonly V3d[] m_pointArray;
 
         #region Constructors
 
@@ -11680,17 +11680,17 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
-        public int PointCount { get { return 2; } }
+        public readonly int PointCount { get { return 2; } }
 
-        public IEnumerable<V3d> Points
+        public readonly IEnumerable<V3d> Points
         {
             get { yield return P0; yield return P1; }
         }
 
-        public Line3d Reversed
+        public readonly Line3d Reversed
         {
             get { return new Line3d(P1, P0); }
         }
@@ -11701,7 +11701,7 @@ namespace Aardvark.Base
 
         public V3d this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -11725,12 +11725,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Line3d Copy(Func<V3d, V3d> point_copyFun)
+        public readonly Line3d Copy(Func<V3d, V3d> point_copyFun)
         {
             return new Line3d(point_copyFun(P0), point_copyFun(P1));
         }
 
-        public Line2d ToLine2d(Func<V3d, V2d> point_copyFun)
+        public readonly Line2d ToLine2d(Func<V3d, V2d> point_copyFun)
         {
             return new Line2d(point_copyFun(P0), point_copyFun(P1));
         }
@@ -11751,19 +11751,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Line3d other)
+        public readonly bool Equals(Line3d other)
             => P0.Equals(other.P0) && P1.Equals(other.P1);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Line3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", P0, P1);
         }
@@ -11778,7 +11778,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             get
             {
@@ -12342,35 +12342,35 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V3d Edge01 { get { return P1 - P0; } }
+        public readonly V3d Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P2 - P0
         /// </summary>
-        public V3d Edge02 { get { return P2 - P0; } }
+        public readonly V3d Edge02 { get { return P2 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V3d Edge12 { get { return P2 - P1; } }
+        public readonly V3d Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V3d Edge10 { get { return P0 - P1; } }
+        public readonly V3d Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P0 - P2
         /// </summary>
-        public V3d Edge20 { get { return P0 - P2; } }
+        public readonly V3d Edge20 { get { return P0 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V3d Edge21 { get { return P1 - P2; } }
+        public readonly V3d Edge21 { get { return P1 - P2; } }
 
-        public IEnumerable<V3d> Edges
+        public readonly IEnumerable<V3d> Edges
         {
             get
             {
@@ -12380,7 +12380,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3d[] EdgeArray
+        public readonly V3d[] EdgeArray
         {
             get
             {
@@ -12392,7 +12392,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line3d> EdgeLines
+        public readonly IEnumerable<Line3d> EdgeLines
         {
             get
             {
@@ -12402,7 +12402,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3d[] EdgeLineArray
+        public readonly Line3d[] EdgeLineArray
         {
             get
             {
@@ -12414,7 +12414,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3d GetEdgeLine(int index)
+        public readonly Line3d GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -12425,7 +12425,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V3d GetEdge(int index)
+        public readonly V3d GetEdge(int index)
         {
             switch (index)
             {
@@ -12436,21 +12436,21 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line3d Line01 { get { return new Line3d(P0, P1); } }
-        public Line3d Line02 { get { return new Line3d(P0, P2); } }
-        public Line3d Line12 { get { return new Line3d(P1, P2); } }
-        public Line3d Line10 { get { return new Line3d(P1, P0); } }
-        public Line3d Line20 { get { return new Line3d(P2, P0); } }
-        public Line3d Line21 { get { return new Line3d(P2, P1); } }
+        public readonly Line3d Line01 { get { return new Line3d(P0, P1); } }
+        public readonly Line3d Line02 { get { return new Line3d(P0, P2); } }
+        public readonly Line3d Line12 { get { return new Line3d(P1, P2); } }
+        public readonly Line3d Line10 { get { return new Line3d(P1, P0); } }
+        public readonly Line3d Line20 { get { return new Line3d(P2, P0); } }
+        public readonly Line3d Line21 { get { return new Line3d(P2, P1); } }
 
-        public int PointCount { get { return 3; } }
+        public readonly int PointCount { get { return 3; } }
 
-        public IEnumerable<V3d> Points
+        public readonly IEnumerable<V3d> Points
         {
             get { yield return P0; yield return P1; yield return P2; }
         }
 
-        public Triangle3d Reversed
+        public readonly Triangle3d Reversed
         {
             get { return new Triangle3d(P2, P1, P0); }
         }
@@ -12461,7 +12461,7 @@ namespace Aardvark.Base
 
         public V3d this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -12487,12 +12487,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Triangle3d Copy(Func<V3d, V3d> point_copyFun)
+        public readonly Triangle3d Copy(Func<V3d, V3d> point_copyFun)
         {
             return new Triangle3d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
 
-        public Triangle2d ToTriangle2d(Func<V3d, V2d> point_copyFun)
+        public readonly Triangle2d ToTriangle2d(Func<V3d, V2d> point_copyFun)
         {
             return new Triangle2d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2));
         }
@@ -12513,19 +12513,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Triangle3d other)
+        public readonly bool Equals(Triangle3d other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Triangle3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", P0, P1, P2);
         }
@@ -12540,7 +12540,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             get
             {
@@ -13133,43 +13133,43 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid { get { return true; } }
-        public bool IsInvalid { get { return false; } }
+        public readonly bool IsValid { get { return true; } }
+        public readonly bool IsInvalid { get { return false; } }
 
         /// <summary>
         /// Edge P1 - P0
         /// </summary>
-        public V3d Edge01 { get { return P1 - P0; } }
+        public readonly V3d Edge01 { get { return P1 - P0; } }
         /// <summary>
         /// Edge P3 - P0
         /// </summary>
-        public V3d Edge03 { get { return P3 - P0; } }
+        public readonly V3d Edge03 { get { return P3 - P0; } }
         /// <summary>
         /// Edge P2 - P1
         /// </summary>
-        public V3d Edge12 { get { return P2 - P1; } }
+        public readonly V3d Edge12 { get { return P2 - P1; } }
         /// <summary>
         /// Edge P0 - P1
         /// </summary>
-        public V3d Edge10 { get { return P0 - P1; } }
+        public readonly V3d Edge10 { get { return P0 - P1; } }
         /// <summary>
         /// Edge P3 - P2
         /// </summary>
-        public V3d Edge23 { get { return P3 - P2; } }
+        public readonly V3d Edge23 { get { return P3 - P2; } }
         /// <summary>
         /// Edge P1 - P2
         /// </summary>
-        public V3d Edge21 { get { return P1 - P2; } }
+        public readonly V3d Edge21 { get { return P1 - P2; } }
         /// <summary>
         /// Edge P0 - P3
         /// </summary>
-        public V3d Edge30 { get { return P0 - P3; } }
+        public readonly V3d Edge30 { get { return P0 - P3; } }
         /// <summary>
         /// Edge P2 - P3
         /// </summary>
-        public V3d Edge32 { get { return P2 - P3; } }
+        public readonly V3d Edge32 { get { return P2 - P3; } }
 
-        public IEnumerable<V3d> Edges
+        public readonly IEnumerable<V3d> Edges
         {
             get
             {
@@ -13180,7 +13180,7 @@ namespace Aardvark.Base
             }
         }
 
-        public V3d[] EdgeArray
+        public readonly V3d[] EdgeArray
         {
             get
             {
@@ -13193,7 +13193,7 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<Line3d> EdgeLines
+        public readonly IEnumerable<Line3d> EdgeLines
         {
             get
             {
@@ -13204,7 +13204,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3d[] EdgeLineArray
+        public readonly Line3d[] EdgeLineArray
         {
             get
             {
@@ -13217,7 +13217,7 @@ namespace Aardvark.Base
             }
         }
 
-        public Line3d GetEdgeLine(int index)
+        public readonly Line3d GetEdgeLine(int index)
         {
             switch (index)
             {
@@ -13229,7 +13229,7 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public V3d GetEdge(int index)
+        public readonly V3d GetEdge(int index)
         {
             switch (index)
             {
@@ -13241,23 +13241,23 @@ namespace Aardvark.Base
             throw new InvalidOperationException();
         }
 
-        public Line3d Line01 { get { return new Line3d(P0, P1); } }
-        public Line3d Line03 { get { return new Line3d(P0, P3); } }
-        public Line3d Line12 { get { return new Line3d(P1, P2); } }
-        public Line3d Line10 { get { return new Line3d(P1, P0); } }
-        public Line3d Line23 { get { return new Line3d(P2, P3); } }
-        public Line3d Line21 { get { return new Line3d(P2, P1); } }
-        public Line3d Line30 { get { return new Line3d(P3, P0); } }
-        public Line3d Line32 { get { return new Line3d(P3, P2); } }
+        public readonly Line3d Line01 { get { return new Line3d(P0, P1); } }
+        public readonly Line3d Line03 { get { return new Line3d(P0, P3); } }
+        public readonly Line3d Line12 { get { return new Line3d(P1, P2); } }
+        public readonly Line3d Line10 { get { return new Line3d(P1, P0); } }
+        public readonly Line3d Line23 { get { return new Line3d(P2, P3); } }
+        public readonly Line3d Line21 { get { return new Line3d(P2, P1); } }
+        public readonly Line3d Line30 { get { return new Line3d(P3, P0); } }
+        public readonly Line3d Line32 { get { return new Line3d(P3, P2); } }
 
-        public int PointCount { get { return 4; } }
+        public readonly int PointCount { get { return 4; } }
 
-        public IEnumerable<V3d> Points
+        public readonly IEnumerable<V3d> Points
         {
             get { yield return P0; yield return P1; yield return P2; yield return P3; }
         }
 
-        public Quad3d Reversed
+        public readonly Quad3d Reversed
         {
             get { return new Quad3d(P3, P2, P1, P0); }
         }
@@ -13268,7 +13268,7 @@ namespace Aardvark.Base
 
         public V3d this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -13296,12 +13296,12 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public Quad3d Copy(Func<V3d, V3d> point_copyFun)
+        public readonly Quad3d Copy(Func<V3d, V3d> point_copyFun)
         {
             return new Quad3d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
 
-        public Quad2d ToQuad2d(Func<V3d, V2d> point_copyFun)
+        public readonly Quad2d ToQuad2d(Func<V3d, V2d> point_copyFun)
         {
             return new Quad2d(point_copyFun(P0), point_copyFun(P1), point_copyFun(P2), point_copyFun(P3));
         }
@@ -13322,19 +13322,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(P0, P1, P2, P3);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Quad3d other)
+        public readonly bool Equals(Quad3d other)
             => P0.Equals(other.P0) && P1.Equals(other.P1) && P2.Equals(other.P2) && P3.Equals(other.P3);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is Quad3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", P0, P1, P2, P3);
         }
@@ -13349,7 +13349,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             get
             {

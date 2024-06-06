@@ -9,8 +9,8 @@ namespace Aardvark.Base
     /// </summary>
     public class DistributionFunction
     {
-        double[] m_pdf;
-        double[] m_cdf;
+        readonly double[] m_pdf;
+        readonly double[] m_cdf;
 
         /// <summary>
         /// Gets the input probability density function.

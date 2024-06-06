@@ -136,7 +136,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the conjugated of the complex number.
         /// </summary>
-        public __ct__ Conjugated
+        public readonly __ct__ Conjugated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new __ct__(Real, -Imag); }
@@ -145,7 +145,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the reciprocal of the complex number.
         /// </summary>
-        public __ct__ Reciprocal
+        public readonly __ct__ Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -158,7 +158,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the squared Gaussian Norm (modulus) of the complex number.
         /// </summary>
-        public __ft__ NormSquared
+        public readonly __ft__ NormSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Real * Real + Imag * Imag; }
@@ -171,7 +171,7 @@ namespace Aardvark.Base
         public __ft__ Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Fun.Sqrt(Real * Real + Imag * Imag); }
+            readonly get { return Fun.Sqrt(Real * Real + Imag * Imag); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -188,7 +188,7 @@ namespace Aardvark.Base
         public __ft__ Argument
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Fun.Atan2(Imag, Real); }
+            readonly get { return Fun.Atan2(Imag, Real); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -202,7 +202,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has no imaginary part.
         /// </summary>
-        public bool IsReal
+        public readonly bool IsReal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Imag.IsTiny(); }
@@ -211,7 +211,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has no real part.
         /// </summary>
-        public bool IsImaginary
+        public readonly bool IsImaginary
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Real.IsTiny(); }
@@ -220,7 +220,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number is 1 + 0i.
         /// </summary>
-        public bool IsOne
+        public readonly bool IsOne
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Real.ApproximateEquals(1) && Imag.IsTiny(); }
@@ -229,7 +229,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number is zero.
         /// </summary>
-        public bool IsZero
+        public readonly bool IsZero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Real.IsTiny() && Imag.IsTiny(); }
@@ -238,7 +238,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number is 0 + 1i.
         /// </summary>
-        public bool IsI
+        public readonly bool IsI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Real.IsTiny(Real) && Imag.ApproximateEquals(1); }
@@ -247,7 +247,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has a part that is NaN.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (__ft__.IsNaN(Real) || __ft__.IsNaN(Imag)); }
@@ -256,7 +256,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has a part that is infinite (positive or negative).
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (__ft__.IsInfinity(Real) || __ft__.IsInfinity(Imag)); }
@@ -265,7 +265,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has a part that is infinite and positive.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (__ft__.IsPositiveInfinity(Real) || __ft__.IsPositiveInfinity(Imag)); }
@@ -274,7 +274,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number has a part that is infinite and negative.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return (__ft__.IsNegativeInfinity(Real) || __ft__.IsNegativeInfinity(Imag)); }
@@ -283,7 +283,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether the complex number is finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return !(IsNaN || IsInfinity); }
@@ -562,14 +562,14 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(Real, Imag);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__ct__ other)
+        public readonly bool Equals(__ct__ other)
             => Real.Equals(other.Real) && Imag.Equals(other.Imag);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
         {
             if (other is __ct__ obj)
                 return Equals(obj);
@@ -577,7 +577,7 @@ namespace Aardvark.Base
                 return false;
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Real, Imag);
         }

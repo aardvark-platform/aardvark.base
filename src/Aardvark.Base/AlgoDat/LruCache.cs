@@ -20,12 +20,12 @@ namespace Aardvark.Base
             public Action DeleteAct;
         }
 
-        private object m_lock;
-        private Dict<TKey, Entry> m_cache;
-        private List<Entry> m_heap;
-        private Func<TKey, long> m_sizeFun;
-        private Func<TKey,TValue> m_readFun;
-        private Action<TKey,TValue> m_deleteAct;
+        private readonly object m_lock;
+        private readonly Dict<TKey, Entry> m_cache;
+        private readonly List<Entry> m_heap;
+        private readonly Func<TKey, long> m_sizeFun;
+        private readonly Func<TKey,TValue> m_readFun;
+        private readonly Action<TKey,TValue> m_deleteAct;
         private long m_capacity;
         private long m_time;
         private long m_size;

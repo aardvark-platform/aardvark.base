@@ -121,7 +121,7 @@ namespace Aardvark.Base
         /// Gets the identity transformation.
         /// </summary>
         public static __type__ Identity
-        { 
+        {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(__mnnt__.Identity);
         }
@@ -133,7 +133,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is valid, i.e. if the linear map is invertible.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Linear.Invertible;
@@ -142,7 +142,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets if this affine transformation is invalid, i.e. if the linear map is singular.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !IsValid;
@@ -151,7 +151,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this affine transformation.
         /// </summary>
-        public __type__ Inverse
+        public readonly __type__ Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -186,7 +186,7 @@ namespace Aardvark.Base
             return new __vmt__(/*# nfields.ForEach((fi, i) => { */
                 /*# mfields.ForEach((fj, j) => {
                 var aij = (j < n) ? "a.Linear.M" + i + j : "a.Trans." + fi;
-                */__aij__ * v.__fj__/*# }, add); }, comma);*/, 
+                */__aij__ * v.__fj__/*# }, add); }, comma);*/,
                 v.__fn__);
         }
 
@@ -363,7 +363,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool operator ==(__type__ a0, __type__ a1)
-            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans); 
+            => (a0.Linear == a1.Linear) && (a0.Trans == a1.Trans);
 
         /// <summary>
         /// Checks whether two <see cref="__type__"/> transformations are different.
@@ -524,7 +524,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -532,7 +532,7 @@ namespace Aardvark.Base
             => new __type__(__mnnt__.RotationEuler(rollInRadians, pitchInRadians, yawInRadians));
 
         /// <summary>
-        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a rotation transformation from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -673,19 +673,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(Linear, Trans);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => Linear.Equals(other.Linear) && Trans.Equals(other.Trans);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Linear, Trans);
         }

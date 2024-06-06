@@ -799,7 +799,7 @@ namespace Aardvark.Base
         /// This instance is equal to value. Greater than zero This instance is greater than value.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int CompareTo(Half other)
+        public readonly int CompareTo(Half other)
         {
             int result = 0;
             if (this < other)
@@ -837,7 +837,7 @@ namespace Aardvark.Base
         /// </returns>
         /// <exception cref="System.ArgumentException">value is not a Half</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int CompareTo(object obj)
+        public readonly int CompareTo(object obj)
         {
             int result;
             if (obj == null)
@@ -865,7 +865,7 @@ namespace Aardvark.Base
         /// <param name="other">A Half object to compare to this instance.</param>
         /// <returns>true if value is equal to this instance; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Half other)
+        public readonly bool Equals(Half other)
         {
             return ((other == this) || (IsNaN(other) && IsNaN(this)));
         }
@@ -877,7 +877,7 @@ namespace Aardvark.Base
         /// <param name="obj">An System.Object.</param>
         /// <returns>true if value is a Half and equal to this instance; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
             bool result = false;
             if (obj is Half half)
@@ -896,7 +896,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>A 32-bit signed integer hash code.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => value.GetHashCode();
 
         /// <summary>
@@ -904,7 +904,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>The enumerated constant (TypeCode)255.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public TypeCode GetTypeCode()
+        public readonly TypeCode GetTypeCode()
             => (TypeCode)255;
 
         #endregion
@@ -1203,7 +1203,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>A string that represents the value of this instance.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => ((float)this).ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
@@ -1213,7 +1213,7 @@ namespace Aardvark.Base
         /// <param name="formatProvider">An System.IFormatProvider that supplies culture-specific formatting information.</param>
         /// <returns>The string representation of the value of this instance as specified by provider.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(IFormatProvider formatProvider)
+        public readonly string ToString(IFormatProvider formatProvider)
             => ((float)this).ToString(formatProvider);
 
         /// <summary>
@@ -1222,7 +1222,7 @@ namespace Aardvark.Base
         /// <param name="format">A numeric format string.</param>
         /// <returns>The string representation of the value of this instance as specified by format.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string format)
+        public readonly string ToString(string format)
             => ((float)this).ToString(format, CultureInfo.InvariantCulture);
 
         /// <summary>
@@ -1234,7 +1234,7 @@ namespace Aardvark.Base
         /// <returns>The string representation of the value of this instance as specified by format and provider.</returns>
         /// <exception cref="System.FormatException">format is invalid.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public string ToString(string format, IFormatProvider formatProvider)
+        public readonly string ToString(string format, IFormatProvider formatProvider)
             => ((float)this).ToString(format, formatProvider);
 
         #endregion
@@ -1242,71 +1242,71 @@ namespace Aardvark.Base
         #region IConvertible Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        float IConvertible.ToSingle(IFormatProvider provider)
+        readonly float IConvertible.ToSingle(IFormatProvider provider)
             => (float)this;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        TypeCode IConvertible.GetTypeCode()
+        readonly TypeCode IConvertible.GetTypeCode()
             => GetTypeCode();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        bool IConvertible.ToBoolean(IFormatProvider provider)
+        readonly bool IConvertible.ToBoolean(IFormatProvider provider)
             => Convert.ToBoolean((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        byte IConvertible.ToByte(IFormatProvider provider)
+        readonly byte IConvertible.ToByte(IFormatProvider provider)
             => Convert.ToByte((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        char IConvertible.ToChar(IFormatProvider provider)
+        readonly char IConvertible.ToChar(IFormatProvider provider)
             => throw new InvalidCastException(string.Format(CultureInfo.CurrentCulture, "Invalid cast from '{0}' to '{1}'.", "Half", "Char"));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        DateTime IConvertible.ToDateTime(IFormatProvider provider)
+        readonly DateTime IConvertible.ToDateTime(IFormatProvider provider)
             => throw new InvalidCastException(string.Format(CultureInfo.CurrentCulture, "Invalid cast from '{0}' to '{1}'.", "Half", "DateTime"));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        decimal IConvertible.ToDecimal(IFormatProvider provider)
+        readonly decimal IConvertible.ToDecimal(IFormatProvider provider)
             => Convert.ToDecimal((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        double IConvertible.ToDouble(IFormatProvider provider)
+        readonly double IConvertible.ToDouble(IFormatProvider provider)
             => Convert.ToDouble((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        short IConvertible.ToInt16(IFormatProvider provider)
+        readonly short IConvertible.ToInt16(IFormatProvider provider)
             => Convert.ToInt16((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        int IConvertible.ToInt32(IFormatProvider provider)
+        readonly int IConvertible.ToInt32(IFormatProvider provider)
             => Convert.ToInt32((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        long IConvertible.ToInt64(IFormatProvider provider)
+        readonly long IConvertible.ToInt64(IFormatProvider provider)
             => Convert.ToInt64((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        sbyte IConvertible.ToSByte(IFormatProvider provider)
+        readonly sbyte IConvertible.ToSByte(IFormatProvider provider)
             => Convert.ToSByte((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        string IConvertible.ToString(IFormatProvider provider)
+        readonly string IConvertible.ToString(IFormatProvider provider)
             => Convert.ToString((float)this, CultureInfo.InvariantCulture);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider)
+        readonly object IConvertible.ToType(Type conversionType, IFormatProvider provider)
             => (((float)this) as IConvertible).ToType(conversionType, provider);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        ushort IConvertible.ToUInt16(IFormatProvider provider)
+        readonly ushort IConvertible.ToUInt16(IFormatProvider provider)
             => Convert.ToUInt16((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        uint IConvertible.ToUInt32(IFormatProvider provider)
+        readonly uint IConvertible.ToUInt32(IFormatProvider provider)
             => Convert.ToUInt32((float)this);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        ulong IConvertible.ToUInt64(IFormatProvider provider)
+        readonly ulong IConvertible.ToUInt64(IFormatProvider provider)
             => Convert.ToUInt64((float)this);
 
         #endregion

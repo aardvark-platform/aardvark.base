@@ -31,7 +31,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public IEnumerable<int> Indices
+        public readonly IEnumerable<int> Indices
         {
             get
             {
@@ -46,7 +46,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -92,12 +92,12 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(I0, I1);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Line1i o) ? Equals(o) : false;
 
         #endregion
@@ -105,7 +105,7 @@ namespace Aardvark.Base
         #region IEquatable<Line1i> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Line1i other)
+        public readonly bool Equals(Line1i other)
         {
             return this == other;
         }
@@ -137,7 +137,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public IEnumerable<int> Indices
+        public readonly IEnumerable<int> Indices
         {
             get
             {
@@ -148,17 +148,17 @@ namespace Aardvark.Base
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line01 { get { return new Line1i(I0, I1); } }
+        public readonly Line1i Line01 { get { return new Line1i(I0, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line02 { get { return new Line1i(I0, I2); } }
+        public readonly Line1i Line02 { get { return new Line1i(I0, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line10 { get { return new Line1i(I1, I0); } }
+        public readonly Line1i Line10 { get { return new Line1i(I1, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line12 { get { return new Line1i(I1, I2); } }
+        public readonly Line1i Line12 { get { return new Line1i(I1, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line20 { get { return new Line1i(I2, I0); } }
+        public readonly Line1i Line20 { get { return new Line1i(I2, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line21 { get { return new Line1i(I2, I1); } }
+        public readonly Line1i Line21 { get { return new Line1i(I2, I1); } }
 
         #endregion
 
@@ -166,7 +166,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -214,12 +214,12 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(I0, I1, I2);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Triangle1i o) ? Equals(o) : false;
 
         #endregion
@@ -227,7 +227,7 @@ namespace Aardvark.Base
         #region IEquatable<Triangle1i> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Triangle1i other)
+        public readonly bool Equals(Triangle1i other)
         {
             return this == other;
         }
@@ -260,7 +260,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public IEnumerable<int> Indices
+        public readonly IEnumerable<int> Indices
         {
             get
             {
@@ -272,78 +272,78 @@ namespace Aardvark.Base
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line01 { get { return new Line1i(I0, I1); } }
+        public readonly Line1i Line01 { get { return new Line1i(I0, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line02 { get { return new Line1i(I0, I2); } }
+        public readonly Line1i Line02 { get { return new Line1i(I0, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line03 { get { return new Line1i(I0, I3); } }
+        public readonly Line1i Line03 { get { return new Line1i(I0, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line10 { get { return new Line1i(I1, I0); } }
+        public readonly Line1i Line10 { get { return new Line1i(I1, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line12 { get { return new Line1i(I1, I2); } }
+        public readonly Line1i Line12 { get { return new Line1i(I1, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line13 { get { return new Line1i(I1, I3); } }
+        public readonly Line1i Line13 { get { return new Line1i(I1, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line20 { get { return new Line1i(I2, I0); } }
+        public readonly Line1i Line20 { get { return new Line1i(I2, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line21 { get { return new Line1i(I2, I1); } }
+        public readonly Line1i Line21 { get { return new Line1i(I2, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line23 { get { return new Line1i(I2, I3); } }
+        public readonly Line1i Line23 { get { return new Line1i(I2, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line30 { get { return new Line1i(I3, I0); } }
+        public readonly Line1i Line30 { get { return new Line1i(I3, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line31 { get { return new Line1i(I3, I1); } }
+        public readonly Line1i Line31 { get { return new Line1i(I3, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line32 { get { return new Line1i(I3, I2); } }
+        public readonly Line1i Line32 { get { return new Line1i(I3, I2); } }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle012 { get { return new Triangle1i(I0, I1, I2); } }
+        public readonly Triangle1i Triangle012 { get { return new Triangle1i(I0, I1, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle013 { get { return new Triangle1i(I0, I1, I3); } }
+        public readonly Triangle1i Triangle013 { get { return new Triangle1i(I0, I1, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle021 { get { return new Triangle1i(I0, I2, I1); } }
+        public readonly Triangle1i Triangle021 { get { return new Triangle1i(I0, I2, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle023 { get { return new Triangle1i(I0, I2, I3); } }
+        public readonly Triangle1i Triangle023 { get { return new Triangle1i(I0, I2, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle031 { get { return new Triangle1i(I0, I3, I1); } }
+        public readonly Triangle1i Triangle031 { get { return new Triangle1i(I0, I3, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle032 { get { return new Triangle1i(I0, I3, I2); } }
+        public readonly Triangle1i Triangle032 { get { return new Triangle1i(I0, I3, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle102 { get { return new Triangle1i(I1, I0, I2); } }
+        public readonly Triangle1i Triangle102 { get { return new Triangle1i(I1, I0, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle103 { get { return new Triangle1i(I1, I0, I3); } }
+        public readonly Triangle1i Triangle103 { get { return new Triangle1i(I1, I0, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle120 { get { return new Triangle1i(I1, I2, I0); } }
+        public readonly Triangle1i Triangle120 { get { return new Triangle1i(I1, I2, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle123 { get { return new Triangle1i(I1, I2, I3); } }
+        public readonly Triangle1i Triangle123 { get { return new Triangle1i(I1, I2, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle130 { get { return new Triangle1i(I1, I3, I0); } }
+        public readonly Triangle1i Triangle130 { get { return new Triangle1i(I1, I3, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle132 { get { return new Triangle1i(I1, I3, I2); } }
+        public readonly Triangle1i Triangle132 { get { return new Triangle1i(I1, I3, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle201 { get { return new Triangle1i(I2, I0, I1); } }
+        public readonly Triangle1i Triangle201 { get { return new Triangle1i(I2, I0, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle203 { get { return new Triangle1i(I2, I0, I3); } }
+        public readonly Triangle1i Triangle203 { get { return new Triangle1i(I2, I0, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle210 { get { return new Triangle1i(I2, I1, I0); } }
+        public readonly Triangle1i Triangle210 { get { return new Triangle1i(I2, I1, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle213 { get { return new Triangle1i(I2, I1, I3); } }
+        public readonly Triangle1i Triangle213 { get { return new Triangle1i(I2, I1, I3); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle230 { get { return new Triangle1i(I2, I3, I0); } }
+        public readonly Triangle1i Triangle230 { get { return new Triangle1i(I2, I3, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle231 { get { return new Triangle1i(I2, I3, I1); } }
+        public readonly Triangle1i Triangle231 { get { return new Triangle1i(I2, I3, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle301 { get { return new Triangle1i(I3, I0, I1); } }
+        public readonly Triangle1i Triangle301 { get { return new Triangle1i(I3, I0, I1); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle302 { get { return new Triangle1i(I3, I0, I2); } }
+        public readonly Triangle1i Triangle302 { get { return new Triangle1i(I3, I0, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle310 { get { return new Triangle1i(I3, I1, I0); } }
+        public readonly Triangle1i Triangle310 { get { return new Triangle1i(I3, I1, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle312 { get { return new Triangle1i(I3, I1, I2); } }
+        public readonly Triangle1i Triangle312 { get { return new Triangle1i(I3, I1, I2); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle320 { get { return new Triangle1i(I3, I2, I0); } }
+        public readonly Triangle1i Triangle320 { get { return new Triangle1i(I3, I2, I0); } }
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle321 { get { return new Triangle1i(I3, I2, I1); } }
+        public readonly Triangle1i Triangle321 { get { return new Triangle1i(I3, I2, I1); } }
 
         #endregion
 
@@ -351,7 +351,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -401,12 +401,12 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(I0, I1, I2, I3);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Quad1i o) ? Equals(o) : false;
 
         #endregion
@@ -414,7 +414,7 @@ namespace Aardvark.Base
         #region IEquatable<Quad1i> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Quad1i other)
+        public readonly bool Equals(Quad1i other)
         {
             return this == other;
         }

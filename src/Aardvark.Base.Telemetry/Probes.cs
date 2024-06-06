@@ -50,7 +50,7 @@ namespace Aardvark.Base
             public struct StopWatchTimeTimer : IDisposable
             {
                 StopWatchTime Source;
-                Stopwatch Watch;
+                readonly Stopwatch Watch;
 
                 internal StopWatchTimeTimer(StopWatchTime source, Stopwatch watch) { Source = source; Watch = watch; }
                 public void Dispose()
@@ -75,7 +75,7 @@ namespace Aardvark.Base
         public class WallClockTime : IProbe<TimeSpan>
         {
             private int m_actives = 0;
-            private Stopwatch m_stopwatch = new Stopwatch();
+            private readonly Stopwatch m_stopwatch = new Stopwatch();
 
             public WallClockTime() => OnReset += (s, e) => m_stopwatch.Reset();
             
@@ -129,10 +129,10 @@ namespace Aardvark.Base
                 return m_threadLocalProcessThread.Value;
             }
             
-            private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
-            private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
+            private readonly ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
+            private readonly ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
             
-            private ThreadLocal<bool> m_active = new ThreadLocal<bool>(() => false);
+            private readonly ThreadLocal<bool> m_active = new ThreadLocal<bool>(() => false);
 
             private long m_sum = 0;
 
@@ -175,7 +175,7 @@ namespace Aardvark.Base
             public struct CpuTimeTimer : IDisposable
             {
                 CpuTime Source;
-                long T0, T0User, T0Privileged;
+                readonly long T0, T0User, T0Privileged;
 
                 internal CpuTimeTimer(CpuTime source, long t0, long t0user, long t0priv) { Source = source; T0 = t0; T0User = t0user; T0Privileged = t0priv; }
                 
@@ -250,10 +250,10 @@ namespace Aardvark.Base
                 return m_threadLocalProcessThread.Value;
             }
 
-            private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
-            private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
+            private readonly ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
+            private readonly ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
 
-            private HashSet<int> m_threadIds = new HashSet<int>();
+            private readonly HashSet<int> m_threadIds = new HashSet<int>();
             private TimeSpan m_sum = TimeSpan.Zero;
 
             public CpuTimeUser() => OnReset += (s, e) => { lock (m_threadIds) m_sum = TimeSpan.Zero; };
@@ -287,7 +287,7 @@ namespace Aardvark.Base
             {
                 CpuTimeUser Source;
                 TimeSpan T0;
-                int ThreadId;
+                readonly int ThreadId;
                 
                 internal CpuTimeUserTimer(CpuTimeUser source, TimeSpan t0, int threadId) { Source = source; T0 = t0; ThreadId = threadId; }
 
@@ -337,10 +337,10 @@ namespace Aardvark.Base
                 Thread.EndThreadAffinity();
                 return m_threadLocalProcessThread.Value;
             }
-            private ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
-            private ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
+            private readonly ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
+            private readonly ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
 
-            private HashSet<int> m_threadIds = new HashSet<int>();
+            private readonly HashSet<int> m_threadIds = new HashSet<int>();
             private TimeSpan m_sum = TimeSpan.Zero;
 
             public CpuTimePrivileged()
@@ -378,7 +378,7 @@ namespace Aardvark.Base
             {
                 CpuTimePrivileged Source;
                 TimeSpan T0;
-                int ThreadId;
+                readonly int ThreadId;
 
                 internal CpuTimePrivilegedTimer(CpuTimePrivileged source, TimeSpan t0, int threadId) { Source = source; T0 = t0; ThreadId = threadId; }
 
@@ -416,7 +416,7 @@ namespace Aardvark.Base
 
         public class CustomProbeDouble : IProbe<double>
         {
-            private Func<double> m_value;
+            private readonly Func<double> m_value;
 
             public CustomProbeDouble(Func<double> valueFunc) => m_value = valueFunc;
 
@@ -427,7 +427,7 @@ namespace Aardvark.Base
 
         public class CustomProbeLong : IProbe<long>
         {
-            private Func<long> m_value;
+            private readonly Func<long> m_value;
 
             public CustomProbeLong(Func<long> valueFunc) => m_value = valueFunc;
 
@@ -451,7 +451,7 @@ namespace Aardvark.Base
 
         public class CustomProbeString : IProbe<string>
         {
-            private Func<string> m_value;
+            private readonly Func<string> m_value;
 
             public CustomProbeString(Func<string> valueFunc) => m_value = valueFunc;
 
@@ -469,7 +469,7 @@ namespace Aardvark.Base
         /// </summary>
         public class SnapshotProbeLong : IProbe<long>
         {
-            private IProbe<long> m_probe;
+            private readonly IProbe<long> m_probe;
             private long m_base;
 
             /// <summary>
@@ -492,7 +492,7 @@ namespace Aardvark.Base
         /// </summary>
         public class SnapshotProbeDouble : IProbe<double>
         {
-            private IProbe<double> m_probe;
+            private readonly IProbe<double> m_probe;
             private double m_base;
 
             /// <summary>
@@ -515,7 +515,7 @@ namespace Aardvark.Base
         /// </summary>
         public class SnapshotProbeTimeSpan : IProbe<TimeSpan>
         {
-            private IProbe<TimeSpan> m_probe;
+            private readonly IProbe<TimeSpan> m_probe;
             private long m_base;
 
             /// <summary>

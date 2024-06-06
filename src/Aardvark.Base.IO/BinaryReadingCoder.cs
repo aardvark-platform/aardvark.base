@@ -13,10 +13,10 @@ namespace Aardvark.Base.Coder
     public partial class BinaryReadingCoder
         : BaseReadingCoder, ICoder, IDisposable, IReadingCoder
     {
-        private StreamCodeReader m_reader;
+        private readonly StreamCodeReader m_reader;
         private string m_fileName;
         private readonly int m_coderVersion;
-        private bool m_disposeStream;
+        private readonly bool m_disposeStream;
 
         #region Constructors
 

@@ -16,19 +16,19 @@ namespace Aardvark.Base
 
         public V3f Normal
         {
-            get { return m_normal.Normalized; }
+            readonly get { return m_normal.Normalized; }
             set { m_normal = value; }
         }
 
         public M44f ErrorQuadric
         {
-            get { return m_errorQuadric; }
+            readonly get { return m_errorQuadric; }
             set { m_errorQuadric = value; }
         }
 
-        public float ErrorOffset => ErrorQuadric.M33;
+        public readonly float ErrorOffset => ErrorQuadric.M33;
 
-        public M44f ErrorHeuristic { get; set; }
+        public M44f ErrorHeuristic { readonly get; set; }
 
         #endregion
 
@@ -132,19 +132,19 @@ namespace Aardvark.Base
 
         public V3d Normal
         {
-            get { return m_normal.Normalized; }
+            readonly get { return m_normal.Normalized; }
             set { m_normal = value; }
         }
 
         public M44d ErrorQuadric
         {
-            get { return m_errorQuadric; }
+            readonly get { return m_errorQuadric; }
             set { m_errorQuadric = value; }
         }
 
-        public double ErrorOffset => ErrorQuadric.M33;
+        public readonly double ErrorOffset => ErrorQuadric.M33;
 
-        public M44d ErrorHeuristic { get; set; }
+        public M44d ErrorHeuristic { readonly get; set; }
 
         #endregion
 

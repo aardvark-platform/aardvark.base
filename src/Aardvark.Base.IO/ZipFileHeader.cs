@@ -51,7 +51,7 @@ namespace Aardvark.Base.Coder.Legacy
         public const long MinLength = 30;
         public const long MaxLength = MinLength + 2 * UInt16.MaxValue;
 
-        public long Length
+        public readonly long Length
         {
             get { return MinLength + lengthFileName + lengthExtra; }
         }
@@ -459,7 +459,7 @@ namespace Aardvark.Base.Coder.Legacy
         public const long MinLength = 22;
         public const long MaxLength = MinLength + UInt16.MaxValue;
 
-        public long Length
+        public readonly long Length
         {
             get { return MinLength + cmntLen; }
         }

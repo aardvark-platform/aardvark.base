@@ -131,7 +131,7 @@ namespace Aardvark.Base
         public __ftype__ __f__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.__f__; }
+            readonly get { return V.__f__; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.__f__ = value; }
         }
@@ -140,7 +140,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="__type__"/> transformation.
         /// </summary>
-        public __type__ Inverse
+        public readonly __type__ Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __type__(/*# dfields.ForEach(f => { */1 / __f__/*# }, comma); */);
@@ -467,7 +467,7 @@ namespace Aardvark.Base
         public __ftype__ this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -477,19 +477,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => /*# dfields.ForEach(f => {*/__f__.Equals(other.__f__)/*# }, and);*/;
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[/*# d.ForEach(i => {*/{__i__}/*# }, comma);*/]", /*# dfields.ForEach(f => {*/__f__/*#}, comma);*/);
         }

@@ -30,7 +30,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -1140,7 +1140,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
@@ -1150,9 +1150,9 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            Dict<TKey, TValue> m_dict;
-            TKey m_key;
-            int m_hash;
+            readonly Dict<TKey, TValue> m_dict;
+            readonly TKey m_key;
+            readonly int m_hash;
             int m_extraIndex;
             TValue m_current;
 
@@ -1165,11 +1165,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -1698,7 +1698,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentDict<TKey, TValue>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
@@ -1729,7 +1729,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            Dict<TKey, TValue> m_dict;
+            readonly Dict<TKey, TValue> m_dict;
             int m_index;
             int m_extraIndex;
             KeyValuePair<TKey, TValue> m_current;
@@ -1742,11 +1742,11 @@ namespace Aardvark.Base
                 m_current = default(KeyValuePair<TKey, TValue>);
             }
 
-            public KeyValuePair<TKey, TValue> Current => m_current;
+            public readonly KeyValuePair<TKey, TValue> Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -2660,7 +2660,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentDictSet<TKey>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<TKey> Members
@@ -2691,7 +2691,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<TKey>
         {
-            DictSet<TKey> m_dict;
+            readonly DictSet<TKey> m_dict;
             int m_index;
             int m_extraIndex;
             TKey m_current;
@@ -2704,11 +2704,11 @@ namespace Aardvark.Base
                 m_current = default(TKey);
             }
 
-            public TKey Current => m_current;
+            public readonly TKey Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -2949,7 +2949,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -3707,7 +3707,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(int key)
@@ -3717,8 +3717,8 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            IntDict<TValue> m_dict;
-            int m_hash;
+            readonly IntDict<TValue> m_dict;
+            readonly int m_hash;
             int m_extraIndex;
             TValue m_current;
 
@@ -3730,11 +3730,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -4097,7 +4097,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentIntDict<TValue>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<KeyValuePair<int, TValue>> Members
@@ -4128,7 +4128,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<KeyValuePair<int, TValue>>
         {
-            IntDict<TValue> m_dict;
+            readonly IntDict<TValue> m_dict;
             int m_index;
             int m_extraIndex;
             KeyValuePair<int, TValue> m_current;
@@ -4141,11 +4141,11 @@ namespace Aardvark.Base
                 m_current = default(KeyValuePair<int, TValue>);
             }
 
-            public KeyValuePair<int, TValue> Current => m_current;
+            public readonly KeyValuePair<int, TValue> Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -4844,7 +4844,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentIntSet(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<int> Members
@@ -4875,7 +4875,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<int>
         {
-            IntSet m_dict;
+            readonly IntSet m_dict;
             int m_index;
             int m_extraIndex;
             int m_current;
@@ -4888,11 +4888,11 @@ namespace Aardvark.Base
                 m_current = default(int);
             }
 
-            public int Current => m_current;
+            public readonly int Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -5133,7 +5133,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -5924,7 +5924,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(Symbol key)
@@ -5934,8 +5934,8 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            SymbolDict<TValue> m_dict;
-            int m_hash;
+            readonly SymbolDict<TValue> m_dict;
+            readonly int m_hash;
             int m_extraIndex;
             TValue m_current;
 
@@ -5947,11 +5947,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -6314,7 +6314,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentSymbolDict<TValue>(this);
         }
-        
+
         public void Add<TType>(TypedSymbol<TType> key, TType value)
             where TType : TValue
         {
@@ -6428,7 +6428,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<KeyValuePair<Symbol, TValue>>
         {
-            SymbolDict<TValue> m_dict;
+            readonly SymbolDict<TValue> m_dict;
             int m_index;
             int m_extraIndex;
             KeyValuePair<Symbol, TValue> m_current;
@@ -6441,11 +6441,11 @@ namespace Aardvark.Base
                 m_current = default(KeyValuePair<Symbol, TValue>);
             }
 
-            public KeyValuePair<Symbol, TValue> Current => m_current;
+            public readonly KeyValuePair<Symbol, TValue> Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -7164,7 +7164,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentSymbolSet(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<Symbol> Members
@@ -7195,7 +7195,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<Symbol>
         {
-            SymbolSet m_dict;
+            readonly SymbolSet m_dict;
             int m_index;
             int m_extraIndex;
             Symbol m_current;
@@ -7208,11 +7208,11 @@ namespace Aardvark.Base
                 m_current = default(Symbol);
             }
 
-            public Symbol Current => m_current;
+            public readonly Symbol Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -7446,14 +7446,14 @@ namespace Aardvark.Base
             : ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyValueLong<TKey, TValue>[] m_firstArray;
         private HashKeyValueNextLong<TKey, TValue>[] m_extraArray;
         private ulong m_count;
         private ulong m_increaseThreshold;
         private ulong m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private long m_freeIndex;
         private int m_capacityIndex;
         private ulong m_extraCount;
@@ -8553,7 +8553,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
@@ -8563,9 +8563,9 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            BigDict<TKey, TValue> m_dict;
-            TKey m_key;
-            long m_hash;
+            readonly BigDict<TKey, TValue> m_dict;
+            readonly TKey m_key;
+            readonly long m_hash;
             long m_extraIndex;
             TValue m_current;
 
@@ -8578,11 +8578,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -9111,7 +9111,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentBigDict<TKey, TValue>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
@@ -9142,7 +9142,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            BigDict<TKey, TValue> m_dict;
+            readonly BigDict<TKey, TValue> m_dict;
             long m_index;
             long m_extraIndex;
             KeyValuePair<TKey, TValue> m_current;
@@ -9155,11 +9155,11 @@ namespace Aardvark.Base
                 m_current = default(KeyValuePair<TKey, TValue>);
             }
 
-            public KeyValuePair<TKey, TValue> Current => m_current;
+            public readonly KeyValuePair<TKey, TValue> Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -9392,7 +9392,7 @@ namespace Aardvark.Base
             : ICountableDictSet, IDictSet<TKey>,
               IEnumerable, IEnumerable<TKey>
     {
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyLong<TKey>[] m_firstArray;
         private HashKeyNextLong<TKey>[] m_extraArray;
@@ -10058,7 +10058,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentBigDictSet<TKey>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<TKey> Members
@@ -10089,7 +10089,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<TKey>
         {
-            BigDictSet<TKey> m_dict;
+            readonly BigDictSet<TKey> m_dict;
             long m_index;
             long m_extraIndex;
             TKey m_current;
@@ -10102,11 +10102,11 @@ namespace Aardvark.Base
                 m_current = default(TKey);
             }
 
-            public TKey Current => m_current;
+            public readonly TKey Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -10346,7 +10346,7 @@ namespace Aardvark.Base
         private ulong m_count;
         private ulong m_increaseThreshold;
         private ulong m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private long m_freeIndex;
         private int m_capacityIndex;
         private ulong m_extraCount;
@@ -11093,7 +11093,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(long key)
@@ -11103,8 +11103,8 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            LongDict<TValue> m_dict;
-            long m_hash;
+            readonly LongDict<TValue> m_dict;
+            readonly long m_hash;
             long m_extraIndex;
             TValue m_current;
 
@@ -11116,11 +11116,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -11483,7 +11483,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentLongDict<TValue>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<KeyValuePair<long, TValue>> Members
@@ -11514,7 +11514,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<KeyValuePair<long, TValue>>
         {
-            LongDict<TValue> m_dict;
+            readonly LongDict<TValue> m_dict;
             long m_index;
             long m_extraIndex;
             KeyValuePair<long, TValue> m_current;
@@ -11527,11 +11527,11 @@ namespace Aardvark.Base
                 m_current = default(KeyValuePair<long, TValue>);
             }
 
-            public KeyValuePair<long, TValue> Current => m_current;
+            public readonly KeyValuePair<long, TValue> Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -12213,7 +12213,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentLongSet(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<long> Members
@@ -12244,7 +12244,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<long>
         {
-            LongSet m_dict;
+            readonly LongSet m_dict;
             long m_index;
             long m_extraIndex;
             long m_current;
@@ -12257,11 +12257,11 @@ namespace Aardvark.Base
                 m_current = default(long);
             }
 
-            public long Current => m_current;
+            public readonly long Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -12493,7 +12493,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentDict<TKey, TValue>
     {
-        private Dict<TKey, TValue> m_dict;
+        private readonly Dict<TKey, TValue> m_dict;
 
         #region Constructors
 
@@ -13099,7 +13099,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentDictSet<TKey>
     {
-        private DictSet<TKey> m_dict;
+        private readonly DictSet<TKey> m_dict;
 
         #region Constructors
 
@@ -13358,7 +13358,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentIntDict<TValue>
     {
-        private IntDict<TValue> m_dict;
+        private readonly IntDict<TValue> m_dict;
 
         #region Constructors
 
@@ -13800,7 +13800,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentIntSet
     {
-        private IntSet m_dict;
+        private readonly IntSet m_dict;
 
         #region Constructors
 
@@ -13997,7 +13997,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentSymbolDict<TValue>
     {
-        private SymbolDict<TValue> m_dict;
+        private readonly SymbolDict<TValue> m_dict;
 
         #region Constructors
 
@@ -14548,7 +14548,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentSymbolSet
     {
-        private SymbolSet m_dict;
+        private readonly SymbolSet m_dict;
 
         #region Constructors
 
@@ -14758,7 +14758,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentBigDict<TKey, TValue>
     {
-        private BigDict<TKey, TValue> m_dict;
+        private readonly BigDict<TKey, TValue> m_dict;
 
         #region Constructors
 
@@ -15353,7 +15353,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentBigDictSet<TKey>
     {
-        private BigDictSet<TKey> m_dict;
+        private readonly BigDictSet<TKey> m_dict;
 
         #region Constructors
 
@@ -15601,7 +15601,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentLongDict<TValue>
     {
-        private LongDict<TValue> m_dict;
+        private readonly LongDict<TValue> m_dict;
 
         #region Constructors
 
@@ -16032,7 +16032,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ConcurrentLongSet
     {
-        private LongSet m_dict;
+        private readonly LongSet m_dict;
 
         #region Constructors
 
@@ -16227,7 +16227,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -19090,7 +19090,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -21173,7 +21173,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -23386,14 +23386,14 @@ namespace Aardvark.Base
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
     {
         private long m_version;
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyValueLong<TKey, TValue>[] m_firstArray;
         private HashKeyValueNextLong<TKey, TValue>[] m_extraArray;
         private ulong m_count;
         private ulong m_increaseThreshold;
         private ulong m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private long m_freeIndex;
         private int m_capacityIndex;
         private ulong m_extraCount;
@@ -25322,7 +25322,7 @@ namespace Aardvark.Base
               IEnumerable, IEnumerable<TKey>
     {
         private long m_version;
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyLong<TKey>[] m_firstArray;
         private HashKeyNextLong<TKey>[] m_extraArray;
@@ -26237,7 +26237,7 @@ namespace Aardvark.Base
         private ulong m_count;
         private ulong m_increaseThreshold;
         private ulong m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private long m_freeIndex;
         private int m_capacityIndex;
         private ulong m_extraCount;
@@ -28299,7 +28299,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -29409,7 +29409,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
@@ -29419,9 +29419,9 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            DictIEq<TKey, TValue> m_dict;
-            TKey m_key;
-            int m_hash;
+            readonly DictIEq<TKey, TValue> m_dict;
+            readonly TKey m_key;
+            readonly int m_hash;
             int m_extraIndex;
             TValue m_current;
 
@@ -29434,11 +29434,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -29967,7 +29967,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentDictIEq<TKey, TValue>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
@@ -29998,7 +29998,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            DictIEq<TKey, TValue> m_dict;
+            readonly DictIEq<TKey, TValue> m_dict;
             int m_index;
             int m_extraIndex;
             KeyValuePair<TKey, TValue> m_current;
@@ -30011,11 +30011,11 @@ namespace Aardvark.Base
                 m_current = default(KeyValuePair<TKey, TValue>);
             }
 
-            public KeyValuePair<TKey, TValue> Current => m_current;
+            public readonly KeyValuePair<TKey, TValue> Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -30930,7 +30930,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentDictSetIEq<TKey>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<TKey> Members
@@ -30961,7 +30961,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<TKey>
         {
-            DictSetIEq<TKey> m_dict;
+            readonly DictSetIEq<TKey> m_dict;
             int m_index;
             int m_extraIndex;
             TKey m_current;
@@ -30974,11 +30974,11 @@ namespace Aardvark.Base
                 m_current = default(TKey);
             }
 
-            public TKey Current => m_current;
+            public readonly TKey Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -31213,14 +31213,14 @@ namespace Aardvark.Base
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>
         where TKey : IEquatable<TKey>
     {
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyValueLong<TKey, TValue>[] m_firstArray;
         private HashKeyValueNextLong<TKey, TValue>[] m_extraArray;
         private ulong m_count;
         private ulong m_increaseThreshold;
         private ulong m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private long m_freeIndex;
         private int m_capacityIndex;
         private ulong m_extraCount;
@@ -32320,7 +32320,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed.
-        /// Should be preferred over ValuesWithKey enumeration in 
+        /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
         public ValuesWithKeyEnumerator GetValuesWithKeyEnumerator(TKey key)
@@ -32330,9 +32330,9 @@ namespace Aardvark.Base
 
         public struct ValuesWithKeyEnumerator : IEnumerator<TValue>
         {
-            BigDictIEq<TKey, TValue> m_dict;
-            TKey m_key;
-            long m_hash;
+            readonly BigDictIEq<TKey, TValue> m_dict;
+            readonly TKey m_key;
+            readonly long m_hash;
             long m_extraIndex;
             TValue m_current;
 
@@ -32345,11 +32345,11 @@ namespace Aardvark.Base
                 m_current = default(TValue);
             }
 
-            public TValue Current => m_current;
+            public readonly TValue Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -32878,7 +32878,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentBigDictIEq<TKey, TValue>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<KeyValuePair<TKey, TValue>> Members
@@ -32909,7 +32909,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
         {
-            BigDictIEq<TKey, TValue> m_dict;
+            readonly BigDictIEq<TKey, TValue> m_dict;
             long m_index;
             long m_extraIndex;
             KeyValuePair<TKey, TValue> m_current;
@@ -32922,11 +32922,11 @@ namespace Aardvark.Base
                 m_current = default(KeyValuePair<TKey, TValue>);
             }
 
-            public KeyValuePair<TKey, TValue> Current => m_current;
+            public readonly KeyValuePair<TKey, TValue> Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -33160,7 +33160,7 @@ namespace Aardvark.Base
               IEnumerable, IEnumerable<TKey>
         where TKey : IEquatable<TKey>
     {
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyLong<TKey>[] m_firstArray;
         private HashKeyNextLong<TKey>[] m_extraArray;
@@ -33826,7 +33826,7 @@ namespace Aardvark.Base
         {
             return new ConcurrentBigDictSetIEq<TKey>(this);
         }
-        
+
         #endregion
 
         #region IEnumerable<TKey> Members
@@ -33857,7 +33857,7 @@ namespace Aardvark.Base
 
         public struct Enumerator : IEnumerator<TKey>
         {
-            BigDictSetIEq<TKey> m_dict;
+            readonly BigDictSetIEq<TKey> m_dict;
             long m_index;
             long m_extraIndex;
             TKey m_current;
@@ -33870,11 +33870,11 @@ namespace Aardvark.Base
                 m_current = default(TKey);
             }
 
-            public TKey Current => m_current;
+            public readonly TKey Current => m_current;
 
-            object IEnumerator.Current => m_current;
+            readonly object IEnumerator.Current => m_current;
 
-            public void Dispose() { }
+            public readonly void Dispose() { }
 
             public bool MoveNext()
             {
@@ -34107,7 +34107,7 @@ namespace Aardvark.Base
     public class ConcurrentDictIEq<TKey, TValue>
         where TKey : IEquatable<TKey>
     {
-        private DictIEq<TKey, TValue> m_dict;
+        private readonly DictIEq<TKey, TValue> m_dict;
 
         #region Constructors
 
@@ -34714,7 +34714,7 @@ namespace Aardvark.Base
     public class ConcurrentDictSetIEq<TKey>
         where TKey : IEquatable<TKey>
     {
-        private DictSetIEq<TKey> m_dict;
+        private readonly DictSetIEq<TKey> m_dict;
 
         #region Constructors
 
@@ -34974,7 +34974,7 @@ namespace Aardvark.Base
     public class ConcurrentBigDictIEq<TKey, TValue>
         where TKey : IEquatable<TKey>
     {
-        private BigDictIEq<TKey, TValue> m_dict;
+        private readonly BigDictIEq<TKey, TValue> m_dict;
 
         #region Constructors
 
@@ -35570,7 +35570,7 @@ namespace Aardvark.Base
     public class ConcurrentBigDictSetIEq<TKey>
         where TKey : IEquatable<TKey>
     {
-        private BigDictSetIEq<TKey> m_dict;
+        private readonly BigDictSetIEq<TKey> m_dict;
 
         #region Constructors
 
@@ -35828,7 +35828,7 @@ namespace Aardvark.Base
         private uint m_count;
         private uint m_increaseThreshold;
         private uint m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private int m_freeIndex;
         private int m_capacityIndex;
         private uint m_extraCount;
@@ -38687,14 +38687,14 @@ namespace Aardvark.Base
         where TKey : IEquatable<TKey>
     {
         private long m_version;
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyValueLong<TKey, TValue>[] m_firstArray;
         private HashKeyValueNextLong<TKey, TValue>[] m_extraArray;
         private ulong m_count;
         private ulong m_increaseThreshold;
         private ulong m_decreaseThreshold;
-        private bool m_doNotStackDuplicateKeys;
+        private readonly bool m_doNotStackDuplicateKeys;
         private long m_freeIndex;
         private int m_capacityIndex;
         private ulong m_extraCount;
@@ -40624,7 +40624,7 @@ namespace Aardvark.Base
         where TKey : IEquatable<TKey>
     {
         private long m_version;
-        private Func<TKey, long> m_hfun;
+        private readonly Func<TKey, long> m_hfun;
         private ulong m_capacity;
         private NextHashKeyLong<TKey>[] m_firstArray;
         private HashKeyNextLong<TKey>[] m_extraArray;

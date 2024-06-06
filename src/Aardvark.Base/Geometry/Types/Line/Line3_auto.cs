@@ -21,7 +21,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public V3f Origin
         {
-            get { return P0; }
+            readonly get { return P0; }
             set { P0 = value; }
         }
 
@@ -31,23 +31,23 @@ namespace Aardvark.Base
         [XmlIgnore]
         public V3f Direction
         {
-            get { return P1 - P0; }
+            readonly get { return P1 - P0; }
             set { P1 = P0 + value; }
         }
 
-        public Ray3f Ray3f => new Ray3f(P0, P1 - P0);
+        public readonly Ray3f Ray3f => new Ray3f(P0, P1 - P0);
 
-        public bool IsDegenerated => !Direction.Abs().AnyGreater(Constant<float>.PositiveTinyValue);
+        public readonly bool IsDegenerated => !Direction.Abs().AnyGreater(Constant<float>.PositiveTinyValue);
 
         #endregion
 
         #region IBoundingSphere3f Members
 
-        public Sphere3f BoundingSphere3f => new Sphere3f(this.ComputeCentroid(), 0.5f * Direction.Length);
+        public readonly Sphere3f BoundingSphere3f => new Sphere3f(this.ComputeCentroid(), 0.5f * Direction.Length);
 
         #endregion
 
-        public Line3f Flipped => new Line3f(P1, P0);
+        public readonly Line3f Flipped => new Line3f(P1, P0);
     }
 
     #endregion
@@ -68,7 +68,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public V3d Origin
         {
-            get { return P0; }
+            readonly get { return P0; }
             set { P0 = value; }
         }
 
@@ -78,23 +78,23 @@ namespace Aardvark.Base
         [XmlIgnore]
         public V3d Direction
         {
-            get { return P1 - P0; }
+            readonly get { return P1 - P0; }
             set { P1 = P0 + value; }
         }
 
-        public Ray3d Ray3d => new Ray3d(P0, P1 - P0);
+        public readonly Ray3d Ray3d => new Ray3d(P0, P1 - P0);
 
-        public bool IsDegenerated => !Direction.Abs().AnyGreater(Constant<double>.PositiveTinyValue);
+        public readonly bool IsDegenerated => !Direction.Abs().AnyGreater(Constant<double>.PositiveTinyValue);
 
         #endregion
 
         #region IBoundingSphere3d Members
 
-        public Sphere3d BoundingSphere3d => new Sphere3d(this.ComputeCentroid(), 0.5 * Direction.Length);
+        public readonly Sphere3d BoundingSphere3d => new Sphere3d(this.ComputeCentroid(), 0.5 * Direction.Length);
 
         #endregion
 
-        public Line3d Flipped => new Line3d(P1, P0);
+        public readonly Line3d Flipped => new Line3d(P1, P0);
     }
 
     #endregion

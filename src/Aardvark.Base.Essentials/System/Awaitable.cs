@@ -21,7 +21,7 @@ namespace Aardvark.Base
         private CancellationToken? m_ct;
         private CancellationTokenRegistration m_ctRegistration;
 
-        private Awaiter m_awaiter;
+        private readonly Awaiter m_awaiter;
 
         #region Constructors
 
@@ -139,9 +139,9 @@ namespace Aardvark.Base
 
         #endregion
 
-        private struct Awaiter : IAwaiter
+        private readonly struct Awaiter : IAwaiter
         {
-            private Awaitable m_source;
+            private readonly Awaitable m_source;
 
             #region Constructors
 
@@ -193,7 +193,7 @@ namespace Aardvark.Base
         private CancellationToken? m_ct;
         private CancellationTokenRegistration m_ctRegistration;
 
-        private Awaiter m_awaiter;
+        private readonly Awaiter m_awaiter;
         private ManualResetEventSlim m_onPush = null;
 
         #region Constructors
@@ -377,9 +377,9 @@ namespace Aardvark.Base
 
         #endregion
 
-        private struct Awaiter : IAwaiter<T>
+        private readonly struct Awaiter : IAwaiter<T>
         {
-            private Awaitable<T> m_source;
+            private readonly Awaitable<T> m_source;
 
             #region Constructors
 
@@ -804,7 +804,7 @@ namespace Aardvark.Base
     /// </summary>
     public class TaskAwaitable<T> : IAwaitable<T>
     {
-        private Task<T> m_task;
+        private readonly Task<T> m_task;
 
         /// <summary>
         /// </summary>
@@ -843,7 +843,7 @@ namespace Aardvark.Base
     /// </summary>
     public class TaskAwaitable : IAwaitable
     {
-        private Task m_task;
+        private readonly Task m_task;
 
         /// <summary>
         /// </summary>

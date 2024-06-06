@@ -180,7 +180,7 @@ namespace Aardvark.Base
     public class Cases<TPar, TNode> : IEnumerable<Case<TPar, TNode>>
         where TPar : TextParser<TPar>
     {
-        private List<Case<TPar, TNode>> CaseList;
+        private readonly List<Case<TPar, TNode>> CaseList;
 
         public Case<TPar, TNode>[] Array => CaseList.ToArray();
 
@@ -416,7 +416,7 @@ namespace Aardvark.Base
     /// </summary>
     public class ParserCases<TNode> : IEnumerable<ParserCase<TNode>>
     {
-        private List<ParserCase<TNode>> CaseList;
+        private readonly List<ParserCase<TNode>> CaseList;
 
         public ParserCase<TNode>[] Array => CaseList.ToArray(); 
 
@@ -1379,7 +1379,7 @@ namespace Aardvark.Base
                 => (char)(HexOfOrd((int)str[1]) * 16 + HexOfOrd((int)str[2]));
 
         // Decide what to do, based on the first character of the escape sequence.
-        private static Dictionary<char, Esc> s_escMap = new Dictionary<char, Esc> {
+        private static readonly Dictionary<char, Esc> s_escMap = new Dictionary<char, Esc> {
             { 'a', "a", str => '\a' },  { 'b', "b", str => '\b' },  { 'f', "f", str => '\f' },
             { 'n', "n", str => '\n' },  { 'r', "r", str => '\r' },  { 't', "t", str => '\t' },
             { 'v', "v", str => '\v' },
@@ -1388,7 +1388,7 @@ namespace Aardvark.Base
             { 'x', "x[0-9a-fA-F][0-9a-fA-F]", HexOfEscString },
         };
 
-        private static string s_escapes
+        private static readonly string s_escapes
                 = String.Join("|", s_escMap.Values.Select(e => e.Pattern).Distinct());
 
         private static readonly ParserState<StringBuilder> s_escState = new ParserCases<StringBuilder> {

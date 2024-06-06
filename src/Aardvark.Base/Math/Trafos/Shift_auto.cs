@@ -90,7 +90,7 @@ namespace Aardvark.Base
         public float X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -101,7 +101,7 @@ namespace Aardvark.Base
         public float Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -109,7 +109,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the length of this <see cref="Shift2f"/> transformation.
         /// </summary>
-        public float Length
+        public readonly float Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
@@ -118,7 +118,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the squared length of this <see cref="Shift2f"/> transformation.
         /// </summary>
-        public float LengthSquared
+        public readonly float LengthSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
@@ -127,7 +127,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Shift2f"/> transformation.
         /// </summary>
-        public Shift2f Inverse
+        public readonly Shift2f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Shift2f(-V); }
@@ -136,7 +136,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the reciprocal of this <see cref="Shift2f"/> transformation.
         /// </summary>
-        public Shift2f Reciprocal
+        public readonly Shift2f Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Shift2f(1 / V);
@@ -565,7 +565,7 @@ namespace Aardvark.Base
         public float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -575,19 +575,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Shift2f other)
+        public readonly bool Equals(Shift2f other)
             => X.Equals(other.X) && Y.Equals(other.Y);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Shift2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", X, Y);
         }
@@ -777,7 +777,7 @@ namespace Aardvark.Base
         public float X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -788,7 +788,7 @@ namespace Aardvark.Base
         public float Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -799,7 +799,7 @@ namespace Aardvark.Base
         public float Z
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Z; }
+            readonly get { return V.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
@@ -807,7 +807,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the length of this <see cref="Shift3f"/> transformation.
         /// </summary>
-        public float Length
+        public readonly float Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
@@ -816,7 +816,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the squared length of this <see cref="Shift3f"/> transformation.
         /// </summary>
-        public float LengthSquared
+        public readonly float LengthSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
@@ -825,7 +825,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Shift3f"/> transformation.
         /// </summary>
-        public Shift3f Inverse
+        public readonly Shift3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Shift3f(-V); }
@@ -834,7 +834,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the reciprocal of this <see cref="Shift3f"/> transformation.
         /// </summary>
-        public Shift3f Reciprocal
+        public readonly Shift3f Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Shift3f(1 / V);
@@ -1296,7 +1296,7 @@ namespace Aardvark.Base
         public float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -1306,19 +1306,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Shift3f other)
+        public readonly bool Equals(Shift3f other)
             => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Shift3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", X, Y, Z);
         }
@@ -1495,7 +1495,7 @@ namespace Aardvark.Base
         public double X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -1506,7 +1506,7 @@ namespace Aardvark.Base
         public double Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -1514,7 +1514,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the length of this <see cref="Shift2d"/> transformation.
         /// </summary>
-        public double Length
+        public readonly double Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
@@ -1523,7 +1523,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the squared length of this <see cref="Shift2d"/> transformation.
         /// </summary>
-        public double LengthSquared
+        public readonly double LengthSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
@@ -1532,7 +1532,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Shift2d"/> transformation.
         /// </summary>
-        public Shift2d Inverse
+        public readonly Shift2d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Shift2d(-V); }
@@ -1541,7 +1541,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the reciprocal of this <see cref="Shift2d"/> transformation.
         /// </summary>
-        public Shift2d Reciprocal
+        public readonly Shift2d Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Shift2d(1 / V);
@@ -1970,7 +1970,7 @@ namespace Aardvark.Base
         public double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -1980,19 +1980,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Shift2d other)
+        public readonly bool Equals(Shift2d other)
             => X.Equals(other.X) && Y.Equals(other.Y);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Shift2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", X, Y);
         }
@@ -2182,7 +2182,7 @@ namespace Aardvark.Base
         public double X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -2193,7 +2193,7 @@ namespace Aardvark.Base
         public double Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -2204,7 +2204,7 @@ namespace Aardvark.Base
         public double Z
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Z; }
+            readonly get { return V.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
@@ -2212,7 +2212,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the length of this <see cref="Shift3d"/> transformation.
         /// </summary>
-        public double Length
+        public readonly double Length
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.Length; }
@@ -2221,7 +2221,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the squared length of this <see cref="Shift3d"/> transformation.
         /// </summary>
-        public double LengthSquared
+        public readonly double LengthSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return V.LengthSquared; }
@@ -2230,7 +2230,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Shift3d"/> transformation.
         /// </summary>
-        public Shift3d Inverse
+        public readonly Shift3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return new Shift3d(-V); }
@@ -2239,7 +2239,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the reciprocal of this <see cref="Shift3d"/> transformation.
         /// </summary>
-        public Shift3d Reciprocal
+        public readonly Shift3d Reciprocal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Shift3d(1 / V);
@@ -2701,7 +2701,7 @@ namespace Aardvark.Base
         public double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -2711,19 +2711,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Shift3d other)
+        public readonly bool Equals(Shift3d other)
             => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Shift3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", X, Y, Z);
         }

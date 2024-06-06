@@ -28,13 +28,13 @@ namespace Aardvark.Base.Benchmarks
     [MemoryDiagnoser, PlainExporter]
     public class TelemetryProbesBenchmark
     {
-        Telemetry.StopWatchTime StopWatchProbe = new Telemetry.StopWatchTime();
-        Telemetry.CpuTime CPUProbe = new Telemetry.CpuTime();
-        Telemetry.WallClockTime WallProbe = new Telemetry.WallClockTime();
-        Telemetry.CpuTimeUser CPUUserProbe = new Telemetry.CpuTimeUser();
-        Telemetry.CpuTimePrivileged CPUPrivilegedProbe = new Telemetry.CpuTimePrivileged();
+        readonly Telemetry.StopWatchTime StopWatchProbe = new Telemetry.StopWatchTime();
+        readonly Telemetry.CpuTime CPUProbe = new Telemetry.CpuTime();
+        readonly Telemetry.WallClockTime WallProbe = new Telemetry.WallClockTime();
+        readonly Telemetry.CpuTimeUser CPUUserProbe = new Telemetry.CpuTimeUser();
+        readonly Telemetry.CpuTimePrivileged CPUPrivilegedProbe = new Telemetry.CpuTimePrivileged();
 
-        double[] m_data = new double[10000].SetByIndex(i => i + 1);
+        readonly double[] m_data = new double[10000].SetByIndex(i => i + 1);
 
         [Benchmark]
         public int StopWatchTime()

@@ -147,19 +147,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray != null;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray == null;
         }
 
-        public int PlaneCount
+        public readonly int PlaneCount
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
@@ -182,7 +182,7 @@ namespace Aardvark.Base
         #region Override
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             if (PlaneArray == null || PlaneArray.Length == 0) return 0;
             var h = PlaneArray[0].GetHashCode();
@@ -191,7 +191,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Hull3f other)
+        public readonly bool Equals(Hull3f other)
         {
             if (PlaneArray == null || other.PlaneArray == null) return false;
             for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
@@ -199,11 +199,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Hull3f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => PlaneArray != null
                 ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
                 : "[null]"
@@ -224,7 +224,7 @@ namespace Aardvark.Base
 
         #region Transformation
 
-        public Hull3f Transformed(Trafo3f trafo)
+        public readonly Hull3f Transformed(Trafo3f trafo)
         {
             int count = PlaneCount;
             var hull = new Hull3f(count);
@@ -237,7 +237,7 @@ namespace Aardvark.Base
             return hull;
         }
 
-        public void TransformInto(Trafo3f trafo, ref Hull3f hull)
+        public readonly void TransformInto(Trafo3f trafo, ref Hull3f hull)
         {
             int count = PlaneCount;
             var invTr = trafo.Backward.Transposed;
@@ -253,11 +253,11 @@ namespace Aardvark.Base
         #region Reversal
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Hull3f Reversed()
+        public readonly Hull3f Reversed()
             => new Hull3f(PlaneArray.Map(p => p.Reversed));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Reverse()
+        public readonly void Reverse()
             => PlaneArray.Apply(p => p.Reversed);
 
         #endregion
@@ -360,12 +360,12 @@ namespace Aardvark.Base
         /// specified by an array of its eight corner vertices, that must
         /// be ordered as returned by the <see pref="corners"/>
         /// call of the axis aligned bounding box. The avaibility of this
-        /// corner array slightly improves the performance of the test. 
+        /// corner array slightly improves the performance of the test.
         /// Note that this is a conservative test, since in some cases
         /// around the edges of the hull it may return true although the
         /// hull does not intersect the box.
         /// </summary>
-        public bool IntersectsAxisAlignedBox(
+        public readonly bool IntersectsAxisAlignedBox(
                 V3f[] corners)
         {
             var planes = Hull.PlaneArray;
@@ -387,7 +387,7 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public FastHull3f Transformed(Trafo3f trafo)
+        public readonly FastHull3f Transformed(Trafo3f trafo)
         {
             var newFastHull = new FastHull3f()
             {
@@ -398,7 +398,7 @@ namespace Aardvark.Base
             return newFastHull;
         }
 
-        public void TransformInto(Trafo3f trafo, ref FastHull3f fastHull)
+        public readonly void TransformInto(Trafo3f trafo, ref FastHull3f fastHull)
         {
             Hull.TransformInto(trafo, ref fastHull.Hull);
             ComputeMinCornerIndexArrayInto(fastHull.Hull.PlaneArray,
@@ -535,19 +535,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray != null;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray == null;
         }
 
-        public int PlaneCount
+        public readonly int PlaneCount
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
@@ -570,7 +570,7 @@ namespace Aardvark.Base
         #region Override
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             if (PlaneArray == null || PlaneArray.Length == 0) return 0;
             var h = PlaneArray[0].GetHashCode();
@@ -579,7 +579,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Hull3d other)
+        public readonly bool Equals(Hull3d other)
         {
             if (PlaneArray == null || other.PlaneArray == null) return false;
             for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
@@ -587,11 +587,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Hull3d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => PlaneArray != null
                 ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
                 : "[null]"
@@ -612,7 +612,7 @@ namespace Aardvark.Base
 
         #region Transformation
 
-        public Hull3d Transformed(Trafo3d trafo)
+        public readonly Hull3d Transformed(Trafo3d trafo)
         {
             int count = PlaneCount;
             var hull = new Hull3d(count);
@@ -625,7 +625,7 @@ namespace Aardvark.Base
             return hull;
         }
 
-        public void TransformInto(Trafo3d trafo, ref Hull3d hull)
+        public readonly void TransformInto(Trafo3d trafo, ref Hull3d hull)
         {
             int count = PlaneCount;
             var invTr = trafo.Backward.Transposed;
@@ -641,11 +641,11 @@ namespace Aardvark.Base
         #region Reversal
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Hull3d Reversed()
+        public readonly Hull3d Reversed()
             => new Hull3d(PlaneArray.Map(p => p.Reversed));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Reverse()
+        public readonly void Reverse()
             => PlaneArray.Apply(p => p.Reversed);
 
         #endregion
@@ -748,12 +748,12 @@ namespace Aardvark.Base
         /// specified by an array of its eight corner vertices, that must
         /// be ordered as returned by the <see pref="corners"/>
         /// call of the axis aligned bounding box. The avaibility of this
-        /// corner array slightly improves the performance of the test. 
+        /// corner array slightly improves the performance of the test.
         /// Note that this is a conservative test, since in some cases
         /// around the edges of the hull it may return true although the
         /// hull does not intersect the box.
         /// </summary>
-        public bool IntersectsAxisAlignedBox(
+        public readonly bool IntersectsAxisAlignedBox(
                 V3d[] corners)
         {
             var planes = Hull.PlaneArray;
@@ -775,7 +775,7 @@ namespace Aardvark.Base
 
         #region Transformations
 
-        public FastHull3d Transformed(Trafo3d trafo)
+        public readonly FastHull3d Transformed(Trafo3d trafo)
         {
             var newFastHull = new FastHull3d()
             {
@@ -786,7 +786,7 @@ namespace Aardvark.Base
             return newFastHull;
         }
 
-        public void TransformInto(Trafo3d trafo, ref FastHull3d fastHull)
+        public readonly void TransformInto(Trafo3d trafo, ref FastHull3d fastHull)
         {
             Hull.TransformInto(trafo, ref fastHull.Hull);
             ComputeMinCornerIndexArrayInto(fastHull.Hull.PlaneArray,

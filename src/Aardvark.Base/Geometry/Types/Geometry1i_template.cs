@@ -13,7 +13,7 @@ namespace Aardvark.Base
     //# Action comma = () => Out(", ");
     //# Action andand = () => Out(" && ");
     //# Action oror = () => Out(" || ");
-    //# var types   = new[] { null, null,   "Line1i",   "Triangle1i",   "Quad1i"    }; 
+    //# var types   = new[] { null, null,   "Line1i",   "Triangle1i",   "Quad1i"    };
     //# var names   = new[] { null, null,   "line",     "triangle",     "quad"      };
     //# var points  = new[] { null, null,   "endpoint", "vertex",       "vertex"    };
     //#
@@ -43,7 +43,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public IEnumerable<int> Indices
+        public readonly IEnumerable<int> Indices
         {
             get
             {
@@ -57,7 +57,7 @@ namespace Aardvark.Base
         //#     d.ForEach(i0 =>  {
         //#         d.ForEach(i1 => { if (i1 != i0) {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Line1i Line__i0____i1__ { get { return new Line1i(I__i0__, I__i1__); } }
+        public readonly Line1i Line__i0____i1__ { get { return new Line1i(I__i0__, I__i1__); } }
         //#         }});
         //#     });
 
@@ -67,7 +67,7 @@ namespace Aardvark.Base
         //#         d.ForEach(i1 => { if (i1 != i0) {
         //#             d.ForEach(i2 => { if (i2 != i1 && i2 != i0) {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        public Triangle1i Triangle__i0____i1____i2__ { get { return new Triangle1i(I__i0__, I__i1__, I__i2__); } }
+        public readonly Triangle1i Triangle__i0____i1____i2__ { get { return new Triangle1i(I__i0__, I__i1__, I__i2__); } }
         //#             }});
         //#         }});
         //#     });
@@ -79,7 +79,7 @@ namespace Aardvark.Base
 
         public int this[int index]
         {
-            get
+            readonly get
             {
                 switch (index)
                 {
@@ -127,12 +127,12 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(/*# d.ForEach(i => { */I__i__/*# }, comma); */);
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         #endregion
@@ -140,7 +140,7 @@ namespace Aardvark.Base
         #region IEquatable<__type__> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
         {
             return this == other;
         }

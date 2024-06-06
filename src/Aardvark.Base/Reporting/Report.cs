@@ -128,9 +128,9 @@ namespace Aardvark.Base
             Console.Write(message); Console.Out.Flush();
         }
 
-        private static bool s_coloredConsole;
-        private static ConsoleColor s_defaultForeground;
-        private static ConsoleColor s_defaultBackground;
+        private static readonly bool s_coloredConsole;
+        private static readonly ConsoleColor s_defaultForeground;
+        private static readonly ConsoleColor s_defaultBackground;
 
 
 #if !__ANDROID__

@@ -6,7 +6,7 @@ namespace Aardvark.Base
     public class CameraProjectionOrtho : ICameraProjection
     {
         private Trafo3d m_trafo;
-        private EventSource<Trafo3d> m_trafoChanges = new EventSource<Trafo3d>();
+        private readonly EventSource<Trafo3d> m_trafoChanges = new EventSource<Trafo3d>();
         private Box3d m_box;
         
         public CameraProjectionOrtho(double left, double right, double bottom, double top, double near, double far)

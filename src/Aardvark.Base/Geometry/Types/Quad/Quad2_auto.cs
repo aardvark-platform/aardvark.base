@@ -13,13 +13,13 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 0.5f * ((P2.X - P0.X) * (P3.Y - P1.Y) - (P3.X - P1.X) * (P2.Y - P0.Y)).Abs();
         }
 
-        public bool IsDegenerated
+        public readonly bool IsDegenerated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P1 - P0).AllTiny || (P2 - P1).AllTiny || (P3 - P2).AllTiny || (P0 - P3).AllTiny || WindingOrder.IsTiny();
@@ -29,7 +29,7 @@ namespace Aardvark.Base
         /// Returns a value less than zero for ccw and greater than zero for cw.
         /// The magnitude magnitude is twice the area.
         /// </summary>
-        public float WindingOrder
+        public readonly float WindingOrder
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P2.X - P0.X) * (P3.Y - P1.Y) - (P3.X - P1.X) * (P2.Y - P0.Y);
@@ -49,13 +49,13 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => 0.5 * ((P2.X - P0.X) * (P3.Y - P1.Y) - (P3.X - P1.X) * (P2.Y - P0.Y)).Abs();
         }
 
-        public bool IsDegenerated
+        public readonly bool IsDegenerated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P1 - P0).AllTiny || (P2 - P1).AllTiny || (P3 - P2).AllTiny || (P0 - P3).AllTiny || WindingOrder.IsTiny();
@@ -65,7 +65,7 @@ namespace Aardvark.Base
         /// Returns a value less than zero for ccw and greater than zero for cw.
         /// The magnitude magnitude is twice the area.
         /// </summary>
-        public double WindingOrder
+        public readonly double WindingOrder
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (P2.X - P0.X) * (P3.Y - P1.Y) - (P3.X - P1.X) * (P2.Y - P0.Y);

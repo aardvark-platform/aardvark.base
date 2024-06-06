@@ -52,9 +52,9 @@ namespace Aardvark.Base
     /// </summary>
     public class ConstEventSource<T> : IEvent<T>
     {
-        private static Awaitable s_awaitableNonGeneric = new Awaitable();
-        private static Awaitable<T> s_awaitable = new Awaitable<T>();
-        private T m_value;
+        private static readonly Awaitable s_awaitableNonGeneric = new Awaitable();
+        private static readonly Awaitable<T> s_awaitable = new Awaitable<T>();
+        private readonly T m_value;
 
         /// <summary>
         /// </summary>

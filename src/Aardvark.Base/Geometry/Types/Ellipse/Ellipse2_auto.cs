@@ -12,19 +12,19 @@ namespace Aardvark.Base
 
     public partial struct Ellipse2f : IValidity
     {
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public float Area
+        public readonly float Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Abs(Axis0.X * Axis1.Y - Axis0.Y * Axis1.X) * ConstantF.Pi;
@@ -41,19 +41,19 @@ namespace Aardvark.Base
 
     public partial struct Ellipse2d : IValidity
     {
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public double Area
+        public readonly double Area
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Abs(Axis0.X * Axis1.Y - Axis0.Y * Axis1.X) * Constant.Pi;

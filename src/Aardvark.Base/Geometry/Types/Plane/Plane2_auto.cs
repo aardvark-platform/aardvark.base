@@ -112,7 +112,7 @@ namespace Aardvark.Base
         public V2f Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Normal * Distance; }
+            readonly get { return Normal * Distance; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Distance = Vec.Dot(Normal, value); }
@@ -121,7 +121,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is not the zero-vector.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal != V2f.Zero;
@@ -130,7 +130,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is the zero-vector.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V2f.Zero;
@@ -140,7 +140,7 @@ namespace Aardvark.Base
         /// Returns a Plane3f whose cutting-line with the XY-Plane
         /// is represented by the Plane2f
         /// </summary>
-        public Plane3f PlaneXY
+        public readonly Plane3f PlaneXY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3f(Normal.XYO, Distance);
@@ -150,7 +150,7 @@ namespace Aardvark.Base
         /// Returns a Plane3f whose cutting-line with the XZ-Plane
         /// is represented by the Plane2f
         /// </summary>
-        public Plane3f PlaneXZ
+        public readonly Plane3f PlaneXZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3f(Normal.XOY, Distance);
@@ -160,7 +160,7 @@ namespace Aardvark.Base
         /// Returns a Plane3f whose cutting-line with the YZ-Plane
         /// is represented by the Plane2f
         /// </summary>
-        public Plane3f PlaneYZ
+        public readonly Plane3f PlaneYZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3f(Normal.OXY, Distance);
@@ -173,7 +173,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the normalized <see cref="Plane2f"/> as new <see cref="Plane2f"/>.
         /// </summary>
-        public Plane2f Normalized
+        public readonly Plane2f Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -208,7 +208,7 @@ namespace Aardvark.Base
         /// Returns <see cref="Plane2f"/> with normal vector in opposing direction.
         /// </summary>
         /// <returns></returns>
-        public Plane2f Reversed
+        public readonly Plane2f Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane2f(-Normal, -Distance);
@@ -219,20 +219,20 @@ namespace Aardvark.Base
         /// IMPORTANT: If the plane is not normalized the returned height is scaled with the magnitued of the plane normal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float Height(V2f p) => Vec.Dot(Normal, p) - Distance;
+        public readonly float Height(V2f p) => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Sign(V2f p) => Height(p).Sign();
+        public readonly int Sign(V2f p) => Height(p).Sign();
 
         /// <summary>
         /// Projets the given point x perpendicular on the plane
         /// and returns the nearest point on the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2f NearestPoint(V2f x)
+        public readonly V2f NearestPoint(V2f x)
         {
             var p = Point;
             return (x - Normal.Dot(x - p) * Normal);
@@ -241,7 +241,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the coefficients (a, b, c, d) of the normal equation.
         /// </summary>
-        public V3f Coefficients
+        public readonly V3f Coefficients
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3f(Normal, -Distance);
@@ -264,18 +264,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Plane2f other)
+        public readonly bool Equals(Plane2f other)
             => Normal.Equals(other.Normal) && Distance.Equals(other.Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Plane2f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() =>
+        public override readonly string ToString() =>
             string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -413,7 +413,7 @@ namespace Aardvark.Base
         public V2d Point
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Normal * Distance; }
+            readonly get { return Normal * Distance; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { Distance = Vec.Dot(Normal, value); }
@@ -422,7 +422,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is not the zero-vector.
         /// </summary>
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal != V2d.Zero;
@@ -431,7 +431,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the normal of the plane is the zero-vector.
         /// </summary>
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Normal == V2d.Zero;
@@ -441,7 +441,7 @@ namespace Aardvark.Base
         /// Returns a Plane3d whose cutting-line with the XY-Plane
         /// is represented by the Plane2d
         /// </summary>
-        public Plane3d PlaneXY
+        public readonly Plane3d PlaneXY
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3d(Normal.XYO, Distance);
@@ -451,7 +451,7 @@ namespace Aardvark.Base
         /// Returns a Plane3d whose cutting-line with the XZ-Plane
         /// is represented by the Plane2d
         /// </summary>
-        public Plane3d PlaneXZ
+        public readonly Plane3d PlaneXZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3d(Normal.XOY, Distance);
@@ -461,7 +461,7 @@ namespace Aardvark.Base
         /// Returns a Plane3d whose cutting-line with the YZ-Plane
         /// is represented by the Plane2d
         /// </summary>
-        public Plane3d PlaneYZ
+        public readonly Plane3d PlaneYZ
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane3d(Normal.OXY, Distance);
@@ -474,7 +474,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the normalized <see cref="Plane2d"/> as new <see cref="Plane2d"/>.
         /// </summary>
-        public Plane2d Normalized
+        public readonly Plane2d Normalized
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -509,7 +509,7 @@ namespace Aardvark.Base
         /// Returns <see cref="Plane2d"/> with normal vector in opposing direction.
         /// </summary>
         /// <returns></returns>
-        public Plane2d Reversed
+        public readonly Plane2d Reversed
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Plane2d(-Normal, -Distance);
@@ -520,20 +520,20 @@ namespace Aardvark.Base
         /// IMPORTANT: If the plane is not normalized the returned height is scaled with the magnitued of the plane normal.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double Height(V2d p) => Vec.Dot(Normal, p) - Distance;
+        public readonly double Height(V2d p) => Vec.Dot(Normal, p) - Distance;
 
         /// <summary>
         /// The sign of the height of the point over the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int Sign(V2d p) => Height(p).Sign();
+        public readonly int Sign(V2d p) => Height(p).Sign();
 
         /// <summary>
         /// Projets the given point x perpendicular on the plane
         /// and returns the nearest point on the plane.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V2d NearestPoint(V2d x)
+        public readonly V2d NearestPoint(V2d x)
         {
             var p = Point;
             return (x - Normal.Dot(x - p) * Normal);
@@ -542,7 +542,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the coefficients (a, b, c, d) of the normal equation.
         /// </summary>
-        public V3d Coefficients
+        public readonly V3d Coefficients
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new V3d(Normal, -Distance);
@@ -565,18 +565,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Normal, Distance);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Plane2d other)
+        public readonly bool Equals(Plane2d other)
             => Normal.Equals(other.Normal) && Distance.Equals(other.Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Plane2d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() =>
+        public override readonly string ToString() =>
             string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Normal, Distance);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

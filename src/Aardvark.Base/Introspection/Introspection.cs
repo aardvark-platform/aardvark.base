@@ -141,7 +141,7 @@ namespace Aardvark.Base
             : null
             ;
 
-        private static HashSet<string> s_defaultAssemblyBlacklist =
+        private static readonly HashSet<string> s_defaultAssemblyBlacklist =
             new HashSet<string>(
                 new[]
                 {
@@ -277,10 +277,10 @@ namespace Aardvark.Base
 
     public static class Introspection
     {
-        private static CultureInfo s_cultureInfoEnUs = new CultureInfo("en-us");
-        private static Dictionary<string, Assembly> s_assemblies;
-        private static HashSet<string> s_assembliesThatFailedToLoad = new HashSet<string>();
-        private static HashSet<Assembly> s_allAssemblies = new HashSet<Assembly>();
+        private static readonly CultureInfo s_cultureInfoEnUs = new CultureInfo("en-us");
+        private static readonly Dictionary<string, Assembly> s_assemblies;
+        private static readonly HashSet<string> s_assembliesThatFailedToLoad = new HashSet<string>();
+        private static readonly HashSet<Assembly> s_allAssemblies = new HashSet<Assembly>();
 
         private static string InitializeCacheDirectory()
         {
@@ -294,7 +294,7 @@ namespace Aardvark.Base
             return path;
         }
 
-        private static Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
+        private static readonly Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
 
         /// <summary>
         /// Returns the directory of the introspection cache files.
@@ -1084,8 +1084,8 @@ namespace Aardvark.Base
 
         private static class LdConfig
         {
-            static Regex rx = new Regex(@"[ \t]*(?<name>[^ \t]+)[ \t]+\((?<libc>[^,]+)\,(?<arch>[^,\)]+)[^\)]*\)[ \t]*\=\>[ \t]*(?<path>.*)");
-            static Dictionary<string, string> result = new Dictionary<string, string>();
+            static readonly Regex rx = new Regex(@"[ \t]*(?<name>[^ \t]+)[ \t]+\((?<libc>[^,]+)\,(?<arch>[^,\)]+)[^\)]*\)[ \t]*\=\>[ \t]*(?<path>.*)");
+            static readonly Dictionary<string, string> result = new Dictionary<string, string>();
             static bool loaded = false;
 
             static void Load()
@@ -1470,9 +1470,9 @@ namespace Aardvark.Base
             UnpackNativeDependenciesToBaseDir(a,baseDir);
         }
 
-        private static Regex soRx = new Regex(@"\.so(\.[0-9\-]+)?$");
-        private static Regex dllRx = new Regex(@"\.(dll|exe)$");
-        private static Regex dylibRx = new Regex(@"\.dylib$");
+        private static readonly Regex soRx = new Regex(@"\.so(\.[0-9\-]+)?$");
+        private static readonly Regex dllRx = new Regex(@"\.(dll|exe)$");
+        private static readonly Regex dylibRx = new Regex(@"\.dylib$");
 
         /// The path native dlls will be extracted to, each either each library to a separate folder or directly to the NativeLibraryPath 
         /// directory (depending on the configuration of SeparateLibraryDirectories).
@@ -1488,7 +1488,7 @@ namespace Aardvark.Base
         /// NOTE: When using global shared NativeLibraryPath, SeparateLibraryDirectories should not be set to false, as this there might be version conflicts
         public static bool SeparateLibraryDirectories = true;
 
-        private static Dictionary<Assembly, string>  s_nativePaths = new Dictionary<Assembly, string>();
+        private static readonly Dictionary<Assembly, string>  s_nativePaths = new Dictionary<Assembly, string>();
         private static string[] s_allPaths = null;
 
         public static string[] GetNativeLibraryPaths()
@@ -1547,7 +1547,7 @@ namespace Aardvark.Base
             }
         }
 
-        private static Dictionary<(Assembly, string), string> s_cache = new Dictionary<(Assembly, string), string>();
+        private static readonly Dictionary<(Assembly, string), string> s_cache = new Dictionary<(Assembly, string), string>();
 
         public static IntPtr LoadLibrary(Assembly assembly, string nativeName)
         {

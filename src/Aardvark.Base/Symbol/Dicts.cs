@@ -9,7 +9,7 @@ namespace Aardvark.Base
 
     public class SingleEntryDict<TKey, TValue> : IDict<TKey, TValue>
     {
-        TKey m_key;
+        readonly TKey m_key;
         TValue m_value;
 
         #region Constructors
@@ -81,8 +81,8 @@ namespace Aardvark.Base
     /// </summary>
     public class SingleValueDict<TKey, TValue> : IDict<TKey, TValue>, IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        private IDictSet<TKey> m_keys;
-        private TValue m_value;
+        private readonly IDictSet<TKey> m_keys;
+        private readonly TValue m_value;
 
         #region Constructors
 
@@ -184,7 +184,7 @@ namespace Aardvark.Base
     /// </summary>
     public class UniversalDict<TKey, TValue> : IDict<TKey, TValue>
     {
-        private TValue m_value;
+        private readonly TValue m_value;
 
         #region Constructor
 
@@ -255,7 +255,7 @@ namespace Aardvark.Base
     /// </summary>
     public class UnionDict<TKey, TValue> : IDict<TKey, TValue>, IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        List<IDict<TKey, TValue>> m_dictList;
+        readonly List<IDict<TKey, TValue>> m_dictList;
 
         #region Constructors
 
@@ -506,9 +506,9 @@ namespace Aardvark.Base
     /// </summary>
     public class DeltaDict<TKey, TValue> : IDict<TKey, TValue>, IDictDepth, IEnumerable<KeyValuePair<TKey, TValue>>
     {
-        IDict<TKey, TValue> m_baseDict;
-        Dict<TKey, TValue> m_deltaDict;
-        int m_depth;
+        readonly IDict<TKey, TValue> m_baseDict;
+        readonly Dict<TKey, TValue> m_deltaDict;
+        readonly int m_depth;
 
         #region Constructors
 
@@ -620,8 +620,8 @@ namespace Aardvark.Base
     /// </summary>
     public class SingleValueSymbolDict<TValue> : IDict<Symbol, TValue>, IEnumerable<KeyValuePair<Symbol, TValue>>
     {
-        private IDictSet<Symbol> m_keys;
-        private TValue m_value;
+        private readonly IDictSet<Symbol> m_keys;
+        private readonly TValue m_value;
 
         #region Constructors
 
@@ -724,7 +724,7 @@ namespace Aardvark.Base
     /// </summary>
     public class UniversalSymbolDict<TValue> : IDict<Symbol, TValue>
     {
-        private TValue m_value;
+        private readonly TValue m_value;
 
         #region Constructor
 
@@ -795,7 +795,7 @@ namespace Aardvark.Base
     /// </summary>
     public class UnionSymbolDict<TValue> : IDict<Symbol, TValue>, IEnumerable<KeyValuePair<Symbol, TValue>>
     {
-        List<IDict<Symbol, TValue>> m_dictList;
+        readonly List<IDict<Symbol, TValue>> m_dictList;
 
         #region Constructors
 
@@ -1044,8 +1044,8 @@ namespace Aardvark.Base
     /// </summary>
     public class DeltaSymbolDict<TValue> : IDict<Symbol, TValue>, IEnumerable<KeyValuePair<Symbol, TValue>>
     {
-        IDict<Symbol, TValue> m_baseDict;
-        IDict<Symbol, TValue> m_deltaDict;
+        readonly IDict<Symbol, TValue> m_baseDict;
+        readonly IDict<Symbol, TValue> m_deltaDict;
 
         #region Constructors
 

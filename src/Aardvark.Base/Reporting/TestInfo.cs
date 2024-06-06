@@ -19,7 +19,7 @@
 
         #region Operations
 
-        public long TestCount { get { return PassedCount + FailedCount; } }
+        public readonly long TestCount { get { return PassedCount + FailedCount; } }
 
         public static TestInfo operator +(TestInfo a, TestInfo b)
         {
@@ -27,7 +27,7 @@
                                 a.FailedCount + b.FailedCount);
         }
 
-        public static TestInfo Empty = new TestInfo(0, 0);
+        public static readonly TestInfo Empty = new TestInfo(0, 0);
 
         #endregion
     }

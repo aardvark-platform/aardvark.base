@@ -44,7 +44,7 @@ namespace Aardvark.Base
 
     internal class Subject<T> : IObservable<T>, IObserver<T>
     {
-        private Dictionary<IObserver<T>, int> m_observers;
+        private readonly Dictionary<IObserver<T>, int> m_observers;
 
         public Subject()
         {
@@ -111,7 +111,7 @@ namespace Aardvark.Base
 
     internal class LambdaObserver<T> : IObserver<T>
     {
-        private Action<T> m_action;
+        private readonly Action<T> m_action;
 
         public LambdaObserver(Action<T> action)
         {
@@ -132,8 +132,8 @@ namespace Aardvark.Base
 
     internal class MapObserver<T1, T2> : IObserver<T1>
     {
-        private Func<T1, T2> m_mapping;
-        private IObserver<T2> m_target;
+        private readonly Func<T1, T2> m_mapping;
+        private readonly IObserver<T2> m_target;
 
         public MapObserver(IObserver<T2> target, Func<T1, T2> mapping)
         {
@@ -157,8 +157,8 @@ namespace Aardvark.Base
 
     internal class MapObservable<T1, T2> : IObservable<T2>
     {
-        private IObservable<T1> m_input;
-        private Func<T1, T2> m_mapping;
+        private readonly IObservable<T1> m_input;
+        private readonly Func<T1, T2> m_mapping;
 
         public MapObservable(IObservable<T1> input, Func<T1, T2> mapping)
         {

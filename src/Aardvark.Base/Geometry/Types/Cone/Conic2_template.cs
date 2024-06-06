@@ -44,9 +44,9 @@ namespace Aardvark.Base
         }
 
 
-        public __ftype__ Discriminant { get { return CXX * CYY - CXY * CXY; } }
+        public readonly __ftype__ Discriminant { get { return CXX * CYY - CXY * CXY; } }
 
-        public int ConicType
+        public readonly int ConicType
         {
             get
             {

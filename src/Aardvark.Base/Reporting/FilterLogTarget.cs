@@ -8,8 +8,8 @@ namespace Aardvark.Base
     /// </summary>
     public class FilterLogTarget : ILogTarget
     {
-        private ILogTarget m_target;
-        private Func<LogMsg, bool> m_filterFun;
+        private readonly ILogTarget m_target;
+        private readonly Func<LogMsg, bool> m_filterFun;
 
         public FilterLogTarget(ILogTarget target, Func<LogMsg, bool> filterFun)
         {

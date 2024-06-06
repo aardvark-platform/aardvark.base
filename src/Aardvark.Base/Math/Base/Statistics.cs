@@ -35,8 +35,8 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public double Value { get { return m_value; } }
-        public T Data { get { return m_data; } }
+        public readonly double Value { get { return m_value; } }
+        public readonly T Data { get { return m_data; } }
 
         #endregion
 
@@ -110,7 +110,7 @@ namespace Aardvark.Base
     {
         long m_count;
         KahanSum m_sum;
-        StatsOptions m_options;
+        readonly StatsOptions m_options;
         Extremum<T> m_min;
         Extremum<T> m_max;
         KahanSum m_sumOfSquares;
@@ -152,18 +152,18 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public long Count { get { return m_count; } }
+        public readonly long Count { get { return m_count; } }
 
-        public double Min { get { return m_min.Value; } }
-        public double Max { get { return m_max.Value; } }
-        public T MinData { get { return m_min.Data; } }
-        public T MaxData { get { return m_max.Data; } }
+        public readonly double Min { get { return m_min.Value; } }
+        public readonly double Max { get { return m_max.Value; } }
+        public readonly T MinData { get { return m_min.Data; } }
+        public readonly T MaxData { get { return m_max.Data; } }
 
-        public double Sum { get { return m_sum.Value; } }
-        public double SumOfSquares { get { return m_sumOfSquares.Value; } }
-        public double Mean { get { return Sum / m_count; } }
-        public double Variance { get { return (SumOfSquares - Sum * Mean)/ m_count; } }
-        public double SampleVariance { get { return (SumOfSquares - Sum * Mean) / (m_count - 1); } }
+        public readonly double Sum { get { return m_sum.Value; } }
+        public readonly double SumOfSquares { get { return m_sumOfSquares.Value; } }
+        public readonly double Mean { get { return Sum / m_count; } }
+        public readonly double Variance { get { return (SumOfSquares - Sum * Mean)/ m_count; } }
+        public readonly double SampleVariance { get { return (SumOfSquares - Sum * Mean) / (m_count - 1); } }
 
         #endregion
 
@@ -215,7 +215,7 @@ namespace Aardvark.Base
 
         #region IReportable Members
 
-        public void ReportValue(int verbosity, string name)
+        public readonly void ReportValue(int verbosity, string name)
         {
             using (Report.Job(verbosity, name))
             {
@@ -262,16 +262,16 @@ namespace Aardvark.Base
     public struct Histogram : IReportable
     {
         private Range1d m_slotRange;
-        private double m_scale;
+        private readonly double m_scale;
         private long m_small;
         private long m_large;
         private Range1d m_dataRange;
-        private long[] m_histo;
+        private readonly long[] m_histo;
 
         #region Constructor
 
         public Histogram(double min, double max, int slotCount)
-            : this(new Range1d(min, max), slotCount) 
+            : this(new Range1d(min, max), slotCount)
         {
         }
 
@@ -289,13 +289,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public Range1d DataRange { get { return m_dataRange; } }
-        public Range1d SlotRange { get { return m_slotRange; } }
-        public long SmallCount { get { return m_small; } }
-        public long LargeCount { get { return m_large; } }
-        public int SlotCount { get { return m_histo.Length; } }
-        public long this[int slot] { get { return m_histo[slot]; } }
-        public long[] Slots { get { return m_histo; } }
+        public readonly Range1d DataRange { get { return m_dataRange; } }
+        public readonly Range1d SlotRange { get { return m_slotRange; } }
+        public readonly long SmallCount { get { return m_small; } }
+        public readonly long LargeCount { get { return m_large; } }
+        public readonly int SlotCount { get { return m_histo.Length; } }
+        public readonly long this[int slot] { get { return m_histo[slot]; } }
+        public readonly long[] Slots { get { return m_histo; } }
 
         #endregion
 
@@ -373,7 +373,7 @@ namespace Aardvark.Base
                 Report.Value(v, range, count);
         }
 
-        public void ReportValue(int v, string name)
+        public readonly void ReportValue(int v, string name)
         {
             using (Report.Job(v, "{0}:", name))
             {
@@ -393,7 +393,7 @@ namespace Aardvark.Base
         #endregion
 
     }
-    
+
     public class HistogramClass
     {
         public Histogram Value;

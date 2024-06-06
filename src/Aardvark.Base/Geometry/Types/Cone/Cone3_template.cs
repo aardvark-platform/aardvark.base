@@ -250,13 +250,13 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction != __v3t__.Zero;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Direction == __v3t__.Zero;
@@ -279,18 +279,18 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => HashCode.GetCombined(Origin, Direction, Angle);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Origin, Direction, Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => Origin.Equals(other.Origin) && Direction.Equals(other.Direction) && Angle.Equals(other.Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", Origin, Direction, Angle);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -308,9 +308,9 @@ namespace Aardvark.Base
         /// if zero, point is located on cone
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ftype__ GetDistance(__v3t__ point) => Vec.Distance(point, GetClosestPoint(point));
+        public readonly __ftype__ GetDistance(__v3t__ point) => Vec.Distance(point, GetClosestPoint(point));
 
-        public __circle3t__ GetCircle(__ftype__ height)
+        public readonly __circle3t__ GetCircle(__ftype__ height)
         {
             //circle along axis
             var dirLength = height;
@@ -320,16 +320,16 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ray3t__ GetAxis() => new __ray3t__(Origin, Direction);
+        public readonly __ray3t__ GetAxis() => new __ray3t__(Origin, Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ftype__ GetHeight(__v3t__ position)
+        public readonly __ftype__ GetHeight(__v3t__ position)
             => new __ray3t__(Origin, Direction).GetTOfProjectedPoint(position);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ftype__ GetRadius(__ftype__ height) => height * Angle.Sin() / Angle.Cos();
+        public readonly __ftype__ GetRadius(__ftype__ height) => height * Angle.Sin() / Angle.Cos();
 
-        public __v3t__ GetClosestPoint(__v3t__ point)
+        public readonly __v3t__ GetClosestPoint(__v3t__ point)
         {
             var ray = new __ray3t__(Origin, Direction);
             var cp = point.GetClosestPointOn(ray);

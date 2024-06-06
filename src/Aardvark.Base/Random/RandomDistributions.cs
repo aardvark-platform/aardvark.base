@@ -9,7 +9,7 @@ namespace Aardvark.Base
     /// </summary>
     public class RandomGaussian : IRandomDistribution
     {
-        private IRandomUniform m_rndUniform;
+        private readonly IRandomUniform m_rndUniform;
         private double m_cachedValue;
 
         public RandomGaussian(IRandomUniform rndUniform)

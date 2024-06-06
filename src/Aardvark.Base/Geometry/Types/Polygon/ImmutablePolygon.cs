@@ -19,7 +19,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Vertices.
         /// </summary>
-        private ImmutableList<T> m_ps = ImmutableList<T>.Empty;
+        private readonly ImmutableList<T> m_ps = ImmutableList<T>.Empty;
 
         /// <summary>
         /// Creates an immutable polygon from given outline.

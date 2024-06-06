@@ -106,31 +106,31 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0;
         }
 
-        public float RadiusSquared
+        public readonly float RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius;
         }
 
-        public float SurfaceArea
+        public readonly float SurfaceArea
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (4 * RadiusSquared * ConstantF.Pi);
         }
 
-        public float Volume
+        public readonly float Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (4.0f / 3.0f) * ConstantF.Pi * Radius * Radius * Radius;
@@ -189,20 +189,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Sphere3f other)
+        public readonly bool Equals(Sphere3f other)
             => Center.Equals(other.Center) && Radius.Equals(other.Radius);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Sphere3f o) ? Equals(o) : false;
 
         /// <summary>
         /// Writes a sphere to String.
         /// </summary>
         /// <returns>String representing the sphere.</returns>
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         public static Sphere3f Parse(string s)
@@ -215,7 +215,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
-        public Box3f BoundingBox3f
+        public readonly Box3f BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box3f(Center - Radius, Center + Radius);
@@ -341,31 +341,31 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0;
         }
 
-        public double RadiusSquared
+        public readonly double RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius;
         }
 
-        public double SurfaceArea
+        public readonly double SurfaceArea
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (4 * RadiusSquared * Constant.Pi);
         }
 
-        public double Volume
+        public readonly double Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (4.0 / 3.0) * Constant.Pi * Radius * Radius * Radius;
@@ -424,20 +424,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Sphere3d other)
+        public readonly bool Equals(Sphere3d other)
             => Center.Equals(other.Center) && Radius.Equals(other.Radius);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Sphere3d o) ? Equals(o) : false;
 
         /// <summary>
         /// Writes a sphere to String.
         /// </summary>
         /// <returns>String representing the sphere.</returns>
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         public static Sphere3d Parse(string s)
@@ -450,7 +450,7 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
-        public Box3d BoundingBox3d
+        public readonly Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Box3d(Center - Radius, Center + Radius);

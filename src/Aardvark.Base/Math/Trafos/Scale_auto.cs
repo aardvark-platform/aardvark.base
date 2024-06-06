@@ -99,7 +99,7 @@ namespace Aardvark.Base
         public float X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -110,7 +110,7 @@ namespace Aardvark.Base
         public float Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -118,7 +118,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Scale2f"/> transformation.
         /// </summary>
-        public Scale2f Inverse
+        public readonly Scale2f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2f(1 / X, 1 / Y);
@@ -516,7 +516,7 @@ namespace Aardvark.Base
         public float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -526,19 +526,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Scale2f other)
+        public readonly bool Equals(Scale2f other)
             => X.Equals(other.X) && Y.Equals(other.Y);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Scale2f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", X, Y);
         }
@@ -737,7 +737,7 @@ namespace Aardvark.Base
         public float X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -748,7 +748,7 @@ namespace Aardvark.Base
         public float Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -759,7 +759,7 @@ namespace Aardvark.Base
         public float Z
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Z; }
+            readonly get { return V.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
@@ -767,7 +767,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Scale3f"/> transformation.
         /// </summary>
-        public Scale3f Inverse
+        public readonly Scale3f Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3f(1 / X, 1 / Y, 1 / Z);
@@ -1180,7 +1180,7 @@ namespace Aardvark.Base
         public float this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -1190,19 +1190,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Scale3f other)
+        public readonly bool Equals(Scale3f other)
             => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Scale3f o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", X, Y, Z);
         }
@@ -1388,7 +1388,7 @@ namespace Aardvark.Base
         public double X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -1399,7 +1399,7 @@ namespace Aardvark.Base
         public double Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -1407,7 +1407,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Scale2d"/> transformation.
         /// </summary>
-        public Scale2d Inverse
+        public readonly Scale2d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale2d(1 / X, 1 / Y);
@@ -1805,7 +1805,7 @@ namespace Aardvark.Base
         public double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -1815,19 +1815,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Scale2d other)
+        public readonly bool Equals(Scale2d other)
             => X.Equals(other.X) && Y.Equals(other.Y);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Scale2d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", X, Y);
         }
@@ -2026,7 +2026,7 @@ namespace Aardvark.Base
         public double X
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.X; }
+            readonly get { return V.X; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.X = value; }
         }
@@ -2037,7 +2037,7 @@ namespace Aardvark.Base
         public double Y
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Y; }
+            readonly get { return V.Y; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Y = value; }
         }
@@ -2048,7 +2048,7 @@ namespace Aardvark.Base
         public double Z
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return V.Z; }
+            readonly get { return V.Z; }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set { V.Z = value; }
         }
@@ -2056,7 +2056,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets the inverse of this <see cref="Scale3d"/> transformation.
         /// </summary>
-        public Scale3d Inverse
+        public readonly Scale3d Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new Scale3d(1 / X, 1 / Y, 1 / Z);
@@ -2469,7 +2469,7 @@ namespace Aardvark.Base
         public double this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => V[index];
+            readonly get => V[index];
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set => V[index] = value;
@@ -2479,19 +2479,19 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return V.GetHashCode();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Scale3d other)
+        public readonly bool Equals(Scale3d other)
             => X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Scale3d o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}]", X, Y, Z);
         }

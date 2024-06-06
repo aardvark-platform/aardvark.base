@@ -178,7 +178,7 @@ namespace Aardvark.Base
             { "woman", "women" },
         };
 
-        static Dictionary<string, string>[] s_pluralEndings
+        static readonly Dictionary<string, string>[] s_pluralEndings
             = new Dictionary<string, string>[]
         {
             null,

@@ -46,7 +46,7 @@ namespace Aardvark.Base.Coder
         }
 
         private static bool s_initTypeInfosCalled = false;
-        private static object s_initTypeInfosLock = new Object();
+        private static readonly object s_initTypeInfosLock = new Object();
 
         private static void InitTypeInfos()
         {
@@ -112,7 +112,7 @@ namespace Aardvark.Base.Coder
     public class BaseReadingCoder : BaseCoder
     {
         protected Dictionary<string, TypeInfo> m_typeInfoOfName;
-        private Stack<List<TypeInfo>> m_typeInfoArrayStack;
+        private readonly Stack<List<TypeInfo>> m_typeInfoArrayStack;
         protected List<object> m_refs;
 
         #region Constructor
@@ -178,7 +178,7 @@ namespace Aardvark.Base.Coder
     public class BaseWritingCoder : BaseCoder
     {
         protected Dictionary<Type, TypeInfo> m_typeInfoOfType;
-        private Stack<List<TypeInfo>> m_typeInfoArrayStack;
+        private readonly Stack<List<TypeInfo>> m_typeInfoArrayStack;
         protected Dictionary<object, int> m_refs;
 
         #region Constructor

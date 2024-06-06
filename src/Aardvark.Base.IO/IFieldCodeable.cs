@@ -11,10 +11,10 @@ namespace Aardvark.Base.Coder
     /// </summary>
     public struct FieldCoder
     {
-        int m_order;
+        readonly int m_order;
         string m_name;
-        int m_minVersion;
-        int m_maxVersion;
+        readonly int m_minVersion;
+        readonly int m_maxVersion;
         Action<ICoder, object> m_code;
 
         #region Constructors
@@ -42,11 +42,11 @@ namespace Aardvark.Base.Coder
 
         #region Properties
 
-        public int Order { get { return m_order; } }
-        public string Name { get { return m_name; } set { m_name = value; } }
-        public int MinVersion { get { return m_minVersion; } }
-        public int MaxVersion { get { return m_maxVersion; } }
-        public Action<ICoder, object> Code { get { return m_code; } set { m_code = value; } }
+        public readonly int Order { get { return m_order; } }
+        public string Name { readonly get { return m_name; } set { m_name = value; } }
+        public readonly int MinVersion { get { return m_minVersion; } }
+        public readonly int MaxVersion { get { return m_maxVersion; } }
+        public Action<ICoder, object> Code { readonly get { return m_code; } set { m_code = value; } }
 
         #endregion
     }
@@ -92,8 +92,8 @@ namespace Aardvark.Base.Coder
 
     internal static class FieldCoderArray
     {
-        private static object s_lock = new object();
-        private static Dictionary<(int, Type, int), FieldCoder[]> s_fieldCoderArrayMap
+        private static readonly object s_lock = new object();
+        private static readonly Dictionary<(int, Type, int), FieldCoder[]> s_fieldCoderArrayMap
                 = new Dictionary<(int, Type, int), FieldCoder[]>();
 
         public static FieldCoder[] Get(int coderVersion, Type type, int version, IFieldCodeable fieldCodeAble)
@@ -122,8 +122,8 @@ namespace Aardvark.Base.Coder
 
     internal class FieldCoderMap : Dictionary<string, Action<ICoder, object>>
     {
-        private static object s_lock = new object();
-        private static Dictionary<(int, Type, int), FieldCoderMap> s_fieldCoderMapMap
+        private static readonly object s_lock = new object();
+        private static readonly Dictionary<(int, Type, int), FieldCoderMap> s_fieldCoderMapMap
                 = new Dictionary<(int, Type, int), FieldCoderMap>();
 
         public static FieldCoderMap Get(int coderVersion, Type type, int version, IFieldCodeable fieldCodeAble)

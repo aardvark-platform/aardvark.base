@@ -31,7 +31,7 @@ namespace Aardvark.Base
     //# var ops = new[] {" + ", " - ", " % ", " / ", " * "};
     //# var bwops = new[] { "&", "|", "^" };
     //# for (int n = 2; n <= 4; n++) {
-    //# for (int m = n; m <= (n+1) && m < 5; m++) { 
+    //# for (int m = n; m <= (n+1) && m < 5; m++) {
     //# for (int t = 0; t < tcharA.Length; t++) {
     //#     var msub1 = m - 1;
     //#     var msub2 = m - 2;
@@ -55,7 +55,7 @@ namespace Aardvark.Base
     //#     var rotnsub1t = "Rot" + (n - 1) + tchar;
     //#     var nfields = fields.Take(n).ToArray();
     //#     var mfields = fields.Take(m).ToArray();
-    //#     var isReal = t > 1;    
+    //#     var isReal = t > 1;
     //#     var ftype = ftypeA[t];
     //#     var fcaps = fcapsA[t];
     //#     var ctype = ctypeA[t];
@@ -128,7 +128,7 @@ namespace Aardvark.Base
         }
 
         //# }
-        //# for (int t1 = 0; t1 < tcharA.Length; t1++) { 
+        //# for (int t1 = 0; t1 < tcharA.Length; t1++) {
         //#     for (int a = 2; a <= 4; a++) {
         //#         for (int b = a; b <= (a+1) && b < 5; b++) {
         //#             var MabType1 = "M" + a + b + tcharA[t1];
@@ -149,7 +149,7 @@ namespace Aardvark.Base
 
         #region Conversions
 
-        //# for (int t1 = 0; t1 < tcharA.Length; t1++) { 
+        //# for (int t1 = 0; t1 < tcharA.Length; t1++) {
         //#     for (int a = 2; a <= 4; a++) {
         //#         for (int b = a; b <= (a+1) && b < 5; b++) {
         //#             var MabType1 = "M" + a + b + tcharA[t1];
@@ -195,7 +195,7 @@ namespace Aardvark.Base
             };
         }
 
-        public void CopyTo(__ftype1__[] array, long index)
+        public readonly void CopyTo(__ftype1__[] array, long index)
         {
             //# n.ForEach(j => { m.ForEach(k => { var jk = j * m + k;
             array[index + __jk__] = /*#  if (t != t1) { */(__ftype1__)/*# } */M__j____k__;
@@ -209,7 +209,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public __nmtype1__ Copy(Func<__ftype__, __ftype1__> element_fun)
+        public readonly __nmtype1__ Copy(Func<__ftype__, __ftype1__> element_fun)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => { */element_fun(M__r____s__)/*# }, comma); }, comma); */);
@@ -218,7 +218,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
-        public __nmtype1__ Copy(Func<__ftype__, int, int, __ftype1__> element_index0_index1_fun)
+        public readonly __nmtype1__ Copy(Func<__ftype__, int, int, __ftype1__> element_index0_index1_fun)
         {
             return new __nmtype1__(/*# n.ForEach(r => { */
                 /*# m.ForEach(s => { */element_index0_index1_fun(M__r____s__, __r__, __s__)/*# }, comma); }, comma); */);
@@ -231,13 +231,13 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a copy of the upper left sub matrix.
         /// </summary>
-        public __nmtype1__ UpperLeft__nmtype1x__()
+        public readonly __nmtype1__ UpperLeft__nmtype1x__()
         {
             return (__nmtype1__)this;
         }
 
         //# }
-        public __ftype__[] ToArray()
+        public readonly __ftype__[] ToArray()
         {
             var array = new __ftype__[__nm__];
             //# n.ForEach(j => { m.ForEach(k => { var jk = j * m + k;
@@ -491,7 +491,7 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in radians.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -501,14 +501,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees. 
+        /// Creates a 3D rotation matrix from roll (X), pitch (Y), and yaw (Z) in degrees.
         /// The rotation order is: Z, Y, X.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype__ RotationEulerInDegrees(__ftype__ rollInDegrees, __ftype__ pitchInDegrees, __ftype__ yawInDegrees)
             => RotationEuler(
                 rollInDegrees.RadiansFromDegrees(),
-                pitchInDegrees.RadiansFromDegrees(), 
+                pitchInDegrees.RadiansFromDegrees(),
                 yawInDegrees.RadiansFromDegrees());
 
         /// <summary>
@@ -679,19 +679,19 @@ namespace Aardvark.Base
 
         #region Properties and Indexers
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => true;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => false;
         }
 
-        public IEnumerable<__ftype__> Elements
+        public readonly IEnumerable<__ftype__> Elements
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -702,38 +702,38 @@ namespace Aardvark.Base
             }
         }
 
-        public IEnumerable<__vmtype__> Rows
+        public readonly IEnumerable<__vmtype__> Rows
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                //# n.ForEach(k => { 
+                //# n.ForEach(k => {
                 yield return R__k__;
                 //# });
             }
         }
 
-        public IEnumerable<__vntype__> Columns
+        public readonly IEnumerable<__vntype__> Columns
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                //# m.ForEach(k => { 
+                //# m.ForEach(k => {
                 yield return C__k__;
                 //# });
             }
         }
 
-        //# n.ForEach(k => { 
+        //# n.ForEach(k => {
         [XmlIgnore]
         public __vmtype__ R__k__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new __vmtype__(/*# m.ForEach(f => {*/ M__k____f__/*#}, comma); */); }
+            readonly get { return new __vmtype__(/*# m.ForEach(f => {*/ M__k____f__/*#}, comma); */); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                //# mfields.ForEach((f, j) => { 
+                //# mfields.ForEach((f, j) => {
                 M__k____j__ = value.__f__;
                 //# });
             }
@@ -745,25 +745,25 @@ namespace Aardvark.Base
         public __vntype__ C__k__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return new __vntype__(/*# n.ForEach(f => {*/ M__f____k__/*#}, comma); */); }
+            readonly get { return new __vntype__(/*# n.ForEach(f => {*/ M__f____k__/*#}, comma); */); }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
-                //# nfields.ForEach((f, j) => { 
+                //# nfields.ForEach((f, j) => {
                 M__j____k__ = value.__f__;
                 //# });
             }
         }
 
         //# });
-        public __vntype__ Diagonal
+        public readonly __vntype__ Diagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __vntype__(/*# n.ForEach(i => {*/M__i____i__/*#}, comma); */);
         }
 
         //# if (n == m) {
-        public __vntype__ AntiDiagonal
+        public readonly __vntype__ AntiDiagonal
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __vntype__(/*# n.ForEach(i => { var j = n - 1 - i; */M__i____j__/*#}, comma); */);
@@ -773,7 +773,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the minimum element of the matrix.
         /// </summary>
-        public __ftype__ MinElement
+        public readonly __ftype__ MinElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Min(/*# n.ForEach(r => { m.ForEach(s => {*/M__r____s__/*#}, comma);}, comma); */);
@@ -782,7 +782,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the maximum element of the matrix.
         /// </summary>
-        public __ftype__ MaxElement
+        public readonly __ftype__ MaxElement
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.Max(/*# n.ForEach(r => { m.ForEach(s => {*/M__r____s__/*#}, comma);}, comma); */);
@@ -791,7 +791,7 @@ namespace Aardvark.Base
         public unsafe __ftype__ this[int index]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (__ftype__* ptr = __getptr__) { return ptr[index]; }
             }
@@ -805,7 +805,7 @@ namespace Aardvark.Base
         public unsafe __ftype__ this[int row, int column]
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (__ftype__* ptr = __getptr__) { return ptr[row * __m__ + column]; }
             }
@@ -823,7 +823,7 @@ namespace Aardvark.Base
         //# var actArray = new[] { oror, andand };
         //# condArray.ForEach(scopeArray, (cond, scope) => {
         //# quantArray.ForEach(actArray, (qant, act) => {
-        public bool __qant____cond__
+        public readonly bool __qant____cond__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -834,11 +834,11 @@ namespace Aardvark.Base
         }
 
         //# }); // quantArray
-        //# }); // condArray 
+        //# }); // condArray
         /// <summary>
         /// Returns true if the absolute value of each element of the matrix is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -847,7 +847,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -856,7 +856,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -865,7 +865,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -874,7 +874,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any element of the matrix is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -883,7 +883,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all elements of the matrix are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -926,7 +926,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the matrix. This is
         /// calculated as |M00| + |M01| + ...
         /// </summary>
-        public __ftype__ Norm1
+        public readonly __ftype__ Norm1
         {
             get
             {
@@ -939,7 +939,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the matrix. This is
         /// calculated as Sqrt(M00 * M00 + M01 * M01 + ... )
         /// </summary>
-        public __ctype__ Norm2
+        public readonly __ctype__ Norm2
         {
             get
             {
@@ -952,7 +952,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the matrix. This is
         /// calculated as max(|M00|, |M01|, ...).
         /// </summary>
-        public __ftype__ NormMax
+        public readonly __ftype__ NormMax
         {
             get
             {
@@ -966,7 +966,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the matrix. This is calculated as
         /// min(|M00|, |M01|, ...).
         /// </summary>
-        public __ftype__ NormMin
+        public readonly __ftype__ NormMin
         {
             get
             {
@@ -991,7 +991,7 @@ namespace Aardvark.Base
         //#     for (int t1 = t; t1 < tcharA.Length; t1++) {
         //#         var nmtype1 = "M" + n + m + tcharA[t1];
         //#         var ftype1 = ftypeA[t1];
-        //#         if (o != ops.Length-1) { 
+        //#         if (o != ops.Length-1) {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __nmtype1__ __opact__(__nmtype__ a, __nmtype1__ b)
         {
@@ -1137,33 +1137,33 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(/*# n.ForEach(r => { */
                         HashCode.GetCombined(/*# m.ForEach(s => {*/M__r____s__/*# }, comma); }, bracketComma); */));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__nmtype__ other)
+        public readonly bool Equals(__nmtype__ other)
         {
             return /*# n.ForEach(i => { */
                 /*# m.ForEach(j => { */M__i____j__.Equals(other.M__i____j__)/*#}, andand);}, andand);*/;
         }
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __nmtype__ o) ? Equals(o) : false;
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
         }
@@ -1171,7 +1171,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 2x2-Matrix in the form "(beginM)(beginR)m00(betweenR)m01(endR)(betweenM)(beginR)m10(betweenR)m11(endR)(endM)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
+        public readonly string ToString(string format, IFormatProvider fp, string beginM, string betweenM, string endM, string beginR, string betweenR, string endR)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return beginM/*# n.ForEach(r => {*/
@@ -1195,7 +1195,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns adjoint of this matrix.
         /// </summary>
-        public __nmtype__ Adjoint
+        public readonly __nmtype__ Adjoint
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
@@ -1225,7 +1225,7 @@ namespace Aardvark.Base
         /// The trace is defined as the sum of the diagonal elements,
         /// and is only defined for square matrices.
         /// </summary>
-        public __ftype__ Trace
+        public readonly __ftype__ Trace
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return /*# n.ForEach(r => {*/M__r____r__/*# }, add);*/ ; }
@@ -1235,7 +1235,7 @@ namespace Aardvark.Base
         /// Gets the determinant of this matrix.
         /// The determinant is only defined for square matrices.
         /// </summary>
-        public __ftype__ Determinant
+        public readonly __ftype__ Determinant
         {
             get
             {
@@ -1281,7 +1281,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is invertible.
         /// A matrix is invertible if its determinant is not zero.
         /// </summary>
-        public bool Invertible
+        public readonly bool Invertible
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant != 0; }
@@ -1291,7 +1291,7 @@ namespace Aardvark.Base
         /// Returns whether this matrix is singular.
         /// A matrix is singular if its determinant is zero.
         /// </summary>
-        public bool Singular
+        public readonly bool Singular
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Determinant == 0; }
@@ -1300,7 +1300,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets transpose of this matrix.
         /// </summary>
-        public __nmtype__ Transposed
+        public readonly __nmtype__ Transposed
         {
             get
             {
@@ -1335,8 +1335,8 @@ namespace Aardvark.Base
             }
             //# } else {
             M__n____n__d dbl = (M__n____n__d)this;
-            if(dbl.LuInvert()) 
-            { 
+            if(dbl.LuInvert())
+            {
                 this = (__nmtype__)dbl;
                 return true;
             }
@@ -1348,7 +1348,7 @@ namespace Aardvark.Base
         /// Returns the inverse of the matrix using lu factorization.
         /// If the matrix is not invertible, __nmtype__.Zero is returned.
         /// </summary>
-        public/*# if(ftype == "double") { Out(" unsafe"); } */ __nmtype__ LuInverse()
+        public/*# if(ftype == "double") { Out(" unsafe"); } */ readonly __nmtype__ LuInverse()
         {
             //# if (ftype == "double") {
             var lu = this;
@@ -1360,7 +1360,7 @@ namespace Aardvark.Base
                 return res;
             }
             return __nmtype__.Zero;
-            //# } else { 
+            //# } else {
             return (__nmtype__)((M__n____n__d)this).LuInverse();
             //# }
         }
@@ -1369,7 +1369,7 @@ namespace Aardvark.Base
         /// Returns the inverse of this matrix. If the matrix is not invertible
         /// __nmtype__.Zero is returned.
         /// </summary>
-        public __nmtype__ Inverse
+        public readonly __nmtype__ Inverse
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => LuInverse();
@@ -1414,7 +1414,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[long x, long y]
         {
-            get
+            readonly get
             {
                 return /*# if (ftype != "double") { */(double)/*# } */this[(int)y, (int)x];
             }
@@ -1430,7 +1430,7 @@ namespace Aardvark.Base
         /// </summary>
         public double this[V2l v]
         {
-            get
+            readonly get
             {
                 return /*# if (ftype != "double") { */(double)/*# } */this[(int)v.Y, (int)v.X];
             }
@@ -1444,12 +1444,12 @@ namespace Aardvark.Base
 
         #region IMatrix
 
-        public V2l Dim
+        public readonly V2l Dim
         {
             get { return Dimensions; }
         }
 
-        public object GetValue(long x, long y)
+        public readonly object GetValue(long x, long y)
         {
             return (object)this[(int)x, (int)y];
         }
@@ -1459,7 +1459,7 @@ namespace Aardvark.Base
             this[(int)x, (int)y] = (__ftype__)value;
         }
 
-        public object GetValue(V2l v)
+        public readonly object GetValue(V2l v)
         {
             return (object)this[(int)(v.X), (int)(v.Y)];
         }
@@ -1543,7 +1543,7 @@ namespace Aardvark.Base
         //# if (t > 1 && m == 4) {
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A left-handed coordinates system transformation is expected, 
+        /// NOTE: A left-handed coordinates system transformation is expected,
         /// where the view-space z-axis points in forward direction.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1552,7 +1552,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Extracts the forward vector from the given view transformation matrix.
-        /// NOTE: A right-handed coordinates system transformation is expected, where 
+        /// NOTE: A right-handed coordinates system transformation is expected, where
         /// the view-space z-axis points opposit the forward vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1560,7 +1560,7 @@ namespace Aardvark.Base
             => -m.R__msub2__.__xyzmsub1__.Normalized;
 
         /// <summary>
-        /// Extracts the translation component of the given transformation matrix, which when given 
+        /// Extracts the translation component of the given transformation matrix, which when given
         /// a model transformation represents the model origin in world position.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1572,7 +1572,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Builds a hull from the given view-projection transformation matrix (left, right, bottom, top, near, far).
         /// The view volume is assumed to be [-1, -1, -1] [1, 1, 1].
-        /// The normals of the hull planes point to the outside and are normalized. 
+        /// The normals of the hull planes point to the outside and are normalized.
         /// A point inside the visual hull will has negative height to all planes.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

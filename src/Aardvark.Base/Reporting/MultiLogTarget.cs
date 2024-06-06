@@ -3,7 +3,7 @@
     public class MultiLogTarget : ILogTarget
     {
         private volatile ILogTarget[] m_targetArray;
-        private object m_targetArrayLock;
+        private readonly object m_targetArrayLock;
 
         #region Constructor
 

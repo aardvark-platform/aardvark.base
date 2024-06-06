@@ -27,7 +27,7 @@ namespace Aardvark.Base.Benchmarks
             Z = z;
         }
 
-        public StructThing DoMath(StructThing b)
+        public readonly StructThing DoMath(StructThing b)
         {
             return new StructThing(
                 Y * b.X - X * b.Y,
@@ -40,7 +40,7 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class StaticConstants
     {
-        StructThing[] arr = new StructThing[500000];
+        readonly StructThing[] arr = new StructThing[500000];
 
         public StaticConstants()
         {

@@ -72,7 +72,7 @@ namespace Aardvark.Base
     {
         #region local variables/constants
         private Node _root;
-        private IComparer<T> _comparer;
+        private readonly IComparer<T> _comparer;
         private int _count;
         private int _version;
         private Object _syncRoot;
@@ -2023,13 +2023,13 @@ namespace Aardvark.Base
         /// </summary>
         internal sealed class TreeSubSet : SortedSetExt<T>
         {
-            private SortedSetExt<T> _underlying;
-            private T _min, _max;
+            private readonly SortedSetExt<T> _underlying;
+            private readonly T _min, _max;
             //these exist for unbounded collections
             //for instance, you could allow this subset to be defined for i>10. The set will throw if
             //anything <=10 is added, but there is no upperbound. These features Head(), Tail(), were punted
             //in the spec, and are not available, but the framework is there to make them available at some point.
-            private bool _lBoundActive, _uBoundActive;
+            private readonly bool _lBoundActive, _uBoundActive;
             //used to see if the count is out of date            
 
 
@@ -2342,15 +2342,15 @@ namespace Aardvark.Base
         [SuppressMessage("Microsoft.Performance", "CA1815:OverrideEqualsAndOperatorEqualsOnValueTypes", Justification = "not an expected scenario")]
         public struct Enumerator : IEnumerator<T>, IEnumerator
         {
-            private SortedSetExt<T> _tree;
-            private int _version;
+            private readonly SortedSetExt<T> _tree;
+            private readonly int _version;
 
 
-            private Stack<SortedSetExt<T>.Node> _stack;
+            private readonly Stack<SortedSetExt<T>.Node> _stack;
             private SortedSetExt<T>.Node _current;
             //private static SortedSetExt<T>.Node s_dummyNode = new SortedSetExt<T>.Node(default(T));
 
-            private bool _reverse;
+            private readonly bool _reverse;
 
             internal Enumerator(SortedSetExt<T> set)
             {
@@ -2449,11 +2449,11 @@ namespace Aardvark.Base
                 return true;
             }
 
-            public void Dispose()
+            public readonly void Dispose()
             {
             }
 
-            public T Current
+            public readonly T Current
             {
                 get
                 {
@@ -2465,7 +2465,7 @@ namespace Aardvark.Base
                 }
             }
 
-            object IEnumerator.Current
+            readonly object IEnumerator.Current
             {
                 get
                 {
@@ -2478,7 +2478,7 @@ namespace Aardvark.Base
                 }
             }
 
-            internal bool NotStartedOrEnded
+            internal readonly bool NotStartedOrEnded
             {
                 get
                 {
@@ -2537,8 +2537,8 @@ namespace Aardvark.Base
     /// </summary>    
     internal sealed class SortedSetEqualityComparer<T> : IEqualityComparer<SortedSetExt<T>>
     {
-        private IComparer<T> _comparer;
-        private IEqualityComparer<T> _eqComparer;
+        private readonly IComparer<T> _comparer;
+        private readonly IEqualityComparer<T> _eqComparer;
 
         public SortedSetEqualityComparer() : this(null, null) { }
 

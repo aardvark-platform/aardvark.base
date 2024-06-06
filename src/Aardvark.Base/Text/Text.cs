@@ -57,41 +57,41 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public int Count => End - Start;
+        public readonly int Count => End - Start;
 
-        public bool IsEmpty => Count <= 0;
+        public readonly bool IsEmpty => Count <= 0;
 
-        public bool IsWhiteSpace => IsOnly(CharFun.IsWhiteSpace);
+        public readonly bool IsWhiteSpace => IsOnly(CharFun.IsWhiteSpace);
 
-        public Text WhiteSpaceAtStartTrimmed => TrimmedAtStart(CharFun.IsWhiteSpace);
+        public readonly Text WhiteSpaceAtStartTrimmed => TrimmedAtStart(CharFun.IsWhiteSpace);
 
-        public Text WhiteSpaceAtEndTrimmed => TrimmedAtEnd(CharFun.IsWhiteSpace);
+        public readonly Text WhiteSpaceAtEndTrimmed => TrimmedAtEnd(CharFun.IsWhiteSpace);
 
-        public Text WhiteSpaceTrimmed => Trimmed(CharFun.IsWhiteSpace);
+        public readonly Text WhiteSpaceTrimmed => Trimmed(CharFun.IsWhiteSpace);
 
         #endregion
 
         #region Indexer
 
-        public char this[int index] => String[Start + index];
+        public readonly char this[int index] => String[Start + index];
 
         #endregion
 
         #region Processing Methods
 
-        public int IndexOf(char ch)
+        public readonly int IndexOf(char ch)
         {
             var index = String.IndexOf(ch, Start, Count);
             return index < 0 ? -1 : index - Start;
         }
 
-        public int IndexOf(string str)
+        public readonly int IndexOf(string str)
         {
             var index = String.IndexOf(str, Start, Count);
             return index < 0 ? -1 : index - Start;
         }
 
-        public int IndexOf(char ch, int start)
+        public readonly int IndexOf(char ch, int start)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -99,7 +99,7 @@ namespace Aardvark.Base
             return index < 0 ? -1 : index - Start;
         }
 
-        public int IndexOf(string str, int start)
+        public readonly int IndexOf(string str, int start)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -107,7 +107,7 @@ namespace Aardvark.Base
             return index < 0 ? -1 : index - Start;
         }
 
-        public int IndexOf(char ch, int start, int count)
+        public readonly int IndexOf(char ch, int start, int count)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -115,7 +115,7 @@ namespace Aardvark.Base
             return index < 0 ? -1 : index - Start;
         }
 
-        public int IndexOf(string str, int start, int count)
+        public readonly int IndexOf(string str, int start, int count)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -123,19 +123,19 @@ namespace Aardvark.Base
             return index < 0 ? -1 : index - Start;
         }
 
-        public int LastIndexOf(char ch)
+        public readonly int LastIndexOf(char ch)
         {
             var index = String.LastIndexOf(ch, Start, Count);
             return index < 0 ? -1 : index - Start;
         }
 
-        public int LastIndexOf(string str)
+        public readonly int LastIndexOf(string str)
         {
             var index = String.LastIndexOf(str, Start, Count);
             return index < 0 ? -1 : index - Start;
         }
 
-        public int LastIndexOf(char ch, int start)
+        public readonly int LastIndexOf(char ch, int start)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -143,7 +143,7 @@ namespace Aardvark.Base
             return index < 0 ? -1 : index - Start;
         }
 
-        public int LastIndexOf(string str, int start)
+        public readonly int LastIndexOf(string str, int start)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -151,7 +151,7 @@ namespace Aardvark.Base
             return index < 0 ? -1 : index - Start;
         }
 
-        public int LastIndexOf(char ch, int start, int count)
+        public readonly int LastIndexOf(char ch, int start, int count)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -159,7 +159,7 @@ namespace Aardvark.Base
             return index < 0 ? -1 : index - Start;
         }
 
-        public int LastIndexOf(string str, int start, int count)
+        public readonly int LastIndexOf(string str, int start, int count)
         {
             if (start >= 0) { start += Start; if (start >= End) return -1; }
             else start = Math.Max(Start, start + End);
@@ -177,7 +177,7 @@ namespace Aardvark.Base
         /// containing the last 3 characters t or the complete text t, if
         /// its length is less than 3 characters.
         /// </summary>
-        public Text Sub(int start, int end)
+        public readonly Text Sub(int start, int end)
         {
             start = start < 0   ? Math.Max(Start, End + start)
                                 : Math.Min(Start + start, End);
@@ -186,7 +186,7 @@ namespace Aardvark.Base
             return start < end ? new Text(start, end, String) : Empty;
         }
 
-        public string SubString(int start, int count)
+        public readonly string SubString(int start, int count)
         {
             start += Start;
             return start < End
@@ -194,13 +194,13 @@ namespace Aardvark.Base
                     : "";
         }
 
-        public Text SubText(int start)
+        public readonly Text SubText(int start)
         {
             start += Start;
             return start < End ? new Text(start, End, String) : Empty;
         }
 
-        public Text SubText(int start, int count)
+        public readonly Text SubText(int start, int count)
         {
             start += Start;
             return start < End
@@ -208,7 +208,7 @@ namespace Aardvark.Base
                     : Empty;
         }
 
-        public bool StartsWith(string prefix)
+        public readonly bool StartsWith(string prefix)
         {
             int c = prefix.Length;
             if (c > Count) return false;
@@ -217,7 +217,7 @@ namespace Aardvark.Base
             return true;
         }
 
-        public bool EndsWith(string postfix)
+        public readonly bool EndsWith(string postfix)
         {
             int c = postfix.Length;
             if (c > Count) return false;
@@ -226,7 +226,7 @@ namespace Aardvark.Base
             return true;
         }
 
-        public bool StartsWith(Text prefix)
+        public readonly bool StartsWith(Text prefix)
         {
             int c = prefix.Count;
             if (c > Count) return false;
@@ -235,7 +235,7 @@ namespace Aardvark.Base
             return true;
         }
 
-        public bool EndsWith(Text postfix)
+        public readonly bool EndsWith(Text postfix)
         {
             int c = postfix.Count;
             if (c > Count) return false;
@@ -248,7 +248,7 @@ namespace Aardvark.Base
         /// Returns true if the supplied predicate is true for all characters
         /// of the text.
         /// </summary>
-        public bool IsOnly(Func<char, bool> charPredicate)
+        public readonly bool IsOnly(Func<char, bool> charPredicate)
         {
             for (int i = Start, e = End; i < e; i++)
             {
@@ -262,7 +262,7 @@ namespace Aardvark.Base
         /// Returns the text without the characters at the start, for which
         /// the supplied predicate is true.
         /// </summary>
-        public Text TrimmedAtStart(Func<char, bool> trimIfTrue)
+        public readonly Text TrimmedAtStart(Func<char, bool> trimIfTrue)
         {
             for (int s = Start, e = End; s < e; s++)
             {
@@ -276,7 +276,7 @@ namespace Aardvark.Base
         /// Returns the text without the characters at the end, for which
         /// the supplied predicate is true.
         /// </summary>
-        public Text TrimmedAtEnd(Func<char, bool> trimIfTrue)
+        public readonly Text TrimmedAtEnd(Func<char, bool> trimIfTrue)
         {
             for (int s = Start, e = End - 1; s <= e; e--)
             {
@@ -291,7 +291,7 @@ namespace Aardvark.Base
         /// end, for which the supplied predicate is true.
         /// </summary>
         /// <param name="trimIfTrue"></param>
-        public Text Trimmed(Func<char, bool> trimIfTrue)
+        public readonly Text Trimmed(Func<char, bool> trimIfTrue)
         {
             for (int s = Start, e = End; s < e; s++)
             {
@@ -309,9 +309,9 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override string ToString() => String.Substring(Start, Count);
+        public override readonly string ToString() => String.Substring(Start, Count);
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             int hc = Count;
             for (int i = Start, e = End; i < e; i++)
@@ -319,7 +319,7 @@ namespace Aardvark.Base
             return hc;
         }
 
-        public override bool Equals(object obj) => obj is Text ? this == (Text)obj : false;
+        public override readonly bool Equals(object obj) => obj is Text ? this == (Text)obj : false;
 
         #endregion
 
@@ -371,10 +371,10 @@ namespace Aardvark.Base
 
         public static Regex IdentifierRegex = new Regex(@"\b[A-Za-z_][0-9A-Za-z_]*\b");
 
-        public Text ReplaceIdentifiers(Dictionary<string, string> changeMap)
+        public readonly Text ReplaceIdentifiers(Dictionary<string, string> changeMap)
              => ReplaceParts(IdentifierRegex, changeMap);
 
-        public Text ReplaceParts(
+        public readonly Text ReplaceParts(
             Regex partRegex,
             Dictionary<string, string> changeMap)
         {
@@ -413,7 +413,7 @@ namespace Aardvark.Base
         /// NOTE: The resulting parts are not trimmed. Use the Trim extension
         /// to trim all resulting strings.
         /// </summary>
-        public IEnumerable<Text> NestedBracketSplit(int splitLevel)
+        public readonly IEnumerable<Text> NestedBracketSplit(int splitLevel)
         {
             int level = 0;
             int begin = Start;
@@ -463,7 +463,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Given a known previous line, get the line at the current position.
         /// </summary>
-        public Line GetLineOfPos(Line line, int pos)
+        public readonly Line GetLineOfPos(Line line, int pos)
         {
             int i = line.Start;
             while (i < pos)
@@ -480,16 +480,16 @@ namespace Aardvark.Base
         /// Get the line of the current position without knowledge of any
         /// pervious line.
         /// </summary>
-        public Line GetLineOfPos(int pos) => GetLineOfPos(new Line(0, 0), pos);
+        public readonly Line GetLineOfPos(int pos) => GetLineOfPos(new Line(0, 0), pos);
 
         /// <summary>
         /// Returns the first position after position start in the text, that
         /// does not contain a whitespace character, or the length of the text
         /// if it is all whitespace.
         /// </summary>
-        public int SkipWhiteSpace(int start = 0) => Skip(CharFun.IsWhiteSpace, start);
+        public readonly int SkipWhiteSpace(int start = 0) => Skip(CharFun.IsWhiteSpace, start);
 
-        public int Skip(Func<char, bool> skipFun, int start = 0)
+        public readonly int Skip(Func<char, bool> skipFun, int start = 0)
         {
             for (int i = Start + start, e = End; i < e; i++)
             {
@@ -499,7 +499,7 @@ namespace Aardvark.Base
             return End - Start;
         }
 
-        public bool ParseBool()
+        public readonly bool ParseBool()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -510,7 +510,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public byte ParseByte()
+        public readonly byte ParseByte()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -521,7 +521,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public sbyte ParseSByte()
+        public readonly sbyte ParseSByte()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -532,7 +532,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public short ParseShort()
+        public readonly short ParseShort()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -543,7 +543,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public ushort ParseUShort()
+        public readonly ushort ParseUShort()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -554,7 +554,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public int ParseInt()
+        public readonly int ParseInt()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -565,7 +565,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public uint ParseUInt()
+        public readonly uint ParseUInt()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -576,7 +576,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public long ParseLong()
+        public readonly long ParseLong()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -587,7 +587,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public ulong ParseULong()
+        public readonly ulong ParseULong()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -598,7 +598,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public float ParseFloat()
+        public readonly float ParseFloat()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -609,7 +609,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public double ParseDouble()
+        public readonly double ParseDouble()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -620,7 +620,7 @@ namespace Aardvark.Base
             return pv.Value;
         }
 
-        public decimal ParseDecimal()
+        public readonly decimal ParseDecimal()
         {
             int i = SkipWhiteSpace(), c = Count;
             if (i == c) throw new ArgumentException();
@@ -636,7 +636,7 @@ namespace Aardvark.Base
                             RegexOptions.Singleline | RegexOptions.IgnoreCase
                             | RegexOptions.ExplicitCapture | RegexOptions.Compiled);
 
-        public ParsedValue<bool> ParsedValueOfBoolAt(int start)
+        public readonly ParsedValue<bool> ParsedValueOfBoolAt(int start)
         {
             start += Start;
             if (start >= End) return new ParsedValue<bool>(ParseError.EndOfText, 0);
@@ -647,7 +647,7 @@ namespace Aardvark.Base
             return new ParsedValue<bool>(ParseError.OutOfRange, 0);
         }
 
-        public ParsedValue<byte> ParsedValueOfByteAt(int start)
+        public readonly ParsedValue<byte> ParsedValueOfByteAt(int start)
         {
             start += Start;
             int pos = start;
@@ -670,7 +670,7 @@ namespace Aardvark.Base
             return new ParsedValue<byte>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<sbyte> ParsedValueOfSByteAt(int start)
+        public readonly ParsedValue<sbyte> ParsedValueOfSByteAt(int start)
         {
             start += Start;
             int pos = start;
@@ -717,7 +717,7 @@ namespace Aardvark.Base
             return new ParsedValue<sbyte>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<short> ParsedValueOfShortAt(int start)
+        public readonly ParsedValue<short> ParsedValueOfShortAt(int start)
         {
             start += Start;
             int pos = start;
@@ -764,7 +764,7 @@ namespace Aardvark.Base
             return new ParsedValue<short>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<ushort> ParsedValueOfUShortAt(int start)
+        public readonly ParsedValue<ushort> ParsedValueOfUShortAt(int start)
         {
             start += Start;
             int pos = start;
@@ -787,7 +787,7 @@ namespace Aardvark.Base
             return new ParsedValue<ushort>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<int> ParsedValueOfIntAt(int start)
+        public readonly ParsedValue<int> ParsedValueOfIntAt(int start)
         {
             start += Start;
             int pos = start;
@@ -834,7 +834,7 @@ namespace Aardvark.Base
             return new ParsedValue<int>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<uint> ParsedValueOfUIntAt(int start)
+        public readonly ParsedValue<uint> ParsedValueOfUIntAt(int start)
         {
             start += Start;
             int pos = start;
@@ -857,7 +857,7 @@ namespace Aardvark.Base
             return new ParsedValue<uint>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<long> ParsedValueOfLongAt(int start)
+        public readonly ParsedValue<long> ParsedValueOfLongAt(int start)
         {
             start += Start;
             int pos = start;
@@ -904,7 +904,7 @@ namespace Aardvark.Base
             return new ParsedValue<long>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<ulong> ParsedValueOfULongAt(int start)
+        public readonly ParsedValue<ulong> ParsedValueOfULongAt(int start)
         {
             start += Start;
             int pos = start;
@@ -928,7 +928,7 @@ namespace Aardvark.Base
             return new ParsedValue<ulong>(ParseError.IllegalCharacter, pos - start);
         }
 
-        public ParsedValue<float> ParsedValueOfFloatAt(int start)
+        public readonly ParsedValue<float> ParsedValueOfFloatAt(int start)
         {
             start += Start;
             int pos = start;
@@ -973,7 +973,7 @@ namespace Aardvark.Base
             }
         }
 
-        public ParsedValue<double> ParsedValueOfDoubleAt(int start)
+        public readonly ParsedValue<double> ParsedValueOfDoubleAt(int start)
         {
             start += Start;
             int pos = start;
@@ -1018,7 +1018,7 @@ namespace Aardvark.Base
             }
         }
 
-        public ParsedValue<decimal> ParsedValueOfDecimalAt(int start)
+        public readonly ParsedValue<decimal> ParsedValueOfDecimalAt(int start)
         {
             start += Start;
             int pos = start;
@@ -1053,7 +1053,7 @@ namespace Aardvark.Base
 
         #region IEquatable<Text> Members
 
-        public bool Equals(Text other) => this == other;
+        public readonly bool Equals(Text other) => this == other;
 
         #endregion
     }

@@ -161,10 +161,10 @@ namespace Aardvark.Base
     
     internal static class SymbolManager
     {
-        private static Dict<string, int> s_stringDict = new Dict<string, int>(1024);
-        private static Dict<Guid, int> s_guidDict = new Dict<Guid, int>(1024);
-        private static List<string> s_allStrings = new List<string>(1024);
-        private static List<Guid> s_allGuids = new List<Guid>(1024);
+        private static readonly Dict<string, int> s_stringDict = new Dict<string, int>(1024);
+        private static readonly Dict<Guid, int> s_guidDict = new Dict<Guid, int>(1024);
+        private static readonly List<string> s_allStrings = new List<string>(1024);
+        private static readonly List<Guid> s_allGuids = new List<Guid>(1024);
         private static SpinLock s_lock = new SpinLock();
         
         static SymbolManager()

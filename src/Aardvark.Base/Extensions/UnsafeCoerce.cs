@@ -18,7 +18,7 @@ namespace Aardvark.Base
             return typeId;
         }
 
-        private static FastConcurrentDict<Type, IntPtr> s_typeIds = new FastConcurrentDict<Type, IntPtr>();
+        private static readonly FastConcurrentDict<Type, IntPtr> s_typeIds = new FastConcurrentDict<Type, IntPtr>();
 
         [Obsolete("breaks net8.0+")]
         private static IntPtr GetTypeId<T>()

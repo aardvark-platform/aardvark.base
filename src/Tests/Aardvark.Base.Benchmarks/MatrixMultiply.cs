@@ -10,8 +10,8 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class MatrixMultiply
     {
-        M44d[] arr44 = new M44d[100000];
-        M34d[] arr34 = new M34d[100000];
+        readonly M44d[] arr44 = new M44d[100000];
+        readonly M34d[] arr34 = new M34d[100000];
 
         //[GlobalSetup]
         public MatrixMultiply()

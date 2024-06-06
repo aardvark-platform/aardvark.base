@@ -29,7 +29,7 @@ namespace Aardvark.Base
     {
         #region Geometric Properties
 
-        public __v2t__ Center => (P0 + P1) * __half__;
+        public readonly __v2t__ Center => (P0 + P1) * __half__;
 
         /// <summary>
         /// P0
@@ -37,7 +37,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public __v2t__ Origin
         {
-            get { return P0; }
+            readonly get { return P0; }
             set { P0 = value; }
         }
 
@@ -47,37 +47,37 @@ namespace Aardvark.Base
         [XmlIgnore]
         public __v2t__ Direction
         {
-            get { return P1 - P0; }
+            readonly get { return P1 - P0; }
             set { P1 = P0 + value; }
         }
 
-        public __ray2t__ __ray2t__ => new __ray2t__(P0, P1 - P0);
+        public readonly __ray2t__ __ray2t__ => new __ray2t__(P0, P1 - P0);
 
-        public __plane2t__ __plane2t__ => __ray2t__.__plane2t__;
+        public readonly __plane2t__ __plane2t__ => __ray2t__.__plane2t__;
 
-        public __ftype__ LeftValueOfDir(__v2t__ v) => v.X * (P0.Y - P1.Y) + v.Y * (P1.X - P0.X);
+        public readonly __ftype__ LeftValueOfDir(__v2t__ v) => v.X * (P0.Y - P1.Y) + v.Y * (P1.X - P0.X);
 
-        public __ftype__ RightValueOfDir(__v2t__ v) => v.X * (P1.Y - P0.Y) + v.Y * (P0.X - P1.X);
+        public readonly __ftype__ RightValueOfDir(__v2t__ v) => v.X * (P1.Y - P0.Y) + v.Y * (P0.X - P1.X);
 
-        public __ftype__ LeftValueOfPos(__v2t__ p)
+        public readonly __ftype__ LeftValueOfPos(__v2t__ p)
             => (p.X - P0.X) * (P0.Y - P1.Y) + (p.Y - P0.Y) * (P1.X - P0.X);
 
-        public __ftype__ RightValueOfPos(__v2t__ p)
+        public readonly __ftype__ RightValueOfPos(__v2t__ p)
             => (p.X - P0.X) * (P1.Y - P0.Y) + (p.Y - P0.Y) * (P0.X - P1.X);
 
-        public bool IsDegenerated => Direction.AllTiny;
+        public readonly bool IsDegenerated => Direction.AllTiny;
 
         #endregion
 
         #region __iboundingcircle__ Members
 
-        public __circle2t__ BoundingCircle2__tc__ => new __circle2t__(Center, __half__ * Direction.Length);
+        public readonly __circle2t__ BoundingCircle2__tc__ => new __circle2t__(Center, __half__ * Direction.Length);
 
         #endregion
 
         #region Geometric Computations
 
-        public __v2t__ GetClosestPointOnLine(__v2t__ p)
+        public readonly __v2t__ GetClosestPointOnLine(__v2t__ p)
         {
             var d = P0 - P1;
             var l = d.LengthSquared;
@@ -91,13 +91,13 @@ namespace Aardvark.Base
             return P0 - t * d;
         }
 
-        public __ftype__ GetDistanceToLine(__v2t__ p)
+        public readonly __ftype__ GetDistanceToLine(__v2t__ p)
         {
             var f = GetClosestPointOnLine(p);
             return (f - p).Length;
         }
 
-        public bool IsDistanceToPointSmallerThan(__v2t__ p, __ftype__ maxDist)
+        public readonly bool IsDistanceToPointSmallerThan(__v2t__ p, __ftype__ maxDist)
         {
             //speed-up by first checking the bounding box
             var box = __boundingbox2t__;
@@ -107,7 +107,7 @@ namespace Aardvark.Base
             return GetDistanceToLine(p) <= maxDist;
         }
 
-        public __type__ Flipped => new __type__(P1, P0);
+        public readonly __type__ Flipped => new __type__(P1, P0);
 
         #endregion
 

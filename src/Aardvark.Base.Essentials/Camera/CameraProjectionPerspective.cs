@@ -7,7 +7,7 @@ namespace Aardvark.Base
     public class CameraProjectionPerspective : ICameraProjectionPerspective
     {
         private Trafo3d m_trafo;
-        private EventSource<Trafo3d> m_trafoChanges = new EventSource<Trafo3d>();
+        private readonly EventSource<Trafo3d> m_trafoChanges = new EventSource<Trafo3d>();
         private Box3d m_box;
 
         public CameraProjectionPerspective(double horizontalFovInDegrees, double near, double far, double aspectRatio = 1.0)

@@ -119,31 +119,31 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius < 0.0;
         }
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius >= 0.0;
         }
 
-        public __ftype__ RadiusSquared
+        public readonly __ftype__ RadiusSquared
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Radius * Radius;
         }
 
-        public __ftype__ SurfaceArea
+        public readonly __ftype__ SurfaceArea
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => (4 * RadiusSquared * __pi__);
         }
 
-        public __ftype__ Volume
+        public readonly __ftype__ Volume
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => __fourbythree__ * __pi__ * Radius * Radius * Radius;
@@ -202,20 +202,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override int GetHashCode() => HashCode.GetCombined(Center, Radius);
+        public override readonly int GetHashCode() => HashCode.GetCombined(Center, Radius);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
             => Center.Equals(other.Center) && Radius.Equals(other.Radius);
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
         /// <summary>
         /// Writes a sphere to String.
         /// </summary>
         /// <returns>String representing the sphere.</returns>
-        public override string ToString()
+        public override readonly string ToString()
             => string.Format(CultureInfo.InvariantCulture, "[{0}, {1}]", Center, Radius);
 
         public static __type__ Parse(string s)
@@ -228,7 +228,7 @@ namespace Aardvark.Base
 
         #region __iboundingbox__ Members
 
-        public __box3t__ BoundingBox3__tc__
+        public readonly __box3t__ BoundingBox3__tc__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => new __box3t__(Center - Radius, Center + Radius);

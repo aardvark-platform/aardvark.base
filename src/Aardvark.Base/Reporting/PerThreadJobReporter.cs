@@ -6,7 +6,7 @@ namespace Aardvark.Base
     public class PerThreadJobReporter : IJobReporter
     {
         private SpinLock m_lock;
-        private volatile Dictionary<int, IJobReporter> m_reporterMap;
+        private readonly Dictionary<int, IJobReporter> m_reporterMap;
         private volatile int m_threadCount;
         private int m_indent;
 

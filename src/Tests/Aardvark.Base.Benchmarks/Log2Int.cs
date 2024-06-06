@@ -36,10 +36,10 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class Log2Int
     {
-        int[] m_numbersInt = new int[1000000];
-        uint[] m_numbersUInt = new uint[1000000];
-        float[] m_numbersFloat = new float[1000000];
-        double[] m_numbersDouble = new double[1000000];
+        readonly int[] m_numbersInt = new int[1000000];
+        readonly uint[] m_numbersUInt = new uint[1000000];
+        readonly float[] m_numbersFloat = new float[1000000];
+        readonly double[] m_numbersDouble = new double[1000000];
 
         public Log2Int()
         {
@@ -374,9 +374,9 @@ namespace Aardvark.Base.Benchmarks
     [DisassemblyDiagnoser(printSource: true)]
     public class Log2
     {
-        int[] m_numbersInt = new int[1000000];
-        float[] m_numbersFloat = new float[1000000];
-        double[] m_numbersDouble = new double[1000000];
+        readonly int[] m_numbersInt = new int[1000000];
+        readonly float[] m_numbersFloat = new float[1000000];
+        readonly double[] m_numbersDouble = new double[1000000];
 
         public Log2()
         {

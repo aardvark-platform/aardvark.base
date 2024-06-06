@@ -85,9 +85,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public __boxnt__ AxisAlignedBox => Box.Transformed((__mmmt__)Trafo);
+        public readonly __boxnt__ AxisAlignedBox => Box.Transformed((__mmmt__)Trafo);
 
-        public __vnt__[] Corners
+        public readonly __vnt__[] Corners
         {
             get
             {
@@ -97,7 +97,7 @@ namespace Aardvark.Base
         }
         //# if (n == 2) {
 
-        public __vnt__[] CornersCCW
+        public readonly __vnt__[] CornersCCW
         {
             get
             {

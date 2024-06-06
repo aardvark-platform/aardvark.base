@@ -8,7 +8,7 @@ namespace Aardvark.Base
     {
         public static class Debug
         {
-            private static List<Action<string, IProbe>> s_registrationActions = new List<Action<string, IProbe>>();
+            private static readonly List<Action<string, IProbe>> s_registrationActions = new List<Action<string, IProbe>>();
 
             /// <summary>
             /// e.g.: using (Telemetry.Debug.CpuTimers.YourTimerNameHere) { /* stuff to time */ }
@@ -40,7 +40,7 @@ namespace Aardvark.Base
 
             private class DynamicCpuTimeProvider : DynamicObject
             {
-                private Dictionary<string, CpuTime> m_probes = new Dictionary<string, CpuTime>();
+                private readonly Dictionary<string, CpuTime> m_probes = new Dictionary<string, CpuTime>();
 
                 public override IEnumerable<string> GetDynamicMemberNames() => m_probes.Keys;
 
@@ -65,7 +65,7 @@ namespace Aardvark.Base
 
             private class DynamicCounterProvider : DynamicObject
             {
-                private Dictionary<string, Counter> m_probes = new Dictionary<string, Counter>();
+                private readonly Dictionary<string, Counter> m_probes = new Dictionary<string, Counter>();
 
                 public override IEnumerable<string> GetDynamicMemberNames() => m_probes.Keys;
 

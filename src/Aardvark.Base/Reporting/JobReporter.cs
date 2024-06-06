@@ -6,12 +6,12 @@ namespace Aardvark.Base
 {
     public class JobReporter : IJobReporter
     {
-        private int m_ti;
+        private readonly int m_ti;
         public int m_indent;
         private ReportJob m_job;
-        private Stack<ReportJob> m_jobStack;
+        private readonly Stack<ReportJob> m_jobStack;
         private volatile IReporter[] m_reporterArray;
-        private object m_reporterArrayLock;
+        private readonly object m_reporterArrayLock;
 
         #region Constructor
 

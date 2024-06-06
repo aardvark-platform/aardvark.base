@@ -487,7 +487,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C3us"/> color.
@@ -509,7 +509,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C3ui"/> color.
@@ -531,7 +531,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C3f"/> color.
@@ -553,7 +553,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C3d"/> color.
@@ -574,7 +574,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C4b"/> color.
@@ -596,7 +596,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C4us"/> color.
@@ -619,7 +619,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C4ui"/> color.
@@ -642,7 +642,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C4f"/> color.
@@ -665,7 +665,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C4d"/> color.
@@ -687,7 +687,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3i ToV3i() => (V3i)this;
+        public readonly V3i ToV3i() => (V3i)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V3i"/> vector.
@@ -709,7 +709,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3ui ToV3ui() => (V3ui)this;
+        public readonly V3ui ToV3ui() => (V3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V3ui"/> vector.
@@ -731,7 +731,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l ToV3l() => (V3l)this;
+        public readonly V3l ToV3l() => (V3l)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V3l"/> vector.
@@ -753,7 +753,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V3f"/> vector.
@@ -775,7 +775,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V3d"/> vector.
@@ -798,7 +798,7 @@ namespace Aardvark.Base
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4i ToV4i() => (V4i)this;
+        public readonly V4i ToV4i() => (V4i)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V4i"/> vector.
@@ -821,7 +821,7 @@ namespace Aardvark.Base
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4ui ToV4ui() => (V4ui)this;
+        public readonly V4ui ToV4ui() => (V4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V4ui"/> vector.
@@ -844,7 +844,7 @@ namespace Aardvark.Base
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4l ToV4l() => (V4l)this;
+        public readonly V4l ToV4l() => (V4l)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V4l"/> vector.
@@ -867,7 +867,7 @@ namespace Aardvark.Base
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V4f"/> vector.
@@ -890,7 +890,7 @@ namespace Aardvark.Base
         /// W is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from a <see cref="V4d"/> vector.
@@ -981,7 +981,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b Map(Func<byte, byte> channel_fun)
+        public readonly C3b Map(Func<byte, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -990,7 +990,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us Map(Func<byte, ushort> channel_fun)
+        public readonly C3us Map(Func<byte, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -999,7 +999,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui Map(Func<byte, uint> channel_fun)
+        public readonly C3ui Map(Func<byte, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -1008,7 +1008,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f Map(Func<byte, float> channel_fun)
+        public readonly C3f Map(Func<byte, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -1017,13 +1017,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d Map(Func<byte, double> channel_fun)
+        public readonly C3d Map(Func<byte, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -1031,7 +1031,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<byte, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<byte, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -1039,7 +1039,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte[] ToArray()
+        public readonly byte[] ToArray()
             => (byte[])this;
 
         #endregion
@@ -1060,7 +1060,7 @@ namespace Aardvark.Base
                 fixed (byte* ptr = &B) { ptr[IndexMapping[i]] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (byte* ptr = &B) { return ptr[IndexMapping[i]]; }
             }
@@ -1487,7 +1487,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b Clamped(byte min, byte max)
+        public readonly C3b Clamped(byte min, byte max)
         {
             return new C3b(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max));
         }
@@ -1500,7 +1500,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. 
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return R + G + B; }
@@ -1510,7 +1510,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). 
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -1520,7 +1520,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). 
         /// </summary>
-        public byte NormMax
+        public readonly byte NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(R, G, B); }
@@ -1530,7 +1530,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). 
         /// </summary>
-        public byte NormMin
+        public readonly byte NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(R, G, B); }
@@ -1540,20 +1540,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C3b o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -1701,12 +1701,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -1714,7 +1714,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
@@ -1725,7 +1725,7 @@ namespace Aardvark.Base
         #region IEquatable<C3b> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C3b other)
+        public readonly bool Equals(C3b other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
@@ -1736,19 +1736,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.ByteToDouble(R); }
+            readonly get { return Col.ByteToDouble(R); }
             set { R = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.ByteToDouble(G); }
+            readonly get { return Col.ByteToDouble(G); }
             set { G = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.ByteToDouble(B); }
+            readonly get { return Col.ByteToDouble(B); }
             set { B = Col.DoubleToByteClamped(value); }
         }
 
@@ -2771,7 +2771,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C3b"/> color.
@@ -2793,7 +2793,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C3ui"/> color.
@@ -2815,7 +2815,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C3f"/> color.
@@ -2837,7 +2837,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C3d"/> color.
@@ -2860,7 +2860,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C4b"/> color.
@@ -2881,7 +2881,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C4us"/> color.
@@ -2903,7 +2903,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C4ui"/> color.
@@ -2926,7 +2926,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C4f"/> color.
@@ -2949,7 +2949,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C4d"/> color.
@@ -2971,7 +2971,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3i ToV3i() => (V3i)this;
+        public readonly V3i ToV3i() => (V3i)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V3i"/> vector.
@@ -2993,7 +2993,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3ui ToV3ui() => (V3ui)this;
+        public readonly V3ui ToV3ui() => (V3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V3ui"/> vector.
@@ -3015,7 +3015,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l ToV3l() => (V3l)this;
+        public readonly V3l ToV3l() => (V3l)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V3l"/> vector.
@@ -3037,7 +3037,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V3f"/> vector.
@@ -3059,7 +3059,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V3d"/> vector.
@@ -3082,7 +3082,7 @@ namespace Aardvark.Base
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4i ToV4i() => (V4i)this;
+        public readonly V4i ToV4i() => (V4i)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V4i"/> vector.
@@ -3105,7 +3105,7 @@ namespace Aardvark.Base
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4ui ToV4ui() => (V4ui)this;
+        public readonly V4ui ToV4ui() => (V4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V4ui"/> vector.
@@ -3128,7 +3128,7 @@ namespace Aardvark.Base
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4l ToV4l() => (V4l)this;
+        public readonly V4l ToV4l() => (V4l)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V4l"/> vector.
@@ -3151,7 +3151,7 @@ namespace Aardvark.Base
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V4f"/> vector.
@@ -3174,7 +3174,7 @@ namespace Aardvark.Base
         /// W is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from a <see cref="V4d"/> vector.
@@ -3265,7 +3265,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b Map(Func<ushort, byte> channel_fun)
+        public readonly C3b Map(Func<ushort, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -3274,7 +3274,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us Map(Func<ushort, ushort> channel_fun)
+        public readonly C3us Map(Func<ushort, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -3283,7 +3283,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui Map(Func<ushort, uint> channel_fun)
+        public readonly C3ui Map(Func<ushort, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -3292,7 +3292,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f Map(Func<ushort, float> channel_fun)
+        public readonly C3f Map(Func<ushort, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -3301,13 +3301,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d Map(Func<ushort, double> channel_fun)
+        public readonly C3d Map(Func<ushort, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -3315,7 +3315,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<ushort, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<ushort, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -3323,7 +3323,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort[] ToArray()
+        public readonly ushort[] ToArray()
             => (ushort[])this;
 
         #endregion
@@ -3341,7 +3341,7 @@ namespace Aardvark.Base
                 fixed (ushort* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (ushort* ptr = &R) { return ptr[i]; }
             }
@@ -3768,7 +3768,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us Clamped(ushort min, ushort max)
+        public readonly C3us Clamped(ushort min, ushort max)
         {
             return new C3us(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max));
         }
@@ -3781,7 +3781,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. 
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return R + G + B; }
@@ -3791,7 +3791,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). 
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -3801,7 +3801,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). 
         /// </summary>
-        public ushort NormMax
+        public readonly ushort NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(R, G, B); }
@@ -3811,7 +3811,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). 
         /// </summary>
-        public ushort NormMin
+        public readonly ushort NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(R, G, B); }
@@ -3821,20 +3821,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C3us o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -3982,12 +3982,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -3995,7 +3995,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
@@ -4006,7 +4006,7 @@ namespace Aardvark.Base
         #region IEquatable<C3us> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C3us other)
+        public readonly bool Equals(C3us other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
@@ -4017,19 +4017,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.UShortToDouble(R); }
+            readonly get { return Col.UShortToDouble(R); }
             set { R = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.UShortToDouble(G); }
+            readonly get { return Col.UShortToDouble(G); }
             set { G = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.UShortToDouble(B); }
+            readonly get { return Col.UShortToDouble(B); }
             set { B = Col.DoubleToUShortClamped(value); }
         }
 
@@ -5026,7 +5026,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C3b"/> color.
@@ -5048,7 +5048,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C3us"/> color.
@@ -5070,7 +5070,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C3f"/> color.
@@ -5092,7 +5092,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C3d"/> color.
@@ -5115,7 +5115,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C4b"/> color.
@@ -5138,7 +5138,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C4us"/> color.
@@ -5159,7 +5159,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C4ui"/> color.
@@ -5181,7 +5181,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C4f"/> color.
@@ -5204,7 +5204,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C4d"/> color.
@@ -5224,7 +5224,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C3ui"/> color to a <see cref="V3ui"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3ui ToV3ui() => (V3ui)this;
+        public readonly V3ui ToV3ui() => (V3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V3ui"/> vector.
@@ -5245,7 +5245,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l ToV3l() => (V3l)this;
+        public readonly V3l ToV3l() => (V3l)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V3l"/> vector.
@@ -5267,7 +5267,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V3f"/> vector.
@@ -5289,7 +5289,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V3d"/> vector.
@@ -5310,7 +5310,7 @@ namespace Aardvark.Base
         /// W is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4ui ToV4ui() => (V4ui)this;
+        public readonly V4ui ToV4ui() => (V4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V4ui"/> vector.
@@ -5332,7 +5332,7 @@ namespace Aardvark.Base
         /// W is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4l ToV4l() => (V4l)this;
+        public readonly V4l ToV4l() => (V4l)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V4l"/> vector.
@@ -5355,7 +5355,7 @@ namespace Aardvark.Base
         /// W is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V4f"/> vector.
@@ -5378,7 +5378,7 @@ namespace Aardvark.Base
         /// W is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from a <see cref="V4d"/> vector.
@@ -5469,7 +5469,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b Map(Func<uint, byte> channel_fun)
+        public readonly C3b Map(Func<uint, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -5478,7 +5478,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us Map(Func<uint, ushort> channel_fun)
+        public readonly C3us Map(Func<uint, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -5487,7 +5487,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui Map(Func<uint, uint> channel_fun)
+        public readonly C3ui Map(Func<uint, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -5496,7 +5496,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f Map(Func<uint, float> channel_fun)
+        public readonly C3f Map(Func<uint, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -5505,13 +5505,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d Map(Func<uint, double> channel_fun)
+        public readonly C3d Map(Func<uint, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -5519,7 +5519,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<uint, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<uint, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -5527,7 +5527,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint[] ToArray()
+        public readonly uint[] ToArray()
             => (uint[])this;
 
         #endregion
@@ -5545,7 +5545,7 @@ namespace Aardvark.Base
                 fixed (uint* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (uint* ptr = &R) { return ptr[i]; }
             }
@@ -5972,7 +5972,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui Clamped(uint min, uint max)
+        public readonly C3ui Clamped(uint min, uint max)
         {
             return new C3ui(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max));
         }
@@ -5985,7 +5985,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. 
         /// </summary>
-        public long Norm1
+        public readonly long Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return R + G + B; }
@@ -5995,7 +5995,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). 
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -6005,7 +6005,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). 
         /// </summary>
-        public uint NormMax
+        public readonly uint NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(R, G, B); }
@@ -6015,7 +6015,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). 
         /// </summary>
-        public uint NormMin
+        public readonly uint NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(R, G, B); }
@@ -6025,20 +6025,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C3ui o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -6186,12 +6186,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -6199,7 +6199,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
@@ -6210,7 +6210,7 @@ namespace Aardvark.Base
         #region IEquatable<C3ui> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C3ui other)
+        public readonly bool Equals(C3ui other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
@@ -6221,19 +6221,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.UIntToDouble(R); }
+            readonly get { return Col.UIntToDouble(R); }
             set { R = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.UIntToDouble(G); }
+            readonly get { return Col.UIntToDouble(G); }
             set { G = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.UIntToDouble(B); }
+            readonly get { return Col.UIntToDouble(B); }
             set { B = Col.DoubleToUIntClamped(value); }
         }
 
@@ -7134,61 +7134,61 @@ namespace Aardvark.Base
 
         #region Properities
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNaN(R) || float.IsNaN(G) || float.IsNaN(B);
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNaN(R) && float.IsNaN(G) && float.IsNaN(B);
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsInfinity(R) || float.IsInfinity(G) || float.IsInfinity(B);
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsInfinity(R) && float.IsInfinity(G) && float.IsInfinity(B);
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsPositiveInfinity(R) || float.IsPositiveInfinity(G) || float.IsPositiveInfinity(B);
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsPositiveInfinity(R) && float.IsPositiveInfinity(G) && float.IsPositiveInfinity(B);
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNegativeInfinity(R) || float.IsNegativeInfinity(G) || float.IsNegativeInfinity(B);
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNegativeInfinity(R) && float.IsNegativeInfinity(G) && float.IsNegativeInfinity(B);
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B);
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B);
@@ -7197,7 +7197,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -7206,7 +7206,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -7215,7 +7215,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -7224,7 +7224,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -7233,7 +7233,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -7242,7 +7242,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -7265,7 +7265,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C3b"/> color.
@@ -7287,7 +7287,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C3us"/> color.
@@ -7309,7 +7309,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C3ui"/> color.
@@ -7329,7 +7329,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C3f"/> color to a <see cref="C3d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C3d"/> color.
@@ -7351,7 +7351,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C4b"/> color.
@@ -7374,7 +7374,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C4us"/> color.
@@ -7397,7 +7397,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C4ui"/> color.
@@ -7418,7 +7418,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C4f"/> color.
@@ -7438,7 +7438,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from the given <see cref="C4d"/> color.
@@ -7457,7 +7457,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C3f"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from a <see cref="V3f"/> vector.
@@ -7476,7 +7476,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C3f"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from a <see cref="V3d"/> vector.
@@ -7496,7 +7496,7 @@ namespace Aardvark.Base
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from a <see cref="V4f"/> vector.
@@ -7516,7 +7516,7 @@ namespace Aardvark.Base
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3f"/> color from a <see cref="V4d"/> vector.
@@ -7604,7 +7604,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b Map(Func<float, byte> channel_fun)
+        public readonly C3b Map(Func<float, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -7613,7 +7613,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us Map(Func<float, ushort> channel_fun)
+        public readonly C3us Map(Func<float, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -7622,7 +7622,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui Map(Func<float, uint> channel_fun)
+        public readonly C3ui Map(Func<float, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -7631,7 +7631,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f Map(Func<float, float> channel_fun)
+        public readonly C3f Map(Func<float, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -7640,13 +7640,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d Map(Func<float, double> channel_fun)
+        public readonly C3d Map(Func<float, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -7654,7 +7654,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<float, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<float, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -7662,7 +7662,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float[] ToArray()
+        public readonly float[] ToArray()
             => (float[])this;
 
         #endregion
@@ -7680,7 +7680,7 @@ namespace Aardvark.Base
                 fixed (float* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &R) { return ptr[i]; }
             }
@@ -8051,7 +8051,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f Clamped(float min, float max)
+        public readonly C3f Clamped(float min, float max)
         {
             return new C3f(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max));
         }
@@ -8064,7 +8064,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. 
         /// </summary>
-        public float Norm1
+        public readonly float Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Abs(R) + Fun.Abs(G) + Fun.Abs(B); }
@@ -8074,7 +8074,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). 
         /// </summary>
-        public float Norm2
+        public readonly float Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -8084,7 +8084,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). 
         /// </summary>
-        public float NormMax
+        public readonly float NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -8094,7 +8094,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). 
         /// </summary>
-        public float NormMin
+        public readonly float NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -8104,20 +8104,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C3f o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -8260,12 +8260,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -8273,7 +8273,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
@@ -8284,7 +8284,7 @@ namespace Aardvark.Base
         #region IEquatable<C3f> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C3f other)
+        public readonly bool Equals(C3f other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
@@ -8295,19 +8295,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return (double)(R); }
+            readonly get { return (double)(R); }
             set { R = (float)(value); }
         }
 
         double IRGB.Green
         {
-            get { return (double)(G); }
+            readonly get { return (double)(G); }
             set { G = (float)(value); }
         }
 
         double IRGB.Blue
         {
-            get { return (double)(B); }
+            readonly get { return (double)(B); }
             set { B = (float)(value); }
         }
 
@@ -9245,61 +9245,61 @@ namespace Aardvark.Base
 
         #region Properities
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNaN(R) || double.IsNaN(G) || double.IsNaN(B);
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNaN(R) && double.IsNaN(G) && double.IsNaN(B);
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsInfinity(R) || double.IsInfinity(G) || double.IsInfinity(B);
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsInfinity(R) && double.IsInfinity(G) && double.IsInfinity(B);
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsPositiveInfinity(R) || double.IsPositiveInfinity(G) || double.IsPositiveInfinity(B);
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsPositiveInfinity(R) && double.IsPositiveInfinity(G) && double.IsPositiveInfinity(B);
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNegativeInfinity(R) || double.IsNegativeInfinity(G) || double.IsNegativeInfinity(B);
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNegativeInfinity(R) && double.IsNegativeInfinity(G) && double.IsNegativeInfinity(B);
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B);
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B);
@@ -9308,7 +9308,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -9317,7 +9317,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -9326,7 +9326,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -9335,7 +9335,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -9344,7 +9344,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -9353,7 +9353,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -9376,7 +9376,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C3b"/> color.
@@ -9398,7 +9398,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C3us"/> color.
@@ -9420,7 +9420,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C3ui"/> color.
@@ -9440,7 +9440,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C3d"/> color to a <see cref="C3f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C3f"/> color.
@@ -9462,7 +9462,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C4b"/> color.
@@ -9485,7 +9485,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C4us"/> color.
@@ -9508,7 +9508,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C4ui"/> color.
@@ -9529,7 +9529,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C4f"/> color.
@@ -9549,7 +9549,7 @@ namespace Aardvark.Base
         /// The alpha channel is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from the given <see cref="C4d"/> color.
@@ -9568,7 +9568,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C3d"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from a <see cref="V3f"/> vector.
@@ -9587,7 +9587,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C3d"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from a <see cref="V3d"/> vector.
@@ -9607,7 +9607,7 @@ namespace Aardvark.Base
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from a <see cref="V4f"/> vector.
@@ -9627,7 +9627,7 @@ namespace Aardvark.Base
         /// W is set to 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C3d"/> color from a <see cref="V4d"/> vector.
@@ -9715,7 +9715,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b Map(Func<double, byte> channel_fun)
+        public readonly C3b Map(Func<double, byte> channel_fun)
         {
             return new C3b(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -9724,7 +9724,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us Map(Func<double, ushort> channel_fun)
+        public readonly C3us Map(Func<double, ushort> channel_fun)
         {
             return new C3us(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -9733,7 +9733,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui Map(Func<double, uint> channel_fun)
+        public readonly C3ui Map(Func<double, uint> channel_fun)
         {
             return new C3ui(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -9742,7 +9742,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f Map(Func<double, float> channel_fun)
+        public readonly C3f Map(Func<double, float> channel_fun)
         {
             return new C3f(channel_fun(R), channel_fun(G), channel_fun(B));
         }
@@ -9751,13 +9751,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d Map(Func<double, double> channel_fun)
+        public readonly C3d Map(Func<double, double> channel_fun)
         {
             return new C3d(channel_fun(R), channel_fun(G), channel_fun(B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -9765,7 +9765,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<double, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<double, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -9773,7 +9773,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double[] ToArray()
+        public readonly double[] ToArray()
             => (double[])this;
 
         #endregion
@@ -9791,7 +9791,7 @@ namespace Aardvark.Base
                 fixed (double* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &R) { return ptr[i]; }
             }
@@ -10162,7 +10162,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d Clamped(double min, double max)
+        public readonly C3d Clamped(double min, double max)
         {
             return new C3d(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max));
         }
@@ -10175,7 +10175,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. 
         /// </summary>
-        public double Norm1
+        public readonly double Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Abs(R) + Fun.Abs(G) + Fun.Abs(B); }
@@ -10185,7 +10185,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). 
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -10195,7 +10195,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). 
         /// </summary>
-        public double NormMax
+        public readonly double NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -10205,7 +10205,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). 
         /// </summary>
-        public double NormMin
+        public readonly double NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -10215,20 +10215,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C3d o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -10371,12 +10371,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -10384,7 +10384,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + end;
@@ -10395,7 +10395,7 @@ namespace Aardvark.Base
         #region IEquatable<C3d> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C3d other)
+        public readonly bool Equals(C3d other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B);
         }
@@ -10406,19 +10406,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return (R); }
+            readonly get { return (R); }
             set { R = (value); }
         }
 
         double IRGB.Green
         {
-            get { return (G); }
+            readonly get { return (G); }
             set { G = (value); }
         }
 
         double IRGB.Blue
         {
-            get { return (B); }
+            readonly get { return (B); }
             set { B = (value); }
         }
 
@@ -11745,7 +11745,7 @@ namespace Aardvark.Base
 
         #region Properities
 
-        public C3b RGB => (C3b)this;
+        public readonly C3b RGB => (C3b)this;
 
         #endregion
 
@@ -11763,7 +11763,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4b"/> color to a <see cref="C3b"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C3b"/> color.
@@ -11786,7 +11786,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C3us"/> color.
@@ -11810,7 +11810,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C3ui"/> color.
@@ -11834,7 +11834,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C3f"/> color.
@@ -11858,7 +11858,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C3d"/> color.
@@ -11881,7 +11881,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C4us"/> color.
@@ -11903,7 +11903,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C4ui"/> color.
@@ -11925,7 +11925,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C4f"/> color.
@@ -11947,7 +11947,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C4d"/> color.
@@ -11970,7 +11970,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3i ToV3i() => (V3i)this;
+        public readonly V3i ToV3i() => (V3i)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V3i"/> vector.
@@ -11994,7 +11994,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3ui ToV3ui() => (V3ui)this;
+        public readonly V3ui ToV3ui() => (V3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V3ui"/> vector.
@@ -12018,7 +12018,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l ToV3l() => (V3l)this;
+        public readonly V3l ToV3l() => (V3l)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V3l"/> vector.
@@ -12042,7 +12042,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V3f"/> vector.
@@ -12066,7 +12066,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V3d"/> vector.
@@ -12089,7 +12089,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4i ToV4i() => (V4i)this;
+        public readonly V4i ToV4i() => (V4i)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V4i"/> vector.
@@ -12111,7 +12111,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4ui ToV4ui() => (V4ui)this;
+        public readonly V4ui ToV4ui() => (V4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V4ui"/> vector.
@@ -12133,7 +12133,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4l ToV4l() => (V4l)this;
+        public readonly V4l ToV4l() => (V4l)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V4l"/> vector.
@@ -12155,7 +12155,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V4f"/> vector.
@@ -12177,7 +12177,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from a <see cref="V4d"/> vector.
@@ -12268,7 +12268,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b Map(Func<byte, byte> channel_fun)
+        public readonly C4b Map(Func<byte, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -12277,7 +12277,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us Map(Func<byte, ushort> channel_fun)
+        public readonly C4us Map(Func<byte, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -12286,7 +12286,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui Map(Func<byte, uint> channel_fun)
+        public readonly C4ui Map(Func<byte, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -12295,7 +12295,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f Map(Func<byte, float> channel_fun)
+        public readonly C4f Map(Func<byte, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -12304,13 +12304,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d Map(Func<byte, double> channel_fun)
+        public readonly C4d Map(Func<byte, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<byte, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -12319,7 +12319,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<byte, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<byte, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -12328,7 +12328,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public byte[] ToArray()
+        public readonly byte[] ToArray()
             => (byte[])this;
 
         #endregion
@@ -12349,7 +12349,7 @@ namespace Aardvark.Base
                 fixed (byte* ptr = &B) { ptr[IndexMapping[i]] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (byte* ptr = &B) { return ptr[IndexMapping[i]]; }
             }
@@ -12792,7 +12792,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b Clamped(byte min, byte max)
+        public readonly C4b Clamped(byte min, byte max)
         {
             return new C4b(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max), A);
         }
@@ -12805,7 +12805,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. The alpha channel is ignored.
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return R + G + B; }
@@ -12815,7 +12815,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). The alpha channel is ignored.
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -12825,7 +12825,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public byte NormMax
+        public readonly byte NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(R, G, B); }
@@ -12835,7 +12835,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public byte NormMin
+        public readonly byte NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(R, G, B); }
@@ -12845,20 +12845,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C4b o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B, A);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -13007,12 +13007,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -13020,7 +13020,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
@@ -13031,7 +13031,7 @@ namespace Aardvark.Base
         #region IEquatable<C4b> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C4b other)
+        public readonly bool Equals(C4b other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
@@ -13042,19 +13042,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.ByteToDouble(R); }
+            readonly get { return Col.ByteToDouble(R); }
             set { R = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.ByteToDouble(G); }
+            readonly get { return Col.ByteToDouble(G); }
             set { G = Col.DoubleToByteClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.ByteToDouble(B); }
+            readonly get { return Col.ByteToDouble(B); }
             set { B = Col.DoubleToByteClamped(value); }
         }
 
@@ -13065,7 +13065,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return Col.ByteToDouble(A); }
+            readonly get { return Col.ByteToDouble(A); }
             set { A = Col.DoubleToByteClamped(value); }
         }
 
@@ -14312,7 +14312,7 @@ namespace Aardvark.Base
 
         #region Properities
 
-        public C3us RGB => (C3us)this;
+        public readonly C3us RGB => (C3us)this;
 
         #endregion
 
@@ -14332,7 +14332,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C3b"/> color.
@@ -14354,7 +14354,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4us"/> color to a <see cref="C3us"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C3us"/> color.
@@ -14377,7 +14377,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C3ui"/> color.
@@ -14401,7 +14401,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C3f"/> color.
@@ -14425,7 +14425,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C3d"/> color.
@@ -14448,7 +14448,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C4b"/> color.
@@ -14470,7 +14470,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C4ui"/> color.
@@ -14492,7 +14492,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C4f"/> color.
@@ -14514,7 +14514,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C4d"/> color.
@@ -14537,7 +14537,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3i ToV3i() => (V3i)this;
+        public readonly V3i ToV3i() => (V3i)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V3i"/> vector.
@@ -14561,7 +14561,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3ui ToV3ui() => (V3ui)this;
+        public readonly V3ui ToV3ui() => (V3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V3ui"/> vector.
@@ -14585,7 +14585,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l ToV3l() => (V3l)this;
+        public readonly V3l ToV3l() => (V3l)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V3l"/> vector.
@@ -14609,7 +14609,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V3f"/> vector.
@@ -14633,7 +14633,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V3d"/> vector.
@@ -14656,7 +14656,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4i ToV4i() => (V4i)this;
+        public readonly V4i ToV4i() => (V4i)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V4i"/> vector.
@@ -14678,7 +14678,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4ui ToV4ui() => (V4ui)this;
+        public readonly V4ui ToV4ui() => (V4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V4ui"/> vector.
@@ -14700,7 +14700,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4l ToV4l() => (V4l)this;
+        public readonly V4l ToV4l() => (V4l)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V4l"/> vector.
@@ -14722,7 +14722,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V4f"/> vector.
@@ -14744,7 +14744,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from a <see cref="V4d"/> vector.
@@ -14835,7 +14835,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b Map(Func<ushort, byte> channel_fun)
+        public readonly C4b Map(Func<ushort, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -14844,7 +14844,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us Map(Func<ushort, ushort> channel_fun)
+        public readonly C4us Map(Func<ushort, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -14853,7 +14853,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui Map(Func<ushort, uint> channel_fun)
+        public readonly C4ui Map(Func<ushort, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -14862,7 +14862,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f Map(Func<ushort, float> channel_fun)
+        public readonly C4f Map(Func<ushort, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -14871,13 +14871,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d Map(Func<ushort, double> channel_fun)
+        public readonly C4d Map(Func<ushort, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<ushort, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -14886,7 +14886,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<ushort, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<ushort, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -14895,7 +14895,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ushort[] ToArray()
+        public readonly ushort[] ToArray()
             => (ushort[])this;
 
         #endregion
@@ -14913,7 +14913,7 @@ namespace Aardvark.Base
                 fixed (ushort* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (ushort* ptr = &R) { return ptr[i]; }
             }
@@ -15356,7 +15356,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us Clamped(ushort min, ushort max)
+        public readonly C4us Clamped(ushort min, ushort max)
         {
             return new C4us(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max), A);
         }
@@ -15369,7 +15369,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. The alpha channel is ignored.
         /// </summary>
-        public int Norm1
+        public readonly int Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return R + G + B; }
@@ -15379,7 +15379,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). The alpha channel is ignored.
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -15389,7 +15389,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public ushort NormMax
+        public readonly ushort NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(R, G, B); }
@@ -15399,7 +15399,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public ushort NormMin
+        public readonly ushort NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(R, G, B); }
@@ -15409,20 +15409,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C4us o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B, A);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -15572,12 +15572,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -15585,7 +15585,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
@@ -15596,7 +15596,7 @@ namespace Aardvark.Base
         #region IEquatable<C4us> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C4us other)
+        public readonly bool Equals(C4us other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
@@ -15607,19 +15607,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.UShortToDouble(R); }
+            readonly get { return Col.UShortToDouble(R); }
             set { R = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.UShortToDouble(G); }
+            readonly get { return Col.UShortToDouble(G); }
             set { G = Col.DoubleToUShortClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.UShortToDouble(B); }
+            readonly get { return Col.UShortToDouble(B); }
             set { B = Col.DoubleToUShortClamped(value); }
         }
 
@@ -15630,7 +15630,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return Col.UShortToDouble(A); }
+            readonly get { return Col.UShortToDouble(A); }
             set { A = Col.DoubleToUShortClamped(value); }
         }
 
@@ -16834,7 +16834,7 @@ namespace Aardvark.Base
 
         #region Properities
 
-        public C3ui RGB => (C3ui)this;
+        public readonly C3ui RGB => (C3ui)this;
 
         #endregion
 
@@ -16854,7 +16854,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C3b"/> color.
@@ -16878,7 +16878,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C3us"/> color.
@@ -16900,7 +16900,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4ui"/> color to a <see cref="C3ui"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C3ui"/> color.
@@ -16923,7 +16923,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C3f"/> color.
@@ -16947,7 +16947,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C3d"/> color.
@@ -16970,7 +16970,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C4b"/> color.
@@ -16992,7 +16992,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C4us"/> color.
@@ -17014,7 +17014,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C4f"/> color.
@@ -17036,7 +17036,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C4d"/> color.
@@ -17057,7 +17057,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4ui"/> color to a <see cref="V3ui"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3ui ToV3ui() => (V3ui)this;
+        public readonly V3ui ToV3ui() => (V3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V3ui"/> vector.
@@ -17080,7 +17080,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3l ToV3l() => (V3l)this;
+        public readonly V3l ToV3l() => (V3l)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V3l"/> vector.
@@ -17104,7 +17104,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V3f"/> vector.
@@ -17128,7 +17128,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V3d"/> vector.
@@ -17149,7 +17149,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4ui"/> color to a <see cref="V4ui"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4ui ToV4ui() => (V4ui)this;
+        public readonly V4ui ToV4ui() => (V4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V4ui"/> vector.
@@ -17170,7 +17170,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4l ToV4l() => (V4l)this;
+        public readonly V4l ToV4l() => (V4l)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V4l"/> vector.
@@ -17192,7 +17192,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V4f"/> vector.
@@ -17214,7 +17214,7 @@ namespace Aardvark.Base
         /// The values are not mapped from the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from a <see cref="V4d"/> vector.
@@ -17305,7 +17305,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b Map(Func<uint, byte> channel_fun)
+        public readonly C4b Map(Func<uint, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -17314,7 +17314,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us Map(Func<uint, ushort> channel_fun)
+        public readonly C4us Map(Func<uint, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -17323,7 +17323,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui Map(Func<uint, uint> channel_fun)
+        public readonly C4ui Map(Func<uint, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -17332,7 +17332,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f Map(Func<uint, float> channel_fun)
+        public readonly C4f Map(Func<uint, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -17341,13 +17341,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d Map(Func<uint, double> channel_fun)
+        public readonly C4d Map(Func<uint, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<uint, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -17356,7 +17356,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<uint, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<uint, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -17365,7 +17365,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public uint[] ToArray()
+        public readonly uint[] ToArray()
             => (uint[])this;
 
         #endregion
@@ -17383,7 +17383,7 @@ namespace Aardvark.Base
                 fixed (uint* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (uint* ptr = &R) { return ptr[i]; }
             }
@@ -17826,7 +17826,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui Clamped(uint min, uint max)
+        public readonly C4ui Clamped(uint min, uint max)
         {
             return new C4ui(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max), A);
         }
@@ -17839,7 +17839,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. The alpha channel is ignored.
         /// </summary>
-        public long Norm1
+        public readonly long Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return R + G + B; }
@@ -17849,7 +17849,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). The alpha channel is ignored.
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -17859,7 +17859,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public uint NormMax
+        public readonly uint NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(R, G, B); }
@@ -17869,7 +17869,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public uint NormMin
+        public readonly uint NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(R, G, B); }
@@ -17879,20 +17879,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C4ui o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B, A);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -18042,12 +18042,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -18055,7 +18055,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
@@ -18066,7 +18066,7 @@ namespace Aardvark.Base
         #region IEquatable<C4ui> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C4ui other)
+        public readonly bool Equals(C4ui other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
@@ -18077,19 +18077,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return Col.UIntToDouble(R); }
+            readonly get { return Col.UIntToDouble(R); }
             set { R = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Green
         {
-            get { return Col.UIntToDouble(G); }
+            readonly get { return Col.UIntToDouble(G); }
             set { G = Col.DoubleToUIntClamped(value); }
         }
 
         double IRGB.Blue
         {
-            get { return Col.UIntToDouble(B); }
+            readonly get { return Col.UIntToDouble(B); }
             set { B = Col.DoubleToUIntClamped(value); }
         }
 
@@ -18100,7 +18100,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return Col.UIntToDouble(A); }
+            readonly get { return Col.UIntToDouble(A); }
             set { A = Col.DoubleToUIntClamped(value); }
         }
 
@@ -19145,63 +19145,63 @@ namespace Aardvark.Base
 
         #region Properities
 
-        public C3f RGB => (C3f)this;
+        public readonly C3f RGB => (C3f)this;
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNaN(R) || float.IsNaN(G) || float.IsNaN(B) || float.IsNaN(A);
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNaN(R) && float.IsNaN(G) && float.IsNaN(B) && float.IsNaN(A);
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsInfinity(R) || float.IsInfinity(G) || float.IsInfinity(B) || float.IsInfinity(A);
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsInfinity(R) && float.IsInfinity(G) && float.IsInfinity(B) && float.IsInfinity(A);
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsPositiveInfinity(R) || float.IsPositiveInfinity(G) || float.IsPositiveInfinity(B) || float.IsPositiveInfinity(A);
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsPositiveInfinity(R) && float.IsPositiveInfinity(G) && float.IsPositiveInfinity(B) && float.IsPositiveInfinity(A);
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNegativeInfinity(R) || float.IsNegativeInfinity(G) || float.IsNegativeInfinity(B) || float.IsNegativeInfinity(A);
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => float.IsNegativeInfinity(R) && float.IsNegativeInfinity(G) && float.IsNegativeInfinity(B) && float.IsNegativeInfinity(A);
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B) || Fun.IsTiny(A);
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B) && Fun.IsTiny(A);
@@ -19210,7 +19210,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;float&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -19219,7 +19219,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -19228,7 +19228,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -19237,7 +19237,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -19246,7 +19246,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -19255,7 +19255,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -19279,7 +19279,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C3b"/> color.
@@ -19303,7 +19303,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C3us"/> color.
@@ -19327,7 +19327,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C3ui"/> color.
@@ -19349,7 +19349,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C3f"/> color.
@@ -19370,7 +19370,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C3d"/> color.
@@ -19392,7 +19392,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C4b"/> color.
@@ -19414,7 +19414,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C4us"/> color.
@@ -19436,7 +19436,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C4ui"/> color.
@@ -19456,7 +19456,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4f"/> color to a <see cref="C4d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d ToC4d() => (C4d)this;
+        public readonly C4d ToC4d() => (C4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from the given <see cref="C4d"/> color.
@@ -19476,7 +19476,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4f"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from a <see cref="V3f"/> vector.
@@ -19497,7 +19497,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4f"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from a <see cref="V3d"/> vector.
@@ -19517,7 +19517,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4f"/> color to a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from a <see cref="V4f"/> vector.
@@ -19536,7 +19536,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4f"/> color to a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4f"/> color from a <see cref="V4d"/> vector.
@@ -19624,7 +19624,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b Map(Func<float, byte> channel_fun)
+        public readonly C4b Map(Func<float, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -19633,7 +19633,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us Map(Func<float, ushort> channel_fun)
+        public readonly C4us Map(Func<float, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -19642,7 +19642,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui Map(Func<float, uint> channel_fun)
+        public readonly C4ui Map(Func<float, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -19651,7 +19651,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f Map(Func<float, float> channel_fun)
+        public readonly C4f Map(Func<float, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -19660,13 +19660,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d Map(Func<float, double> channel_fun)
+        public readonly C4d Map(Func<float, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<float, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -19675,7 +19675,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<float, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<float, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -19684,7 +19684,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public float[] ToArray()
+        public readonly float[] ToArray()
             => (float[])this;
 
         #endregion
@@ -19702,7 +19702,7 @@ namespace Aardvark.Base
                 fixed (float* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (float* ptr = &R) { return ptr[i]; }
             }
@@ -20086,7 +20086,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f Clamped(float min, float max)
+        public readonly C4f Clamped(float min, float max)
         {
             return new C4f(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max), A);
         }
@@ -20099,7 +20099,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. The alpha channel is ignored.
         /// </summary>
-        public float Norm1
+        public readonly float Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Abs(R) + Fun.Abs(G) + Fun.Abs(B); }
@@ -20109,7 +20109,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). The alpha channel is ignored.
         /// </summary>
-        public float Norm2
+        public readonly float Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -20119,7 +20119,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public float NormMax
+        public readonly float NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -20129,7 +20129,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public float NormMin
+        public readonly float NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -20139,20 +20139,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C4f o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B, A);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -20297,12 +20297,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -20310,7 +20310,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
@@ -20321,7 +20321,7 @@ namespace Aardvark.Base
         #region IEquatable<C4f> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C4f other)
+        public readonly bool Equals(C4f other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
@@ -20332,19 +20332,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return (double)(R); }
+            readonly get { return (double)(R); }
             set { R = (float)(value); }
         }
 
         double IRGB.Green
         {
-            get { return (double)(G); }
+            readonly get { return (double)(G); }
             set { G = (float)(value); }
         }
 
         double IRGB.Blue
         {
-            get { return (double)(B); }
+            readonly get { return (double)(B); }
             set { B = (float)(value); }
         }
 
@@ -20355,7 +20355,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return (double)(A); }
+            readonly get { return (double)(A); }
             set { A = (float)(value); }
         }
 
@@ -21440,63 +21440,63 @@ namespace Aardvark.Base
 
         #region Properities
 
-        public C3d RGB => (C3d)this;
+        public readonly C3d RGB => (C3d)this;
 
-        public bool AnyNaN
+        public readonly bool AnyNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNaN(R) || double.IsNaN(G) || double.IsNaN(B) || double.IsNaN(A);
         }
 
-        public bool AllNaN
+        public readonly bool AllNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNaN(R) && double.IsNaN(G) && double.IsNaN(B) && double.IsNaN(A);
         }
 
-        public bool AnyInfinity
+        public readonly bool AnyInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsInfinity(R) || double.IsInfinity(G) || double.IsInfinity(B) || double.IsInfinity(A);
         }
 
-        public bool AllInfinity
+        public readonly bool AllInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsInfinity(R) && double.IsInfinity(G) && double.IsInfinity(B) && double.IsInfinity(A);
         }
 
-        public bool AnyPositiveInfinity
+        public readonly bool AnyPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsPositiveInfinity(R) || double.IsPositiveInfinity(G) || double.IsPositiveInfinity(B) || double.IsPositiveInfinity(A);
         }
 
-        public bool AllPositiveInfinity
+        public readonly bool AllPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsPositiveInfinity(R) && double.IsPositiveInfinity(G) && double.IsPositiveInfinity(B) && double.IsPositiveInfinity(A);
         }
 
-        public bool AnyNegativeInfinity
+        public readonly bool AnyNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNegativeInfinity(R) || double.IsNegativeInfinity(G) || double.IsNegativeInfinity(B) || double.IsNegativeInfinity(A);
         }
 
-        public bool AllNegativeInfinity
+        public readonly bool AllNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => double.IsNegativeInfinity(R) && double.IsNegativeInfinity(G) && double.IsNegativeInfinity(B) && double.IsNegativeInfinity(A);
         }
 
-        public bool AnyTiny
+        public readonly bool AnyTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) || Fun.IsTiny(G) || Fun.IsTiny(B) || Fun.IsTiny(A);
         }
 
-        public bool AllTiny
+        public readonly bool AllTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => Fun.IsTiny(R) && Fun.IsTiny(G) && Fun.IsTiny(B) && Fun.IsTiny(A);
@@ -21505,7 +21505,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;double&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -21514,7 +21514,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -21523,7 +21523,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -21532,7 +21532,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -21541,7 +21541,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -21550,7 +21550,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -21574,7 +21574,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3b ToC3b() => (C3b)this;
+        public readonly C3b ToC3b() => (C3b)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C3b"/> color.
@@ -21598,7 +21598,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3us ToC3us() => (C3us)this;
+        public readonly C3us ToC3us() => (C3us)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C3us"/> color.
@@ -21622,7 +21622,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3ui ToC3ui() => (C3ui)this;
+        public readonly C3ui ToC3ui() => (C3ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C3ui"/> color.
@@ -21644,7 +21644,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3f ToC3f() => (C3f)this;
+        public readonly C3f ToC3f() => (C3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C3f"/> color.
@@ -21665,7 +21665,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3d"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C3d ToC3d() => (C3d)this;
+        public readonly C3d ToC3d() => (C3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C3d"/> color.
@@ -21687,7 +21687,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b ToC4b() => (C4b)this;
+        public readonly C4b ToC4b() => (C4b)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C4b"/> color.
@@ -21709,7 +21709,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us ToC4us() => (C4us)this;
+        public readonly C4us ToC4us() => (C4us)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C4us"/> color.
@@ -21731,7 +21731,7 @@ namespace Aardvark.Base
         /// The values are mapped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui ToC4ui() => (C4ui)this;
+        public readonly C4ui ToC4ui() => (C4ui)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C4ui"/> color.
@@ -21751,7 +21751,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4d"/> color to a <see cref="C4f"/> color.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f ToC4f() => (C4f)this;
+        public readonly C4f ToC4f() => (C4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from the given <see cref="C4f"/> color.
@@ -21771,7 +21771,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4d"/> color to a <see cref="V3f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3f ToV3f() => (V3f)this;
+        public readonly V3f ToV3f() => (V3f)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from a <see cref="V3f"/> vector.
@@ -21792,7 +21792,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4d"/> color to a <see cref="V3d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V3d ToV3d() => (V3d)this;
+        public readonly V3d ToV3d() => (V3d)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from a <see cref="V3d"/> vector.
@@ -21812,7 +21812,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4d"/> color to a <see cref="V4f"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4f ToV4f() => (V4f)this;
+        public readonly V4f ToV4f() => (V4f)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from a <see cref="V4f"/> vector.
@@ -21831,7 +21831,7 @@ namespace Aardvark.Base
         /// Converts the given <see cref="C4d"/> color to a <see cref="V4d"/> vector.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public V4d ToV4d() => (V4d)this;
+        public readonly V4d ToV4d() => (V4d)this;
 
         /// <summary>
         /// Creates a <see cref="C4d"/> color from a <see cref="V4d"/> vector.
@@ -21919,7 +21919,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4b Map(Func<double, byte> channel_fun)
+        public readonly C4b Map(Func<double, byte> channel_fun)
         {
             return new C4b(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -21928,7 +21928,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4us Map(Func<double, ushort> channel_fun)
+        public readonly C4us Map(Func<double, ushort> channel_fun)
         {
             return new C4us(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -21937,7 +21937,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4ui Map(Func<double, uint> channel_fun)
+        public readonly C4ui Map(Func<double, uint> channel_fun)
         {
             return new C4ui(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -21946,7 +21946,7 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4f Map(Func<double, float> channel_fun)
+        public readonly C4f Map(Func<double, float> channel_fun)
         {
             return new C4f(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
@@ -21955,13 +21955,13 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d Map(Func<double, double> channel_fun)
+        public readonly C4d Map(Func<double, double> channel_fun)
         {
             return new C4d(channel_fun(R), channel_fun(G), channel_fun(B), channel_fun(A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<double, T> element_fun)
         {
             array[start + 0] = element_fun(R);
             array[start + 1] = element_fun(G);
@@ -21970,7 +21970,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<double, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<double, int, T> element_index_fun)
         {
             array[start + 0] = element_index_fun(R, 0);
             array[start + 1] = element_index_fun(G, 1);
@@ -21979,7 +21979,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public double[] ToArray()
+        public readonly double[] ToArray()
             => (double[])this;
 
         #endregion
@@ -21997,7 +21997,7 @@ namespace Aardvark.Base
                 fixed (double* ptr = &R) { ptr[i] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (double* ptr = &R) { return ptr[i]; }
             }
@@ -22381,7 +22381,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public C4d Clamped(double min, double max)
+        public readonly C4d Clamped(double min, double max)
         {
             return new C4d(R.Clamp(min, max), G.Clamp(min, max), B.Clamp(min, max), A);
         }
@@ -22394,7 +22394,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. The alpha channel is ignored.
         /// </summary>
-        public double Norm1
+        public readonly double Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Abs(R) + Fun.Abs(G) + Fun.Abs(B); }
@@ -22404,7 +22404,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). The alpha channel is ignored.
         /// </summary>
-        public double Norm2
+        public readonly double Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(R * R + G * G + B * B); }
@@ -22414,7 +22414,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public double NormMax
+        public readonly double NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -22424,7 +22424,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). The alpha channel is ignored.
         /// </summary>
-        public double NormMin
+        public readonly double NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(Fun.Abs(R), Fun.Abs(G), Fun.Abs(B)); }
@@ -22434,20 +22434,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is C4d o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(R, G, B, A);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")
@@ -22592,12 +22592,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -22605,7 +22605,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin + R.ToString(format, fp)  + between + G.ToString(format, fp)  + between + B.ToString(format, fp)  + between + A.ToString(format, fp)  + end;
@@ -22616,7 +22616,7 @@ namespace Aardvark.Base
         #region IEquatable<C4d> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(C4d other)
+        public readonly bool Equals(C4d other)
         {
             return R.Equals(other.R) && G.Equals(other.G) && B.Equals(other.B) && A.Equals(other.A);
         }
@@ -22627,19 +22627,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return (R); }
+            readonly get { return (R); }
             set { R = (value); }
         }
 
         double IRGB.Green
         {
-            get { return (G); }
+            readonly get { return (G); }
             set { G = (value); }
         }
 
         double IRGB.Blue
         {
-            get { return (B); }
+            readonly get { return (B); }
             set { B = (value); }
         }
 
@@ -22650,7 +22650,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return (A); }
+            readonly get { return (A); }
             set { A = (value); }
         }
 

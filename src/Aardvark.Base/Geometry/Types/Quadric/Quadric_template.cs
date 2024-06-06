@@ -31,19 +31,19 @@ namespace Aardvark.Base
 
         public __v3t__ Normal
         {
-            get { return m_normal.Normalized; }
+            readonly get { return m_normal.Normalized; }
             set { m_normal = value; }
         }
 
         public __m44t__ ErrorQuadric
         {
-            get { return m_errorQuadric; }
+            readonly get { return m_errorQuadric; }
             set { m_errorQuadric = value; }
         }
 
-        public __ftype__ ErrorOffset => ErrorQuadric.M33;
+        public readonly __ftype__ ErrorOffset => ErrorQuadric.M33;
 
-        public __m44t__ ErrorHeuristic { get; set; }
+        public __m44t__ ErrorHeuristic { readonly get; set; }
 
         #endregion
 

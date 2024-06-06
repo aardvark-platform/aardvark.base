@@ -80,19 +80,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray != null;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray == null;
         }
 
-        public int PlaneCount
+        public readonly int PlaneCount
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
@@ -115,7 +115,7 @@ namespace Aardvark.Base
         #region Override
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             if (PlaneArray == null || PlaneArray.Length == 0) return 0;
             var h = PlaneArray[0].GetHashCode();
@@ -124,7 +124,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Hull2f other)
+        public readonly bool Equals(Hull2f other)
         {
             if (PlaneArray == null || other.PlaneArray == null) return false;
             for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
@@ -132,11 +132,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Hull2f o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => PlaneArray != null
                 ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
                 : "[null]"
@@ -157,7 +157,7 @@ namespace Aardvark.Base
 
         #region Transformation
 
-        public Hull2f Transformed(Trafo2f trafo)
+        public readonly Hull2f Transformed(Trafo2f trafo)
         {
             int count = PlaneCount;
             var hull = new Hull2f(new Plane2f[count]);
@@ -170,7 +170,7 @@ namespace Aardvark.Base
             return hull;
         }
 
-        public void TransformInto(Trafo2f trafo, ref Hull2f hull)
+        public readonly void TransformInto(Trafo2f trafo, ref Hull2f hull)
         {
             int count = PlaneCount;
             var invTr = trafo.Backward.Transposed;
@@ -182,11 +182,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Hull2f Reversed()
+        public readonly Hull2f Reversed()
             => new Hull2f(PlaneArray.Map(p => p.Reversed));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Reverse()
+        public readonly void Reverse()
             => PlaneArray.Apply(p => p.Reversed);
 
         #endregion
@@ -335,19 +335,19 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public bool IsValid
+        public readonly bool IsValid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray != null;
         }
 
-        public bool IsInvalid
+        public readonly bool IsInvalid
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray == null;
         }
 
-        public int PlaneCount
+        public readonly int PlaneCount
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => PlaneArray.Length;
@@ -370,7 +370,7 @@ namespace Aardvark.Base
         #region Override
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             if (PlaneArray == null || PlaneArray.Length == 0) return 0;
             var h = PlaneArray[0].GetHashCode();
@@ -379,7 +379,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(Hull2d other)
+        public readonly bool Equals(Hull2d other)
         {
             if (PlaneArray == null || other.PlaneArray == null) return false;
             for (var i = 0; i < PlaneArray.Length; i++) if (PlaneArray[i] != other.PlaneArray[i]) return false;
@@ -387,11 +387,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is Hull2d o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
             => PlaneArray != null
                 ? string.Format(CultureInfo.InvariantCulture, "[{0}]", string.Join(",", PlaneArray.Map(x => x.ToString())))
                 : "[null]"
@@ -412,7 +412,7 @@ namespace Aardvark.Base
 
         #region Transformation
 
-        public Hull2d Transformed(Trafo2d trafo)
+        public readonly Hull2d Transformed(Trafo2d trafo)
         {
             int count = PlaneCount;
             var hull = new Hull2d(new Plane2d[count]);
@@ -425,7 +425,7 @@ namespace Aardvark.Base
             return hull;
         }
 
-        public void TransformInto(Trafo2d trafo, ref Hull2d hull)
+        public readonly void TransformInto(Trafo2d trafo, ref Hull2d hull)
         {
             int count = PlaneCount;
             var invTr = trafo.Backward.Transposed;
@@ -437,11 +437,11 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Hull2d Reversed()
+        public readonly Hull2d Reversed()
             => new Hull2d(PlaneArray.Map(p => p.Reversed));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Reverse()
+        public readonly void Reverse()
             => PlaneArray.Apply(p => p.Reversed);
 
         #endregion

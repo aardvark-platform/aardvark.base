@@ -296,11 +296,11 @@ namespace Aardvark.Base
             return new FuncOfT2Bool<T>(et => a != b.F(et));
         }
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
             return F.Equals(obj);
         }
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return F.GetHashCode();
         }

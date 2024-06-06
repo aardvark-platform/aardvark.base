@@ -19,8 +19,8 @@ namespace Aardvark.Base.Benchmarks
     // The final method to be tested uses unsafe and direct access with pointers. As expect this method is much more efficient than the other
     // two in most cases. An exception to this are the row and column indexers for 4x4 matrices. Here, the flow control variants actually perform
     // slightly better.
-    
-    //# string[] methods = new[] { "Switch", "If", "Unsafe" }; 
+
+    //# string[] methods = new[] { "Switch", "If", "Unsafe" };
     //# Action comma = () => Out(", ");
     //# Action el = () => Out("else ");
     //# for (int d = 2; d <= 4; d++) {
@@ -48,11 +48,11 @@ namespace Aardvark.Base.Benchmarks
         #region __vtype__
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct __vtype__
+        private readonly struct __vtype__
         {
             #region Fields
 
-            public double /*# fields.ForEach(f => { */__f__/*# }, comma); */;
+            public readonly double /*# fields.ForEach(f => { */__f__/*# }, comma); */;
 
             #endregion
 
@@ -102,12 +102,12 @@ namespace Aardvark.Base.Benchmarks
         #region __nmtype__
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct __nmtype__
+        private readonly struct __nmtype__
         {
             #region Fields
 
             //# n.ForEach(i => {
-            public double /*# d.ForEach(j => { */M__i____j__/*# }, comma); */;
+            public readonly double /*# d.ForEach(j => { */M__i____j__/*# }, comma); */;
             //# });
 
             #endregion
@@ -154,7 +154,7 @@ namespace Aardvark.Base.Benchmarks
             {
                 switch (row)
                 {
-                    //# n.ForEach(r => { 
+                    //# n.ForEach(r => {
                     case __r__:
                         switch (column)
                         {
@@ -183,7 +183,7 @@ namespace Aardvark.Base.Benchmarks
             public unsafe double ElemUnsafe(int row, int column)
             {
                 fixed (double* ptr = __mgetptr__)
-                { 
+                {
                     return ptr[row * __d__ + column];
                 }
             }

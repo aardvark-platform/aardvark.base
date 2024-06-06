@@ -152,18 +152,18 @@ namespace Aardvark.Base
         #region Operations
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __vt__ GetVector(__ftype__ alpha)
+        public readonly __vt__ GetVector(__ftype__ alpha)
             => Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __vt__ GetPoint(__ftype__ alpha)
+        public readonly __vt__ GetPoint(__ftype__ alpha)
             => Center + Axis0 * Fun.Cos(alpha) + Axis1 * Fun.Sin(alpha);
 
         /// <summary>
         /// Perform the supplied action for each of count vectors from the center
-        /// of the ellipse to the circumference. 
+        /// of the ellipse to the circumference.
         /// </summary>
-        public void ForEachVector(int count, Action<int, __vt__> index_vector_act)
+        public readonly void ForEachVector(int count, Action<int, __vt__> index_vector_act)
         {
             __ftype__ d = __constant__.PiTimesTwo / count;
             __ftype__ a = Fun.Sin(d * __half__).Square() * 2, b = Fun.Sin(d); // init trig. recurrence
@@ -181,7 +181,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Get count points on the circumference of the ellipse.
         /// </summary>
-        public __vt__[] GetPoints(int count)
+        public readonly __vt__[] GetPoints(int count)
         {
             var array = new __vt__[count];
             var c = Center;
@@ -211,11 +211,11 @@ namespace Aardvark.Base
         #region Overrides
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
             => HashCode.GetCombined(Center, /*# if (d == 3) { */Normal, /*# }*/Axis0, Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__et__ other) =>
+        public readonly bool Equals(__et__ other) =>
             Center.Equals(other.Center) &&
             //# if (d == 3) {
             Normal.Equals(other.Normal) &&
@@ -224,11 +224,11 @@ namespace Aardvark.Base
             Axis1.Equals(other.Axis1);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
              => (other is __et__ o) ? Equals(o) : false;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString()
+        public override readonly string ToString()
         {
             //# if (d == 3) {
             return string.Format(CultureInfo.InvariantCulture, "[{0}, {1}, {2}, {3}]", Center, Normal, Axis0, Axis1);

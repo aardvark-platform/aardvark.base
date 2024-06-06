@@ -243,10 +243,10 @@ namespace Aardvark.Base
             }
         }
 
-        private static Dict<Format, Symbol> s_nameOfFormat = null;
-        private static SymbolDict<Format> s_formatOfName = null;
-        private static Dict<Format, Symbol> s_intentOfFormat = null;
-        private static Dict<Format, int> s_channelCountMap = null;
+        private static readonly Dict<Format, Symbol> s_nameOfFormat = null;
+        private static readonly SymbolDict<Format> s_formatOfName = null;
+        private static readonly Dict<Format, Symbol> s_intentOfFormat = null;
+        private static readonly Dict<Format, int> s_channelCountMap = null;
 
         public static Symbol GetName(this Format format)
         {
@@ -1106,21 +1106,21 @@ namespace Aardvark.Base
             return new CieXYZf(white.Y * s_labFinv(l), white.X * s_labFinv(l + c.a * 0.002), white.Z * s_labFinv(l - c.b * 0.005));
         }
 
-        public static Trafo2d ConeResponseDomain_XYZScaling = new Trafo2d(M33d.Identity, M33d.Identity);
+        public static readonly Trafo2d ConeResponseDomain_XYZScaling = new Trafo2d(M33d.Identity, M33d.Identity);
 
-        public static Trafo2d ConeResponseDomain_Bradford = new Trafo2d(new M33d(0.8951000, 0.2664000, -0.1614000,
-                                                                                -0.7502000, 1.7135000, 0.0367000,
-                                                                                 0.0389000, -0.0685000, 1.0296000),
-                                                                        new M33d(0.9869929, -0.1470543, 0.1599627,
-                                                                                 0.4323053, 0.5183603, 0.0492912,
-                                                                                -0.0085287, 0.0400428, 0.9684867));
+        public static readonly Trafo2d ConeResponseDomain_Bradford = new Trafo2d(new M33d(0.8951000, 0.2664000, -0.1614000,
+                                                                                         -0.7502000, 1.7135000, 0.0367000,
+                                                                                          0.0389000, -0.0685000, 1.0296000),
+                                                                                 new M33d(0.9869929, -0.1470543, 0.1599627,
+                                                                                          0.4323053, 0.5183603, 0.0492912,
+                                                                                         -0.0085287, 0.0400428, 0.9684867));
 
-        public static Trafo2d ConeResponseDomain_VonKries = new Trafo2d(new M33d(0.4002400, 0.7076000, -0.0808100,
-                                                                                -0.2263000, 1.1653200, 0.0457000,
-                                                                                 0.0000000, 0.0000000, 0.9182200),
-                                                                        new M33d(1.8599364, -1.1293816, 0.2198974,
-                                                                                 0.3611914, 0.6388125, -0.0000064,
-                                                                                 0.0000000, 0.0000000, 1.0890636));
+        public static readonly Trafo2d ConeResponseDomain_VonKries = new Trafo2d(new M33d(0.4002400, 0.7076000, -0.0808100,
+                                                                                         -0.2263000, 1.1653200, 0.0457000,
+                                                                                          0.0000000, 0.0000000, 0.9182200),
+                                                                                 new M33d(1.8599364, -1.1293816, 0.2198974,
+                                                                                          0.3611914, 0.6388125, -0.0000064,
+                                                                                          0.0000000, 0.0000000, 1.0890636));
 
         public static readonly CieXYZf CieXYZfAWhite = new CieXYZf(109.85, 100.0, 35.585);
         public static readonly CieXYZf CieXYZfBWhite = new CieXYZf(99.072, 100.0, 85.223);
@@ -1732,9 +1732,9 @@ namespace Aardvark.Base
             return new HSLf(hue, saturation, lightness).ToC3f();
         }
 
-        public HSLf AsHSLf() { return new HSLf(R, G, B); }
+        public readonly HSLf AsHSLf() { return new HSLf(R, G, B); }
 
-        public HSVf AsHSVf() { return new HSVf(R, G, B); }
+        public readonly HSVf AsHSVf() { return new HSVf(R, G, B); }
 
     }
 
@@ -1866,9 +1866,9 @@ namespace Aardvark.Base
         public CieLabf(float _L, float _a, float _b) { L = _L; a = _a; b = _b; }
         public CieLabf(double _L, double _a, double _b) { L = (float)_L; a = (float)_a; b = (float)_b; }
 
-        public bool Equals(CieLabf other) => L == other.L && a == other.a && b == other.b;
-        public override bool Equals(object other) => (other is CieLabf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(L, a, b);
+        public readonly bool Equals(CieLabf other) => L == other.L && a == other.a && b == other.b;
+        public override readonly bool Equals(object other) => (other is CieLabf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(L, a, b);
     }
 
     #endregion
@@ -1889,11 +1889,11 @@ namespace Aardvark.Base
         public CIeLuvf(float _L, float _u, float _v) { L = _L; u = _u; v = _v; }
         public CIeLuvf(double _L, double _u, double _v) { L = (float)_L; u = (float)_u; v = (float)_v; }
 
-        public C3f AsC3f() { return new C3f(L, u, v); }
+        public readonly C3f AsC3f() { return new C3f(L, u, v); }
 
-        public bool Equals(CIeLuvf other) => L == other.L && u == other.u && v == other.v;
-        public override bool Equals(object other) => (other is CIeLuvf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(L, u, v);
+        public readonly bool Equals(CIeLuvf other) => L == other.L && u == other.u && v == other.v;
+        public override readonly bool Equals(object other) => (other is CIeLuvf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(L, u, v);
     }
 
     #endregion
@@ -1918,9 +1918,9 @@ namespace Aardvark.Base
         public CieXYZf(float _X, float _Y, float _Z) { X = _X; Y = _Y; Z = _Z; }
         public CieXYZf(double _X, double _Y, double _Z) { X = (float)_X; Y = (float)_Y; Z = (float)_Z; }
 
-        public bool Equals(CieXYZf other) => X == other.X && Y == other.Y && Z == other.Z;
-        public override bool Equals(object other) => (other is CieXYZf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(X, Y, Z);
+        public readonly bool Equals(CieXYZf other) => X == other.X && Y == other.Y && Z == other.Z;
+        public override readonly bool Equals(object other) => (other is CieXYZf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(X, Y, Z);
     }
 
     #endregion
@@ -1941,9 +1941,9 @@ namespace Aardvark.Base
         public CieYxyf(float _Y, float _x, float _y) { Y = _Y; x = _x; y = _y; }
         public CieYxyf(double _Y, double _x, double _y) { Y = (float)_Y; x = (float)_x; y = (float)_y; }
 
-        public bool Equals(CieYxyf other) => Y == other.Y && x == other.x && y == other.y;
-        public override bool Equals(object other) => (other is CieYxyf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(Y, x, y);
+        public readonly bool Equals(CieYxyf other) => Y == other.Y && x == other.x && y == other.y;
+        public override readonly bool Equals(object other) => (other is CieYxyf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(Y, x, y);
     }
 
     #endregion
@@ -1967,9 +1967,9 @@ namespace Aardvark.Base
         public CMYKf(double _C, double _M, double _Y, double _K)
                 { C = (float)_C; M = (float)_M; Y = (float)_Y; K = (float)_K; }
 
-        public bool Equals(CMYKf other) => C == other.C && M == other.M && Y == other.Y && K == other.K;
-        public override bool Equals(object other) => (other is CMYKf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(C, M, Y, K);
+        public readonly bool Equals(CMYKf other) => C == other.C && M == other.M && Y == other.Y && K == other.K;
+        public override readonly bool Equals(object other) => (other is CMYKf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(C, M, Y, K);
     }
 
     #endregion
@@ -2007,13 +2007,13 @@ namespace Aardvark.Base
             return col.ToHSLf();
         }
 
-        public C3f AsC3f() { return new C3f(H, S, L); }
+        public readonly C3f AsC3f() { return new C3f(H, S, L); }
 
         #endregion
 
-        public bool Equals(HSLf other) => H == other.H && S == other.S && L == other.L;
-        public override bool Equals(object other) => (other is HSLf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(H, S, L);
+        public readonly bool Equals(HSLf other) => H == other.H && S == other.S && L == other.L;
+        public override readonly bool Equals(object other) => (other is HSLf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(H, S, L);
     }
 
     #endregion
@@ -2051,13 +2051,13 @@ namespace Aardvark.Base
             return col.ToHSVf();
         }
 
-        public C3f AsC3f() { return new C3f(H, S, V); }
+        public readonly C3f AsC3f() { return new C3f(H, S, V); }
 
         #endregion
 
-        public bool Equals(HSVf other) => H == other.H && S == other.S && V == other.V;
-        public override bool Equals(object other) => (other is HSVf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(H, S, V);
+        public readonly bool Equals(HSVf other) => H == other.H && S == other.S && V == other.V;
+        public override readonly bool Equals(object other) => (other is HSVf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(H, S, V);
     }
 
     #endregion
@@ -2078,11 +2078,11 @@ namespace Aardvark.Base
         public Yuvf(float _Y, float _u, float _v) { Y = _Y; u = _u; v = _v; }
         public Yuvf(double _Y, double _u, double _v) { Y = (float)_Y; u = (float)_u; v = (float)_v; }
 
-        public C3f AsC3f() { return new C3f(Y, u, v); }
+        public readonly C3f AsC3f() { return new C3f(Y, u, v); }
 
-        public bool Equals(Yuvf other) => Y == other.Y && u == other.u && v == other.v;
-        public override bool Equals(object other) => (other is Yuvf o) ? Equals(o) : false;
-        public override int GetHashCode() => HashCode.GetCombined(Y, u, v);
+        public readonly bool Equals(Yuvf other) => Y == other.Y && u == other.u && v == other.v;
+        public override readonly bool Equals(object other) => (other is Yuvf o) ? Equals(o) : false;
+        public override readonly int GetHashCode() => HashCode.GetCombined(Y, u, v);
     }
 
     #endregion

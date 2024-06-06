@@ -8,7 +8,7 @@
     public struct Skipper
     {
         int m_count;
-        int m_limit;
+        readonly int m_limit;
 
         #region Constructor
 
@@ -26,7 +26,7 @@
 
         #region Do
 
-        public bool HasDone
+        public readonly bool HasDone
         {
             get { return m_count == m_limit; }
         }

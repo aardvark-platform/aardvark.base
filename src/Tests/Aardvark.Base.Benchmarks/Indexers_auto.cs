@@ -19,7 +19,7 @@ namespace Aardvark.Base.Benchmarks
     // The final method to be tested uses unsafe and direct access with pointers. As expect this method is much more efficient than the other
     // two in most cases. An exception to this are the row and column indexers for 4x4 matrices. Here, the flow control variants actually perform
     // slightly better.
-    
+
     #region Indexers2
 
     [SimpleJob(RuntimeMoniker.NetCoreApp31)]
@@ -33,11 +33,11 @@ namespace Aardvark.Base.Benchmarks
         #region Vector
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct Vector
+        private readonly struct Vector
         {
             #region Fields
 
-            public double X, Y;
+            public readonly double X, Y;
 
             #endregion
 
@@ -86,12 +86,12 @@ namespace Aardvark.Base.Benchmarks
         #region Matrix
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct Matrix
+        private readonly struct Matrix
         {
             #region Fields
 
-            public double M00, M01;
-            public double M10, M11;
+            public readonly double M00, M01;
+            public readonly double M10, M11;
 
             #endregion
 
@@ -184,7 +184,7 @@ namespace Aardvark.Base.Benchmarks
             public unsafe double ElemUnsafe(int row, int column)
             {
                 fixed (double* ptr = &M00)
-                { 
+                {
                     return ptr[row * 2 + column];
                 }
             }
@@ -537,11 +537,11 @@ namespace Aardvark.Base.Benchmarks
         #region Vector
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct Vector
+        private readonly struct Vector
         {
             #region Fields
 
-            public double X, Y, Z;
+            public readonly double X, Y, Z;
 
             #endregion
 
@@ -593,13 +593,13 @@ namespace Aardvark.Base.Benchmarks
         #region Matrix
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct Matrix
+        private readonly struct Matrix
         {
             #region Fields
 
-            public double M00, M01, M02;
-            public double M10, M11, M12;
-            public double M20, M21, M22;
+            public readonly double M00, M01, M02;
+            public readonly double M10, M11, M12;
+            public readonly double M20, M21, M22;
 
             #endregion
 
@@ -724,7 +724,7 @@ namespace Aardvark.Base.Benchmarks
             public unsafe double ElemUnsafe(int row, int column)
             {
                 fixed (double* ptr = &M00)
-                { 
+                {
                     return ptr[row * 3 + column];
                 }
             }
@@ -1081,11 +1081,11 @@ namespace Aardvark.Base.Benchmarks
         #region Vector
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct Vector
+        private readonly struct Vector
         {
             #region Fields
 
-            public double X, Y, Z, W;
+            public readonly double X, Y, Z, W;
 
             #endregion
 
@@ -1140,14 +1140,14 @@ namespace Aardvark.Base.Benchmarks
         #region Matrix
 
         [StructLayout(LayoutKind.Sequential)]
-        private struct Matrix
+        private readonly struct Matrix
         {
             #region Fields
 
-            public double M00, M01, M02, M03;
-            public double M10, M11, M12, M13;
-            public double M20, M21, M22, M23;
-            public double M30, M31, M32, M33;
+            public readonly double M00, M01, M02, M03;
+            public readonly double M10, M11, M12, M13;
+            public readonly double M20, M21, M22, M23;
+            public readonly double M30, M31, M32, M33;
 
             #endregion
 
@@ -1308,7 +1308,7 @@ namespace Aardvark.Base.Benchmarks
             public unsafe double ElemUnsafe(int row, int column)
             {
                 fixed (double* ptr = &M00)
-                { 
+                {
                     return ptr[row * 4 + column];
                 }
             }

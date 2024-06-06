@@ -5,7 +5,7 @@ namespace Aardvark.Base
 {
     public static class EnumHelpers
     {
-        static Dict<Type, Dict<long, (object, object)>> s_neighbourValuesDicts = new Dict<Type, Dict<long, (object, object)>>();
+        static readonly Dict<Type, Dict<long, (object, object)>> s_neighbourValuesDicts = new Dict<Type, Dict<long, (object, object)>>();
 
         static Dict<long, (object, object)> GetNeighbourValuesDict<T>(Type enumType)
         {
@@ -57,7 +57,7 @@ namespace Aardvark.Base
             return (T)result.Item2;
         }
 
-        static Dictionary<Type, (Array, Dictionary<long, int>)> s_valueIndexMapping = new Dictionary<Type, (Array, Dictionary<long, int>)>(); // long = worst case enum value
+        static readonly Dictionary<Type, (Array, Dictionary<long, int>)> s_valueIndexMapping = new Dictionary<Type, (Array, Dictionary<long, int>)>(); // long = worst case enum value
 
         static (Array, Dictionary<long, int>) GetValueIndexMapping(Type enumType)
         {

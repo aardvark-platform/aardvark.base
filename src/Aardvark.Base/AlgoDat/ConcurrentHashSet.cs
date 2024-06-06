@@ -10,7 +10,7 @@ namespace System.Collections.Concurrent
     {
 		//int does not waste too much memory and might be used for reference-counting 
 		//or similar features. TODO: investigate if this is faster using reference types.
-        private ConcurrentDictionary<T, int> m_entries;
+        private readonly ConcurrentDictionary<T, int> m_entries;
 
         #region Constructors
 
@@ -85,9 +85,9 @@ namespace System.Collections.Concurrent
 
         #endregion
 
-        public struct Enumerator : IEnumerator<T>, System.Collections.IEnumerator
+        public readonly struct Enumerator : IEnumerator<T>, System.Collections.IEnumerator
         {
-            private IEnumerator<KeyValuePair<T, int>> m_enumerator;
+            private readonly IEnumerator<KeyValuePair<T, int>> m_enumerator;
 
             internal Enumerator(ConcurrentHashSet<T> set)
             {

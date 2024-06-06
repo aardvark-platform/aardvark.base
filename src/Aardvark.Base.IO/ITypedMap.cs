@@ -19,8 +19,8 @@ namespace Aardvark.Base.Coder
 
         #region Properties
 
-        public string Name { get { return m_name; } set { m_name = value; } }
-        public Type Type { get { return m_type; } set { m_type = value; } }
+        public string Name { readonly get { return m_name; } set { m_name = value; } }
+        public Type Type { readonly get { return m_type; } set { m_type = value; } }
 
         #endregion
     }
@@ -62,8 +62,8 @@ namespace Aardvark.Base.Coder
     public class TypeOfString : Dictionary<string, Type> { }
     public static class FieldTypeMap
     {
-        static object s_lock = new object();
-        static Dictionary<Type, TypeOfString> s_fieldTypeTypeMap
+        static readonly object s_lock = new object();
+        static readonly Dictionary<Type, TypeOfString> s_fieldTypeTypeMap
                 = new Dictionary<Type, TypeOfString>();
 
         public static TypeOfString Get(Type type, ITypedMap typedMap)

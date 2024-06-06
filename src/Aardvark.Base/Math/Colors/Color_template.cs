@@ -591,7 +591,7 @@ namespace Aardvark.Base
         //# if (t.HasAlpha) {
         //#     var t1 = Meta.ColorTypeOf(3, ft);
         //#     var type1 = t1.Name;
-        public __type1__ RGB => (__type1__)this;
+        public readonly __type1__ RGB => (__type1__)this;
 
         //# }
         //# if (isReal) {
@@ -601,7 +601,7 @@ namespace Aardvark.Base
         //# var actArray = new[] { oror, andand };
         //# condArray.ForEach(scopeArray, (cond, scope) => {
         //# quantArray.ForEach(actArray, (qant, act) => {
-        public bool __qant____cond__
+        public readonly bool __qant____cond__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => /*# fields.ForEach((f, i) => { */__scope__.Is__cond__(__f__)/*# }, act); */;
@@ -612,7 +612,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the absolute value of each component of the color is smaller than Constant&lt;__ftype__&gt;.PositiveTinyValue, false otherwise.
         /// </summary>
-        public bool IsTiny
+        public readonly bool IsTiny
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AllTiny;
@@ -621,7 +621,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is NaN, false otherwise.
         /// </summary>
-        public bool IsNaN
+        public readonly bool IsNaN
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNaN;
@@ -630,7 +630,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite (positive or negative), false otherwise.
         /// </summary>
-        public bool IsInfinity
+        public readonly bool IsInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyInfinity;
@@ -639,7 +639,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and positive, false otherwise.
         /// </summary>
-        public bool IsPositiveInfinity
+        public readonly bool IsPositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyPositiveInfinity;
@@ -648,7 +648,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if any component of the color is infinite and negative, false otherwise.
         /// </summary>
-        public bool IsNegativeInfinity
+        public readonly bool IsNegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => AnyNegativeInfinity;
@@ -657,7 +657,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns whether all components of the color are finite (i.e. not NaN and not infinity).
         /// </summary>
-        public bool IsFinite
+        public readonly bool IsFinite
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => !(IsInfinity || IsNaN);
@@ -694,7 +694,7 @@ namespace Aardvark.Base
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type1__ To__type1__() => (__type1__)this;
+        public readonly __type1__ To__type1__() => (__type1__)this;
 
         /// <summary>
         /// Creates a <see cref="__type__"/> color from the given <see cref="__type1__"/> color.
@@ -737,7 +737,7 @@ namespace Aardvark.Base
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __vtype__ To__vtype__() => (__vtype__)this;
+        public readonly __vtype__ To__vtype__() => (__vtype__)this;
 
         /// <summary>
         /// Creates a <see cref="__type__"/> color from a <see cref="__vtype__"/> vector.
@@ -787,14 +787,14 @@ namespace Aardvark.Base
         /// Returns a copy with all elements transformed by the supplied function.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type1__ Map(Func<__ftype__, __ftype1__> channel_fun)
+        public readonly __type1__ Map(Func<__ftype__, __ftype1__> channel_fun)
         {
             return new __type1__(/*# fields.ForEach(f => { */channel_fun(__f__)/*# }, comma); */);
         }
 
         //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<__ftype__, T> element_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<__ftype__, T> element_fun)
         {
             //# fields.ForEach((f, i) => {
             array[start + __i__] = element_fun(__f__);
@@ -802,7 +802,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void CopyTo<T>(T[] array, int start, Func<__ftype__, int, T> element_index_fun)
+        public readonly void CopyTo<T>(T[] array, int start, Func<__ftype__, int, T> element_index_fun)
         {
             //# fields.ForEach((f, i) => {
             array[start + __i__] = element_index_fun(__f__, __i__);
@@ -810,7 +810,7 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __ftype__[] ToArray()
+        public readonly __ftype__[] ToArray()
             => (__ftype__[])this;
 
         #endregion
@@ -833,7 +833,7 @@ namespace Aardvark.Base
                 fixed (__ftype__* ptr = __getptr__) { ptr[/*#if (ft == Meta.ByteType) {*/IndexMapping[i]/*# } else {*/i/*#}*/] = value; }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get
+            readonly get
             {
                 fixed (__ftype__* ptr = __getptr__) { return ptr[/*#if (ft == Meta.ByteType) {*/IndexMapping[i]/*# } else {*/i/*#}*/]; }
             }
@@ -1027,7 +1027,7 @@ namespace Aardvark.Base
         /// Returns a copy with the color channels clamped to the given bounds.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public __type__ Clamped(__ftype__ min, __ftype__ max)
+        public readonly __type__ Clamped(__ftype__ min, __ftype__ max)
         {
             return new __type__(/*# channels.ForEach(
                 c => { */__c__.Clamp(min, max)/*# }, comma);
@@ -1042,7 +1042,7 @@ namespace Aardvark.Base
         /// Returns the Manhattan (or 1-) norm of the vector. This is
         /// calculated as |R| + |G| + |B|. /*# if (t.HasAlpha) { */The alpha channel is ignored./*# } */
         /// </summary>
-        public __htype__ Norm1
+        public readonly __htype__ Norm1
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return /*# channels.ForEach(c => { */__fabs_p____c____q_fabs__/*# }, add); */; }
@@ -1052,7 +1052,7 @@ namespace Aardvark.Base
         /// Returns the Euclidean (or 2-) norm of the color. This is calculated
         /// as sqrt(R^2 + G^2 + B^2). /*# if (t.HasAlpha) { */The alpha channel is ignored./*# } */
         /// </summary>
-        public __ctype__ Norm2
+        public readonly __ctype__ Norm2
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Sqrt(/*# channels.ForEach(c => { */__c__ * __c__/*# }, add); */); }
@@ -1062,7 +1062,7 @@ namespace Aardvark.Base
         /// Returns the infinite (or maximum) norm of the color. This is
         /// calculated as max(|R|, |G|, |B|). /*# if (t.HasAlpha) { */The alpha channel is ignored./*# } */
         /// </summary>
-        public __ftype__ NormMax
+        public readonly __ftype__ NormMax
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Max(/*# channels.ForEach(c => { */__fabs_p____c____q_fabs__/*# }, comma); */); }
@@ -1072,7 +1072,7 @@ namespace Aardvark.Base
         /// Returns the minimum norm of the color. This is calculated as
         /// min(|R|, |G|, |B|). /*# if (t.HasAlpha) { */The alpha channel is ignored./*# } */
         /// </summary>
-        public __ftype__ NormMin
+        public readonly __ftype__ NormMin
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get { return Fun.Min(/*# channels.ForEach(c => { */__fabs_p____c____q_fabs__/*# }, comma); */); }
@@ -1082,20 +1082,20 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override bool Equals(object other)
+        public override readonly bool Equals(object other)
             => (other is __type__ o) ? Equals(o) : false;
 
-        public override int GetHashCode()
+        public override readonly int GetHashCode()
         {
             return HashCode.GetCombined(/*# t.Fields.ForEach(f => { */__f__/*# }, comma); */);
         }
 
-        public override string ToString()
+        public override readonly string ToString()
         {
             return ToString(null, CultureInfo.InvariantCulture);
         }
 
-        public Text ToText(int bracketLevel = 1)
+        public readonly Text ToText(int bracketLevel = 1)
         {
             return
                 ((bracketLevel == 1 ? "[" : "")/*# fields.ForEach(f => {*/
@@ -1246,12 +1246,12 @@ namespace Aardvark.Base
 
         #region IFormattable Members
 
-        public string ToString(string format)
+        public readonly string ToString(string format)
         {
             return ToString(format, CultureInfo.InvariantCulture);
         }
 
-        public string ToString(string format, IFormatProvider fp)
+        public readonly string ToString(string format, IFormatProvider fp)
         {
             return ToString(format, fp, "[", ", ", "]");
         }
@@ -1259,7 +1259,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Outputs e.g. a 3D-Vector in the form "(begin)x(between)y(between)z(end)".
         /// </summary>
-        public string ToString(string format, IFormatProvider fp, string begin, string between, string end)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
             return begin /*# fields.ForEach(f => {*/+ __f__.ToString(format, fp) /*# }, addbetween); */ + end;
@@ -1270,7 +1270,7 @@ namespace Aardvark.Base
         #region IEquatable<__type__> Members
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public bool Equals(__type__ other)
+        public readonly bool Equals(__type__ other)
         {
             return /*# fields.ForEach(f => { */__f__.Equals(other.__f__)/*# }, andand); */;
         }
@@ -1281,19 +1281,19 @@ namespace Aardvark.Base
 
         double IRGB.Red
         {
-            get { return __ft_to_d__(R); }
+            readonly get { return __ft_to_d__(R); }
             set { R = __d_to_ft__(value); }
         }
 
         double IRGB.Green
         {
-            get { return __ft_to_d__(G); }
+            readonly get { return __ft_to_d__(G); }
             set { G = __d_to_ft__(value); }
         }
 
         double IRGB.Blue
         {
-            get { return __ft_to_d__(B); }
+            readonly get { return __ft_to_d__(B); }
             set { B = __d_to_ft__(value); }
         }
 
@@ -1305,7 +1305,7 @@ namespace Aardvark.Base
         [XmlIgnore]
         public double Opacity
         {
-            get { return __ft_to_d__(A); }
+            readonly get { return __ft_to_d__(A); }
             set { A = __d_to_ft__(value); }
         }
 
