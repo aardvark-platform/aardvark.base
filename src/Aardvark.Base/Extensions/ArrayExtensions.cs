@@ -460,7 +460,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Create a copy with the elements reversed. 
+        /// Create a copy with the elements reversed.
         /// </summary>
         public static T[] CopyReversed<T>(this T[] array)
         {
@@ -1577,7 +1577,7 @@ namespace Aardvark.Base
                 int[][] forwardMaps)
         {
             var offset = 0;
-            for (int i = 0; i < sourceArrays.Count(); i++)
+            for (int i = 0; i < sourceArrays.Length; i++)
             {
                 sourceArrays[i].ForwardMappedCopyTo(
                                     targetArray, forwardMaps[i], offset);
@@ -1655,7 +1655,7 @@ namespace Aardvark.Base
                 int[] backwardMap,
                 int targetOffest)
         {
-            int count = backwardMap.Count();
+            int count = backwardMap.Length;
             int targetIndexOffset = targetArray.Max() + 1;
 
             // creating targetArray, still indexing sourceArray
@@ -1705,7 +1705,7 @@ namespace Aardvark.Base
                 out int[] targetArray,
                 int[] backwardMap)
         {
-            targetArray = new int[backwardMap.Count()].Set(-1);
+            targetArray = new int[backwardMap.Length].Set(-1);
             return sourceArray.BackMappedCopyIndexArrayTo(
                 targetArray, backwardMap, 0);
         }
@@ -1721,7 +1721,7 @@ namespace Aardvark.Base
                 int[][] sourceArrays,
                 int[][] forwardMaps)
         {
-            var count = sourceArrays.Count();
+            var count = sourceArrays.Length;
             var indexMaps = new int[count][];
             var offset = 0;
             for (int i = 0; i < count; i++)
@@ -1745,7 +1745,7 @@ namespace Aardvark.Base
                 int[][] sourceArrays,
                 int[][] backwardMaps)
         {
-            var count = sourceArrays.Count();
+            var count = sourceArrays.Length;
             var indexMaps = new int[count][];
             var offset = 0;
             for (int i = 0; i < count; i++)
@@ -1753,7 +1753,7 @@ namespace Aardvark.Base
                 indexMaps[i] = sourceArrays[i]
                                 .BackMappedCopyIndexArrayTo(
                                     targetArray, backwardMaps[i], offset);
-                offset += backwardMaps[i].Count();
+                offset += backwardMaps[i].Length;
             }
             return indexMaps;
         }
@@ -1934,7 +1934,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// Creates an array that contains the integrated sum up to each element of input array.
         /// The length of the integrated array is +1 of the input array and contains the total
         /// sum in the last element.
         /// Using double precision during integration.
@@ -1952,7 +1952,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// Creates an array that contains the integrated sum up to each element of input array.
         /// The length of the integrated array is +1 of the input array and contains the total
         /// sum in the last element.
         /// Using single precision during integration.
@@ -1970,7 +1970,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// Creates an array that contains the integrated sum up to each element of input array.
         /// The length of the integrated array is +1 of the input array and contains the total
         /// sum in the last element.
         /// </summary>
@@ -1987,7 +1987,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// Creates an array that contains the integrated sum up to each element of input array.
         /// The length of the integrated array is +1 of the input array and contains the total
         /// sum in the last element.
         /// </summary>
@@ -2004,7 +2004,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates an array that contains the integrated sum up to each element of input array. 
+        /// Creates an array that contains the integrated sum up to each element of input array.
         /// The length of the integrated array is +1 of the input array and contains the total
         /// sum in the last element.
         /// </summary>
@@ -2343,21 +2343,21 @@ namespace Aardvark.Base
         {
             var elementSize = data.GetType().GetElementType().GetCLRSize();
             var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(data), data.Length * elementSize);
-            return span;   
+            return span;
         }
-        
+
         public static Span<byte> AsByteSpan<T>(this T[] data) where T : struct
         {
             var span = new Span<T>(data);
             return MemoryMarshal.AsBytes(span);
         }
-        
+
         public static ReadOnlySpan<byte> AsByteSpan(this string data)
         {
             return MemoryMarshal.AsBytes(data.AsSpan());
         }
 #endif
-        
+
         internal static unsafe T UseAsStream<T>(this Array data, Func<UnmanagedMemoryStream, T> action)
         {
             var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
@@ -2375,7 +2375,7 @@ namespace Aardvark.Base
                 gc.Free();
             }
         }
-       
+
         internal static unsafe void UseAsStream(this Array data, Action<UnmanagedMemoryStream> action)
         {
             var gc = GCHandle.Alloc(data, GCHandleType.Pinned);
@@ -2393,8 +2393,8 @@ namespace Aardvark.Base
                 gc.Free();
             }
         }
-       
-        
+
+
         #endregion
 
         #region Hashes
@@ -2419,8 +2419,8 @@ namespace Aardvark.Base
 #endif
         }
 
-        
-        
+
+
         /// <summary>
         /// Computes the MD5 hash of the data array.
         /// </summary>
@@ -2432,7 +2432,7 @@ namespace Aardvark.Base
             Array.Resize(ref hash, 16);
             return hash;
 #else
-            
+
             using(var sha = SHA1.Create())
             {
                 var hash = data.UseAsStream((stream) => sha.ComputeHash(stream));
@@ -2488,7 +2488,7 @@ namespace Aardvark.Base
                 return data.UseAsStream((stream) => sha.ComputeHash(stream));
             }
 #endif
-            
+
         }
 
         /// <summary>
@@ -2620,7 +2620,7 @@ namespace Aardvark.Base
                 data.UseAsStream((stream) => a.Update(stream));
 #endif
             }
-            return a.Checksum;            
+            return a.Checksum;
         }
 
         /// <summary>
@@ -2629,7 +2629,7 @@ namespace Aardvark.Base
         public static uint ComputeAdler32Checksum(this string s)
         {
             var a = new Adler32();
-            
+
 #if NET6_0_OR_GREATER
             a.Update(s.AsByteSpan());
 #else
