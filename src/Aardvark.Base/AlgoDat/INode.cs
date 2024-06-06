@@ -1,4 +1,5 @@
 ﻿using Aardvark.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -53,7 +54,7 @@ namespace Aardvark.VRVis
         /// </summary>
         public static IEnumerable<INode> DepthFirst(this INode self)
         {
-            if (self == null) return new INode[0];
+            if (self == null) return Array.Empty<INode>();
             return self.DepthFirst(n => n.SubNodes);
         }
 

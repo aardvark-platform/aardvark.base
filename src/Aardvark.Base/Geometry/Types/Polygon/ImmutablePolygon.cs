@@ -14,7 +14,7 @@ namespace Aardvark.Base
         /// <summary>
         /// The empty polygon (no points).
         /// </summary>
-        public static readonly IImmutablePolygon<T> Empty = new ImmutablePolygon<T>(new T[0]);
+        public static readonly IImmutablePolygon<T> Empty = new ImmutablePolygon<T>(Array.Empty<T>());
 
         /// <summary>
         /// Vertices.
@@ -63,37 +63,37 @@ namespace Aardvark.Base
         public int Count => m_ps.Count;
 
         /// <summary>
-        /// Returns new polygon with point added. 
+        /// Returns new polygon with point added.
         /// </summary>
         public IImmutablePolygon<T> AddPoint(T p)
             => new ImmutablePolygon<T>(m_ps.Add(p));
 
         /// <summary>
-        /// Returns new polygon with points added. 
+        /// Returns new polygon with points added.
         /// </summary>
         public IImmutablePolygon<T> AddPoints(IEnumerable<T> points)
             => new ImmutablePolygon<T>(m_ps.AddRange(points));
 
         /// <summary>
-        /// Returns new polygon with point replaced. 
+        /// Returns new polygon with point replaced.
         /// </summary>
         public IImmutablePolygon<T> SetPoint(int index, T p)
             => new ImmutablePolygon<T>(m_ps.SetItem(index, p));
 
         /// <summary>
-        /// Returns new polygon with point p inserted at given index. 
+        /// Returns new polygon with point p inserted at given index.
         /// </summary>
         public IImmutablePolygon<T> InsertPoint(int index, T p)
             => new ImmutablePolygon<T>(m_ps.Insert(index, p));
 
         /// <summary>
-        /// Returns new polygon with point removed. 
+        /// Returns new polygon with point removed.
         /// </summary>
         public IImmutablePolygon<T> RemovePoint(int index)
             => new ImmutablePolygon<T>(m_ps.RemoveAt(index));
 
         /// <summary>
-        /// Returns new polygon with points removed. 
+        /// Returns new polygon with points removed.
         /// </summary>
         public IImmutablePolygon<T> RemovePoints(IEnumerable<int> indexes)
         {

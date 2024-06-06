@@ -274,7 +274,7 @@ namespace Aardvark.Base
         public readonly V2f[] GetEdgeArray()
         {
             var pc = m_pointCount;
-            if (pc < 2) return new V2f[0];
+            if (pc < 2) return Array.Empty<V2f>();
             var edgeArray = new V2f[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -294,7 +294,7 @@ namespace Aardvark.Base
         public readonly Line2f[] GetEdgeLineArray()
         {
             var pc = PointCount;
-            if (pc < 2) return new Line2f[0];
+            if (pc < 2) return Array.Empty<Line2f>();
             var ela = new Line2f[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -3751,7 +3751,7 @@ namespace Aardvark.Base
         public readonly V3f[] GetEdgeArray()
         {
             var pc = m_pointCount;
-            if (pc < 2) return new V3f[0];
+            if (pc < 2) return Array.Empty<V3f>();
             var edgeArray = new V3f[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -3771,7 +3771,7 @@ namespace Aardvark.Base
         public readonly Line3f[] GetEdgeLineArray()
         {
             var pc = PointCount;
-            if (pc < 2) return new Line3f[0];
+            if (pc < 2) return Array.Empty<Line3f>();
             var ela = new Line3f[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -7229,7 +7229,7 @@ namespace Aardvark.Base
         public readonly V2d[] GetEdgeArray()
         {
             var pc = m_pointCount;
-            if (pc < 2) return new V2d[0];
+            if (pc < 2) return Array.Empty<V2d>();
             var edgeArray = new V2d[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -7249,7 +7249,7 @@ namespace Aardvark.Base
         public readonly Line2d[] GetEdgeLineArray()
         {
             var pc = PointCount;
-            if (pc < 2) return new Line2d[0];
+            if (pc < 2) return Array.Empty<Line2d>();
             var ela = new Line2d[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -10706,7 +10706,7 @@ namespace Aardvark.Base
         public readonly V3d[] GetEdgeArray()
         {
             var pc = m_pointCount;
-            if (pc < 2) return new V3d[0];
+            if (pc < 2) return Array.Empty<V3d>();
             var edgeArray = new V3d[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -10726,7 +10726,7 @@ namespace Aardvark.Base
         public readonly Line3d[] GetEdgeLineArray()
         {
             var pc = PointCount;
-            if (pc < 2) return new Line3d[0];
+            if (pc < 2) return Array.Empty<Line3d>();
             var ela = new Line3d[pc];
             var p = m_pointArray[0];
             var p0 = p;

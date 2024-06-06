@@ -26,7 +26,7 @@ namespace Aardvark.Tests
         [Test]
         public void BoxFromEmptyArrayShouldBeInvalid()
         {
-            var ps = new V3d[0];
+            var ps = Array.Empty<V3d>();
             var bb = new Box3d(ps);
             Assert.IsTrue(bb.IsInvalid);
         }

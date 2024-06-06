@@ -49,8 +49,8 @@ namespace Aardvark.Base.Coder
         #region Properties
 
         public string Descriptor { get { return m_descriptor; } }
-        
-        public object Data 
+
+        public object Data
         {
             get { return m_data; }
             set { m_data = value; }
@@ -76,7 +76,7 @@ namespace Aardvark.Base.Coder
         }
 
         /// <summary>
-        /// Creates a file convertible given a file name and a preferrable target used to 
+        /// Creates a file convertible given a file name and a preferrable target used to
         /// determine the shortest possible path (a matching creator must be registered).
         /// </summary>
         public static Convertible FromFile(string fileName, Convertible preferrableTarget)
@@ -103,8 +103,8 @@ namespace Aardvark.Base.Coder
         }
 
         /// <summary>
-        /// Creates a matching raw convertible from a given convertible and a preferrable target 
-        /// used to the determine the shortest possible path (a matching raw convertible creator 
+        /// Creates a matching raw convertible from a given convertible and a preferrable target
+        /// used to the determine the shortest possible path (a matching raw convertible creator
         /// must be registered).
         /// </summary>
         public static Convertible FindMatchingRaw(Convertible c, Convertible preferrableTarget)
@@ -113,8 +113,8 @@ namespace Aardvark.Base.Coder
         }
 
         /// <summary>
-        /// Creates a matching raw convertible from a given convertible and a preferrable target 
-        /// used to the determine the shortest possible path (a matching raw convertible creator 
+        /// Creates a matching raw convertible from a given convertible and a preferrable target
+        /// used to the determine the shortest possible path (a matching raw convertible creator
         /// must be registered).
         /// </summary>
         public static Convertible FindMatchingRaw(Convertible c, string preferrableTargetDescriptor)
@@ -169,7 +169,7 @@ namespace Aardvark.Base.Coder
         #endregion
 
         #region Query Methods
-    
+
         /// <summary>
         /// Returns whether a convertible is directly convertible into the target.
         /// </summary>
@@ -398,14 +398,14 @@ namespace Aardvark.Base.Coder
         /// Private helper for public Convert method above.
         /// </summary>
         private void Convert(
-            Convertible source, Convertible target, 
+            Convertible source, Convertible target,
             Dictionary<string, Dictionary<string, RoutingEntry>> routingMap,
             List<Convertible> tempConvertibles)
         {
             var sourceDescr = source.Descriptor;
             var targetDescr = target.Descriptor;
 
-            if (sourceDescr == targetDescr) 
+            if (sourceDescr == targetDescr)
             {
                 DirectConvert(source, target);
                 return;
@@ -1029,7 +1029,7 @@ namespace Aardvark.Base.Coder
 
         /// <summary>
         /// Sets whether a resource is available or not. By default, resources are
-        /// not available. If this is done after the routing table has been 
+        /// not available. If this is done after the routing table has been
         /// initialized once, the routing table will be rebuilt (therefore, use
         /// SetResourceAvailability(List{string} resources, bool available) if you need
         /// to set the availability of multiple resources).
@@ -1055,7 +1055,7 @@ namespace Aardvark.Base.Coder
 
         /// <summary>
         /// Sets whether resources are available or not. By default, resources are
-        /// not available. If this is done after the routing table has been 
+        /// not available. If this is done after the routing table has been
         /// initialized once, the routing table will be rebuilt.
         /// </summary>
         public void SetResourceAvailability(List<string> resources, bool available)
@@ -1114,7 +1114,7 @@ namespace Aardvark.Base.Coder
         {
             var reqResources = RequiredResources(descriptor);
 
-            if (reqResources == null) 
+            if (reqResources == null)
                 return true;
 
             foreach (var res in reqResources)
@@ -1168,7 +1168,7 @@ namespace Aardvark.Base.Coder
             }
             throw new ArgumentException();
         }
-        
+
         /// <summary>
         /// Enumerates all conversions in the specified conversion chain,
         /// or returns null if no conversion exists.
@@ -1192,7 +1192,7 @@ namespace Aardvark.Base.Coder
         {
             var key = (source, target);
             if (m_annotationsMap.ContainsKey(key)) return m_annotationsMap[key];
-            return new Annotation[0];
+            return Array.Empty<Annotation>();
         }
 
         /// <summary>

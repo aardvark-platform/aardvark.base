@@ -50,7 +50,7 @@ namespace Aardvark.Base
             if (count <= 3)
             {
                 var result = indices;
-                indices = new int[0];
+                indices = Array.Empty<int>();
                 return result;
             }
 
@@ -78,7 +78,7 @@ namespace Aardvark.Base
                     if (newIndex == lastIndex)
                     {
                         var finalIndices = indices;
-                        indices = new int[0];
+                        indices = Array.Empty<int>();
                         return finalIndices;
                     }
 
@@ -502,7 +502,7 @@ namespace Aardvark.Base
             if (count <= 3)
             {
                 var result = indices;
-                indices = new int[0];
+                indices = Array.Empty<int>();
                 return result;
             }
 
@@ -530,7 +530,7 @@ namespace Aardvark.Base
                     if (newIndex == lastIndex)
                     {
                         var finalIndices = indices;
-                        indices = new int[0];
+                        indices = Array.Empty<int>();
                         return finalIndices;
                     }
 

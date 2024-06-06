@@ -3285,7 +3285,7 @@ namespace Aardvark.Base
                     return true;
                 }
             }
-            rays = new Ray3f[0];
+            rays = Array.Empty<Ray3f>();
             return false;
         }
 
@@ -7461,7 +7461,7 @@ namespace Aardvark.Base
                     return true;
                 }
             }
-            rays = new Ray3d[0];
+            rays = Array.Empty<Ray3d>();
             return false;
         }
 

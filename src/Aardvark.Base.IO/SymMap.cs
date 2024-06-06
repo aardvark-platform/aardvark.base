@@ -94,7 +94,7 @@ namespace Aardvark.Base.Coder
                     if (s_lastMapCodedVersionMap.TryGetValue(m_typeName, out lastMapCodedVersion)
                         && lastMapCodedVersion >= coderVersion)
                     {
-                        if (m_typeName == this.GetType().GetCanonicalName()) return new FieldCoder[0];
+                        if (m_typeName == this.GetType().GetCanonicalName()) return Array.Empty<FieldCoder>();
                         return new FieldCoder[]
                         {
                            new FieldCoder(0, "TypeName", (c, o) => c.CodePositiveSymbol(ref ((SymMap)o).m_typeName)),
@@ -119,7 +119,7 @@ namespace Aardvark.Base.Coder
                 }
             }
 
-            if (m_typeName == this.GetType().GetCanonicalName()) return new FieldCoder[0];
+            if (m_typeName == this.GetType().GetCanonicalName()) return Array.Empty<FieldCoder>();
 
             return new FieldCoder[]
             {

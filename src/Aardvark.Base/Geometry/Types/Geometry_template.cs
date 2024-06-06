@@ -323,7 +323,7 @@ namespace Aardvark.Base
         public readonly __tvec__[] GetEdgeArray()
         {
             var pc = m_pointCount;
-            if (pc < 2) return new __tvec__[0];
+            if (pc < 2) return Array.Empty<__tvec__>();
             var edgeArray = new __tvec__[pc];
             var p = m_pointArray[0];
             var p0 = p;
@@ -343,7 +343,7 @@ namespace Aardvark.Base
         public readonly __tline__[] GetEdgeLineArray()
         {
             var pc = PointCount;
-            if (pc < 2) return new __tline__[0];
+            if (pc < 2) return Array.Empty<__tline__>();
             var ela = new __tline__[pc];
             var p = m_pointArray[0];
             var p0 = p;

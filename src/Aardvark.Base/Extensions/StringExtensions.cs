@@ -30,7 +30,7 @@ namespace Aardvark.Base
             if (s == "true" || s == "t") return true;
             if (s == "false" || s == "f") return false;
             double r;
-            // Double.TryParse() sets r to 0 if the conversion fails, 
+            // Double.TryParse() sets r to 0 if the conversion fails,
             // which means we don't really need to check the return value.
             Double.TryParse(s, out r);
             return r != 0.0;
@@ -97,7 +97,7 @@ namespace Aardvark.Base
 
             if (!decimal.TryParse(self, out result))
             {
-                result = def; 
+                result = def;
             }
 
             return result;
@@ -147,7 +147,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the english plural of the supplied word (i.e. the word
         /// with "s" appended) if the supplied integer is not equal to one.
-        /// Otherwise the word is returned unchanged. 
+        /// Otherwise the word is returned unchanged.
         /// </summary>
         public static string Plural(this string word, int s)
         {
@@ -404,7 +404,7 @@ namespace Aardvark.Base
 
         #region Formatting
         /// <summary>
-        /// Same as String.Format, but uses the InvariantCulture formatter 
+        /// Same as String.Format, but uses the InvariantCulture formatter
         /// (The one we usually want. You know, . as decimal point,...)
         /// </summary>
         public static string FormatInvariant(this string format, params object[] args)
@@ -451,7 +451,7 @@ namespace Aardvark.Base
         public static byte[] HexToBytes(this string str)
         {
             if (str.Length == 0 || str.Length % 2 != 0)
-                return new byte[0];
+                return System.Array.Empty<byte>();
 
             byte[] buffer = new byte[str.Length / 2];
             char c;

@@ -45,7 +45,7 @@ namespace Aardvark.Base.Coder
     {
         private readonly T m_value;
         private readonly IEnumerable<Annotation> m_tags;
-        private static readonly IEnumerable<Annotation> s_empty = new Annotation[0];
+        private static readonly IEnumerable<Annotation> s_empty = System.Array.Empty<Annotation>();
 
         public Annotated(T value)
         {

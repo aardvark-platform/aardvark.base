@@ -61,7 +61,7 @@ namespace Aardvark.Base
         public static double EvaluateDerivative(this double[] coeff, double x)
         {
             int i = coeff.Length - 1;
-            if (i < 0) throw new ArgumentException(); 
+            if (i < 0) throw new ArgumentException();
             double value = i * coeff[i];
             --i;
             while (i > 0) { value = x * value + i * coeff[i]; --i; }
@@ -82,7 +82,7 @@ namespace Aardvark.Base
             {
                 case 0:
                 case 1:
-                        return new double[0];
+                        return Array.Empty<double>();
                 case 2: return RealRootOf(coeff[1], coeff[2]).NonNanToArray();
                 case 3: return RealRootsOf(coeff[2], coeff[1], coeff[0])
                                        .NonNanToArray();
@@ -107,7 +107,7 @@ namespace Aardvark.Base
         {
             switch (coeff.Length)
             {
-                case 0: return new double[0];
+                case 0: return Array.Empty<double>();
                 case 1: return RealRootOfNormed(coeff[0]).IntoArray();
                 case 2: return RealRootsOfNormed(coeff[1], coeff[0])
                                              .NonNanToArray();
@@ -122,7 +122,7 @@ namespace Aardvark.Base
 
         private static double[] NonNanToArray(this double root)
         {
-            if (double.IsNaN(root)) return new double[0];
+            if (double.IsNaN(root)) return Array.Empty<double>();
             return new double[] { root };
         }
 
@@ -130,7 +130,7 @@ namespace Aardvark.Base
         {
             if (double.IsNaN(p.Item1))
             {
-                if (double.IsNaN(p.Item2)) return new double[0];
+                if (double.IsNaN(p.Item2)) return Array.Empty<double>();
                 return new double[] { p.Item2 };
             }
             if (double.IsNaN(p.Item2)) return new double[] { p.Item1 };
@@ -174,7 +174,7 @@ namespace Aardvark.Base
             if (Fun.IsTiny(a)) return double.NaN;
             return -b / a;
         }
-        
+
         /// <summary>
         /// Return -p as the root of x + p = 0.
         /// </summary>
@@ -378,14 +378,14 @@ namespace Aardvark.Base
                 u = Fun.Sqrt(u);                        // factor of 10^5!
             if (v < Constant<double>.PositiveTinyValue) // values greater than
                 v = 0.0;                                // +tiny == 4 * eps
-            else                                        // do not seem to 
+            else                                        // do not seem to
                 v = Fun.Sqrt(v);                        // improve accuraccy!
             double q1 = q < 0 ? -v : v;
             return MergeSortedAndShift(RealRootsOfNormed(q1, z - u),
                                RealRootsOfNormed(-q1, z + u),
                                -1/4.0 * c3);
         }
-        
+
         static (double, double, double, double) MergeSortedAndShift(
                 (double, double, double) t, double d, double shift)
         {
@@ -457,10 +457,10 @@ namespace Aardvark.Base
             if (len < 2) return a;
             if ((a[0] - a[1]).Abs() < eps)
             {
-                if (len < 3) return new double[0];
+                if (len < 3) return Array.Empty<double>();
                 if (len < 4) return new double[] { a[2] };
                 if ((a[2] - a[3]).Abs() < eps)
-                    return new double[0];
+                    return Array.Empty<double>();
                 else
                     return new double[] { a[2], a[3] };
             }

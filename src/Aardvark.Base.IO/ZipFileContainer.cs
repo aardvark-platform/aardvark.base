@@ -24,8 +24,8 @@ namespace Aardvark.Base.Coder.Legacy
             public long UncompressedSize;
         }
 
-        private string[] m_ZipFileNames = new string[0];
-        private WeakReference[] m_ZipFileStreams = new WeakReference[0];
+        private string[] m_ZipFileNames = Array.Empty<string>();
+        private WeakReference[] m_ZipFileStreams = Array.Empty<WeakReference>();
         private readonly SymbolDict<SubFileHeader> m_Files = new SymbolDict<SubFileHeader>();
         private readonly SymbolSet m_Directories = new SymbolSet();
         private readonly bool m_contentCaseSensitive = false;
@@ -97,7 +97,7 @@ namespace Aardvark.Base.Coder.Legacy
             Report.BeginTimed("Init Zip container '" + containerPath + "'.");
 
             FileStream mainFileStream = null;
-            FileStream[] zipStreams = new FileStream[0];
+            FileStream[] zipStreams = Array.Empty<FileStream>();
 
             try
             {
@@ -120,7 +120,7 @@ namespace Aardvark.Base.Coder.Legacy
 
                 zipStreams = new FileStream[zipEoCDR.cd_diskId + 1];
                 zipStreams[zipEoCDR.cd_diskId] = mainFileStream;
-                
+
                 // Load all parts of a multi zip
                 if (zipEoCDR.cd_diskId > 0)
                 {
@@ -142,7 +142,7 @@ namespace Aardvark.Base.Coder.Legacy
                         zipStreams[i] = File.Open(m_ZipFileNames[i], FileMode.Open, FileAccess.Read, FileShare.None);
                     }
                 }
-                
+
                 // Try to load Zip64 End Of Central Directory Locator
                 var zip64Locator = new TZip64EndOfCentralDirectoryLocator();
                 zip64Locator.Load(mainFileStream, zipEoCDR.Position);
@@ -399,6 +399,6 @@ namespace Aardvark.Base.Coder.Legacy
 
         #endregion
 
-        
+
     }
 }

@@ -3318,7 +3318,7 @@ namespace Aardvark.Base
                     return true;
                 }
             }
-            rays = new __ray3t__[0];
+            rays = Array.Empty<__ray3t__>();
             return false;
         }
 

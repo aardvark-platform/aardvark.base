@@ -19,7 +19,7 @@ namespace Aardvark.Base
             while (true) yield return Guid.NewGuid();
         }
     }
-    
+
     public static partial class EnumerableEx
     {
         #region Indexed Values
@@ -47,7 +47,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns elements with index into 'other'. 
+        /// Returns elements with index into 'other'.
         /// </summary>
         public static IEnumerable<IndexedValue<T>> IndexIntoOther<T>(
                 this IEnumerable<T> self, IList<T> other)
@@ -58,7 +58,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+
         #region Special Selects
 
         public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T> self)
@@ -181,7 +181,7 @@ namespace Aardvark.Base
             }
             return result;
         }
-        
+
         /// <summary>
         /// Maps the elements of an array to a result list.
         /// </summary>
@@ -690,7 +690,7 @@ namespace Aardvark.Base
                     }
                 }
         }
-       
+
         /// <summary>
         /// [A B].Triples([x y], [X Y]) -> (A, x, X) (A, x, Y) (A, y, X) (A, y, Y) (B, x, X) (B, x, Y) (B, y, X) (B, y, Y) (C, x, X) (C, x, Y) (C, y, X) (C, y, Y)
         /// </summary>
@@ -759,7 +759,7 @@ namespace Aardvark.Base
 
             foreach (var x in self) { yield return x; yield return x; }
         }
-        
+
         /// <summary>
         /// Duplicates each element of the sequence n times.
         /// [A B C].DupElements(4) -> [A A A A B B B B C C C C]
@@ -891,7 +891,7 @@ namespace Aardvark.Base
             if (elements == null) return Enumerable.Empty<T>();
             return elements;
         }
-        
+
         /// <summary>
         /// Compares both enumerables using SequenceEqual and additionally checks
         /// whether both enumerables are null.
@@ -964,7 +964,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Aardvark.Runtime.IEnumerableExtensions:
-        /// Invokes a transform function on each element of a sequence and 
+        /// Invokes a transform function on each element of a sequence and
         /// returns the element that yielded the maximum value (and the maximum value in rv_maxVal).
         /// Only elements that yield larger values than minVal are considered.
         /// If multiple elements yield the maximum value, the first in the sequence is chosen.
@@ -1002,7 +1002,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Aardvark.Runtime.IEnumerableExtensions:
-        /// Invokes a transform function on each element of a sequence and 
+        /// Invokes a transform function on each element of a sequence and
         /// returns the element that yielded the minimum value (and the minimum value in rv_minVal).
         /// Only elements that yield smaller values than maxVal are considered.
         /// If multiple elements yield the minimum value, the first in the sequence is chosen.
@@ -2012,7 +2012,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+
         #region Conversions
 
         public static T[] ToArrayDebug<T>(this IEnumerable<T> self)
@@ -2193,7 +2193,7 @@ namespace Aardvark.Base
         {
             if (count == 0)
             {
-                return new TElement[0];
+                return Array.Empty<TElement>();
             }
             else
             {
@@ -2302,9 +2302,9 @@ namespace Aardvark.Base
             }
             return -1;
         }
-        
+
         /// <summary>
-        /// Concats single item to sequence. 
+        /// Concats single item to sequence.
         /// </summary>
         public static IEnumerable<T> Concat<T>(this IEnumerable<T> sequence, T item)
         {
@@ -2313,7 +2313,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Concats sequence to single item. 
+        /// Concats sequence to single item.
         /// </summary>
         public static IEnumerable<T> Concat<T>(this T item, IEnumerable<T> sequence)
         {
@@ -2400,7 +2400,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Converts a sequence that contains numbers of elements
         /// into a sequence that represents the indices of the
-        /// first element if the elements are stored in consecutive 
+        /// first element if the elements are stored in consecutive
         /// order and is closed by the total count elements.
         /// The length of the integrated sequence is +1 of the input.
         /// </summary>
@@ -2415,7 +2415,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Integrates a sequence of values. 
+        /// Integrates a sequence of values.
         /// Returns a sequence of N+1 values where the last is the sum off all value.
         /// </summary>
         public static IEnumerable<double> Integrated(this IEnumerable<double> values, double sum = 0)

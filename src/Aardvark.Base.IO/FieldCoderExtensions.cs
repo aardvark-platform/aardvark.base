@@ -65,7 +65,7 @@ namespace Aardvark.Base.Coder
             if (prop != null)
             {
                 // template:
-                // (c, o) => 
+                // (c, o) =>
                 // {
                 //     if (c.IsWriting) { var v = ((Foo)o).MyProperty; c.Code(ref v); }
                 //     else { var v = 0; c.Code(ref v); ((Foo)o).MyProperty = v; }
@@ -105,7 +105,7 @@ namespace Aardvark.Base.Coder
             var method_IsWriting = typeof(ICoder).GetMethod(
                 "get_IsWriting",
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                null, new Type[] { }, null
+                null, Array.Empty<Type>(), null
                 );
 
             var method_Code = GetCodeMethodOverloadFor(prop.PropertyType);
@@ -141,12 +141,12 @@ namespace Aardvark.Base.Coder
             gen.Emit(OpCodes.Ldloca, 0);                        // load address of local variable v
             gen.Emit(OpCodes.Initobj, prop.PropertyType);       // initialize v to default value
 
-            // c.Code(ref v);                    
+            // c.Code(ref v);
             gen.Emit(OpCodes.Ldarg_0);                          // c, used as this for following call
             gen.Emit(OpCodes.Ldloca, 0);                        // ref v
             gen.Emit(OpCodes.Callvirt, method_Code);            // call ... c.code(ref v)
 
-            // ((T)o).MyProperty = v;  
+            // ((T)o).MyProperty = v;
             gen.Emit(OpCodes.Ldarg_1);                          // o
             gen.Emit(OpCodes.Castclass, type);                  // cast to T
             gen.Emit(OpCodes.Ldloc_0);                          // v

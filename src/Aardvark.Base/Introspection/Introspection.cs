@@ -111,13 +111,13 @@ namespace Aardvark.Base
     public static class IntrospectionProperties
     {
         /// <summary>
-        /// Introspection is based on Assembly.GetEntryAssembly which represents the managed 
+        /// Introspection is based on Assembly.GetEntryAssembly which represents the managed
         /// entry point (i.e. the first assembly that was executed by AppDomain.ExecuteAssembly).
         /// However, started from an unmanaged entry point (like VisualStudio tests) Assembly.GetEntryAssembly
         /// is null. To allow us to start from unmanaged hosting processes this alternative
         /// has been implemented.
         /// A second use case are managed interactive shells like fsi.exi. Here we want to
-        /// start our dependency walk at a custom assembly instead of the running assembly 
+        /// start our dependency walk at a custom assembly instead of the running assembly
         /// which is the interactive shell host.
         /// </summary>
         public static Assembly CustomEntryAssembly { get; set; }
@@ -269,7 +269,7 @@ namespace Aardvark.Base
             }
             else
             {
-                // no option left.... 
+                // no option left....
                 return DateTime.Now;
             }
         };
@@ -326,13 +326,13 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<Type> GetAllClassesImplementingInterface(Type interfaceType)
             => AllAssemblies.SelectMany(a => GetAllClassesImplementingInterface(a, interfaceType));
-        
+
         /// <summary>
         /// Enumerates all classes inheriting from the specified base class.
         /// </summary>
         public static IEnumerable<Type> GetAllClassesInheritingFrom(Type baseType)
             => AllAssemblies.SelectMany(a => GetAllClassesInheritingFrom(a, baseType));
-        
+
         /// <summary>
         /// Enumerates all types decorated with attribute T as tuples of type
         /// and its one or more T-attributes.
@@ -433,7 +433,7 @@ namespace Aardvark.Base
                            select (m, attribs),
                   result => result.Select(m => m.Item1.DeclaringType.AssemblyQualifiedName)
                   );
-        
+
         static Introspection()
         {
             // enumerating all assemblies reachable from entry assembly
@@ -473,7 +473,7 @@ namespace Aardvark.Base
             {
                 RegisterAllAssembliesInCustomEntryPath();
             }
-            
+
             //Report.Line("s_telemetryEnumerateAssembliesCheckTime1: {0}", s_telemetryEnumerateAssembliesCheckTime1.Value);
             //Report.Line("s_telemetryEnumerateAssembliesCheckTime2: {0}", s_telemetryEnumerateAssembliesCheckTime2.Value);
         }
@@ -518,7 +518,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Note by hs: Since this function throws and catches exceptions in non exceptional cases we
-        /// use [DebuggerNonUserCode] to deactive first chance exceptions here 
+        /// use [DebuggerNonUserCode] to deactive first chance exceptions here
         /// at least if non user code is deactivated in Options/Debugging.
         /// </summary>
         /// <param name="name">the name of the entry assembly</param>
@@ -617,7 +617,7 @@ namespace Aardvark.Base
                         Report.Line(4, "[cache hit ] {0}", a);
                         return decode(lines.Skip(1)).ToArray();
                     }
-                } 
+                }
             } catch(Exception e)
             {
                 Report.Warn("Could not get cache for {1}: {0}", e.Message, a.FullName);
@@ -649,7 +649,7 @@ namespace Aardvark.Base
                 Report.End();
                 ts = e.Types.Where(t => t != null).ToArray();
             }
-            
+
             var result = createResult(ts).ToArray();
 
 
@@ -728,7 +728,7 @@ namespace Aardvark.Base
 
         [DllImport("libdl", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr dlopen(string path, int flag);
-        
+
         [DllImport("libdl", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr dlsym(IntPtr handle, string name);
 
@@ -924,7 +924,7 @@ namespace Aardvark.Base
                                             var attType = m.GetTypeReference((System.Reflection.Metadata.TypeReferenceHandle)pp);
                                             var nameStr = m.GetString(attType.Name);
                                             var nsStr = m.GetString(attType.Namespace);
-                                            if (nsStr == "Aardvark.Base" && nameStr == "OnAardvarkInitAttribute") 
+                                            if (nsStr == "Aardvark.Base" && nameStr == "OnAardvarkInitAttribute")
                                             {
                                                 return true;
                                             }
@@ -1028,7 +1028,7 @@ namespace Aardvark.Base
         {
             //Note: I removed the separate AppDomain for Plugin probing because:
             //1) it made problems on startup in some setups
-            //2) the code below seemed to not do anything in the new AppDomain since the call 
+            //2) the code below seemed to not do anything in the new AppDomain since the call
             //   var paths = aardvark.GetPluginAssemblyPaths();
             //   was actually executed in this AppDomain.
             //Changes are marked with APPD
@@ -1474,12 +1474,12 @@ namespace Aardvark.Base
         private static readonly Regex dllRx = new Regex(@"\.(dll|exe)$");
         private static readonly Regex dylibRx = new Regex(@"\.dylib$");
 
-        /// The path native dlls will be extracted to, each either each library to a separate folder or directly to the NativeLibraryPath 
+        /// The path native dlls will be extracted to, each either each library to a separate folder or directly to the NativeLibraryPath
         /// directory (depending on the configuration of SeparateLibraryDirectories).
-        /// 
+        ///
         /// The default configuration extract native libraries to shared temp path with each library in its unique versioned directory.
-        /// 
-        /// Setting NativeLibraryPath to the application path and SeparateLibraryDirectories to false will result in the "old" style of 
+        ///
+        /// Setting NativeLibraryPath to the application path and SeparateLibraryDirectories to false will result in the "old" style of
         /// loading native libs, that is not compatible if the application does not have write permission to the directory (e.g. ProgramFiles).
         [Obsolete("using explicit native library path is no longer possble https://github.com/aardvark-platform/aardvark.base/issues/64")]
         public static string NativeLibraryPath = Path.Combine(Path.GetTempPath(), "aardvark-native");
@@ -1567,7 +1567,7 @@ namespace Aardvark.Base
             }
             IntPtr ptr = IntPtr.Zero;
             string probe = Environment.CurrentDirectory;
-            var nextToAssembly = new string[0];
+            var nextToAssembly = Array.Empty<string>();
 
             if (assembly != null)
             {
@@ -1587,7 +1587,7 @@ namespace Aardvark.Base
 
             try
             {
-                string[] formats = new string[0];
+                string[] formats = Array.Empty<string>();
 
                 if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
                 else if (os == OS.Win32) formats = new[] { "{0}.dll" };
@@ -1640,7 +1640,7 @@ namespace Aardvark.Base
                         var lowerLibName = libName.ToLower();
                         var libPath = Directory.GetFiles(p).Where(fp => Path.GetFileName(fp).ToLower() == lowerLibName).FirstOrDefault();
                         if (libPath != null)
-                        {            
+                        {
                             if (setDllDir) Kernel32.SetDllDirectory(p);
 
                             probe = libPath;
@@ -1809,7 +1809,7 @@ namespace Aardvark.Base
 
 #if NETCOREAPP3_1_OR_GREATER
 
-                        string[] formats = new string[0];
+                        string[] formats = Array.Empty<string>();
                         var os = GetOS();
 
                         if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
@@ -2001,7 +2001,7 @@ namespace Aardvark.Base
                         else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(IEnumerable<Assembly>)) mi.Invoke(null, new object[] { Introspection.AllAssemblies });
                         else Report.Warn("Strange aardvark init method found: {0}, should be Init : IEnumberable<Assembly> -> unit or unit -> unit", mi);
                     }
-                    catch (Exception e) 
+                    catch (Exception e)
                     {
                         Report.Warn("failed: {0}", e);
                     }
