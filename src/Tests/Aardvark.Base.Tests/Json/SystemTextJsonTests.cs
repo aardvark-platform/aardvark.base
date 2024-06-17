@@ -265,7 +265,7 @@ namespace Aardvark.Base.Tests.Json
                 throw new JsonException();
             }
         }
-        public static void W(this Utf8JsonWriter writer, in CIeLuvf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in CieLuvf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteNumberValue(value.L);
@@ -273,7 +273,7 @@ namespace Aardvark.Base.Tests.Json
             writer.WriteNumberValue(value.v);
             writer.WriteEndArray();
         }
-        public static void R(this ref Utf8JsonReader reader, out CIeLuvf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out CieLuvf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -1744,7 +1744,7 @@ namespace Aardvark.Base.Tests.Json
 
         #endregion
 
-        #region C[34][b|d|f|ui|us], CieLabf, CIeLuvf, CieXYZf, CieYxyf, CMYKf, HSLf, HSVf, Yuvf
+        #region C[34][b|d|f|ui|us], CieLabf, CieLuvf, CieXYZf, CieYxyf, CMYKf, HSLf, HSVf, Yuvf
 
         [Test] public void C3b_Roundtrip() => RoundtripTest(new C3b(1,2,3));
         [Test] public void C3d_Roundtrip() => RoundtripTest(new C3b(1.2, 2.3, 3.4));
@@ -1759,7 +1759,7 @@ namespace Aardvark.Base.Tests.Json
         [Test] public void C4us_Roundtrip() => RoundtripTest(new C4us(1, 2, 3, 4));
 
         [Test] public void CieLabf_Roundtrip() => RoundtripTest(new CieLabf(0.1, 0.2, 0.3));
-        [Test] public void CIeLuvf_Roundtrip() => RoundtripTest(new CIeLuvf(0.1, 0.2, 0.3));
+        [Test] public void CIeLuvf_Roundtrip() => RoundtripTest(new CieLuvf(0.1, 0.2, 0.3));
         [Test] public void CieXYZf_Roundtrip() => RoundtripTest(new CieXYZf(0.1, 0.2, 0.3));
         [Test] public void CieYxyf_Roundtrip() => RoundtripTest(new CieYxyf(0.1, 0.2, 0.3));
         [Test] public void CMYKf_Roundtrip() => RoundtripTest(new CMYKf(0.1, 0.2, 0.3, 0.4));

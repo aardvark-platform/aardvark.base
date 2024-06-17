@@ -1877,7 +1877,7 @@ namespace Aardvark.Base
 
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
-    public partial struct CIeLuvf : IEquatable<CIeLuvf>
+    public partial struct CieLuvf : IEquatable<CieLuvf>
     {
         [DataMember]
         public float L;
@@ -1886,13 +1886,13 @@ namespace Aardvark.Base
         [DataMember]
         public float v;
 
-        public CIeLuvf(float _L, float _u, float _v) { L = _L; u = _u; v = _v; }
-        public CIeLuvf(double _L, double _u, double _v) { L = (float)_L; u = (float)_u; v = (float)_v; }
+        public CieLuvf(float _L, float _u, float _v) { L = _L; u = _u; v = _v; }
+        public CieLuvf(double _L, double _u, double _v) { L = (float)_L; u = (float)_u; v = (float)_v; }
 
         public readonly C3f AsC3f() { return new C3f(L, u, v); }
 
-        public readonly bool Equals(CIeLuvf other) => L == other.L && u == other.u && v == other.v;
-        public override readonly bool Equals(object other) => (other is CIeLuvf o) ? Equals(o) : false;
+        public readonly bool Equals(CieLuvf other) => L == other.L && u == other.u && v == other.v;
+        public override readonly bool Equals(object other) => (other is CieLuvf o) ? Equals(o) : false;
         public override readonly int GetHashCode() => HashCode.GetCombined(L, u, v);
     }
 

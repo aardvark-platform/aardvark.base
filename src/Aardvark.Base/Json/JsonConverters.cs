@@ -343,7 +343,7 @@ namespace Aardvark.Base
                 throw new JsonException();
             }
         }
-        public static void W(this Utf8JsonWriter writer, in CIeLuvf value, JsonSerializerOptions options)
+        public static void W(this Utf8JsonWriter writer, in CieLuvf value, JsonSerializerOptions options)
         {
             writer.WriteStartArray();
             writer.WriteFloatValue(value.L);
@@ -351,7 +351,7 @@ namespace Aardvark.Base
             writer.WriteFloatValue(value.v);
             writer.WriteEndArray();
         }
-        public static void R(this ref Utf8JsonReader reader, out CIeLuvf value, JsonSerializerOptions options)
+        public static void R(this ref Utf8JsonReader reader, out CieLuvf value, JsonSerializerOptions options)
         {
             if (reader.TokenType == JsonTokenType.StartArray)
             {
@@ -3075,13 +3075,13 @@ namespace Aardvark.Base
     }
 
     [JsonConverter(typeof(Converter))]
-    public partial struct CIeLuvf
+    public partial struct CieLuvf
     {
-        private class Converter : JsonConverter<CIeLuvf>
+        private class Converter : JsonConverter<CieLuvf>
         {
-            public override CIeLuvf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            { CIeLuvf value = default; reader.R(out value, options); return value; }
-            public override void Write(Utf8JsonWriter writer, CIeLuvf value, JsonSerializerOptions options)
+            public override CieLuvf Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            { CieLuvf value = default; reader.R(out value, options); return value; }
+            public override void Write(Utf8JsonWriter writer, CieLuvf value, JsonSerializerOptions options)
                 => writer.W(value, options);
         }
     }
