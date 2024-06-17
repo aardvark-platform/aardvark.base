@@ -2265,7 +2265,7 @@ namespace Aardvark.Base
             try
             {
                 var typeSize = input.GetType().GetElementType().GetCLRSize();
-                var dataSize = input.Length * typeSize;
+                var dataSize = length * typeSize;
 
                 unsafe
                 {
@@ -2281,14 +2281,10 @@ namespace Aardvark.Base
         }
 
         public static void CopyTo(this Array input, int length, IntPtr target)
-        {
-            CopyTo(input, 0, length, target);
-        }
+            => CopyTo(input, 0, length, target);
 
         public static void CopyTo(this Array input, IntPtr target)
-        {
-            CopyTo(input, 0, input.Length, target);
-        }
+            => CopyTo(input, 0, input.Length, target);
 
         public static void CopyTo(this IntPtr input, Array target, int offset, int length)
         {
@@ -2297,7 +2293,7 @@ namespace Aardvark.Base
             try
             {
                 var typeSize = target.GetType().GetElementType().GetCLRSize();
-                var dataSize = target.Length * typeSize;
+                var dataSize = length * typeSize;
 
                 unsafe
                 {
@@ -2312,15 +2308,10 @@ namespace Aardvark.Base
         }
 
         public static void CopyTo(this IntPtr input, Array target, int length)
-        {
-            CopyTo(input, target, 0, length);
-        }
+            => CopyTo(input, target, 0, length);
 
         public static void CopyTo(this IntPtr input, Array target)
-        {
-            CopyTo(input, target, target.Length);
-        }
-
+            => CopyTo(input, target, target.Length);
 
         public static void CopyTo(this IntPtr input, IntPtr target, int size)
         {
