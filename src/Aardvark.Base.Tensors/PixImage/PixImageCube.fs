@@ -4,8 +4,6 @@ open System
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 
-#nowarn "44" // F# compiler currently warns if an obsolete method is used from within an obsolete method -_-
-
 [<AutoOpen>]
 module FSharpPixImageCubeExtensions =
 
@@ -42,14 +40,6 @@ module FSharpPixImageCubeExtensions =
 
         static member Load (images : Map<CubeSide, string>, [<Optional; DefaultParameterValue(null : IPixLoader)>] loader : IPixLoader) =
             PixImageCube(images |> Map.toArray |> Array.map (fun (_,file) -> PixImageMipMap [|PixImage.Load(file, loader)|]))
-
-        [<Obsolete("Use Load()")>]
-        static member Create (images : Map<CubeSide, string>) =
-            PixImageCube.Load(images)
-
-        [<Obsolete("Use Load()")>]
-        static member Create (images : Map<CubeSide, string>, loadOptions : PixLoadOptions) =
-            PixImageCube.Load(images)
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
     module PixImageCube =

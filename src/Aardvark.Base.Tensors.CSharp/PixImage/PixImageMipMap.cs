@@ -111,53 +111,6 @@ namespace Aardvark.Base
                     $"Could not load image mipmap from file '{filename}'"
             );
 
-        /// <summary>
-        /// Loads images from the given files.
-        /// </summary>
-        /// <param name="filenames">The image files to load.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
-        /// <returns>The loaded images.</returns>
-        /// <exception cref="ImageLoadException">if an image could not be loaded.</exception>
-        [Obsolete]
-        public static IEnumerable<PixImageMipMap> Load(IEnumerable<string> filenames, IPixLoader loader = null)
-            => Load(filenames, MipMapOptions.Default, loader);
-
-        /// <summary>
-        /// Loads images from the given files.
-        /// </summary>
-        /// <param name="filenames">The image files to load.</param>
-        /// <param name="options">Options determining if and how mip maps are generated.</param>
-        /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
-        /// <returns>The loaded images.</returns>
-        /// <exception cref="ImageLoadException">if an image could not be loaded.</exception>
-        [Obsolete]
-        public static IEnumerable<PixImageMipMap> Load(IEnumerable<string> filenames, MipMapOptions options, IPixLoader loader = null)
-            => Create(PixImage.Load(filenames, loader), options);
-
-        [Obsolete("Use Load()")]
-        public static PixImageMipMap Create(string filename)
-        {
-            return new PixImageMipMap(PixImage.Create(filename, PixLoadOptions.Default));
-        }
-
-        [Obsolete("Use Load()")]
-        public static PixImageMipMap Create(string filename, PixLoadOptions options)
-        {
-            return new PixImageMipMap(PixImage.Create(filename, options));
-        }
-
-        [Obsolete("Use Load()")]
-        public static IEnumerable<PixImageMipMap> Create(IEnumerable<string> filenames)
-        {
-            return Create(filenames, MipMapOptions.Default);
-        }
-
-        [Obsolete("Use Load()")]
-        public static IEnumerable<PixImageMipMap> Create(IEnumerable<string> filenames, MipMapOptions options)
-        {
-            return Create(from filename in filenames select PixImage.Create(filename), options);
-        }
-
         #endregion
 
         #region Load from stream
