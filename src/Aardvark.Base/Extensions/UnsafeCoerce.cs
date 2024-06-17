@@ -1,12 +1,31 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Aardvark.Base
 {
     public static class ArrayUnsafeCoerceExtensions
     {
+        private static readonly MethodInfo unsafeSizeOfMeth = typeof(Unsafe).GetMethod(nameof(Unsafe.SizeOf), BindingFlags.Public | BindingFlags.Static);
+
+        private static readonly ConcurrentDictionary<Type, int> unsafeTypeSizes = new();
+
+        /// <summary>
+        /// Returns the managed size of the given type.
+        /// </summary>
+        public static int GetCLRSize(this Type t)
+        {
+            return unsafeTypeSizes.GetOrAdd(t, t =>
+            {
+                var mi = unsafeSizeOfMeth.MakeGenericMethod(t);
+                return (int)mi.Invoke(null, null);
+            });
+        }
+
         #region UnsafeCoerce
-        
+
         [Obsolete("breaks net8.0+")]
         public static IntPtr GetTypeIdUncached<T>()
             where T : struct
@@ -30,14 +49,6 @@ namespace Aardvark.Base
                 s_typeIds[typeof(T)] = typeId;
             }
             return typeId;
-        }
-
-        public static int GetCLRSize(this Type t)
-        {
-            // TODO: somehow make use of sizeof operator -> requires compile time type -> cannot use ILGenerator in .net standard
-            if (t == typeof(char)) return 2; // Marshal.SizeOf = 1
-            if (t == typeof(bool)) return 1; // Marshal.SizeOf = 4
-            return Marshal.SizeOf(t);
         }
 
         [Obsolete("breaks net8.0+")]
