@@ -230,18 +230,6 @@ namespace Aardvark.Base
         /// </summary>
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue defaultValue)
             => self.TryGetValue(key, out var result) ? result : defaultValue;
-
-        // obsolete in netcore -> replaced by System.Collections.Generic.CollectionExtensions
-#if !NETCOREAPP3_1_OR_GREATER
-        /// <summary>
-        /// Returns the value stored with the supplied key or the specified default value if not found.
-        /// </summary>
-        [Obsolete("Use GetOrDefault instead.")]
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> self, TKey key, TValue default_value)
-        {
-            return self.TryGetValue(key, out var result) ? result : default_value;
-        }
-#endif
     }
 
     #endregion
