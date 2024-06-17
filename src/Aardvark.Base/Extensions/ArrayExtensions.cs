@@ -20,8 +20,12 @@ namespace Aardvark.Base
         /// <returns>this</returns>
         public static T[] Set<T>(this T[] self, T value)
         {
+#if NET6_0_OR_GREATER
+            Array.Fill(self, value);
+#else
             var len = self.LongLength;
             for (int i = 0; i < len; i++) self[i] = value;
+#endif
             return self;
         }
 
@@ -144,18 +148,18 @@ namespace Aardvark.Base
             return self;
         }
 
-        #endregion
+#endregion
 
         #region Generic Array Copying
 
         /// <summary>
-        /// Use this instead of Clone() in order to get a typed array back.
+        /// Creates a copy of the array.
         /// </summary>
         public static T[] Copy<T>(this T[] array)
         {
             var count = array.LongLength;
             var result = new T[count];
-            for (var i = 0L; i < count; i++) result[i] = array[i];
+            Array.Copy(array, result, count);
             return result;
         }
 
@@ -167,7 +171,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.LongLength);
-            for (var i = 0L; i < len; i++) result[i] = array[i];
+            Array.Copy(array, result, len);
             return result;
         }
 
@@ -179,7 +183,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.Length);
-            for (var i = 0; i < len; i++) result[i] = array[i];
+            Array.Copy(array, result, len);
             return result;
         }
 
@@ -191,7 +195,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.LongLength - start);
-            for (var i = 0L; i < len; i++) result[i] = array[i + start];
+            Array.Copy(array, start, result, 0, len);
             return result;
         }
 
@@ -203,7 +207,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.Length - start);
-            for (var i = 0; i < len; i++) result[i] = array[i + start];
+            Array.Copy(array, start, result, 0, len);
             return result;
         }
 
@@ -383,37 +387,25 @@ namespace Aardvark.Base
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, long count, T[] target, long targetStart)
-        {
-            for (var i = 0L; i < count; i++)
-                target[targetStart + i] = array[i];
-        }
+            => Array.Copy(array, 0, target, targetStart, count);
 
         /// <summary>
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, int count, T[] target, int targetStart)
-        {
-            for (var i = 0; i < count; i++)
-                target[targetStart + i] = array[i];
-        }
+            => Array.Copy(array, 0, target, targetStart, count);
 
         /// <summary>
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, long start, long count, T[] target, long targetStart)
-        {
-            for (var i = 0L; i < count; i++)
-                target[targetStart + i] = array[start + i];
-        }
+            => Array.Copy(array, start, target, targetStart, count);
 
         /// <summary>
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, int start, int count, T[] target, int targetStart)
-        {
-            for (var i = 0; i < count; i++)
-                target[targetStart + i] = array[start + i];
-        }
+            => Array.Copy(array, start, target, targetStart, count);
 
         /// <summary>
         /// Copies the array into a list.
@@ -2346,7 +2338,7 @@ namespace Aardvark.Base
             var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(data), data.Length * elementSize);
             return span;   
         }
-#endif       
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<byte> AsByteSpan<T>(this T[] data) where T : struct
