@@ -20,8 +20,12 @@ namespace Aardvark.Base
         /// <returns>this</returns>
         public static T[] Set<T>(this T[] self, T value)
         {
+#if NET6_0_OR_GREATER
+            Array.Fill(self, value);
+#else
             var len = self.LongLength;
             for (int i = 0; i < len; i++) self[i] = value;
+#endif
             return self;
         }
 
@@ -144,18 +148,18 @@ namespace Aardvark.Base
             return self;
         }
 
-        #endregion
+#endregion
 
         #region Generic Array Copying
 
         /// <summary>
-        /// Use this instead of Clone() in order to get a typed array back.
+        /// Creates a copy of the array.
         /// </summary>
         public static T[] Copy<T>(this T[] array)
         {
             var count = array.LongLength;
             var result = new T[count];
-            for (var i = 0L; i < count; i++) result[i] = array[i];
+            Array.Copy(array, result, count);
             return result;
         }
 
@@ -167,7 +171,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.LongLength);
-            for (var i = 0L; i < len; i++) result[i] = array[i];
+            Array.Copy(array, result, len);
             return result;
         }
 
@@ -179,7 +183,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.Length);
-            for (var i = 0; i < len; i++) result[i] = array[i];
+            Array.Copy(array, result, len);
             return result;
         }
 
@@ -191,7 +195,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.LongLength - start);
-            for (var i = 0L; i < len; i++) result[i] = array[i + start];
+            Array.Copy(array, start, result, 0, len);
             return result;
         }
 
@@ -203,7 +207,7 @@ namespace Aardvark.Base
         {
             var result = new T[count];
             var len = Math.Min(count, array.Length - start);
-            for (var i = 0; i < len; i++) result[i] = array[i + start];
+            Array.Copy(array, start, result, 0, len);
             return result;
         }
 
@@ -383,37 +387,25 @@ namespace Aardvark.Base
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, long count, T[] target, long targetStart)
-        {
-            for (var i = 0L; i < count; i++)
-                target[targetStart + i] = array[i];
-        }
+            => Array.Copy(array, 0, target, targetStart, count);
 
         /// <summary>
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, int count, T[] target, int targetStart)
-        {
-            for (var i = 0; i < count; i++)
-                target[targetStart + i] = array[i];
-        }
+            => Array.Copy(array, 0, target, targetStart, count);
 
         /// <summary>
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, long start, long count, T[] target, long targetStart)
-        {
-            for (var i = 0L; i < count; i++)
-                target[targetStart + i] = array[start + i];
-        }
+            => Array.Copy(array, start, target, targetStart, count);
 
         /// <summary>
         /// Copy a range of elements to the target array.
         /// </summary>
         public static void CopyTo<T>(this T[] array, int start, int count, T[] target, int targetStart)
-        {
-            for (var i = 0; i < count; i++)
-                target[targetStart + i] = array[start + i];
-        }
+            => Array.Copy(array, start, target, targetStart, count);
 
         /// <summary>
         /// Copies the array into a list.
@@ -2339,24 +2331,34 @@ namespace Aardvark.Base
         }
 
 #if NET6_0_OR_GREATER
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<byte> AsByteSpan(this Array data)
         {
             var elementSize = data.GetType().GetElementType().GetCLRSize();
             var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(data), data.Length * elementSize);
             return span;
         }
+#endif
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<byte> AsByteSpan<T>(this T[] data) where T : struct
         {
-            var span = new Span<T>(data);
-            return MemoryMarshal.AsBytes(span);
+            return MemoryMarshal.AsBytes(data.AsSpan());
         }
-
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<byte> AsByteSpan(this string data)
         {
             return MemoryMarshal.AsBytes(data.AsSpan());
         }
-#endif
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<TTo> AsCastSpan<TFrom, TTo>(this TFrom[] arr)
+            where TFrom : struct
+            where TTo : struct
+        {
+            return MemoryMarshal.Cast<TFrom, TTo>(arr.AsSpan());
+        }
 
         internal static unsafe T UseAsStream<T>(this Array data, Func<UnmanagedMemoryStream, T> action)
         {
@@ -2418,9 +2420,7 @@ namespace Aardvark.Base
             }
 #endif
         }
-
-
-
+        
         /// <summary>
         /// Computes the MD5 hash of the data array.
         /// </summary>
@@ -2441,6 +2441,19 @@ namespace Aardvark.Base
             }
 #endif
         }
+
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Computes the MD5 hash of the data array.
+        /// </summary>
+        /// <returns>128bit/16byte data hash</returns>
+        public static byte[] ComputeMD5Hash<T>(this T[] data) where T : struct
+        {
+            var hash = SHA1.HashData(data.AsByteSpan());
+            Array.Resize(ref hash, 16);
+            return hash;
+        }
+#endif
 
         /// <summary>
         /// Computes the MD5 hash of the given string.
@@ -2488,8 +2501,18 @@ namespace Aardvark.Base
                 return data.UseAsStream((stream) => sha.ComputeHash(stream));
             }
 #endif
-
         }
+
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Computes the SHA1 hash of the data array.
+        /// </summary>
+        /// <returns>160bit/20byte data hash</returns>
+        public static byte[] ComputeSHA1Hash<T>(this T[] data)  where T : struct
+        {
+            return SHA1.HashData(data.AsByteSpan());
+        }
+#endif
 
         /// <summary>
         /// Computes the SHA1 hash of the given string.
@@ -2537,6 +2560,17 @@ namespace Aardvark.Base
 #endif
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Computes the SHA256 hash of the data array.
+        /// </summary>
+        /// <returns>256bit/32byte data hash</returns>
+        public static byte[] ComputeSHA256Hash<T>(this T[] data) where T : struct
+        {
+            return SHA256.HashData(data.AsByteSpan());
+        }
+#endif
+
         /// <summary>
         /// Computes the SHA256 hash of the given string.
         /// </summary>
@@ -2583,6 +2617,17 @@ namespace Aardvark.Base
 #endif
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Computes the SHA512 hash of the data array.
+        /// </summary>
+        /// <returns>512bit/64byte data hash</returns>
+        public static byte[] ComputeSHA512Hash<T>(this T[] data) where T : struct
+        {
+            return SHA512.HashData(data.AsByteSpan());
+        }
+#endif
+
         /// <summary>
         /// Computes the SHA512 hash of the given string.
         /// </summary>
@@ -2623,6 +2668,19 @@ namespace Aardvark.Base
             return a.Checksum;
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Computes a checksum of the data array using the Adler-32 algorithm (<see cref="Adler32"/>).
+        /// </summary>
+        public static uint ComputeAdler32Checksum<T>(this T[] data) where T : struct
+        {
+            var a = new Adler32();
+            if (data != null)
+                a.Update(data.AsByteSpan());
+            return a.Checksum;
+        }
+#endif
+
         /// <summary>
         /// Computes a checksum of the given string using the Adler-32 algorithm (<see cref="Adler32"/>).
         /// </summary>
@@ -2638,6 +2696,6 @@ namespace Aardvark.Base
             return a.Checksum;
         }
 
-        #endregion
+#endregion
     }
 }
