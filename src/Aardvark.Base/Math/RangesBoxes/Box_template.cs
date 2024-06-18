@@ -1978,7 +1978,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ GetBounding__bnamecaps__(this __itype__[] indexArray, __itype__ count, __ltype__[] pointArray)
         {
-            return indexArray.GetBounding__bnamecaps__(0, indexArray.__getlength__, pointArray);
+            return indexArray.GetBounding__bnamecaps__(0, count, pointArray);
         }
 
         /// <summary>

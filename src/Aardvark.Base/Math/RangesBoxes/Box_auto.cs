@@ -943,7 +943,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1b GetBoundingRange(this int[] indexArray, int count, byte[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -987,7 +987,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1b GetBoundingRange(this long[] indexArray, long count, byte[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -1935,7 +1935,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1sb GetBoundingRange(this int[] indexArray, int count, sbyte[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -1979,7 +1979,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1sb GetBoundingRange(this long[] indexArray, long count, sbyte[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -2927,7 +2927,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1s GetBoundingRange(this int[] indexArray, int count, short[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -2971,7 +2971,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1s GetBoundingRange(this long[] indexArray, long count, short[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -3919,7 +3919,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1us GetBoundingRange(this int[] indexArray, int count, ushort[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -3963,7 +3963,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1us GetBoundingRange(this long[] indexArray, long count, ushort[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -4911,7 +4911,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1i GetBoundingRange(this int[] indexArray, int count, int[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -4955,7 +4955,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1i GetBoundingRange(this long[] indexArray, long count, int[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -5903,7 +5903,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1ui GetBoundingRange(this int[] indexArray, int count, uint[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -5947,7 +5947,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1ui GetBoundingRange(this long[] indexArray, long count, uint[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -6895,7 +6895,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1l GetBoundingRange(this int[] indexArray, int count, long[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -6939,7 +6939,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1l GetBoundingRange(this long[] indexArray, long count, long[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -7887,7 +7887,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1ul GetBoundingRange(this int[] indexArray, int count, ulong[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -7931,7 +7931,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1ul GetBoundingRange(this long[] indexArray, long count, ulong[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -8898,7 +8898,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1f GetBoundingRange(this int[] indexArray, int count, float[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -8942,7 +8942,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1f GetBoundingRange(this long[] indexArray, long count, float[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -9909,7 +9909,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1d GetBoundingRange(this int[] indexArray, int count, double[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -9953,7 +9953,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Range1d GetBoundingRange(this long[] indexArray, long count, double[] pointArray)
         {
-            return indexArray.GetBoundingRange(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingRange(0, count, pointArray);
         }
 
         /// <summary>
@@ -11488,7 +11488,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2i GetBoundingBox(this int[] indexArray, int count, V2i[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -11532,7 +11532,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2i GetBoundingBox(this long[] indexArray, long count, V2i[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -13019,7 +13019,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2l GetBoundingBox(this int[] indexArray, int count, V2l[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -13063,7 +13063,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2l GetBoundingBox(this long[] indexArray, long count, V2l[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -14656,7 +14656,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2f GetBoundingBox(this int[] indexArray, int count, V2f[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -14700,7 +14700,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2f GetBoundingBox(this long[] indexArray, long count, V2f[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -16293,7 +16293,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2d GetBoundingBox(this int[] indexArray, int count, V2d[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -16337,7 +16337,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box2d GetBoundingBox(this long[] indexArray, long count, V2d[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -17801,7 +17801,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3i GetBoundingBox(this int[] indexArray, int count, V3i[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -17845,7 +17845,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3i GetBoundingBox(this long[] indexArray, long count, V3i[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -19689,7 +19689,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3l GetBoundingBox(this int[] indexArray, int count, V3l[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -19733,7 +19733,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3l GetBoundingBox(this long[] indexArray, long count, V3l[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -21688,7 +21688,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3f GetBoundingBox(this int[] indexArray, int count, V3f[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -21732,7 +21732,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3f GetBoundingBox(this long[] indexArray, long count, V3f[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -23687,7 +23687,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3d GetBoundingBox(this int[] indexArray, int count, V3d[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.Length, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
@@ -23731,7 +23731,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Box3d GetBoundingBox(this long[] indexArray, long count, V3d[] pointArray)
         {
-            return indexArray.GetBoundingBox(0, indexArray.LongLength, pointArray);
+            return indexArray.GetBoundingBox(0, count, pointArray);
         }
 
         /// <summary>
