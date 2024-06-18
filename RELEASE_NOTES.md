@@ -13,6 +13,7 @@
 - [PixImage] Removed obsolete loading API
 - Removed IDictionary.GetValueOrDefault
 - Removed broken UnsafeCoerce utilities
+- Removed obsolete CameraExtrinsics and CameraIntrinsics
 
 ### 5.2.31
 * fixed Hash Computations for non-primitive types
