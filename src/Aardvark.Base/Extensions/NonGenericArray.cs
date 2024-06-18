@@ -7,6 +7,7 @@ namespace Aardvark.Base
     {
 		#region Non-Generic Array
 
+		[Obsolete]
 		private static readonly Dictionary<Type, Func<Array, Array>> CopyFunMap =
 			new Dictionary<Type, Func<Array, Array>>
 			{
@@ -44,12 +45,25 @@ namespace Aardvark.Base
 				{ typeof(V4d[]), a => ((V4d[])a).Copy() },
 			};
 
-		public static Array Copy(this Array array)
-		{
-			return CopyFunMap[array.GetType()](array);
-		}
+        /// <summary>
+        /// Creates a copy of the array.
+        /// </summary>
+        public static Array Copy(this Array array)
+        {
+            var counts = new long[array.Rank];
 
-		private static readonly Dictionary<Type, Func<Array, object, Array>> CopyFunFunMap =
+            for (int i = 0; i < counts.Length; i++)
+            {
+                counts[i] = array.GetLongLength(i);
+            }
+
+            var result = Array.CreateInstance(array.GetType().GetElementType(), counts);
+            Array.Copy(array, result, array.LongLength);
+            return result;
+        }
+
+        [Obsolete]
+        private static readonly Dictionary<Type, Func<Array, object, Array>> CopyFunFunMap =
 			new Dictionary<Type, Func<Array, object, Array>>
 			{
 				{ typeof(byte[]), (a, f) => ((byte[])a).Map((Func<byte,byte>)f) },
@@ -86,7 +100,8 @@ namespace Aardvark.Base
 				{ typeof(V4d[]), (a, f) => ((V4d[])a).Map((Func<V4d,V4d>)f) },
 			};
 
-		public static Array Copy<T>(this Array array,
+        [Obsolete("Anybody using this?")]
+        public static Array Copy<T>(this Array array,
 									Func<T, T> funOfElementTypeToElementType,
 									Func<Array, Array> defaultFun = null)
 		{
