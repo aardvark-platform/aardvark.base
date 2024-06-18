@@ -1,3 +1,19 @@
+### 5.3.0-prerelease0001
+- Updated to .NET 8 and F# 8
+- Optimized partial active patterns by using struct representation
+- Added F# tensor utilities and math functions using SRTP
+- Deprecated Error type
+- Deprecated GenericValues.zero
+- Removed Async.AwaitTask (already in FSharp.Core)
+- Removed Caching.cacheFunction
+- Fixed return type of LengthSquared for integer-based vectors. Now returns an integer instead of double.
+- [Color] Removed obsolete conversion functions
+- Added missing readonly modifiers for structs
+- Renamed CIeLuvf to CieLuvf
+- [PixImage] Removed obsolete loading API
+- Removed IDictionary.GetValueOrDefault
+- Removed broken UnsafeCoerce utilities
+
 ### 5.2.31
 * fixed Hash Computations for non-primitive types
 * added `AsByteSpan` extension method for System.Array/string in >=net6.0
