@@ -797,17 +797,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -1789,17 +1788,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -2781,17 +2779,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -3773,17 +3770,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -4765,17 +4761,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -5757,17 +5752,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -6749,17 +6743,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -7741,17 +7734,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -8752,17 +8744,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -9763,17 +9754,16 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]");
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp) + betweenB
-                          + Max.ToString(format, fp) + endB;
+            return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
         #endregion
@@ -11100,8 +11090,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion
@@ -12631,8 +12620,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion
@@ -14279,8 +14267,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion
@@ -15916,8 +15903,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion
@@ -17418,8 +17404,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion
@@ -19306,8 +19291,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion
@@ -21317,8 +21301,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion
@@ -23316,8 +23299,7 @@ namespace Aardvark.Base
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB
-                          + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
+            return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
         #endregion

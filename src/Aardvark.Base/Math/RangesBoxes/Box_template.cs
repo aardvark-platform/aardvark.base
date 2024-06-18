@@ -1517,18 +1517,20 @@ namespace Aardvark.Base
 
         public readonly string ToString(string format, IFormatProvider fp)
         {
-            return ToString(format, fp, "[", ", ", "]", "[", ", ", "]");
+            return ToString(format, fp, "[", ", ", "]"/*# if (dim > 1) {*/, "[", ", ", "]"/*# }*/);
         }
 
         /// <summary>
         /// Outputs e.g. a Box2 in the form "(beginB)(beginV)min.x(betweenV)min.y(endV)(betweenB)(beginV)max.x(betweenV)max.y(endV)(endB)".
         /// </summary>
-        public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
+        //# var begin = "begin" + ((dim > 1) ? "B" : "");
+        //# var between = "between" + ((dim > 1) ? "B" : "");
+        //# var end = "end" + ((dim > 1) ? "B" : "");
+        public readonly string ToString(string format, IFormatProvider fp, string __begin__, string __between__, string __end__/*# if (dim > 1) {*/, string beginV, string betweenV, string endV/*# }*/)
         {
             //# var format = "format, fp" + (dim > 1 ? ", beginV, betweenV, endV" : "");
             if (fp == null) fp = CultureInfo.InvariantCulture;
-            return beginB + Min.ToString(__format__) + betweenB
-                          + Max.ToString(__format__) + endB;
+            return __begin__ + Min.ToString(__format__) + __between__ + Max.ToString(__format__) + __end__;
         }
 
         #endregion
