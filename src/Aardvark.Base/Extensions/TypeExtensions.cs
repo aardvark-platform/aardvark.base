@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
-    public static class ArrayUnsafeCoerceExtensions
+    public static class TypeExtensions
     {
         private static readonly MethodInfo unsafeSizeOfMeth = typeof(Unsafe).GetMethod(nameof(Unsafe.SizeOf), BindingFlags.Public | BindingFlags.Static);
 
