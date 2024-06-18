@@ -348,10 +348,7 @@ module SymDict =
 
 [<AutoOpen>]
 module CSharpCollectionExtensions =
-    open System
-    open System.Runtime.CompilerServices
     open System.Collections.Generic
-    open System.Runtime.InteropServices
 
     type Dictionary<'Key, 'Value> with
         member inline x.TryFind(key : 'Key) : 'Value option = Dictionary.tryFind key x
@@ -364,22 +361,3 @@ module CSharpCollectionExtensions =
     type SymbolDict<'Value> with
         member inline x.TryFind(key : Symbol) : 'Value option = SymDict.tryFind key x
         member inline x.TryFindV(key : Symbol) : 'Value voption = SymDict.tryFindV key x
-
-    type public DictionaryExtensions =
-
-        [<Obsolete("Broken. Use IDictionary.TryPop instead.")>]
-        [<Extension>]
-        static member TryRemove(x : Dictionary<'a,'b>, k,[<Out>] r: byref<'b>) =
-            match x.TryGetValue k with
-            | (true,v) -> r <- v; true
-            | _ -> false
-
-        [<Obsolete("Use IDictionary.GetCreate instead.")>]
-        [<Extension>]
-        static member GetOrAdd(x : Dictionary<'a,'b>, k : 'a, creator : 'a -> 'b) =
-            match x.TryGetValue k with
-            | (true,v) -> v
-            | _ ->
-                let v = creator k
-                x.Add(k,v) |> ignore
-                v

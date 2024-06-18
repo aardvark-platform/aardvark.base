@@ -705,10 +705,6 @@ namespace Aardvark.Base
                 );
         }
 
-        [Obsolete("Use PerspectiveProjectionGL instead.")]
-        public static __type__ PerspectiveProjectionOpenGl(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
-            => __type__.PerspectiveProjectionGL(l, r, b, t, n, f);
-
         /// <summary>
         /// Creates a right-handed perspective projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, -1), (+1, +1, +1)] and left-handed (handedness flip between view and NDC space).
@@ -788,31 +784,6 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a left-handed perspective projection transform, where z-positive points into the scene.
-        /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
-        /// </summary>
-        [Obsolete("Broken, do not use.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ PerspectiveProjectionLH(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
-        {
-            return new __type__(
-                new __mmmt__(
-                    (2 * n) / (r - l),                     0,                     0,                     0,
-                                    0,     (2 * n) / (t - b),                     0,                     0,
-                    (l + r) / (l - r),     (b + t) / (b - t),           f / (f - n),                     1,
-                                    0,                     0,     (n * f) / (n - f),                     0
-                    ),                                                     
-                                                                       
-                new __mmmt__(                                      
-                    (r - l) / (2 * n),                     0,                     0,                     0,
-                                    0,     (t - b) / (2 * n),                     0,                     0,
-                                    0,                     0,                     0,     (n - f) / (f * n),
-                    (r + l) / (2 * n),     (t + b) / (2 * n),                     1,                 1 / n
-                    )
-                );
-        }
-
-        /// <summary>
         /// Creates a right-handed orthographic projection transform, where z-negative points into the scene.
         /// The resulting canonical view volume is [(-1, -1, 0), (+1, +1, +1)].
         /// </summary>
@@ -869,10 +840,6 @@ namespace Aardvark.Base
                     )
                 );
         }
-
-        [Obsolete("Use OrthoProjectionGL instead.")]
-        public static __type__ OrthoProjectionOpenGl(__rtype__ l, __rtype__ r, __rtype__ b, __rtype__ t, __rtype__ n, __rtype__ f)
-            => __type__.OrthoProjectionGL(l, r, b, t, n, f);
 
         #endregion
 

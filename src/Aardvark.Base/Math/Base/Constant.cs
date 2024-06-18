@@ -178,13 +178,6 @@ namespace Aardvark.Base
         public const double PiInv = 0.318309886183790671537767526745028724068919291480912897495;
 
         /// <summary>
-        /// Ratio of a circle's circumference to its diameter as float
-        /// in Euclidean geometry. Also known as Archimedes' constant.
-        /// </summary>
-        [Obsolete("Use ConstantF.Pi instead")]
-        public const float PiF = (float)Pi;
-
-        /// <summary>
         /// Two times PI: the circumference of the unit circle.
         /// </summary>
         public const double PiTimesTwo = 6.283185307179586476925286766559;
@@ -245,12 +238,6 @@ namespace Aardvark.Base
         public const double Sqrt2Half = 0.70710678118654752440084436210485;
 
         /// <summary>
-        /// Square root of 0.5.
-        /// </summary>
-        [Obsolete("Use ConstantF.Sqrt2Half instead")]
-        public const float Sqrt2HalfF = (float)Sqrt2Half;
-
-        /// <summary>
         /// Square root of 3.
         /// </summary>
         public const double Sqrt3 = 1.732050807568877293527446341505;
@@ -266,32 +253,14 @@ namespace Aardvark.Base
         public const double Ln2 = 0.69314718055994530941723212145818;
 
         /// <summary>
-        /// Natural logarithm (base e) of 2 as float.
-        /// </summary>
-        [Obsolete("Use ConstantF.Ln2 instead")]
-        public const float Ln2F = (float)Ln2;
-
-        /// <summary>
         /// 1 divided by logarithm of 2 (base e).
         /// </summary>
         public const double Ln2Inv = 1.4426950408889634073599246810023;
 
         /// <summary>
-        /// 1 divided by logarithm of 2 (base e) as float.
-        /// </summary>
-        [Obsolete("Use ConstantF.Ln2Inv instead")]
-        public const float Ln2InvF = (float)Ln2Inv;
-
-        /// <summary>
         /// 1 divided by 3.
         /// </summary>
         public const double OneThird = 0.33333333333333333333333333333333;
-
-        /// <summary>
-        /// 1 divided by 3.
-        /// </summary>
-        [Obsolete("Use ConstantF.OneThird instead")]
-        public const double OneThirdF = (float)OneThird;
 
         /// <summary>
         /// Used to convert degrees to radians.

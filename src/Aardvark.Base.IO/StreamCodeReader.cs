@@ -75,22 +75,6 @@ namespace Aardvark.Base.Coder
 
         #endregion
 
-        #region Camera
-
-        public CameraExtrinsics ReadCameraExtrinsics()
-        {
-            return new CameraExtrinsics(ReadM33d(), ReadV3d());
-        }
-
-        public CameraIntrinsics ReadCameraIntrinsics()
-        {
-            return new CameraIntrinsics(ReadV2d(), ReadV2d(),
-                                        ReadDouble(), ReadDouble(), ReadDouble(),
-                                        ReadDouble(), ReadDouble(), ReadDouble());
-        }
-
-        #endregion
-
         #region Read Arrays and Lists
 
         public long ReadArray(byte[] array, long index, long count)

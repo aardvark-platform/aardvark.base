@@ -41,7 +41,6 @@
     <Compile Include="Math\AverageWindow.fs" />
     <Compile Include="Math\Converters.fs" />
     <Compile Include="Datastructures\Mutable\FixedSizeArray.fs" />
-    <Compile Include="Datastructures\Mutable\Order.fs" />
     <Compile Include="Datastructures\Mutable\OrderMaintenance.fs" />
     <Compile Include="Datastructures\Mutable\SkipList.fs" />
     <Compile Include="Datastructures\Mutable\AVL.fs" />
@@ -51,8 +50,6 @@
     <Compile Include="Datastructures\Mutable\ReferenceCountingSet.fs" />
     <Compile Include="Datastructures\Immutable\MapExt.fs" />
     <Compile Include="Datastructures\Immutable\FingerTree.fs" />
-    <None Include="Datastructures\Immutable\RangeSetOld_template.fs" />
-    <Compile Include="Datastructures\Immutable\RangeSetOld_auto.fs" />
     <None Include="Datastructures\Immutable\RangeSet_template.fs" />
     <Compile Include="Datastructures\Immutable\RangeSet_auto.fs" />
     <Compile Include="Datastructures\Immutable\Graph.fs" />
@@ -73,7 +70,6 @@
     <Compile Include="Reflection\TypeBuilder.fs" />
     <Compile Include="Reflection\ReflectionExtensions.fs" />
     <Compile Include="Runtime\DynamicLinker.fs" />
-    <Compile Include="Runtime\ExecutableMemory.fs" />
     <Compile Include="Runtime\Assembler.fs" />
     <Compile Include="Runtime\WeakTable.fs" />
     <Compile Include="Runtime\NativeMemory.fs" />

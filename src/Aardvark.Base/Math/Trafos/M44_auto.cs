@@ -157,32 +157,6 @@ namespace Aardvark.Base
             return P;
         }
 
-
-
-        /// <summary>
-        /// Builds a customized, left-handed perspective Off-Center projection matrix.
-        /// </summary>
-        [Obsolete("Broken, do not use.")]
-        public static M44f PerspectiveProjectionTransformLH(float l, float r, float t, float b, float n, float f)
-        {
-            //  Fx     0      0     0
-            //  0      Fy     0     0
-            //  Sx     Sy     A     1
-            //  0      0      B     0
-            float Fx = 2 * n / (r - l);
-            float Fy = 2 * n / (t - b);
-            float Sx = (l + r) / (l - r);
-            float Sy = (t + b) / (b - t);
-            float A = f / (f - n);
-            float B = n * f / (n - f);
-
-            M44f P = new M44f(
-                Fx, 0, 0, 0,
-                0, Fy, 0, 0,
-                Sx, Sy, A, 1,
-                0, 0, B, 0);
-            return P;
-        }
         #endregion
 
         #region Static creators
@@ -398,32 +372,6 @@ namespace Aardvark.Base
             return P;
         }
 
-
-
-        /// <summary>
-        /// Builds a customized, left-handed perspective Off-Center projection matrix.
-        /// </summary>
-        [Obsolete("Broken, do not use.")]
-        public static M44d PerspectiveProjectionTransformLH(double l, double r, double t, double b, double n, double f)
-        {
-            //  Fx     0      0     0
-            //  0      Fy     0     0
-            //  Sx     Sy     A     1
-            //  0      0      B     0
-            double Fx = 2 * n / (r - l);
-            double Fy = 2 * n / (t - b);
-            double Sx = (l + r) / (l - r);
-            double Sy = (t + b) / (b - t);
-            double A = f / (f - n);
-            double B = n * f / (n - f);
-
-            M44d P = new M44d(
-                Fx, 0, 0, 0,
-                0, Fy, 0, 0,
-                Sx, Sy, A, 1,
-                0, 0, B, 0);
-            return P;
-        }
         #endregion
 
         #region Static creators

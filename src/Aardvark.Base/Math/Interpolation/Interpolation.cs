@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 using Ex = System.Linq.Expressions.Expression;
 
 namespace Aardvark.Base
@@ -21,35 +20,6 @@ namespace Aardvark.Base
         {
             return Ipol<T, U>.Generate(a, b, c, d, interpolator);
         }
-
-        #endregion
-
-        #region Spherical Linear Interpolation
-
-        /// <summary>
-        /// Spherical linear interpolation.
-        ///
-        /// Assumes q1 and q2 are normalized and that t in [0,1].
-        ///
-        /// This method interpolates along the shortest arc between q1 and q2.
-        /// </summary>
-        [Obsolete("Use Rot.SlerpShortest or Quaternion.SlerpShortest instead")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Rot3d SlerpShortest(Rot3d q1, Rot3d q2, double t)
-            => Rot.SlerpShortest(q1, q2, t);
-
-        /// <summary>
-        /// Spherical linear interpolation.
-        ///
-        /// Assumes q1 and q2 are normalized and that t in [0,1].
-        ///
-        /// This method interpolates along the shortest arc between q1 and q2.
-        /// </summary>
-        [Obsolete("Use Rot.SlerpShortest or Quaternion.SlerpShortest instead")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Rot3f SlerpShortest(Rot3f q1, Rot3f q2, float t)
-            => Rot.SlerpShortest(q1, q2, t);
-
 
         #endregion
     }

@@ -162,32 +162,6 @@ namespace Aardvark.Base
             return P;
         }
 
-
-
-        /// <summary>
-        /// Builds a customized, left-handed perspective Off-Center projection matrix.
-        /// </summary>
-        [Obsolete("Broken, do not use.")]
-        public static M4__x4t__ PerspectiveProjectionTransformLH(__ft__ l, __ft__ r, __ft__ t, __ft__ b, __ft__ n, __ft__ f)
-        {
-            //  Fx     0      0     0
-            //  0      Fy     0     0
-            //  Sx     Sy     A     1
-            //  0      0      B     0
-            __ft__ Fx = 2 * n / (r - l);
-            __ft__ Fy = 2 * n / (t - b);
-            __ft__ Sx = (l + r) / (l - r);
-            __ft__ Sy = (t + b) / (b - t);
-            __ft__ A = f / (f - n);
-            __ft__ B = n * f / (n - f);
-
-            M4__x4t__ P = new M4__x4t__(
-                Fx, 0, 0, 0,
-                0, Fy, 0, 0,
-                Sx, Sy, A, 1,
-                0, 0, B, 0);
-            return P;
-        }
         #endregion
 
         #region Static creators

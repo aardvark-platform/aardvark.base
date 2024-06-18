@@ -462,9 +462,6 @@ module __rangeset__ =
     /// Adds the given range to the set.
     let inline add (range : __range__) (set : __rangeset__) = set.Add range
 
-    [<Obsolete("Use __rangeset__.add instead.")>]
-    let inline insert (range : __range__) (set : __rangeset__) = set.Add range
-
     /// Removes the given range from the set.
     let inline remove (range : __range__) (set : __rangeset__) = set.Remove range
 
@@ -473,9 +470,6 @@ module __rangeset__ =
 
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : __range__) (set : __rangeset__) = set.Intersect range
-
-    [<Obsolete("Use __rangeset__.intersect instead.")>]
-    let inline window (range : __range__) (set : __rangeset__) = intersect range set
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : __ltype__) (set : __rangeset__) = set.Contains value
