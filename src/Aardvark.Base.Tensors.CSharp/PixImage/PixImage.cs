@@ -319,8 +319,7 @@ namespace Aardvark.Base
 
         #region Static Tables and Methods
 
-        protected static Dictionary<string, PixFileFormat> s_formatOfExtension =
-            new Dictionary<string, PixFileFormat>()
+        private static readonly Dictionary<string, PixFileFormat> s_formatOfExtension = new()
         {
             { ".tga", PixFileFormat.Targa },
             { ".png", PixFileFormat.Png },
@@ -335,19 +334,12 @@ namespace Aardvark.Base
             { ".exr", PixFileFormat.Exr },
         };
 
-        protected static Lazy<Dictionary<PixFileFormat, string>> s_preferredExtensionOfFormat =
-            new Lazy<Dictionary<PixFileFormat, string>>(() =>
+        private static readonly Lazy<Dictionary<PixFileFormat, string>> s_preferredExtensionOfFormat = new(() =>
             {
                 var result = new Dictionary<PixFileFormat, string>();
-                foreach (var pext in from kvp in s_formatOfExtension
-                                        group kvp by kvp.Value into g
-                                        select new
-                                        {
-                                            g.Key,
-                                            Value = g.OrderBy(x => x.Key.Length).Select(x => x.Key).First()
-                                        })
+                foreach (var kvp in s_formatOfExtension)
                 {
-                    result[pext.Key] = pext.Value;
+                    result[kvp.Value] = kvp.Key;
                 }
                 return result;
             },
