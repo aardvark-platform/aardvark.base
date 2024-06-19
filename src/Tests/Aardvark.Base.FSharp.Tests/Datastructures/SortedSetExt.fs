@@ -1,5 +1,4 @@
 ﻿namespace Aardvark.Base.FSharp.Tests
-#nowarn "44"
 
 open System
 open Aardvark.Base
@@ -48,7 +47,7 @@ module SortedSetNeighbours =
             Console.WriteLine("iteration {0}: {1}", i, d.Count)
 
             if remove && i > 200 then
-                let kvp = d |> Seq.nth (r.Next(d.Count))
+                let kvp = d |> Seq.item (r.Next(d.Count))
                 d.Remove kvp.Key |> should be True
                 values.Add kvp.Key |> should be True
                 content.Remove kvp.Key |> should be True
@@ -63,7 +62,7 @@ module SortedSetNeighbours =
 
                 ()
             else
-                let v = values |> Seq.nth (r.Next values.Count)
+                let v = values |> Seq.item (r.Next values.Count)
                 values.Remove v |> should be True
 
                 let l,s,r = d |> SortedDictionary.neighbourhood v

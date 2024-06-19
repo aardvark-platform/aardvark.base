@@ -1,4 +1,4 @@
-﻿namespace Aardvark.Base.FSharp.Benchmarks
+﻿namespace Aardvark.Base.FSharp.Tests
 
 open System
 open Aardvark.Base

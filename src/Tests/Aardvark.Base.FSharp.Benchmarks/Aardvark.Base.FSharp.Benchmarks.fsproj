@@ -22,7 +22,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="paket.references" />
-    <Compile Include="RangeSet.fs" />
     <None Include="Tuples_template.fs" />
     <Compile Include="Tuples_auto.fs" />
     <Compile Include="ActivePatterns.fs" />
