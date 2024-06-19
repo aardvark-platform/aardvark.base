@@ -249,16 +249,6 @@ namespace Aardvark.Base.Coder
             return mb.GetILGenerator();
         }
 
-        [Obsolete("cannot save dynamic assemblies anymore")]
-        public static void SaveDebug()
-        {
-            s_assemblyBuilder = null;
-            s_modBuilder = null;
-            s_typeBuilder = null;
-
-            throw new NotSupportedException("cannot save dynamic assemblies anymore");
-        }
-
         private static AssemblyBuilder s_assemblyBuilder;
         private static ModuleBuilder s_modBuilder;
         private static TypeBuilder s_typeBuilder;

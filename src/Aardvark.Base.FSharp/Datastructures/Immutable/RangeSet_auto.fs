@@ -448,9 +448,6 @@ module RangeSet1i =
     /// Adds the given range to the set.
     let inline add (range : Range1i) (set : RangeSet1i) = set.Add range
 
-    [<Obsolete("Use RangeSet1i.add instead.")>]
-    let inline insert (range : Range1i) (set : RangeSet1i) = set.Add range
-
     /// Removes the given range from the set.
     let inline remove (range : Range1i) (set : RangeSet1i) = set.Remove range
 
@@ -459,9 +456,6 @@ module RangeSet1i =
 
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1i) (set : RangeSet1i) = set.Intersect range
-
-    [<Obsolete("Use RangeSet1i.intersect instead.")>]
-    let inline window (range : Range1i) (set : RangeSet1i) = intersect range set
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : int32) (set : RangeSet1i) = set.Contains value
@@ -901,9 +895,6 @@ module RangeSet1ui =
     /// Adds the given range to the set.
     let inline add (range : Range1ui) (set : RangeSet1ui) = set.Add range
 
-    [<Obsolete("Use RangeSet1ui.add instead.")>]
-    let inline insert (range : Range1ui) (set : RangeSet1ui) = set.Add range
-
     /// Removes the given range from the set.
     let inline remove (range : Range1ui) (set : RangeSet1ui) = set.Remove range
 
@@ -912,9 +903,6 @@ module RangeSet1ui =
 
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1ui) (set : RangeSet1ui) = set.Intersect range
-
-    [<Obsolete("Use RangeSet1ui.intersect instead.")>]
-    let inline window (range : Range1ui) (set : RangeSet1ui) = intersect range set
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : uint32) (set : RangeSet1ui) = set.Contains value
@@ -1354,9 +1342,6 @@ module RangeSet1l =
     /// Adds the given range to the set.
     let inline add (range : Range1l) (set : RangeSet1l) = set.Add range
 
-    [<Obsolete("Use RangeSet1l.add instead.")>]
-    let inline insert (range : Range1l) (set : RangeSet1l) = set.Add range
-
     /// Removes the given range from the set.
     let inline remove (range : Range1l) (set : RangeSet1l) = set.Remove range
 
@@ -1365,9 +1350,6 @@ module RangeSet1l =
 
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1l) (set : RangeSet1l) = set.Intersect range
-
-    [<Obsolete("Use RangeSet1l.intersect instead.")>]
-    let inline window (range : Range1l) (set : RangeSet1l) = intersect range set
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : int64) (set : RangeSet1l) = set.Contains value
@@ -1807,9 +1789,6 @@ module RangeSet1ul =
     /// Adds the given range to the set.
     let inline add (range : Range1ul) (set : RangeSet1ul) = set.Add range
 
-    [<Obsolete("Use RangeSet1ul.add instead.")>]
-    let inline insert (range : Range1ul) (set : RangeSet1ul) = set.Add range
-
     /// Removes the given range from the set.
     let inline remove (range : Range1ul) (set : RangeSet1ul) = set.Remove range
 
@@ -1818,9 +1797,6 @@ module RangeSet1ul =
 
     /// Returns the intersection of the set with the given range.
     let inline intersect (range : Range1ul) (set : RangeSet1ul) = set.Intersect range
-
-    [<Obsolete("Use RangeSet1ul.intersect instead.")>]
-    let inline window (range : Range1ul) (set : RangeSet1ul) = intersect range set
 
     /// Returns whether the given value is contained in the range set.
     let inline contains (value : uint64) (set : RangeSet1ul) = set.Contains value

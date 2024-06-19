@@ -1,3 +1,37 @@
+### 5.3.0-prerelease0001
+- Updated to .NET 8 and F# 8
+- Optimized partial active patterns by using struct representation
+- Added F# tensor utilities and math functions using SRTP
+- Deprecated Error type
+- Deprecated GenericValues.zero
+- Fixed return type of LengthSquared for integer-based vectors. Now returns an integer instead of double.
+- Added missing readonly modifiers for structs
+- Renamed CIeLuvf to CieLuvf
+- Removed obsolete API:
+  - [Color] obsolete conversion functions
+  - [Color] `Parse()` overload with IFormatProvider parameter
+  - [PixImage] obsolete loading API
+  - `Async.AwaitTask` (already in FSharp.Core)
+  - `Caching.cacheFunction`
+  - `IDictionary.GetValueOrDefault`
+  - broken UnsafeCoerce utilities
+  - `CameraExtrinsics` and `CameraIntrinsics`
+  - float variants of `Constant`
+  - `IPol.SlerpShortest`
+  - `Cell.Parse()` with offset parameter
+  - `M44x.PerspectiveProjectionTransformLH`
+  - `Trafo.PerspectiveProjectionOpenGl`
+  - `Trafo.PerspectiveProjectionLH`
+  - `Trafo.OrthoProjectionOpenGl`
+  - `RangeSet` and `RangeSet64`
+  - `RangeSet1*.insert` and `window`
+  - `Time` and `TimeLink`
+  - `ExecutableMemory`
+  - `Dictionary.TryRemove` and `GetOrAdd`
+  - `Seq.forany` and `Array.forany` (use `exists` instead)
+  - `Strings` module
+  - Assembler related types and functions (use Aardvark.Assembler instead)
+
 ### 5.2.31
 * fixed Hash Computations for non-primitive types
 * added `AsByteSpan` extension method for System.Array/string in >=net6.0

@@ -846,24 +846,6 @@ namespace Aardvark.Base.Coder
             value = new Fraction(numerator, denominator);
         }
 
-        public void CodeCameraExtrinsics(ref CameraExtrinsics v)
-        {
-            var rotation = default(M33d); var translation = default(V3d);
-            CodeM33d(ref rotation); CodeV3d(ref translation);
-            v = new CameraExtrinsics(rotation, translation);
-        }
-
-        public void CodeCameraIntrinsics(ref CameraIntrinsics v)
-        {
-            var focalLength = default(V2d); var principalPoint = default(V2d);
-            double skew = 0.0, k1 = 0.0, k2 = 0.0, k3 = 0.0, p1 = 0.0, p2 = 0.0;
-            CodeV2d(ref focalLength); CodeV2d(ref principalPoint);
-            CodeDouble(ref skew);
-            CodeDouble(ref k1); CodeDouble(ref k2); CodeDouble(ref k3);
-            CodeDouble(ref p1); CodeDouble(ref p1);
-            v = new CameraIntrinsics(focalLength, principalPoint, skew, k1, k2, k3, p1, p2);
-        }
-
         #endregion
 
         #region Code Arrays

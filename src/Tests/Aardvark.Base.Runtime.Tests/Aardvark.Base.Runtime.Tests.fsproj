@@ -16,7 +16,6 @@
 	<RunWorkingDirectory>$(OutputPath)\net8.0</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DynamicCode.fs" />
     <Compile Include="CoderTests.fs" />
     <Compile Include="ReflectionTests.fs" />
   </ItemGroup>

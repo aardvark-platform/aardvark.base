@@ -1658,11 +1658,6 @@ namespace Aardvark.Base
         public static bool TryParse(string s, out C3b result)
             => TryParse(new Text(s), out result);
 
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3b Parse(string s, IFormatProvider provider)
-            => Parse(s);
-
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
         /// </summary>
@@ -3939,11 +3934,6 @@ namespace Aardvark.Base
         public static bool TryParse(string s, out C3us result)
             => TryParse(new Text(s), out result);
 
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3us Parse(string s, IFormatProvider provider)
-            => Parse(s);
-
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
         /// </summary>
@@ -6143,11 +6133,6 @@ namespace Aardvark.Base
         public static bool TryParse(string s, out C3ui result)
             => TryParse(new Text(s), out result);
 
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3ui Parse(string s, IFormatProvider provider)
-            => Parse(s);
-
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
         /// </summary>
@@ -8216,11 +8201,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string s, out C3f result)
             => TryParse(new Text(s), out result);
-
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3f Parse(string s, IFormatProvider provider)
-            => Parse(s);
 
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
@@ -10327,11 +10307,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string s, out C3d result)
             => TryParse(new Text(s), out result);
-
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3d Parse(string s, IFormatProvider provider)
-            => Parse(s);
 
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
@@ -12964,11 +12939,6 @@ namespace Aardvark.Base
         public static bool TryParse(string s, out C4b result)
             => TryParse(new Text(s), out result);
 
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4b Parse(string s, IFormatProvider provider)
-            => Parse(s);
-
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
         /// </summary>
@@ -15529,11 +15499,6 @@ namespace Aardvark.Base
         public static bool TryParse(string s, out C4us result)
             => TryParse(new Text(s), out result);
 
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4us Parse(string s, IFormatProvider provider)
-            => Parse(s);
-
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
         /// </summary>
@@ -17999,11 +17964,6 @@ namespace Aardvark.Base
         public static bool TryParse(string s, out C4ui result)
             => TryParse(new Text(s), out result);
 
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4ui Parse(string s, IFormatProvider provider)
-            => Parse(s);
-
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
         /// </summary>
@@ -20253,11 +20213,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string s, out C4f result)
             => TryParse(new Text(s), out result);
-
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4f Parse(string s, IFormatProvider provider)
-            => Parse(s);
 
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
@@ -22548,11 +22503,6 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string s, out C4d result)
             => TryParse(new Text(s), out result);
-
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4d Parse(string s, IFormatProvider provider)
-            => Parse(s);
 
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.

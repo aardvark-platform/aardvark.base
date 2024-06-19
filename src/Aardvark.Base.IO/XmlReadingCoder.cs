@@ -667,16 +667,6 @@ namespace Aardvark.Base.Coder
         public void CodeList_of_Symbol_(ref List<Symbol> v) { throw new NotImplementedException(); }
         public void CodeList_of_Fraction_(ref List<Fraction> v) { throw new NotImplementedException(); }
 
-        public void CodeCameraExtrinsics(ref CameraExtrinsics v)
-        {
-            throw new NotSupportedException("cannot serialize single camera");
-        }
-
-        public void CodeCameraIntrinsics(ref CameraIntrinsics v)
-        {
-            throw new NotSupportedException("cannot serialize single camera");
-        }
-
         #endregion
 
         #region IDisposable Members
@@ -1690,16 +1680,6 @@ namespace Aardvark.Base.Coder
         }        
         
         public void CodeList_of_Fraction_(ref List<Fraction> v) { CodeList(ref v, s => Fraction.Parse(s)); }
-
-        public void CodeCameraExtrinsics(ref CameraExtrinsics v)
-        {
-            throw new NotSupportedException("cannot serialize single camera");
-        }
-
-        public void CodeCameraIntrinsics(ref CameraIntrinsics v)
-        {
-            throw new NotSupportedException("cannot serialize single camera");
-        }
 
         #endregion
 

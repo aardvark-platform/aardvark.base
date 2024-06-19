@@ -582,12 +582,6 @@ namespace Aardvark.Base
             return new Cell(x, y, z, e);
         }
 
-        /// <summary>
-        /// </summary>
-        [Obsolete("Parameter 'offset' is not respected, use Parse(buffer) instead.")]
-        public static Cell Parse(byte[] buffer, int offset)
-            => Parse(buffer);
-
         #endregion
     }
 }

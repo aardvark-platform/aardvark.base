@@ -26,14 +26,13 @@
     <Compile Include="PixTests.fs" />
     <Compile Include="SVDTests.fs" />
     <Compile Include="CachesTest.fs" />
-    <Compile Include="TimeTests.fs" />
     <Compile Include="PureAgTests.fs" />
     <Compile Include="NativeMemory.fs" />
-    <Compile Include="Fragments.fs" />
     <Compile Include="ControlTests.fs" />
     <Compile Include="SortedSetExt.fs" />
     <Compile Include="MapExt.fs" />
     <Compile Include="OrderMaintenanceTrie.fs" />
+    <Compile Include="SizeOfTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

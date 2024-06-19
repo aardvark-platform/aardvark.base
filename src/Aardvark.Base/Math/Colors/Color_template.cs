@@ -1203,11 +1203,6 @@ namespace Aardvark.Base
         public static bool TryParse(string s, out __type__ result)
             => TryParse(new Text(s), out result);
 
-        [Obsolete("Parameter provider is unused.")]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Parse(string s, IFormatProvider provider)
-            => Parse(s);
-
         /// <summary>
         /// Parses a color string with decimal format [R, G, B, A], or hexadecimal formats RRGGBBAA or RGBA.
         /// </summary>

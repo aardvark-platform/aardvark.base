@@ -648,9 +648,6 @@ and MemoryManager(capacity : nativeint, config : MemoryManagerConfig) as this =
 module MemoryManager =
     let createHGlobal() = new MemoryManager(16n, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)
 
-    [<Obsolete>]
-    let createExecutable() = new MemoryManager(16n, ExecutableMemory.alloc, ExecutableMemory.free)
-
     let private nopConfig = { malloc = (fun _ -> 0n); mfree = (fun _ _ -> ()); mcopy = (fun _ _ _ -> ()) }
     let createNop() = new MemoryManager(16n, nopConfig)
 

@@ -695,22 +695,6 @@ namespace Aardvark.Base.Coder
             m_writer.Write(value.Denominator);
         }
 
-        public void CodeCameraExtrinsics(ref CameraExtrinsics v)
-        {
-            var rotation = v.Rotation; var translation = v.Translation;
-            CodeM33d(ref rotation); CodeV3d(ref translation);
-        }
-
-        public void CodeCameraIntrinsics(ref CameraIntrinsics v)
-        {
-            var focalLength = v.FocalLength; var principalPoint = v.PrincipalPoint;
-            double skew = v.Skew, k1 = v.K1, k2 = v.K2, k3 = v.K3, p1 = v.P1, p2 = v.P2;
-            CodeV2d(ref focalLength); CodeV2d(ref principalPoint);
-            CodeDouble(ref skew);
-            CodeDouble(ref k1); CodeDouble(ref k2); CodeDouble(ref k3);
-            CodeDouble(ref p1); CodeDouble(ref p1);
-        }
-
         #endregion
 
         #region Code Arrays

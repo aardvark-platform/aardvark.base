@@ -51,10 +51,6 @@ module Prelude =
                      | Some x -> yield f x
             }
 
-        [<Obsolete("Use Seq.exists instead.")>]
-        let forany (f : 'a -> bool) (s : seq<'a>) =
-            Seq.exists f s
-
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
             use e = source.GetEnumerator()
             let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt folder
@@ -156,10 +152,6 @@ module Prelude =
                 acc
 
     module Array =
-
-        [<Obsolete("Use Array.exists instead.")>]
-        let forany (f : 'a -> bool) (a : 'a[]) =
-            Array.exists f a
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
             let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt(folder)
@@ -439,14 +431,6 @@ module EnumExtensions =
             cast
 
 module ConversionHelpers =
-
-    [<Obsolete("Use LookupTable.lookupTable' instead.")>]
-    let lookupTableOption (l : list<'a * 'b>) : ('a -> 'b option) =
-        LookupTable.lookupTable' l
-
-    [<Obsolete("Use LookupTable.lookupTable instead.")>]
-    let lookupTable (l : list<'a * 'b>) : ('a -> 'b) =
-        LookupTable.lookupTable l
 
     [<Obsolete("Use Enum.convert instead.")>]
     let inline convertEnum< ^a, ^b when ^a : (static member op_Explicit : ^a -> int)> (fmt : ^a) : ^b =

@@ -424,6 +424,24 @@ namespace Aardvark.Base
             return Convert.ToBase64String(data);
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Converts the byte span to string using base-64 encoding;
+        /// </summary>
+        public static string ToBase64(this Span<byte> span)
+        {
+            return Convert.ToBase64String(span);
+        }
+
+        /// <summary>
+        /// Converts the byte span to string using base-64 encoding;
+        /// </summary>
+        public static string ToBase64(this ReadOnlySpan<byte> span)
+        {
+            return Convert.ToBase64String(span);
+        }
+#endif
+
         /// <summary>
         /// Builds a string representing the byte arrays as hexadecimal number.
         /// </summary>
@@ -469,6 +487,6 @@ namespace Aardvark.Base
             return buffer;
         }
 
-        #endregion
+#endregion
     }
 }

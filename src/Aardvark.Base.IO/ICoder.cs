@@ -82,9 +82,6 @@ namespace Aardvark.Base.Coder
         void CodeIntSet(ref IntSet v);
         void CodeSymbolSet(ref SymbolSet v);
 
-        void CodeCameraIntrinsics(ref CameraIntrinsics v);
-        void CodeCameraExtrinsics(ref CameraExtrinsics v);
-
         void CodeStructArray<T>(ref T[] a) where T : struct;
         void CodeStructList<T>(ref List<T> l) where T : struct;
     }
