@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -319,6 +320,8 @@ namespace Aardvark.Base
 
         #region Static Tables and Methods
 
+        #region Format file extensions
+
         private static readonly Dictionary<string, PixFileFormat> s_formatOfExtension = new()
         {
             { ".tga", PixFileFormat.Targa },
@@ -362,39 +365,78 @@ namespace Aardvark.Base
                 throw new ArgumentException("File name has unknown extension: " + ext);
         }
 
-        // Helper class to create PixImage from given Type
-        private static class Dispatch
-        {
-            private static class CreateDispatcher
-            {
-                public static PixImage<T> Create<T>(Col.Format format, long x, long y, long channels)
-                    => new PixImage<T>(format, x, y, channels);
-
-                public static PixImage<T> CreateArray<T>(T[] data, Col.Format format, long x, long y, long channels)
-                    => new PixImage<T>(format, data.CreateImageVolume(new V3l(x, y, channels)));
-            }
-
-            private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-            private static readonly MethodInfo s_createMethod = typeof(CreateDispatcher).GetMethod("Create", flags);
-            private static readonly MethodInfo s_createArrayMethod = typeof(CreateDispatcher).GetMethod("CreateArray", flags);
-
-            public static PixImage Create(PixFormat format, long x, long y, long channels)
-            {
-                var mi = s_createMethod.MakeGenericMethod(format.Type);
-                return (PixImage)mi.Invoke(null, new object[] { format.Format, x, y, channels });
-            }
-
-            public static PixImage Create(Array array, Col.Format format, long x, long y, long channels)
-            {
-                var mi = s_createArrayMethod.MakeGenericMethod(array.GetType().GetElementType());
-                return (PixImage)mi.Invoke(null, new object[] { array, format, x, y, channels });
-            }
-        }
-
         public static string GetPreferredExtensionOfFormat(PixFileFormat format)
         {
             return s_preferredExtensionOfFormat.Value[format];
         }
+
+        #endregion
+
+        #region Grayscale conversion
+
+        private static void ToGray<T, Tv, R>(PixImage src, object dst, Func<Tv, R> toGray)
+        {
+            ((Matrix<R>)dst).SetMap(src.AsPixImage<T>().GetMatrix<Tv>(), toGray);
+        }
+
+        protected static readonly Dictionary<(Type, Type), Action<PixImage, object>> s_rgbToGrayMap = new()
+            {
+                { (typeof(byte), typeof(byte)),     (src, dst) => ToGray<byte, C3b, byte>(src, dst, Col.ToGrayByte) },
+                { (typeof(ushort), typeof(ushort)), (src, dst) => ToGray<ushort, C3us, ushort>(src, dst, Col.ToGrayUShort) },
+                { (typeof(uint), typeof(uint)),     (src, dst) => ToGray<uint, C3ui, uint>(src, dst, Col.ToGrayUInt) },
+                { (typeof(float), typeof(float)),   (src, dst) => ToGray<float, C3f, float>(src, dst, Col.ToGrayFloat) },
+                { (typeof(double), typeof(double)), (src, dst) => ToGray<double, C3d, double>(src, dst, Col.ToGrayDouble) },
+            };
+
+        #endregion
+
+        #region Create dispatcher
+
+        // Helper class to create PixImage from given Type
+        private static class Dispatch
+        {
+            private delegate PixImage CreateDelegate(Col.Format format, long width, long height, long channels);
+            private delegate PixImage CreateArrayDelegate(Array data, Col.Format format, long width, long height, long channels);
+
+            private static class CreateDispatcher
+            {
+                public static PixImage Create<T>(Col.Format format, long width, long height, long channels)
+                    => new PixImage<T>(format, width, height, channels);
+
+                public static PixImage CreateArray<T>(Array data, Col.Format format, long width, long height, long channels)
+                    => new PixImage<T>(format, ((T[])data).CreateImageVolume(new V3l(width, height, channels)));
+            }
+
+            private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+
+            private static readonly MethodInfo s_createMethod = typeof(CreateDispatcher).GetMethod(nameof(CreateDispatcher.Create), flags);
+            private static readonly ConcurrentDictionary<Type, CreateDelegate> s_createDelegates = new();
+
+            private static readonly MethodInfo s_createArrayMethod = typeof(CreateDispatcher).GetMethod(nameof(CreateDispatcher.CreateArray), flags);
+            private static readonly ConcurrentDictionary<Type, CreateArrayDelegate> s_createArrayDelegates = new();
+
+            public static PixImage Create(PixFormat format, long width, long height, long channels)
+            {
+                var create = s_createDelegates.GetOrAdd(format.Type, t => {
+                    var mi = s_createMethod.MakeGenericMethod(t);
+                    return (CreateDelegate)Delegate.CreateDelegate(typeof(CreateDelegate), mi);
+                });
+
+                return create(format.Format, width, height, channels);
+            }
+
+            public static PixImage Create(Array array, Col.Format format, long width, long height, long channels)
+            {
+                var create = s_createArrayDelegates.GetOrAdd(array.GetType().GetElementType(), t => {
+                    var mi = s_createArrayMethod.MakeGenericMethod(t);
+                    return (CreateArrayDelegate)Delegate.CreateDelegate(typeof(CreateArrayDelegate), mi);
+                });
+
+                return create(array, format, width, height, channels);
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -814,22 +856,6 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
                 { (typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
             };
-
-        private static void ToGray<T, Tv, R>(PixImage src, object dst, Func<Tv, R> toGray)
-        {
-            ((Matrix<R>)dst).SetMap(src.AsPixImage<T>().GetMatrix<Tv>(), toGray);
-        }
-
-        protected static Dictionary<(Type, Type), Action<PixImage, object>> s_rgbToGrayMap =
-            new Dictionary<(Type, Type), Action<PixImage, object>>()
-            {
-                { (typeof(byte), typeof(byte)),     (src, dst) => ToGray<byte, C3b, byte>(src, dst, Col.ToGrayByte) },
-                { (typeof(ushort), typeof(ushort)), (src, dst) => ToGray<ushort, C3us, ushort>(src, dst, Col.ToGrayUShort) },
-                { (typeof(uint), typeof(uint)),     (src, dst) => ToGray<uint, C3ui, uint>(src, dst, Col.ToGrayUInt) },
-                { (typeof(float), typeof(float)),   (src, dst) => ToGray<float, C3f, float>(src, dst, Col.ToGrayFloat) },
-                { (typeof(double), typeof(double)), (src, dst) => ToGray<double, C3d, double>(src, dst, Col.ToGrayDouble) },
-            };
-
         public abstract PixImage<T1> ToPixImage<T1>();
         public abstract PixImage Transformed(ImageTrafo trafo);
 
