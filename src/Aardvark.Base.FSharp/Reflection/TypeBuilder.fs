@@ -866,7 +866,11 @@ module Serializer =
             abstract member WriteRef : IWriter * 'a -> Coder<unit>
 
             default x.CreateEmptyInstance() =
+#if NET8_0_OR_GREATER
+                System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof<'a>) |> unbox<'a>
+#else
                 System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject(typeof<'a>) |> unbox<'a>
+#endif
 
             override x.Read(r : IReader) =
                 code {
@@ -1056,7 +1060,11 @@ module Serializer =
         module AutoCoder = 
             type Helpers() =
                 static member NewObj() : 'a =
+#if NET8_0_OR_GREATER
+                    System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof<'a>) |> unbox<'a>
+#else
                     System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject(typeof<'a>) |> unbox<'a>
+#endif
 
             [<AbstractClass>]
             type AbstractStateCoder<'a>() =
@@ -1662,7 +1670,11 @@ module Serializer =
                         | Some v -> return v
                         | None ->
                             do! Coder.pushName "ReferenceValue"
+#if NET8_0_OR_GREATER
+                            let res = System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof<'a>) |> unbox<'a>
+#else
                             let res = System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject typeof<'a> |> unbox<'a>
+#endif
                             do! Coder.storeValue id res
 
                             let! result = inner.Read(r)
@@ -1703,7 +1715,11 @@ module Serializer =
                         | Some v -> return v
                         | None ->
                             do! Coder.pushName "ReferenceValue"
+#if NET8_0_OR_GREATER
+                            let res = System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof<'a>) |> unbox<'a>
+#else
                             let res = System.Runtime.Serialization.FormatterServices.GetSafeUninitializedObject typeof<'a> |> unbox<'a>
+#endif
                             do! Coder.storeValue id res
 
                             let! result = inner.Read(r)
