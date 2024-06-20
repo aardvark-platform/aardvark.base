@@ -296,12 +296,6 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Constants
-
-        public const long c_writeMemoryChunkSize = 1 << 24;
-
-        #endregion
-
         #region Properties
 
         public PixImageInfo Info {  get { return new PixImageInfo(PixFormat, Size); } }
