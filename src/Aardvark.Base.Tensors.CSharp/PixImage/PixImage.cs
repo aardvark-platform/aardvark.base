@@ -1669,8 +1669,7 @@ namespace Aardvark.Base
         public Matrix<T, Tv> GetChannelInFormatOrder<Tv>(long formatChannelIndex)
         {
             var matrix = Volume.SubXYMatrix<Tv>(formatChannelIndex);
-            matrix.Accessors = TensorAccessors.Get<T, Tv>(
-                    typeof(T), typeof(Tv), TensorAccessors.Intent.ColorChannel, Volume.DeltaArray);
+            matrix.Accessors = TensorAccessors.Get<T, Tv>(TensorAccessors.Intent.ColorChannel, Volume.DeltaArray);
             return matrix;
         }
             

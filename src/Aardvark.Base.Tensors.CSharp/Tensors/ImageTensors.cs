@@ -430,8 +430,7 @@ namespace Aardvark.Base
         public static Matrix<Td, Tv> GetMatrix<Td, Tv>(this Volume<Td> volume, Symbol intent)
         {
             var matrix = volume.SubXYMatrixWindow<Tv>(0L);
-            matrix.Accessors = TensorAccessors.Get<Td, Tv>(typeof(Td), typeof(Tv),
-                                                           intent, volume.DeltaArray);
+            matrix.Accessors = TensorAccessors.Get<Td, Tv>(intent, volume.DeltaArray);
             return matrix;
         }
 
@@ -441,8 +440,7 @@ namespace Aardvark.Base
         public static Volume<Td, Tv> GetVolume<Td, Tv>(this Tensor4<Td> tensor4, Symbol intent)
         {
             var volume = tensor4.SubXYZVolumeWindow<Tv>(0L);
-            volume.Accessors = TensorAccessors.Get<Td, Tv>(typeof(Td), typeof(Tv),
-                                                           intent, tensor4.DeltaArray);
+            volume.Accessors = TensorAccessors.Get<Td, Tv>(intent, tensor4.DeltaArray);
             return volume;
         }
 

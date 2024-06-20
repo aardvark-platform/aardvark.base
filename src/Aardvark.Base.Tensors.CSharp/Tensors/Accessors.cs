@@ -29,19 +29,17 @@ namespace Aardvark.Base
             public static readonly Symbol ColorChannel = "ColorChannel";
         };
 
-        public static TensorAccessors<Td, Tv> Get<Td, Tv>(
-                Type dataType, Type viewType, Symbol intent, long[] delta)
+        public static TensorAccessors<Td, Tv> Get<Td, Tv>(Symbol intent, long[] delta)
         {
-            Func<long[], ITensorAccessors> creator;
-            if (s_creatorMap.TryGetValue(
-                    (dataType, viewType, intent),
-                    out creator))
+            Type dataType = typeof(Td);
+            Type viewType = typeof(Tv);
+
+            if (s_creatorMap.TryGetValue((dataType, viewType, intent), out var creator))
             {
-                var typed = creator(delta) as TensorAccessors<Td, Tv>;
-                if (typed != null) return typed;
+                if (creator(delta) is TensorAccessors<Td, Tv> typed) return typed;
             }
             throw new KeyNotFoundException(
-                $"No accessors to view {typeof(Td)} as {typeof(Tv)} with intent {intent}."
+                $"No accessors to view {dataType} as {viewType} with intent {intent}."
             );
         }
     }

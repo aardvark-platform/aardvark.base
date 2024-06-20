@@ -491,18 +491,14 @@ namespace Aardvark.Base
         public Volume<T, Tv> GetChannelInFormatOrder<Tv>(long formatChannelIndex)
         {
             var volume = Tensor4.SubXYZVolume<Tv>(formatChannelIndex);
-            volume.Accessors = TensorAccessors.Get<T, Tv>(
-                    typeof(T), typeof(Tv), TensorAccessors.Intent.ColorChannel, Tensor4.DeltaArray);
+            volume.Accessors = TensorAccessors.Get<T, Tv>(TensorAccessors.Intent.ColorChannel, Tensor4.DeltaArray);
             return volume;
         }
 
         public Volume<T, Tv> GetVolume<Tv>()
         {
             var volume = Tensor4.SubXYZVolumeWindow<Tv>(0L);
-            volume.Accessors = TensorAccessors.Get<T, Tv>(
-                                        typeof(T), typeof(Tv),
-                                        Format.GetIntent(),
-                                        Tensor4.DeltaArray);
+            volume.Accessors = TensorAccessors.Get<T, Tv>(Format.GetIntent(), Tensor4.DeltaArray);
             return volume;
         }
 
