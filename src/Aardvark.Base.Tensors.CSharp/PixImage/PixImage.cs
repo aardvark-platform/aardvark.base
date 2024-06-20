@@ -389,16 +389,16 @@ namespace Aardvark.Base
         // Helper class to create PixImage from given Type
         private static class Dispatch
         {
-            private delegate PixImage CreateDelegate(Col.Format format, long width, long height, long channels);
-            private delegate PixImage CreateArrayDelegate(Array data, Col.Format format, long width, long height, long channels);
+            private delegate PixImage CreateDelegate(Col.Format format, long sizeX, long sizeY, long channels);
+            private delegate PixImage CreateArrayDelegate(Array data, Col.Format format, long sizeX, long sizeY, long channels);
 
             private static class CreateDispatcher
             {
-                public static PixImage Create<T>(Col.Format format, long width, long height, long channels)
-                    => new PixImage<T>(format, width, height, channels);
+                public static PixImage Create<T>(Col.Format format, long sizeX, long sizeY, long channels)
+                    => new PixImage<T>(format, sizeX, sizeY, channels);
 
-                public static PixImage CreateArray<T>(Array data, Col.Format format, long width, long height, long channels)
-                    => new PixImage<T>(format, ((T[])data).CreateImageVolume(new V3l(width, height, channels)));
+                public static PixImage CreateArray<T>(Array data, Col.Format format, long sizeX, long sizeY, long channels)
+                    => new PixImage<T>(format, ((T[])data).CreateImageVolume(new V3l(sizeX, sizeY, channels)));
             }
 
             private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
@@ -409,24 +409,24 @@ namespace Aardvark.Base
             private static readonly MethodInfo s_createArrayMethod = typeof(CreateDispatcher).GetMethod(nameof(CreateDispatcher.CreateArray), flags);
             private static readonly ConcurrentDictionary<Type, CreateArrayDelegate> s_createArrayDelegates = new();
 
-            public static PixImage Create(PixFormat format, long width, long height, long channels)
+            public static PixImage Create(PixFormat format, long sizeX, long sizeY, long channels)
             {
                 var create = s_createDelegates.GetOrAdd(format.Type, t => {
                     var mi = s_createMethod.MakeGenericMethod(t);
                     return (CreateDelegate)Delegate.CreateDelegate(typeof(CreateDelegate), mi);
                 });
 
-                return create(format.Format, width, height, channels);
+                return create(format.Format, sizeX, sizeY, channels);
             }
 
-            public static PixImage Create(Array array, Col.Format format, long width, long height, long channels)
+            public static PixImage Create(Array array, Col.Format format, long sizeX, long sizeY, long channels)
             {
                 var create = s_createArrayDelegates.GetOrAdd(array.GetType().GetElementType(), t => {
                     var mi = s_createArrayMethod.MakeGenericMethod(t);
                     return (CreateArrayDelegate)Delegate.CreateDelegate(typeof(CreateArrayDelegate), mi);
                 });
 
-                return create(array, format, width, height, channels);
+                return create(array, format, sizeX, sizeY, channels);
             }
         }
 
@@ -436,17 +436,17 @@ namespace Aardvark.Base
 
         #region Static Creator Functions
 
-        public static PixImage Create(PixFormat format, long sx, long sy, long ch)
-            => Dispatch.Create(format, sx, sy, ch);
+        public static PixImage Create(PixFormat format, long sizeX, long sizeY, long channelCount)
+            => Dispatch.Create(format, sizeX, sizeY, channelCount);
 
-        public static PixImage Create(PixFormat format, long sx, long sy)
-            => Dispatch.Create(format, sx, sy, format.ChannelCount);
+        public static PixImage Create(PixFormat format, long sizeX, long sizeY)
+            => Dispatch.Create(format, sizeX, sizeY, format.ChannelCount);
 
-        public static PixImage Create(Array array, Col.Format format, long sx, long sy, long ch)
-            => Dispatch.Create(array, format, sx, sy, ch);
+        public static PixImage Create(Array array, Col.Format format, long sizeX, long sizeY, long channelCount)
+            => Dispatch.Create(array, format, sizeX, sizeY, channelCount);
 
-        public static PixImage Create(Array array, Col.Format format, long sx, long sy)
-            => Dispatch.Create(array, format, sx, sy, format.ChannelCount());
+        public static PixImage Create(Array array, Col.Format format, long sizeX, long sizeY)
+            => Dispatch.Create(array, format, sizeX, sizeY, format.ChannelCount());
 
         public static Volume<T> CreateVolume<T>(V3i size) => size.ToV3l().CreateImageVolume<T>();
 
