@@ -54,60 +54,12 @@ namespace Aardvark.Base
 
         #region Conversions
 
-        protected static Dictionary<(Type, Type), Func<object, object>>
-            s_copyFunMap =
-            new Dictionary<(Type, Type), Func<object, object>>()
-            {
-                { (typeof(byte), typeof(byte)), v => ((Tensor4<byte>)v).CopyWindow() },
-                { (typeof(byte), typeof(ushort)), v => ((Tensor4<byte>)v).ToUShortColor() },
-                { (typeof(byte), typeof(uint)), v => ((Tensor4<byte>)v).ToUIntColor() },
-                { (typeof(byte), typeof(Half)), v => ((Tensor4<byte>)v).ToHalfColor() },
-                { (typeof(byte), typeof(float)), v => ((Tensor4<byte>)v).ToFloatColor() },
-                { (typeof(byte), typeof(double)), v => ((Tensor4<byte>)v).ToDoubleColor() },
-
-                { (typeof(ushort), typeof(byte)), v => ((Tensor4<ushort>)v).ToByteColor() },
-                { (typeof(ushort), typeof(ushort)), v => ((Tensor4<ushort>)v).CopyWindow() },
-                { (typeof(ushort), typeof(uint)), v => ((Tensor4<ushort>)v).ToUIntColor() },
-                { (typeof(ushort), typeof(Half)), v => ((Tensor4<ushort>)v).ToHalfColor() },
-                { (typeof(ushort), typeof(float)), v => ((Tensor4<ushort>)v).ToFloatColor() },
-                { (typeof(ushort), typeof(double)), v => ((Tensor4<ushort>)v).ToDoubleColor() },
-
-                { (typeof(uint), typeof(byte)), v => ((Tensor4<uint>)v).ToByteColor() },
-                { (typeof(uint), typeof(ushort)), v => ((Tensor4<uint>)v).ToUShortColor() },
-                { (typeof(uint), typeof(uint)), v => ((Tensor4<uint>)v).CopyWindow() },
-                { (typeof(uint), typeof(Half)), v => ((Tensor4<uint>)v).ToHalfColor() },
-                { (typeof(uint), typeof(float)), v => ((Tensor4<uint>)v).ToFloatColor() },
-                { (typeof(uint), typeof(double)), v => ((Tensor4<uint>)v).ToDoubleColor() },
-
-                { (typeof(Half), typeof(byte)), v => ((Tensor4<Half>)v).ToByteColor() },
-                { (typeof(Half), typeof(ushort)), v => ((Tensor4<Half>)v).ToUShortColor() },
-                { (typeof(Half), typeof(uint)), v => ((Tensor4<Half>)v).ToUIntColor() },
-                { (typeof(Half), typeof(Half)), v => ((Tensor4<Half>)v).CopyWindow() },
-                { (typeof(Half), typeof(float)), v => ((Tensor4<Half>)v).ToFloatColor() },
-                { (typeof(Half), typeof(double)), v => ((Tensor4<Half>)v).ToDoubleColor() },
-
-                { (typeof(float), typeof(byte)), v => ((Tensor4<float>)v).ToByteColor() },
-                { (typeof(float), typeof(ushort)), v => ((Tensor4<float>)v).ToUShortColor() },
-                { (typeof(float), typeof(uint)), v => ((Tensor4<float>)v).ToUIntColor() },
-                { (typeof(float), typeof(Half)), v => ((Tensor4<float>)v).ToHalfColor() },
-                { (typeof(float), typeof(float)), v => ((Tensor4<float>)v).CopyWindow() },
-                { (typeof(float), typeof(double)), v => ((Tensor4<float>)v).ToDoubleColor() },
-
-                { (typeof(double), typeof(byte)), v => ((Tensor4<double>)v).ToByteColor() },
-                { (typeof(double), typeof(ushort)), v => ((Tensor4<double>)v).ToUShortColor() },
-                { (typeof(double), typeof(uint)), v => ((Tensor4<double>)v).ToUIntColor() },
-                { (typeof(double), typeof(Half)), v => ((Tensor4<double>)v).ToHalfColor() },
-                { (typeof(double), typeof(float)), v => ((Tensor4<double>)v).ToFloatColor() },
-                { (typeof(double), typeof(double)), v => ((Tensor4<double>)v).CopyWindow() },
-            };
-
         private static void ToGray<T, Tv, R>(PixVolume src, object dst, Func<Tv, R> toGray)
         {
             ((Volume<R>)dst).SetMap(src.AsPixVolume<T>().GetVolume<Tv>(), toGray);
         }
 
-        protected static Dictionary<(Type, Type), Action<PixVolume, object>> s_rgbToGrayMap =
-            new Dictionary<(Type, Type), Action<PixVolume, object>>()
+        protected static readonly Dictionary<(Type, Type), Action<PixVolume, object>> s_rgbToGrayMap = new()
             {
                 { (typeof(byte), typeof(byte)),     (src, dst) => ToGray<byte, C3b, byte>(src, dst, Col.ToGrayByte) },
                 { (typeof(ushort), typeof(ushort)), (src, dst) => ToGray<ushort, C3us, ushort>(src, dst, Col.ToGrayUShort) },
@@ -116,17 +68,13 @@ namespace Aardvark.Base
                 { (typeof(double), typeof(double)), (src, dst) => ToGray<double, C3d, double>(src, dst, Col.ToGrayDouble) },
             };
 
-        public abstract PixVolume<T1> ToPixVolume<T1>();
+        public PixVolume<T> AsPixVolume<T>() => this as PixVolume<T>;
 
-        public PixVolume<T> AsPixVolume<T>()
-        {
-            return this as PixVolume<T>;
-        }
+        public PixVolume<T1> ToPixVolume<T1>() => AsPixVolume<T1>() ?? new PixVolume<T1>(this);
 
         public PixVolume<T> ToPixVolume<T>(Col.Format format)
         {
-            if (this is PixVolume<T> castVolume && castVolume.Format == format
-                && castVolume.ChannelCount == format.ChannelCount())
+            if (this is PixVolume<T> castVolume && castVolume.Format == format && castVolume.ChannelCount == format.ChannelCount())
                 return castVolume;
             return new PixVolume<T>(format, this);
         }
@@ -148,6 +96,8 @@ namespace Aardvark.Base
         public abstract Array Array { get; }
 
         public abstract void CopyChannelTo<Tv>(long channelIndex, Volume<Tv> target);
+
+        public abstract void CopyTensor4To<Tv>(Tensor4<Tv> target);
 
         public abstract PixVolume ToPixVolume(Col.Format format);
 
@@ -225,74 +175,83 @@ namespace Aardvark.Base
                 );
             }
 
-            var size = pixVolume.Size;
-            var srcChannels = Col.ChannelsOfFormat(pixVolume.Format);
+            var srcInfo = pixVolume.Tensor4Info;
             var dstChannels = Col.ChannelsOfFormat(format);
-            var tensor4 = CreateTensor4<T>(size.X, size.Y, size.Z, dstChannels.Length);
+            var tensor4 = CreateTensor4<T>(srcInfo.Size.X, srcInfo.Size.Y, srcInfo.Size.Z, dstChannels.Length);
+            tensor4.F = pixVolume.Tensor4Info.F;
 
-            for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
+            if (format == pixVolume.Format)
             {
-                var channel = dstChannels[dstIndex];
-                var volume = tensor4.SubXYZVolume(dstIndex);
-                var srcIndex = srcChannels.IndexOf(channel);
+                pixVolume.CopyTensor4To(tensor4);
+            }
+            else
+            {
+                var srcChannels = Col.ChannelsOfFormat(pixVolume.Format);
 
-                // If we have an RGB channel, we may also just copy a Gray or BW channel
-                if (srcIndex == -1 && (channel == Col.Channel.Red || channel == Col.Channel.Green || channel == Col.Channel.Blue))
+                for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
                 {
-                    var bw = srcChannels.IndexOf(Col.Channel.BW);
-                    var gray = srcChannels.IndexOf(Col.Channel.Gray);
-                    srcIndex = Fun.Max(bw, gray);
-                }
+                    var channel = dstChannels[dstIndex];
+                    var volume = tensor4.SubXYZVolume(dstIndex);
+                    var srcIndex = srcChannels.IndexOf(channel);
 
-                if (srcIndex > -1)
-                {
-                    // Channel exists in source image, just copy
-                    if (pixVolume is PixVolume<T> pi)
+                    // If we have an RGB channel, we may also just copy a Gray or BW channel
+                    if (srcIndex == -1 && (channel == Col.Channel.Red || channel == Col.Channel.Green || channel == Col.Channel.Blue))
                     {
-                        volume.Set(pi.GetChannelInFormatOrder(srcIndex));
+                        var bw = srcChannels.IndexOf(Col.Channel.BW);
+                        var gray = srcChannels.IndexOf(Col.Channel.Gray);
+                        srcIndex = Fun.Max(bw, gray);
+                    }
+
+                    if (srcIndex > -1)
+                    {
+                        // Channel exists in source image, just copy
+                        if (pixVolume is PixVolume<T> pi)
+                        {
+                            volume.Set(pi.GetChannelInFormatOrder(srcIndex));
+                        }
+                        else
+                        {
+                            var order = pixVolume.Format.ChannelOrder();
+                            pixVolume.CopyChannelTo(order[srcIndex], volume); // CopyChannelTo uses canonical order
+                        }
+                    }
+                    else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
+                    {
+                        // Alpha channel does not exist in source image, fill with max value
+                        volume.Set(Col.Info<T>.MaxValue);
+                    }
+                    else if (channel == Col.Channel.Gray &&
+                             srcChannels.Contains(Col.Channel.Red) &&
+                             srcChannels.Contains(Col.Channel.Green) &&
+                             srcChannels.Contains(Col.Channel.Blue))
+                    {
+                        var t1 = pixVolume.PixFormat.Type;
+                        var t2 = typeof(T);
+
+                        if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
+                        {
+                            toGray(pixVolume, volume);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException(
+                                $"Conversion from {t1} image with format {pixVolume.Format} to {t2} grayscale not implemented."
+                            );
+                        }
+                    }
+                    else if (channel == Col.Channel.Blue &&
+                             pixVolume.Format == Col.Format.RG &&
+                             dstChannels.Contains(Col.Channel.Red) &&
+                             dstChannels.Contains(Col.Channel.Green))
+                    {
+                        // Allow expanding from RG to RGB formats, blue channel is set to zero
                     }
                     else
                     {
-                        var order = pixVolume.Format.ChannelOrder();
-                        pixVolume.CopyChannelTo(order[srcIndex], volume); // CopyChannelTo uses canonical order
-                    }
-                }
-                else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
-                {
-                    // Alpha channel does not exist in source image, fill with max value
-                    volume.Set(Col.Info<T>.MaxValue);
-                }
-                else if (channel == Col.Channel.Gray &&
-                         srcChannels.Contains(Col.Channel.Red) &&
-                         srcChannels.Contains(Col.Channel.Green) &&
-                         srcChannels.Contains(Col.Channel.Blue))
-                {
-                    var t1 = pixVolume.PixFormat.Type;
-                    var t2 = typeof(T);
-
-                    if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
-                    {
-                        toGray(pixVolume, volume);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException(
-                            $"Conversion from {t1} image with format {pixVolume.Format} to {t2} grayscale not implemented."
+                        throw new NotSupportedException(
+                            $"Conversion from format {pixVolume.Format} to format {format} is not supported."
                         );
                     }
-                }
-                else if (channel == Col.Channel.Blue &&
-                         pixVolume.Format == Col.Format.RG &&
-                         dstChannels.Contains(Col.Channel.Red) &&
-                         dstChannels.Contains(Col.Channel.Green))
-                {
-                    // Allow expanding from RG to RGB formats, blue channel is set to zero
-                }
-                else
-                {
-                    throw new NotSupportedException(
-                        $"Conversion from format {pixVolume.Format} to format {format} is not supported."
-                    );
                 }
             }
 
@@ -429,19 +388,6 @@ namespace Aardvark.Base
             return Format == format ? this : new PixVolume<T>(format, this);
         }
 
-        public override PixVolume<T1> ToPixVolume<T1>()
-        {
-            var castVolume = this as PixVolume<T1>;
-            if (castVolume != null) return castVolume;
-            var format = typeof(T1).FormatDefaultOf(ChannelCount);
-            if (Format == format)
-            {
-                var copy = s_copyFunMap[(typeof(T), typeof(T1))];
-                return new PixVolume<T1>(format, (Tensor4<T1>)copy(Tensor4));
-            }
-            return new PixVolume<T1>(this);
-        }
-
         #endregion
 
         #region Obtaining Volumes
@@ -515,6 +461,14 @@ namespace Aardvark.Base
         {
             var subMatrix = GetChannel<Tv>(channelIndex);
             target.Set(subMatrix);
+        }
+
+        public override void CopyTensor4To<Tv>(Tensor4<Tv> target)
+        {
+            if (Tensor4 is Tensor4<Tv> source)
+                target.Set(source);
+            else
+                target.Set(Tensor4.AsTensor4<T, Tv>());
         }
 
         public override PixVolume ToPixVolume(Col.Format format)

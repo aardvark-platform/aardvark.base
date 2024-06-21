@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Drawing;
 
 namespace Aardvark.Base
 {
@@ -804,56 +805,9 @@ namespace Aardvark.Base
 
         #region Conversions
 
-        protected static Dictionary<(Type, Type), Func<object, object>> 
-            s_copyFunMap =
-            new Dictionary<(Type, Type), Func<object, object>>()
-            {
-                { (typeof(byte), typeof(byte)), v => ((Volume<byte>)v).CopyWindow() },
-                { (typeof(byte), typeof(ushort)), v => ((Volume<byte>)v).ToUShortColor() },
-                { (typeof(byte), typeof(uint)), v => ((Volume<byte>)v).ToUIntColor() },
-                { (typeof(byte), typeof(Half)), v => ((Volume<byte>)v).ToHalfColor() },
-                { (typeof(byte), typeof(float)), v => ((Volume<byte>)v).ToFloatColor() },
-                { (typeof(byte), typeof(double)), v => ((Volume<byte>)v).ToDoubleColor() },
-
-                { (typeof(ushort), typeof(byte)), v => ((Volume<ushort>)v).ToByteColor() },
-                { (typeof(ushort), typeof(ushort)), v => ((Volume<ushort>)v).CopyWindow() },
-                { (typeof(ushort), typeof(uint)), v => ((Volume<ushort>)v).ToUIntColor() },
-                { (typeof(ushort), typeof(Half)), v => ((Volume<ushort>)v).ToHalfColor() },
-                { (typeof(ushort), typeof(float)), v => ((Volume<ushort>)v).ToFloatColor() },
-                { (typeof(ushort), typeof(double)), v => ((Volume<ushort>)v).ToDoubleColor() },
-
-                { (typeof(uint), typeof(byte)), v => ((Volume<uint>)v).ToByteColor() },
-                { (typeof(uint), typeof(ushort)), v => ((Volume<uint>)v).ToUShortColor() },
-                { (typeof(uint), typeof(uint)), v => ((Volume<uint>)v).CopyWindow() },
-                { (typeof(uint), typeof(Half)), v => ((Volume<uint>)v).ToHalfColor() },
-                { (typeof(uint), typeof(float)), v => ((Volume<uint>)v).ToFloatColor() },
-                { (typeof(uint), typeof(double)), v => ((Volume<uint>)v).ToDoubleColor() },
-
-                { (typeof(Half), typeof(byte)), v => ((Volume<Half>)v).ToByteColor() },
-                { (typeof(Half), typeof(ushort)), v => ((Volume<Half>)v).ToUShortColor() },
-                { (typeof(Half), typeof(uint)), v => ((Volume<Half>)v).ToUIntColor() },
-                { (typeof(Half), typeof(Half)), v => ((Volume<Half>)v).CopyWindow() },
-                { (typeof(Half), typeof(float)), v => ((Volume<Half>)v).ToFloatColor() },
-                { (typeof(Half), typeof(double)), v => ((Volume<Half>)v).ToDoubleColor() },
-
-                { (typeof(float), typeof(byte)), v => ((Volume<float>)v).ToByteColor() },
-                { (typeof(float), typeof(ushort)), v => ((Volume<float>)v).ToUShortColor() },
-                { (typeof(float), typeof(uint)), v => ((Volume<float>)v).ToUIntColor() },
-                { (typeof(float), typeof(Half)), v => ((Volume<float>)v).ToHalfColor() },
-                { (typeof(float), typeof(float)), v => ((Volume<float>)v).CopyWindow() },
-                { (typeof(float), typeof(double)), v => ((Volume<float>)v).ToDoubleColor() },
-
-                { (typeof(double), typeof(byte)), v => ((Volume<double>)v).ToByteColor() },
-                { (typeof(double), typeof(ushort)), v => ((Volume<double>)v).ToUShortColor() },
-                { (typeof(double), typeof(uint)), v => ((Volume<double>)v).ToUIntColor() },
-                { (typeof(double), typeof(Half)), v => ((Volume<double>)v).ToHalfColor() },
-                { (typeof(double), typeof(float)), v => ((Volume<double>)v).ToFloatColor() },
-                { (typeof(double), typeof(double)), v => ((Volume<double>)v).CopyWindow() },
-            };
-        public abstract PixImage<T1> ToPixImage<T1>();
-        public abstract PixImage Transformed(ImageTrafo trafo);
-
         public PixImage<T> AsPixImage<T>() => this as PixImage<T>;
+
+        public PixImage<T1> ToPixImage<T1>() => AsPixImage<T1>() ?? new PixImage<T1>(this);
 
         public PixImage<T> ToPixImage<T>(Col.Format format)
         {
@@ -869,7 +823,7 @@ namespace Aardvark.Base
         public abstract PixFormat PixFormat { get; }
 
         public abstract VolumeInfo VolumeInfo { get; }
-        
+
         public abstract V2i Size { get; }
         public abstract V2l SizeL { get; }
 
@@ -882,6 +836,8 @@ namespace Aardvark.Base
 
         public abstract void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target);
 
+        public abstract void CopyVolumeTo<Tv>(Volume<Tv> target);
+
         public abstract PixImage ToPixImage(Col.Format format);
 
         public abstract PixImage CopyToPixImage();
@@ -893,10 +849,12 @@ namespace Aardvark.Base
         public abstract Array Data { get; }
 
         public abstract T Visit<T>(IPixImageVisitor<T> visitor);
-        
+
         #endregion
 
         #region Image Manipulation (abstract)
+
+        public abstract PixImage Transformed(ImageTrafo trafo);
 
         public abstract PixImage RemappedPixImage(
                 Matrix<float> xMap, Matrix<float> yMap,
@@ -1106,74 +1064,83 @@ namespace Aardvark.Base
                 );
             }
 
-            var size = pixImage.Size;
-            var srcChannels = Col.ChannelsOfFormat(pixImage.Format);
+            var srcInfo = pixImage.VolumeInfo;
             var dstChannels = Col.ChannelsOfFormat(format);
-            var volume = CreateVolume<T>(size.X, size.Y, dstChannels.Length);
+            var volume = CreateVolume<T>(srcInfo.Size.X, srcInfo.Size.Y, dstChannels.Length);
+            volume.F = srcInfo.F;
 
-            for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
+            if (format == pixImage.Format)
             {
-                var channel = dstChannels[dstIndex];
-                var matrix = volume.SubXYMatrix(dstIndex);
-                var srcIndex = srcChannels.IndexOf(channel);
+                pixImage.CopyVolumeTo(volume);
+            }
+            else
+            {
+                var srcChannels = Col.ChannelsOfFormat(pixImage.Format);
 
-                // If we have an RGB channel, we may also just copy a Gray or BW channel
-                if (srcIndex == -1 && (channel == Col.Channel.Red || channel == Col.Channel.Green || channel == Col.Channel.Blue))
+                for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
                 {
-                    var bw = srcChannels.IndexOf(Col.Channel.BW);
-                    var gray = srcChannels.IndexOf(Col.Channel.Gray);
-                    srcIndex = Fun.Max(bw, gray);
-                }
+                    var channel = dstChannels[dstIndex];
+                    var matrix = volume.SubXYMatrix(dstIndex);
+                    var srcIndex = srcChannels.IndexOf(channel);
 
-                if (srcIndex > -1)
-                {
-                    // Channel exists in source image, just copy
-                    if (pixImage is PixImage<T> pi)
+                    // If we have an RGB channel, we may also just copy a Gray or BW channel
+                    if (srcIndex == -1 && (channel == Col.Channel.Red || channel == Col.Channel.Green || channel == Col.Channel.Blue))
                     {
-                        matrix.Set(pi.GetChannelInFormatOrder(srcIndex));
+                        var bw = srcChannels.IndexOf(Col.Channel.BW);
+                        var gray = srcChannels.IndexOf(Col.Channel.Gray);
+                        srcIndex = Fun.Max(bw, gray);
+                    }
+
+                    if (srcIndex > -1)
+                    {
+                        // Channel exists in source image, just copy
+                        if (pixImage is PixImage<T> pi)
+                        {
+                            matrix.Set(pi.GetChannelInFormatOrder(srcIndex));
+                        }
+                        else
+                        {
+                            var order = pixImage.Format.ChannelOrder();
+                            pixImage.CopyChannelTo(order[srcIndex], matrix); // CopyChannelTo uses canonical order
+                        }
+                    }
+                    else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
+                    {
+                        // Alpha channel does not exist in source image, fill with max value
+                        matrix.Set(Col.Info<T>.MaxValue);
+                    }
+                    else if (channel == Col.Channel.Gray &&
+                             srcChannels.Contains(Col.Channel.Red) &&
+                             srcChannels.Contains(Col.Channel.Green) &&
+                             srcChannels.Contains(Col.Channel.Blue))
+                    {
+                        var t1 = pixImage.PixFormat.Type;
+                        var t2 = typeof(T);
+
+                        if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
+                        {
+                            toGray(pixImage, matrix);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException(
+                                $"Conversion from {t1} image with format {pixImage.Format} to {t2} grayscale not implemented."
+                            );
+                        }
+                    }
+                    else if (channel == Col.Channel.Blue &&
+                             pixImage.Format == Col.Format.RG &&
+                             dstChannels.Contains(Col.Channel.Red) &&
+                             dstChannels.Contains(Col.Channel.Green))
+                    {
+                        // Allow expanding from RG to RGB formats, blue channel is set to zero
                     }
                     else
                     {
-                        var order = pixImage.Format.ChannelOrder();
-                        pixImage.CopyChannelTo(order[srcIndex], matrix); // CopyChannelTo uses canonical order
-                    }
-                }
-                else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
-                {
-                    // Alpha channel does not exist in source image, fill with max value
-                    matrix.Set(Col.Info<T>.MaxValue);
-                }
-                else if (channel == Col.Channel.Gray &&
-                         srcChannels.Contains(Col.Channel.Red) &&
-                         srcChannels.Contains(Col.Channel.Green) &&
-                         srcChannels.Contains(Col.Channel.Blue))
-                {
-                    var t1 = pixImage.PixFormat.Type;
-                    var t2 = typeof(T);
-
-                    if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
-                    {
-                        toGray(pixImage, matrix);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException(
-                            $"Conversion from {t1} image with format {pixImage.Format} to {t2} grayscale not implemented."
+                        throw new NotSupportedException(
+                            $"Conversion from format {pixImage.Format} to format {format} is not supported."
                         );
                     }
-                }
-                else if (channel == Col.Channel.Blue &&
-                         pixImage.Format == Col.Format.RG &&
-                         dstChannels.Contains(Col.Channel.Red) &&
-                         dstChannels.Contains(Col.Channel.Green))
-                {
-                    // Allow expanding from RG to RGB formats, blue channel is set to zero
-                }
-                else
-                {
-                    throw new NotSupportedException(
-                        $"Conversion from format {pixImage.Format} to format {format} is not supported."
-                    );
                 }
             }
 
@@ -1295,7 +1262,7 @@ namespace Aardvark.Base
             var order = format.ChannelOrder();
 
             if (ch != format.ChannelCount())
-                throw new ArgumentException("the specified format needs a different number of channels");            
+                throw new ArgumentException("the specified format needs a different number of channels");
             channels.ForEach((channel, ci) =>
                 volume.SubXYMatrix(order[ci]).Set(channel));
 
@@ -1307,7 +1274,7 @@ namespace Aardvark.Base
         #region Properties
 
         public override VolumeInfo VolumeInfo => Volume.Info;
-        
+
         public override V2i Size => (V2i)Volume.Info.Size.XY;
 
         public override V2l SizeL => Volume.Info.Size.XY;
@@ -1351,6 +1318,9 @@ namespace Aardvark.Base
         #endregion
 
         #region Image Manipulation
+
+        public override PixImage Transformed(ImageTrafo trafo)
+            => new PixImage<T>(Format, Volume.Transformed(trafo));
 
         public override PixImage RemappedPixImage(
             Matrix<float> xMap, Matrix<float> yMap,
@@ -1443,7 +1413,7 @@ namespace Aardvark.Base
         {
             s_scaledFun = scaledFun;
         }
-        
+
         public PixImage<T> Scaled(
             double scaleFactor,
             ImageInterpolation ip = ImageInterpolation.Cubic
@@ -1605,22 +1575,6 @@ namespace Aardvark.Base
 
         public PixImage<T> ToFormat(Col.Format format) => Format == format ? this : new PixImage<T>(format, this);
 
-        public override PixImage<T1> ToPixImage<T1>()
-        {
-            var castImage = this as PixImage<T1>;
-            if (castImage != null) return castImage;
-            var format = typeof(T1).FormatDefaultOf(ChannelCount);
-            if (Format == format)
-            {
-                var copy = s_copyFunMap[(typeof(T), typeof(T1))];
-                return new PixImage<T1>(format, (Volume<T1>)copy(Volume));
-            }
-            return new PixImage<T1>(this);
-        }
-
-        public override PixImage Transformed(ImageTrafo trafo)
-            => new PixImage<T>(Format, Volume.Transformed(trafo));
-
         #endregion
 
         #region Obtaining Matrices
@@ -1666,7 +1620,7 @@ namespace Aardvark.Base
             matrix.Accessors = TensorAccessors.Get<T, Tv>(TensorAccessors.Intent.ColorChannel, Volume.DeltaArray);
             return matrix;
         }
-            
+
         public Matrix<T, Tv> GetMatrix<Tv>() => Volume.GetMatrix<T, Tv>(Format.GetIntent());
 
         #endregion
@@ -1679,6 +1633,14 @@ namespace Aardvark.Base
         {
             var subMatrix = GetChannel<Tv>(channelIndex);
             target.Set(subMatrix);
+        }
+
+        public override void CopyVolumeTo<Tv>(Volume<Tv> target)
+        {
+            if (Volume is Volume<Tv> source)
+                target.Set(source);
+            else
+                target.Set(Volume.AsVolume<T, Tv>());
         }
 
         public override PixImage ToPixImage(Col.Format format)

@@ -24,10 +24,14 @@ namespace Aardvark.Tests.Images
         private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat,
                                                      Func<PixVolume<byte>, V3l, T1> getInput,
                                                      Func<PixVolume<byte>, V3l, T2> getActual,
-                                                     Func<T1, T2> expectedConversion)
+                                                     Func<T1, T2> expectedConversion,
+                                                     bool subImageWindow)
         {
             var src = new PixVolume<byte>(sourceFormat, 43, 31, 23);
             src.Tensor4.Data.SetByIndex((_) => (byte)rnd.UniformInt(256));
+
+            if (subImageWindow)
+                src = new PixVolume<byte>(sourceFormat, src.Tensor4.SubImageWindow(11, 7, 3, 27, 13, 8));
 
             var dst = src.ToFormat(targetFormat);
 
@@ -39,17 +43,17 @@ namespace Aardvark.Tests.Images
             });
         }
 
-        private static void FormatConversionArrays(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], byte[]> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetArray, GetArray, expectedConversion);
+        private static void FormatConversionArrays(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], byte[]> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetArray, GetArray, expectedConversion, subImageWindow);
 
-        private static void FormatConversionFromArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], T> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetArray, GetColor<T>, expectedConversion);
+        private static void FormatConversionFromArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], T> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetArray, GetColor<T>, expectedConversion, subImageWindow);
 
-        private static void FormatConversionToArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<T, byte[]> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetColor<T>, GetArray, expectedConversion);
+        private static void FormatConversionToArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<T, byte[]> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetColor<T>, GetArray, expectedConversion, subImageWindow);
 
-        private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat, Func<T1, T2> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetColor<T1>, GetColor<T2>, expectedConversion);
+        private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat, Func<T1, T2> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetColor<T1>, GetColor<T2>, expectedConversion, subImageWindow);
 
         #region From Gray
 
@@ -118,8 +122,20 @@ namespace Aardvark.Tests.Images
         #region From RGBA
 
         [Test]
+        public void FormatConversionRGBAToRGBA()
+            => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.RGBA, color => color);
+
+        [Test]
+        public void FormatConversionRGBAToRGBAWindow()
+            => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.RGBA, color => color, true);
+
+        [Test]
         public void FormatConversionRGBAToBGRA()
             => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.BGRA, color => color);
+
+        [Test]
+        public void FormatConversionRGBAToBGRAWindow()
+            => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.BGRA, color => color, true);
 
         [Test]
         public void FormatConversionRGBAToRGB()

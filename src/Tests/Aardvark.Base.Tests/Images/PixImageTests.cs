@@ -1,9 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Aardvark.Base;
-using System.Runtime.InteropServices;
 
 namespace Aardvark.Tests.Images
 {
@@ -107,10 +104,14 @@ namespace Aardvark.Tests.Images
         private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat,
                                                      Func<PixImage<byte>, V2l, T1> getInput,
                                                      Func<PixImage<byte>, V2l, T2> getActual,
-                                                     Func<T1, T2> expectedConversion)
+                                                     Func<T1, T2> expectedConversion,
+                                                     bool subImageWindow)
         {
             var src = new PixImage<byte>(sourceFormat, 43, 81);
             src.Volume.Data.SetByIndex((_) => (byte)rnd.UniformInt(256));
+
+            if (subImageWindow)
+                src = new PixImage<byte>(sourceFormat, src.Volume.SubImageWindow(2, 3, 33, 67));
 
             var dst = src.ToFormat(targetFormat);
 
@@ -122,17 +123,17 @@ namespace Aardvark.Tests.Images
             });
         }
 
-        private static void FormatConversionArrays(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], byte[]> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetArray, GetArray, expectedConversion);
+        private static void FormatConversionArrays(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], byte[]> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetArray, GetArray, expectedConversion, subImageWindow);
 
-        private static void FormatConversionFromArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], T> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetArray, GetColor<T>, expectedConversion);
+        private static void FormatConversionFromArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<byte[], T> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetArray, GetColor<T>, expectedConversion, subImageWindow);
 
-        private static void FormatConversionToArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<T, byte[]> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetColor<T>, GetArray, expectedConversion);
+        private static void FormatConversionToArray<T>(Col.Format sourceFormat, Col.Format targetFormat, Func<T, byte[]> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetColor<T>, GetArray, expectedConversion, subImageWindow);
 
-        private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat, Func<T1, T2> expectedConversion)
-            => FormatConversion(sourceFormat, targetFormat, GetColor<T1>, GetColor<T2>, expectedConversion);
+        private static void FormatConversion<T1, T2>(Col.Format sourceFormat, Col.Format targetFormat, Func<T1, T2> expectedConversion, bool subImageWindow = false)
+            => FormatConversion(sourceFormat, targetFormat, GetColor<T1>, GetColor<T2>, expectedConversion, subImageWindow);
 
         #region From Gray
 
@@ -201,8 +202,20 @@ namespace Aardvark.Tests.Images
         #region From RGBA
 
         [Test]
+        public void FormatConversionRGBAToRGBA()
+            => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.RGBA, (color => color));
+
+        [Test]
+        public void FormatConversionRGBAToRGBAWindow()
+            => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.RGBA, (color => color), true);
+
+        [Test]
         public void FormatConversionRGBAToBGRA()
             => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.BGRA, color => color);
+
+        [Test]
+        public void FormatConversionRGBAToBGRAWindow()
+            => FormatConversion<C4b, C4b>(Col.Format.RGBA, Col.Format.BGRA, (color => color), true);
 
         [Test]
         public void FormatConversionRGBAToRGB()
