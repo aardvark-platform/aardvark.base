@@ -135,50 +135,33 @@ namespace Aardvark.Base
         /// Create a valid image matrix, with stride appropriate for the
         /// given size. Note that this is just the same as a normal matrix.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Matrix<T> CreateImageMatrix<T>(this V2l size)
-        {
-            return new Matrix<T>(size);
-        }
+            => new (size);
 
         /// <summary>
         /// Create a valid image volume, with stride appropriate for the
         /// given size. For image volumes DZ == 1.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Volume<T> CreateImageVolume<T>(this V3l size)
-        {
-            return new Volume<T>(0L, size, new V3l(size.Z, size.Z * size.X, 1L));
-        }
+            => new (0L, size, new V3l(size.Z, size.Z * size.X, 1L));
 
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Volume<T> CreateImageVolume<T>(this T[] data, V3l size)
-        {
-            return new Volume<T>(data, 0L, size, new V3l(size.Z, size.Z * size.X, 1L));
-        }
-
-
-        #endregion
-
-        #region Tensor4
+            => new (data, 0L, size, new V3l(size.Z, size.Z * size.X, 1L));
 
         /// <summary>
         /// Create a valid image tensor4, with stride appropriate for the
         /// given size.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Tensor4<T> CreateImageTensor4<T>(this V4l size)
-        {
-            return new Tensor4<T>(0L, size,
-                    new V4l(size.W, size.W * size.X, size.W * size.X * size.Y, 1L));
-        }
+            => new (0L, size, new V4l(size.W, size.W * size.X, size.W * size.X * size.Y, 1L));
 
-        public static Volume<T> SubImageWindowAtZ<T>(this Tensor4<T> tensor4, long z)
-        {
-            return tensor4.SubXYWVolumeWindow(z);
-        }
-
-        public static Volume<T> SubImageAtZ<T>(this Tensor4<T> tensor4, long z)
-        {
-            return tensor4.SubXYWVolume(z);
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tensor4<T> CreateImageTensor4<T>(this T[] data, V4l size)
+            => new(data, 0L, size, new V4l(size.W, size.W * size.X, size.W * size.X * size.Y, 1L));
 
         #endregion
 
@@ -220,6 +203,10 @@ namespace Aardvark.Base
         public static Tensor4<T> SubImageWindow<T>(this Tensor4<T> tensor4, long beginX, long beginY, long beginZ, long sizeX, long sizeY, long sizeZ)
             => tensor4.SubImageWindow(new V3l(beginX, beginY, beginZ), new V3l(sizeX, sizeY, sizeZ));
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> SubImageWindowAtZ<T>(this Tensor4<T> tensor4, long z)
+            => tensor4.SubXYWVolumeWindow(z);
+
         /// <summary>
         /// Return a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The coordinates
@@ -255,6 +242,10 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Tensor4<T> SubImage<T>(this Tensor4<T> tensor4, long beginX, long beginY, long beginZ, long sizeX, long sizeY, long sizeZ)
             => tensor4.SubImage(new V3l(beginX, beginY, beginZ), new V3l(sizeX, sizeY, sizeZ));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> SubImageAtZ<T>(this Tensor4<T> tensor4, long z)
+            => tensor4.SubXYWVolume(z);
 
         /// <summary>
         /// Returns a single image row as an image volume.
@@ -472,6 +463,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Reinterpret a volume as a volume of different type.
+        /// </summary>
+        public static Volume<Td, Tv> AsVolume<Td, Tv>(this Volume<Td> volume)
+        {
+            var result = new Volume<Td, Tv>(volume.Data, volume.Info);
+            result.Accessors = TensorAccessors.Get<Td, Tv>(TensorAccessors.Intent.ColorChannel, volume.DeltaArray);
+            return result;
+        }
+
+        /// <summary>
         /// Reinterpret a volume with Size.Z == 1 as matrix. The new matrix starts at [0, 0].
         /// </summary>
         public static Matrix<T> AsMatrix<T>(this Volume<T> volume)
@@ -509,6 +510,15 @@ namespace Aardvark.Base
                                  { F = volume.F.XYZO };
         }
 
+        /// <summary>
+        /// Reinterpret a tensor4 as a tensor4 of different type.
+        /// </summary>
+        public static Tensor4<Td, Tv> AsTensor4<Td, Tv>(this Tensor4<Td> tensor4)
+        {
+            var result = new Tensor4<Td, Tv>(tensor4.Data, tensor4.Info);
+            result.Accessors = TensorAccessors.Get<Td, Tv>(TensorAccessors.Intent.ColorChannel, tensor4.DeltaArray);
+            return result;
+        }
 
         /// <summary>
         /// Reinterpret a tensor4 with Size.W == 1 as volume. The new volume starts at [0, 0, 0].
