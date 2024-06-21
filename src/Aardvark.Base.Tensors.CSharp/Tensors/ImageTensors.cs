@@ -1,6 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -190,91 +189,102 @@ namespace Aardvark.Base
         /// coordinate with the supplied size in pixels. The sub image
         /// retains the coordinates of the parent image.
         /// </summary>
-        public static Volume<T> SubImageWindow<T>(
-                this Volume<T> vol, V2l begin, V2l size)
-        {
-            return vol.SubVolumeWindow(new V3l(begin.X, begin.Y, vol.FZ),
-                                 new V3l(size.X, size.Y, vol.SZ));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> SubImageWindow<T>(this Volume<T> vol, V2l begin, V2l size)
+            => vol.SubVolumeWindow(new V3l(begin.XY, vol.FZ), new V3l(size.XY, vol.SZ));
 
         /// <summary>
         /// Return a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The sub image
         /// retains the coordinates of the parent image.
         /// </summary>
-        public static Volume<T> SubImageWindow<T>(
-                this Volume<T> vol, long beginX, long beginY, long sizeX, long sizeY)
-        {
-            return vol.SubVolumeWindow(new V3l(beginX, beginY, vol.FZ),
-                                       new V3l(sizeX, sizeY, vol.SZ));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> SubImageWindow<T>(this Volume<T> vol, long beginX, long beginY, long sizeX, long sizeY)
+            => vol.SubImageWindow(new V2l(beginX, beginY), new V2l(sizeX, sizeY));
+
+        /// <summary>
+        /// Return a sub image tensor beginning at the supplied pixel
+        /// coordinate with the supplied size in pixels. The sub image
+        /// retains the coordinates of the parent image.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tensor4<T> SubImageWindow<T>(this Tensor4<T> tensor4, V3l begin, V3l size)
+            => tensor4.SubTensor4Window(new V4l(begin.XYZ, tensor4.FW), new V4l(size.XYZ, tensor4.SW));
+
+        /// <summary>
+        /// Return a sub image tensor beginning at the supplied pixel
+        /// coordinate with the supplied size in pixels. The sub image
+        /// retains the coordinates of the parent image.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tensor4<T> SubImageWindow<T>(this Tensor4<T> tensor4, long beginX, long beginY, long beginZ, long sizeX, long sizeY, long sizeZ)
+            => tensor4.SubImageWindow(new V3l(beginX, beginY, beginZ), new V3l(sizeX, sizeY, sizeZ));
 
         /// <summary>
         /// Return a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The coordinates
         /// of the sub image volume start at 0, 0, 0.
         /// </summary>
-        public static Volume<T> SubImage<T>(
-                this Volume<T> vol, V2l begin, V2l size)
-        {
-            return vol.SubVolume(new V3l(begin.X, begin.Y, vol.FZ),
-                                 new V3l(size.X, size.Y, vol.SZ));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> SubImage<T>(this Volume<T> vol, V2l begin, V2l size)
+            => vol.SubVolume(new V3l(begin.XY, vol.FZ), new V3l(size.XY, vol.SZ));
 
         /// <summary>
         /// Return a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The coordinates
         /// of the sub image volume start at 0, 0, 0.
         /// </summary>
-        public static Volume<T> SubImage<T>(
-                this Volume<T> vol, long beginX, long beginY, long sizeX, long sizeY)
-        {
-            return vol.SubVolume(new V3l(beginX, beginY, vol.FZ),
-                                 new V3l(sizeX, sizeY, vol.SZ));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> SubImage<T>(this Volume<T> vol, long beginX, long beginY, long sizeX, long sizeY)
+            => vol.SubImage(new V2l(beginX, beginY), new V2l(sizeX, sizeY));
+
+        /// <summary>
+        /// Return a sub image tensor beginning at the supplied pixel
+        /// coordinate with the supplied size in pixels. The coordinates
+        /// of the sub image tensor start at 0, 0, 0, 0.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tensor4<T> SubImage<T>(this Tensor4<T> tensor4, V3l begin, V3l size)
+            => tensor4.SubTensor4(new V4l(begin.XYZ, tensor4.FW), new V4l(size.XYZ, tensor4.SW));
+
+        /// <summary>
+        /// Return a sub image tensor beginning at the supplied pixel
+        /// coordinate with the supplied size in pixels. The coordinates
+        /// of the sub image tensor start at 0, 0, 0, 0.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tensor4<T> SubImage<T>(this Tensor4<T> tensor4, long beginX, long beginY, long beginZ, long sizeX, long sizeY, long sizeZ)
+            => tensor4.SubImage(new V3l(beginX, beginY, beginZ), new V3l(sizeX, sizeY, sizeZ));
 
         /// <summary>
         /// Returns a single image row as an image volume.
         /// </summary>
-        public static Volume<T> ImageWindowRow<T>(
-                this Volume<T> vol, long y)
-        {
-            return vol.SubVolumeWindow(new V3l(vol.FX, y, vol.FZ),
-                                       new V3l(vol.SX, 1, vol.SZ));
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> ImageWindowRow<T>(this Volume<T> vol, long y)
+            => vol.SubImageWindow(new V2l(vol.FX, y), new V2l(vol.SX, 1));
 
         /// <summary>
         /// Returns a single image column as an image volume.
         /// </summary>
-        public static Volume<T> ImageWindowCol<T>(
-                this Volume<T> vol, long x)
-        {
-            return vol.SubVolumeWindow(new V3l(x, vol.FY, vol.FZ),
-                                       new V3l(1, vol.SY, vol.SZ));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> ImageWindowCol<T>(this Volume<T> vol, long x)
+            => vol.SubImageWindow(new V2l(x, vol.FY), new V2l(1, vol.SY));
 
         /// <summary>
         /// Returns a single image row as an image volume with coordinates
         /// starting at 0, 0, 0.
         /// </summary>
-        public static Volume<T> ImageRow<T>(
-                this Volume<T> vol, long y)
-        {
-            return vol.SubVolume(new V3l(vol.FX, y, vol.FZ),
-                                 new V3l(vol.SX, 1, vol.SZ));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> ImageRow<T>(this Volume<T> vol, long y)
+            => vol.SubImage(new V2l(vol.FX, y), new V2l(vol.SX, 1));
 
         /// <summary>
         /// Returns a single image column as an image volume with coordinates
         /// starting at 0, 0, 0.
         /// </summary>
-        public static Volume<T> ImageCol<T>(
-                this Volume<T> vol, long x)
-        {
-            return vol.SubVolume(new V3l(x, vol.FY, vol.FZ),
-                                 new V3l(1, vol.SY, vol.SZ));
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Volume<T> ImageCol<T>(this Volume<T> vol, long x)
+            => vol.SubImage(new V2l(x, vol.FY), new V2l(1, vol.SY));
 
         #endregion
 
