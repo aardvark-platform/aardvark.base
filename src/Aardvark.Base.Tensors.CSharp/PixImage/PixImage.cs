@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Drawing;
 
 namespace Aardvark.Base
 {
@@ -179,7 +178,7 @@ namespace Aardvark.Base
         {
             lock (s_loaders)
             {
-                var list =  s_loaders.ToList();
+                var list = s_loaders.ToList();
                 list.Sort((x, y) => y.Value - x.Value);
                 return list.Map(x => x.Key);
             }
@@ -299,17 +298,47 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PixImageInfo Info {  get { return new PixImageInfo(PixFormat, Size); } }
+        public abstract Array Data { get; }
+
+        public abstract PixFormat PixFormat { get; }
+
+        public abstract VolumeInfo VolumeInfo { get; }
+
+        public abstract int BytesPerChannel { get; }
+
+        public PixImageInfo Info => new PixImageInfo(PixFormat, Size);
 
         /// <summary>
         /// Size.X * Size.Y.
         /// </summary>
-        public int NumberOfPixels { get { return Size.X * Size.Y; } }
+        public int NumberOfPixels => Size.X * Size.Y;
 
         /// <summary>
         /// Width/height.
         /// </summary>
-        public double AspectRatio { get { return Size.X / (double)Size.Y; } }
+        public double AspectRatio => Size.X / (double)Size.Y;
+
+        public V2i Size => (V2i)VolumeInfo.Size.XY;
+
+        public V2l SizeL => VolumeInfo.Size.XY;
+
+        public int ChannelCount => (int)VolumeInfo.Size.Z;
+
+        public long ChannelCountL => VolumeInfo.Size.Z;
+
+        public int Stride => BytesPerChannel * (int)VolumeInfo.DY;
+
+        public long StrideL => BytesPerChannel * VolumeInfo.DY;
+
+        #region Obsolete
+
+        [Obsolete("Use Data instead.")]
+        public Array Array => Data;
+
+        [Obsolete("Use Stride instead.")]
+        public int IntStride => Stride;
+
+        #endregion
 
         #endregion
 
@@ -650,7 +679,7 @@ namespace Aardvark.Base
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
         public void SaveAsPng(string filename, int compressionLevel = PixPngSaveParams.DefaultCompressionLevel,
-                              bool normalizeFilename = true,  IPixLoader loader = null)
+                              bool normalizeFilename = true, IPixLoader loader = null)
             => Save(filename, new PixPngSaveParams(compressionLevel), normalizeFilename, loader);
 
         #endregion
@@ -809,6 +838,8 @@ namespace Aardvark.Base
 
         public PixImage<T1> ToPixImage<T1>() => AsPixImage<T1>() ?? new PixImage<T1>(this);
 
+        public abstract PixImage ToPixImage(Col.Format format);
+
         public PixImage<T> ToPixImage<T>(Col.Format format)
         {
             if (this is PixImage<T> castImage && castImage.Format == format && castImage.ChannelCount == format.ChannelCount())
@@ -816,60 +847,34 @@ namespace Aardvark.Base
             return new PixImage<T>(format, this);
         }
 
+        public abstract PixImage ToCanonicalDenseLayout();
+
         #endregion
 
-        #region Abstract Methods
-
-        public abstract PixFormat PixFormat { get; }
-
-        public abstract VolumeInfo VolumeInfo { get; }
-
-        public abstract V2i Size { get; }
-        public abstract V2l SizeL { get; }
-
-        public abstract int ChannelCount { get; }
-        public abstract long ChannelCountL { get; }
-
-        public abstract Array Array { get; }
-
-        public abstract int IntStride { get; }
+        #region Copy
 
         public abstract void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target);
 
         public abstract void CopyVolumeTo<Tv>(Volume<Tv> target);
 
-        public abstract PixImage ToPixImage(Col.Format format);
-
         public abstract PixImage CopyToPixImage();
 
         public abstract PixImage CopyToPixImageWithCanonicalDenseLayout();
 
-        public abstract PixImage ToCanonicalDenseLayout();
-
-        public abstract Array Data { get; }
-
-        public abstract T Visit<T>(IPixImageVisitor<T> visitor);
 
         #endregion
 
-        #region Image Manipulation (abstract)
+        #region Image Manipulation
 
         public abstract PixImage Transformed(ImageTrafo trafo);
 
-        public abstract PixImage RemappedPixImage(
-                Matrix<float> xMap, Matrix<float> yMap,
-                ImageInterpolation ip = ImageInterpolation.Cubic);
+        public abstract PixImage RemappedPixImage(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic);
 
-        public abstract PixImage ResizedPixImage(
-                V2i size, ImageInterpolation ip = ImageInterpolation.Cubic);
+        public abstract PixImage ResizedPixImage(V2i size, ImageInterpolation ip = ImageInterpolation.Cubic);
 
-        public abstract PixImage RotatedPixImage(
-                double angleInRadiansCCW, bool resize = true,
-                ImageInterpolation ip = ImageInterpolation.Cubic);
+        public abstract PixImage RotatedPixImage(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic);
 
-        public abstract PixImage ScaledPixImage(
-                V2d scaleFactor,
-                ImageInterpolation ip = ImageInterpolation.Cubic);
+        public abstract PixImage ScaledPixImage(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic);
 
         #endregion
 
@@ -915,6 +920,12 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region IPixImageVisitor
+
+        public abstract T Visit<T>(IPixImageVisitor<T> visitor);
+
+        #endregion
+
         #region IPix
 
         public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixImage(this); }
@@ -927,7 +938,7 @@ namespace Aardvark.Base
     /// is specified as type parameter.
     /// </summary>
     [Serializable]
-    public partial class PixImage<T> : PixImage //, IPixImage2d
+    public partial class PixImage<T> : PixImage
     {
         public Volume<T> Volume;
 
@@ -1148,46 +1159,6 @@ namespace Aardvark.Base
             Format = format;
         }
 
-        public PixImage<T> CopyToImageLayout()
-        {
-            if (Volume.HasImageLayout())
-                return new PixImage<T>(Format, Volume.CopyToImage());
-            return new PixImage<T>(this);
-        }
-
-        public PixImage<T> Copy() => new PixImage<T>(Format, Volume.CopyToImageWindow());
-
-        public override PixImage CopyToPixImage() => Copy();
-
-        public override PixImage CopyToPixImageWithCanonicalDenseLayout() => CopyToImageLayout();
-
-        public override PixImage ToCanonicalDenseLayout() => ToImageLayout();
-
-        /// <summary>
-        /// Copy function for color conversions.
-        /// </summary>
-        /// <typeparam name="Tv"></typeparam>
-        /// <param name="fun"></param>
-        /// <returns></returns>
-        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun) => Copy<Tv>(fun, Format);
-
-        /// <summary>
-        /// Copy function for color conversions. Note that the
-        /// new color format must have the same number of channels
-        /// as the old one, and the result of the supplied conversion
-        /// function is reinterpreted as a color in the new format.
-        /// </summary>
-        /// <typeparam name="Tv"></typeparam>
-        /// <param name="fun"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun, Col.Format format)
-        {
-            var mat = GetMatrix<Tv>().MapWindow(fun);
-            var vol = new Volume<T>(mat.Data, Volume.Info);
-            return new PixImage<T>(format, vol);
-        }
-
         #endregion
 
         #region Constructors from File / Stream
@@ -1273,15 +1244,13 @@ namespace Aardvark.Base
 
         #region Properties
 
+        public override Array Data => Volume.Data;
+
+        public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
+
         public override VolumeInfo VolumeInfo => Volume.Info;
 
-        public override V2i Size => (V2i)Volume.Info.Size.XY;
-
-        public override V2l SizeL => Volume.Info.Size.XY;
-
-        public override int ChannelCount => (int)Volume.Info.Size.Z;
-
-        public override long ChannelCountL => Volume.Info.Size.Z;
+        public override int BytesPerChannel => typeof(T).GetCLRSize();
 
         /// <summary>
         /// Returns the channels of the image in canonical order: red, green,
@@ -1302,12 +1271,6 @@ namespace Aardvark.Base
         /// green, blue, (alpha).
         /// </summary>
         public Matrix<T>[] ChannelArray => Channels.ToArray();
-
-        public int BytesPerChannel => System.Runtime.InteropServices.Marshal.SizeOf(typeof(T));
-
-        public override Array Array => Volume.Data;
-
-        public override int IntStride => BytesPerChannel * (int)Volume.DY;
 
         /// <summary>
         /// Returns the matrix representation of the volume if there is only
@@ -1571,9 +1534,74 @@ namespace Aardvark.Base
 
         #region Conversions
 
-        public PixImage<T> ToImageLayout() => !Volume.HasImageLayout() ? new PixImage<T>(Format, this) : this;
+        public override PixImage ToPixImage(Col.Format format)
+        {
+            if (Format == format && ChannelCount == format.ChannelCount())
+                return this;
+            return new PixImage<T>(format, this);
+        }
 
         public PixImage<T> ToFormat(Col.Format format) => Format == format ? this : new PixImage<T>(format, this);
+
+        public PixImage<T> ToImageLayout() => !Volume.HasImageLayout() ? new PixImage<T>(Format, this) : this;
+
+        public override PixImage ToCanonicalDenseLayout() => ToImageLayout();
+
+        #endregion
+
+        #region Copy
+
+        public override void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target)
+        {
+            var subMatrix = GetChannel<Tv>(channelIndex);
+            target.Set(subMatrix);
+        }
+
+        public override void CopyVolumeTo<Tv>(Volume<Tv> target)
+        {
+            if (Volume is Volume<Tv> source)
+                target.Set(source);
+            else
+                target.Set(Volume.AsVolume<T, Tv>());
+        }
+
+        public PixImage<T> CopyToImageLayout()
+        {
+            if (Volume.HasImageLayout())
+                return new PixImage<T>(Format, Volume.CopyToImage());
+            return new PixImage<T>(this);
+        }
+
+        public PixImage<T> Copy() => new PixImage<T>(Format, Volume.CopyToImageWindow());
+
+        public override PixImage CopyToPixImage() => Copy();
+
+        public override PixImage CopyToPixImageWithCanonicalDenseLayout() => CopyToImageLayout();
+
+        /// <summary>
+        /// Copy function for color conversions.
+        /// </summary>
+        /// <typeparam name="Tv"></typeparam>
+        /// <param name="fun"></param>
+        /// <returns></returns>
+        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun) => Copy<Tv>(fun, Format);
+
+        /// <summary>
+        /// Copy function for color conversions. Note that the
+        /// new color format must have the same number of channels
+        /// as the old one, and the result of the supplied conversion
+        /// function is reinterpreted as a color in the new format.
+        /// </summary>
+        /// <typeparam name="Tv"></typeparam>
+        /// <param name="fun"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun, Col.Format format)
+        {
+            var mat = GetMatrix<Tv>().MapWindow(fun);
+            var vol = new Volume<T>(mat.Data, Volume.Info);
+            return new PixImage<T>(format, vol);
+        }
 
         #endregion
 
@@ -1625,32 +1653,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Concrete Implementation Of Abstract Functions
-
-        public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
-
-        public override void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target)
-        {
-            var subMatrix = GetChannel<Tv>(channelIndex);
-            target.Set(subMatrix);
-        }
-
-        public override void CopyVolumeTo<Tv>(Volume<Tv> target)
-        {
-            if (Volume is Volume<Tv> source)
-                target.Set(source);
-            else
-                target.Set(Volume.AsVolume<T, Tv>());
-        }
-
-        public override PixImage ToPixImage(Col.Format format)
-        {
-            if (Format == format && ChannelCount == format.ChannelCount())
-                return this;
-            return new PixImage<T>(format, this);
-        }
-
-        public override Array Data => Volume.HasImageLayout() ? Volume.Data : throw new ArgumentException(nameof(Volume));
+        #region IPixImageVisitor
 
         public override TResult Visit<TResult>(IPixImageVisitor<TResult> visitor) => visitor.Visit<T>(this);
 

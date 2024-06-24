@@ -1,12 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-//#if !__MonoCS__ && !__ANDROID__
-//using System.Windows.Media;
-//using System.Windows.Media.Imaging;
-//#endif
 
 namespace Aardvark.Base
 {
@@ -15,7 +9,7 @@ namespace Aardvark.Base
         T Visit<TData>(PixVolume<TData> volume);
     }
 
-    public abstract class PixVolume : IPix
+    public abstract class PixVolume : IPix, IPixImage3d
     {
         public Col.Format Format;
 
@@ -34,7 +28,30 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public PixVolumeInfo Info { get { return new PixVolumeInfo(PixFormat, Size); } }
+        public abstract Array Data { get; }
+
+        public abstract PixFormat PixFormat { get; }
+
+        public abstract Tensor4Info Tensor4Info { get; }
+
+        public abstract int BytesPerChannel { get; }
+
+        public PixVolumeInfo Info => new PixVolumeInfo(PixFormat, Size);
+
+        public V3i Size => (V3i)Tensor4Info.Size.XYZ;
+
+        public V3l SizeL => Tensor4Info.Size.XYZ;
+
+        public int ChannelCount => (int)Tensor4Info.Size.W;
+
+        public long ChannelCountL => Tensor4Info.Size.W;
+
+        #region Obsolete
+
+        [Obsolete("Use Data instead.")]
+        public Array Array => Data;
+
+        #endregion
 
         #endregion
 
@@ -72,6 +89,8 @@ namespace Aardvark.Base
 
         public PixVolume<T1> ToPixVolume<T1>() => AsPixVolume<T1>() ?? new PixVolume<T1>(this);
 
+        public abstract PixVolume ToPixVolume(Col.Format format);
+
         public PixVolume<T> ToPixVolume<T>(Col.Format format)
         {
             if (this is PixVolume<T> castVolume && castVolume.Format == format && castVolume.ChannelCount == format.ChannelCount())
@@ -79,31 +98,23 @@ namespace Aardvark.Base
             return new PixVolume<T>(format, this);
         }
 
+        public abstract PixVolume ToCanonicalDenseLayout();
+
         #endregion
 
-        #region Abstract Methods
-
-        public abstract PixFormat PixFormat { get; }
-
-        public abstract Tensor4Info Tensor4Info { get; }
-
-        public abstract V3i Size { get; }
-
-        public abstract V3l SizeL { get; }
-
-        public abstract int ChannelCount { get; }
-
-        public abstract Array Array { get; }
+        #region Copy
 
         public abstract void CopyChannelTo<Tv>(long channelIndex, Volume<Tv> target);
 
         public abstract void CopyTensor4To<Tv>(Tensor4<Tv> target);
 
-        public abstract PixVolume ToPixVolume(Col.Format format);
-
         public abstract PixVolume CopyToPixVolume();
 
         public abstract PixVolume CopyToPixVolumeWithCanonicalDenseLayout();
+
+        #endregion
+
+        #region IPixVolumeVisitor
 
         public abstract TResult Visit<TResult>(IPixVolumeVisitor<TResult> visitor);
 
@@ -116,7 +127,7 @@ namespace Aardvark.Base
         #endregion
     }
 
-    public class PixVolume<T> : PixVolume, IPixImage3d
+    public class PixVolume<T> : PixVolume
     {
         public Tensor4<T> Tensor4;
 
@@ -259,6 +270,79 @@ namespace Aardvark.Base
             Format = format;
         }
 
+        #endregion
+
+        #region Properties
+
+        public override Array Data => Tensor4.Data;
+
+        public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
+
+        public override Tensor4Info Tensor4Info => Tensor4.Info;
+
+        public override int BytesPerChannel => typeof(T).GetCLRSize();
+
+        /// <summary>
+        /// Returns the channels of the image in canonical order: red, green,
+        /// blue, (alpha).
+        /// </summary>
+        public IEnumerable<Volume<T>> Channels
+        {
+            get
+            {
+                long[] order = Format.ChannelOrder();
+                for (long i = 0; i < order.Length; i++)
+                    yield return GetChannelInFormatOrder(order[i]);
+            }
+        }
+
+        /// <summary>
+        /// Returns the array containing the cahnnels in canonical order: red,
+        /// green, blue, (alpha).
+        /// </summary>
+        public Volume<T>[] ChannelArray => Channels.ToArray();
+
+        /// <summary>
+        /// Returns the volume representation of the tensor4 if there is only
+        /// one channel. Fails if there are multiple channels.
+        /// </summary>
+        public Volume<T> Volume => Tensor4.AsVolumeWindow();
+
+        #endregion
+
+        #region Conversions
+
+        public override PixVolume ToPixVolume(Col.Format format)
+        {
+            if (Format == format && ChannelCount == format.ChannelCount())
+                return this;
+            return new PixVolume<T>(format, this);
+        }
+
+        public PixVolume<T> ToFormat(Col.Format format) => Format == format ? this : new PixVolume<T>(format, this);
+
+        public PixVolume<T> ToImageLayout() => !Tensor4.HasImageLayout() ? new PixVolume<T>(Format, this) : this;
+
+        public override PixVolume ToCanonicalDenseLayout() => ToImageLayout();
+
+        #endregion
+
+        #region Copy
+
+        public override void CopyChannelTo<Tv>(long channelIndex, Volume<Tv> target)
+        {
+            var subMatrix = GetChannel<Tv>(channelIndex);
+            target.Set(subMatrix);
+        }
+
+        public override void CopyTensor4To<Tv>(Tensor4<Tv> target)
+        {
+            if (Tensor4 is Tensor4<Tv> source)
+                target.Set(source);
+            else
+                target.Set(Tensor4.AsTensor4<T, Tv>());
+        }
+
         public PixVolume<T> CopyToImageLayout()
         {
             if (Tensor4.HasImageLayout())
@@ -266,20 +350,11 @@ namespace Aardvark.Base
             return new PixVolume<T>(this);
         }
 
-        public PixVolume<T> Copy()
-        {
-            return new PixVolume<T>(Format, Tensor4.CopyToImageWindow());
-        }
+        public PixVolume<T> Copy() => new PixVolume<T>(Format, Tensor4.CopyToImageWindow());
 
-        public override PixVolume CopyToPixVolume()
-        {
-            return Copy();
-        }
+        public override PixVolume CopyToPixVolume() => Copy();
 
-        public override PixVolume CopyToPixVolumeWithCanonicalDenseLayout()
-        {
-            return CopyToImageLayout();
-        }
+        public override PixVolume CopyToPixVolumeWithCanonicalDenseLayout() => CopyToImageLayout();
 
         /// <summary>
         /// Copy function for color conversions.
@@ -307,85 +382,6 @@ namespace Aardvark.Base
             var mat = GetVolume<Tv>().MapWindow(fun);
             var vol = new Volume<T>(mat.Data, Volume.Info);
             return new PixImage<T>(format, vol);
-        }
-
-        #endregion
-
-        #region Properties
-
-        public override Tensor4Info Tensor4Info => Tensor4.Info;
-
-        public override V3i Size
-        {
-            get { return (V3i)Tensor4.Info.Size.XYZ; }
-        }
-
-        public override V3l SizeL
-        {
-            get { return Tensor4.Info.Size.XYZ; }
-        }
-
-        public override int ChannelCount
-        {
-            get { return (int)Tensor4.Info.Size.W; }
-        }
-
-        /// <summary>
-        /// Returns the channels of the image in canonical order: red, green,
-        /// blue, (alpha).
-        /// </summary>
-        public IEnumerable<Volume<T>> Channels
-        {
-            get
-            {
-                long[] order = Format.ChannelOrder();
-                for (long i = 0; i < order.Length; i++)
-                    yield return GetChannelInFormatOrder(order[i]);
-            }
-        }
-
-        /// <summary>
-        /// Returns the array containing the cahnnels in canonical order: red,
-        /// green, blue, (alpha).
-        /// </summary>
-        public Volume<T>[] ChannelArray
-        {
-            get { return Channels.ToArray(); }
-        }
-
-        public int BytesPerChannel
-        {
-            get { return System.Runtime.InteropServices.Marshal.SizeOf(typeof(T)); }
-        }
-
-        public override Array Array
-        {
-            get { return Tensor4.Data; }
-        }
-
-        /// <summary>
-        /// Returns the volume representation of the tensor4 if there is only
-        /// one channel. Fails if there are multiple channels.
-        /// </summary>
-        public Volume<T> Volume
-        {
-            get { return Tensor4.AsVolumeWindow(); }
-        }
-
-        #endregion
-
-        #region Conversions
-
-        public PixVolume<T> ToImageLayout()
-        {
-            if (!Tensor4.HasImageLayout())
-                return new PixVolume<T>(Format, this);
-            else return this;
-        }
-
-        public PixVolume<T> ToFormat(Col.Format format)
-        {
-            return Format == format ? this : new PixVolume<T>(format, this);
         }
 
         #endregion
@@ -450,46 +446,11 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Concrete Implementation Of Abstract Functions
-
-        public override PixFormat PixFormat
-        {
-            get { return new PixFormat(typeof(T), Format); }
-        }
-
-        public override void CopyChannelTo<Tv>(long channelIndex, Volume<Tv> target)
-        {
-            var subMatrix = GetChannel<Tv>(channelIndex);
-            target.Set(subMatrix);
-        }
-
-        public override void CopyTensor4To<Tv>(Tensor4<Tv> target)
-        {
-            if (Tensor4 is Tensor4<Tv> source)
-                target.Set(source);
-            else
-                target.Set(Tensor4.AsTensor4<T, Tv>());
-        }
-
-        public override PixVolume ToPixVolume(Col.Format format)
-        {
-            if (Format == format && ChannelCount == format.ChannelCount())
-                return this;
-            return new PixVolume<T>(format, this);
-        }
+        #region IPixVolumeVisitor
 
         public override TResult Visit<TResult>(IPixVolumeVisitor<TResult> visitor)
         {
             return visitor.Visit(this);
-        }
-
-        #endregion
-
-        #region IPixImage3d Members
-
-        public Array Data
-        {
-            get { return Tensor4.Data; }
         }
 
         #endregion

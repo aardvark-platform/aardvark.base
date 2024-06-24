@@ -7,10 +7,16 @@
 - Fixed return type of LengthSquared for integer-based vectors. Now returns an integer instead of double.
 - Added missing readonly modifiers for structs
 - Renamed CIeLuvf to CieLuvf
+- Cleanup of `PixImage` and `PixVolume`:
+  - Deprecated `Array` in favor of `Data`
+  - Deprecated `PixImage.IntStride` in favor of `Stride` and `StrideL`
+  - `PixVolume` implements `IPixImage3d`
+  - Added `PixVolume.BytesPerChannel`
+  - Added `PixVolume.ToCanonicalDenseLayout`
+  - Removed obsolete loading API
 - Removed obsolete API:
   - [Color] obsolete conversion functions
   - [Color] `Parse()` overload with IFormatProvider parameter
-  - [PixImage] obsolete loading API
   - `Async.AwaitTask` (already in FSharp.Core)
   - `Caching.cacheFunction`
   - `IDictionary.GetValueOrDefault`
