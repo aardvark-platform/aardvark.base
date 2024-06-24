@@ -1,3 +1,12 @@
+### 5.2.32
+- Fixed Type.GetCLRSize for structs
+- Use .NET functions for Array.Copy and Set
+- Fixed Array CopyTo extension overloads for copying between an array and native memory
+- Changed SymMapBaseCollectionTraversal.Collect typeName argument to Symbol
+- Added ToBase64 extensions with span
+- Added generic Compute**Hash overloads (avoiding GetCLRSize)
+- Added AsCastSpan extension
+
 ### 5.2.31
 * fixed Hash Computations for non-primitive types
 * added `AsByteSpan` extension method for System.Array/string in >=net6.0
