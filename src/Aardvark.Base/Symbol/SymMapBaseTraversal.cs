@@ -217,7 +217,11 @@ namespace Aardvark.Base
 
     public class SymMapBaseCollectionTraversal
     {
+        [Obsolete("Use Symbol overload")]
         public static List<SymMapBase> Collect(SymMapBase root, string typenameToCollect)
+             => new SymMapBaseCollectionTraversal(root).Collect((Symbol)typenameToCollect);
+
+        public static List<SymMapBase> Collect(SymMapBase root, Symbol typenameToCollect)
              => new SymMapBaseCollectionTraversal(root).Collect(typenameToCollect);
 
         public SymMapBaseCollectionTraversal(SymMapBase root) => m_root = root;
@@ -230,7 +234,13 @@ namespace Aardvark.Base
 
         private readonly TextWriter m_out = null;
 
+        [Obsolete("Use Symbol overload")]
         public List<SymMapBase> Collect(string typenameToCollect)
+        {
+            return Collect((Symbol)typenameToCollect);
+        }
+
+        public List<SymMapBase> Collect(Symbol typenameToCollect)
         {
             if (m_out != null)
             {
@@ -283,7 +293,7 @@ namespace Aardvark.Base
         }
 
         private readonly SymMapBase m_root;
-        private string m_name;
+        private Symbol m_name;
         private List<SymMapBase> m_result;
         private Dictionary<SymMapBase, int> m_visited;
     }
