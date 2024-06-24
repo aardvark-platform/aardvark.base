@@ -13,6 +13,7 @@
   - `PixVolume` implements `IPixImage3d`
   - Added `PixVolume.BytesPerChannel`
   - Added `PixVolume.ToCanonicalDenseLayout`
+  - Added `Add PixImage<T>.Transformed` (abstract `PixImage.Transformed` is renamed to `PixImage.TransformedPixImage`)
   - Removed obsolete loading API
 - Removed obsolete API:
   - [Color] obsolete conversion functions

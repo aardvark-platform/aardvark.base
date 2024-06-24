@@ -866,7 +866,7 @@ namespace Aardvark.Base
 
         #region Image Manipulation
 
-        public abstract PixImage Transformed(ImageTrafo trafo);
+        public abstract PixImage TransformedPixImage(ImageTrafo trafo);
 
         public abstract PixImage RemappedPixImage(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic);
 
@@ -1282,13 +1282,14 @@ namespace Aardvark.Base
 
         #region Image Manipulation
 
-        public override PixImage Transformed(ImageTrafo trafo)
+        public override PixImage TransformedPixImage(ImageTrafo trafo)
+            => Transformed(trafo);
+
+        public PixImage<T> Transformed(ImageTrafo trafo)
             => new PixImage<T>(Format, Volume.Transformed(trafo));
 
-        public override PixImage RemappedPixImage(
-            Matrix<float> xMap, Matrix<float> yMap,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Remapped(xMap, xMap, ip);
+        public override PixImage RemappedPixImage(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Remapped(xMap, xMap, ip);
 
         public PixImage<T> Remapped(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
@@ -1302,32 +1303,20 @@ namespace Aardvark.Base
 
         private static Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> s_remappedFun = null;
 
-        public static void SetRemappedFun(
-            Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> remappedFun
-            )
-        {
-            s_remappedFun = remappedFun;
-        }
+        public static void SetRemappedFun(Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> remappedFun)
+            => s_remappedFun = remappedFun;
 
-        public override PixImage ResizedPixImage(
-            V2i newSize,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Scaled((V2d)newSize / (V2d)Size, ip);
+        public override PixImage ResizedPixImage(V2i newSize, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Scaled((V2d)newSize / (V2d)Size, ip);
 
-        public PixImage<T> Resized(
-            V2i newSize,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Scaled((V2d)newSize / (V2d)Size, ip);
+        public PixImage<T> Resized(V2i newSize, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Scaled((V2d)newSize / (V2d)Size, ip);
 
-        public PixImage<T> Resized(
-            int xSize, int ySize,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Scaled(new V2d(xSize, ySize) / (V2d)Size, ip);
+        public PixImage<T> Resized(int xSize, int ySize, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Scaled(new V2d(xSize, ySize) / (V2d)Size, ip);
 
-        public override PixImage RotatedPixImage(
-            double angleInRadiansCCW, bool resize = true,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Rotated(angleInRadiansCCW, resize, ip);
+        public override PixImage RotatedPixImage(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Rotated(angleInRadiansCCW, resize, ip);
 
         public PixImage<T> Rotated(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
@@ -1341,20 +1330,13 @@ namespace Aardvark.Base
 
         private static Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> s_rotatedFun = null;
 
-        public static void SetRotatedFun(
-            Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> rotatedFun)
-        {
-            s_rotatedFun = rotatedFun;
-        }
+        public static void SetRotatedFun(Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> rotatedFun)
+            => s_rotatedFun = rotatedFun;
 
-        public override PixImage ScaledPixImage(
-            V2d scaleFactor,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Scaled(scaleFactor, ip);
+        public override PixImage ScaledPixImage(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Scaled(scaleFactor, ip);
 
-        public PixImage<T> Scaled(
-            V2d scaleFactor,
-            ImageInterpolation ip = ImageInterpolation.Cubic)
+        public PixImage<T> Scaled(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
             if (s_scaledFun == null)
             {
@@ -1373,19 +1355,13 @@ namespace Aardvark.Base
         private static Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> s_scaledFun = TensorExtensions.Scaled;
 
         public static void SetScaledFun(Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> scaledFun)
-        {
-            s_scaledFun = scaledFun;
-        }
+            => s_scaledFun = scaledFun;
 
-        public PixImage<T> Scaled(
-            double scaleFactor,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Scaled(new V2d(scaleFactor, scaleFactor), ip);
+        public PixImage<T> Scaled(double scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Scaled(new V2d(scaleFactor, scaleFactor), ip);
 
-        public PixImage<T> Scaled(
-            double xScaleFactor, double yScaleFactor,
-            ImageInterpolation ip = ImageInterpolation.Cubic
-            ) => Scaled(new V2d(xScaleFactor, yScaleFactor), ip);
+        public PixImage<T> Scaled(double xScaleFactor, double yScaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
+            => Scaled(new V2d(xScaleFactor, yScaleFactor), ip);
 
         #endregion
 
