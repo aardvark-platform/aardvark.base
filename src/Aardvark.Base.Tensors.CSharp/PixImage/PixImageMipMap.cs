@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Aardvark.Base
 {
-    public class PixImageMipMap : IPix, IPixMipMap2d
+    public class PixImageMipMap
     {
         public PixImage[] ImageArray;
 
@@ -152,12 +152,6 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region IPix
-
-        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixImageMipMap(this); }
-
-        #endregion
-
         #region IPixMipMap2d
 
         public PixFormat PixFormat
@@ -168,14 +162,6 @@ namespace Aardvark.Base
         public int LevelCount
         {
             get { return ImageArray.Length; }
-        }
-
-        IPixImage2d IPixMipMap2d.this[int level]
-        {
-            get
-            {
-                return ImageArray[level];
-            }
         }
 
         public PixImage this[int level]

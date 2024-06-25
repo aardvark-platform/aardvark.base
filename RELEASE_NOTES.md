@@ -7,6 +7,9 @@
 - Fixed return type of LengthSquared for integer-based vectors. Now returns an integer instead of double.
 - Added missing readonly modifiers for structs
 - Renamed CIeLuvf to CieLuvf
+- Removed IPix and related types:
+  - `PixCubeMap` and `PixCube`: Use `PixImageCube` instead.
+  - `PixMipMap2d`: Use `PixImageMipmap` instead.
 - Cleanup of `PixImage` and `PixVolume`:
   - Deprecated `Array` in favor of `Data`
   - Deprecated `PixImage.IntStride` in favor of `Stride` and `StrideL`

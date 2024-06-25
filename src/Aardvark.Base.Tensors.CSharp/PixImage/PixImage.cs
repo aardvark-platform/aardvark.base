@@ -57,8 +57,10 @@ namespace Aardvark.Base
         T Visit<TData>(PixImage<TData> image);
     }
 
+    public record PixImageInfo(PixFormat Format, V2i Size);
+
     [Serializable]
-    public abstract partial class PixImage : IPix, IPixImage2d
+    public abstract partial class PixImage
     {
         public Col.Format Format;
 
@@ -923,12 +925,6 @@ namespace Aardvark.Base
         #region IPixImageVisitor
 
         public abstract T Visit<T>(IPixImageVisitor<T> visitor);
-
-        #endregion
-
-        #region IPix
-
-        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixImage(this); }
 
         #endregion
     }

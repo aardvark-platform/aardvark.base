@@ -9,7 +9,9 @@ namespace Aardvark.Base
         T Visit<TData>(PixVolume<TData> volume);
     }
 
-    public abstract class PixVolume : IPix, IPixImage3d
+    public record PixVolumeInfo(PixFormat Format, V3i Size);
+
+    public abstract class PixVolume
     {
         public Col.Format Format;
 
@@ -117,12 +119,6 @@ namespace Aardvark.Base
         #region IPixVolumeVisitor
 
         public abstract TResult Visit<TResult>(IPixVolumeVisitor<TResult> visitor);
-
-        #endregion
-
-        #region IPix
-
-        public Tr Op<Tr>(IPixOp<Tr> op) { return op.PixVolume(this); }
 
         #endregion
     }

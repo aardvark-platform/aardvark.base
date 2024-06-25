@@ -5,47 +5,6 @@ namespace Aardvark.Base
 {
     public static class PixImageExtensions
     {
-        #region IPixImage2d Extensions
-
-        public static PixImage<T> ToPixImage<T>(this IPixImage2d image)
-        {
-            if (image is PixImage<T> pixImage) return pixImage;
-            var size = image.Size;
-            var pixFormat = image.PixFormat;
-            if (image.Data is T[] data)
-            {
-                if (data.GetType().GetElementType() != pixFormat.Type)
-                    throw new ArgumentException("type mismatch in supplied IPixImage2d");
-                var volume = data.CreateImageVolume(new V3l(size.X, size.Y, Col.ChannelCount(pixFormat.Format)));
-                return new PixImage<T>(pixFormat.Format, volume);
-            }
-            return image.ToPixImage().ToPixImage<T>();
-        }
-
-        public static PixImage ToPixImage(this IPixImage2d image)
-        {
-            if (image is PixImage pixImage) return pixImage;
-            var size = image.Size;
-            var pixFormat = image.PixFormat;
-            if (image.Data.GetType().GetElementType() != pixFormat.Type)
-                throw new ArgumentException("type mismatch in supplied IPixImage2d");
-            return PixImage.Create(image.Data, pixFormat.Format, size.X, size.Y);
-        }
-
-        #endregion
-
-        #region IPixMipMap2d Extensions
-
-        public static PixImageMipMap ToPixImageMipMap(this IPixMipMap2d mipmap)
-        {
-            if (mipmap is PixImageMipMap pixImageMipMap) return pixImageMipMap;
-            var count = mipmap.LevelCount;
-            var pixImageArray = new PixImage[count].SetByIndex(i => mipmap[i].ToPixImage());
-            return new PixImageMipMap(pixImageArray);
-        }
-
-        #endregion
-
         #region Black and White Conversions
 
         public static Matrix<byte> ToBlackAndWhiteMatrix(this PixImage<byte> pixImage, int threshold)
@@ -302,11 +261,11 @@ namespace Aardvark.Base
         {
             var first = images.SelectMany(ia => ia).WhereNotNull().First();
             if (first.PixFormat.Type == typeof(byte))
-                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<byte>())).Stitch().ToPixImage();
+                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<byte>())).Stitch();
             if (first.PixFormat.Type == typeof(ushort))
-                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<ushort>())).Stitch().ToPixImage();
+                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<ushort>())).Stitch();
             if (first.PixFormat.Type == typeof(float))
-                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<float>())).Stitch().ToPixImage();
+                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<float>())).Stitch();
             throw new NotImplementedException();
         }
 
@@ -341,7 +300,7 @@ namespace Aardvark.Base
         /// <returns>Stitched image</returns>
         public static PixImage<T> StitchSquare<T>(this PixImage<T>[] images)
         {
-            return images.Map(pi => pi.ToPixImage()).StitchSquare().ToPixImage<T>();
+            return images.Map(pi => (PixImage)pi).StitchSquare().ToPixImage<T>();
         }
 
         #endregion
