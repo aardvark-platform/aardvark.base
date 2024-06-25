@@ -11,7 +11,7 @@ module FSharpPixImageCubeExtensions =
 
         member x.Transformed (m : CubeSide -> CubeSide * ImageTrafo) =
             PixImageCube(
-                x.MipMapArray
+                x.Sides
                     |> Array.mapi (fun i mipMap ->
                         let side = unbox<CubeSide> i
                         let (newSide, trafo) = m side

@@ -34,25 +34,49 @@ namespace Aardvark.Base
         All = 0x3f,
     }
 
+    /// <summary>
+    /// A cube map consisting of six image mipmaps.
+    /// </summary>
     public class PixImageCube
     {
-        public PixImageMipMap[] MipMapArray;
+        /// <summary>
+        /// Array of image mipmaps representing the cube sides.
+        /// </summary>
+        public PixImageMipMap[] Sides;
 
-        #region Constructor
+        #region Constructors
 
-        public PixImageCube(PixImageMipMap[] mipMapArray)
-        {
-            MipMapArray = mipMapArray;
-        }
+        /// <summary>
+        /// Creates a cube map from a mipmap array.
+        /// The order of the array follows the <see cref="CubeSide"/> enumeration.
+        /// </summary>
+        /// <param name="sides">An array of mipmaps representing the sides of the mipmap.</param>
+        public PixImageCube(PixImageMipMap[] sides)
+            => Sides = sides;
+
+        /// <summary>
+        /// Creates a cube map from an image array.
+        /// The order of the array follows the <see cref="CubeSide"/> enumeration.
+        /// </summary>
+        /// <param name="sides">An array of images representing the sides of the mipmap.</param>
+        public PixImageCube(PixImage[] sides)
+            => Sides = sides.Map(image => new PixImageMipMap(image));
 
         #endregion
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets an image mipmap of the sides array.
+        /// </summary>
         public PixImageMipMap this[CubeSide side]
         {
-            get { return MipMapArray[(int)side]; }
+            get => Sides[(int)side];
+            set => Sides[(int)side] = value;
         }
+
+        [Obsolete("Use Sides instead.")]
+        public PixImageMipMap[] MipMapArray => Sides;
 
         #endregion
     }
