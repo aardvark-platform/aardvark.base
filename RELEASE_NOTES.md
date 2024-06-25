@@ -9,11 +9,13 @@
 - Renamed CIeLuvf to CieLuvf
 - Removed IPix and related types:
   - `PixCubeMap` and `PixCube`: Use `PixImageCube` instead.
-  - `PixMipMap2d`: Use `PixImageMipmap` instead.
+  - `PixMipMap2d`: Use `PixImageMipMap` instead.
+- Reworked `PixImageMipMap`:
+  - Removed generic `PixImageMipMap<T>`
+  - Removed `MipMapOptions`, static `Create()` method takes multiple optional parameters instead.
 - Cleanup of `PixImage` and `PixVolume`:
   - Deprecated `Array` in favor of `Data`
   - Deprecated `PixImage.IntStride` in favor of `Stride` and `StrideL`
-  - `PixVolume` implements `IPixImage3d`
   - Added `PixVolume.BytesPerChannel`
   - Added `PixVolume.ToCanonicalDenseLayout`
   - Added `Add PixImage<T>.Transformed` (abstract `PixImage.Transformed` is renamed to `PixImage.TransformedPixImage`)

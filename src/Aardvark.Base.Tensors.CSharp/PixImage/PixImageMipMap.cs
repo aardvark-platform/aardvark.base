@@ -1,81 +1,79 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace Aardvark.Base
 {
     public class PixImageMipMap
     {
-        public PixImage[] ImageArray;
-
-        #region MipMapOptions
-
-        public class MipMapOptions
-        {
-            public int Count;
-            public bool PowerOfTwo;
-            public ImageInterpolation Interpolation;
-
-            public static MipMapOptions Default = new MipMapOptions()
-            {
-                Count = 0,
-                Interpolation = ImageInterpolation.Cubic,
-                PowerOfTwo = false,
-            };
-        }
-
-        #endregion
+        /// <summary>
+        /// Array of images representing the mipmap levels.
+        /// </summary>
+        public PixImage[] Images;
 
         #region Constructors
 
-        public PixImageMipMap() { }
+        /// <summary>
+        /// Creates an empty mipmap.
+        /// </summary>
+        public PixImageMipMap() => Images = Array.Empty<PixImage>();
 
-        public PixImageMipMap(params PixImage[] images) { ImageArray = images; }
+        /// <summary>
+        /// Creates a mipmap from the given images.
+        /// </summary>
+        /// <param name="images">An array of images representing the mipmap levels.</param>
+        public PixImageMipMap(params PixImage[] images) => Images = images;
+
+        /// <summary>
+        /// Creates a mipmap consisting of a single image.
+        /// </summary>
+        /// <param name="image">The single image of the mipmap.</param>
+        public PixImageMipMap(PixImage image) => Images = new[] { image };
 
         #endregion
 
         #region Properties
 
-        public int ImageCount { get { return ImageArray.Length; } }
+        /// <summary>
+        /// Number of images in the mipmap array.
+        /// </summary>
+        public int Count => Images?.Length ?? 0;
 
-        public IEnumerable<PixImage> Images { get { return ImageArray; } }
+        /// <summary>
+        /// Returns the base image of the mipmap array or null if it is empty.
+        /// </summary>
+        public PixImage BaseImage => Count > 0 ? Images[0] : null;
+
+        /// <summary>
+        /// Returns the size of the base image, or V2i.Zero if the mipmap array is empty.
+        /// </summary>
+        public V2i BaseSize => BaseImage?.Size ?? V2i.Zero;
+
+        /// <summary>
+        /// Gets or sets an image of the mipmap array.
+        /// </summary>
+        public PixImage this[int index]
+        {
+            get => Images[index];
+            set => Images[index] = value;
+        }
+
+        #region Obsolete
+
+        [Obsolete("Use Count instead.")]
+        public int LevelCount => Count;
+
+        [Obsolete("Use Count instead.")]
+        public int ImageCount => Count;
+
+        [Obsolete("Use Images instead.")]
+        public PixImage[] ImageArray => Images;
+
+        [Obsolete("Use BaseSize instead.")]
+        public V2i BaseImageSize => BaseSize;
 
         #endregion
 
-        #region Static Creators
-
-        // Helper class to create PixImageMipMap from untyped PixImage
-        private static class Dispatch
-        {
-            private static class CreateDispatcher
-            {
-                public static PixImageMipMap<T> Create<T>(PixImage<T> image, MipMapOptions options)
-                    => new PixImageMipMap<T>(image, options);
-            }
-
-            private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-            private static readonly MethodInfo s_createMethod = typeof(CreateDispatcher).GetMethod("Create", flags);
-
-            public static PixImageMipMap Create(PixImage image, MipMapOptions options)
-            {
-                var mi = s_createMethod.MakeGenericMethod(image.PixFormat.Type);
-                return (PixImageMipMap)mi.Invoke(null, new object[] { image, options });
-            }
-        }
-
-        public static IEnumerable<PixImageMipMap> Create(IEnumerable<PixImage> pixies, MipMapOptions options)
-            => pixies.Select(pix => Dispatch.Create(pix, options));
-
-        public static IEnumerable<PixImageMipMap> Create(IEnumerable<PixImage> pixies)
-            => Create(pixies, MipMapOptions.Default);
-
-        public static PixImageMipMap Create(PixImage pix)
-            => Dispatch.Create(pix, MipMapOptions.Default);
-
-        public static PixImageMipMap Create(PixImage pix, MipMapOptions options)
-            => Dispatch.Create(pix, options);
+        #endregion
 
         #region Load from file
 
@@ -150,95 +148,40 @@ namespace Aardvark.Base
 
         #endregion
 
-        #endregion
-
-        #region IPixMipMap2d
-
-        public PixFormat PixFormat
-        {
-            get { if (ImageArray.IsEmptyOrNull()) new ArgumentException("PixMipMap is empty"); return ImageArray[0].PixFormat; }
-        }
-
-        public int LevelCount
-        {
-            get { return ImageArray.Length; }
-        }
-
-        public PixImage this[int level]
-        {
-            get { return ImageArray[level]; }
-        }
-
-        #endregion
-    }
-
-    public class PixImageMipMap<T> : PixImageMipMap
-    {
-        #region Properties
-
-        new public IEnumerable<PixImage<T>> Images { get { return (PixImage<T>[])ImageArray; } }
-        public IEnumerable<V2i> ImageSizes { get { return from image in ImageArray select image.Size; } }
-        public V2i BaseImageSize { get { return ImageArray[0].Size; } }
-
-        #endregion
-
-        #region Constructors
-
-        public PixImageMipMap(PixImage<T> singleImage)
-        {
-            ImageArray = new PixImage<T>[] { singleImage };
-            BuildMipMaps(MipMapOptions.Default);
-        }
-
-        public PixImageMipMap(PixImage<T> singleImage, MipMapOptions options)
-        {
-            ImageArray = new PixImage<T>[] { singleImage };
-            BuildMipMaps(options);
-        }
-
-        #endregion
-
-        #region Methods
+        #region Generation
 
         /// <summary>
-        /// Builds mipmap pyramid using supplied MipMapOptions.
-        /// Throws an exception if mips are already present (this function ensures correct MipMapOptions)
+        /// Builds a mipmap for the given image.
         /// </summary>
-        private void BuildMipMaps(MipMapOptions options)
+        /// <param name="image">The base image of the mipmap.</param>
+        /// <param name="maxCount">The maximum number of levels to generate. Ignored if non-positive.</param>
+        /// <param name="interpolation">The used interpolation method.</param>
+        /// <param name="powerOfTwo">If true, the base image is resized to have power-of-two dimensions.</param>
+        /// <returns></returns>
+        public static PixImageMipMap Create(PixImage image, ImageInterpolation interpolation = ImageInterpolation.Cubic, int maxCount = 0, bool powerOfTwo = false)
         {
-            if (ImageArray == null || ImageArray.Length == 0)
-                throw new ArgumentException("No valid PixImage available.");
+            var baseSize = image.Size;
+            var baseImage = image;
 
-            if (ImageArray.Length > 1)
-                throw new ArgumentException("PixImageMipMap already contains image pyramid");
-
-            var size = ImageArray[0].Size;
-
-            if (options.PowerOfTwo && (!Fun.IsPowerOfTwo(size.X) || !Fun.IsPowerOfTwo(size.Y)))
+            if (powerOfTwo && (!Fun.IsPowerOfTwo(baseSize.X) || !Fun.IsPowerOfTwo(baseSize.Y)))
             {
-                var powerOfTwoSize = new V2i(size.X.NextPowerOfTwo(), size.Y.NextPowerOfTwo());
-                ImageArray[0] = ((PixImage<T>)ImageArray[0]).Resized(powerOfTwoSize);
-                Report.Line(2, "Resizing PixImage to size of power of two");
-                size = powerOfTwoSize;
-                //throw new ArgumentException("Can only build mip maps for PixImages with size of power of two");
+                baseSize = Fun.NextPowerOfTwo(baseSize);
+                baseImage = image.ResizedPixImage(baseSize, interpolation);
             }
 
-            var count = options.Count == 0
-                ? Fun.MipmapLevels(size)
-                : options.Count;
+            var count = Fun.MipmapLevels(baseSize);
+            if (maxCount > 0 && count > maxCount) count = maxCount;
 
-            var mipMaps = new PixImage<T>[count];
-            mipMaps[0] = (PixImage<T>)ImageArray[0];
+            var images = new PixImage[count];
+            images[0] = baseImage;
 
-            for (int i = 1; i < count; i++)
+            for (var i = 1; i < count; i++)
             {
-                size = Fun.MipmapLevelSize(size, 1);
-                mipMaps[i] = mipMaps[i - 1].Resized(size, options.Interpolation);
+                var size = Fun.MipmapLevelSize(baseSize, i);
+                images[i] = images[i - 1].ResizedPixImage(size, interpolation);
             }
 
-            ImageArray = mipMaps;
-            //ImagesContainer.FromPixImageArray(m_images);
-            //InfoOfSet = new Info(Kind.MipMapPyramid, m_images.Length, m_images.Select(x => x.Size).ToArray());
+            return new PixImageMipMap(images);
         }
 
         #endregion
