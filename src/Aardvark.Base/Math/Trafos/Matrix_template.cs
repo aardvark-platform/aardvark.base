@@ -1825,22 +1825,30 @@ namespace Aardvark.Base
         /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static __vmsub1type__ TransposedTransformProj(this __nmtype__ m, __vmsub1type__ p)
+        public static __vmsub1type__ TransposedTransformPosProj(this __nmtype__ m, __vmsub1type__ p)
         {
             var s = /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____msub1__ * p.__fr__/*#}, add);*/ + m.M__msub1____msub1__;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static __vmsub1type__ TransposedTransformProj(this __nmtype__ m, __vmsub1type__ p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.__fields[m-1]__ is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static __vmtype__ TransposedTransformProjFull(this __nmtype__ m, __vmsub1type__ p)
+        public static __vmtype__ TransposedTransformPosProjFull(this __nmtype__ m, __vmsub1type__ p)
         {
             return new __vmtype__(/*# m.ForEach(s => { */
                 /*# mfields.Take(msub1).ForEach((fr, r) => { */m.M__r____s__ * p.__fr__/*#}, add);*/ + m.M__msub1____s__/*#}, comma);*/
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static __vmtype__ TransposedTransformProjFull(this __nmtype__ m, __vmsub1type__ p)
+            => m.TransposedTransformPosProjFull(p);
 
         //# } // n != m
         //# } // m > 2

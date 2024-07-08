@@ -24332,17 +24332,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V2i TransposedTransformProj(this M33i m, V2i p)
+        public static V2i TransposedTransformPosProj(this M33i m, V2i p)
         {
             var s = m.M02 * p.X + m.M12 * p.Y + m.M22;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V2i TransposedTransformProj(this M33i m, V2i p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V3i TransposedTransformProjFull(this M33i m, V2i p)
+        public static V3i TransposedTransformPosProjFull(this M33i m, V2i p)
         {
             return new V3i(
                 m.M00 * p.X + m.M10 * p.Y + m.M20, 
@@ -24350,6 +24354,10 @@ namespace Aardvark.Base
                 m.M02 * p.X + m.M12 * p.Y + m.M22
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V3i TransposedTransformProjFull(this M33i m, V2i p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
@@ -27645,17 +27653,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V2l TransposedTransformProj(this M33l m, V2l p)
+        public static V2l TransposedTransformPosProj(this M33l m, V2l p)
         {
             var s = m.M02 * p.X + m.M12 * p.Y + m.M22;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V2l TransposedTransformProj(this M33l m, V2l p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V3l TransposedTransformProjFull(this M33l m, V2l p)
+        public static V3l TransposedTransformPosProjFull(this M33l m, V2l p)
         {
             return new V3l(
                 m.M00 * p.X + m.M10 * p.Y + m.M20, 
@@ -27663,6 +27675,10 @@ namespace Aardvark.Base
                 m.M02 * p.X + m.M12 * p.Y + m.M22
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V3l TransposedTransformProjFull(this M33l m, V2l p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
@@ -31171,17 +31187,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V2f TransposedTransformProj(this M33f m, V2f p)
+        public static V2f TransposedTransformPosProj(this M33f m, V2f p)
         {
             var s = m.M02 * p.X + m.M12 * p.Y + m.M22;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V2f TransposedTransformProj(this M33f m, V2f p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V3f TransposedTransformProjFull(this M33f m, V2f p)
+        public static V3f TransposedTransformPosProjFull(this M33f m, V2f p)
         {
             return new V3f(
                 m.M00 * p.X + m.M10 * p.Y + m.M20, 
@@ -31189,6 +31209,10 @@ namespace Aardvark.Base
                 m.M02 * p.X + m.M12 * p.Y + m.M22
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V3f TransposedTransformProjFull(this M33f m, V2f p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
@@ -34802,17 +34826,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V2d TransposedTransformProj(this M33d m, V2d p)
+        public static V2d TransposedTransformPosProj(this M33d m, V2d p)
         {
             var s = m.M02 * p.X + m.M12 * p.Y + m.M22;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V2d TransposedTransformProj(this M33d m, V2d p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.Z is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V3d TransposedTransformProjFull(this M33d m, V2d p)
+        public static V3d TransposedTransformPosProjFull(this M33d m, V2d p)
         {
             return new V3d(
                 m.M00 * p.X + m.M10 * p.Y + m.M20, 
@@ -34820,6 +34848,10 @@ namespace Aardvark.Base
                 m.M02 * p.X + m.M12 * p.Y + m.M22
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V3d TransposedTransformProjFull(this M33d m, V2d p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
@@ -52309,17 +52341,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V3i TransposedTransformProj(this M44i m, V3i p)
+        public static V3i TransposedTransformPosProj(this M44i m, V3i p)
         {
             var s = m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V3i TransposedTransformProj(this M44i m, V3i p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V4i TransposedTransformProjFull(this M44i m, V3i p)
+        public static V4i TransposedTransformPosProjFull(this M44i m, V3i p)
         {
             return new V4i(
                 m.M00 * p.X + m.M10 * p.Y + m.M20 * p.Z + m.M30, 
@@ -52328,6 +52364,10 @@ namespace Aardvark.Base
                 m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V4i TransposedTransformProjFull(this M44i m, V3i p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
@@ -56221,17 +56261,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V3l TransposedTransformProj(this M44l m, V3l p)
+        public static V3l TransposedTransformPosProj(this M44l m, V3l p)
         {
             var s = m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V3l TransposedTransformProj(this M44l m, V3l p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V4l TransposedTransformProjFull(this M44l m, V3l p)
+        public static V4l TransposedTransformPosProjFull(this M44l m, V3l p)
         {
             return new V4l(
                 m.M00 * p.X + m.M10 * p.Y + m.M20 * p.Z + m.M30, 
@@ -56240,6 +56284,10 @@ namespace Aardvark.Base
                 m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V4l TransposedTransformProjFull(this M44l m, V3l p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
@@ -60322,17 +60370,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V3f TransposedTransformProj(this M44f m, V3f p)
+        public static V3f TransposedTransformPosProj(this M44f m, V3f p)
         {
             var s = m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V3f TransposedTransformProj(this M44f m, V3f p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V4f TransposedTransformProjFull(this M44f m, V3f p)
+        public static V4f TransposedTransformPosProjFull(this M44f m, V3f p)
         {
             return new V4f(
                 m.M00 * p.X + m.M10 * p.Y + m.M20 * p.Z + m.M30, 
@@ -60341,6 +60393,10 @@ namespace Aardvark.Base
                 m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V4f TransposedTransformProjFull(this M44f m, V3f p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
@@ -64551,17 +64607,21 @@ namespace Aardvark.Base
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
         /// Projective transform is performed. Perspective Division is performed.
         /// </summary>
-        public static V3d TransposedTransformProj(this M44d m, V3d p)
+        public static V3d TransposedTransformPosProj(this M44d m, V3d p)
         {
             var s = m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33;
             return TransposedTransformPos(m, p) * (1 / s);
         }
 
+        [Obsolete("Use TransposedTransformPosProj instead.")]
+        public static V3d TransposedTransformProj(this M44d m, V3d p)
+            => m.TransposedTransformPosProj(p);
+
         /// <summary>
         /// Transforms point p (v.W is presumed 1.0) by transposed version of matrix m.
-        /// Projective transform is performed. Perspective Division is performed.
+        /// Projective transform is performed.
         /// </summary>
-        public static V4d TransposedTransformProjFull(this M44d m, V3d p)
+        public static V4d TransposedTransformPosProjFull(this M44d m, V3d p)
         {
             return new V4d(
                 m.M00 * p.X + m.M10 * p.Y + m.M20 * p.Z + m.M30, 
@@ -64570,6 +64630,10 @@ namespace Aardvark.Base
                 m.M03 * p.X + m.M13 * p.Y + m.M23 * p.Z + m.M33
                 );
         }
+
+        [Obsolete("Use TransposedTransformPosProjFull instead.")]
+        public static V4d TransposedTransformProjFull(this M44d m, V3d p)
+            => m.TransposedTransformPosProjFull(p);
 
         #endregion
 
