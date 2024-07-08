@@ -1,6 +1,8 @@
 namespace Aardvark.Base
 
 open Microsoft.FSharp.NativeInterop
+open System
+open System.Collections.Concurrent
 open System.Runtime.InteropServices
 open System.Reflection
 
@@ -7849,6 +7851,8 @@ module PixImageTensorExtensions =
         
         [<AutoOpen>]
         module private CopyDispatch =
+            let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
+            
             type private Dispatcher() =
                 static member CopyImageToNative<'a when 'a : unmanaged>(src : PixImage<'a>, dst : nativeint, dstInfo : VolumeInfo) =
                     let dst = dst |> NativeVolume.ofNativeInt dstInfo
@@ -7858,19 +7862,24 @@ module PixImageTensorExtensions =
                     let src = src |> NativeVolume.ofNativeInt srcInfo
                     dst |> copyFromNativeVolume src
             
-            module Method =
-                let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
-                let copyImageToNative = typeof<Dispatcher>.GetMethod("CopyImageToNative", flags)
-                let copyNativeToImage = typeof<Dispatcher>.GetMethod("CopyNativeToImage", flags)
-        
+            module ImageToNative =
+                let private def = typeof<Dispatcher>.GetMethod(nameof Dispatcher.CopyImageToNative, flags)
+                let private lookup = ConcurrentDictionary<Type, MethodInfo>()
+                let getGenericMethod (t: Type) = lookup.GetOrAdd(t, fun t -> def.MakeGenericMethod t)
+            
+            module NativeToImage =
+                let private def = typeof<Dispatcher>.GetMethod(nameof Dispatcher.CopyNativeToImage, flags)
+                let private lookup = ConcurrentDictionary<Type, MethodInfo>()
+                let getGenericMethod (t: Type) = lookup.GetOrAdd(t, fun t -> def.MakeGenericMethod t)
+            
         /// Copies the given untyped PixImage to the given native address
         let copyToNative (dst : nativeint) (dstInfo : VolumeInfo) (pix : PixImage) =
-            let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]
+            let mi = ImageToNative.getGenericMethod pix.PixFormat.Type
             mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore
         
         /// Copies from the given native address to the given untyped PixImage
         let copyFromNative (src : nativeint) (srcInfo : VolumeInfo) (pix : PixImage) =
-            let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]
+            let mi = NativeToImage.getGenericMethod pix.PixFormat.Type
             mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore
         
 
@@ -51980,6 +51989,8 @@ module PixVolumeTensorExtensions =
         
         [<AutoOpen>]
         module private CopyDispatch =
+            let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
+            
             type private Dispatcher() =
                 static member CopyImageToNative<'a when 'a : unmanaged>(src : PixVolume<'a>, dst : nativeint, dstInfo : Tensor4Info) =
                     let dst = dst |> NativeTensor4.ofNativeInt dstInfo
@@ -51989,19 +52000,24 @@ module PixVolumeTensorExtensions =
                     let src = src |> NativeTensor4.ofNativeInt srcInfo
                     dst |> copyFromNativeTensor4 src
             
-            module Method =
-                let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public
-                let copyImageToNative = typeof<Dispatcher>.GetMethod("CopyImageToNative", flags)
-                let copyNativeToImage = typeof<Dispatcher>.GetMethod("CopyNativeToImage", flags)
-        
+            module ImageToNative =
+                let private def = typeof<Dispatcher>.GetMethod(nameof Dispatcher.CopyImageToNative, flags)
+                let private lookup = ConcurrentDictionary<Type, MethodInfo>()
+                let getGenericMethod (t: Type) = lookup.GetOrAdd(t, fun t -> def.MakeGenericMethod t)
+            
+            module NativeToImage =
+                let private def = typeof<Dispatcher>.GetMethod(nameof Dispatcher.CopyNativeToImage, flags)
+                let private lookup = ConcurrentDictionary<Type, MethodInfo>()
+                let getGenericMethod (t: Type) = lookup.GetOrAdd(t, fun t -> def.MakeGenericMethod t)
+            
         /// Copies the given untyped PixVolume to the given native address
         let copyToNative (dst : nativeint) (dstInfo : Tensor4Info) (pix : PixVolume) =
-            let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]
+            let mi = ImageToNative.getGenericMethod pix.PixFormat.Type
             mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore
         
         /// Copies from the given native address to the given untyped PixVolume
         let copyFromNative (src : nativeint) (srcInfo : Tensor4Info) (pix : PixVolume) =
-            let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]
+            let mi = NativeToImage.getGenericMethod pix.PixFormat.Type
             mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore
         
 

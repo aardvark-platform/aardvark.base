@@ -1296,6 +1296,8 @@ module Generator =
 
             line "[<AutoOpen>]"
             start "module private CopyDispatch ="
+            line "let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public"
+            line ""
             start "type private Dispatcher() ="
             start "static member CopyImageToNative<'a when 'a : unmanaged>(src : %s<'a>, dst : nativeint, dstInfo : %sInfo) =" pix managedName
             line "let dst = dst |> %s.ofNativeInt dstInfo" name
@@ -1311,25 +1313,33 @@ module Generator =
             stop() // Dispatcher end
             line ""
 
-            start "module Method ="
-            line "let private flags = BindingFlags.Static ||| BindingFlags.NonPublic ||| BindingFlags.Public"
-            line "let copyImageToNative = typeof<Dispatcher>.GetMethod(\"CopyImageToNative\", flags)"
-            line "let copyNativeToImage = typeof<Dispatcher>.GetMethod(\"CopyNativeToImage\", flags)"
-            stop() // Method end
+
+            start "module ImageToNative ="
+            line "let private def = typeof<Dispatcher>.GetMethod(nameof Dispatcher.CopyImageToNative, flags)"
+            line "let private lookup = ConcurrentDictionary<Type, MethodInfo>()"
+            line "let getGenericMethod (t: Type) = lookup.GetOrAdd(t, fun t -> def.MakeGenericMethod t)"
+            stop()
+            line ""
+
+            start "module NativeToImage ="
+            line "let private def = typeof<Dispatcher>.GetMethod(nameof Dispatcher.CopyNativeToImage, flags)"
+            line "let private lookup = ConcurrentDictionary<Type, MethodInfo>()"
+            line "let getGenericMethod (t: Type) = lookup.GetOrAdd(t, fun t -> def.MakeGenericMethod t)"
+            stop()
+            line ""
 
             stop() // CopyDispatch end
-            line""
 
             line "/// Copies the given untyped %s to the given native address" pix
             start "let copyToNative (dst : nativeint) (dstInfo : %sInfo) (pix : %s) =" managedName pix
-            line "let mi = Method.copyImageToNative.MakeGenericMethod [| pix.PixFormat.Type |]"
+            line "let mi = ImageToNative.getGenericMethod pix.PixFormat.Type"
             line "mi.Invoke(null, [|pix; dst; dstInfo|]) |> ignore"
             stop()
             line ""
 
             line "/// Copies from the given native address to the given untyped %s" pix
             start "let copyFromNative (src : nativeint) (srcInfo : %sInfo) (pix : %s) =" managedName pix
-            line "let mi = Method.copyNativeToImage.MakeGenericMethod [| pix.PixFormat.Type |]"
+            line "let mi = NativeToImage.getGenericMethod pix.PixFormat.Type"
             line "mi.Invoke(null, [|src; srcInfo; pix|]) |> ignore"
             stop()
             line ""
@@ -1346,6 +1356,8 @@ module Generator =
         line "namespace Aardvark.Base"
         line ""
         line "open Microsoft.FSharp.NativeInterop"
+        line "open System"
+        line "open System.Collections.Concurrent"
         line "open System.Runtime.InteropServices"
         line "open System.Reflection"
         line ""
