@@ -1,48 +1,5 @@
 ### 5.3.0-prerelease0001
-- Updated to .NET 8 and F# 8
-- Optimized partial active patterns by using struct representation
-- Added F# tensor utilities and math functions using SRTP
-- Deprecated Error type
-- Deprecated GenericValues.zero
-- Fixed return type of LengthSquared for integer-based vectors. Now returns an integer instead of double.
-- Added missing readonly modifiers for structs
-- Renamed CIeLuvf to CieLuvf
-- Removed IPix and related types:
-  - `PixCubeMap` and `PixCube`: Use `PixImageCube` instead.
-  - `PixMipMap2d`: Use `PixImageMipMap` instead.
-- Reworked `PixImageMipMap`:
-  - Removed generic `PixImageMipMap<T>`
-  - Removed `MipMapOptions`, static `Create()` method takes multiple optional parameters instead.
-- Cleanup of `PixImage` and `PixVolume`:
-  - Deprecated `Array` in favor of `Data`
-  - Deprecated `PixImage.IntStride` in favor of `Stride` and `StrideL`
-  - Added `PixVolume.BytesPerChannel`
-  - Added `PixVolume.ToCanonicalDenseLayout`
-  - Added `Add PixImage<T>.Transformed` (abstract `PixImage.Transformed` is renamed to `PixImage.TransformedPixImage`)
-  - Removed obsolete loading API
-- Removed obsolete API:
-  - [Color] obsolete conversion functions
-  - [Color] `Parse()` overload with IFormatProvider parameter
-  - `Async.AwaitTask` (already in FSharp.Core)
-  - `Caching.cacheFunction`
-  - `IDictionary.GetValueOrDefault`
-  - broken UnsafeCoerce utilities
-  - `CameraExtrinsics` and `CameraIntrinsics`
-  - float variants of `Constant`
-  - `IPol.SlerpShortest`
-  - `Cell.Parse()` with offset parameter
-  - `M44x.PerspectiveProjectionTransformLH`
-  - `Trafo.PerspectiveProjectionOpenGl`
-  - `Trafo.PerspectiveProjectionLH`
-  - `Trafo.OrthoProjectionOpenGl`
-  - `RangeSet` and `RangeSet64`
-  - `RangeSet1*.insert` and `window`
-  - `Time` and `TimeLink`
-  - `ExecutableMemory`
-  - `Dictionary.TryRemove` and `GetOrAdd`
-  - `Seq.forany` and `Array.forany` (use `exists` instead)
-  - `Strings` module
-  - Assembler related types and functions (use Aardvark.Assembler instead)
+- Initial prerelease
 
 ### 5.2.31
 * fixed Hash Computations for non-primitive types

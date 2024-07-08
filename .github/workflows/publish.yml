@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - newbuild
+      - v53
     paths:
       - RELEASE_NOTES.md
       - .github/workflows/publish.yml
@@ -22,9 +22,6 @@ jobs:
         run: dotnet tool restore
       - name: Restore
         run: dotnet paket restore
-      # - name: Generate Code
-      #   shell: cmd
-      #   run: generate.cmd
       - name: Build
         shell: cmd
         run: dotnet build -c Release src\Aardvark.sln
