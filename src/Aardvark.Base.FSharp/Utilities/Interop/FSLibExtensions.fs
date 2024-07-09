@@ -277,10 +277,8 @@ module Prelude =
             Buffer.MemoryCopy(source.ToPointer(), destination.ToPointer(), destinationSizeInBytes, sourceBytesToCopy)
 
 
-    type Result<'T> = Result<'T, string>
-
     (* Error datastructure *)
-    [<Obsolete("Use Result<'T> instead.")>]
+    [<Obsolete("Use Result<'T, string> instead.")>]
     type Error<'T> =
         | Success of 'T
         | Error of string
