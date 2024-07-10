@@ -10,96 +10,76 @@ module FSharpMath =
 
     module Helpers =
 
-        // We only support float and float32 based types for exp2, since we have to ensure that the return type matches the input type.
-        // Fun.PowerOfTwo does not have that property for integers generally, e.g. Fun.PowerOfTwo : int64 -> uint64.
-        // In .NET 7+ some of these functions already exist, so we must avoid generating those overloads via ifdefs.
-        // Otherwise, we'd get compiler errors due to ambiguous calls.
-        [<Sealed; AbstractClass>]
-        type Exp2() =
-#if NET7_0_OR_GREATER
-            class end
-#else
-            static member inline Exp2(x: float)   : float   = Fun.PowerOfTwo x
-            static member inline Exp2(x: float32) : float32 = Fun.PowerOfTwo x
-#endif
-
+        // Some of these SRTP member methods have odd names to avoid clashes with
+        // methods added in .NET 7 (e.g. Double.Log2). If we use those standard names in our helper types we
+        // get build errors due to ambiguities when targeting .NET 7+.
         [<Sealed; AbstractClass>]
         type Log2() =
-#if NET7_0_OR_GREATER
-            class end
-#else
-            static member inline Log2(x: float)   : float   = Fun.Log2 x
-            static member inline Log2(x: float32) : float32 = Fun.Log2 x
-#endif
+            static member inline LogBinary(x: int8)    : float   = Fun.Log2 x
+            static member inline LogBinary(x: int16)   : float   = Fun.Log2 x
+            static member inline LogBinary(x: int32)   : float   = Fun.Log2 x
+            static member inline LogBinary(x: int64)   : float   = Fun.Log2 x
+            static member inline LogBinary(x: uint8)   : float   = Fun.Log2 x
+            static member inline LogBinary(x: uint16)  : float   = Fun.Log2 x
+            static member inline LogBinary(x: uint32)  : float   = Fun.Log2 x
+            static member inline LogBinary(x: uint64)  : float   = Fun.Log2 x
+            static member inline LogBinary(x: float)   : float   = Fun.Log2 x
+            static member inline LogBinary(x: float32) : float32 = Fun.Log2 x
 
         [<Sealed; AbstractClass>]
         type Acosh() =
-#if NET7_0_OR_GREATER
-            class end
-#else
-            static member inline Acosh(x: float)   : float   = Fun.Acosh x
-            static member inline Acosh(x: float32) : float32 = Fun.Acosh x
-#endif
+            static member inline Acoshb(x: float)   : float   = Fun.Acosh x
+            static member inline Acoshb(x: float32) : float32 = Fun.Acosh x
 
         [<Sealed; AbstractClass>]
         type Asinh() =
-#if NET7_0_OR_GREATER
-            class end
-#else
-            static member inline Asinh(x: float)   : float   = Fun.Asinh x
-            static member inline Asinh(x: float32) : float32 = Fun.Asinh x
-#endif
+            static member inline Asinhb(x: float)   : float   = Fun.Asinh x
+            static member inline Asinhb(x: float32) : float32 = Fun.Asinh x
 
         [<Sealed; AbstractClass>]
         type Atanh() =
-#if NET7_0_OR_GREATER
-            class end
-#else
-            static member inline Atanh(x: float)   : float   = Fun.Atanh x
-            static member inline Atanh(x: float32) : float32 = Fun.Atanh x
-#endif
+            static member inline Atanhb(x: float)   : float   = Fun.Atanh x
+            static member inline Atanhb(x: float32) : float32 = Fun.Atanh x
 
         [<Sealed; AbstractClass>]
         type Cbrt() =
-#if NET7_0_OR_GREATER
-            class end
-#else
-            static member inline Cbrt(x: float)   : float   = Fun.Cbrt x
-            static member inline Cbrt(x: float32) : float32 = Fun.Cbrt x
-#endif
+            static member inline CubeRoot(x: int8)    : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: int16)   : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: int32)   : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: int64)   : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: uint8)   : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: uint16)  : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: uint32)  : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: uint64)  : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: float)   : float   = Fun.Cbrt x
+            static member inline CubeRoot(x: float32) : float32 = Fun.Cbrt x
 
         [<Sealed; AbstractClass>]
         type Lerp() =
-            static member inline Lerp(a: int8, b: int8, t: float)         : int8    = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: int8, b: int8, t: float32)       : int8    = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint8, b: uint8, t: float)       : uint8   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint8, b: uint8, t: float32)     : uint8   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: int16, b: int16, t: float)       : int16   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: int16, b: int16, t: float32)     : int16   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint16, b: uint16, t: float)     : uint16  = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint16, b: uint16, t: float32)   : uint16  = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: int32, b: int32, t: float)       : int32   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: int32, b: int32, t: float32)     : int32   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint32, b: uint32, t: float)     : uint32  = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint32, b: uint32, t: float32)   : uint32  = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: int64, b: int64, t: float)       : int64   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: int64, b: int64, t: float32)     : int64   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint64, b: uint64, t: float)     : uint64  = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: uint64, b: uint64, t: float32)   : uint64  = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: decimal, b: decimal, t: decimal) : decimal = Fun.Lerp(t, a, b)
-#if !NET7_0_OR_GREATER
-            static member inline Lerp(a: float, b: float, t: float)       : float   = Fun.Lerp(t, a, b)
-            static member inline Lerp(a: float32, b: float32, t: float32) : float32 = Fun.Lerp(t, a, b)
-#endif
+            static member inline LinearInterp(t: float, a: int8, b: int8)         : int8    = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: int8, b: int8)       : int8    = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: uint8, b: uint8)       : uint8   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: uint8, b: uint8)     : uint8   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: int16, b: int16)       : int16   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: int16, b: int16)     : int16   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: uint16, b: uint16)     : uint16  = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: uint16, b: uint16)   : uint16  = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: int32, b: int32)       : int32   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: int32, b: int32)     : int32   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: uint32, b: uint32)     : uint32  = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: uint32, b: uint32)   : uint32  = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: int64, b: int64)       : int64   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: int64, b: int64)     : int64   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: uint64, b: uint64)     : uint64  = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: uint64, b: uint64)   : uint64  = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: decimal, a: decimal, b: decimal) : decimal = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float, a: float, b: float)       : float   = Fun.Lerp(t, a, b)
+            static member inline LinearInterp(t: float32, a: float32, b: float32) : float32 = Fun.Lerp(t, a, b)
 
         [<Sealed; AbstractClass>]
         type CopySign() =
-#if NET7_0_OR_GREATER
-            class end
-#else
-            static member inline CopySign(value: float, sign: float)     : float   = Fun.CopySign(value, sign)
-            static member inline CopySign(value: float32, sign: float32) : float32 = Fun.CopySign(value, sign)
-#endif
+            static member inline CopySgn(value: float, sign: float)     : float   = Fun.CopySign(value, sign)
+            static member inline CopySgn(value: float32, sign: float32) : float32 = Fun.CopySign(value, sign)
 
         [<Sealed; AbstractClass>]
         type Comparison() =
@@ -199,22 +179,22 @@ module FSharpMath =
             ((^Z or ^T or ^U) : (static member Pown : ^T * ^U -> ^T) (x, y))
 
         let inline exp2Aux (_ : ^Z) (x : ^T) =
-            ((^Z or ^T) : (static member Exp2 : ^T -> ^T) (x))
+            ((^Z or ^T) : (static member PowerOfTwo : ^T -> ^T) (x))
 
         let inline log2Aux (_ : ^Z) (x : ^T) =
-            ((^Z or ^T) : (static member Log2 : ^T -> ^T) x)
+            ((^Z or ^T) : (static member LogBinary : ^T -> ^T) x)
 
         let inline asinhAux (_ : ^Z) (x : ^T) =
-            ((^Z or ^T) : (static member Asinh : ^T -> ^T) x)
+            ((^Z or ^T) : (static member Asinhb : ^T -> ^T) x)
 
         let inline acoshAux (_ : ^Z) (x : ^T) =
-            ((^Z or ^T) : (static member Acosh : ^T -> ^T) x)
+            ((^Z or ^T) : (static member Acoshb : ^T -> ^T) x)
 
         let inline atanhAux (_ : ^Z) (x : ^T) =
-            ((^Z or ^T) : (static member Atanh : ^T -> ^T) x)
+            ((^Z or ^T) : (static member Atanhb : ^T -> ^T) x)
 
         let inline cbrtAux (_ : ^Z) (x : ^T) =
-            ((^Z or ^T) : (static member Cbrt : ^T -> ^T) x)
+            ((^Z or ^T) : (static member CubeRoot : ^T -> ^T) x)
 
         // See comment for powAux
         let inline minAux (_ : ^Z) (x : ^T) (y : ^U) =
@@ -228,9 +208,8 @@ module FSharpMath =
         let inline saturateAux (_ : ^Z) (x : ^T) =
             ((^Z or ^T) : (static member Saturate : ^T -> ^T) (x))
 
-        // "Normal" parameter order in constraint because this may resolve to e.g. Single.Lerp(a, b, t) in .NET 7+
         let inline lerpAux (_ : ^Z) (x : ^T) (y : ^T) (t : ^U) =
-            ((^Z or ^T or ^U) : (static member Lerp : ^T * ^T * ^U -> ^T) (x, y, t))
+            ((^Z or ^T or ^U) : (static member LinearInterp : ^U * ^T * ^T -> ^T) (t, x, y))
 
         let inline invLerpAux (_ : ^Z) (a : ^T) (b : ^T) (y : ^T) =
             ((^Z or ^T or ^U) : (static member InvLerp : ^T * ^T * ^T -> ^U) (y, a, b))
@@ -246,7 +225,7 @@ module FSharpMath =
 
         // See comment for powAux
         let inline copysignAux (_ : ^Z) (value : ^T) (sign : ^U) =
-            ((^Z or ^T or ^U) : (static member CopySign : ^T * ^U -> ^T) (value, sign))
+            ((^Z or ^T or ^U) : (static member CopySgn : ^T * ^U -> ^T) (value, sign))
 
         let inline degreesAux (_ : ^Z) (radians : ^T) =
             ((^Z or ^T) : (static member DegreesFromRadians : ^T -> ^T) radians)
@@ -304,9 +283,9 @@ module FSharpMath =
     let inline pown x y =
         pownAux Unchecked.defaultof<Fun> x y
 
-    /// Returns 2 raised to the power of x (must be float or double).
+    /// Returns 2 raised to the power of x (must be float, double, or uint64).
     let inline exp2 x =
-        exp2Aux Unchecked.defaultof<Helpers.Exp2> x
+        exp2Aux Unchecked.defaultof<Fun> x
 
     /// Returns the base 2 logarithm of x.
     let inline log2 x =
@@ -416,14 +395,14 @@ module FSharpMath =
 
             static member Signum(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member Signumi(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = 0
-            static member Cbrt(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member CubeRoot(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
             static member Log(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
-            static member Log2(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member LogBinary(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
-            static member Acosh(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
-            static member Asinh(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
-            static member Atanh(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Acoshb(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Asinhb(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Atanhb(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
             static member Sqrt(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
 
@@ -621,6 +600,7 @@ module FSharpMath =
         let exp2Working() =
             let a : float = exp2 1.0
             let a : float32 = exp2 1.0f
+            let a : uint64 = exp2 1UL
 
             let a = 2.0 * (exp2 V3d.III)
             let a = 2.0 * (indirectExp2 V3d.III)
@@ -780,6 +760,7 @@ module FSharpMath =
             let a : V4i = lerp V4i.Zero V4i.One V4d.Half
             let a : V2i = lerp V2i.Zero V2i.One 0.5f
             let a : V4i = lerp V4i.Zero V4i.One V4f.Half
+            let a : C4b = lerp C4b.Black C4b.Black 0.5f
             ()
 
         let invLerpWorking() =

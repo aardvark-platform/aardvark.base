@@ -312,7 +312,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Acosh(ComplexF x)
+        public static ComplexF Acoshb(ComplexF x)
             => x.Acosh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -332,7 +332,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Asinh(ComplexF x)
+        public static ComplexF Asinhb(ComplexF x)
             => x.Asinh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -352,7 +352,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Atanh(ComplexF x)
+        public static ComplexF Atanhb(ComplexF x)
             => x.Atanh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -372,7 +372,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Cbrt(ComplexF x)
+        public static ComplexF CubeRoot(ComplexF x)
             => x.Cbrt();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -387,7 +387,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexF Log2(ComplexF x)
+        public static ComplexF LogBinary(ComplexF x)
             => x.Log2();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1330,7 +1330,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Acosh(ComplexD x)
+        public static ComplexD Acoshb(ComplexD x)
             => x.Acosh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1350,7 +1350,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Asinh(ComplexD x)
+        public static ComplexD Asinhb(ComplexD x)
             => x.Asinh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1370,7 +1370,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Atanh(ComplexD x)
+        public static ComplexD Atanhb(ComplexD x)
             => x.Atanh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1390,7 +1390,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Cbrt(ComplexD x)
+        public static ComplexD CubeRoot(ComplexD x)
             => x.Cbrt();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1405,7 +1405,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ComplexD Log2(ComplexD x)
+        public static ComplexD LogBinary(ComplexD x)
             => x.Log2();
 
         [EditorBrowsable(EditorBrowsableState.Never)]

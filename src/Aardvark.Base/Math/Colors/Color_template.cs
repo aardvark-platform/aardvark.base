@@ -1126,7 +1126,7 @@ namespace Aardvark.Base
         //# if (ft.IsReal && tt != ft) continue;
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __type__ Lerp(__type__ a, __type__ b, __tt.Name__ t)
+        public static __type__ LinearInterp(__tt.Name__ t, __type__ a, __type__ b)
             => Fun.Lerp(t, a, b);
 
         //#}

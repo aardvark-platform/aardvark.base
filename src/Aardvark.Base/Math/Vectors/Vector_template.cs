@@ -1137,7 +1137,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Acosh(__vtype__ v)
+        public static __vtype__ Acoshb(__vtype__ v)
             => Fun.Acosh(v);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1157,7 +1157,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Asinh(__vtype__ v)
+        public static __vtype__ Asinhb(__vtype__ v)
             => Fun.Asinh(v);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1177,7 +1177,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Atanh(__vtype__ v)
+        public static __vtype__ Atanhb(__vtype__ v)
             => Fun.Atanh(v);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1202,7 +1202,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Cbrt(__vtype__ v)
+        public static __vtype__ CubeRoot(__vtype__ v)
             => Fun.Cbrt(v);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1212,17 +1212,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Exp2(__vtype__ v)
-            => Fun.PowerOfTwo(v);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __vtype__ Log(__vtype__ v)
             => Fun.Log(v);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Log2(__vtype__ v)
+        public static __vtype__ LogBinary(__vtype__ v)
             => Fun.Log2(v);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1232,12 +1227,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ CopySign(__vtype__ value, __vtype__ sign)
+        public static __vtype__ CopySgn(__vtype__ value, __vtype__ sign)
             => Fun.CopySign(value, sign);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ CopySign(__vtype__ value, __ftype__ sign)
+        public static __vtype__ CopySgn(__vtype__ value, __ftype__ sign)
             => Fun.CopySign(value, sign);
 
         //# } // ft.IsReal
@@ -1246,12 +1241,12 @@ namespace Aardvark.Base
         //# if (ft.IsReal && tt != ft) continue;
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Lerp(__vtype__ a, __vtype__ b, __tt.Name__ t)
+        public static __vtype__ LinearInterp(__tt.Name__ t, __vtype__ a, __vtype__ b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __vtype__ Lerp(__vtype__ a, __vtype__ b, __vtt.Name__ t)
+        public static __vtype__ LinearInterp(__vtt.Name__ t, __vtype__ a, __vtype__ b)
             => Fun.Lerp(t, a, b);
 
         //#}

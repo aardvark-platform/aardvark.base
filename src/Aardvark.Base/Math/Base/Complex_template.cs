@@ -324,7 +324,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Acosh(__ct__ x)
+        public static __ct__ Acoshb(__ct__ x)
             => x.Acosh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -344,7 +344,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Asinh(__ct__ x)
+        public static __ct__ Asinhb(__ct__ x)
             => x.Asinh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -364,7 +364,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Atanh(__ct__ x)
+        public static __ct__ Atanhb(__ct__ x)
             => x.Atanh();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -384,7 +384,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Cbrt(__ct__ x)
+        public static __ct__ CubeRoot(__ct__ x)
             => x.Cbrt();
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -399,7 +399,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __ct__ Log2(__ct__ x)
+        public static __ct__ LogBinary(__ct__ x)
             => x.Log2();
 
         [EditorBrowsable(EditorBrowsableState.Never)]

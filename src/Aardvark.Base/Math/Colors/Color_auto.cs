@@ -1584,12 +1584,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3b Lerp(C3b a, C3b b, float t)
+        public static C3b LinearInterp(float t, C3b a, C3b b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3b Lerp(C3b a, C3b b, double t)
+        public static C3b LinearInterp(double t, C3b a, C3b b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -3860,12 +3860,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3us Lerp(C3us a, C3us b, float t)
+        public static C3us LinearInterp(float t, C3us a, C3us b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3us Lerp(C3us a, C3us b, double t)
+        public static C3us LinearInterp(double t, C3us a, C3us b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -6059,12 +6059,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3ui Lerp(C3ui a, C3ui b, float t)
+        public static C3ui LinearInterp(float t, C3ui a, C3ui b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3ui Lerp(C3ui a, C3ui b, double t)
+        public static C3ui LinearInterp(double t, C3ui a, C3ui b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -8133,7 +8133,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3f Lerp(C3f a, C3f b, float t)
+        public static C3f LinearInterp(float t, C3f a, C3f b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -10239,7 +10239,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3d Lerp(C3d a, C3d b, double t)
+        public static C3d LinearInterp(double t, C3d a, C3d b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -12866,12 +12866,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4b Lerp(C4b a, C4b b, float t)
+        public static C4b LinearInterp(float t, C4b a, C4b b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4b Lerp(C4b a, C4b b, double t)
+        public static C4b LinearInterp(double t, C4b a, C4b b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -15425,12 +15425,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4us Lerp(C4us a, C4us b, float t)
+        public static C4us LinearInterp(float t, C4us a, C4us b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4us Lerp(C4us a, C4us b, double t)
+        public static C4us LinearInterp(double t, C4us a, C4us b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -17890,12 +17890,12 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4ui Lerp(C4ui a, C4ui b, float t)
+        public static C4ui LinearInterp(float t, C4ui a, C4ui b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4ui Lerp(C4ui a, C4ui b, double t)
+        public static C4ui LinearInterp(double t, C4ui a, C4ui b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -20145,7 +20145,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4f Lerp(C4f a, C4f b, float t)
+        public static C4f LinearInterp(float t, C4f a, C4f b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -22435,7 +22435,7 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4d Lerp(C4d a, C4d b, double t)
+        public static C4d LinearInterp(double t, C4d a, C4d b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]

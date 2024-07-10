@@ -50,3 +50,4 @@ module MathTests =
         lerp (V2d(50)) (V2d(100)) 0.5           |> should equal (Fun.Lerp(0.5, V2d(50), V2d(100)))
         lerp (V2d(50)) (V2d(100)) (V2d(0.5))    |> should equal (Fun.Lerp(V2d(0.5), V2d(50), V2d(100)))
 
+        lerp (C4d(50.0)) (C4d(100.0)) 0.5       |> should equal (Fun.Lerp(0.5, C4d(50.0), C4d(100.0)))
