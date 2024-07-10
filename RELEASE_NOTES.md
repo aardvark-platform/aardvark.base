@@ -1,6 +1,7 @@
 ### 5.3.0-prerelease0002
 - Removed Result<'T> alias
-- [FSharpMath] Fixed conflicts in SRTP member names with .NET 7
+- [FSharpMath] Fixed conflicts in SRTP member names with .NET
+- [Color] Added Fun.Lerp overloads with vector parameter
 
 ### 5.3.0-prerelease0001
 - Initial prerelease
