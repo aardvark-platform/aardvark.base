@@ -1219,6 +1219,7 @@ namespace Aardvark.Base
                 Method("Log", DoubleType, NotReal(), Tensor("x")),
                 Method("Log2", RealTypes, Tensor("x")),
                 Method("Log2", DoubleType, NotReal(), Tensor("x")),
+                Method("Log2Int", IntType, Tensor("x")),
                 Method("Log10", RealTypes, Tensor("x")),
                 Method("Log10", DoubleType, NotReal(), Tensor("x")),
                 Method("Log", RealTypes, Tensor("x"), Scalar("basis")),

@@ -184,6 +184,9 @@ module FSharpMath =
         let inline log2Aux (_ : ^Z) (x : ^T) =
             ((^Z or ^T) : (static member LogBinary : ^T -> ^T) x)
 
+        let inline log2intAux (_ : ^Z) (x : ^T) =
+            ((^Z or ^T) : (static member Log2Int : ^T -> ^U) x)
+
         let inline asinhAux (_ : ^Z) (x : ^T) =
             ((^Z or ^T) : (static member Asinhb : ^T -> ^T) x)
 
@@ -290,6 +293,10 @@ module FSharpMath =
     /// Returns the base 2 logarithm of x.
     let inline log2 x =
         log2Aux Unchecked.defaultof<Helpers.Log2> x
+
+    /// Returns the base 2 logarithm of x rounded to the next integer towards negative infinity.
+    let inline log2int x =
+        log2intAux Unchecked.defaultof<Fun> x
 
     /// Returns the inverse hyperbolic sine of x.
     let inline asinh x =
@@ -399,6 +406,7 @@ module FSharpMath =
 
             static member Log(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member LogBinary(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
+            static member Log2Int(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = 0
 
             static member Acoshb(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
             static member Asinhb(h : MyCustomNumericTypeExtensionTestTypeForInternalTesting) = h
@@ -658,6 +666,16 @@ module FSharpMath =
             let a : ComplexD = log2 ComplexD.One
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = log2 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             let a : MyCustomNumericTypeExtensionTestTypeForInternalTesting = indirectLog2 (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            ()
+
+        let inline indirectLog2int (x : ^T) =
+            log2int x
+
+        let log2intWorking() =
+            let a : int = log2int 10.0
+            let a : V2i = log2int V2d.II
+            let a : int = log2int (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
+            let a : int = indirectLog2int (MyCustomNumericTypeExtensionTestTypeForInternalTesting())
             ()
 
         let acoshWorking() =
