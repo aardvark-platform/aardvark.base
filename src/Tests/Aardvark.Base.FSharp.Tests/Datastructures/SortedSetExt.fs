@@ -44,7 +44,6 @@ module SortedSetNeighbours =
         for i in 0..10000 do
             
             let remove = r.NextDouble() > 0.5 && d.Count > 0
-            Console.WriteLine("iteration {0}: {1}", i, d.Count)
 
             if remove && i > 200 then
                 let kvp = d |> Seq.item (r.Next(d.Count))
