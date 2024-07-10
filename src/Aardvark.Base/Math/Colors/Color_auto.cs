@@ -1589,7 +1589,17 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b LinearInterp(V3f t, C3b a, C3b b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b LinearInterp(double t, C3b a, C3b b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3b LinearInterp(V3d t, C3b a, C3b b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1758,18 +1768,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3b Lerp(this float x, C3b a, C3b b)
-        {
-            return new C3b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3b Lerp(this float t, C3b a, C3b b)
+            => new C3b(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3b Lerp(this double x, C3b a, C3b b)
-        {
-            return new C3b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3b Lerp(this V3f t, C3b a, C3b b)
+            => new C3b(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3b Lerp(this double t, C3b a, C3b b)
+            => new C3b(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3b Lerp(this V3d t, C3b a, C3b b)
+            => new C3b(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
 
         #endregion
 
@@ -3865,7 +3883,17 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us LinearInterp(V3f t, C3us a, C3us b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us LinearInterp(double t, C3us a, C3us b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3us LinearInterp(V3d t, C3us a, C3us b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -4034,18 +4062,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3us Lerp(this float x, C3us a, C3us b)
-        {
-            return new C3us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3us Lerp(this float t, C3us a, C3us b)
+            => new C3us(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3us Lerp(this double x, C3us a, C3us b)
-        {
-            return new C3us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3us Lerp(this V3f t, C3us a, C3us b)
+            => new C3us(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3us Lerp(this double t, C3us a, C3us b)
+            => new C3us(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3us Lerp(this V3d t, C3us a, C3us b)
+            => new C3us(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
 
         #endregion
 
@@ -6064,7 +6100,17 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui LinearInterp(V3f t, C3ui a, C3ui b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui LinearInterp(double t, C3ui a, C3ui b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3ui LinearInterp(V3d t, C3ui a, C3ui b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -6233,18 +6279,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3ui Lerp(this float x, C3ui a, C3ui b)
-        {
-            return new C3ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3ui Lerp(this float t, C3ui a, C3ui b)
+            => new C3ui(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3ui Lerp(this double x, C3ui a, C3ui b)
-        {
-            return new C3ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3ui Lerp(this V3f t, C3ui a, C3ui b)
+            => new C3ui(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3ui Lerp(this double t, C3ui a, C3ui b)
+            => new C3ui(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3ui Lerp(this V3d t, C3ui a, C3ui b)
+            => new C3ui(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
 
         #endregion
 
@@ -8138,6 +8192,11 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f LinearInterp(V3f t, C3f a, C3f b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f DivideByInt(C3f c, int x)
             => c / x;
 
@@ -8302,10 +8361,15 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3f Lerp(this float x, C3f a, C3f b)
-        {
-            return new C3f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3f Lerp(this float t, C3f a, C3f b)
+            => new C3f(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3f Lerp(this V3f t, C3f a, C3f b)
+            => new C3f(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
+
         #endregion
 
         #region ApproximateEquals
@@ -10244,6 +10308,11 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d LinearInterp(V3d t, C3d a, C3d b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d DivideByInt(C3d c, int x)
             => c / x;
 
@@ -10408,10 +10477,15 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C3d Lerp(this double x, C3d a, C3d b)
-        {
-            return new C3d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B));
-        }
+        public static C3d Lerp(this double t, C3d a, C3d b)
+            => new C3d(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C3d Lerp(this V3d t, C3d a, C3d b)
+            => new C3d(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B));
+
         #endregion
 
         #region ApproximateEquals
@@ -12871,7 +12945,17 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b LinearInterp(V4f t, C4b a, C4b b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b LinearInterp(double t, C4b a, C4b b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4b LinearInterp(V4d t, C4b a, C4b b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -13050,18 +13134,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4b Lerp(this float x, C4b a, C4b b)
-        {
-            return new C4b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4b Lerp(this float t, C4b a, C4b b)
+            => new C4b(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4b Lerp(this double x, C4b a, C4b b)
-        {
-            return new C4b(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4b Lerp(this V4f t, C4b a, C4b b)
+            => new C4b(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4b Lerp(this double t, C4b a, C4b b)
+            => new C4b(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4b Lerp(this V4d t, C4b a, C4b b)
+            => new C4b(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
 
         #endregion
 
@@ -15430,7 +15522,17 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us LinearInterp(V4f t, C4us a, C4us b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us LinearInterp(double t, C4us a, C4us b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4us LinearInterp(V4d t, C4us a, C4us b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -15610,18 +15712,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4us Lerp(this float x, C4us a, C4us b)
-        {
-            return new C4us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4us Lerp(this float t, C4us a, C4us b)
+            => new C4us(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4us Lerp(this double x, C4us a, C4us b)
-        {
-            return new C4us(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4us Lerp(this V4f t, C4us a, C4us b)
+            => new C4us(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4us Lerp(this double t, C4us a, C4us b)
+            => new C4us(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4us Lerp(this V4d t, C4us a, C4us b)
+            => new C4us(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
 
         #endregion
 
@@ -17895,7 +18005,17 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui LinearInterp(V4f t, C4ui a, C4ui b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui LinearInterp(double t, C4ui a, C4ui b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4ui LinearInterp(V4d t, C4ui a, C4ui b)
             => Fun.Lerp(t, a, b);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -18075,18 +18195,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4ui Lerp(this float x, C4ui a, C4ui b)
-        {
-            return new C4ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4ui Lerp(this float t, C4ui a, C4ui b)
+            => new C4ui(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
 
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4ui Lerp(this double x, C4ui a, C4ui b)
-        {
-            return new C4ui(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4ui Lerp(this V4f t, C4ui a, C4ui b)
+            => new C4ui(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4ui Lerp(this double t, C4ui a, C4ui b)
+            => new C4ui(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4ui Lerp(this V4d t, C4ui a, C4ui b)
+            => new C4ui(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
 
         #endregion
 
@@ -20150,6 +20278,11 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f LinearInterp(V4f t, C4f a, C4f b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f DivideByInt(C4f c, int x)
             => c / x;
 
@@ -20325,10 +20458,15 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4f Lerp(this float x, C4f a, C4f b)
-        {
-            return new C4f(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4f Lerp(this float t, C4f a, C4f b)
+            => new C4f(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4f Lerp(this V4f t, C4f a, C4f b)
+            => new C4f(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
+
         #endregion
 
         #region ApproximateEquals
@@ -22440,6 +22578,11 @@ namespace Aardvark.Base
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d LinearInterp(V4d t, C4d a, C4d b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d DivideByInt(C4d c, int x)
             => c / x;
 
@@ -22615,10 +22758,15 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static C4d Lerp(this double x, C4d a, C4d b)
-        {
-            return new C4d(Lerp(x, a.R, b.R), Lerp(x, a.G, b.G), Lerp(x, a.B, b.B), Lerp(x, a.A, b.A));
-        }
+        public static C4d Lerp(this double t, C4d a, C4d b)
+            => new C4d(Lerp(t, a.R, b.R), Lerp(t, a.G, b.G), Lerp(t, a.B, b.B), Lerp(t, a.A, b.A));
+
+        /// <summary>
+        /// Returns the linearly interpolated color between a and b.
+        /// </summary>
+        public static C4d Lerp(this V4d t, C4d a, C4d b)
+            => new C4d(Lerp(t.X, a.R, b.R), Lerp(t.Y, a.G, b.G), Lerp(t.Z, a.B, b.B), Lerp(t.W, a.A, b.A));
+
         #endregion
 
         #region ApproximateEquals

@@ -1124,9 +1124,15 @@ namespace Aardvark.Base
 
         //# foreach(var tt in fdtypes) {
         //# if (ft.IsReal && tt != ft) continue;
+        //# var vtt = Meta.VecTypeOf(dim, tt);
         [EditorBrowsable(EditorBrowsableState.Never)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ LinearInterp(__tt.Name__ t, __type__ a, __type__ b)
+            => Fun.Lerp(t, a, b);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ LinearInterp(__vtt.Name__ t, __type__ a, __type__ b)
             => Fun.Lerp(t, a, b);
 
         //#}
@@ -1313,26 +1319,22 @@ namespace Aardvark.Base
     {
         #region Interpolation
 
-        //# if (!fdtypes.Contains(ft)) {
-        //# fdtypes.ForEach(rt => { var rtype = rt.Name;
+        //# foreach(var tt in fdtypes) {
+        //# if (ft.IsReal && tt != ft) continue;
+        //# var vtt = Meta.VecTypeOf(dim, tt);
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static __type__ Lerp(this __rtype__ x, __type__ a, __type__ b)
-        {
-            return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
-        }
+        public static __type__ Lerp(this __tt.Name__ t, __type__ a, __type__ b)
+            => new __type__(/*# fields.ForEach(f => {*/Lerp(t, a.__f__, b.__f__)/*#}, comma); */);
 
-        //# });
-        //# } else {
         /// <summary>
         /// Returns the linearly interpolated color between a and b.
         /// </summary>
-        public static __type__ Lerp(this __ftype__ x, __type__ a, __type__ b)
-        {
-            return new __type__(/*# fields.ForEach(f => {*/Lerp(x, a.__f__, b.__f__)/*#}, comma); */);
-        }
-        //# }
+        public static __type__ Lerp(this __vtt.Name__ t, __type__ a, __type__ b)
+            => new __type__(/*# fields.ForEach(Meta.VecFields, (cf, vf) => {*/Lerp(t.__vf__, a.__cf__, b.__cf__)/*#}, comma); */);
+
+        //#}
         #endregion
 
         #region ApproximateEquals

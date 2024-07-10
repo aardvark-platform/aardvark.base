@@ -779,6 +779,8 @@ module FSharpMath =
             let a : V2i = lerp V2i.Zero V2i.One 0.5f
             let a : V4i = lerp V4i.Zero V4i.One V4f.Half
             let a : C4b = lerp C4b.Black C4b.Black 0.5f
+            let a : C4b = lerp C4b.Black C4b.Black V4f.Half
+            let a : C4b = lerp C4b.Black C4b.Black V4d.Half
             ()
 
         let invLerpWorking() =
