@@ -1,3 +1,9 @@
+### 5.3.0-prerelease0003
+- Restored Error<'T>
+- [PixImageMipMap] Re-added PixFormat and reverted rename of ImageArray field
+- [PixImageCube] Reverted rename of MipMapArray field
+- [PixLoader] Added CanEncode and CanDecode
+
 ### 5.3.0-prerelease0002
 - Removed Result<'T> alias
 - [FSharpMath] Fixed conflicts in SRTP member names with .NET
