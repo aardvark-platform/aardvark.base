@@ -9,9 +9,3 @@ repositoryUrl https://github.com/aardvark-platform/aardvark.base
 description
     Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
 include-pdbs true
-dependencies
-    framework: netstandard2.0
-        System.Collections.Immutable >= LOCKEDVERSION
-        System.Reflection.Metadata >= LOCKEDVERSION
-    framework: netcoreapp3.1
-        System.Collections.Immutable >= LOCKEDVERSION
