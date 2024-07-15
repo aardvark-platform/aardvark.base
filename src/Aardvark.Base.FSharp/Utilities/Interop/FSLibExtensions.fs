@@ -278,15 +278,16 @@ module Prelude =
 
 
     (* Error datastructure *)
-    [<Obsolete("Use Result<'T, string> instead.")>]
+    [<Struct>]
     type Error<'T> =
-        | Success of 'T
-        | Error of string
+        | Success of value: 'T
+        | Error of error: string
 
     (* Either left or right *)
-    type Either<'a,'b> =
-        | Left of 'a
-        | Right of 'b
+    [<Struct>]
+    type Either<'L, 'R> =
+        | Left of left: 'L
+        | Right of right: 'R
 
     let toFunc (f : 'a -> 'b) : Func<'a, 'b> =
         Func<'a, 'b>(f)
