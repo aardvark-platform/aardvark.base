@@ -1,6 +1,5 @@
 ﻿namespace Aardvark.Base
 
-open System
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 
@@ -11,11 +10,11 @@ module FSharpPixImageCubeExtensions =
 
         member x.Transformed (m : CubeSide -> CubeSide * ImageTrafo) =
             PixImageCube(
-                x.Sides
+                x.MipMapArray
                     |> Array.mapi (fun i mipMap ->
                         let side = unbox<CubeSide> i
                         let (newSide, trafo) = m side
-                        newSide, PixImageMipMap (mipMap.Images |> Array.map (fun pi -> pi.TransformedPixImage(trafo)))
+                        newSide, PixImageMipMap (mipMap.ImageArray |> Array.map _.TransformedPixImage(trafo))
                     )
                     |> Map.ofArray
                     |> Map.toArray
