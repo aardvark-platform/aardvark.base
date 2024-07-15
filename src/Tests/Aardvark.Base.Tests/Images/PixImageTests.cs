@@ -18,7 +18,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(1, 1, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 1);
+            Assert.IsTrue(mip.LevelCount == 1);
         }
 
         [Test]
@@ -26,7 +26,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(2, 2, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 2);
+            Assert.IsTrue(mip.LevelCount == 2);
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(3, 3, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 2);
+            Assert.IsTrue(mip.LevelCount == 2);
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(256, 256, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 9);
+            Assert.IsTrue(mip.LevelCount == 9);
         }
 
         [Test]
@@ -50,7 +50,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(255, 255, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 8);
+            Assert.IsTrue(mip.LevelCount == 8);
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(257, 257, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 9);
+            Assert.IsTrue(mip.LevelCount == 9);
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(57, 43, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 6);
+            Assert.IsTrue(mip.LevelCount == 6);
             //level 0: 57x43
             //level 1: 28x21
             //level 2: 14x10
@@ -80,7 +80,7 @@ namespace Aardvark.Tests.Images
         {
             var pix = new PixImage<byte>(57, 11, 4);
             var mip = PixImageMipMap.Create(pix);
-            Assert.IsTrue(mip.Count == 6);
+            Assert.IsTrue(mip.LevelCount == 6);
             //level 0: 57x11
             //level 1: 28x5
             //level 2: 14x2

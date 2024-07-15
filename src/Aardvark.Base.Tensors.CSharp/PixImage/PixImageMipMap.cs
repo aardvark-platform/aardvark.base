@@ -36,12 +36,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Number of images in the mipmap array.
         /// </summary>
-        public int Count => ImageArray?.Length ?? 0;
+        public int LevelCount => ImageArray?.Length ?? 0;
 
         /// <summary>
         /// Returns the base image of the mipmap array or null if it is empty.
         /// </summary>
-        public PixImage BaseImage => Count > 0 ? ImageArray[0] : null;
+        public PixImage BaseImage => LevelCount > 0 ? ImageArray[0] : null;
 
         /// <summary>
         /// Returns the size of the base image, or V2i.Zero if the mipmap array is empty.
@@ -65,11 +65,8 @@ namespace Aardvark.Base
 
         #region Obsolete
 
-        [Obsolete("Use Count instead.")]
-        public int LevelCount => Count;
-
-        [Obsolete("Use Count instead.")]
-        public int ImageCount => Count;
+        [Obsolete("Use LevelCount instead.")]
+        public int ImageCount => LevelCount;
 
         [Obsolete("Use ImageArray instead.")]
         public PixImage[] Images => ImageArray;
