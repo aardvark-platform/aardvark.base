@@ -1,8 +1,10 @@
 ### 5.3.0-prerelease0003
 - Restored Error<'T>
 - [PixImageMipMap] Re-added PixFormat and reverted rename of ImageArray field
+- [PixImageMipMap] Renamed Count to LevelCount
 - [PixImageCube] Reverted rename of MipMapArray field
 - [PixLoader] Added CanEncode and CanDecode
+- Made Array and Data of PixImage and PixVolume consistent with tensors
 
 ### 5.3.0-prerelease0002
 - Removed Result<'T> alias
