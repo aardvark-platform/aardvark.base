@@ -8,26 +8,26 @@ namespace Aardvark.Base
         /// <summary>
         /// Array of images representing the mipmap levels.
         /// </summary>
-        public PixImage[] Images;
+        public PixImage[] ImageArray;
 
         #region Constructors
 
         /// <summary>
         /// Creates an empty mipmap.
         /// </summary>
-        public PixImageMipMap() => Images = Array.Empty<PixImage>();
+        public PixImageMipMap() => ImageArray = Array.Empty<PixImage>();
 
         /// <summary>
         /// Creates a mipmap from the given images.
         /// </summary>
         /// <param name="images">An array of images representing the mipmap levels.</param>
-        public PixImageMipMap(params PixImage[] images) => Images = images;
+        public PixImageMipMap(params PixImage[] images) => ImageArray = images;
 
         /// <summary>
         /// Creates a mipmap consisting of a single image.
         /// </summary>
         /// <param name="image">The single image of the mipmap.</param>
-        public PixImageMipMap(PixImage image) => Images = new[] { image };
+        public PixImageMipMap(PixImage image) => ImageArray = new[] { image };
 
         #endregion
 
@@ -36,12 +36,12 @@ namespace Aardvark.Base
         /// <summary>
         /// Number of images in the mipmap array.
         /// </summary>
-        public int Count => Images?.Length ?? 0;
+        public int Count => ImageArray?.Length ?? 0;
 
         /// <summary>
         /// Returns the base image of the mipmap array or null if it is empty.
         /// </summary>
-        public PixImage BaseImage => Count > 0 ? Images[0] : null;
+        public PixImage BaseImage => Count > 0 ? ImageArray[0] : null;
 
         /// <summary>
         /// Returns the size of the base image, or V2i.Zero if the mipmap array is empty.
@@ -49,12 +49,18 @@ namespace Aardvark.Base
         public V2i BaseSize => BaseImage?.Size ?? V2i.Zero;
 
         /// <summary>
+        /// Returns the format of the mipmap.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">if the mipmap is empty.</exception>
+        public PixFormat PixFormat => BaseImage?.PixFormat ?? throw new InvalidOperationException("Cannot determine format of empty PixImageMipMap.");
+
+        /// <summary>
         /// Gets or sets an image of the mipmap array.
         /// </summary>
         public PixImage this[int index]
         {
-            get => Images[index];
-            set => Images[index] = value;
+            get => ImageArray[index];
+            set => ImageArray[index] = value;
         }
 
         #region Obsolete
@@ -65,8 +71,8 @@ namespace Aardvark.Base
         [Obsolete("Use Count instead.")]
         public int ImageCount => Count;
 
-        [Obsolete("Use Images instead.")]
-        public PixImage[] ImageArray => Images;
+        [Obsolete("Use ImageArray instead.")]
+        public PixImage[] Images => ImageArray;
 
         [Obsolete("Use BaseSize instead.")]
         public V2i BaseImageSize => BaseSize;
