@@ -30,7 +30,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public abstract Array Data { get; }
+        public abstract Array Array { get; }
 
         public abstract PixFormat PixFormat { get; }
 
@@ -47,13 +47,6 @@ namespace Aardvark.Base
         public int ChannelCount => (int)Tensor4Info.Size.W;
 
         public long ChannelCountL => Tensor4Info.Size.W;
-
-        #region Obsolete
-
-        [Obsolete("Use Data instead.")]
-        public Array Array => Data;
-
-        #endregion
 
         #endregion
 
@@ -270,7 +263,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public override Array Data => Tensor4.Data;
+        public T[] Data => Tensor4.Data;
+
+        public override Array Array => Tensor4.Data;
 
         public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
 

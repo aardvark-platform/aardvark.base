@@ -348,7 +348,7 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public abstract Array Data { get; }
+        public abstract Array Array { get; }
 
         public abstract PixFormat PixFormat { get; }
 
@@ -381,9 +381,6 @@ namespace Aardvark.Base
         public long StrideL => BytesPerChannel * VolumeInfo.DY;
 
         #region Obsolete
-
-        [Obsolete("Use Data instead.")]
-        public Array Array => Data;
 
         [Obsolete("Use Stride instead.")]
         public int IntStride => Stride;
@@ -1288,7 +1285,9 @@ namespace Aardvark.Base
 
         #region Properties
 
-        public override Array Data => Volume.Data;
+        public T[] Data => Volume.Data;
+
+        public override Array Array => Volume.Array;
 
         public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
 
