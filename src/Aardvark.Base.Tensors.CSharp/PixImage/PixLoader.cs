@@ -65,6 +65,16 @@ namespace Aardvark.Base
         string Name { get; }
 
         /// <summary>
+        /// Returns whether the loader supports encoding images (i.e. saving to files and streams).
+        /// </summary>
+        bool CanEncode { get; }
+
+        /// <summary>
+        /// Returns whether the loader supports decoding images (i.e. loading from files and streams).
+        /// </summary>
+        bool CanDecode { get; }
+
+        /// <summary>
         /// Loads a PixImage from a file.
         /// </summary>
         /// <param name="filename">The file to load.</param>

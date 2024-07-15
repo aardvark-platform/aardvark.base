@@ -75,6 +75,10 @@ namespace Aardvark.Base
         {
             public string Name { get; }
 
+            public bool CanEncode => true;
+
+            public bool CanDecode => false;
+
             public PgmPixLoader()
             {
                 Name = "Aardvark PGM";
@@ -186,6 +190,28 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Gets a list of registered loaders with encoding support sorted by priority in descending order.
+        /// </summary>
+        /// <returns>A list of registered loaders that support encoding.</returns>
+        public static List<IPixLoader> GetEncoders()
+        {
+            var list = GetLoaders();
+            list.RemoveAll(loader => !loader.CanEncode);
+            return list;
+        }
+
+        /// <summary>
+        /// Gets a list of registered loaders with decoding support sorted by priority in descending order.
+        /// </summary>
+        /// <returns>A list of registered loaders that support decoding.</returns>
+        public static List<IPixLoader> GetDecoders()
+        {
+            var list = GetLoaders();
+            list.RemoveAll(loader => !loader.CanDecode);
+            return list;
+        }
+
         internal static Result TryInvokeLoader<Result>(
                         IPixLoader loader, Func<IPixLoader, Result> invoke,
                         Func<Result, bool> isValid,
@@ -215,8 +241,10 @@ namespace Aardvark.Base
             return default;
         }
 
+        internal enum LoaderType { Encoder, Decoder, Any };
+
         internal static Result InvokeLoaders<Input, Result>(
-                                IPixLoader loader, Input input,
+                                LoaderType loaderType, IPixLoader loader, Input input,
                                 Func<IPixLoader, Input, Result> tryInvoke,
                                 Action<Input> resetInput,
                                 Func<Result, bool> isValid,
@@ -224,12 +252,24 @@ namespace Aardvark.Base
         {
             if (loader != null)
             {
+                if (loaderType == LoaderType.Encoder && !loader.CanEncode)
+                    throw new ImageLoadException(errorMessage + " - Encoding not supported.");
+
+                if (loaderType == LoaderType.Decoder && !loader.CanDecode)
+                    throw new ImageLoadException(errorMessage + " - Decoding not supported.");
+
                 var result = tryInvoke(loader, input);
                 if (isValid(result)) { return result; }
             }
             else
             {
-                var loaders = GetLoaders();
+                var loaders =
+                    loaderType switch
+                    {
+                        LoaderType.Encoder => GetEncoders(),
+                        LoaderType.Decoder => GetDecoders(),
+                        _ => GetLoaders()
+                    };
 
                 for (int i = 0; i < loaders.Count; i++)
                 {
@@ -239,13 +279,21 @@ namespace Aardvark.Base
                     if (isValid(result)) return result;
                 }
 
+                var loaderDesc =
+                    loaderType switch
+                    {
+                        LoaderType.Encoder => "encoder",
+                        LoaderType.Decoder => "decoder",
+                        _ => "loader"
+                    };
+
                 if (loaders.Count == 0)
                 {
-                    errorMessage += " - No loaders available!";
+                    errorMessage += $" - No {loaderDesc}s available!";
                 }
                 else
                 {
-                    errorMessage += " - Available loaders:" + Environment.NewLine;
+                    errorMessage += $" - Available {loaderDesc}s:" + Environment.NewLine;
 
                     foreach (var l in loaders)
                     {
@@ -258,7 +306,7 @@ namespace Aardvark.Base
         }
 
         internal static Result InvokeLoadersWithStream<Result>(
-                        IPixLoader loader, Stream stream,
+                        LoaderType loaderType, IPixLoader loader, Stream stream,
                         Func<IPixLoader, Stream, Result> tryInvoke,
                         Func<Result, bool> isValid,
                         string errorMessage)
@@ -266,7 +314,7 @@ namespace Aardvark.Base
             var initialPosition = stream.Position;
 
             return InvokeLoaders(
-                loader, stream, tryInvoke,
+                loaderType, loader, stream, tryInvoke,
                 s => s.Seek(initialPosition, SeekOrigin.Begin),
                 isValid, errorMessage
             );
@@ -506,7 +554,7 @@ namespace Aardvark.Base
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImage LoadRaw(string filename, IPixLoader loader = null)
             => InvokeLoaders(
-                    loader, filename, (l, f) => TryLoadFromFileWithLoader(l, f), Ignore, NotNull,
+                    LoaderType.Decoder, loader, filename, (l, f) => TryLoadFromFileWithLoader(l, f), Ignore, NotNull,
                     $"Could not load image from file '{filename}'"
             );
 
@@ -546,7 +594,7 @@ namespace Aardvark.Base
         /// <exception cref="NotSupportedException">if the stream is not seekable and multiple loaders are invoked.</exception>
         public static PixImage LoadRaw(Stream stream, IPixLoader loader = null)
             => InvokeLoadersWithStream(
-                loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), NotNull,
+                LoaderType.Decoder, loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), NotNull,
                 $"Could not load image from {GetStreamDescription(stream)}"
             );
 
@@ -633,7 +681,7 @@ namespace Aardvark.Base
                 filename = NormalizedFileName(filename, saveParams.Format);
 
             InvokeLoaders(
-                loader, filename, (l, f) => TrySaveToFileWithLoader(l, f, saveParams), Ignore, Identity,
+                LoaderType.Encoder, loader, filename, (l, f) => TrySaveToFileWithLoader(l, f, saveParams), Ignore, Identity,
                 $"Could not save image to file '{filename}'"
             );
         }
@@ -704,7 +752,7 @@ namespace Aardvark.Base
         /// <exception cref="NotSupportedException">if the stream is not seekable and multiple loaders are invoked.</exception>
         public void Save(Stream stream, PixSaveParams saveParams, IPixLoader loader = null)
             => InvokeLoadersWithStream(
-                loader, stream, (l, s) => TrySaveToStreamWithLoader(l, s, saveParams), Identity,
+                LoaderType.Encoder, loader, stream, (l, s) => TrySaveToStreamWithLoader(l, s, saveParams), Identity,
                 "Could not save image to stream"
             );
 
@@ -804,7 +852,7 @@ namespace Aardvark.Base
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImageInfo GetInfoFromFile(string filename, IPixLoader loader = null)
             => InvokeLoaders(
-                    loader, filename, (l, f) => TryGetInfoFromFileWithLoader(l, f), Ignore, NotNull,
+                    LoaderType.Any, loader, filename, (l, f) => TryGetInfoFromFileWithLoader(l, f), Ignore, NotNull,
                     $"Could not get image info from file '{filename}'"
             );
 
@@ -828,7 +876,7 @@ namespace Aardvark.Base
         /// <exception cref="NotSupportedException">if the stream is not seekable and multiple loaders are invoked.</exception>
         public static PixImageInfo GetInfoFromStream(Stream stream, IPixLoader loader = null)
             => InvokeLoadersWithStream(
-                    loader, stream, (l, s) => TryGetInfoFromStreamWithLoader(l, s), NotNull,
+                    LoaderType.Any, loader, stream, (l, s) => TryGetInfoFromStreamWithLoader(l, s), NotNull,
                     $"Could not get image info from stream"
             );
 

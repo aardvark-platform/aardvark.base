@@ -111,7 +111,7 @@ namespace Aardvark.Base
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImageMipMap Load(string filename, IPixLoader loader = null)
             => PixImage.InvokeLoaders(
-                    loader, filename, (l, f) => TryLoadFromFileWithLoader(l, f), PixImage.Ignore, PixImage.NotNull,
+                    PixImage.LoaderType.Decoder, loader, filename, (l, f) => TryLoadFromFileWithLoader(l, f), PixImage.Ignore, PixImage.NotNull,
                     $"Could not load image mipmap from file '{filename}'"
             );
 
@@ -148,7 +148,7 @@ namespace Aardvark.Base
         /// <exception cref="NotSupportedException">if the stream is not seekable and multiple loaders are invoked.</exception>
         public static PixImageMipMap Load(Stream stream, IPixLoader loader = null)
             => PixImage.InvokeLoadersWithStream(
-                loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), PixImage.NotNull,
+                PixImage.LoaderType.Decoder, loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), PixImage.NotNull,
                 $"Could not load image mipmap from {PixImage.GetStreamDescription(stream)}"
             );
 
