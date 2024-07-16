@@ -372,6 +372,14 @@ namespace Aardvark.Base
 
         public V2l SizeL => VolumeInfo.Size.XY;
 
+        public int Width => Size.X;
+
+        public long WidthL => SizeL.X;
+
+        public int Height => Size.Y;
+
+        public long HeightL => SizeL.Y;
+
         public int ChannelCount => (int)VolumeInfo.Size.Z;
 
         public long ChannelCountL => VolumeInfo.Size.Z;

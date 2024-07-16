@@ -44,6 +44,18 @@ namespace Aardvark.Base
 
         public V3l SizeL => Tensor4Info.Size.XYZ;
 
+        public int Width => Size.X;
+
+        public long WidthL => SizeL.X;
+
+        public int Height => Size.Y;
+
+        public long HeightL => SizeL.Y;
+
+        public int Depth => Size.Z;
+
+        public long DepthL => SizeL.Z;
+
         public int ChannelCount => (int)Tensor4Info.Size.W;
 
         public long ChannelCountL => Tensor4Info.Size.W;
