@@ -1,3 +1,7 @@
+### 5.3.0-prerelease0004
+- Fixed PixImage/Volume conversion with redundant channels
+- Added Width, Height, and Depth properties for PixImage and PixVolume
+
 ### 5.3.0-prerelease0003
 - Restored Error<'T>
 - [PixImageMipMap] Re-added PixFormat and reverted rename of ImageArray field
