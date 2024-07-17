@@ -192,7 +192,7 @@ namespace Aardvark.Base
             var tensor4 = CreateTensor4<T>(srcInfo.Size.X, srcInfo.Size.Y, srcInfo.Size.Z, dstChannels.Length);
             tensor4.F = pixVolume.Tensor4Info.F;
 
-            if (format == pixVolume.Format)
+            if (format == pixVolume.Format && srcInfo.Size == tensor4.Size)
             {
                 pixVolume.CopyTensor4To(tensor4);
             }

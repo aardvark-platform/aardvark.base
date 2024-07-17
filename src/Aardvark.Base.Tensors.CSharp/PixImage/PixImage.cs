@@ -1129,7 +1129,7 @@ namespace Aardvark.Base
             var volume = CreateVolume<T>(srcInfo.Size.X, srcInfo.Size.Y, dstChannels.Length);
             volume.F = srcInfo.F;
 
-            if (format == pixImage.Format)
+            if (format == pixImage.Format && srcInfo.Size == volume.Size)
             {
                 pixImage.CopyVolumeTo(volume);
             }

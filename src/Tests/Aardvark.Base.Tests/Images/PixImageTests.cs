@@ -449,6 +449,23 @@ namespace Aardvark.Tests.Images
         #region From RGB
 
         [Test]
+        public void FormatConversionRGBToRGBWithAdditionalChannel()
+        {
+            var getRandom = s_randomValues[typeof(byte)];
+            var volume = ImageTensors.CreateImageVolume<byte>(new V3l(54, 23, 4));
+            volume.Data.SetByIndex((_) => (byte)getRandom(rnd));
+            var src = new PixImage<byte>(Col.Format.RGB, volume);
+            var dst = new PixImage<byte>(Col.Format.RGB, src);
+
+            src.GetChannel(0L).ForeachCoord((coord) =>
+            {
+                var expected = GetColor<byte, C3b>(src, coord);
+                var actual = GetColor<byte, C3b>(dst, coord);
+                Assert.AreEqual(expected, actual);
+            });
+        }
+
+        [Test]
         public void FormatConversionRGBToBGRA()
             => FormatConversion<byte, byte, C3b, C4b>(Col.Format.RGB, Col.Format.BGRA, c => c.ToC4b());
 
