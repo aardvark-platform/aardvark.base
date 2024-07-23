@@ -33,7 +33,7 @@ namespace Aardvark.Base
     /// <summary>
     /// A cube map consisting of six image mipmaps.
     /// </summary>
-    public class PixImageCube : IPix
+    public class PixCube : IPix
     {
         /// <summary>
         /// Array of image mipmaps representing the cube sides.
@@ -47,7 +47,7 @@ namespace Aardvark.Base
         /// The order of the array follows the <see cref="CubeSide"/> enumeration.
         /// </summary>
         /// <param name="sides">An array of mipmaps representing the sides of the mipmap.</param>
-        public PixImageCube(PixImageMipMap[] sides)
+        public PixCube(PixImageMipMap[] sides)
             => MipMapArray = sides;
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace Aardvark.Base
         /// The order of the array follows the <see cref="CubeSide"/> enumeration.
         /// </summary>
         /// <param name="sides">An array of images representing the sides of the mipmap.</param>
-        public PixImageCube(PixImage[] sides)
+        public PixCube(PixImage[] sides)
             => MipMapArray = sides.Map(image => new PixImageMipMap(image));
 
         #endregion

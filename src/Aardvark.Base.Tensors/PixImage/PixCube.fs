@@ -4,12 +4,12 @@ open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 
 [<AutoOpen>]
-module FSharpPixImageCubeExtensions =
+module FSharpPixCubeExtensions =
 
-    type PixImageCube with
+    type PixCube with
 
         member x.Transformed (m : CubeSide -> CubeSide * ImageTrafo) =
-            PixImageCube(
+            PixCube(
                 x.MipMapArray
                     |> Array.mapi (fun i mipMap ->
                         let side = unbox<CubeSide> i
@@ -32,16 +32,16 @@ module FSharpPixImageCubeExtensions =
             )
 
         static member Create (images : Map<CubeSide, PixImageMipMap>) =
-            PixImageCube(images |> Map.toArray |> Array.map snd)
+            PixCube(images |> Map.toArray |> Array.map snd)
 
         static member Create (images : Map<CubeSide, PixImage>) =
-            PixImageCube(images |> Map.toArray |> Array.map (fun (_,pi) -> PixImageMipMap [|pi|]))
+            PixCube(images |> Map.toArray |> Array.map (fun (_,pi) -> PixImageMipMap [|pi|]))
 
         static member Load (images : Map<CubeSide, string>, [<Optional; DefaultParameterValue(null : IPixLoader)>] loader : IPixLoader) =
-            PixImageCube(images |> Map.toArray |> Array.map (fun (_,file) -> PixImageMipMap [|PixImage.Load(file, loader)|]))
+            PixCube(images |> Map.toArray |> Array.map (fun (_,file) -> PixImageMipMap [|PixImage.Load(file, loader)|]))
 
     [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
-    module PixImageCube =
+    module PixCube =
 
         module Trafo =
 
@@ -163,62 +163,62 @@ module FSharpPixImageCubeExtensions =
                     |> List.map snd
                     |> List.toArray
 
-            PixImageCube(faces)
+            PixCube(faces)
 
-        let rotX90 (c : PixImageCube) =
+        let rotX90 (c : PixCube) =
             c.Transformed Trafo.RotX90
 
-        let rotX180 (c : PixImageCube) =
+        let rotX180 (c : PixCube) =
             c.Transformed Trafo.RotX180
 
-        let rotX270 (c : PixImageCube) =
+        let rotX270 (c : PixCube) =
             c.Transformed Trafo.RotX270
 
-        let rotY90 (c : PixImageCube) =
+        let rotY90 (c : PixCube) =
             c.Transformed Trafo.RotY90
 
-        let rotY180 (c : PixImageCube) =
+        let rotY180 (c : PixCube) =
             c.Transformed Trafo.RotY180
 
-        let rotY270 (c : PixImageCube) =
+        let rotY270 (c : PixCube) =
             c.Transformed Trafo.RotY270
 
-        let rotZ90 (c : PixImageCube) =
+        let rotZ90 (c : PixCube) =
             c.Transformed Trafo.RotZ90
 
-        let rotZ180 (c : PixImageCube) =
+        let rotZ180 (c : PixCube) =
             c.Transformed Trafo.RotZ180
 
-        let rotZ270 (c : PixImageCube) =
+        let rotZ270 (c : PixCube) =
             c.Transformed Trafo.RotZ270
 
-        let invertX (c : PixImageCube) =
+        let invertX (c : PixCube) =
             c.Transformed Trafo.InvertX
 
-        let invertY (c : PixImageCube) =
+        let invertY (c : PixCube) =
             c.Transformed Trafo.InvertY
 
-        let invertZ (c : PixImageCube) =
+        let invertZ (c : PixCube) =
             c.Transformed Trafo.InvertZ
 
-        let ofOpenGlConvention (c : PixImageCube) =
+        let ofOpenGlConvention (c : PixCube) =
             c.Transformed Trafo.OfOpenGlConventionTrafo
 
-        let toOpenGlConvention (c : PixImageCube) =
+        let toOpenGlConvention (c : PixCube) =
             c.Transformed Trafo.ToOpenGlConventionTrafo
 
 [<AbstractClass; Sealed; Extension>]
-type PixImageCubeExtensions private() =
+type PixCubeExtensions private() =
 
     [<Extension>]
-    static member Transformed(x : PixImageCube, f : System.Func<CubeSide, Tup<CubeSide, ImageTrafo>>) =
+    static member Transformed(x : PixCube, f : System.Func<CubeSide, Tup<CubeSide, ImageTrafo>>) =
         x.Transformed(fun side ->
             let t = f.Invoke(side)
             t.E0, t.E1
         )
 
     [<Extension>]
-    static member Transformed(x : PixImageCube, d : System.Collections.Generic.Dictionary<CubeSide, Tup<CubeSide, ImageTrafo>>) =
+    static member Transformed(x : PixCube, d : System.Collections.Generic.Dictionary<CubeSide, Tup<CubeSide, ImageTrafo>>) =
         x.Transformed (fun side ->
             match d.TryGetValue side with
                 | (true, t) -> t.E0, t.E1
@@ -228,20 +228,20 @@ type PixImageCubeExtensions private() =
         )
 
 
-    [<Extension>] static member RotX90(x : PixImageCube) = PixImageCube.rotX90 x
-    [<Extension>] static member RotX180(x : PixImageCube) = PixImageCube.rotX180 x
-    [<Extension>] static member RotX270(x : PixImageCube) = PixImageCube.rotX270 x
+    [<Extension>] static member RotX90(x : PixCube) = PixCube.rotX90 x
+    [<Extension>] static member RotX180(x : PixCube) = PixCube.rotX180 x
+    [<Extension>] static member RotX270(x : PixCube) = PixCube.rotX270 x
 
-    [<Extension>] static member RotY90(x : PixImageCube) = PixImageCube.rotY90 x
-    [<Extension>] static member RotY180(x : PixImageCube) = PixImageCube.rotY180 x
-    [<Extension>] static member RotY270(x : PixImageCube) = PixImageCube.rotY270 x
+    [<Extension>] static member RotY90(x : PixCube) = PixCube.rotY90 x
+    [<Extension>] static member RotY180(x : PixCube) = PixCube.rotY180 x
+    [<Extension>] static member RotY270(x : PixCube) = PixCube.rotY270 x
 
-    [<Extension>] static member RotZ90(x : PixImageCube) = PixImageCube.rotZ90 x
-    [<Extension>] static member RotZ180(x : PixImageCube) = PixImageCube.rotZ180 x
-    [<Extension>] static member RotZ270(x : PixImageCube) = PixImageCube.rotZ270 x
+    [<Extension>] static member RotZ90(x : PixCube) = PixCube.rotZ90 x
+    [<Extension>] static member RotZ180(x : PixCube) = PixCube.rotZ180 x
+    [<Extension>] static member RotZ270(x : PixCube) = PixCube.rotZ270 x
 
-    [<Extension>] static member InvertX(x : PixImageCube) = PixImageCube.invertX x
-    [<Extension>] static member InvertY(x : PixImageCube) = PixImageCube.invertY x
-    [<Extension>] static member InvertZ(x : PixImageCube) = PixImageCube.invertZ x
-    [<Extension>] static member FromOpenGlConvention(x : PixImageCube) = PixImageCube.ofOpenGlConvention x
-    [<Extension>] static member ToOpenGlConvention(x : PixImageCube) = PixImageCube.toOpenGlConvention x
+    [<Extension>] static member InvertX(x : PixCube) = PixCube.invertX x
+    [<Extension>] static member InvertY(x : PixCube) = PixCube.invertY x
+    [<Extension>] static member InvertZ(x : PixCube) = PixCube.invertZ x
+    [<Extension>] static member FromOpenGlConvention(x : PixCube) = PixCube.ofOpenGlConvention x
+    [<Extension>] static member ToOpenGlConvention(x : PixCube) = PixCube.toOpenGlConvention x
