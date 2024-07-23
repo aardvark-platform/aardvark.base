@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
@@ -37,7 +33,7 @@ namespace Aardvark.Base
     /// <summary>
     /// A cube map consisting of six image mipmaps.
     /// </summary>
-    public class PixImageCube
+    public class PixImageCube : IPix
     {
         /// <summary>
         /// Array of image mipmaps representing the cube sides.
@@ -74,6 +70,11 @@ namespace Aardvark.Base
             get => MipMapArray[(int)side];
             set => MipMapArray[(int)side] = value;
         }
+
+        /// <summary>
+        /// Returns the format of the cube map.
+        /// </summary>
+        public PixFormat PixFormat => MipMapArray[0].PixFormat;
 
         #endregion
     }

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Aardvark.Base
 {
-    public class PixImageMipMap
+    public class PixImageMipMap : IPix
     {
         /// <summary>
         /// Array of images representing the mipmap levels.

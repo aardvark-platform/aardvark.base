@@ -60,7 +60,7 @@ namespace Aardvark.Base
     public record PixImageInfo(PixFormat Format, V2i Size);
 
     [Serializable]
-    public abstract partial class PixImage
+    public abstract partial class PixImage : IPix
     {
         public Col.Format Format;
 

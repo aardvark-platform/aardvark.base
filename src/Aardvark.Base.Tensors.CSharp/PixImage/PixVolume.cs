@@ -11,7 +11,7 @@ namespace Aardvark.Base
 
     public record PixVolumeInfo(PixFormat Format, V3i Size);
 
-    public abstract class PixVolume
+    public abstract class PixVolume : IPix
     {
         public Col.Format Format;
 
