@@ -1,3 +1,7 @@
+### 5.3.0-prerelease0005
+- Reintroduced `IPixImage` as `IPix`
+- Renamed `PixImageCube` to `PixCube`
+
 ### 5.3.0-prerelease0004
 - Fixed PixImage/Volume conversion with redundant channels
 - Added Width, Height, and Depth properties for PixImage and PixVolume
