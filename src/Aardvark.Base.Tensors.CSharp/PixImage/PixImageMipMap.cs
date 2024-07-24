@@ -161,7 +161,7 @@ namespace Aardvark.Base
         /// <param name="interpolation">The used interpolation method.</param>
         /// <param name="powerOfTwo">If true, the base image is resized to have power-of-two dimensions.</param>
         /// <returns></returns>
-        public static PixImageMipMap Create(PixImage image, ImageInterpolation interpolation = ImageInterpolation.Cubic, int maxCount = 0, bool powerOfTwo = false)
+        public static PixImageMipMap Create(PixImage image, ImageInterpolation interpolation = ImageInterpolation.Linear, int maxCount = 0, bool powerOfTwo = false)
         {
             var baseSize = image.Size;
             var baseImage = image;
