@@ -151,6 +151,13 @@ module Prelude =
 
                 acc
 
+        /// Inserts a separator in between the elements of the given list.
+        let inline intersperse (separator: 'T) (list: 'T list) =
+            (list, []) ||> List.foldBack (fun x -> function
+                | [] -> [x]
+                | xs -> x::separator::xs
+            )
+
     module Array =
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
