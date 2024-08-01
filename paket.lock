@@ -20,6 +20,7 @@ NUGET
       FSharp.Core (>= 4.3.2)
       FsPickler (>= 5.3.2)
       Newtonsoft.Json (>= 10.0.1)
+    FuzzySharp (2.0.2)
     Microsoft.Bcl.AsyncInterfaces (8.0) - restriction: || (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
       System.Threading.Tasks.Extensions (>= 4.5.4) - restriction: || (&& (== net8.0) (>= net462)) (&& (== net8.0) (< netstandard2.1)) (== netstandard2.0)
     Microsoft.NETCore.Platforms (7.0.4)
@@ -90,7 +91,7 @@ NUGET
       System.Buffers (>= 4.5.1) - restriction: || (&& (== net8.0) (>= monotouch)) (&& (== net8.0) (>= net461)) (&& (== net8.0) (< netcoreapp2.0)) (&& (== net8.0) (< netstandard1.1)) (&& (== net8.0) (< netstandard2.0)) (&& (== net8.0) (>= xamarinios)) (&& (== net8.0) (>= xamarinmac)) (&& (== net8.0) (>= xamarintvos)) (&& (== net8.0) (>= xamarinwatchos)) (== netstandard2.0)
       System.Numerics.Vectors (>= 4.4) - restriction: || (&& (== net8.0) (< netcoreapp2.0)) (== netstandard2.0)
       System.Runtime.CompilerServices.Unsafe (>= 4.5.3) - restriction: || (&& (== net8.0) (>= monotouch)) (&& (== net8.0) (>= net461)) (&& (== net8.0) (< netcoreapp2.0)) (&& (== net8.0) (< netcoreapp2.1)) (&& (== net8.0) (< netstandard1.1)) (&& (== net8.0) (< netstandard2.0)) (&& (== net8.0) (>= uap10.1)) (&& (== net8.0) (>= xamarinios)) (&& (== net8.0) (>= xamarinmac)) (&& (== net8.0) (>= xamarintvos)) (&& (== net8.0) (>= xamarinwatchos)) (== netstandard2.0)
-    System.Numerics.Vectors (4.5) - restriction: || (&& (== net8.0) (>= net462)) (&& (== net8.0) (< netcoreapp2.0)) (== netstandard2.0)
+    System.Numerics.Vectors (4.5)
     System.ObjectModel (4.3)
       System.Collections (>= 4.3)
       System.Diagnostics.Debug (>= 4.3)
@@ -160,6 +161,8 @@ NUGET
     System.Threading.Tasks.Extensions (4.5.4) - restriction: || (&& (== net8.0) (>= net462)) (&& (== net8.0) (< net6.0)) (== netstandard2.0)
       System.Runtime.CompilerServices.Unsafe (>= 4.5.3) - restriction: || (&& (== net8.0) (>= net461)) (&& (== net8.0) (< netcoreapp2.1)) (&& (== net8.0) (< netstandard1.0)) (&& (== net8.0) (< netstandard2.0)) (&& (== net8.0) (>= wp8)) (== netstandard2.0)
     Unofficial.LibTessDotNet (2.0.2)
+    Unofficial.Typography (0.1)
+      System.Numerics.Vectors (>= 4.5)
 
 GROUP CodeGenerator
 STORAGE: NONE

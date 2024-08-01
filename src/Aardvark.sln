@@ -70,6 +70,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "._", "._", "{61D029CD-C474-
 		..\RELEASE_NOTES.md = ..\RELEASE_NOTES.md
 	EndProjectSection
 EndProject
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Fonts", "Aardvark.Base.Fonts\Aardvark.Base.Fonts.fsproj", "{C6C9C0AE-0900-4F21-86C6-2202E44A6013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -168,6 +170,10 @@ Global
 		{F278A2F7-52FF-40CD-B16D-4D82F7DFA8C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F278A2F7-52FF-40CD-B16D-4D82F7DFA8C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F278A2F7-52FF-40CD-B16D-4D82F7DFA8C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6C9C0AE-0900-4F21-86C6-2202E44A6013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6C9C0AE-0900-4F21-86C6-2202E44A6013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6C9C0AE-0900-4F21-86C6-2202E44A6013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6C9C0AE-0900-4F21-86C6-2202E44A6013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +201,7 @@ Global
 		{06739A61-1B1C-4FC3-8DEF-926B10FACB28} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{FBB17215-CDCE-4FFA-B10A-EA1B320C8638} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{F278A2F7-52FF-40CD-B16D-4D82F7DFA8C3} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
+		{C6C9C0AE-0900-4F21-86C6-2202E44A6013} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}

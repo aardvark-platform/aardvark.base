@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <AssemblyName>Aardvark.Base.Fonts</AssemblyName>
+    <OutputType>Library</OutputType>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarnOn>3389;3390;3395</WarnOn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\bin\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\bin\Release</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="BvhInternal.fs" />
+    <Compile Include="PathSegment.fs" />
+    <Compile Include="PathTessellator.fs" />
+    <Compile Include="Path.fs" />
+    <Compile Include="FontResolver.fs" />
+    <Compile Include="Font.fs" />
+    <None Include="paket.references" />
+    <None Include="paket.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />
+  </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
+</Project>

@@ -20,6 +20,9 @@ nuget Unofficial.LibTessDotNet     ~> 2.0.2
 nuget FsPickler                    ~> 5.3.2
 nuget FsPickler.Json               ~> 5.3.2
 
+nuget Unofficial.Typography        ~> 0.1.0
+nuget FuzzySharp                   ~> 2.0.2
+
 group CodeGenerator
     framework net8.0
     storage: none

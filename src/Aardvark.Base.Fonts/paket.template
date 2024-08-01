@@ -1,0 +1,11 @@
+type project
+id Aardvark.Base.Fonts
+authors Aardvark Platform Team
+owners Aardvark Platform Team
+projectUrl http://github.com/aardvark-platform
+licenseUrl http://www.apache.org/licenses/LICENSE-2.0.txt
+repositoryType git
+repositoryUrl https://github.com/aardvark-platform/aardvark.base
+description
+    Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
+include-pdbs true
