@@ -644,9 +644,9 @@ type ShapeCache(r : IRuntime) =
     member x.InstancedBoundaryEffect = instancedBoundaryEffect
     member x.BillboardEffect = billboardEffect
     member x.InstancedBillboardEffect = instancedBillboardEffect
-    member x.Surface s = surface s :> ISurface
-    member x.BoundarySurface s = boundarySurface s :> ISurface
-    member x.BillboardSurface s = billboardSurface s :> ISurface
+    member x.Surface s = surface s
+    member x.BoundarySurface s = boundarySurface s
+    member x.BillboardSurface s = billboardSurface s
     member x.VertexBuffers = vertexBuffers
 
     member x.GetBufferRange(shape : Shape) =
