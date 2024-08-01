@@ -1,10 +1,9 @@
-﻿namespace Aardvark.Rendering.Text
-
+﻿namespace Aardvark.Base.Fonts
 
 open Aardvark.Base
 
 [<AutoOpen>]
-module Helpers = 
+module Helpers =
 
     [<Literal>]
     let internal epsilon = 1E-9
@@ -19,17 +18,17 @@ module Helpers =
         let v = p2 - p1
         let uv2World = M33d.FromCols(V3d(u, 0.0), V3d(v, 0.0), V3d(p1, 1.0))
         let world2UV = uv2World.Inverse
-                
+
         let cuv = world2UV.TransformPos centerInWorld
         let ruv = Vec.length (V2d.IO - cuv)
-            
+
         let r0 = Plane2d(Vec.normalize (V2d.IO - cuv), V2d.IO)
         let r2 = Plane2d(Vec.normalize (V2d.OI - cuv), V2d.OI)
         let mutable uv1 = V2d.Zero
         r0.Intersects(r2, &uv1) |> ignore
 
         (V2d.IO - cuv) / ruv, (uv1 - cuv) / ruv, (V2d.OI - cuv) / ruv
-   
+
     let flip (a,b) = b,a
 
     let findBezierT (epsilon : float) (pt : V2d) (p0 : V2d) (p1 : V2d) (p2 : V2d) : option<float> =
@@ -52,10 +51,10 @@ module Helpers =
     let inline arcT (a0 : float) (da : float) (v : float) =
         let mutable a0 = a0
         let mutable v = v
-        
+
         while a0 < 0.0 do a0 <- a0 + Constant.PiTimesTwo
         while v < 0.0 do v <- v + Constant.PiTimesTwo
-        
+
         if da < 0.0 then
             if v > a0 + 1E-8 then v <- v - Constant.PiTimesTwo
             (v - a0) / da
@@ -111,7 +110,7 @@ module Helpers =
             let pc = n0.Intersect(n1)
             pc
 
-            
+
 
 type PathSegment =
     private
@@ -128,7 +127,7 @@ module internal PathSegmentIntersections =
     /// gets an axis aligned bounding box for the given segment
     let bounds (seg : PathSegment) =
         match seg with
-        | LineSeg(p0, p1) -> 
+        | LineSeg(p0, p1) ->
             let mutable b = Box2d(p0, p0)
             b.ExtendBy p1
             b
@@ -143,7 +142,7 @@ module internal PathSegmentIntersections =
             b.ExtendBy p2
             b.ExtendBy p3
             b
-        | ArcSeg(p0, p1, a0, da, ellipse) -> 
+        | ArcSeg(p0, p1, a0, da, ellipse) ->
             let mutable bb = Box2d(p0, p0)
             bb.ExtendBy p1
 
@@ -189,7 +188,7 @@ module internal PathSegmentIntersections =
         | Bezier2Seg(p0,_,_) -> p0
         | Bezier3Seg(p0,_,_,_) -> p0
         | ArcSeg(p0,_,_,_,_) -> p0
-        
+
     /// returns the end-point of the segment (t=1)
     let inline endPoint (seg : PathSegment) =
         match seg with
@@ -204,7 +203,7 @@ module internal PathSegmentIntersections =
         elif t >= 1.0 then endPoint seg
         else
             match seg with
-            | LineSeg(p0, p1) -> 
+            | LineSeg(p0, p1) ->
                 lerp p0 p1 t
 
             | Bezier2Seg(p0, p1, p2) ->
@@ -221,7 +220,7 @@ module internal PathSegmentIntersections =
                 if t <= 0.0 then p0
                 elif t >= 1.0 then p1
                 else ellipse.GetPoint(a0 + t * da)
- 
+
     /// evaluates the curve-derivative for the given parameter (t <- [0;1])
     let derivative (t : float) (seg : PathSegment) =
         let t = clamp 0.0 1.0 t
@@ -243,10 +242,10 @@ module internal PathSegmentIntersections =
             let v = p2 - p1
             let w = p3 - p2
             3.0 * (s*s*u + 2.0*t*s*v + t*t*w)
-       
+
 
     [<AutoOpen>]
-    module private Implementations = 
+    module private Implementations =
 
         let private teps = 1E-6
 
@@ -294,23 +293,23 @@ module internal PathSegmentIntersections =
 
 
             let q2 = b*b - 4.0*a*c
-            
+
             let inline test (t : float) =
                 if t >= -teps && t <= 1.0 + teps then
                     let t = clamp 0.0 1.0 t
-                    let pt = r.GetPointOnRay t 
+                    let pt = r.GetPointOnRay t
                     match e.TryGetAlpha(pt, epsilon) with
                     | Some a ->
                         let ta = arcT alpha0 dAlpha a
-                        if ta >= -teps && ta <= 1.0 + teps then 
+                        if ta >= -teps && ta <= 1.0 + teps then
                             let ta = clamp 0.0 1.0 ta
                             if Fun.ApproximateEquals(pt, e.GetPoint (alpha0 + ta*dAlpha), epsilon) then
                                 Some (ta, t)
                             else
                                 None
-                        else 
+                        else
                             None
-                    | None -> 
+                    | None ->
                         None
                 else
                     None
@@ -343,7 +342,7 @@ module internal PathSegmentIntersections =
 
         let bezier2Line (epsilon : float) (p0 : V2d) (p1 : V2d) (p2 : V2d) (q0 : V2d) (q1 : V2d) =
             // o+t*d = a*t^2 + b*t + c
-            
+
             // o.X+s*d.X = a.X*t^2 + b.X*t + c.X
             // o.Y+s*d.Y = a.Y*t^2 + b.Y*t + c.Y
 
@@ -396,38 +395,38 @@ module internal PathSegmentIntersections =
 
         let bezier2 (epsilon : float) (p0 : V2d) (p1 : V2d) (p2 : V2d) (q0 : V2d) (q1 : V2d) (q2 : V2d) =
             let f0 =
-               -4.0*q0.Y*q1.X*q1.Y*q2.X + 4.0*q0.X*sqr(q1.Y)*q2.X + sqr(q0.Y)*sqr(q2.X) + sqr(p0.Y)*sqr(q0.X - 2.0*q1.X + q2.X) + 4.0*q0.Y*sqr(q1.X)*q2.Y - 4.0*q0.X*q1.X*q1.Y*q2.Y - 2.0*q0.X*q0.Y*q2.X*q2.Y + sqr(q0.X)*sqr(q2.Y) + sqr(p0.X)*sqr(q0.Y - 2.0*q1.Y + q2.Y) - 
-                2.0*p0.Y*(-2.0*q0.X*q1.X*q1.Y + 4.0*q0.X*q1.Y*q2.X - 2.0*q1.X*q1.Y*q2.X + q0.Y*(2.0*sqr(q1.X) - q0.X*q2.X - 2.0*q1.X*q2.X + sqr(q2.X)) + sqr(q0.X)*q2.Y - 2.0*q0.X*q1.X*q2.Y + 2.0*sqr(q1.X)*q2.Y - q0.X*q2.X*q2.Y + p0.X*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y)) + 
+               -4.0*q0.Y*q1.X*q1.Y*q2.X + 4.0*q0.X*sqr(q1.Y)*q2.X + sqr(q0.Y)*sqr(q2.X) + sqr(p0.Y)*sqr(q0.X - 2.0*q1.X + q2.X) + 4.0*q0.Y*sqr(q1.X)*q2.Y - 4.0*q0.X*q1.X*q1.Y*q2.Y - 2.0*q0.X*q0.Y*q2.X*q2.Y + sqr(q0.X)*sqr(q2.Y) + sqr(p0.X)*sqr(q0.Y - 2.0*q1.Y + q2.Y) -
+                2.0*p0.Y*(-2.0*q0.X*q1.X*q1.Y + 4.0*q0.X*q1.Y*q2.X - 2.0*q1.X*q1.Y*q2.X + q0.Y*(2.0*sqr(q1.X) - q0.X*q2.X - 2.0*q1.X*q2.X + sqr(q2.X)) + sqr(q0.X)*q2.Y - 2.0*q0.X*q1.X*q2.Y + 2.0*sqr(q1.X)*q2.Y - q0.X*q2.X*q2.Y + p0.X*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y)) +
                 2.0*p0.X*(-(sqr(q0.Y)*q2.X) + 2.0*q1.Y*(-(q1.Y*q2.X) + q1.X*q2.Y) + q0.Y*(2.0*q1.Y*q2.X + 2.0*q1.X*(q1.Y - 2.0*q2.Y) + (q0.X + q2.X)*q2.Y) - q0.X*(2.0*sqr(q1.Y) - 2.0*q1.Y*q2.Y + sqr(q2.Y)))
-        
+
             let f1 =
-                -4.0*(2.0*p1.Y*q0.Y*sqr(q1.X) - 2.0*p1.Y*q0.X*q1.X*q1.Y - 2.0*p1.X*q0.Y*q1.X*q1.Y + 2.0*p1.X*q0.X*sqr(q1.Y) - p1.Y*q0.X*q0.Y*q2.X + p1.X*sqr(q0.Y)*q2.X - 2.0*p1.Y*q0.Y*q1.X*q2.X + 4.0*p1.Y*q0.X*q1.Y*q2.X - 2.0*p1.X*q0.Y*q1.Y*q2.X - 2.0*p1.Y*q1.X*q1.Y*q2.X + 2.0*p1.X*sqr(q1.Y)*q2.X + 
-                     p1.Y*q0.Y*sqr(q2.X) + sqr(p0.Y)*sqr(q0.X - 2.0*q1.X + q2.X) + p1.Y*sqr(q0.X)*q2.Y - p1.X*q0.X*q0.Y*q2.Y - 2.0*p1.Y*q0.X*q1.X*q2.Y + 4.0*p1.X*q0.Y*q1.X*q2.Y + 2.0*p1.Y*sqr(q1.X)*q2.Y - 2.0*p1.X*q0.X*q1.Y*q2.Y - 2.0*p1.X*q1.X*q1.Y*q2.Y - p1.Y*q0.X*q2.X*q2.Y - p1.X*q0.Y*q2.X*q2.Y + 
-                     p1.X*q0.X*sqr(q2.Y) + sqr(p0.X)*sqr(q0.Y - 2.0*q1.Y + q2.Y) + p0.Y*(p1.X*q0.X*q0.Y - 2.0*p1.X*q0.Y*q1.X - 2.0*q0.Y*sqr(q1.X) - 2.0*p1.X*q0.X*q1.Y + 4.0*p1.X*q1.X*q1.Y + 2.0*q0.X*q1.X*q1.Y + p1.X*q0.Y*q2.X + q0.X*q0.Y*q2.X + 2.0*q0.Y*q1.X*q2.X - 2.0*p1.X*q1.Y*q2.X - 4.0*q0.X*q1.Y*q2.X + 
-                        2.0*q1.X*q1.Y*q2.X - q0.Y*sqr(q2.X) - p1.Y*sqr(q0.X - 2.0*q1.X + q2.X) + p1.X*q0.X*q2.Y - sqr(q0.X)*q2.Y - 2.0*p1.X*q1.X*q2.Y + 2.0*q0.X*q1.X*q2.Y - 2.0*sqr(q1.X)*q2.Y + p1.X*q2.X*q2.Y + q0.X*q2.X*q2.Y - 2.0*p0.X*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y)) + 
-                     p0.X*(2.0*q0.Y*q1.X*q1.Y - 2.0*q0.X*sqr(q1.Y) - sqr(q0.Y)*q2.X + 2.0*q0.Y*q1.Y*q2.X - 2.0*sqr(q1.Y)*q2.X + q0.X*q0.Y*q2.Y - 4.0*q0.Y*q1.X*q2.Y + 2.0*q0.X*q1.Y*q2.Y + 2.0*q1.X*q1.Y*q2.Y + q0.Y*q2.X*q2.Y - q0.X*sqr(q2.Y) + p1.Y*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y) - 
+                -4.0*(2.0*p1.Y*q0.Y*sqr(q1.X) - 2.0*p1.Y*q0.X*q1.X*q1.Y - 2.0*p1.X*q0.Y*q1.X*q1.Y + 2.0*p1.X*q0.X*sqr(q1.Y) - p1.Y*q0.X*q0.Y*q2.X + p1.X*sqr(q0.Y)*q2.X - 2.0*p1.Y*q0.Y*q1.X*q2.X + 4.0*p1.Y*q0.X*q1.Y*q2.X - 2.0*p1.X*q0.Y*q1.Y*q2.X - 2.0*p1.Y*q1.X*q1.Y*q2.X + 2.0*p1.X*sqr(q1.Y)*q2.X +
+                     p1.Y*q0.Y*sqr(q2.X) + sqr(p0.Y)*sqr(q0.X - 2.0*q1.X + q2.X) + p1.Y*sqr(q0.X)*q2.Y - p1.X*q0.X*q0.Y*q2.Y - 2.0*p1.Y*q0.X*q1.X*q2.Y + 4.0*p1.X*q0.Y*q1.X*q2.Y + 2.0*p1.Y*sqr(q1.X)*q2.Y - 2.0*p1.X*q0.X*q1.Y*q2.Y - 2.0*p1.X*q1.X*q1.Y*q2.Y - p1.Y*q0.X*q2.X*q2.Y - p1.X*q0.Y*q2.X*q2.Y +
+                     p1.X*q0.X*sqr(q2.Y) + sqr(p0.X)*sqr(q0.Y - 2.0*q1.Y + q2.Y) + p0.Y*(p1.X*q0.X*q0.Y - 2.0*p1.X*q0.Y*q1.X - 2.0*q0.Y*sqr(q1.X) - 2.0*p1.X*q0.X*q1.Y + 4.0*p1.X*q1.X*q1.Y + 2.0*q0.X*q1.X*q1.Y + p1.X*q0.Y*q2.X + q0.X*q0.Y*q2.X + 2.0*q0.Y*q1.X*q2.X - 2.0*p1.X*q1.Y*q2.X - 4.0*q0.X*q1.Y*q2.X +
+                        2.0*q1.X*q1.Y*q2.X - q0.Y*sqr(q2.X) - p1.Y*sqr(q0.X - 2.0*q1.X + q2.X) + p1.X*q0.X*q2.Y - sqr(q0.X)*q2.Y - 2.0*p1.X*q1.X*q2.Y + 2.0*q0.X*q1.X*q2.Y - 2.0*sqr(q1.X)*q2.Y + p1.X*q2.X*q2.Y + q0.X*q2.X*q2.Y - 2.0*p0.X*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y)) +
+                     p0.X*(2.0*q0.Y*q1.X*q1.Y - 2.0*q0.X*sqr(q1.Y) - sqr(q0.Y)*q2.X + 2.0*q0.Y*q1.Y*q2.X - 2.0*sqr(q1.Y)*q2.X + q0.X*q0.Y*q2.Y - 4.0*q0.Y*q1.X*q2.Y + 2.0*q0.X*q1.Y*q2.Y + 2.0*q1.X*q1.Y*q2.Y + q0.Y*q2.X*q2.Y - q0.X*sqr(q2.Y) + p1.Y*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y) -
                         p1.X*sqr(q0.Y - 2.0*q1.Y + q2.Y)))
 
             let f2 =
-              2.0*(-(p0.X*p2.Y*q0.X*q0.Y) + 3.0*sqr(p0.X)*sqr(q0.Y) - 6.0*p0.X*p1.X*sqr(q0.Y) + 2.0*sqr(p1.X)*sqr(q0.Y) + p0.X*p2.X*sqr(q0.Y) + 2.0*p0.X*p2.Y*q0.Y*q1.X - 2.0*p2.Y*q0.Y*sqr(q1.X) + 2.0*p0.X*p2.Y*q0.X*q1.Y - 12.0*sqr(p0.X)*q0.Y*q1.Y + 24.0*p0.X*p1.X*q0.Y*q1.Y - 
-                 8.0*sqr(p1.X)*q0.Y*q1.Y - 4.0*p0.X*p2.X*q0.Y*q1.Y - 4.0*p0.X*p2.Y*q1.X*q1.Y + 2.0*p2.Y*q0.X*q1.X*q1.Y + 2.0*p0.X*q0.Y*q1.X*q1.Y - 4.0*p1.X*q0.Y*q1.X*q1.Y + 2.0*p2.X*q0.Y*q1.X*q1.Y + 12.0*sqr(p0.X)*sqr(q1.Y) - 24.0*p0.X*p1.X*sqr(q1.Y) + 8.0*sqr(p1.X)*sqr(q1.Y) + 
-                 4.0*p0.X*p2.X*sqr(q1.Y) - 2.0*p0.X*q0.X*sqr(q1.Y) + 4.0*p1.X*q0.X*sqr(q1.Y) - 2.0*p2.X*q0.X*sqr(q1.Y) - p0.X*p2.Y*q0.Y*q2.X + p2.Y*q0.X*q0.Y*q2.X - p0.X*sqr(q0.Y)*q2.X + 2.0*p1.X*sqr(q0.Y)*q2.X - p2.X*sqr(q0.Y)*q2.X + 2.0*p2.Y*q0.Y*q1.X*q2.X + 2.0*p0.X*p2.Y*q1.Y*q2.X - 
-                 4.0*p2.Y*q0.X*q1.Y*q2.X + 2.0*p0.X*q0.Y*q1.Y*q2.X - 4.0*p1.X*q0.Y*q1.Y*q2.X + 2.0*p2.X*q0.Y*q1.Y*q2.X + 2.0*p2.Y*q1.X*q1.Y*q2.X - 2.0*p0.X*sqr(q1.Y)*q2.X + 4.0*p1.X*sqr(q1.Y)*q2.X - 2.0*p2.X*sqr(q1.Y)*q2.X - p2.Y*q0.Y*sqr(q2.X) + 3.0*sqr(p0.Y)*sqr(q0.X - 2.0*q1.X + q2.X) + 
-                 2.0*sqr(p1.Y)*sqr(q0.X - 2.0*q1.X + q2.X) - p0.X*p2.Y*q0.X*q2.Y - p2.Y*sqr(q0.X)*q2.Y + 6.0*sqr(p0.X)*q0.Y*q2.Y - 12.0*p0.X*p1.X*q0.Y*q2.Y + 4.0*sqr(p1.X)*q0.Y*q2.Y + 2.0*p0.X*p2.X*q0.Y*q2.Y + p0.X*q0.X*q0.Y*q2.Y - 2.0*p1.X*q0.X*q0.Y*q2.Y + p2.X*q0.X*q0.Y*q2.Y + 
-                 2.0*p0.X*p2.Y*q1.X*q2.Y + 2.0*p2.Y*q0.X*q1.X*q2.Y - 4.0*p0.X*q0.Y*q1.X*q2.Y + 8.0*p1.X*q0.Y*q1.X*q2.Y - 4.0*p2.X*q0.Y*q1.X*q2.Y - 2.0*p2.Y*sqr(q1.X)*q2.Y - 12.0*sqr(p0.X)*q1.Y*q2.Y + 24.0*p0.X*p1.X*q1.Y*q2.Y - 8.0*sqr(p1.X)*q1.Y*q2.Y - 4.0*p0.X*p2.X*q1.Y*q2.Y + 2.0*p0.X*q0.X*q1.Y*q2.Y - 
-                 4.0*p1.X*q0.X*q1.Y*q2.Y + 2.0*p2.X*q0.X*q1.Y*q2.Y + 2.0*p0.X*q1.X*q1.Y*q2.Y - 4.0*p1.X*q1.X*q1.Y*q2.Y + 2.0*p2.X*q1.X*q1.Y*q2.Y - p0.X*p2.Y*q2.X*q2.Y + p2.Y*q0.X*q2.X*q2.Y + p0.X*q0.Y*q2.X*q2.Y - 2.0*p1.X*q0.Y*q2.X*q2.Y + p2.X*q0.Y*q2.X*q2.Y + 3.0*sqr(p0.X)*sqr(q2.Y) - 6.0*p0.X*p1.X*sqr(q2.Y) + 
-                 2.0*sqr(p1.X)*sqr(q2.Y) + p0.X*p2.X*sqr(q2.Y) - p0.X*q0.X*sqr(q2.Y) + 2.0*p1.X*q0.X*sqr(q2.Y) - p2.X*q0.X*sqr(q2.Y) - 
-                 p0.Y*(6.0*p0.X*q0.X*q0.Y - 6.0*p1.X*q0.X*q0.Y + p2.X*q0.X*q0.Y - 12.0*p0.X*q0.Y*q1.X + 12.0*p1.X*q0.Y*q1.X - 2.0*p2.X*q0.Y*q1.X + 2.0*q0.Y*sqr(q1.X) - 12.0*p0.X*q0.X*q1.Y + 12.0*p1.X*q0.X*q1.Y - 2.0*p2.X*q0.X*q1.Y + 24.0*p0.X*q1.X*q1.Y - 24.0*p1.X*q1.X*q1.Y + 4.0*p2.X*q1.X*q1.Y - 2.0*q0.X*q1.X*q1.Y + 
-                    6.0*p0.X*q0.Y*q2.X - 6.0*p1.X*q0.Y*q2.X + p2.X*q0.Y*q2.X - q0.X*q0.Y*q2.X - 2.0*q0.Y*q1.X*q2.X - 12.0*p0.X*q1.Y*q2.X + 12.0*p1.X*q1.Y*q2.X - 2.0*p2.X*q1.Y*q2.X + 4.0*q0.X*q1.Y*q2.X - 2.0*q1.X*q1.Y*q2.X + q0.Y*sqr(q2.X) + 6.0*p1.Y*sqr(q0.X - 2.0*q1.X + q2.X) - p2.Y*sqr(q0.X - 2.0*q1.X + q2.X) + 
-                    6.0*p0.X*q0.X*q2.Y - 6.0*p1.X*q0.X*q2.Y + p2.X*q0.X*q2.Y + sqr(q0.X)*q2.Y - 12.0*p0.X*q1.X*q2.Y + 12.0*p1.X*q1.X*q2.Y - 2.0*p2.X*q1.X*q2.Y - 2.0*q0.X*q1.X*q2.Y + 2.0*sqr(q1.X)*q2.Y + 6.0*p0.X*q2.X*q2.Y - 6.0*p1.X*q2.X*q2.Y + p2.X*q2.X*q2.Y - q0.X*q2.X*q2.Y) + 
-                 2.0*p1.Y*(2.0*q0.Y*sqr(q1.X) - 2.0*q0.X*q1.X*q1.Y - q0.X*q0.Y*q2.X - 2.0*q0.Y*q1.X*q2.X + 4.0*q0.X*q1.Y*q2.X - 2.0*q1.X*q1.Y*q2.X + q0.Y*sqr(q2.X) + sqr(q0.X)*q2.Y - 2.0*q0.X*q1.X*q2.Y + 2.0*sqr(q1.X)*q2.Y - q0.X*q2.X*q2.Y + 3.0*p0.X*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y) - 
+              2.0*(-(p0.X*p2.Y*q0.X*q0.Y) + 3.0*sqr(p0.X)*sqr(q0.Y) - 6.0*p0.X*p1.X*sqr(q0.Y) + 2.0*sqr(p1.X)*sqr(q0.Y) + p0.X*p2.X*sqr(q0.Y) + 2.0*p0.X*p2.Y*q0.Y*q1.X - 2.0*p2.Y*q0.Y*sqr(q1.X) + 2.0*p0.X*p2.Y*q0.X*q1.Y - 12.0*sqr(p0.X)*q0.Y*q1.Y + 24.0*p0.X*p1.X*q0.Y*q1.Y -
+                 8.0*sqr(p1.X)*q0.Y*q1.Y - 4.0*p0.X*p2.X*q0.Y*q1.Y - 4.0*p0.X*p2.Y*q1.X*q1.Y + 2.0*p2.Y*q0.X*q1.X*q1.Y + 2.0*p0.X*q0.Y*q1.X*q1.Y - 4.0*p1.X*q0.Y*q1.X*q1.Y + 2.0*p2.X*q0.Y*q1.X*q1.Y + 12.0*sqr(p0.X)*sqr(q1.Y) - 24.0*p0.X*p1.X*sqr(q1.Y) + 8.0*sqr(p1.X)*sqr(q1.Y) +
+                 4.0*p0.X*p2.X*sqr(q1.Y) - 2.0*p0.X*q0.X*sqr(q1.Y) + 4.0*p1.X*q0.X*sqr(q1.Y) - 2.0*p2.X*q0.X*sqr(q1.Y) - p0.X*p2.Y*q0.Y*q2.X + p2.Y*q0.X*q0.Y*q2.X - p0.X*sqr(q0.Y)*q2.X + 2.0*p1.X*sqr(q0.Y)*q2.X - p2.X*sqr(q0.Y)*q2.X + 2.0*p2.Y*q0.Y*q1.X*q2.X + 2.0*p0.X*p2.Y*q1.Y*q2.X -
+                 4.0*p2.Y*q0.X*q1.Y*q2.X + 2.0*p0.X*q0.Y*q1.Y*q2.X - 4.0*p1.X*q0.Y*q1.Y*q2.X + 2.0*p2.X*q0.Y*q1.Y*q2.X + 2.0*p2.Y*q1.X*q1.Y*q2.X - 2.0*p0.X*sqr(q1.Y)*q2.X + 4.0*p1.X*sqr(q1.Y)*q2.X - 2.0*p2.X*sqr(q1.Y)*q2.X - p2.Y*q0.Y*sqr(q2.X) + 3.0*sqr(p0.Y)*sqr(q0.X - 2.0*q1.X + q2.X) +
+                 2.0*sqr(p1.Y)*sqr(q0.X - 2.0*q1.X + q2.X) - p0.X*p2.Y*q0.X*q2.Y - p2.Y*sqr(q0.X)*q2.Y + 6.0*sqr(p0.X)*q0.Y*q2.Y - 12.0*p0.X*p1.X*q0.Y*q2.Y + 4.0*sqr(p1.X)*q0.Y*q2.Y + 2.0*p0.X*p2.X*q0.Y*q2.Y + p0.X*q0.X*q0.Y*q2.Y - 2.0*p1.X*q0.X*q0.Y*q2.Y + p2.X*q0.X*q0.Y*q2.Y +
+                 2.0*p0.X*p2.Y*q1.X*q2.Y + 2.0*p2.Y*q0.X*q1.X*q2.Y - 4.0*p0.X*q0.Y*q1.X*q2.Y + 8.0*p1.X*q0.Y*q1.X*q2.Y - 4.0*p2.X*q0.Y*q1.X*q2.Y - 2.0*p2.Y*sqr(q1.X)*q2.Y - 12.0*sqr(p0.X)*q1.Y*q2.Y + 24.0*p0.X*p1.X*q1.Y*q2.Y - 8.0*sqr(p1.X)*q1.Y*q2.Y - 4.0*p0.X*p2.X*q1.Y*q2.Y + 2.0*p0.X*q0.X*q1.Y*q2.Y -
+                 4.0*p1.X*q0.X*q1.Y*q2.Y + 2.0*p2.X*q0.X*q1.Y*q2.Y + 2.0*p0.X*q1.X*q1.Y*q2.Y - 4.0*p1.X*q1.X*q1.Y*q2.Y + 2.0*p2.X*q1.X*q1.Y*q2.Y - p0.X*p2.Y*q2.X*q2.Y + p2.Y*q0.X*q2.X*q2.Y + p0.X*q0.Y*q2.X*q2.Y - 2.0*p1.X*q0.Y*q2.X*q2.Y + p2.X*q0.Y*q2.X*q2.Y + 3.0*sqr(p0.X)*sqr(q2.Y) - 6.0*p0.X*p1.X*sqr(q2.Y) +
+                 2.0*sqr(p1.X)*sqr(q2.Y) + p0.X*p2.X*sqr(q2.Y) - p0.X*q0.X*sqr(q2.Y) + 2.0*p1.X*q0.X*sqr(q2.Y) - p2.X*q0.X*sqr(q2.Y) -
+                 p0.Y*(6.0*p0.X*q0.X*q0.Y - 6.0*p1.X*q0.X*q0.Y + p2.X*q0.X*q0.Y - 12.0*p0.X*q0.Y*q1.X + 12.0*p1.X*q0.Y*q1.X - 2.0*p2.X*q0.Y*q1.X + 2.0*q0.Y*sqr(q1.X) - 12.0*p0.X*q0.X*q1.Y + 12.0*p1.X*q0.X*q1.Y - 2.0*p2.X*q0.X*q1.Y + 24.0*p0.X*q1.X*q1.Y - 24.0*p1.X*q1.X*q1.Y + 4.0*p2.X*q1.X*q1.Y - 2.0*q0.X*q1.X*q1.Y +
+                    6.0*p0.X*q0.Y*q2.X - 6.0*p1.X*q0.Y*q2.X + p2.X*q0.Y*q2.X - q0.X*q0.Y*q2.X - 2.0*q0.Y*q1.X*q2.X - 12.0*p0.X*q1.Y*q2.X + 12.0*p1.X*q1.Y*q2.X - 2.0*p2.X*q1.Y*q2.X + 4.0*q0.X*q1.Y*q2.X - 2.0*q1.X*q1.Y*q2.X + q0.Y*sqr(q2.X) + 6.0*p1.Y*sqr(q0.X - 2.0*q1.X + q2.X) - p2.Y*sqr(q0.X - 2.0*q1.X + q2.X) +
+                    6.0*p0.X*q0.X*q2.Y - 6.0*p1.X*q0.X*q2.Y + p2.X*q0.X*q2.Y + sqr(q0.X)*q2.Y - 12.0*p0.X*q1.X*q2.Y + 12.0*p1.X*q1.X*q2.Y - 2.0*p2.X*q1.X*q2.Y - 2.0*q0.X*q1.X*q2.Y + 2.0*sqr(q1.X)*q2.Y + 6.0*p0.X*q2.X*q2.Y - 6.0*p1.X*q2.X*q2.Y + p2.X*q2.X*q2.Y - q0.X*q2.X*q2.Y) +
+                 2.0*p1.Y*(2.0*q0.Y*sqr(q1.X) - 2.0*q0.X*q1.X*q1.Y - q0.X*q0.Y*q2.X - 2.0*q0.Y*q1.X*q2.X + 4.0*q0.X*q1.Y*q2.X - 2.0*q1.X*q1.Y*q2.X + q0.Y*sqr(q2.X) + sqr(q0.X)*q2.Y - 2.0*q0.X*q1.X*q2.Y + 2.0*sqr(q1.X)*q2.Y - q0.X*q2.X*q2.Y + 3.0*p0.X*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y) -
                     2.0*p1.X*(q0.X - 2.0*q1.X + q2.X)*(q0.Y - 2.0*q1.Y + q2.Y)))
 
             let f3 =
                 -4.0*(p2.Y*q0.X - p0.X*q0.Y + 2.0*p1.X*q0.Y - p2.X*q0.Y - 2.0*p2.Y*q1.X + 2.0*p0.X*q1.Y - 4.0*p1.X*q1.Y + 2.0*p2.X*q1.Y + p2.Y*q2.X + p0.Y*(q0.X - 2.0*q1.X + q2.X) - 2.0*p1.Y*(q0.X - 2.0*q1.X + q2.X) - p0.X*q2.Y + 2.0*p1.X*q2.Y - p2.X*q2.Y)*
                     (p0.Y*(q0.X - 2.0*q1.X + q2.X) - p1.Y*(q0.X - 2.0*q1.X + q2.X) - (p0.X - p1.X)*(q0.Y - 2.0*q1.Y + q2.Y))
-        
-            let f4 = 
+
+            let f4 =
                 sqr(-(p2.Y*q0.X) + p0.X*q0.Y - 2.0*p1.X*q0.Y + p2.X*q0.Y + 2.0*p2.Y*q1.X - 2.0*p0.X*q1.Y + 4.0*p1.X*q1.Y - 2.0*p2.X*q1.Y - p2.Y*q2.X - p0.Y*(q0.X - 2.0*q1.X + q2.X) + 2.0*p1.Y*(q0.X - 2.0*q1.X + q2.X) + p0.X*q2.Y - 2.0*p1.X*q2.Y + p2.X*q2.Y)
 
             let struct (t0, t1, t2, t3) = Polynomial.RealRootsOf(f4, f3, f2, f1, f0)
@@ -447,7 +446,7 @@ module internal PathSegmentIntersections =
                     Some (t, q0*s*s + 2.0*q1*s*t + q2*t*t)
                 else
                     None
-                
+
             let test (tp : float) =
                 match evalP tp with
                 | Some(tp, pp) ->
@@ -478,8 +477,8 @@ module internal PathSegmentIntersections =
             // |c + cos t * a + sin t * b|^2 = 1
             // <c + cos(t)*a + sin(t)*b | c + cos(t)*a + sin(t)*b> = 1
 
-            // <c|c> + cos(t)*<a|c> + sin(t)*<b|c> + 
-            // cos(t)*<a|c> + cos(t)^2*<a|a> + sin(t)*cos(t)*<a|b> + 
+            // <c|c> + cos(t)*<a|c> + sin(t)*<b|c> +
+            // cos(t)*<a|c> + cos(t)^2*<a|a> + sin(t)*cos(t)*<a|b> +
             // sin(t)*<b|c> + sin(t)*cos(t)*<a|b> + sin(t)^2*<b|b> - 1 = 0
 
             // (cos(t)^2*<a|a> + sin(t)^2*<b|b>) + 2*(sin(t)*cos(t)*<a|b> + cos(t)*<a|c> + sin(t)*<b|c>) + <c|c> - 1 = 0
@@ -513,7 +512,7 @@ module internal PathSegmentIntersections =
             let g4 = 4.0*sqr(ab) + sqr(aa - bb)
             let struct(s0, s1, s2, s3) = Polynomial.RealRootsOf(g4, g3, g2, g1, g0)
 
-           
+
             let add (v0 : float, v1 : float) (l : list<float * float>) =
                 let exists = l |> List.exists (fun (va, vb) -> Fun.ApproximateEquals(v0, va, 1E-8) && Fun.ApproximateEquals(v1, vb, 1E-8))
                 if exists then l
@@ -522,12 +521,12 @@ module internal PathSegmentIntersections =
             let sols =
                 let mutable sols = []
                 for c in [c0;c1;c2;c3] do
-                    if c >= -1.0 && c <= 1.0 then 
+                    if c >= -1.0 && c <= 1.0 then
                         let s = sqrt(1.0 - sqr c)
                         sols <- sols |> add (c, s) |> add (c, -s)
-                    
+
                 for s in [s0;s1;s2;s3] do
-                    if s >= -1.0 && s <= 1.0 then 
+                    if s >= -1.0 && s <= 1.0 then
                         let c = sqrt(1.0 - sqr s)
                         sols <- sols |> add (c, s) |> add (-c, s)
 
@@ -548,7 +547,7 @@ module internal PathSegmentIntersections =
                     else
                         getSolutions acc t
 
-                    
+
 
 
 
@@ -573,7 +572,7 @@ module internal PathSegmentIntersections =
                 else
                     None
             )
-        
+
         let private bezier2Ellipse (p0 : V2d) (p1 : V2d) (p2 : V2d) (e : Ellipse2d) =
             let m = M33d.FromCols(V3d(e.Axis0, 0.0), V3d(e.Axis1, 0.0), V3d(e.Center, 1.0))
             let mi = m.Inverse
@@ -588,7 +587,7 @@ module internal PathSegmentIntersections =
 
             // |a*t^2 + b*t + c| = 1
             // <a*t^2 + b*t + c | a*t^2 + b*t + c > = 1
-        
+
             // t^4*<a|a> + t^3*<a|b> + t^2*<a|c> +
             // t^3*<a|b> + t^2*<b|b> + t*<b|c> +
             // t^2*<a|c> + t*<b|c> + <c|c> - 1 = 0
@@ -630,9 +629,9 @@ module internal PathSegmentIntersections =
                 else
                     None
             )
-            
+
         let bezier3Line (epsilon : float) (p0 : V2d) (p1 : V2d) (p2 : V2d) (p3 : V2d) (q0 : V2d) (q1 : V2d) =
-            
+
             let a = -p0 + 3.0*p1 - 3.0*p2 + p3
             let b = 3.0*p0 - 6.0*p1 + 3.0*p2
             let c = 3.0*p1 - 3.0*p0
@@ -646,7 +645,7 @@ module internal PathSegmentIntersections =
             // v.X*t + o.X = a.X*s^3 + b.X*s^2 + c.X*s + d.X
             // v.Y*t + o.Y = a.Y*s^3 + b.Y*s^2 + c.Y*s + d.Y
 
-            
+
             // v.Y*v.X*t + v.Y*o.X = v.Y*a.X*s^3 + v.Y*b.X*s^2 + v.Y*c.X*s + v.Y*d.X
             // -v.X*v.Y*t - v.X*o.Y = -v.X*a.Y*s^3 - v.X*b.Y*s^2 - v.X*c.Y*s - v.X*d.Y
 
@@ -705,7 +704,7 @@ module internal PathSegmentIntersections =
                 Bezier3Seg(p0, q0, m0, c), Bezier3Seg(c, m1, q2, p3)
 
         let numeric (epsilon : float) (l : PathSegment) (r : PathSegment) =
-            
+
             let stack = System.Collections.Generic.Stack<struct(PathSegment * PathSegment * V4d)>(64)
 
             let mutable result = []
@@ -745,8 +744,8 @@ module internal PathSegmentIntersections =
                     t <- t + dt
                     lastStep <- dt.NormMax
                     iter <- iter + 1
-                
-                
+
+
 
                 let tl = clamp 0.0 1.0 t.X
                 let tr = clamp 0.0 1.0 t.Y
@@ -758,7 +757,7 @@ module internal PathSegmentIntersections =
                 if Fun.ApproximateEquals(pl, pr, largeEps) then
                     let pt = (pl + pr) / 2.0
                     let contained = points |> List.exists (fun p -> Fun.ApproximateEquals(p, pt, largeEps))
-                    if not contained then 
+                    if not contained then
                         result <- (tl, tr) :: result
                         points <- pt :: points
                         cnt <- cnt + 1
@@ -782,7 +781,7 @@ module internal PathSegmentIntersections =
                     else
                         let l0, l1 = halves l
                         let r0, r1 = halves r
-                    
+
                         let lsh = ls / 2.0
                         let rsh = rs / 2.0
 
@@ -806,10 +805,10 @@ module internal PathSegmentIntersections =
             lines eps a0 a1 b0 b1
 
         | LineSeg(a0, a1), Bezier2Seg(b0, b1, b2) ->
-            bezier2Line eps b0 b1 b2 a0 a1 
+            bezier2Line eps b0 b1 b2 a0 a1
             |> List.map flip
             |> List.sortBy fst
-            
+
         | LineSeg(a0, a1), ArcSeg(c0, c1, b0, db, b) ->
             arcLine eps c0 c1 b0 db b a0 a1
             |> List.map flip
@@ -823,7 +822,7 @@ module internal PathSegmentIntersections =
         | Bezier2Seg(a0, a1, a2), LineSeg(b0, b1) ->
             bezier2Line eps a0 a1 a2 b0 b1
             |> List.sortBy fst
-            
+
         | Bezier2Seg(a0, a1, a2), Bezier2Seg(b0, b1, b2) ->
             bezier2 eps a0 a1 a2 b0 b1 b2
             |> List.sortBy fst
@@ -831,7 +830,7 @@ module internal PathSegmentIntersections =
         | Bezier2Seg(a0, a1, a2), ArcSeg(_, _, b0, db, b) ->
             bezier2Arc eps a0 a1 a2 b0 db b
             |> List.sortBy fst
-            
+
         | Bezier2Seg _, Bezier3Seg _ ->
             numeric eps a b
             |> List.sortBy fst
@@ -839,12 +838,12 @@ module internal PathSegmentIntersections =
         | ArcSeg(c0, c1, a0, da, a), LineSeg(b0, b1) ->
             arcLine eps c0 c1 a0 da a b0 b1
             |> List.sortBy fst
-        
+
         | ArcSeg(_, _, a0, da, a), Bezier2Seg(b0, b1, b2) ->
             bezier2Arc eps b0 b1 b2 a0 da a
             |> List.map flip
             |> List.sortBy fst
-            
+
         | ArcSeg(ap0, ap1, a0, da, a), ArcSeg(bp0, bp1, b0, db, b) ->
             if Fun.ApproximateEquals(ap0, bp0, eps) then [0.0, 0.0]
             elif Fun.ApproximateEquals(ap0, bp1, eps) then [0.0, 1.0]
@@ -853,7 +852,7 @@ module internal PathSegmentIntersections =
             else
                 arcs eps a0 da a b0 db b
                 |> List.sortBy fst
-            
+
         | ArcSeg _, Bezier3Seg _ ->
             numeric eps a b
             |> List.sortBy fst
@@ -861,7 +860,7 @@ module internal PathSegmentIntersections =
         | Bezier3Seg(a0, a1, a2, a3), LineSeg(b0, b1) ->
             bezier3Line eps a0 a1 a2 a3 b0 b1
             |> List.sortBy fst
-            
+
         | Bezier3Seg _, Bezier2Seg _ ->
             numeric eps a b
             |> List.sortBy fst
@@ -873,11 +872,11 @@ module internal PathSegmentIntersections =
         | Bezier3Seg _, Bezier3Seg _ ->
             numeric eps a b
             |> List.sortBy fst
-            
+
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module PathSegment =
-    
+
 
     let inline private cc (a : V2d) (b : V2d) =
         a.X*b.Y - a.Y*b.X
@@ -915,25 +914,25 @@ module PathSegment =
         | Bezier2Seg(p0, p1, p2) -> PathSegment.Bezier2Seg(p0, p1, pt)
         | Bezier3Seg(p0, p1, p2, p3) -> PathSegment.Bezier3Seg(p0, p1, p2, pt)
         | ArcSeg(p0, p1, a, da, e) -> PathSegment.ArcSeg(p0, pt, a, da, e)
-     
+
 
     /// creates a line segment
-    let line (p0 : V2d) (p1 : V2d) = 
+    let line (p0 : V2d) (p1 : V2d) =
         if Fun.ApproximateEquals(p0, p1, epsilon) then
             failwithf "[PathSegment] degenerate line at: %A" p0
 
         LineSeg(p0, p1)
 
     /// creates a quadratic bezier segment
-    let bezier2 (p0 : V2d) (p1 : V2d) (p2 : V2d) = 
+    let bezier2 (p0 : V2d) (p1 : V2d) (p2 : V2d) =
         // check if the spline is actually a line
         let d = p2 - p0 |> Vec.normalize
         let n = V2d(-d.Y, d.X)
-        
-        
-        if Fun.IsTiny(Vec.dot (p1 - p0) n, epsilon) then 
+
+
+        if Fun.IsTiny(Vec.dot (p1 - p0) n, epsilon) then
             line p0 p2
-        else 
+        else
             Bezier2Seg(p0, p1, p2)
 
     /// creates a cubic bezier segment
@@ -958,7 +957,7 @@ module PathSegment =
                     bezier2 p0 ctrl p3
                 else
                     Bezier3Seg(p0, p1, p2, p3)
-            
+
 
 
     /// creates a line segment (if not degenerate)
@@ -967,15 +966,15 @@ module PathSegment =
         else Some (LineSeg(p0, p1))
 
     /// creates a qudratic bezier segment (if not degenerate)
-    let tryBezier2 (p0 : V2d) (p1 : V2d) (p2 : V2d) = 
+    let tryBezier2 (p0 : V2d) (p1 : V2d) (p2 : V2d) =
         // check if the spline is actually a line
         let d = p2 - p0 |> Vec.normalize
         let n = V2d(-d.Y, d.X)
-        
-        
-        if Fun.IsTiny(Vec.dot (p1 - p0) n, epsilon) then 
+
+
+        if Fun.IsTiny(Vec.dot (p1 - p0) n, epsilon) then
             tryLine p0 p2
-        else 
+        else
             Bezier2Seg(p0, p1, p2) |> Some
 
     /// creates a cubic bezier segment (if not degenerate)
@@ -986,33 +985,33 @@ module PathSegment =
             let dd = (p3 - p0)
             let len = Vec.length dd
             let d03 = dd / len
-            
+
             let n = V2d(-d03.Y, d03.X)
             let h1 = Vec.dot (p1 - p0) n
             let h2 = Vec.dot (p2 - p0) n
 
             if Fun.IsTiny(h1, epsilon) && Fun.IsTiny(h2, epsilon) then
                 tryLine p0 p3
-            else        
+            else
                 // let f3 = -p0 + 3.0*p1 - 3.0*p2 + p3
                 // let f2 = 3.0*p0 - 6.0*p1 + 3.0*p2
                 // let f1 = 3.0*p1 - 3.0*p0
                 // let f0 = p0
-                
-                
+
+
                 // let g2 = q2 + q0 - 2.0*q1
                 // let g1 = 2.0*(q1 - q0)
                 // let g0 = q0
-                
-                
+
+
                 // f3 = 0
                 // =>
                 // q2 + q0 - 2.0*q1 = 3.0*p0 - 6.0*p1 + 3.0*p2
                 // 3.0*p1 - 3.0*p0 = 2.0*q1 - 2.0*q0
                 // p0 = q0
-                
+
                 // semantically: q2 = p3
-                
+
                 // q1 = -p0 + 3*p1 - 1.5*p2 + 0.5*p3
                 let f3 = -p0 + 3.0*p1 - 3.0*p2 + p3
                 if Fun.IsTiny(f3, epsilon) then
@@ -1034,7 +1033,7 @@ module PathSegment =
         else
             ArcSeg(p0, p1, a0, da, newEllipse) |> Some
 
-    
+
     /// creates an arc using the an angle alpha0 and a (signed) dAlpha.
     /// in order to avoid precision issues p0,p1 users may redundantly supply p0 and p1.
     /// the implementation validates that p0~ellipse.GetPoint(alpha0) and p1~ellipse.GetPoint(alpha0+dAlpha) respectively.
@@ -1045,7 +1044,7 @@ module PathSegment =
             createArc false p0 p1 alpha0 dAlpha ellipse
         else
             None
-            
+
     /// creates an arc using the an angle alpha0 and a (signed) dAlpha.
     /// in order to avoid precision issues p0,p1 users may redundantly supply p0 and p1.
     /// the implementation validates that p0~ellipse.GetPoint(alpha0) and p1~ellipse.GetPoint(alpha0+dAlpha) respectively.
@@ -1063,22 +1062,22 @@ module PathSegment =
             let p0 = ellipse.GetPoint alpha0
             let p1 = ellipse.GetPoint (alpha0 + dAlpha)
             createArc false p0 p1 alpha0 dAlpha ellipse
-            
+
     /// creates an arc using the an angle alpha0 and a (signed) dAlpha
     let arc (alpha0 : float) (dAlpha : float) (ellipse : Ellipse2d) =
         tryArc alpha0 dAlpha ellipse |> Option.get
 
-    /// creates an arc-segment passing through p0 and p2. 
+    /// creates an arc-segment passing through p0 and p2.
     /// the tangents are made parallel to (p1-p0) and (p2-p1) respectively.
     /// since this configuration is ambigous the ellipse with minimal eccentricity is chosen.
     let tryArcSegment (p0 : V2d) (p1 : V2d) (p2 : V2d) =
         // check if the arc is actually a line
         let d = p2 - p0 |> Vec.normalize
         let n = V2d(-d.Y, d.X)
-        
-        if Fun.IsTiny(Vec.dot (p1 - p0) n, epsilon) then 
+
+        if Fun.IsTiny(Vec.dot (p1 - p0) n, epsilon) then
             tryLine p0 p2
-        else 
+        else
             // see: https://math.stackexchange.com/questions/2204258/roundest-ellipse-with-specified-tangents
             let m = 0.5 * (p0 + p2)
             let am = m - p0
@@ -1094,7 +1093,7 @@ module PathSegment =
             let d = m + vm * (lmd / lvm)
 
             let inline ln (v : V2d) = V2d(-v.Y, v.X)
-            
+
             let pd = Plane2d(ln (am / lam), d)
             let pv = Plane2d(ln (va / lva), p0)
             let mutable e = V2d.Zero
@@ -1109,7 +1108,7 @@ module PathSegment =
                 if pef.Intersects(pvm, &c) then
                     let lcd = Vec.length (d - c)
                     let g = c - am * (lcd/lam)
-                    
+
                     let ellipse = createEllipse c (d - c) (g - c)
                     let a0 = ellipse.GetAlpha p0
                     let a1 = ellipse.GetAlpha p2
@@ -1123,8 +1122,8 @@ module PathSegment =
 
             else
                 tryLine p0 p2
-         
-    /// creates an arc-segment passing through p0 and p2. 
+
+    /// creates an arc-segment passing through p0 and p2.
     /// the tangents are made parallel to (p1-p0) and (p2-p1) respectively.
     /// since this configuration is ambigous the ellipse with minimal eccentricity is chosen.
     let arcSegment (p0 : V2d) (p1 : V2d) (p2 : V2d) =
@@ -1138,7 +1137,7 @@ module PathSegment =
         | Bezier2Seg(p0,_,_) -> p0
         | Bezier3Seg(p0,_,_,_) -> p0
         | ArcSeg(p0,_,_,_,_) -> p0
-        
+
     /// returns the end-point of the segment (t=1)
     let endPoint (seg : PathSegment) =
         match seg with
@@ -1153,7 +1152,7 @@ module PathSegment =
         elif t >= 1.0 then endPoint seg
         else
             match seg with
-            | LineSeg(p0, p1) -> 
+            | LineSeg(p0, p1) ->
                 lerp p0 p1 t
 
             | Bezier2Seg(p0, p1, p2) ->
@@ -1170,7 +1169,7 @@ module PathSegment =
                 if t <= 0.0 then p0
                 elif t >= 1.0 then p1
                 else ellipse.GetPoint(a0 + t * da)
- 
+
     /// evaluates the curve-derivative for the given parameter (t <- [0;1])
     let derivative (t : float) (seg : PathSegment) =
         let t = clamp 0.0 1.0 t
@@ -1192,7 +1191,7 @@ module PathSegment =
             let v = p2 - p1
             let w = p3 - p2
             3.0 * (s*s*u + 2.0*t*s*v + t*t*w)
-            
+
     /// evaluates the second curve-derivative for the given parameter (t <- [0;1])
     let secondDerivative (t : float) (seg : PathSegment) =
         let t = clamp 0.0 1.0 t
@@ -1212,7 +1211,7 @@ module PathSegment =
             let v = p2 - p1
             let w = p3 - p2
             6.0 * ((1.0-t)*(v-u) + t*(w-v))
-         
+
     /// evaluates the third curve-derivative for the given parameter (t <- [0;1])
     let thirdDerivative (t : float) (seg : PathSegment) =
         let t = clamp 0.0 1.0 t
@@ -1232,192 +1231,192 @@ module PathSegment =
             let v = p2 - p1
             let w = p3 - p2
             6.0 * (u+w - 2.0*v)
-            
+
     /// evaluates the curvature for the given parameter (t <- [0;1]).
     /// the curvature is defined as: c(t) := (x'(t)*y''(t) - y'(t)*x''(t)) / (x'(t)^2 + y'(t)^2)^(3/2).
     /// see https://en.wikipedia.org/wiki/Curvature#In_terms_of_a_general_parametrization
     let curvature (t : float) (seg : PathSegment) =
         match seg with
-        | LineSeg _ -> 
+        | LineSeg _ ->
             0.0
 
         | _ ->
-            
-            
+
+
             //(df.X*ddf.Y - df.Y*ddf.X) / (df.LengthSquared ** 1.5)
-            
-            
+
+
             // f = t^2 * (p0 - 2*p1 + p2) + t*2*(p1 - p0) + p0
-            
-            
+
+
             // df = 2.0 * ((1-t)*(p1 - p0) + t*(p2 - p1))
             // ddf = 2.0 * (p0 - 2.0*p1 + p2)
-            
-            
+
+
             // df/2 =(p1 - p0)- t*(p1 - p0) + t*(p2 - p1)
-            
-            
+
+
             // df/2 = (p1 - p0) - t*(p1 - p0) + t*(p2 - p1)
             // df = t * 2*(p2 - 2*p1 + p0) + 2*(p1 - p0)
             // ddf = 2*(p2 - 2*p1 + p0)
-            
-            
+
+
             // c = (df.X*ddf.Y - df.Y*ddf.X) / (df.LengthSquared ** 1.5)
             // c^2 = max
-            
+
             // c^2 = (df.X*ddf.Y - df.Y*ddf.X)^2 / (df.LengthSquared ** 3)
-            
+
             // a := 2*(p2 - 2*p1 + p0)
             // b := 2*(p1 - p0)
-            
-            
+
+
             // df = t*a + b
             // ddf = a
-            
+
             // ((t*a.X + b.X)*a.Y - (t*a.Y + b.Y)*a.X)^2 / ((t*a + b)^2)^3
-            
+
             // (t*a.X*a.Y + b.X*a.Y - t*a.Y*a.X - b.Y*a.X)^2 / ((t*a + b)^2)^3
             // c^2 = (b.X*a.Y - b.Y*a.X)^2 * ((t*a + b)^2)^-3
-            
+
             // dc^2 / dt = -3 * (b.X*a.Y - b.Y*a.X)^2 * ((t*a + b)^2)^-4 * 2*(t*a + b) * a
-            
-            
+
+
             // (t*a + b) * a  = 0
             // t = -<b|a> / <a|a>
-            
-            
-            
+
+
+
             // d := t0
             // a := 2.0*(p0 - 2*p1 + p2)
-            
+
             // df = a*t + d
             // ddf = a
-            
+
             // c^2 = [(a.X*t+d.X)*a.Y - (a.Y*t+d.Y)*a.X]^2 * [(a*t+d)^2]^-3
             // c^2 = [t*(a.X*a.Y - a.Y*a.X) + (d.X*a.Y - d.Y*a.X)]^2 * [(a*t+d)^2]^-3
-            
+
             // f := a.X*a.Y - a.Y*a.X
             // g := d.X*a.Y - d.Y*a.X
-            
+
             // f = 0
-            
+
             // c^2 = [t*f + g]^2 * [(a*t+d)^2]^-3
-            
-            
+
+
             // c^2 = g^2 * [(a*t+d)^2]^-3
-            
+
             // dc^2 / dt = -3*g^2 * [(a*t+d)^2]^-4
-            
-            
+
+
             // dc^2 / dt = 2*[t*f + g]*f * [(a*t+d)^2]^-3 - 6*[t*f + g]^2 * (a*t+d) * [(a*t+d)^2]^-4
-            
+
             // [t*f + g]*f * [(a*t+d)^2]^-3 - 3*[t*f + g]^2 * (a*t+d) * [(a*t+d)^2]^-4 = 0 /// * [(a*t+d)^2]^4
-            
-            // [t*f + g]*f * [(a*t+d)^2] - 3*[t*f + g]^2 * (a*t+d) = 0 
-            
-            
-            
-            
-            
-            
-            
+
+            // [t*f + g]*f * [(a*t+d)^2] - 3*[t*f + g]^2 * (a*t+d) = 0
+
+
+
+
+
+
+
             let df = derivative t seg
-            let ddf = secondDerivative t seg 
+            let ddf = secondDerivative t seg
             (df.X*ddf.Y - df.Y*ddf.X) / (df.LengthSquared ** 1.5)
-          
+
     /// evaluates the curvature-derivative for the given parameter (t <- [0;1]).
     let curvatureDerivative (t : float) (seg : PathSegment) =
         match seg with
-        | LineSeg _ -> 
+        | LineSeg _ ->
             0.0
 
         | _ ->
-            
+
             // F = df/dt(t)
             // G = d2f/dt^2(t)
-            
+
             // (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y)
-            
+
             // sqr F.X*G.X*G.Y - sqr F.Y*G.X*G.Y - F.X*F.Y*sqr G.X + F.X*F.Y*sqr G.Y
-            
+
             // G.X*G.Y*(sqr F.X - sqr F.Y) + F.X*F.Y*(sqr G.Y - sqr G.X)
-            
+
             // (Fx*Gy - Fy*Gx) * (Fx^2 + Fy^2)^(2/3)
-            
+
             // (Gx*Gy + Fx*Hy - Gy*Gx - Fy*Hx) * (Fx^2 + Fy^2)^(2/3) +
             // (Fx*Gy - Fy*Gx) * (4/3) * (Fx^2 + Fy^2)^(-1/3) * (Fx*Gx + Fy*Gy)
-            
-            
+
+
             // (Fx*Hy - Fy*Hx) * (Fx^2 + Fy^2)^(2/3) +
             // (4/3) * (Fx*Gy - Fy*Gx) * (Fx*Gx + Fy*Gy) * (Fx^2 + Fy^2)^(-1/3)
-            
-            
+
+
             // (Fx*Hy - Fy*Hx) * (Fx^2 + Fy^2)^(2/3) + (Fx*Gy - Fy*Gx) * (2/3) * (Fx^2 + Fy^2)^(-1/3) * 2*(Fx*Gx + Fy*Gy)
-            
+
             // A := lim dp->0 [(c(p + dp) - c(p)) / |dp|]
-            
+
             // p(t) = f(t)
             // dp(t) = f'(t) * dt
-            
+
             // dc/sqrt(dpx^2 + dpy^2)
-            
-            
+
+
             // A^2 = dc^2/(dpx^2 + dpy^2)
-            
-            
+
+
             // A^2 = dc^2/(f'x(t)^2*dt^2 + f'y(t)^2*dt^2)
             // A^2 = (1 / (f'x(t)^2 + f'y(t)^2)) * (dc^/dt)^2
             // A = (1 / |f'|) * (dc/dt)
-            
-            
-            
+
+
+
             // (c(f(t) + f'(t) * dt) - c(f(t))) / |f'(t) * dt|
             // (1 / |f'(t)|) * lim dt->0 [(C(t + dt) - C(t)) / dt]
-            
+
             // (1 / |f'(t)|) * dC/dt
-            
-            
+
+
             // (1 / |f'(t)|) * (c(t + dt) - c(t)) / dt
-            
-            
+
+
             // c = (F.X*G.Y - F.Y*G.X) * (F.X^2 + F.Y^2)^(-3/2)
-            
+
             // dc / dt = (G.X*G.Y + F.X*H.Y - G.Y*G.X - F.Y*H.X) * (F.X^2 + F.Y^2)^(-3/2) -
             // 3 * (F.X*G.Y - F.Y*G.X) * (F.X^2 + F.Y^2)^(-5/2) * (F.X*G.X + F.Y*G.Y)
-            
-            
+
+
             // dc / dt = (F.X*H.Y - F.Y*H.X) * (F.X^2 + F.Y^2)^(-3/2) -
             // 3 * (F.X*G.Y - F.Y*G.X) * (F.X^2 + F.Y^2)^(-5/2) * (F.X*G.X + F.Y*G.Y)
-            
-            
+
+
             // dc / dt = (F.X^2 + F.Y^2)^(-3/2) * [(F.X*H.Y - F.Y*H.X) -
             // 3 * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) * (F.X^2 + F.Y^2)^-1]
-            
-            
-            
+
+
+
             let F = derivative t seg
             let G = secondDerivative t seg
             let H = thirdDerivative t seg
-            
+
             let lfSq = F.LengthSquared
-            
+
             let diff = lfSq**(-1.5) * ((F.X*H.Y - F.Y*H.X) - 3.0 * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) / lfSq)
-            //     
             //
-            // let diff = 
+            //
+            // let diff =
             //     (F.X*H.Y - F.Y*H.X) * sqr lfSqCbrt +
             //     (4.0/3.0) * (F.X*G.Y - F.Y*G.X) * (F.X*G.X + F.Y*G.Y) / lfSqCbrt
 
             diff / F.Length
-    
+
 
     /// finds all parameters t <- [0;1] where the curvature changes its sign.
     /// note that only Bezier3 segments may have inflection points.
     let inflectionParameters (seg : PathSegment) =
         // {t | t >= 0 && t <= 1 && f'(t).X*f''(t).Y - f'(t).Y*f''(t).X == 0 }
         match seg with
-        | LineSeg _ 
-        | ArcSeg _ 
+        | LineSeg _
+        | ArcSeg _
         | Bezier2Seg _ ->
             []
 
@@ -1444,7 +1443,7 @@ module PathSegment =
                     [t0]
             elif v1 then [t1]
             else []
-      
+
     /// gets a normalized tangent at the given parameter (t <- [0;1])
     let tangent (t : float) (seg : PathSegment) =
         match seg with
@@ -1456,11 +1455,11 @@ module PathSegment =
             let alpha = a0 + t * da
             let n = (cos alpha * e.Axis1 - sin alpha * e.Axis0) |> Vec.normalize
             if da > 0.0 then n else -n
-            
+
         | Bezier2Seg(p0, p1, p2) ->
-            if t <= 0.0 then 
+            if t <= 0.0 then
                 Vec.normalize (p1 - p0)
-            elif t >= 1.0 then 
+            elif t >= 1.0 then
                 Vec.normalize (p2 - p1)
             else
                 let u = 1.0 - t
@@ -1479,17 +1478,17 @@ module PathSegment =
                 let v = p2 - p1
                 let w = p3 - p2
                 Vec.normalize (s*s*u + 2.0*t*s*v + t*t*w)
-        
+
     /// gets a normalized (left) normal at the given parameter (t <- [0;1])
     let normal (t : float) (seg : PathSegment) =
         let t = tangent t seg
         V2d(-t.Y, t.X)
 
     /// gets an axis aligned bounding box for the given segment
-    let bounds (seg : PathSegment) = 
+    let bounds (seg : PathSegment) =
         PathSegmentIntersections.bounds seg
 
-    /// reverses the given segment s.t. reversed(t) = original(1-t) 
+    /// reverses the given segment s.t. reversed(t) = original(1-t)
     let reverse (seg : PathSegment) =
         match seg with
         | LineSeg(p0, p1) -> LineSeg(p1, p0)
@@ -1503,14 +1502,14 @@ module PathSegment =
         | LineSeg(p0, p1) -> line (f p0) (f p1)
         | Bezier2Seg(p0, p1, p2) -> bezier2 (f p0) (f p1) (f p2)
         | Bezier3Seg(p0, p1, p2, p3) -> bezier3 (f p0) (f p1) (f p2) (f p3)
-        | ArcSeg(p0, p1, a0, da, ellipse) -> 
+        | ArcSeg(p0, p1, a0, da, ellipse) ->
             let c = f ellipse.Center
             let ax0 = f (ellipse.Center + ellipse.Axis0) - c
             let ax1 = f (ellipse.Center + ellipse.Axis1) - c
             let e = Ellipse2d.FromConjugateDiameters(c, ax0, ax1)
             let q0 = f p0
             let q1 = f p1
-            let da = 
+            let da =
                 if not e.IsCcw then -da
                 else da
             let a0 = e.GetAlpha q0
@@ -1524,7 +1523,7 @@ module PathSegment =
             Some s
         else
             match s with
-            | LineSeg(p0,_) -> 
+            | LineSeg(p0,_) ->
                 tryLine p0 (point t1 s)
 
             | ArcSeg(p0, _, a0, da, e) ->
@@ -1555,7 +1554,7 @@ module PathSegment =
             Some s
         else
             match s with
-            | LineSeg(_,p1) -> 
+            | LineSeg(_,p1) ->
                 tryLine (point t0 s) p1
 
             | ArcSeg(p0, p1, a0, da, e) ->
@@ -1588,7 +1587,7 @@ module PathSegment =
             withT0 t0 s
         elif t0 < t1 then
             match s with
-            | LineSeg(_,_) -> 
+            | LineSeg(_,_) ->
                 let p0 = point t0 s
                 let p1 = point t1 s
                 tryLine p0 p1
@@ -1607,7 +1606,7 @@ module PathSegment =
 
                 let r0 = Ray2d(p0, d0)
                 let r1 = Ray2d(p1, -d1)
-                
+
                 let mutable t = 0.0
                 if r0.Intersects(r1, &t) then
                     let c = r0.GetPointOnRay t
@@ -1616,7 +1615,7 @@ module PathSegment =
                     tryLine p0 p1
 
             | Bezier3Seg _ ->
-                
+
                 match withT0 t0 s with
                 | Some r ->
                     withT1 ((t1 - t0) / (1.0 - t0)) r
@@ -1624,8 +1623,8 @@ module PathSegment =
                     None
         else
             None
-        
-      
+
+
     /// tries to split the segment into two new segments having ranges [0;t] and [t;1] respectively.
     let splitWithCenterPoint (t : float) (pt : V2d) (s : PathSegment) =
         if t <= 0.0 then (None, Some s)
@@ -1665,10 +1664,10 @@ module PathSegment =
     let split (t : float) (s : PathSegment) =
         let pt = point t s
         splitWithCenterPoint t pt s
-        
+
     /// tries to get the t-parameter for a point very near the segment (within eps)
     let tryGetT (eps : float) (pt : V2d) (segment : PathSegment) =
-        
+
         let newtonImprove (iter : int) (t : float) =
             let mutable t = t
             let mutable dt = 1000.0
@@ -1676,29 +1675,29 @@ module PathSegment =
             while iter > 0 && not (Fun.IsTiny (dt, 1E-15)) do
                 // err^2 = min
                 // 2*err * err' = 0
-                
+
                 // f = 2*err * err'
                 // f' = 2*(err'^2 + err*err'')
-                
+
                 let err = point t segment - pt
                 let d = derivative t segment
                 let dd = secondDerivative t segment
-                
+
                 //let v = Vec.lengthSquared err
                 let dv = 2.0 * Vec.dot err d
                 let ddv = 2.0 * (Vec.dot d d + Vec.dot err dd)
-                
-                
+
+
                 dt <- -0.8 * dv / ddv
                 //printfn "%d: %A %A -> %A" iter t dv dt
                 t <- t + dt
                 iter <- iter - 1
-                
+
             let t = clamp 0.0 1.0 t
             let err = point t segment - pt
             if Fun.IsTiny(err, eps) then Some t
             else None
-        
+
         match segment with
         | LineSeg(p0, p1) ->
             if Fun.ApproximateEquals(p0, pt, eps) then Some 0.0
@@ -1719,19 +1718,19 @@ module PathSegment =
             elif Fun.ApproximateEquals(p2, pt, eps) then Some 1.0
             else
                 let box = Box2d([p0; p1; p2]).EnlargedBy eps
-                
+
                 if box.Contains pt then
                     let a = p2 + p0 - 2.0*p1
                     let b = 2.0*(p1 - p0)
                     let c = p0 - pt
-                    
-                    let struct(t0, t1) = 
+
+                    let struct(t0, t1) =
                         if box.Size.MajorDim = 0 then Polynomial.RealRootsOf(a.X, b.X, c.X)
                         else Polynomial.RealRootsOf(a.Y, b.Y, c.Y)
-                        
+
                     let d0 = if t0 >= 0.0 && t0 <= 1.0 then Vec.length (a * sqr t0 + b * t0 + c) else System.Double.PositiveInfinity
                     let d1 = if t1 >= 0.0 && t1 <= 1.0 then Vec.length (a * sqr t1 + b * t1 + c) else System.Double.PositiveInfinity
-                    
+
                     if d0 < d1 then
                         newtonImprove 20 t0
                     else
@@ -1739,45 +1738,45 @@ module PathSegment =
                         else None
                 else
                     None
-            
+
             //t^2 * (p2 + p0 - 2*p1) + t * 2*(p1 - p0) + p0
-            
+
         | Bezier3Seg(p0, p1, p2, p3) ->
             if Fun.ApproximateEquals(p0, pt, eps) then Some 0.0
             elif Fun.ApproximateEquals(p3, pt, eps) then Some 1.0
             else
                 let box = Box2d([p0; p1; p2; p3]).EnlargedBy eps
-                
+
                 if box.Contains pt then
                     let a = -p0 + 3.0*p1 - 3.0*p2 + p3
                     let b = 3.0*p0 - 6.0*p1 + 3.0*p2
                     let c = 3.0*p1 - 3.0*p0
                     let d = p0 - pt
-                    
-                    let struct(t0, t1, t2) = 
+
+                    let struct(t0, t1, t2) =
                         if box.Size.MajorDim = 0 then Polynomial.RealRootsOf(a.X, b.X, c.X, d.X)
                         else Polynomial.RealRootsOf(a.Y, b.Y, c.Y, d.Y)
-                    
-                    
+
+
                     let t0 = if t0 >= -eps && t0 <= 1.0 + eps then newtonImprove 10 t0 else None
                     let t1 = if t1 >= -eps && t1 <= 1.0 + eps then newtonImprove 10 t1 else None
                     let t2 = if t2 >= -eps && t2 <= 1.0 + eps then newtonImprove 10 t2 else None
-                        
+
                     let d0 = match t0 with | Some t0 -> Vec.length (a * sqr t0 + b * t0 + c) | _ -> System.Double.PositiveInfinity
                     let d1 = match t1 with | Some t1 -> Vec.length (a * sqr t1 + b * t1 + c) | _ -> System.Double.PositiveInfinity
                     let d2 = match t2 with | Some t2 -> Vec.length (a * sqr t2 + b * t2 + c) | _ -> System.Double.PositiveInfinity
-                    
-                    
-                    let result = 
+
+
+                    let result =
                         if d0 < d1 then
                             if d0 < d2 then t0
                             else t2
                         else
                             if d1 < d2 then t1
                             else t2
-                            
+
                     result |> Option.bind (newtonImprove 30)
-                    
+
                 else
                     None
         | ArcSeg(p0, p1, a, da, e) ->
@@ -1785,17 +1784,17 @@ module PathSegment =
             elif Fun.ApproximateEquals(p1, pt, eps) then Some 1.0
             else
                 let m = M33d.FromCols(V3d(e.Axis0, 0.0), V3d(e.Axis1, 0.0), V3d(e.Center, 1.0))
-                
+
                 let c = m.Inverse.TransformPos(pt) |> Vec.normalize
                 let angle = atan2 c.Y c.X
-                
+
                 let t = arcT a da angle
-                
+
                 if Fun.ApproximateEquals(m.TransformPos c, pt, eps) then
                     newtonImprove 30 t
                 else
-                    None    
-       
+                    None
+
     /// tries to merge two segments together resulting in an optional new segment (or None if the segments cannot be merged)
     let tryMerge (eps : float) (a : PathSegment) (b : PathSegment) =
         match a with
@@ -1822,7 +1821,7 @@ module PathSegment =
                 else
                     let ta1 = a2 - a1 |> Vec.normalize
                     let tb0 = b1 - b0 |> Vec.normalize
-                    
+
                     if Fun.ApproximateEquals(ta1, tb0, 1E-9) then
                         let ra = Ray2d(a0, a1 - a0)
                         let rb = Ray2d(b2, b2 - b1)
@@ -1862,13 +1861,13 @@ module PathSegment =
         | _ ->
             // TODO: proper merge for Arc/Bezier3
             None
-     
-     
+
+
     let private overlapTs = [| 0.25; 0.5; 0.75; 0.333 |]
-     
+
     /// tries to find the overlapping t-ranges for two segments. The first range will be sorted whereas the second one may not be.
     let overlap (eps : float) (a : PathSegment) (b : PathSegment) =
-        
+
         let isOnLine (p0 : V2d) (p1 : V2d) (p : V2d) =
             let u = p1 - p0
             let len = Vec.length u
@@ -1884,10 +1883,10 @@ module PathSegment =
                     None
             else
                 None
-        
-        
+
+
         let inline checkRange ((aRange : Range1d, bRange : V2d) as tup) =
-            let isOverlapping = 
+            let isOverlapping =
                 overlapTs |> Array.forall (fun t ->
                     let ta = lerp aRange.Min aRange.Max t
                     let tb = lerp bRange.X bRange.Y t
@@ -1897,11 +1896,11 @@ module PathSegment =
                 Some tup
             else
                 None
-        
-        
+
+
         let a0 = startPoint a
         let a1 = endPoint a
-        
+
         let b0 = startPoint b
         let b1 = endPoint b
 
@@ -1924,7 +1923,7 @@ module PathSegment =
                         checkRange (Range1d(tab0, 1.0), V2d(0.0, tba1))
                     | None ->
                         None
-        | None -> 
+        | None ->
             match tryGetT eps b1 a with
             | Some tab1 ->
                 match tryGetT eps a0 b with
@@ -1946,14 +1945,14 @@ module PathSegment =
                         None
                 | None ->
                     None
-           
+
     /// splits a PathSegment given two ordered ts into possibly three parts (the range must not be empty or invalid)
     let splitRange (r : Range1d) (seg : PathSegment) : option<PathSegment> * PathSegment * option<PathSegment> =
         let l, rest = split r.Min seg
         let m, r = split ((r.Max - r.Min) / (1.0 - r.Min)) (Option.get rest)
-        l, Option.get m, r 
-             
-        
+        l, Option.get m, r
+
+
     /// splits the segment at the given parameter values and returns the list of resulting segments.
     let splitMany (ts : list<float>) (s : PathSegment) =
         match ts with
@@ -1968,7 +1967,7 @@ module PathSegment =
                     else
                         let ts = ts |> List.map (fun t -> (t-t0)/(1.0-t0))
                         let l, r = split t0 s
-                        let r = 
+                        let r =
                             match r with
                             | Some r -> run ts r
                             | None -> []
@@ -1998,11 +1997,11 @@ module ``PathSegment Public API`` =
                 match t1 with
                 | Some t1 -> PathSegment.withT1 t1 x
                 | None -> Some x
-        
+
         member x.Item
             with inline get(t : float) = PathSegment.point t x
 
-        
+
 
 
     let (|Line|Bezier2|Bezier3|Arc|) (s : PathSegment) =
@@ -2023,7 +2022,7 @@ module ``PathSegment Public API`` =
         static member ForceBezier3(p0, p1, p2, p3) = Bezier3Seg(p0, p1, p2, p3)
         static member ForceArc(p0, p1, a0, da, e) = ArcSeg(p0, p1, a0, da, e)
 
-    
+
     module PathSegment =
         let (|Line|Bezier2|Bezier3|Arc|) (s : PathSegment) =
             match s with

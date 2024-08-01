@@ -1,5 +1,4 @@
-﻿module internal Aardvark.Rendering.Text.BvhImpl
-
+﻿module internal Aardvark.Base.Fonts.BvhImpl
 
 open Aardvark.Base
 open Aardvark.Base.Sorting
@@ -24,8 +23,8 @@ module internal BvhNode3d =
     let inline getBounds (n : BvhNode3d<'K, 'V>) =
         match n with
         | Leaf(_,b,_)
-        | Node(_,_,b,_,_) -> b 
-        
+        | Node(_,_,b,_,_) -> b
+
     let inline count (n : BvhNode3d<'K, 'V>) =
         match n with
         | Leaf(_,_,v) -> v.Count
@@ -56,7 +55,7 @@ module internal BvhNode3d =
 
 
             for dim in 0 .. 2 do
-                let getter = 
+                let getter =
                     match dim with
                     | 0 -> fun (v : V3d) -> v.X
                     | 1 -> fun (v : V3d) -> v.Y
@@ -106,13 +105,13 @@ module internal BvhNode3d =
                 for li in 0 .. lCnt - 1 do
                     left.[li] <- arr.[bestPerm.[i]]
                     i <- i + 1
-                
+
                 for ri in 0 .. rCnt - 1 do
                     right.[ri] <- arr.[bestPerm.[i]]
                     i <- i + 1
 
                 Some (bestCost, bestlBox, HashMap.ofArrayV left, bestrBox, HashMap.ofArrayV right)
-            else    
+            else
                 None
 
     let rec build (limit : int) (bounds : Box3d) (elements : HashMap<'K, struct(Box3d * 'V)>) =
@@ -122,7 +121,7 @@ module internal BvhNode3d =
         elif elements.Count <= limit then
             Leaf(0, bounds, elements)
 
-        else   
+        else
             let bv = 1.0 / bounds.Volume
             match split bv elements with
             | Some (cost, lBox, lElements, rBox, rElements) ->
@@ -147,7 +146,7 @@ module internal BvhNode3d =
                 HashMap.union l r
             else
                 HashMap.empty
-                
+
     let rec getIntersectingFilter (query : Box3d) (filter : OptimizedClosures.FSharpFunc<'K, Box3d, 'V, bool>) (node : BvhNode3d<'K, 'V>) =
         match node with
         | Leaf(_, bounds, values) ->
@@ -174,21 +173,21 @@ module internal BvhNode3d =
             match HashMap.tryFindV key values with
             | ValueSome (struct(ob, _ov)) ->
                 // replace
-                if bounds.Contains ob then  
+                if bounds.Contains ob then
                     Leaf(overflowCount, b, HashMap.add key (struct(bounds, value)) values)
                 else
                     let mutable bb = bounds
                     for struct(_,struct(b,_)) in values.ToSeqV() do
                         bb.ExtendBy b
                     Leaf(overflowCount, bb, HashMap.add key (struct(bounds, value)) values)
-            | _ -> 
+            | _ ->
                 // add
                 let b = b.ExtendedBy bounds
                 let vs = HashMap.add key (struct(bounds, value)) values
 
-                if vs.Count >= 2 * overflowCount && vs.Count > limit then 
+                if vs.Count >= 2 * overflowCount && vs.Count > limit then
                     build limit b vs
-                else 
+                else
                     Leaf(overflowCount, b, vs)
 
         | Node(bestCost, _, b, l, r) ->
@@ -205,8 +204,8 @@ module internal BvhNode3d =
             if lCost < rCost then
                 // add left
                 if lCost > 2.0 * bestCost then
-                    toSeq node 
-                    |> HashMap.ofSeqV 
+                    toSeq node
+                    |> HashMap.ofSeqV
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -217,9 +216,9 @@ module internal BvhNode3d =
                     let nb = Box.Union(lb, rb)
                     Node(min bestCost cc, lc + rc, nb, l, r)
             else
-                if rCost > 2.0 * bestCost then  
-                    toSeq node 
-                    |> HashMap.ofSeqV 
+                if rCost > 2.0 * bestCost then
+                    toSeq node
+                    |> HashMap.ofSeqV
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -229,13 +228,13 @@ module internal BvhNode3d =
                     let cc = cost invVol lb lc rb rc
                     let nb = Box.Union(lb, rb)
                     Node(min bestCost cc, lc + rc, nb, l, r)
-            
+
     let rec tryRemove (limit : int) (key : 'K) (bounds : Box3d) (node : BvhNode3d<'K, 'V>) =
         match node with
         | Leaf(overflowCount, b, values) ->
             if b.Intersects bounds then
                 match HashMap.tryRemove key values with
-                | Some (struct(_,v), n) -> 
+                | Some (struct(_,v), n) ->
                     if n.Count > 0 then
                         let mutable bb = Box3d.Invalid
                         for struct(_,struct(b,_)) in n.ToSeqV() do
@@ -253,7 +252,7 @@ module internal BvhNode3d =
                 match tryRemove limit key bounds l with
                 | Some (v, l) ->
                     match l with
-                    | Some l -> 
+                    | Some l ->
                         let lc = count l
                         let rc = count r
                         let lb = getBounds l
@@ -272,7 +271,7 @@ module internal BvhNode3d =
                     match tryRemove limit key bounds r with
                     | Some(v,r) ->
                         match r with
-                        | Some r -> 
+                        | Some r ->
                             let lc = count l
                             let rc = count r
                             let lb = getBounds l
@@ -291,7 +290,7 @@ module internal BvhNode3d =
                         None
             else
                 None
-           
+
     let remove (limit : int) (key : 'K) (bounds : Box3d) (node : BvhNode3d<'K, 'V>) =
         match tryRemove limit key bounds node with
         | Some (_, rest) -> rest
@@ -308,18 +307,18 @@ type BvhTree3d<'K, 'V> private(limit : int, root : option<BvhNode3d<'K, 'V>>, ke
     member x.Add(key : 'K, bounds : Box3d, value : 'V) =
         if bounds.IsValid then
             let keyBounds = HashMap.add key bounds keyBounds
-            let newRoot = 
+            let newRoot =
                 match root with
                 | Some r -> BvhNode3d.add limit key bounds value r
                 | None -> BvhNode3d.Leaf(0, bounds, HashMap.single key (struct(bounds, value)))
             BvhTree3d(limit, Some newRoot, keyBounds)
-        else    
+        else
             x
-        
+
     member x.Remove(key : 'K) =
         match HashMap.tryRemove key keyBounds with
         | Some (bounds, keyBounds) ->
-            let newRoot = 
+            let newRoot =
                 match root with
                 | Some r -> BvhNode3d.remove limit key bounds r
                 | None -> None
@@ -330,7 +329,7 @@ type BvhTree3d<'K, 'V> private(limit : int, root : option<BvhNode3d<'K, 'V>>, ke
     member x.TryRemove(key : 'K) =
         match HashMap.tryRemove key keyBounds with
         | Some (bounds, keyBounds) ->
-            let newRoot = 
+            let newRoot =
                 match root with
                 | Some r -> BvhNode3d.tryRemove limit key bounds r
                 | None -> None
@@ -341,14 +340,14 @@ type BvhTree3d<'K, 'V> private(limit : int, root : option<BvhNode3d<'K, 'V>>, ke
                 None
         | None ->
             None
-         
+
     member x.GetIntersecting(query : Box3d) =
         match root with
         | Some r ->
             BvhNode3d.getIntersecting query r
         | None ->
             HashMap.empty
-            
+
     member x.GetIntersecting(query : Box3d, filter : 'K -> Box3d -> 'V -> bool) =
         match root with
         | Some r ->
@@ -361,8 +360,8 @@ type BvhTree3d<'K, 'V> private(limit : int, root : option<BvhNode3d<'K, 'V>>, ke
         match root with
         | Some root -> BvhNode3d.toSeq root |> Seq.map (fun struct(k,struct(b,v)) -> k,b,v)
         | None -> Seq.empty
-        
-    member x.ToList() = 
+
+    member x.ToList() =
         x.ToSeq() |> Seq.toList
 
     member x.ToArray() =
@@ -409,7 +408,7 @@ module BvhTree3d =
     let inline ofSeq (elements : seq<'K * Box3d * 'V>)= BvhTree3d.Build(splitLimit, elements)
     let inline ofList (elements : list<'K * Box3d * 'V>)= BvhTree3d.Build(splitLimit, elements)
     let inline ofArray (elements : array<'K * Box3d * 'V>)= BvhTree3d.Build(splitLimit, elements)
-    
+
     let inline toSeq (tree : BvhTree3d<'K, 'V>)= tree.ToSeq()
     let inline toList (tree : BvhTree3d<'K, 'V>)= tree.ToList()
     let inline toArray (tree : BvhTree3d<'K, 'V>)= tree.ToArray()
@@ -440,8 +439,8 @@ module internal BvhNode2d =
     let inline getBounds (n : BvhNode2d<'K, 'V>) =
         match n with
         | Leaf(_,b,_)
-        | Node(_,_,b,_,_) -> b 
-        
+        | Node(_,_,b,_,_) -> b
+
     let inline count (n : BvhNode2d<'K, 'V>) =
         match n with
         | Leaf(_,_,v) -> v.Count
@@ -472,7 +471,7 @@ module internal BvhNode2d =
 
 
             for dim in 0 .. 1 do
-                let getter = 
+                let getter =
                     match dim with
                     | 0 -> fun (v : V2d) -> v.X
                     | _ -> fun (v : V2d) -> v.Y
@@ -521,13 +520,13 @@ module internal BvhNode2d =
                 for li in 0 .. lCnt - 1 do
                     left.[li] <- arr.[bestPerm.[i]]
                     i <- i + 1
-                
+
                 for ri in 0 .. rCnt - 1 do
                     right.[ri] <- arr.[bestPerm.[i]]
                     i <- i + 1
 
                 Some (bestCost, bestlBox, HashMap.ofArrayV left, bestrBox, HashMap.ofArrayV right)
-            else    
+            else
                 None
 
     let rec build (limit : int) (bounds : Box2d) (elements : HashMap<'K, struct(Box2d * 'V)>) =
@@ -537,7 +536,7 @@ module internal BvhNode2d =
         elif elements.Count <= limit then
             Leaf(0, bounds, elements)
 
-        else   
+        else
             let bv = 1.0 / bounds.Area
             match split bv elements with
             | Some (cost, lBox, lElements, rBox, rElements) ->
@@ -565,7 +564,7 @@ module internal BvhNode2d =
                 HashMap.union l r
             else
                 HashMap.empty
-        
+
     let rec getIntersectingFilter (query : Box2d) (filter : OptimizedClosures.FSharpFunc<'K, Box2d, 'V, option<'T>>) (node : BvhNode2d<'K, 'V>) =
         match node with
         | Leaf(_, bounds, values) ->
@@ -592,21 +591,21 @@ module internal BvhNode2d =
             match HashMap.tryFindV key values with
             | ValueSome (struct(ob, _ov)) ->
                 // replace
-                if bounds.Contains ob then  
+                if bounds.Contains ob then
                     Leaf(overflowCount, b, HashMap.add key (struct(bounds, value)) values)
                 else
                     let mutable bb = bounds
                     for struct(_,struct(b,_)) in values.ToSeqV() do
                         bb.ExtendBy b
                     Leaf(overflowCount, bb, HashMap.add key (struct(bounds, value)) values)
-            | _ -> 
+            | _ ->
                 // add
                 let b = b.ExtendedBy bounds
                 let vs = HashMap.add key (struct(bounds, value)) values
 
-                if vs.Count >= 2 * overflowCount && vs.Count > limit then 
+                if vs.Count >= 2 * overflowCount && vs.Count > limit then
                     build limit b vs
-                else 
+                else
                     Leaf(overflowCount, b, vs)
 
         | Node(bestCost, _, b, l, r) ->
@@ -623,8 +622,8 @@ module internal BvhNode2d =
             if lCost < rCost then
                 // add left
                 if lCost > 2.0 * bestCost then
-                    toSeq node 
-                    |> HashMap.ofSeqV 
+                    toSeq node
+                    |> HashMap.ofSeqV
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -635,9 +634,9 @@ module internal BvhNode2d =
                     let nb = Box.Union(lb, rb)
                     Node(min bestCost cc, lc + rc, nb, l, r)
             else
-                if rCost > 2.0 * bestCost then  
-                    toSeq node 
-                    |> HashMap.ofSeqV 
+                if rCost > 2.0 * bestCost then
+                    toSeq node
+                    |> HashMap.ofSeqV
                     |> HashMap.add key (struct(bounds, value))
                     |> build limit nb
                 else
@@ -647,13 +646,13 @@ module internal BvhNode2d =
                     let cc = cost invVol lb lc rb rc
                     let nb = Box.Union(lb, rb)
                     Node(min bestCost cc, lc + rc, nb, l, r)
-            
+
     let rec tryRemove (limit : int) (key : 'K) (bounds : Box2d) (node : BvhNode2d<'K, 'V>) =
         match node with
         | Leaf(overflowCount, b, values) ->
             if b.Intersects bounds then
                 match HashMap.tryRemove key values with
-                | Some (struct(_,v), n) -> 
+                | Some (struct(_,v), n) ->
                     if n.Count > 0 then
                         let mutable bb = Box2d.Invalid
                         for struct(_,struct(b,_)) in n.ToSeqV() do
@@ -671,7 +670,7 @@ module internal BvhNode2d =
                 match tryRemove limit key bounds l with
                 | Some (v, l) ->
                     match l with
-                    | Some l -> 
+                    | Some l ->
                         let lc = count l
                         let rc = count r
                         let lb = getBounds l
@@ -690,7 +689,7 @@ module internal BvhNode2d =
                     match tryRemove limit key bounds r with
                     | Some(v,r) ->
                         match r with
-                        | Some r -> 
+                        | Some r ->
                             let lc = count l
                             let rc = count r
                             let lb = getBounds l
@@ -709,7 +708,7 @@ module internal BvhNode2d =
                         None
             else
                 None
-           
+
     let remove (limit : int) (key : 'K) (bounds : Box2d) (node : BvhNode2d<'K, 'V>) =
         match tryRemove limit key bounds node with
         | Some (_, rest) -> rest
@@ -726,18 +725,18 @@ type BvhTree2d<'K, 'V> private(limit : int, root : option<BvhNode2d<'K, 'V>>, ke
     member x.Add(key : 'K, bounds : Box2d, value : 'V) =
         if bounds.IsValid then
             let keyBounds = HashMap.add key bounds keyBounds
-            let newRoot = 
+            let newRoot =
                 match root with
                 | Some r -> BvhNode2d.add limit key bounds value r
                 | None -> BvhNode2d.Leaf(0, bounds, HashMap.single key (struct(bounds, value)))
             BvhTree2d(limit, Some newRoot, keyBounds)
-        else    
+        else
             x
-        
+
     member x.Remove(key : 'K) =
         match HashMap.tryRemove key keyBounds with
         | Some (bounds, keyBounds) ->
-            let newRoot = 
+            let newRoot =
                 match root with
                 | Some r -> BvhNode2d.remove limit key bounds r
                 | None -> None
@@ -748,7 +747,7 @@ type BvhTree2d<'K, 'V> private(limit : int, root : option<BvhNode2d<'K, 'V>>, ke
     member x.TryRemove(key : 'K) =
         match HashMap.tryRemove key keyBounds with
         | Some (bounds, keyBounds) ->
-            let newRoot = 
+            let newRoot =
                 match root with
                 | Some r -> BvhNode2d.tryRemove limit key bounds r
                 | None -> None
@@ -759,14 +758,14 @@ type BvhTree2d<'K, 'V> private(limit : int, root : option<BvhNode2d<'K, 'V>>, ke
                 None
         | None ->
             None
-         
+
     member x.GetIntersecting(query : Box2d) =
         match root with
         | Some r ->
             BvhNode2d.getIntersecting (ref 0) query r
         | None ->
             HashMap.empty
-            
+
     member x.GetIntersecting(query : Box2d, filter : 'K -> Box2d -> 'V -> option<'T>) =
         match root with
         | Some r ->
@@ -779,8 +778,8 @@ type BvhTree2d<'K, 'V> private(limit : int, root : option<BvhNode2d<'K, 'V>>, ke
         match root with
         | Some root -> BvhNode2d.toSeq root |> Seq.map (fun struct(k,struct(b,v)) -> k,b,v)
         | None -> Seq.empty
-        
-    member x.ToList() = 
+
+    member x.ToList() =
         x.ToSeq() |> Seq.toList
 
     member x.ToArray() =
@@ -829,7 +828,7 @@ module BvhTree2d =
     let inline ofSeq (elements : seq<'K * Box2d * 'V>)= BvhTree2d.Build(splitLimit, elements)
     let inline ofList (elements : list<'K * Box2d * 'V>)= BvhTree2d.Build(splitLimit, elements)
     let inline ofArray (elements : array<'K * Box2d * 'V>)= BvhTree2d.Build(splitLimit, elements)
-    
+
     let inline toSeq (tree : BvhTree2d<'K, 'V>)= tree.ToSeq()
     let inline toList (tree : BvhTree2d<'K, 'V>)= tree.ToList()
     let inline toArray (tree : BvhTree2d<'K, 'V>)= tree.ToArray()
@@ -839,13 +838,13 @@ module BvhTree2d =
         for (k,b,v) in toSeq r do
             l <- l.Add(k,b,v)
         l
-            
+
 
 module BvhTest =
-    
+
     let ofSeq (limit : int) (bounds : seq<Box2d>) =
         BvhTree2d.Build(limit, bounds |> Seq.mapi (fun i b -> i,b,b))
-        
+
     let ofSeqStupid (limit : int) (bounds : seq<Box2d>) =
         let mutable t = BvhTree2d.Empty limit
         for (i, b) in Seq.indexed bounds do
@@ -866,10 +865,10 @@ module BvhTest =
         let limit = 24
         for cnt in [1024; 65536] do
             Log.start "%d boxes" cnt
-            let boxes = 
+            let boxes =
                 Array.init cnt (fun _ -> randomBox())
 
-            let bruteForce (q : Box2d) =    
+            let bruteForce (q : Box2d) =
                 let mutable res = HashSet.empty
                 for i in 0 .. boxes.Length - 1 do
                     let b = boxes.[i]
@@ -886,7 +885,7 @@ module BvhTest =
             let bvhs = ofSeqStupid limit boxes
             sw.Stop()
             Log.line "incr took:  %A" sw.MicroTime
-            
+
             sw.Restart()
             let mutable r = bvhs
             for i in 0 .. bvhs.Count - 1 do
@@ -906,7 +905,7 @@ module BvhTest =
                 let reference = bruteForce q
                 swf.Stop()
 
-                
+
                 swb.Start()
                 let build = bvh.GetIntersecting q
                 swb.Stop()
@@ -927,7 +926,7 @@ module BvhTest =
                         | Add(_,i) -> Report.WarnNoPrefix("missing {0}", i)
                         | Rem(_,i) -> Report.WarnNoPrefix("wrong {0}", i)
                     Log.stop()
-                    
+
                 let delta = HashSet.computeDelta incr reference
                 if not (HashSetDelta.isEmpty delta) then
                     Log.start "incr error"
@@ -938,7 +937,7 @@ module BvhTest =
                         | Add(_,i) -> Report.WarnNoPrefix("missing {0}", i)
                         | Rem(_,i) -> Report.WarnNoPrefix("wrong {0}", i)
                     Log.stop()
-                    
+
             Log.line "force: %A" (swf.MicroTime / iter)
             Log.line "build: %A" (swb.MicroTime / iter)
             Log.line "incr:  %A" (swi.MicroTime / iter)
