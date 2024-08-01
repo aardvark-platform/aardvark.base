@@ -508,7 +508,7 @@ module FontRenderingSettings =
 
 
 type ShapeCache(r : IRuntime) =
-    static let cache = ConcurrentDictionary<IRuntime, ShapeCache>()
+    static let cache = ConcurrentDictionary<IRuntime, Lazy<ShapeCache>>()
 
     let types =
         Map.ofList [
@@ -520,9 +520,9 @@ type ShapeCache(r : IRuntime) =
     let ranges = ConcurrentDictionary<Shape, Range1i>()
 
 
-    let surfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
-    let boundarySurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
-    let billboardSurfaceCache = ConcurrentDictionary<IFramebufferSignature, IBackendSurface>()
+    let surfaceCache = ConcurrentDictionary<IFramebufferSignature, Lazy<IBackendSurface>>()
+    let boundarySurfaceCache = ConcurrentDictionary<IFramebufferSignature, Lazy<IBackendSurface>>()
+    let billboardSurfaceCache = ConcurrentDictionary<IFramebufferSignature, Lazy<IBackendSurface>>()
 
 
     let pathShader =
@@ -574,41 +574,47 @@ type ShapeCache(r : IRuntime) =
         ]
 
     let surface (s : IFramebufferSignature) =
-        surfaceCache.GetOrAdd(s, fun s -> 
-            r.PrepareEffect(
-                s, [
-                    Path.Shader.pathVertex      |> toEffect
-                    pathShader
-                ]
+        surfaceCache.GetOrAdd(s, fun s ->
+            lazy (
+                r.PrepareEffect(
+                    s, [
+                        Path.Shader.pathVertex      |> toEffect
+                        pathShader
+                    ]
+                )
             )
-        )
+        ).Value
 
     let boundarySurface (s : IFramebufferSignature) =
         boundarySurfaceCache.GetOrAdd(s, fun s ->
-            r.PrepareEffect(
-                s, [
-                    Path.Shader.boundaryVertex  |> toEffect
-                    Path.Shader.boundary        |> toEffect
-                ]
+            lazy (
+                r.PrepareEffect(
+                    s, [
+                        Path.Shader.boundaryVertex  |> toEffect
+                        Path.Shader.boundary        |> toEffect
+                    ]
+                )
             )
-        )
+        ).Value
 
     let billboardSurface (s : IFramebufferSignature) =
         billboardSurfaceCache.GetOrAdd(s, fun s ->
-            r.PrepareEffect(
-                s, [
-                    Path.Shader.pathVertexBillboard  |> toEffect
-                    Path.Shader.boundary        |> toEffect
-                ]
+            lazy (
+                r.PrepareEffect(
+                    s, [
+                        Path.Shader.pathVertexBillboard  |> toEffect
+                        Path.Shader.boundary        |> toEffect
+                    ]
+                )
             )
-        )
+        ).Value
         
 
     do 
         r.OnDispose.Add(fun () ->
-            for x in boundarySurfaceCache.Values do r.DeleteSurface x
-            for x in surfaceCache.Values do r.DeleteSurface x
-            for x in billboardSurfaceCache.Values do r.DeleteSurface x
+            for x in boundarySurfaceCache.Values do r.DeleteSurface x.Value
+            for x in surfaceCache.Values do r.DeleteSurface x.Value
+            for x in billboardSurfaceCache.Values do r.DeleteSurface x.Value
             pool.Dispose()
             ranges.Clear()
             cache.Clear()
@@ -629,8 +635,8 @@ type ShapeCache(r : IRuntime) =
 
     static member GetOrCreateCache(r : IRuntime) =
         cache.GetOrAdd(r, fun r ->
-            new ShapeCache(r)
-        )
+            lazy (new ShapeCache(r))
+        ).Value
 
     member x.Effect = effect
     member x.InstancedEffect = instancedEffect
