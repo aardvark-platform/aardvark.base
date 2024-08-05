@@ -4,9 +4,10 @@ open FSharp.Data.Adaptive
 open Aardvark.Base
 open BvhImpl
 
-type ShapeGeometry =
-    { Positions   : V3f[]
-      Coordinates : V4f[] }
+[<Struct>]
+type ShapeGeometry(positions: V3f[], coordinates: V4f[]) =
+    member _.Positions = positions
+    member _.Coordinates = coordinates
 
 module internal Tessellator =
     open LibTessDotNet.Double
@@ -1131,4 +1132,4 @@ module internal Tessellator =
             System.Array.Resize(&positions, cnt)
             System.Array.Resize(&coords, cnt)
 
-        { Positions = positions; Coordinates = coords }
+        ShapeGeometry(positions, coords)
