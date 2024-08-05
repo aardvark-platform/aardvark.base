@@ -10,7 +10,10 @@ type WindingRule =
     | EvenOdd
     | AbsGreaterEqualTwo
 
-type Path = private { bounds : Box2d; outline : PathSegment[] }
+type Path =
+    private { bounds : Box2d; outline : PathSegment[] }
+    member x.Bounds = x.bounds
+    member x.Outline = x.outline
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Path =
