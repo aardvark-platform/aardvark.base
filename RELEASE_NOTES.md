@@ -1,3 +1,6 @@
+### 5.3.0
+- https://github.com/aardvark-platform/aardvark.base/wiki/Aardvark-5.3-changelog
+
 ### 5.3.0-prerelease0005
 - Reintroduced `IPixImage` as `IPix`
 - Renamed `PixImageCube` to `PixCube`
