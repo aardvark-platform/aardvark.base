@@ -3,7 +3,7 @@
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module ImageTrafo =
     let private composeTable =
-        LookupTable.lookupTable [
+        LookupTable.lookup [
             struct (ImageTrafo.Identity, ImageTrafo.Identity), ImageTrafo.Identity
             struct (ImageTrafo.Identity, ImageTrafo.Rot90), ImageTrafo.Rot90
             struct (ImageTrafo.Identity, ImageTrafo.Rot180), ImageTrafo.Rot180
@@ -74,7 +74,7 @@ module ImageTrafo =
         composeTable (struct (l, r))
 
     let inverse =
-        LookupTable.lookupTable [
+        LookupTable.lookup [
             ImageTrafo.MirrorX, ImageTrafo.MirrorX
             ImageTrafo.MirrorY, ImageTrafo.MirrorY
             ImageTrafo.Identity, ImageTrafo.Identity

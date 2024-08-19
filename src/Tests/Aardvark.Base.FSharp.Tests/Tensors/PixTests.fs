@@ -258,7 +258,7 @@ module PixTests =
 
     let computePSNR =
         let table : Type -> (PixImage -> PixImage -> float) =
-            LookupTable.lookupTable [
+            LookupTable.lookup [
                 typeof<uint8>,   fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<uint8>()) (dst.AsPixImage<uint8>())
                 typeof<uint16>,  fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<uint16>()) (dst.AsPixImage<uint16>())
                 typeof<uint32>,  fun src dst -> PixImage.peakSignalToNoiseRatio (src.AsPixImage<uint32>()) (dst.AsPixImage<uint32>())

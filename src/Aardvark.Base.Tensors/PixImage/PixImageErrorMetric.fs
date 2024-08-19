@@ -13,7 +13,7 @@ module FSharpPixImageErrorMetricExtensions =
         module ErrorMetricHelpers =
 
             let maxValues =
-                LookupTable.lookupTable [
+                LookupTable.lookup [
                     typeof<uint8>,   255.0
                     typeof<int8>,    255.0
                     typeof<uint16>,  65535.0

@@ -367,35 +367,55 @@ module NiceUtilities =
     module LookupTable =
         open System.Collections.Generic
 
+        let private build (entries: #seq<'Key * 'Value>) =
+            let d = Dictionary()
+
+            for k, v in entries do
+                match d.TryGetValue k with
+                | (true, vo) -> raise <| ArgumentException($"Duplicate lookup table entry {k}: {v} and {vo}.")
+                | _ -> ()
+
+                d.[k] <- v
+
+            d
+
+        /// Builds a lookup table from the given entries and returns a function that retrieves the value associated with a key.
+        /// Fails if a key occurs more than once in the input collection.
+        let lookup (entries: #seq<'Key * 'Value>) =
+            let d = build entries
+
+            fun (key : 'Key) ->
+                match d.TryGetValue key with
+                | (true, v) -> v
+                | _ -> raise <| KeyNotFoundException($"Key {key} of type {typeof<'Key>} not found in lookup table.")
+
+        /// Builds a lookup table from the given entries and returns a function that retrieves the value associated with a key if it exists.
+        /// Fails if a key occurs more than once in the input collection.
+        let tryLookup (entries: #seq<'Key * 'Value>) =
+            let d = build entries
+
+            fun (key : 'Key) ->
+                match d.TryGetValue key with
+                | (true, v) -> Some v
+                | _ -> None
+
+        /// Builds a lookup table from the given entries and returns a function that retrieves the value associated with a key if it exists.
+        /// Fails if a key occurs more than once in the input collection.
+        let tryLookupV (entries: #seq<'Key * 'Value>) =
+            let d = build entries
+
+            fun (key : 'Key) ->
+                match d.TryGetValue key with
+                | (true, v) -> ValueSome v
+                | _ -> ValueNone
+
+        [<Obsolete("Use LookupTable.lookup instead.")>]
         let lookupTable (l : list<'a * 'b>) =
-            let d = Dictionary()
-            for (k,v) in l do
+            lookup l
 
-                match d.TryGetValue k with
-                    | (true, vo) -> failwithf "duplicated lookup-entry: %A (%A vs %A)" k vo v
-                    | _ -> ()
-
-                d.[k] <- v
-
-            fun (key : 'a) ->
-                match d.TryGetValue key with
-                    | (true, v) -> v
-                    | _ -> failwithf "unsupported %A: %A" typeof<'a> key
-
-
+        [<Obsolete("Use LookupTable.tryLookup instead.")>]
         let lookupTable' (l : list<'a * 'b>) =
-            let d = Dictionary()
-            for (k,v) in l do
-                match d.TryGetValue k with
-                    | (true, vo) -> failwithf "duplicated lookup-entry: %A (%A vs %A)" k vo v
-                    | _ -> ()
-
-                d.[k] <- v
-
-            fun (key : 'a) ->
-                match d.TryGetValue key with
-                    | (true, v) -> Some v
-                    | _ -> None
+            tryLookup l
 
 [<AutoOpen>]
 module EnumExtensions =
