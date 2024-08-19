@@ -19,6 +19,25 @@ module Path =
     let andPath first second = combine [| first; second |]
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
+module Stream =
+
+    /// <summary>
+    /// Reads the contents of a stream into a byte array.
+    /// </summary>
+    /// <param name="stream">The stream to read.</param>
+    /// <returns>A byte array containing the contents of the stream.</returns>
+    let readAllBytes (stream: Stream) =
+        if stream.CanSeek then
+            let buffer = Array.zeroCreate<byte> <| int stream.Length
+            use ms = new MemoryStream(buffer)
+            stream.CopyTo ms
+            buffer
+        else
+            use ms = new MemoryStream()
+            stream.CopyTo ms
+            ms.ToArray()
+
+[<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module File =
 
     /// <summary>
