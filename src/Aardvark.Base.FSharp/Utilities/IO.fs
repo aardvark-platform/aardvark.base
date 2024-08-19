@@ -14,9 +14,36 @@ module IO =
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Path =
-    let combine (paths : seq<string>) = Path.Combine(paths |> Seq.toArray)
 
-    let andPath first second = combine [| first; second |]
+    /// Combines a sequence of strings into a path.
+    let combine (paths: seq<string>) =
+        Path.Combine(paths |> Seq.toArray)
+
+    /// Combines two strings into a path.
+    let andPath (first: string) (second: string) =
+        Path.Combine(first, second)
+
+    /// Adds a trailing slash unless the path already has one.
+    let withTrailingSlash (path: string) =
+#if NET6_0_OR_GREATER
+        if path.EndsWith Path.DirectorySeparatorChar then
+#else
+        if path.EndsWith(string Path.DirectorySeparatorChar) then
+#endif
+            path
+        else
+            path + string Path.DirectorySeparatorChar
+
+    /// Removes the trailing slash from the given path if it has one.
+    let withoutTrailingSlash (path: string) =
+#if NET6_0_OR_GREATER
+        if path.EndsWith Path.DirectorySeparatorChar then
+#else
+        if path.EndsWith(string Path.DirectorySeparatorChar) then
+#endif
+            path.Substring(0, path.Length - 1)
+        else
+            path
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module Stream =
