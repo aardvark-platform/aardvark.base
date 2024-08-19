@@ -251,6 +251,9 @@ module FSharpMath =
         let inline isNegInfAux (_ : ^Z) (_ : ^Y) (x : ^T) =
             ((^Z or ^Y or ^T) : (static member IsNegativeInfinity : ^T -> bool) x)
 
+        let inline approximateEqualsAux (_: ^Z) (epsilon: ^U) (x: ^T) (y: ^T) =
+            ((^Z or ^T) : (static member ApproximateEquals : ^T * ^T * ^U -> bool) (x, y, epsilon))
+
     /// Resolves to the zero value for any scalar or vector type.
     [<GeneralizableValue>]
     let inline zero< ^T when ^T : (static member Zero : ^T) > : ^T =
@@ -386,6 +389,10 @@ module FSharpMath =
     /// Returns whether x is finite (i.e. not NaN and not infinity).
     let inline isFinite (x : ^T) =
         (x |> isInfinity |> not) && (x |> isNaN |> not)
+
+    /// Returns whether the distance between x and y is not more than epsilon.
+    let inline approximateEquals epsilon x y =
+        approximateEqualsAux Unchecked.defaultof<Fun> epsilon x y
 
     [<CompilerMessage("testing purposes", 1337, IsHidden = true)>]
     module ``Math compiler tests 😀😁`` =
@@ -898,4 +905,12 @@ module FSharpMath =
             let a : bool = isNegativeInfinity C3d.Black
             let a : bool = isNegativeInfinity V3d.Zero
             let a : bool = isNegativeInfinity M33d.Zero
+            ()
+
+        let approximateEqualsWorking() =
+            let a : bool = approximateEquals 2 42 43
+            let a : bool = approximateEquals 1.0 42.0 43.0
+            let a : bool = approximateEquals 1 V2i.Zero V2i.One
+            let a : bool = approximateEquals 1 M44i.Zero M44i.Identity
+            let a : bool = approximateEquals 1.0 ComplexD.Zero ComplexD.One
             ()
