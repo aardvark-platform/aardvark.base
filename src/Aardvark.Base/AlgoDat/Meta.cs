@@ -19,6 +19,9 @@ namespace Aardvark.Base
             public bool IsReal { get; set; }
             public bool IsCharOrString { get; set; }
 
+            private string m_fsharpName;
+            public string FSharpName { get => m_fsharpName ?? Name; set => m_fsharpName = value; }
+
 
             public SimpleType()
             { }
@@ -135,6 +138,7 @@ namespace Aardvark.Base
             Caps = "Byte",
             Char = "b",
             Read = "ReadByte",
+            FSharpName = "uint8",
             IsInteger = true,
         };
 
@@ -144,6 +148,7 @@ namespace Aardvark.Base
             Caps = "SByte",
             Char = "sb",
             Read = "ReadSByte",
+            FSharpName = "int8",
             IsInteger = true,
         };
 
@@ -153,6 +158,7 @@ namespace Aardvark.Base
             Caps = "Short",
             Char = "s",
             Read = "ReadInt16",
+            FSharpName = "int16",
             IsInteger = true,
         };
 
@@ -162,6 +168,7 @@ namespace Aardvark.Base
             Caps = "UShort",
             Char = "us",
             Read = "ReadUInt16",
+            FSharpName = "uint16",
             IsInteger = true,
         };
 
@@ -171,6 +178,7 @@ namespace Aardvark.Base
             Caps = "Int",
             Char = "i",
             Read = "ReadInt32",
+            FSharpName = "int32",
             IsInteger = true,
         };
 
@@ -180,6 +188,7 @@ namespace Aardvark.Base
             Caps = "UInt",
             Char = "ui",
             Read = "ReadUInt32",
+            FSharpName = "uint32",
             IsInteger = true,
         };
 
@@ -189,6 +198,7 @@ namespace Aardvark.Base
             Caps = "Long",
             Char = "l",
             Read = "ReadInt64",
+            FSharpName = "int64",
             IsInteger = true,
         };
 
@@ -198,6 +208,7 @@ namespace Aardvark.Base
             Caps = "ULong",
             Char = "ul",
             Read = "ReadUInt64",
+            FSharpName = "uint64",
             IsInteger = true,
         };
 
@@ -207,6 +218,7 @@ namespace Aardvark.Base
             Caps = "Half",
             Char = "h",
             Read = "ReadHalf",
+            FSharpName = "float16",
             IsReal = true,
         };
 
@@ -216,6 +228,7 @@ namespace Aardvark.Base
             Caps = "Float",
             Char = "f",
             Read = "ReadSingle",
+            FSharpName = "float32",
             IsReal = true,
         };
 
@@ -225,6 +238,7 @@ namespace Aardvark.Base
             Caps = "Double",
             Char = "d",
             Read = "ReadDouble",
+            FSharpName = "float",
             IsReal = true,
         };
 
@@ -239,6 +253,7 @@ namespace Aardvark.Base
         {
             Name = "Char",
             Read = "ReadChar",
+            FSharpName = "char",
             IsCharOrString = true,
         };
 
@@ -246,6 +261,7 @@ namespace Aardvark.Base
         {
             Name = "String",
             Read = "ReadString",
+            FSharpName = "string",
             IsCharOrString = true,
         };
 

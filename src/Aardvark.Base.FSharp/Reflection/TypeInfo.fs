@@ -9,6 +9,7 @@ namespace Aardvark.Base
 /// TypeInfo contains metadata associated with types and provides active patterns
 /// deconstructing vector/matrix types etc.
 /// </summary>
+[<System.Obsolete("Use TypeMeta module instead.")>]
 module TypeInfo =
     open System
     open System.Collections.Generic
@@ -266,93 +267,51 @@ module TypeInfo =
 
         [<return: Struct>]
         let inline (|Integral|_|) (t : Type) =
-            if Set.contains (typeInfo t) IntegralTypes then
-                ValueSome ()
-            else
-                ValueNone
+            TypeMeta.Patterns.(|Integral|_|) t
 
         [<return: Struct>]
         let inline (|Fractional|_|) (t : Type) =
-            if Set.contains (typeInfo t) FractionalTypes then
-                ValueSome ()
-            else
-                ValueNone
+            TypeMeta.Patterns.(|Fractional|_|) t
 
         [<return: Struct>]
         let inline (|Num|_|) (t : Type) =
-            if Set.contains (typeInfo t) NumTypes then
-                ValueSome ()
-            else
-                ValueNone
+            TypeMeta.Patterns.(|Numeric|_|) t
 
         [<return: Struct>]
         let inline (|Vector|_|) (t : Type) =
-            if Set.contains (typeInfo t) VectorTypes then
-                ValueSome ()
-            else
-                ValueNone
+            TypeMeta.Patterns.(|Vector|_|) t
 
         [<return: Struct>]
         let inline (|Color|_|) (t : Type) =
-            if Set.contains (typeInfo t) ColorTypes then
-                ValueSome ()
-            else
-                ValueNone
+            TypeMeta.Patterns.(|Color|_|) t
 
         [<return: Struct>]
         let inline (|Matrix|_|) (t : Type) =
-            if Set.contains (typeInfo t) MatrixTypes then
-                ValueSome ()
-            else
-                ValueNone
+            TypeMeta.Patterns.(|Matrix|_|) t
 
         [<return: Struct>]
         let inline (|VectorOf|_|) (t : Type) =
-            VectorTypes
-            |> Seq.tryFindV (fun vi -> vi.Type.Name = t.Name)
-            |> ValueOption.map (fun t ->
-                let vt = unbox<VectorType> t
-                vt.dimension, vt.baseType.Type
-            )
+            TypeMeta.Patterns.(|VectorOf|_|) t |> ValueOption.map (fun struct (d, t) -> d, t)
 
         [<return: Struct>]
         let inline (|ColorOf|_|) (t : Type) =
-            ColorTypes
-            |> Seq.tryFindV (fun ti -> ti.Type.Name = t.Name)
-            |> ValueOption.map (fun t ->
-                let vt = unbox<VectorType> t
-                vt.dimension, vt.baseType.Type
-            )
+            TypeMeta.Patterns.(|ColorOf|_|) t |> ValueOption.map (fun struct (d, t) -> d, t)
 
         [<return: Struct>]
         let inline (|MatrixOf|_|) (t : Type) =
-            MatrixTypes
-            |> Seq.tryFindV (fun vi -> vi.Type.Name = t.Name)
-            |> ValueOption.map (fun t ->
-                let mt = unbox<MatrixType> t
-                mt.dimension, mt.baseType.Type
-            )
+            TypeMeta.Patterns.(|MatrixOf|_|) t |> ValueOption.map (fun struct (d, t) -> d, t)
 
         [<return: Struct>]
         let inline (|Ref|_|) (t : Type) =
-            if t.IsGenericType && t.GetGenericTypeDefinition() = TRef.simpleType then
-                ValueSome <| t.GetGenericArguments().[0]
-            else
-                ValueNone
+            TypeMeta.Patterns.(|RefOf|_|) t
 
         [<return: Struct>]
         let inline (|List|_|) (t : Type) =
-            if t.IsGenericType && t.GetGenericTypeDefinition() = TList.simpleType then
-                ValueSome <| t.GetGenericArguments().[0]
-            else
-                ValueNone
+            TypeMeta.Patterns.(|ListOf|_|) t
 
         [<return: Struct>]
         let inline (|Seq|_|) (t : Type) =
-            if t.IsGenericType && t.GetGenericTypeDefinition() = TSeq.simpleType then
-                ValueSome <| t.GetGenericArguments().[0]
-            else
-                ValueNone
+            TypeMeta.Patterns.(|SeqOf|_|) t
 
         [<Obsolete("Use Seq instead.")>]
         [<return: Struct>]

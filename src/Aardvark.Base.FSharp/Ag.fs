@@ -234,7 +234,6 @@ module Ag =
     [<AutoOpen>]
     module private Helpers =
         open System.Reflection.Emit
-        open Aardvark.Base.TypeInfo
 
         type NewRootDelegate = delegate of obj -> obj
         type SynDelegateStatic = delegate of obj * Scope -> obj

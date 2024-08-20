@@ -82,7 +82,7 @@ module AMD64 =
         
         let getArgumentLocation (arg : int) (argType : Type) (cc : CallingConvention) =
             match argType with
-                | TypeInfo.Patterns.Fractional -> 
+                | TypeMeta.Patterns.Fractional ->
                     if arg < cc.floatRegisters.Length then RegisterArgument cc.floatRegisters.[arg]
                     else StackArgument
                 | _ -> 

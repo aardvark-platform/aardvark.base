@@ -60,6 +60,8 @@
     <Compile Include="Color\ColorBrewer.fs" />
     <Compile Include="Color\ColorBrewerSchemes.fs" />
     <None Include="color\ColorBrewerSchemes.fsx" />
+    <None Include="Reflection\TypeMeta_template.fs" />
+    <Compile Include="Reflection\TypeMeta_auto.fs" />
     <Compile Include="Reflection\TypeInfo.fs" />
     <Compile Include="Reflection\FunctionReflection.fs" />
     <Compile Include="Reflection\Formatf.fs" />

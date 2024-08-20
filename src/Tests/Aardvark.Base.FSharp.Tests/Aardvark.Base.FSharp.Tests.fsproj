@@ -34,6 +34,7 @@
     <Compile Include="NativeMemory.fs" />
     <Compile Include="ControlTests.fs" />
     <Compile Include="SizeOfTests.fs" />
+    <Compile Include="TypeMetaTests.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,7 @@
     <Compile Include="TensorUtilitiesBench.fs" />
     <Compile Include="TensorMathBench.fs" />
     <Compile Include="DynamicDispatchBench.fs" />
+    <Compile Include="TypePatternsBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
