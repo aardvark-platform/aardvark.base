@@ -2,6 +2,7 @@
 
 open System
 open System.Collections.Generic
+open System.Collections.Concurrent
 open Aardvark.Base
 open System.Reflection
 open System.Runtime.InteropServices
@@ -618,7 +619,7 @@ module PrimitiveValueConverter =
             ( fun (v : M33f)        -> M23d.op_Explicit v ) :> obj
             ( fun (v : M33f)        -> M33i.op_Explicit v ) :> obj
             ( fun (v : M33f)        -> M33l.op_Explicit v ) :> obj
-            ( fun (v : M33f)        -> v ) :> obj        
+            ( fun (v : M33f)        -> v ) :> obj
             ( fun (v : M33f)        -> M33d.op_Explicit v ) :> obj
             ( fun (v : M33f)        -> M34i.op_Explicit v ) :> obj
             ( fun (v : M33f)        -> M34l.op_Explicit v ) :> obj
@@ -641,7 +642,7 @@ module PrimitiveValueConverter =
             ( fun (v : M33d)        -> M33i.op_Explicit v ) :> obj
             ( fun (v : M33d)        -> M33l.op_Explicit v ) :> obj
             ( fun (v : M33d)        -> M33f.op_Explicit v ) :> obj
-            ( fun (v : M33d)        -> v ) :> obj    
+            ( fun (v : M33d)        -> v ) :> obj
             ( fun (v : M33d)        -> M34i.op_Explicit v ) :> obj
             ( fun (v : M33d)        -> M34l.op_Explicit v ) :> obj
             ( fun (v : M33d)        -> M34f.op_Explicit v ) :> obj
@@ -838,7 +839,7 @@ module PrimitiveValueConverter =
             ( fun (v : M44d)        -> v ) :> obj
         ]
 
-    
+
     let private colorConversions =
         [
             // C3b -> other colors
@@ -1180,7 +1181,7 @@ module PrimitiveValueConverter =
             ( fun (m : M44f) -> m.Transposed ) :> obj
             ( fun (m : M44i) -> m.Transposed ) :> obj
             ( fun (m : M44l) -> m.Transposed ) :> obj
-            
+
             ( fun (m : M34d) -> M34d(m.M00, m.M10, m.M20, m.M03, m.M01, m.M11, m.M21, m.M13, m.M02, m.M12, m.M22, m.M23) ) :> obj
             ( fun (m : M34f) -> M34f(m.M00, m.M10, m.M20, m.M03, m.M01, m.M11, m.M21, m.M13, m.M02, m.M12, m.M22, m.M23) ) :> obj
             ( fun (m : M34i) -> M34i(m.M00, m.M10, m.M20, m.M03, m.M01, m.M11, m.M21, m.M13, m.M02, m.M12, m.M22, m.M23) ) :> obj
@@ -1189,39 +1190,37 @@ module PrimitiveValueConverter =
 
 
     type private ConversionMapping<'a>() =
-        let store = Dict<Type, Dict<Type, 'a>>()
+        let store = Dictionary<Type, Dictionary<Type, 'a>>()
 
-        member x.Add(input : Type, output : Type, e : 'a) =
-            let map = store.GetOrCreate(input, fun _ -> Dict())
-            match map.TryGetValue output with
-                | (true, old) ->
-                    Log.warn "conflicting uniform conversions for: %s -> %s" input.Name output.Name
-                | _ ->
-                    ()
+        member x.Add(input : Type, output : Type, conversion : 'a) =
+            let map = store.GetCreate(input, fun _ -> Dictionary())
 
-            map.[output] <- e
+            if map.ContainsKey output then
+                Log.warn "[PrimitiveValueConverter] Conflicting conversions for: %s -> %s" input.Name output.Name
 
-        member x.TryGet(input : Type, output : Type, [<Out>] e : byref<'a>) =
+            map.[output] <- conversion
+
+        member x.TryGet(input : Type, output : Type, [<Out>] conversion : byref<'a>) =
             match store.TryGetValue input with
-                | (true, m) ->
-                    m.TryGetValue(output, &e)
-                | _ ->
-                    false
+            | (true, m) ->
+                m.TryGetValue(output, &conversion)
+            | _ ->
+                false
 
 
-    let private createCompiledMap (l : list<obj>) =
+    let private createCompiledMap (conversions : list<obj>) =
         let result = ConversionMapping()
 
-        for e in l do
-            let (i,o) = FSharpType.GetFunctionElements (e.GetType())
-            result.Add(i,o,e)
+        for c in conversions do
+            let (i, o) = FSharpType.GetFunctionElements (c.GetType())
+            result.Add(i, o, c)
 
         result
 
     let private mapping = createCompiledMap allConversions
 
     let private transposeMapping =
-        let dict = Dictionary<Type, obj>()
+        let dict = ConcurrentDictionary<Type, obj>()
         for f in transposeFunctions do
             let t = f.GetType()
             let (arg, ret) = FSharpType.GetFunctionElements t
@@ -1234,23 +1233,23 @@ module PrimitiveValueConverter =
         type UnboxLambda<'a> private() =
             static let instance = fun (v : obj) -> unbox<'a> v
             static member Instance = instance
-            
+
         type IdLambda<'a> private() =
             static let instance = fun (v : 'a) -> v
             static member Instance = instance
-               
+
         type ComposedLambda<'a, 'b, 'c> private() =
             static member Create(f : 'a -> 'b, g : 'b -> 'c) =
                 f >> g
-         
+
         type UntypedArrayMapLambda<'a, 'b> private() =
             static member Create(converter : 'a -> 'b) =
                 fun (arr : Array) -> arr |> unbox |> Array.map converter :> Array
-                   
+
         type ArrayMapLambda<'a, 'b> private() =
             static member Create(converter : 'a -> 'b) =
                 fun (arr : Array) -> arr |> unbox |> Array.map converter
-                     
+
         type UnboxTyped<'e, 'b>() =
             static let conv = fun (e : 'e) -> e |> unbox<'b>
             static member Instance = conv
@@ -1263,12 +1262,12 @@ module PrimitiveValueConverter =
             let (b',c) = FSharpType.GetFunctionElements gt
             if b <> b' then failwith "[PrimitiveValueConverter] cannot compose functions"
             let t = typedefof<ComposedLambda<_,_,_>>.MakeGenericType [| a; b; c |]
-            let mi = 
+            let mi =
                 t.GetMethod(
                     "Create",
-                    BindingFlags.NonPublic ||| BindingFlags.Static ||| BindingFlags.Public, 
-                    Type.DefaultBinder, 
-                    [| ft; gt|], 
+                    BindingFlags.NonPublic ||| BindingFlags.Static ||| BindingFlags.Public,
+                    Type.DefaultBinder,
+                    [| ft; gt|],
                     null
                 )
 
@@ -1278,8 +1277,8 @@ module PrimitiveValueConverter =
             let ft = f.GetType()
             let (_,r) = FSharpType.GetFunctionElements ft
             match transposeMapping.TryGetValue r with
-                | (true, transpose) -> compose f transpose
-                | _ -> f
+            | (true, transpose) -> compose f transpose
+            | _ -> f
 
         let idFunction (t : Type) =
             let t = typedefof<IdLambda<_>>.MakeGenericType [| t |]
@@ -1289,62 +1288,67 @@ module PrimitiveValueConverter =
             let t = typedefof<UnboxLambda<_>>.MakeGenericType [| t |]
             t.GetProperty("Instance").GetValue(null)
 
-    let rec tryGetConverter (inType : Type) (outType : Type) =
+    let rec tryGetConverterV (inType : Type) (outType : Type) =
         lock mapping (fun () ->
             match mapping.TryGet(inType, outType) with
-                | (true, conv) ->
-                    Some conv
-                | _ ->
-                    if outType.IsArray && inType.IsArray then
-                        let inType' = inType.GetElementType()
-                        let outType' = outType.GetElementType()
-                        match tryGetConverter inType' outType' with
-                            | Some innerConv ->
-                                let tconv = typedefof<ArrayMapLambda<_,_>>.MakeGenericType [| inType'; outType' |] 
-                                
-                                
-                                let mi = 
-                                    tconv.GetMethod(
-                                        "Create",
-                                        BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Static, 
-                                        Type.DefaultBinder, 
-                                        [| innerConv.GetType() |],
-                                        null
-                                    )
+            | (true, conv) ->
+                ValueSome conv
 
-                                let conv = mi.Invoke(null, [|innerConv|])
-                                mapping.Add(inType, outType, conv)
-                                Some conv
+            | _ ->
+                if outType.IsArray && inType.IsArray then
+                    let inType' = inType.GetElementType()
+                    let outType' = outType.GetElementType()
 
-                            | None ->
-                                None
-                    elif inType.IsEnum then
-                        let valueType = Enum.GetUnderlyingType(inType)
-                        let toValue =
-                            let value = typedefof<UnboxTyped<_,_>>.MakeGenericType [| inType; valueType |]
-                            let prop = value.GetProperty("Instance", BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Static)
-                            prop.GetValue(null)
+                    match tryGetConverterV inType' outType' with
+                    | ValueSome innerConv ->
+                        let tconv = typedefof<ArrayMapLambda<_,_>>.MakeGenericType [| inType'; outType' |]
 
-                        match tryGetConverter valueType outType with
-                            | Some inner -> 
-                                Some <| compose toValue inner
-                            | None ->
-                                None
-                    else
-                        None
+                        let mi =
+                            tconv.GetMethod(
+                                "Create",
+                                BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Static,
+                                Type.DefaultBinder,
+                                [| innerConv.GetType() |],
+                                null
+                            )
+
+                        let conv = mi.Invoke(null, [|innerConv|])
+                        mapping.Add(inType, outType, conv)
+                        ValueSome conv
+
+                    | ValueNone ->
+                        ValueNone
+
+                elif inType.IsEnum then
+                    let valueType = Enum.GetUnderlyingType(inType)
+
+                    let toValue =
+                        let value = typedefof<UnboxTyped<_,_>>.MakeGenericType [| inType; valueType |]
+                        let prop = value.GetProperty("Instance", BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Static)
+                        prop.GetValue(null)
+
+                    match tryGetConverterV valueType outType with
+                    | ValueSome inner -> ValueSome <| compose toValue inner
+                    | ValueNone -> ValueNone
+
+                else
+                    ValueNone
             )
 
-    let rec getConverter (inType : Type) (outType : Type) =
-        match tryGetConverter inType outType with
-            | Some c -> c
-            | None -> raise <| InvalidConversionException($"Unknown conversion from {inType} to {outType}", inType, outType)
+    let tryGetConverter (inType : Type) (outType : Type) =
+        tryGetConverterV inType outType |> ValueOption.toOption
+
+    let getConverter (inType : Type) (outType : Type) =
+        match tryGetConverterV inType outType with
+        | ValueSome c -> c
+        | ValueNone -> raise <| InvalidConversionException($"Unknown conversion from {inType} to {outType}", inType, outType)
 
     //open Aardvark.Base.IL
     type private Invoker private() =
-        static let cache = System.Collections.Concurrent.ConcurrentDictionary<Type * Type, obj -> obj -> obj>()
+        static let cache = System.Collections.Concurrent.ConcurrentDictionary<struct (Type * Type), obj -> obj -> obj>()
 
         static let get (inType : Type) (outType : Type) =
-            cache.GetOrAdd((inType, outType), Func<_,_>(fun (inType, outType) ->
+            cache.GetOrAdd(struct (inType, outType), Func<_,_>(fun struct (inType, outType) ->
                 let tfun = FSharpType.MakeFunctionType(inType, outType)
                 let invoke = tfun.GetMethod("Invoke")
 
@@ -1354,7 +1358,7 @@ module PrimitiveValueConverter =
                 //cil {
                 //    do! IL.ldarg 0
                 //    do! IL.ldarg 1
-                //    if inType.IsValueType then 
+                //    if inType.IsValueType then
                 //        do! IL.unbox inType
                 //    do! IL.call invoke
                 //    if outType.IsValueType then
@@ -1379,12 +1383,12 @@ module PrimitiveValueConverter =
 
 
     type private ArrayConverterCache<'a>() =
-        static let conv = Dict<Type, Array -> 'a[]>()
+        static let conv = Dictionary<Type, Array -> 'a[]>()
         static let t = typedefof<ArrayMapLambda<_,_>>
 
         static member Get (inputType : Type) =
             lock conv (fun () ->
-                conv.GetOrCreate(inputType, Func<Type, Array -> 'a[]>(fun inputType ->
+                conv.GetCreate(inputType, Func<Type, Array -> 'a[]>(fun inputType ->
                     if inputType = typeof<'a> then
                         unbox
                     else
@@ -1396,13 +1400,13 @@ module PrimitiveValueConverter =
             )
 
     type private ArrayConverterCache() =
-        static let conv = Dict<Type * Type, Array -> Array>()
+        static let conv = Dictionary<struct (Type * Type), Array -> Array>()
         static let t = typedefof<UntypedArrayMapLambda<_,_>>
 
         static member Get (inputType : Type, outputType : Type) =
             lock conv (fun () ->
-                let key = (inputType, outputType)
-                conv.GetOrCreate(key, Func<Type * Type, Array -> Array>(fun (inputType, outputType) ->
+                let key = struct (inputType, outputType)
+                conv.GetCreate(key, Func<struct (Type * Type), Array -> Array>(fun struct (inputType, outputType) ->
                     if inputType = outputType then
                         id
                     else
@@ -1416,26 +1420,26 @@ module PrimitiveValueConverter =
     let getArrayConverter (inputType : Type) (outputType : Type) : Array -> Array =
         ArrayConverterCache.Get(inputType, outputType)
 
-    let private uniformCache = Dict<bool * Type * Type, obj>()
+    let private uniformCache = Dictionary<struct (bool * Type * Type), obj>()
     let getUniformConverter (transpose : bool) (inType : Type) (outType : Type) =
-        let key = (transpose, inType, outType)
+        let key = struct (transpose, inType, outType)
         lock uniformCache (fun () ->
-            uniformCache.GetOrCreate(key, fun (rowMajor, inType, outType) ->
+            uniformCache.GetCreate(key, fun struct (transpose, inType, outType) ->
                 if transpose then getConverter inType outType |> withTranspose
                 else getConverter inType outType
             )
         )
 
-    let private idFunctions = Dict<Type, obj>()
+    let private idFunctions = Dictionary<Type, obj>()
     let getIdentityConverter (t : Type) =
         lock idFunctions (fun () ->
-            idFunctions.GetOrCreate(t, fun t -> idFunction t)
+            idFunctions.GetCreate(t, fun t -> idFunction t)
         )
 
     let getTransposeConverter (t : Type) =
         match transposeMapping.TryGetValue t with
-            | (true, v) -> v
-            | _ -> getIdentityConverter t
+        | (true, v) -> v
+        | _ -> getIdentityConverter t
 
     let isTransposable (t : Type) =
         transposeMapping.ContainsKey t
