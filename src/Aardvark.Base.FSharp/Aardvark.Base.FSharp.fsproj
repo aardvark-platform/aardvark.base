@@ -34,6 +34,7 @@
     <Compile Include="Utilities\Monoid.fs" />
     <Compile Include="Utilities\Monads.fs" />
     <Compile Include="Utilities\Weak.fs" />
+    <Compile Include="Utilities\PrimitiveValueConverter.fs" />
     <Compile Include="Math\Math.fs" />
     <Compile Include="Math\Vectors.fs" />
     <Compile Include="Math\Matrix.fs" />
