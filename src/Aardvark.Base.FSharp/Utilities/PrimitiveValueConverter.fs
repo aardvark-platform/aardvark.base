@@ -1328,8 +1328,13 @@ module PrimitiveValueConverter =
                         prop.GetValue(null)
 
                     match tryGetConverterV valueType outType with
-                    | ValueSome inner -> ValueSome <| compose toValue inner
-                    | ValueNone -> ValueNone
+                    | ValueSome inner ->
+                        let conv = compose toValue inner
+                        mapping.Add(inType, outType, conv)
+                        ValueSome conv
+
+                    | ValueNone ->
+                        ValueNone
 
                 else
                     ValueNone
@@ -1342,6 +1347,13 @@ module PrimitiveValueConverter =
         match tryGetConverterV inType outType with
         | ValueSome c -> c
         | ValueNone -> raise <| InvalidConversionException($"Unknown conversion from {inType} to {outType}", inType, outType)
+
+    let addConverters (converters: #seq<obj>) =
+        lock mapping (fun _ ->
+            for c in converters do
+                let (i, o) = FSharpType.GetFunctionElements (c.GetType())
+                mapping.Add(i, o, c)
+        )
 
     //open Aardvark.Base.IL
     type private Invoker private() =
