@@ -367,7 +367,7 @@ module NiceUtilities =
     module LookupTable =
         open System.Collections.Generic
 
-        let private build (entries: #seq<'Key * 'Value>) =
+        let private build (entries: list<'Key * 'Value>) =
             let d = Dictionary()
 
             for k, v in entries do
@@ -381,7 +381,7 @@ module NiceUtilities =
 
         /// Builds a lookup table from the given entries and returns a function that retrieves the value associated with a key.
         /// Fails if a key occurs more than once in the input collection.
-        let lookup (entries: #seq<'Key * 'Value>) =
+        let lookup (entries: list<'Key * 'Value>) =
             let d = build entries
 
             fun (key : 'Key) ->
@@ -391,7 +391,7 @@ module NiceUtilities =
 
         /// Builds a lookup table from the given entries and returns a function that retrieves the value associated with a key if it exists.
         /// Fails if a key occurs more than once in the input collection.
-        let tryLookup (entries: #seq<'Key * 'Value>) =
+        let tryLookup (entries: list<'Key * 'Value>) =
             let d = build entries
 
             fun (key : 'Key) ->
@@ -401,7 +401,7 @@ module NiceUtilities =
 
         /// Builds a lookup table from the given entries and returns a function that retrieves the value associated with a key if it exists.
         /// Fails if a key occurs more than once in the input collection.
-        let tryLookupV (entries: #seq<'Key * 'Value>) =
+        let tryLookupV (entries: list<'Key * 'Value>) =
             let d = build entries
 
             fun (key : 'Key) ->
