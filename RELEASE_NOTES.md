@@ -1,3 +1,6 @@
+### 5.3.2
+- [FSharp] Revert LookupTable utilities to use lists instead of seq
+
 ### 5.3.1
 - [FSharp] Added Stream.readAllBytes
 - [FSharp] Added Path.withTrailingSlash and withoutTrailingSlash
