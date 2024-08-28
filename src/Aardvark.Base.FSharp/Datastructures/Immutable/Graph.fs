@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+[<RequireQualifiedAccess>]
 type Tree<'a> =
     | Empty
     | Node of int * list<'a * Tree<'a>>
@@ -9,18 +10,18 @@ module Tree =
     
     let isEmpty (t : Tree<'a>) =
         match t with
-            | Empty -> true
+            | Tree.Empty -> true
             | _ -> false
 
     let rec map (mapping : 'a -> 'b) (t : Tree<'a>) =
         match t with
-            | Empty -> Empty
-            | Node(ni, children) -> Node(ni, children |> List.map (fun (e,c) -> mapping e, map mapping c))
+            | Tree.Empty -> Tree.Empty
+            | Tree.Node(ni, children) -> Tree.Node(ni, children |> List.map (fun (e,c) -> mapping e, map mapping c))
 
     let rec filter (predicate : 'a -> bool) (t : Tree<'a>) =
         match t with
-            | Empty -> Empty
-            | Node(ni, children) ->
+            | Tree.Empty -> Tree.Empty
+            | Tree.Node(ni, children) ->
                 let newChildren = 
                     children |> List.choose (fun (e,c) -> 
                         if predicate e then 
@@ -29,22 +30,22 @@ module Tree =
                         else
                             None
                     )
-                Node(ni, newChildren)
+                Tree.Node(ni, newChildren)
 
     let rec foldEdges (folder : 's -> 'a -> 's) (seed : 's) (t : Tree<'a>) =
         match t with
-            | Empty -> 
+            | Tree.Empty -> 
                 seed
 
-            | Node(_, edges) ->
+            | Tree.Node(_, edges) ->
                 edges |> List.fold (fun s (e,c) -> c |> foldEdges folder (folder s e)) seed
 
     let rec foldNodes (folder : 's -> int -> 's) (seed : 's) (t : Tree<'a>) =
         match t with
-            | Empty -> 
+            | Tree.Empty -> 
                 seed
 
-            | Node(id, edges) ->
+            | Tree.Node(id, edges) ->
                 match edges with
                     | [] -> 
                         folder seed id
@@ -172,7 +173,7 @@ module UndirectedGraph =
 
     let spanningTree (g : UndirectedGraph<'e>) =
         if Set.isEmpty g.nodes then
-            Empty
+            Tree.Empty
         else
             let root = Seq.head g.nodes
 
@@ -202,7 +203,7 @@ module UndirectedGraph =
                     assert (!cnt = Set.count g.nodes - 1)
                     t
                 | None -> 
-                    Empty
+                    Tree.Empty
 
     let minimumSpanningTree (cmp : 'e -> 'e -> int) (g : UndirectedGraph<'e>) =
         let edges = g |> toEdges |> List.toArray
