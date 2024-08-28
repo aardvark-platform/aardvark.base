@@ -6,12 +6,13 @@ open System.Threading.Tasks
 
 open Aardvark.Base
 
+[<RequireQualifiedAccess>]
 type ProcListValue<'a, 'r> =
     | Nil
     | Cons of 'a * ProcList<'a, 'r>
 
 and ProcList<'a, 'r>(run : Proc<ProcListValue<'a, 'r>, 'r>) =
-    static let empty = ProcList<'a, 'r>(Proc.Create Nil)
+    static let empty = ProcList<'a, 'r>(Proc.Create ProcListValue.Nil)
 
     static member Empty = empty
 
@@ -22,7 +23,7 @@ module ProcList =
     let empty<'a, 'r> = ProcList<'a, 'r>.Empty
 
     let single (v : 'a) : ProcList<'a, 'r> = 
-        ProcList<'a, 'r>(Proc.create <| Cons(v, empty))
+        ProcList<'a, 'r>(Proc.create <| ProcListValue.Cons(v, empty))
 
     let ofSeq (v : seq<'a>) : ProcList<'a, 'r> = 
         use e = v.GetEnumerator()
@@ -30,7 +31,7 @@ module ProcList =
             if e.MoveNext() then
                 let v = e.Current
                 let rest = build()
-                ProcList(Proc.create <| Cons(v, rest))
+                ProcList(Proc.create <| ProcListValue.Cons(v, rest))
             else
                 empty
         build()
@@ -41,7 +42,7 @@ module ProcList =
                 empty
 
             | h :: rest ->
-                Cons(h, ofList rest)
+                ProcListValue.Cons(h, ofList rest)
                     |> Proc.Create
                     |> ProcList
     
@@ -50,7 +51,7 @@ module ProcList =
             if i >= arr.Length then
                 empty
             else
-                ProcList(Proc.create <| Cons(arr.[i], build (i+1) arr))
+                ProcList(Proc.create <| ProcListValue.Cons(arr.[i], build (i+1) arr))
         build 0 arr
 
 
@@ -59,11 +60,11 @@ module ProcList =
             proc {
                 let! c = list.run
                 match c with
-                    | Nil -> 
-                        return Nil
+                | ProcListValue.Nil -> 
+                    return ProcListValue.Nil
 
-                    | Cons(h,tail) ->
-                        return Cons(mapping h, map mapping tail)
+                | ProcListValue.Cons(h,tail) ->
+                    return ProcListValue.Cons(mapping h, map mapping tail)
             }
         )
 
@@ -72,15 +73,15 @@ module ProcList =
             proc {
                 let! c = list.run
                 match c with
-                    | Nil -> 
-                        return Nil
+                | ProcListValue.Nil -> 
+                    return ProcListValue.Nil
 
-                    | Cons(h,tail) ->
-                        match mapping h with
-                            | Some v ->
-                                return Cons(v, choose mapping tail)
-                            | None ->
-                                return! (choose mapping tail).run
+                | ProcListValue.Cons(h,tail) ->
+                    match mapping h with
+                        | Some v ->
+                            return ProcListValue.Cons(v, choose mapping tail)
+                        | None ->
+                            return! (choose mapping tail).run
             }
         )
 
@@ -89,12 +90,12 @@ module ProcList =
             proc {
                 let! l = list.run
                 match l with
-                    | Nil -> return Nil
-                    | Cons(h,tail) ->
-                        if predicate h then
-                            return Cons(h, filter predicate tail)
-                        else
-                            return! (filter predicate tail).run
+                | ProcListValue.Nil -> return ProcListValue.Nil
+                | ProcListValue.Cons(h,tail) ->
+                    if predicate h then
+                        return ProcListValue.Cons(h, filter predicate tail)
+                    else
+                        return! (filter predicate tail).run
             }
         )
 
@@ -103,8 +104,8 @@ module ProcList =
             proc {
                 let! l = l.run
                 match l with
-                    | Nil -> return! r.run
-                    | Cons(h,tail) -> return Cons(h, append tail r)
+                | ProcListValue.Nil -> return! r.run
+                | ProcListValue.Cons(h,tail) -> return ProcListValue.Cons(h, append tail r)
             }
         )
 
@@ -113,11 +114,11 @@ module ProcList =
             proc {
                 let! l = l.run
                 match l with
-                    | Nil -> 
-                        return Nil
+                | ProcListValue.Nil -> 
+                    return ProcListValue.Nil
 
-                    | Cons(h,t) ->
-                        return! (append h (concat t)).run
+                | ProcListValue.Cons(h,t) ->
+                    return! (append h (concat t)).run
             }
         )
 
@@ -134,12 +135,12 @@ module ProcList =
             proc {
                 let! list = list.run
                 match list with
-                    | Nil -> 
-                        return Nil
+                | ProcListValue.Nil -> 
+                    return ProcListValue.Nil
 
-                    | Cons(h,tail) ->
-                        let res = append (mapping h) (collect mapping tail)
-                        return! res.run
+                | ProcListValue.Cons(h,tail) ->
+                    let res = append (mapping h) (collect mapping tail)
+                    return! res.run
             }
         )
 
