@@ -6,15 +6,57 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
+using BundleReader = SingleFileExtractor.Core.ExecutableReader;
+using BundleFileEntry = SingleFileExtractor.Core.FileEntry;
 
 namespace Aardvark.Base
 {
+    internal static class FileUtils
+    {
+        public static DateTime GetLastWriteTimeSafe(string path)
+        {
+            try
+            {
+                return File.Exists(path) ? File.GetLastWriteTimeUtc(path) : DateTime.MaxValue;
+            }
+            catch (Exception)
+            {
+                Report.Warn($"Could not get write time for: {path}");
+                return DateTime.MaxValue;
+            }
+        }
+    }
+
+    internal static class AssemblyExtenions
+    {
+        public static string GetLocationSafe(this Assembly assembly)
+        {
+            try
+            {
+                var location = assembly.Location;
+                return location.IsNullOrEmpty() ? null : location;
+            }
+            catch { return null; }
+        }
+
+        public static bool HasLocation(this Assembly assembly)
+            => assembly.GetLocationSafe() != null;
+
+        public static DateTime GetLastWriteTimeSafe(this Assembly assembly)
+        {
+            var location = assembly?.GetLocationSafe() ?? IntrospectionProperties.CurrentEntryBundle;
+            return FileUtils.GetLastWriteTimeSafe(location);
+        }
+    }
+
     public static class CachingProperties
     {
         /// <summary>
@@ -102,7 +144,7 @@ namespace Aardvark.Base
             return scheme switch
             {
                 NamingScheme.Version =>   asm.GetName().Version.ToString(),
-                NamingScheme.Timestamp => IntrospectionProperties.GetLastWriteTimeUtc(asm).ToBinary().ToString(),
+                NamingScheme.Timestamp => asm.GetLastWriteTimeSafe().ToBinary().ToString(),
                 _ => ""
             };
         }
@@ -136,10 +178,47 @@ namespace Aardvark.Base
         public static bool NativeLibraryUnpackingAllowed = true;
 
 
-        public static string CurrentEntryPath => (CurrentEntryAssembly != null)
-            ? Path.GetDirectoryName(CurrentEntryAssembly.Location)
-            : null
-            ;
+        public static string CurrentEntryPath
+        {
+            get
+            {
+                var location = CurrentEntryAssembly?.GetLocationSafe();
+                return (location != null) ? Path.GetDirectoryName(location) : null;
+            }
+        }
+
+        /// <summary>
+        /// Returns the path to the single file deployed entry bundle if it exists, null otherwise.
+        /// </summary>
+        public static string CurrentEntryBundle
+        {
+            get
+            {
+                var entryAssembly = CurrentEntryAssembly;
+
+                // If Location is empty or null, we might have a single-file application
+                if (entryAssembly != null && !entryAssembly.HasLocation())
+                {
+                    var name = entryAssembly.GetName().Name;
+                    var ext = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ".exe" : "";
+                    var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, name + ext);
+
+                    if (File.Exists(path))
+                    {
+                        return path;
+                    }
+                    else
+                    {
+                        Report.Warn($"Could not find bundle executable: {path}");
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         private static readonly HashSet<string> s_defaultAssemblyBlacklist =
             new HashSet<string>(
@@ -251,28 +330,12 @@ namespace Aardvark.Base
                     else return AssemblyFilter(a.GetName().Name);
                 };
 
+        [Obsolete]
         public static string BundleEntryPoint = "";
 
-        /// <summary>
-        /// Robustly tries to get DateTime also for bundled deployments. Use BundleEntryPoint to register dummy entry as a first fallback. returns DateTime.Now if all fallbacks fail.
-        /// </summary>
-        public static Func<Assembly, DateTime> GetLastWriteTimeUtc = (Assembly assembly) =>
-        {
-            if (!String.IsNullOrEmpty(assembly.Location) && File.Exists(assembly.Location)) // first choise - won't work for bundled deplyoments?
-            {
-                return File.GetLastWriteTimeUtc(assembly.Location);
-
-            }
-            else if (File.Exists(BundleEntryPoint)) // fallback 1 - use bundle entrypoint
-            {
-                return File.GetLastWriteTimeUtc(BundleEntryPoint);
-            }
-            else
-            {
-                // no option left....
-                return DateTime.Now;
-            }
-        };
+        [Obsolete]
+        public static Func<Assembly, DateTime> GetLastWriteTimeUtc =
+            (Assembly assembly) => assembly.GetLastWriteTimeSafe();
     }
 
     public static class Introspection
@@ -446,7 +509,7 @@ namespace Aardvark.Base
             {
                 if (typeof(Aardvark).Assembly != null)
                 {
-                    Report.Warn("Assembly.GetEntryAssembly() == null && IntrospectionProperties.CurrentEntryAssembly == null. This might be due to nunit like setups. trying to use typeof<Aardvark>.Assembly instead: {0}", typeof(Aardvark).Assembly.Location);
+                    Report.Warn("Assembly.GetEntryAssembly() == null && IntrospectionProperties.CurrentEntryAssembly == null. This might be due to nunit like setups. trying to use typeof<Aardvark>.Assembly instead: {0}", typeof(Aardvark).Assembly.GetLocationSafe());
                     IntrospectionProperties.CustomEntryAssembly = typeof(Aardvark).Assembly;
                     RegisterAllAssembliesInCustomEntryPath();
                 } else
@@ -558,10 +621,9 @@ namespace Aardvark.Base
 
         private static string GetQueryCacheFilename(Assembly asm, Guid queryGuid)
         {
-            var name = Path.GetFileName(asm.Location);
+            var name = asm.GetName().Name;
             var id = asm.GetIdentifier(CachingProperties.IntrospectionCacheFileNaming);
-            var fname = string.Format("{0}_{1}_{2}.txt", name, id, queryGuid);
-            return Path.Combine(CacheDirectory, fname);
+            return Path.Combine(CacheDirectory, $"{name}_{id}_{queryGuid}.query");
         }
 
         private class CacheFileHeader
@@ -604,7 +666,7 @@ namespace Aardvark.Base
             try
             {
                 cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
-                assemblyTimeStamp = IntrospectionProperties.GetLastWriteTimeUtc(a);
+                assemblyTimeStamp = a.GetLastWriteTimeSafe();
 
                 // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
                 if (!String.IsNullOrEmpty(cacheFileName) && File.Exists(cacheFileName))
@@ -734,6 +796,7 @@ namespace Aardvark.Base
 
     }
 
+    // TODO: static class
     [Serializable]
     public class Aardvark
     {
@@ -778,308 +841,430 @@ namespace Aardvark.Base
             }
         }
 
-        private static string InitializeCacheDirectory()
-        {
-            var path = Path.Combine(CachingProperties.CacheDirectory, "Plugins");
-
-            if (!Directory.Exists(path))
+        private static readonly Lazy<string> s_pluginsCacheDirectory =
+            new (() =>
             {
-                Directory.CreateDirectory(path);
-            }
+                var path = Path.Combine(CachingProperties.CacheDirectory, "Plugins");
 
-            return path;
-        }
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
 
-        private static readonly Lazy<string> s_cacheDirectory = new Lazy<string>(InitializeCacheDirectory);
+                return path;
+            });
 
         /// <summary>
         /// Returns the directory of the plugins cache files.
         /// </summary>
-        public static string CacheDirectory => s_cacheDirectory.Value;
+        public static string PluginsCacheDirectory => s_pluginsCacheDirectory.Value;
 
+        [Obsolete("Use PluginsCacheDirectory instead.")]
+        public static string CacheDirectory => PluginsCacheDirectory;
+
+        private static readonly Lazy<string> s_pluginsCacheFile =
+            new(() =>
+            {
+                Assembly entryAssembly = IntrospectionProperties.CurrentEntryAssembly;
+                string entryAssemblyName = entryAssembly?.GetName().Name ?? "unknown";
+                string entryAssemblyId = entryAssembly?.GetIdentifier(CachingProperties.PluginsCacheFileNaming) ?? "unknown";
+                string fileName = string.Format("{0}_{1}_plugins.xml", entryAssemblyName, entryAssemblyId);
+
+                return Path.Combine(PluginsCacheDirectory, fileName);
+            });
+
+        /// <summary>
+        /// Returns the path of the plugins cache file.
+        /// </summary>
+        public static string PluginsCacheFile => s_pluginsCacheFile.Value;
+
+        [Obsolete("Use PluginsCacheFile instead.")]
         public string CacheFile = string.Empty;
 
+        [Obsolete("Use static methods instead.")]
         public Aardvark()
         {
-            Assembly asm = IntrospectionProperties.CurrentEntryAssembly;
-            string entryAssemblyName = asm?.GetName().Name ?? "unknown";
-            string entryAssemblyId = asm?.GetIdentifier(CachingProperties.PluginsCacheFileNaming) ?? "unknown";
-            string fileName = string.Format("{0}_{1}_plugins.xml", entryAssemblyName, entryAssemblyId);
-
-            CacheFile = Path.Combine(CacheDirectory, fileName);
         }
 
-        private PluginCache ReadCacheFile()
+        private static PluginCache ReadCacheFile()
         {
-            if (File.Exists(CacheFile))
+            if (File.Exists(PluginsCacheFile))
             {
                 try
                 {
-                    using var stream = new FileStream(CacheFile, FileMode.Open);
+                    using var stream = new FileStream(PluginsCacheFile, FileMode.Open);
                     var result = PluginCache.Deserialize(stream);
-                    Report.Line(3, "[ReadCacheFile] loaded cache file: {0}", CacheFile);
+                    Report.Line(3, $"[ReadCacheFile] Loaded plugins cache file: {PluginsCacheFile}");
                     return result;
                 }
                 catch (Exception e)
                 {
-                    Report.Line(3, "[ReadCacheFile] could not load cache file {0}: {1}", CacheFile, e.Message);
+                    Report.Line(3, $"[ReadCacheFile] Could not load plugins cache file '{PluginsCacheFile}': {e.Message}");
                     return new PluginCache();
                 }
             }
             else
             {
-                Report.Line(3, "[ReadCacheFile] no plugins cache file found at {0}", CacheFile);
+                Report.Line(3, $"[ReadCacheFile] Using new plugins cache file: {PluginsCacheFile}");
                 return new PluginCache();
             }
         }
 
-        private void WriteCacheFile(PluginCache cache)
+
+        private static void WriteCacheFile(PluginCache cache)
         {
-            if (string.IsNullOrEmpty(CacheFile))
+            if (string.IsNullOrEmpty(PluginsCacheFile))
             {
-                Report.Warn("Could not write cache file since CacheFile was null or empty");
+                Report.Warn("Could not write plugins cache file since Aardvark.PluginCacheFile was null or empty");
             }
             else
             {
                 try
                 {
-                    if (File.Exists(CacheFile)) File.Delete(CacheFile);
+                    if (File.Exists(PluginsCacheFile)) File.Delete(PluginsCacheFile);
 
-                    using var stream = new FileStream(CacheFile, FileMode.CreateNew);
+                    using var stream = new FileStream(PluginsCacheFile, FileMode.CreateNew);
                     cache.Serialize(stream);
                 }
-                catch(Exception ex)
+                catch(Exception e)
                 {
-                    Report.Warn("Could not write cache file: {0}", ex.Message);
+                    Report.Warn($"Could not write plugins cache file '{PluginsCacheFile}': {e.Message}");
                 }
             }
         }
 
         private static readonly Regex versionRx = new Regex(@"^[ \t]*(?<name>[\.A-Za-z_0-9]+)[ \t]*,[ \t]*(v|V)ersion[ \t]*=[ \t]*(?<version>[\.A-Za-z_0-9]+)$");
 
-        private static unsafe bool IsPlugin(string file)
+        private static unsafe bool ProbeForPlugin(Stream stream)
         {
-            try
+            using var v = new PEReader(stream, PEStreamOptions.LeaveOpen);
+
+            if (v.PEHeaders.CorHeader == null || !v.HasMetadata) return false;
+            var data = v.GetMetadata();
+            var m = new MetadataReader(data.Pointer, data.Length);
+
+            var assdef = m.GetAssemblyDefinition();
+            foreach (var att in assdef.GetCustomAttributes())
             {
-                using (var s = File.OpenRead(file))
-                using (var v = new System.Reflection.PortableExecutable.PEReader(s))
+                var attDef = m.GetCustomAttribute(att);
+                if (attDef.Constructor.Kind == HandleKind.MemberReference)
                 {
-                    if (v.PEHeaders.CorHeader == null || !v.HasMetadata) return false;
-                    var data = v.GetMetadata();
-                    var m = new System.Reflection.Metadata.MetadataReader(data.Pointer, data.Length);
-
-
-                    var assdef = m.GetAssemblyDefinition();
-                    foreach (var att in assdef.GetCustomAttributes())
+                    var hh = (MemberReferenceHandle)attDef.Constructor;
+                    var e = m.GetMemberReference(hh);
+                    var pp = e.Parent;
+                    if (pp.Kind == HandleKind.TypeReference)
                     {
-                        var attDef = m.GetCustomAttribute(att);
-                        if (attDef.Constructor.Kind == System.Reflection.Metadata.HandleKind.MemberReference)
+                        var attType = m.GetTypeReference((TypeReferenceHandle)pp);
+                        var nameStr = m.GetString(attType.Name);
+                        var nsStr = m.GetString(attType.Namespace);
+                        if (nsStr == "System.Runtime.Versioning" && nameStr == "TargetFrameworkAttribute")
                         {
-                            var hh = (System.Reflection.Metadata.MemberReferenceHandle)attDef.Constructor;
-                            var e = m.GetMemberReference(hh);
-                            var pp = e.Parent;
-                            if (pp.Kind == System.Reflection.Metadata.HandleKind.TypeReference)
+                            var reader = m.GetBlobReader(attDef.Value);
+                            if (reader.ReadUInt16() == 1)
                             {
-                                var attType = m.GetTypeReference((System.Reflection.Metadata.TypeReferenceHandle)pp);
-                                var nameStr = m.GetString(attType.Name);
-                                var nsStr = m.GetString(attType.Namespace);
-                                if (nsStr == "System.Runtime.Versioning" && nameStr == "TargetFrameworkAttribute")
+                                var version = reader.ReadSerializedString();
+                                var match = versionRx.Match(version);
+                                if (match.Success)
                                 {
-                                    var reader = m.GetBlobReader(attDef.Value);
-                                    if (reader.ReadUInt16() == 1)
-                                    {
-                                        var version = reader.ReadSerializedString();
-                                        var match = versionRx.Match(version);
-                                        if (match.Success)
-                                        {
-                                            var fwName = match.Groups["name"].Value;
-                                            var isLoadable =
-                                                (fwName == ".NETCoreApp") ||
-                                                (fwName == ".NETStandard");
-                                            if (!isLoadable) return false;
-                                        }
-                                    }
+                                    var fwName = match.Groups["name"].Value;
+                                    var isLoadable =
+                                        (fwName == ".NETCoreApp") ||
+                                        (fwName == ".NETStandard");
+                                    if (!isLoadable) return false;
                                 }
                             }
                         }
                     }
-
-                    foreach (var t in m.TypeDefinitions)
-                    {
-                        var def = m.GetTypeDefinition(t);
-                        foreach (var meth in def.GetMethods())
-                        {
-                            var mdef = m.GetMethodDefinition(meth);
-                            var hasInitAtt =
-                                mdef.GetCustomAttributes().Any(att =>
-                                {
-                                    var attDef = m.GetCustomAttribute(att);
-                                    if (attDef.Constructor.Kind == System.Reflection.Metadata.HandleKind.MemberReference)
-                                    {
-                                        var hh = (System.Reflection.Metadata.MemberReferenceHandle)attDef.Constructor;
-                                        var e = m.GetMemberReference(hh);
-                                        var pp = e.Parent;
-                                        if (pp.Kind == System.Reflection.Metadata.HandleKind.TypeReference)
-                                        {
-                                            var attType = m.GetTypeReference((System.Reflection.Metadata.TypeReferenceHandle)pp);
-                                            var nameStr = m.GetString(attType.Name);
-                                            var nsStr = m.GetString(attType.Namespace);
-                                            if (nsStr == "Aardvark.Base" && nameStr == "OnAardvarkInitAttribute")
-                                            {
-                                                return true;
-                                            }
-                                            else return false;
-                                        }
-                                        else return false;
-                                    }
-                                    else return false;
-                                });
-
-                            if (hasInitAtt) return true;
-                        }
-                    }
-
-                    return false;
                 }
             }
-            catch(Exception)
+
+            foreach (var t in m.TypeDefinitions)
             {
-                Report.Warn("NO PLUGIN: {0}", file);
-                return false;
+                var def = m.GetTypeDefinition(t);
+                foreach (var meth in def.GetMethods())
+                {
+                    var mdef = m.GetMethodDefinition(meth);
+                    var hasInitAtt =
+                        mdef.GetCustomAttributes().Any(att =>
+                        {
+                            var attDef = m.GetCustomAttribute(att);
+                            if (attDef.Constructor.Kind == HandleKind.MemberReference)
+                            {
+                                var hh = (MemberReferenceHandle)attDef.Constructor;
+                                var e = m.GetMemberReference(hh);
+                                var pp = e.Parent;
+                                if (pp.Kind == HandleKind.TypeReference)
+                                {
+                                    var attType = m.GetTypeReference((TypeReferenceHandle)pp);
+                                    var nameStr = m.GetString(attType.Name);
+                                    var nsStr = m.GetString(attType.Namespace);
+                                    return nsStr == "Aardvark.Base" && nameStr == nameof(OnAardvarkInitAttribute);
+                                }
+                                else return false;
+                            }
+                            else return false;
+                        });
+
+                    if (hasInitAtt) return true;
+                }
+            }
+
+            return false;
+        }
+
+        private abstract class AssemblySource
+        {
+            public abstract string Path { get; }
+
+            public abstract DateTime LastModified { get; }
+
+            public abstract Stream OpenRead();
+
+            public abstract Assembly Load();
+        }
+
+        private class FileAssemblySource : AssemblySource
+        {
+            public override string Path { get; }
+
+            public override DateTime LastModified { get; }
+
+            public FileAssemblySource(string path)
+            {
+                Path = path;
+                LastModified = FileUtils.GetLastWriteTimeSafe(path);
+            }
+
+            public override Stream OpenRead()
+                => File.OpenRead(Path);
+
+            public override Assembly Load()
+            {
+#if NETCOREAPP3_1_OR_GREATER
+                // In .NET core Assembly.LoadFile uses a separate context, resulting in assemblies being
+                // potentially loaded multiple times -> leads to problems with static fields in unit tests
+                // See: https://github.com/dotnet/runtime/issues/39783
+                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(Path);
+#else
+                return Assembly.LoadFile(Path);
+#endif
             }
         }
 
-        public string[] GetPluginAssemblyPaths()
+        private class BundleAssemblySource : AssemblySource
         {
-            var cache = ReadCacheFile();
-            var newCache = new PluginCache();
+            private readonly BundleFileEntry m_entry;
 
-            var folder = Array.Empty<string>();
+            private byte[] m_data;
 
-            // attach folder contents if possible (e.g. not possible in bundle deployments if no bundle entry is specified)
-            if (IntrospectionProperties.CurrentEntryPath != null)
-                folder = Directory.EnumerateFiles(IntrospectionProperties.CurrentEntryPath).ToArray();
-            else if (IntrospectionProperties.BundleEntryPoint != null)
-                folder = Directory.EnumerateFiles(Path.GetDirectoryName(IntrospectionProperties.BundleEntryPoint)).ToArray();
+            public override string Path { get; }
 
-            string[] assemblies =
-                    folder
-                        .Where(p => { var ext = Path.GetExtension(p).ToLowerInvariant(); return ext == ".dll" || ext == ".exe"; })
-                        .Where(p => {
-                            var name = Path.GetFileNameWithoutExtension(p);
-                            var f = IntrospectionProperties.AssemblyFilter(name);
-                            if (!f) { Report.Line(4, "[GetPluginAssemblyPaths] Ignoring assembly {0} due to filter", name); }
-                            return f;
-                        })
-                        .Select(Path.GetFullPath)
-                        .ToArray();
+            public override DateTime LastModified { get; }
 
-            var paths = new List<string>();
+            public BundleReader Reader => m_entry.ExecutableReader;
 
-            foreach (var fileName in assemblies)
+            public BundleAssemblySource(BundleFileEntry entry)
             {
-                var lastWrite = DateTime.MaxValue;
-                try { lastWrite = File.GetLastWriteTimeUtc(fileName); }
-                catch(Exception)
+                var bundlePath = entry.ExecutableReader.FileName;
+                Path = System.IO.Path.Combine(bundlePath, entry.RelativePath);
+                LastModified = FileUtils.GetLastWriteTimeSafe(bundlePath);
+                m_entry = entry;
+            }
+
+            private byte[] GetData()
+            {
+                if (m_data == null)
                 {
-                    Report.Line(3, "[GetPluginAssemblyPaths] could not get write time for: {0}", fileName);
+                    using var s = m_entry.AsStream();
+                    using var ms = new MemoryStream(s.CanSeek ? (int)s.Length : 0);
+                    s.CopyTo(ms);
+                    m_data = ms.GetBuffer();
                 }
 
-                bool exists = cache.TryGetValue(fileName, out PluginCache.Data cacheValue);
+                return m_data;
+            }
 
-                if (exists && lastWrite <= cacheValue.LastModified)
+            public override Stream OpenRead()
+                => new MemoryStream(GetData());
+
+            public override Assembly Load()
+            {
+#if NETCOREAPP3_1_OR_GREATER
+                using var s = OpenRead();
+                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromStream(s);
+#else
+                return Assembly.Load(GetData());
+#endif
+            }
+        }
+
+        private class AssemblySourceList : List<AssemblySource>, IDisposable
+        {
+            private BundleReader m_reader;
+
+            public void AddDirectory(string path)
+            {
+                foreach (var p in Directory.GetFiles(path))
                 {
-                    Report.Line(3, "[GetPluginAssemblyPaths] cache found for: {0}", fileName);
-                    if (cacheValue.IsPlugin)
+                    Add(new FileAssemblySource(p));
+                }
+            }
+
+            public void AddBundle(BundleReader reader)
+            {
+                if (m_reader != null)
+                    throw new InvalidOperationException("Cannot add multiple bundles.");
+
+                m_reader = reader;
+
+                if (reader.IsSingleFile && reader.IsSupported)
+                {
+                    foreach (var e in reader.Bundle.Files)
                     {
-                        newCache[fileName] = new PluginCache.Data(lastWrite, true);
-                        paths.Add(fileName);
-                    }
-                    else
-                    {
-                        newCache[fileName] = new PluginCache.Data(lastWrite, false);
+                        Add(new BundleAssemblySource(e));
                     }
                 }
                 else
                 {
-                    if (exists)
-                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because cache outdated {0}", fileName);
-                    else
-                        Report.Line(3, "[GetPluginAssemblyPaths] retrying to load because not in cache {0}", fileName);
-
-                    if (IsPlugin(fileName))
-                    {
-                        Report.Line(3, "[GetPluginAssemblyPaths] plugin found {0}", fileName);
-                        newCache[fileName] = new PluginCache.Data(lastWrite, true);
-                        paths.Add(fileName);
-                    }
-                    else
-                    {
-                        newCache[fileName] = new PluginCache.Data(lastWrite, false);
-                    }
+                    Report.Warn($"Cannot read bundle executable: {reader.FileName}");
                 }
             }
 
-            WriteCacheFile(newCache);
-            return paths.ToArray();
+            public void Dispose()
+            {
+                m_reader?.Dispose();
+                m_reader = null;
+            }
+        }
+
+        private static AssemblySourceList FindAssemblySources()
+        {
+            var sources = new AssemblySourceList();
+
+            try
+            {
+                var bundlePath = IntrospectionProperties.CurrentEntryBundle;
+
+                if (bundlePath != null)
+                {
+                    try
+                    {
+                        var reader = new BundleReader(bundlePath);
+                        sources.AddBundle(reader);
+                    }
+                    catch (Exception e)
+                    {
+                        Report.Warn($"Failed to get assemblies from single file application: {e.Message}");
+                    }
+                }
+                else
+                {
+                    var rootPath = IntrospectionProperties.CurrentEntryPath ?? AppDomain.CurrentDomain.BaseDirectory;
+
+                    try
+                    {
+                        sources.AddDirectory(rootPath);
+                    }
+                    catch (Exception e)
+                    {
+                        Report.Warn($"Failed to enumerate assemblies in '{rootPath}': {e.Message}");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Report.Warn($"Error while locating plugin assemblies: {e}");
+            }
+
+            return sources;
+        }
+
+        private static bool IsPlugin(AssemblySource source, PluginCache oldCache, PluginCache newCache)
+        {
+            var ext = Path.GetExtension(source.Path).ToLowerInvariant();
+            if (ext != ".dll" &&  ext != ".exe") return false;
+
+            var name = Path.GetFileNameWithoutExtension(source.Path);
+            if (!IntrospectionProperties.AssemblyFilter(name))
+            {
+                Report.Line(4, $"[IsPlugin] Ignoring assembly {name} due to filter");
+                return false;
+            }
+
+            bool isPlugin = false;
+            bool exists = oldCache.TryGetValue(source.Path, out PluginCache.Data cacheValue);
+
+            if (exists)
+            {
+                if (source.LastModified <= cacheValue.LastModified)
+                {
+                    Report.Line(4, $"[IsPlugin] Cache found for: {source.Path}");
+                    isPlugin = cacheValue.IsPlugin;
+                }
+                else
+                {
+                    Report.Line(4, $"[IsPlugin] Retrying to load because cache is outdated: {source.Path}");
+                }
+            }
+            else
+            {
+                Report.Line(4, $"[IsPlugin] Retrying to load because not in cache: {source.Path}");
+
+                try
+                {
+                    using var s = source.OpenRead();
+
+                    if (ProbeForPlugin(s))
+                    {
+                        Report.Line(4, $"[IsPlugin] Plugin found: {source.Path}");
+                        isPlugin = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Report.Line(4, $"[IsPlugin] Error while probing assembly '{source.Path}': {e.Message}");
+                }
+            }
+
+            newCache[source.Path] = new PluginCache.Data(source.LastModified, isPlugin);
+            return isPlugin;
         }
 
         public static List<Assembly> LoadPlugins()
         {
-            //Note: I removed the separate AppDomain for Plugin probing because:
-            //1) it made problems on startup in some setups
-            //2) the code below seemed to not do anything in the new AppDomain since the call
-            //   var paths = aardvark.GetPluginAssemblyPaths();
-            //   was actually executed in this AppDomain.
-            //Changes are marked with APPD
+            var oldCache = ReadCacheFile();
+            var newCache = new PluginCache();
 
-
-            //APPD var setup = new AppDomainSetup();
-            //APPD setup.ApplicationBase = IntrospectionProperties.CurrentEntryPath;
+            using var sources = FindAssemblySources();
+            List<Assembly> assemblies = new ();
 
             try
             {
-                //APPD var d = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, setup);
-                var aardvark = new Aardvark(); //APPD (Aardvark)d.CreateInstanceAndUnwrap(typeof(Aardvark).Assembly.FullName, typeof(Aardvark).FullName);
-
-                Report.Line(3, "[LoadPlugins] Using plugin cache file name: {0}", aardvark.CacheFile);
-                var paths = aardvark.GetPluginAssemblyPaths();
-                //APPD AppDomain.Unload(d);
-
-
-                var assemblies = new List<Assembly>();
-
-                foreach (var p in paths)
+                foreach (var source in sources)
                 {
-
                     try
                     {
-#if NETCOREAPP3_1_OR_GREATER
-                        // In .NET core Assembly.LoadFile uses a separate context, resulting in assemblies being
-                        // potentially loaded multiple times -> leads to problems with static fields in unit tests
-                        // See: https://github.com/dotnet/runtime/issues/39783
-                        var ass = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(p);
-#else
-                        var ass = Assembly.LoadFile(p);
-#endif
-                        assemblies.Add(ass);
+                        if (!IsPlugin(source, oldCache, newCache))
+                            continue;
+
+                        var asm = source.Load();
+                        assemblies.Add(asm);
                     }
                     catch (Exception e)
                     {
-                        Report.Line(3, "[LoadPlugins] Could not load assembly: {0}", e.Message);
+                        Report.Warn($"Failed to load plugin assembly '{source.Path}': {e.Message}");
                     }
                 }
-
-                return assemblies;
-            } catch(Exception e)
-            {
-                Report.Warn("[LoadPlugins] could not load plugins: {0}", e.Message);
-                return new List<Assembly>();
             }
+            finally
+            {
+                WriteCacheFile(newCache);
+            }
+
+            return assemblies;
         }
 
-
-#region LdConfig
+        #region LdConfig
 
 
         private static class LdConfig
@@ -1163,9 +1348,9 @@ namespace Aardvark.Base
 
         }
 
-#endregion
+        #endregion
 
-#region DllMap
+        #region DllMap
 
         private enum OS
         {
@@ -1244,9 +1429,9 @@ namespace Aardvark.Base
 
         }
 
-#endregion
+        #endregion
 
-#region Symlink
+        #region Symlink
 
         [DllImport("libc")]
         private static extern int symlink(string src, string linkName);
@@ -1295,8 +1480,7 @@ namespace Aardvark.Base
 
         }
 
-
-#endregion
+        #endregion
 
         private static void GetPlatformAndArch(out string platform, out string arch)
         {
@@ -1463,10 +1647,7 @@ namespace Aardvark.Base
 
         public static void UnpackNativeDependencies(Assembly a)
         {
-            var baseDir =
-                IntrospectionProperties.CustomEntryAssembly != null
-                ? Path.GetDirectoryName(IntrospectionProperties.CustomEntryAssembly.Location)
-                : AppDomain.CurrentDomain.BaseDirectory;
+            var baseDir = IntrospectionProperties.CurrentEntryPath ?? AppDomain.CurrentDomain.BaseDirectory;
             UnpackNativeDependenciesToBaseDir(a,baseDir);
         }
 
@@ -1567,22 +1748,15 @@ namespace Aardvark.Base
             }
             IntPtr ptr = IntPtr.Zero;
             string probe = Environment.CurrentDirectory;
-            var nextToAssembly = Array.Empty<string>();
+            var paths = new List<string>(capacity: 1);
 
-            if (assembly != null)
+            try
             {
-                try { nextToAssembly = new[] { Path.GetFullPath(Path.GetDirectoryName(assembly.Location)) }; }
-                catch (Exception) { }
+                var location = assembly?.GetLocationSafe() ?? IntrospectionProperties.CurrentEntryPath ?? AppDomain.CurrentDomain.BaseDirectory;
+                paths.Add(location);
             }
-            else
+            catch
             {
-                try
-                {
-                    var entry = IntrospectionProperties.CustomEntryAssembly != null ? IntrospectionProperties.CustomEntryAssembly : Assembly.GetEntryAssembly();
-                    try { nextToAssembly = new[] { Path.GetFullPath(Path.GetDirectoryName(entry.Location)) }; }
-                    catch (Exception) { }
-                }
-                catch { }
             }
 
             try
@@ -1593,25 +1767,22 @@ namespace Aardvark.Base
                 else if (os == OS.Win32) formats = new[] { "{0}.dll" };
                 else if (os == OS.MacOS) formats = new[] { "{0}.dylib", "lib{0}.dylib" };
 
-
-                string[] paths;
                 if (assembly != null)
                 {
                     if (TryGetNativeLibraryPath(assembly, out var dstFolder))
                     {
-                        paths = new[] { dstFolder };
+                        paths.Add(dstFolder);
                     }
                     else
                     {
-                        paths = GetNativeLibraryPaths();
+                        paths.AddRange(GetNativeLibraryPaths());
                     }
                 }
                 else
                 {
-                    paths = GetNativeLibraryPaths();
+                    paths.AddRange(GetNativeLibraryPaths());
                 }
 
-                paths = nextToAssembly.Concat(paths);
 #if NETCOREAPP3_1_OR_GREATER
 
                 var realName = Path.GetFileNameWithoutExtension(nativeName);
