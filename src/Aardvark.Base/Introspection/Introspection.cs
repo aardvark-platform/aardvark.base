@@ -1518,6 +1518,7 @@ namespace Aardvark.Base
             }
         }
 
+        [Obsolete("Not used internally anymore.")]
         public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
         {
             if (a.IsDynamic) return;
@@ -1643,6 +1644,7 @@ namespace Aardvark.Base
             }
         }
 
+        [Obsolete("Not used internally anymore.")]
         public static void UnpackNativeDependencies(Assembly a)
         {
             var baseDir = IntrospectionProperties.CurrentEntryPath;
@@ -1667,7 +1669,12 @@ namespace Aardvark.Base
         /// NOTE: When using global shared NativeLibraryPath, SeparateLibraryDirectories should not be set to false, as this there might be version conflicts
         public static bool SeparateLibraryDirectories = true;
 
-        private static readonly Dictionary<Assembly, string>  s_nativePaths = new Dictionary<Assembly, string>();
+        private static readonly Lazy<string> s_nativeLibraryCacheDirectory =
+            new(() => Path.Combine(CachingProperties.CacheDirectory, "Native"));
+
+        public static readonly string NativeLibraryCacheDirectory = s_nativeLibraryCacheDirectory.Value;
+
+        private static readonly Dictionary<Assembly, string> s_nativePaths = new Dictionary<Assembly, string>();
         private static string[] s_allPaths = null;
 
         public static string[] GetNativeLibraryPaths()
@@ -1700,27 +1707,25 @@ namespace Aardvark.Base
                     }
                     else
                     {
-                        using (var s = assembly.GetManifestResourceStream("native.zip"))
+                        using var s = assembly.GetManifestResourceStream("native.zip");
+                        string dstFolder = NativeLibraryCacheDirectory;
+
+                        if (SeparateLibraryDirectories)
                         {
-#pragma warning disable CS0618 // Type or member is obsolete
-                            string dstFolder = NativeLibraryPath;
-                            if (SeparateLibraryDirectories)
-                            {
-                                var md5 = System.Security.Cryptography.SHA1.Create();
-                                var bytes = md5.ComputeHash(s);
-                                Array.Resize(ref bytes, 16);
-                                var hash = new Guid(bytes);
-                                md5.Dispose();
-                                var bits = IntPtr.Size * 8;
-                                var folderName = string.Format("{0}-{1}-{2}", assembly.GetName().Name, hash.ToString(), bits);
-                                dstFolder = Path.Combine(NativeLibraryPath, folderName);
-                            }
-#pragma warning restore CS0618 // Type or member is obsolete
-                            s_nativePaths[assembly] = dstFolder;
-                            s_allPaths = null;
-                            path = dstFolder;
-                            return true;
+                            var md5 = System.Security.Cryptography.SHA1.Create();
+                            var bytes = md5.ComputeHash(s);
+                            Array.Resize(ref bytes, 16);
+                            var hash = new Guid(bytes);
+                            md5.Dispose();
+
+                            GetPlatformAndArch(out var platform, out var arch);
+                            dstFolder = Path.Combine(dstFolder, assembly.GetName().Name, hash.ToString(), platform, arch);
                         }
+
+                        s_nativePaths[assembly] = dstFolder;
+                        s_allPaths = null;
+                        path = dstFolder;
+                        return true;
                     }
                 }
             }
