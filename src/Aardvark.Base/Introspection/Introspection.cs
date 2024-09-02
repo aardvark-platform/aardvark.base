@@ -35,6 +35,18 @@ namespace Aardvark.Base
         }
     }
 
+    internal static class PathUtils
+    {
+        public static string GetDirectoryNameSafe(string path)
+        {
+            try
+            {
+                return (path != null) ? Path.GetDirectoryName(path) : null;
+            }
+            catch { return null; }
+        }
+    }
+
     internal static class AssemblyExtenions
     {
         public static string GetLocationSafe(this Assembly assembly)
@@ -183,7 +195,7 @@ namespace Aardvark.Base
             get
             {
                 var location = CurrentEntryAssembly?.GetLocationSafe();
-                return (location != null) ? Path.GetDirectoryName(location) : null;
+                return PathUtils.GetDirectoryNameSafe(location) ?? AppDomain.CurrentDomain.BaseDirectory;
             }
         }
 
@@ -501,83 +513,64 @@ namespace Aardvark.Base
         {
             // enumerating all assemblies reachable from entry assembly
             s_assemblies = new Dictionary<string, Assembly>();
-            var entryAssembly = Assembly.GetEntryAssembly();
 
-            if (Assembly.GetEntryAssembly() == null
-               && IntrospectionProperties.CurrentEntryAssembly == null
-               && typeof(Aardvark).Assembly != null)
-            {
-                if (typeof(Aardvark).Assembly != null)
-                {
-                    Report.Warn("Assembly.GetEntryAssembly() == null && IntrospectionProperties.CurrentEntryAssembly == null. This might be due to nunit like setups. trying to use typeof<Aardvark>.Assembly instead: {0}", typeof(Aardvark).Assembly.GetLocationSafe());
-                    IntrospectionProperties.CustomEntryAssembly = typeof(Aardvark).Assembly;
-                    RegisterAllAssembliesInCustomEntryPath();
-                } else
-                {
-                    Report.Warn("All is null!!. Assembly.GetEntryAssembly(), IntrospectionProperties.CurrentEntryAssembly, typeof(Aardvark).Assembly. Aardvark stuff, based on introspection will most likely fail due to missing entry points. Optimistically continuing for now...");
-                }
-            }
+            var entryAssembly = IntrospectionProperties.CurrentEntryAssembly ?? typeof(Aardvark).Assembly;
 
-            // hs: Assembly.GetEntryAssembly() returns null if started from unmanged hosting process (like visualstudio)
-            // use CustomEntryAssembly assembly in this cases.
-            // prior to rev. 17705 CustomEntryAssembly was only used if entryAssembly is null. However this precludes
-            // hosting processes from using custom root assemblies (see commend in IntrospectionProperties.CustomEntryAssembly)
-            // if this breaks your code just do not set IntrospectionProperties.CustomEntryAssembly or contact me (hs)
-            if (IntrospectionProperties.CustomEntryAssembly != null)
+            if (entryAssembly == null)
             {
-                Report.Line("[Introspection] CustomEntryAssembly used");
-                EnumerateAssemblies(IntrospectionProperties.CustomEntryAssembly.GetName().Name, IntrospectionProperties.CustomEntryAssembly);
-            } else if (entryAssembly != null)
-            {
-                var entryAssemblyName = entryAssembly.GetName();
-                EnumerateAssemblies(entryAssemblyName.Name);
+                Report.Warn("[Introspection] Could not determine entry assembly");
+                RegisterAllAssembliesInPath(IntrospectionProperties.CurrentEntryPath);
             }
             else
             {
-                RegisterAllAssembliesInCustomEntryPath();
+                var name = entryAssembly.GetName().Name;
+                EnumerateAssemblies(name, entryAssembly);
             }
-
-            //Report.Line("s_telemetryEnumerateAssembliesCheckTime1: {0}", s_telemetryEnumerateAssembliesCheckTime1.Value);
-            //Report.Line("s_telemetryEnumerateAssembliesCheckTime2: {0}", s_telemetryEnumerateAssembliesCheckTime2.Value);
-        }
-
-        private static void RegisterAllAssembliesInCustomEntryPath()
-        {
-            Report.Warn("[Introspection] Assembly.GetEntryAssembly() == null");
-            // hs: why is this necessary here? bootstrapper should be initialized before anything is loaded?
-            // sm: so let's see who complains if we comment it out ;-)
-            //Bootstrapper.Init();
-
-            RegisterAllAssembliesInPath(IntrospectionProperties.CurrentEntryPath);
         }
 
         /// <summary>
         /// Tries to load and register all assemblies in given path.
         /// </summary>
         [DebuggerNonUserCode]
+        [Obsolete("Use overload without verbose parameter.")]
         public static void RegisterAllAssembliesInPath(string path, bool verbose)
-        {
-            if (verbose) Report.Begin("[Introspection] registering all assemblies in {0}", path);
-            var files = Directory.GetFiles(path, "*.dll").Concat(Directory.GetFiles(path, "*.exe"));
-            foreach (var file in files)
-            {
-                try
-                {
-                    EnumerateAssemblies(AssemblyName.GetAssemblyName(file).Name);
-                    if (verbose) Report.Line("{0}", Path.GetFileName(file));
-                }
-                catch
-                {
-                }
-            }
-            if (verbose) Report.End();
-        }
+            => RegisterAllAssembliesInPath(path);
 
         /// <summary>
         /// Tries to load and register all assemblies in given path.
         /// </summary>
         [DebuggerNonUserCode]
-        public static void RegisterAllAssembliesInPath(string path) => RegisterAllAssembliesInPath(path, false);
+        public static void RegisterAllAssembliesInPath(string path)
+        {
+            Report.Begin(4, $"[Introspection] Registering assemblies in: {path}");
+
+            try
+            {
+                foreach (var file in Directory.GetFiles(path))
+                {
+                    var ext = Path.GetExtension(file).ToLowerInvariant();
+                    if (ext != ".dll" &&  ext != ".exe") continue;
+
+                    try
+                    {
+                        var name = AssemblyName.GetAssemblyName(file);
+                        Report.Line(4, $"{Path.GetFileName(file)}");
+                        EnumerateAssemblies(name.Name);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Report.Warn($"Error while registering assemblies in '{path}': {e.Message}");
+            }
+            finally
+            {
+                Report.End(4);
+            }
+        }
 
         /// <summary>
         /// Note by hs: Since this function throws and catches exceptions in non exceptional cases we
@@ -1159,7 +1152,7 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    var rootPath = IntrospectionProperties.CurrentEntryPath ?? AppDomain.CurrentDomain.BaseDirectory;
+                    var rootPath = IntrospectionProperties.CurrentEntryPath;
 
                     try
                     {
@@ -1647,7 +1640,7 @@ namespace Aardvark.Base
 
         public static void UnpackNativeDependencies(Assembly a)
         {
-            var baseDir = IntrospectionProperties.CurrentEntryPath ?? AppDomain.CurrentDomain.BaseDirectory;
+            var baseDir = IntrospectionProperties.CurrentEntryPath;
             UnpackNativeDependenciesToBaseDir(a,baseDir);
         }
 
@@ -1752,7 +1745,7 @@ namespace Aardvark.Base
 
             try
             {
-                var location = assembly?.GetLocationSafe() ?? IntrospectionProperties.CurrentEntryPath ?? AppDomain.CurrentDomain.BaseDirectory;
+                var location = assembly?.GetLocationSafe() ?? IntrospectionProperties.CurrentEntryPath;
                 paths.Add(location);
             }
             catch
