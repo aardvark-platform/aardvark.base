@@ -17,6 +17,10 @@ using System.Xml.Linq;
 using BundleReader = SingleFileExtractor.Core.ExecutableReader;
 using BundleFileEntry = SingleFileExtractor.Core.FileEntry;
 
+#if NET8_0_OR_GREATER
+using System.Runtime.Loader;
+#endif
+
 namespace Aardvark.Base
 {
     internal static class FileUtils
@@ -1038,7 +1042,7 @@ namespace Aardvark.Base
                 // In .NET core Assembly.LoadFile uses a separate context, resulting in assemblies being
                 // potentially loaded multiple times -> leads to problems with static fields in unit tests
                 // See: https://github.com/dotnet/runtime/issues/39783
-                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(Path);
+                return AssemblyLoadContext.Default.LoadFromAssemblyPath(Path);
 #else
                 return Assembly.LoadFile(Path);
 #endif
@@ -1085,7 +1089,7 @@ namespace Aardvark.Base
             {
 #if NETCOREAPP3_1_OR_GREATER
                 using var s = OpenRead();
-                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromStream(s);
+                return AssemblyLoadContext.Default.LoadFromStream(s);
 #else
                 return Assembly.Load(GetData());
 #endif
@@ -2072,7 +2076,38 @@ namespace Aardvark.Base
             Report.End();
 
 #if NETCOREAPP3_1_OR_GREATER
-            System.Runtime.Loader.AssemblyLoadContext.Default.ResolvingUnmanagedDll += (ass, name) =>
+            // Assembly loading via name fails if the assembly is not referenced as runtime or compile library.
+            // This happens when a plugin is not referenced but simply dropped next to the entry assembly (e.g. multiple projects share the same output folder).
+            // Here we just try to locate the assembly next to the entry path.
+            // See: https://github.com/Particular/Workshop/issues/64
+            AssemblyLoadContext.Default.Resolving += (ctx, name) =>
+            {
+                Report.Begin(4, $"Trying to resolve assembly: {name.FullName}");
+
+                try
+                {
+                    var path = Path.Combine(IntrospectionProperties.CurrentEntryPath, name.Name + ".dll");
+
+                    if (File.Exists(path))
+                    {
+                        var asm = ctx.LoadFromAssemblyPath(path);
+                        Report.End(4, $" - success: {path}");
+                        return asm;
+                    }
+                    else
+                    {
+                        Report.End(4, $" - not found");
+                        return null;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Report.End(4, $" - failed: {e}");
+                    return null;
+                }
+            };
+
+            AssemblyLoadContext.Default.ResolvingUnmanagedDll += (ass, name) =>
             {
                 Report.Line(4, "trying to resolve native library {0}", name);
                 try { return LoadLibrary(null, name); }
