@@ -527,7 +527,12 @@ namespace Aardvark.Base
             }
             else
             {
-                Report.Line(4, $"[Introspection] Entry assembly: {entryAssembly.FullName} (path: {entryAssembly.GetLocationSafe()})");
+                var location = IntrospectionProperties.CurrentEntryBundle ?? entryAssembly.GetLocationSafe();
+                if (location != null)
+                    Report.Line(4, $"[Introspection] Entry assembly: {entryAssembly.FullName} (path: {location})");
+                else
+                    Report.Line(4, $"[Introspection] Entry assembly: {entryAssembly.FullName} (unknown location)");
+
                 var name = entryAssembly.GetName().Name;
                 EnumerateAssemblies(name, entryAssembly);
             }
