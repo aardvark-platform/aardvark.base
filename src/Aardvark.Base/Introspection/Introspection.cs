@@ -523,6 +523,7 @@ namespace Aardvark.Base
             }
             else
             {
+                Report.Line(4, $"[Introspection] Entry assembly: {entryAssembly.FullName} (path: {entryAssembly.GetLocationSafe()})");
                 var name = entryAssembly.GetName().Name;
                 EnumerateAssemblies(name, entryAssembly);
             }
@@ -2139,11 +2140,6 @@ namespace Aardvark.Base
             Report.End();
         }
 
-        private static void CurrentDomain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            throw new NotImplementedException();
-        }
-
         private static void LoadAll(IEnumerable<Assembly> xs)
         {
             var assemblies = Enumerable.Concat(Introspection.AllAssemblies, xs).GroupBy(a => a.FullName).Select(x => x.First()).ToArray();
@@ -2158,20 +2154,25 @@ namespace Aardvark.Base
                 {
                     var parameters = mi.GetParameters();
 
-                    Report.BeginTimed("initializing {1}", mi.Name, mi.DeclaringType.Name);
+                    Report.BeginTimed($"Initializing {mi.DeclaringType.Name}");
 
                     try
                     {
-                        if (parameters.Length == 0) mi.Invoke(null, null);
-                        else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(IEnumerable<Assembly>)) mi.Invoke(null, new object[] { Introspection.AllAssemblies });
-                        else Report.Warn("Strange aardvark init method found: {0}, should be Init : IEnumberable<Assembly> -> unit or unit -> unit", mi);
+                        if (parameters.Length == 0)
+                            mi.Invoke(null, null);
+                        else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(IEnumerable<Assembly>))
+                            mi.Invoke(null, new object[] { Introspection.AllAssemblies });
+                        else
+                            Report.Warn("Strange aardvark init method found: {0}, should be Init : IEnumberable<Assembly> -> unit or unit -> unit", mi);
                     }
                     catch (Exception e)
                     {
-                        Report.Warn("failed: {0}", e);
+                        Report.Warn("Failed: {0}", e);
                     }
-
-                    Report.End();
+                    finally
+                    {
+                        Report.End();
+                    }
                 }
             }
         }
