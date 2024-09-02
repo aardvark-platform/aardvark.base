@@ -1745,8 +1745,9 @@ namespace Aardvark.Base
 
             try
             {
-                var location = assembly?.GetLocationSafe() ?? IntrospectionProperties.CurrentEntryPath;
-                paths.Add(location);
+                var location = Path.GetDirectoryName(assembly?.GetLocationSafe()) ?? IntrospectionProperties.CurrentEntryPath;
+                if (location != null)
+                    paths.Add(location);
             }
             catch
             {
