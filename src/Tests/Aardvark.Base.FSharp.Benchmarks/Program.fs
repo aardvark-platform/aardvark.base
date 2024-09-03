@@ -14,5 +14,8 @@ module Program =
             let job = Job.ShortRun.WithToolchain(InProcess.Emit.InProcessEmitToolchain.Instance)
             ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator).AddJob(job)
 
-        BenchmarkSwitcher.FromAssembly(typeof<ZipFloatArrays>.Assembly).Run(argv, cfg) |> ignore;
+        BenchmarkSwitcher.FromAssembly(typeof<ZipFloatArrays>.Assembly).Run(argv, cfg) |> ignore
+
+        //BenchmarkRunner.Run<RefCountingSet>(cfg) |> ignore
+
         0

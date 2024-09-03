@@ -13,7 +13,7 @@ open FSharp.Data.Adaptive
 type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable nullCount = 0
     let mutable version = 0
-    let mutable store = Dictionary<obj, 'a * ref<int>>(1)
+    let mutable store = Dictionary<obj, struct('a * ref<int>)>(1)
 
 
     static let rec checkDeltas (l : list<SetOperation<'a>>) =
@@ -65,7 +65,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                     r := !r + 1
                     false
                 | _ ->
-                    let r = v, ref 1
+                    let r = struct(v, ref 1)
                     store.[v] <- r
                     hasChanged()
                     true
@@ -340,6 +340,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
         member x.Overlaps other = x.Overlaps other
         member x.SetEquals other = x.SetEquals other
 
+    member x.GetEnumerator() = new ReferenceCountingSetEnumerator<'a>(nullCount > 0, store)
 
     interface IEnumerable with
         member x.GetEnumerator() =
@@ -350,33 +351,48 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
             new ReferenceCountingSetEnumerator<'a>(nullCount > 0, store) :> IEnumerator<'a>
 
 // define an Enumerator enumerating all (distinct) elements in the set
-and private ReferenceCountingSetEnumerator<'a>(containsNull : bool, store : Dictionary<obj, 'a * ref<int>>) =
-    let mutable emitNull = containsNull
-    let mutable e = store.GetEnumerator() :> IEnumerator<KeyValuePair<obj, 'a * ref<int>>>
-    let mutable currentIsNull = Unchecked.defaultof<bool> // does not matter here
+and ReferenceCountingSetEnumerator<'a> =
+    struct 
+        val mutable internal containsNull : bool
+        val mutable internal emitNull : bool
+        val mutable internal currentIsNull : bool
+        val mutable internal e : Dictionary<obj, struct('a * ref<int>)>.Enumerator
 
-    member x.Current =
-         if currentIsNull then
-            Unchecked.defaultof<_>
-         else
-            e.Current.Value |> fst
+        member x.Current =
+            if x.currentIsNull then
+                Unchecked.defaultof<_>
+            else
+                x.e.Current.Value |> fstv
 
-    interface IEnumerator with
         member x.MoveNext() =
-            if emitNull then
-                emitNull <- false
-                currentIsNull <- true
+            if x.emitNull then
+                x.emitNull <- false
+                x.currentIsNull <- true
                 true
             else
-                currentIsNull <- false
-                e.MoveNext()
+                x.currentIsNull <- false
+                x.e.MoveNext()
 
-        member x.Reset() =
-            emitNull <- containsNull
-            e.Reset()
+        interface IEnumerator with
+            member x.MoveNext() = 
+                x.MoveNext()
 
-        member x.Current = x.Current :> obj
+            member x.Reset() =
+                x.emitNull <- x.containsNull
+                (x.e :> IEnumerator).Reset()
 
-    interface IEnumerator<'a> with
-        member x.Current = x.Current
-        member x.Dispose() = e.Dispose()
+            member x.Current = x.Current :> obj
+
+        interface IEnumerator<'a> with
+            member x.Current = x.Current
+            member x.Dispose() = x.e.Dispose()
+
+        internal new(containsNull2 : bool, store : Dictionary<obj, struct('a * ref<int>)>) =
+            {
+                containsNull = containsNull2
+                emitNull = containsNull2
+                currentIsNull = false
+                e = store.GetEnumerator()
+            }
+
+    end
