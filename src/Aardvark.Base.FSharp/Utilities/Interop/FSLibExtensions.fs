@@ -214,6 +214,8 @@ module Prelude =
         let inline sndv (struct (_, y)) = y
 
     type nativeptr<'T when 'T : unmanaged> with
+        member inline ptr.Address = NativePtr.toNativeInt ptr
+
         member ptr.Value
             with inline get () = NativePtr.read ptr
             and  inline set (value : 'T) = NativePtr.write ptr value

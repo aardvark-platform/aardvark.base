@@ -182,6 +182,14 @@ module NativeUtilities =
         finally
             gc.Free()
 
+    let inline pin ([<InlineIfLambda>] f: nativeptr<'T> -> 'U) (value: 'T) =
+        use ptr = fixed &value
+        f ptr
+
+    let inline pinArr ([<InlineIfLambda>] f: nativeptr<'T> -> 'U) (array: 'T[])  =
+        use ptr = fixed array
+        f ptr
+
 [<AutoOpen>]
 module MarshalDelegateExtensions =
     open System.Collections.Concurrent
