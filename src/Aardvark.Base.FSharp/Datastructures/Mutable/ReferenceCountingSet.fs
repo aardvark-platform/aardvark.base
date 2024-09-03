@@ -46,14 +46,14 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
             nullCount = 1
         else
             match store.TryGetValue v with
-                | (true, (_,r)) ->
-                    r := !r + 1
-                    false
-                | _ ->
-                    let r = struct(v, ref 1)
-                    store.[v] <- r
-                    hasChanged()
-                    true
+            | (true, (_,r)) ->
+                r := !r + 1
+                false
+            | _ ->
+                let r = struct(v, ref 1)
+                store.[v] <- r
+                hasChanged()
+                true
 
     let remove (v : 'a) =
         if isNull (v :> obj) then
@@ -61,15 +61,15 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
             nullCount = 0
         else
             match store.TryGetValue v with
-                | (true, (_,r)) ->
-                    r := !r - 1
-                    if !r = 0 then
-                        hasChanged()
-                        store.Remove v
-                    else
-                        false
-                | _ ->
+            | (true, (_,r)) ->
+                r := !r - 1
+                if !r = 0 then
+                    hasChanged()
+                    store.Remove v
+                else
                     false
+            | _ ->
+                false
 
     do for e in initial do
         add e |> ignore
@@ -89,76 +89,76 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
     member internal x.Apply(deltas : list<SetOperation<'a>>) =
         match deltas with
-            | [] -> []
-            | [v] ->
-                match v with
-                    | Add(_,v) ->
-                        if x.Add v then [Add v]
-                        else []
-                    | Rem(_,v) ->
-                        if x.Remove v then [Rem v]
-                        else []
+        | [] -> []
+        | [v] ->
+            match v with
+                | Add(_,v) ->
+                    if x.Add v then [Add v]
+                    else []
+                | Rem(_,v) ->
+                    if x.Remove v then [Rem v]
+                    else []
 
-            | _ ->
-                let mutable originalNullRefs = nullCount
-                let touched = Dictionary<obj, 'a * bool * ref<int>>()
-                for d in deltas do
-                    match d with
-                        | Add(_,v) ->
-                            let o = v :> obj
-                            if isNull o then
-                                nullCount <- nullCount + 1
-                            else
-                                match store.TryGetValue o with
-                                    | (true, (_,r)) ->
-                                        r := !r + 1
-                                    | _ ->
-                                        let r = ref 1
-                                        touched.[o] <- (v, false, r)
-                                        store.[o] <- (v, r)
-                        | Rem(_, v) ->
-                            let o = v :> obj
-                            if isNull o then
-                                nullCount <- nullCount - 1
-                            else
-                                match store.TryGetValue o with
-                                    | (true, (_,r)) ->
-                                        r := !r - 1
-                                        if !r = 0 && not (touched.ContainsKey o) then
-                                            touched.[o] <- (v, true, r)
-                                    | _ ->
-                                        let r = ref -1
-                                        touched.[o] <- (v, false, r)
-                                        store.[o] <- (v, r)
-
-                            ()
-
-                let valueDeltas =
-                    touched.Values
-                        |> Seq.choose (fun (value, wasContained, refCount) ->
-                            let r = !refCount
-                            if r > 0 then
-                                if wasContained then None
-                                else Some (Add value)
-                            else
-                                store.Remove value |> ignore
-                                if wasContained then Some (Rem value)
-                                else None
-                           )
-                        |> Seq.toList
-
-                let result =
-                    if nullCount = 0 && originalNullRefs > 0 then
-                        (Rem Unchecked.defaultof<_>)::valueDeltas
-                    elif nullCount > 0 && originalNullRefs = 0 then
-                        (Add Unchecked.defaultof<_>)::valueDeltas
+        | _ ->
+            let mutable originalNullRefs = nullCount
+            let touched = Dictionary<obj, 'a * bool * ref<int>>()
+            for d in deltas do
+                match d with
+                | Add(_,v) ->
+                    let o = v :> obj
+                    if isNull o then
+                        nullCount <- nullCount + 1
                     else
-                        valueDeltas
+                        match store.TryGetValue o with
+                        | (true, (_,r)) ->
+                            r := !r + 1
+                        | _ ->
+                            let r = ref 1
+                            touched.[o] <- (v, false, r)
+                            store.[o] <- (v, r)
+                | Rem(_, v) ->
+                    let o = v :> obj
+                    if isNull o then
+                        nullCount <- nullCount - 1
+                    else
+                        match store.TryGetValue o with
+                        | (true, (_,r)) ->
+                            r := !r - 1
+                            if !r = 0 && not (touched.ContainsKey o) then
+                                touched.[o] <- (v, true, r)
+                        | _ ->
+                            let r = ref -1
+                            touched.[o] <- (v, false, r)
+                            store.[o] <- (v, r)
 
-                if not (List.isEmpty result) then
-                    hasChanged()
+                    ()
 
-                result
+            let valueDeltas =
+                touched.Values
+                    |> Seq.choose (fun (value, wasContained, refCount) ->
+                        let r = !refCount
+                        if r > 0 then
+                            if wasContained then None
+                            else Some (Add value)
+                        else
+                            store.Remove value |> ignore
+                            if wasContained then Some (Rem value)
+                            else None
+                        )
+                    |> Seq.toList
+
+            let result =
+                if nullCount = 0 && originalNullRefs > 0 then
+                    (Rem Unchecked.defaultof<_>)::valueDeltas
+                elif nullCount > 0 && originalNullRefs = 0 then
+                    (Add Unchecked.defaultof<_>)::valueDeltas
+                else
+                    valueDeltas
+
+            if not (List.isEmpty result) then
+                hasChanged()
+
+            result
 
     /// <summary>
     /// adds an element to the ReferenceCountingSet and returns
