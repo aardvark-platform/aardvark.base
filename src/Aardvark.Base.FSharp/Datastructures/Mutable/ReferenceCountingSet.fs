@@ -15,23 +15,8 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     let mutable version = 0
     let mutable store = Dictionary<obj, struct('a * ref<int>)>(1)
 
-
-    static let rec checkDeltas (l : list<SetOperation<'a>>) =
-        let set = System.Collections.Generic.HashSet<obj>()
-        for d in l do
-            let value =
-                match d with
-                    | Add v -> v
-                    | Rem v -> v
-
-            if not (set.Add value) then
-                failwithf "found duplicate value %A in delta-list: %A" value l
-
     let hasChanged() =
         Interlocked.Increment &version |> ignore
-
-
-
 
     let toCollection (s : seq<'a>) =
         match s with
@@ -172,9 +157,6 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
                 if not (List.isEmpty result) then
                     hasChanged()
-
-
-                // checkDeltas result
 
                 result
 
@@ -353,10 +335,10 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 // define an Enumerator enumerating all (distinct) elements in the set
 and ReferenceCountingSetEnumerator<'a> =
     struct 
-        val mutable internal containsNull : bool
-        val mutable internal emitNull : bool
-        val mutable internal currentIsNull : bool
-        val mutable internal e : Dictionary<obj, struct('a * ref<int>)>.Enumerator
+        val mutable private containsNull : bool
+        val mutable private emitNull : bool
+        val mutable private currentIsNull : bool
+        val mutable private e : Dictionary<obj, struct('a * ref<int>)>.Enumerator
 
         member x.Current =
             if x.currentIsNull then
@@ -387,10 +369,10 @@ and ReferenceCountingSetEnumerator<'a> =
             member x.Current = x.Current
             member x.Dispose() = x.e.Dispose()
 
-        internal new(containsNull2 : bool, store : Dictionary<obj, struct('a * ref<int>)>) =
+        internal new(containsNull : bool, store : Dictionary<obj, struct('a * ref<int>)>) =
             {
-                containsNull = containsNull2
-                emitNull = containsNull2
+                containsNull = containsNull
+                emitNull = containsNull
                 currentIsNull = false
                 e = store.GetEnumerator()
             }
