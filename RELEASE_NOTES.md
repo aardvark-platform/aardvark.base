@@ -1,3 +1,14 @@
+### 5.3.3
+- Optimized ReferenceCountingSet (struct enumerator, internal struct tuples)
+- Restored MD5 hashing extensions (fixes: https://github.com/aardvark-platform/aardvark.base/issues/72)
+- [Introspection] Native libraries are now unpacked to the default Aardvark cache directory with subfolders for each platform (fixes: https://github.com/aardvark-platform/aardvark.base/issues/81).
+- [Introspection] Improved support for single file deployment. Fixed plugin loading and caching (fixes: https://github.com/aardvark-platform/aardvark.base/issues/65).
+- [Introspection] Made assembly loading more robust for NET 8. If an assembly cannot be resolved the entry path is checked for the assembly file, making it possible to load assemblies by name that are not runtime or compilation dependencies (see also: https://github.com/Particular/Workshop/issues/64).
+- [FSharp] Added RequireQualifiedAccess attribute to ProcListValue
+- [FSharp] Added RequireQualifiedAccess attribute to Tree
+- [FSharp] Added pin, pinArr, and NativePtr.Address
+- Added Stream.ReadBytes extension
+
 ### 5.3.2
 - [FSharp] Revert LookupTable utilities to use lists instead of seq
 
