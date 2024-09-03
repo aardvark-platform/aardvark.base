@@ -10,6 +10,7 @@ using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -1717,14 +1718,18 @@ namespace Aardvark.Base
 
                         if (SeparateLibraryDirectories)
                         {
-                            var md5 = System.Security.Cryptography.SHA1.Create();
-                            var bytes = md5.ComputeHash(s);
-                            Array.Resize(ref bytes, 16);
-                            var hash = new Guid(bytes);
-                            md5.Dispose();
+#if NET8_0_OR_GREATER
+                            var hash = SHA1.HashData(s);
+                            var guid = new Guid(hash.AsSpan(0, 16));
+#else
+                            using var sha1 = SHA1.Create();
+                            var hash = sha1.ComputeHash(s);
+                            Array.Resize(ref hash, 16);
+                            var guid = new Guid(hash);
+#endif
 
                             GetPlatformAndArch(out var platform, out var arch);
-                            dstFolder = Path.Combine(dstFolder, assembly.GetName().Name, hash.ToString(), platform, arch);
+                            dstFolder = Path.Combine(dstFolder, assembly.GetName().Name, guid.ToString(), platform, arch);
                         }
 
                         s_nativePaths[assembly] = dstFolder;

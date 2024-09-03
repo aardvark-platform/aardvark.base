@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -2336,7 +2335,7 @@ namespace Aardvark.Base
         {
             return MemoryMarshal.AsBytes(data.AsSpan());
         }
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<byte> AsByteSpan(this string data)
         {
@@ -2392,6 +2391,8 @@ namespace Aardvark.Base
 
         #region Hashes
 
+        #region MD5
+
         /// <summary>
         /// Computes the MD5 hash of the data array.
         /// </summary>
@@ -2399,19 +2400,13 @@ namespace Aardvark.Base
         public static byte[] ComputeMD5Hash(this byte[] data)
         {
 #if NET6_0_OR_GREATER
-            var hash = SHA1.HashData(data);
-            Array.Resize(ref hash, 16);
-            return hash;
+            return MD5.HashData(data);
 #else
-            using (var sha = SHA1.Create())
-            {
-                var hash = sha.ComputeHash(data);
-                Array.Resize(ref hash, 16);
-                return hash;
-            }
+            using var md5 = MD5.Create();
+            return md5.ComputeHash(data);
 #endif
         }
-        
+
         /// <summary>
         /// Computes the MD5 hash of the data array.
         /// </summary>
@@ -2419,17 +2414,10 @@ namespace Aardvark.Base
         public static byte[] ComputeMD5Hash(this Array data)
         {
 #if NET6_0_OR_GREATER
-            var hash = SHA1.HashData(data.AsByteSpan());
-            Array.Resize(ref hash, 16);
-            return hash;
+            return MD5.HashData(data.AsByteSpan());
 #else
-
-            using(var sha = SHA1.Create())
-            {
-                var hash = data.UseAsStream((stream) => sha.ComputeHash(stream));
-                Array.Resize(ref hash, 16);
-                return hash;
-            }
+            using var md5 = MD5.Create();
+            return data.UseAsStream((stream) => md5.ComputeHash(stream));
 #endif
         }
 
@@ -2439,11 +2427,7 @@ namespace Aardvark.Base
         /// </summary>
         /// <returns>128bit/16byte data hash</returns>
         public static byte[] ComputeMD5Hash<T>(this T[] data) where T : struct
-        {
-            var hash = SHA1.HashData(data.AsByteSpan());
-            Array.Resize(ref hash, 16);
-            return hash;
-        }
+            => MD5.HashData(data.AsByteSpan());
 #endif
 
         /// <summary>
@@ -2453,13 +2437,15 @@ namespace Aardvark.Base
         public static byte[] ComputeMD5Hash(this string s)
         {
 #if NET6_0_OR_GREATER
-            var hash = SHA1.HashData(s.AsByteSpan());
-            Array.Resize(ref hash, 16);
-            return hash;
+            return MD5.HashData(s.AsByteSpan());
 #else
             return Encoding.Unicode.GetBytes(s).ComputeMD5Hash();
 #endif
         }
+
+        #endregion
+
+        #region SHA1
 
         /// <summary>
         /// Computes the SHA1 hash of the data array.
@@ -2518,6 +2504,10 @@ namespace Aardvark.Base
 #endif
         }
 
+        #endregion
+
+        #region SHA256
+
         /// <summary>
         /// Computes the SHA256 hash of the data array.
         /// </summary>
@@ -2574,6 +2564,10 @@ namespace Aardvark.Base
             return Encoding.Unicode.GetBytes(s).ComputeSHA256Hash();
 #endif
         }
+
+        #endregion
+
+        #region SHA512
 
         /// <summary>
         /// Computes the SHA512 hash of the data array.
@@ -2632,6 +2626,10 @@ namespace Aardvark.Base
 #endif
         }
 
+        #endregion
+
+        #region Adler32
+
         /// <summary>
         /// Computes a checksum of the data array using the Adler-32 algorithm (<see cref="Adler32"/>).
         /// </summary>
@@ -2687,6 +2685,8 @@ namespace Aardvark.Base
             return a.Checksum;
         }
 
-#endregion
+        #endregion
+
+        #endregion
     }
 }

@@ -15,12 +15,6 @@ open System.Threading
 
 #nowarn "9"
 
-let hash = SHA1.Create()
-let md5 (str : string) =
-    str |> Encoding.Unicode.GetBytes |> hash.ComputeHash |> Array.truncate 16 |> Guid
-
-
-
 module FileManagerTypes =
     let inline (++) (ptr : nativeptr<'a>) (v : 'a) = NativePtr.add ptr (int v)
     let inline (!!) (ptr : nativeptr<'a>) = NativePtr.read ptr

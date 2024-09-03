@@ -363,16 +363,22 @@ namespace Aardvark.Base
         #region Guid
 
         /// <summary>
-        /// Computes the MD5 hash of the given string and returns it as Guid.
+        /// Computes the SHA1 hash of the given string and returns it as Guid.
         /// </summary>
         public static Guid ToGuid(this string self)
         {
             if (string.IsNullOrEmpty(self)) return Guid.Empty;
-            return new Guid(self.ComputeMD5Hash());
+            var hash = self.ComputeSHA1Hash();
+#if NET8_0_OR_GREATER
+            return new Guid(hash.AsSpan(0, 16));
+#else
+            Array.Resize(ref hash, 16);
+            return new Guid(hash);
+#endif
         }
 
         /// <summary>
-        /// Combines the given strings and returns a Guid based on the MD5 hash.
+        /// Combines the given strings and returns a Guid based on the SHA1 hash.
         /// </summary>
         public static Guid ToGuid(this IEnumerable<string> self)
         {
@@ -382,7 +388,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Combines the given Guids to a string and returns a Guid based on the MD5 hash.
+        /// Combines the given Guids to a string and returns a Guid based on the SHA1 hash.
         /// </summary>
         public static Guid ToGuid(this IEnumerable<Guid> self)
         {
@@ -391,7 +397,7 @@ namespace Aardvark.Base
             return sb.ToString().ToGuid();
         }
 
-        #endregion
+#endregion
 
         #region Properties
 
