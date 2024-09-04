@@ -266,6 +266,26 @@ module Prelude =
             let l = int64 <| sizeof<'a> * count
             new System.IO.UnmanagedMemoryStream(cast ptr, l,l, FileAccess.ReadWrite) :> _
 
+        /// Pins the given value and invokes the action with the native pointer.
+        /// Note: Use a fixed expression with a byref if writing to the original location is required.
+        let inline pin<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (value: 'T) =
+            use ptr = fixed &value
+            action ptr
+
+        /// Pins the given array and invokes the action with the native pointer.
+        let inline pinArr<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (array: 'T[])  =
+            use ptr = fixed array
+            action ptr
+
+        /// Pins the given array at the given index and invokes the action with the native pointer.
+        let inline pinArri<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (index: int) (array: 'T[])  =
+            use ptr = fixed &array.[index]
+            action ptr
+
+        /// Allocates a temporary native pointer and invokes the action.
+        let inline temp<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) =
+            pin action Unchecked.defaultof<'T>
+
         module Operators =
 
             let ( &+ ) (ptr : nativeptr<'a>) (count : int) =

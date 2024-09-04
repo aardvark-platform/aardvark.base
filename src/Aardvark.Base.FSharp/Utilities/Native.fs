@@ -127,6 +127,12 @@ module NativeUtilities =
         let inline set<'a when 'a : unmanaged> (ptr : nativeint) (index : int) (value : 'a)=
             NativePtr.set (NativePtr.ofNativeInt<'a> ptr) index value
 
+        /// Pins the given object and invokes the action with its address.
+        let inline pin ([<InlineIfLambda>] action: nativeint -> 'T) (value: obj) =
+            let gc = GCHandle.Alloc(value, GCHandleType.Pinned)
+            try action <| gc.AddrOfPinnedObject()
+            finally gc.Free()
+
     type Marshal with
         static member Copy(source : nativeint, destination : nativeint, length : unativeint) =
             match os with
@@ -174,21 +180,17 @@ module NativeUtilities =
         static member inline Compare(source : nativeint, destination : nativeint, length : 'a) =
             Marshal.Compare(source, destination, unativeint length)
 
-
+    [<Obsolete("Use NativeInt.pin instead.")>]
     let pinned (a : obj) f =
-        let gc = GCHandle.Alloc(a, GCHandleType.Pinned)
-        try
-            f ( gc.AddrOfPinnedObject() )
-        finally
-            gc.Free()
+        NativeInt.pin f a
 
+    [<Obsolete("Use NativePtr.pin instead.")>]
     let inline pin ([<InlineIfLambda>] f: nativeptr<'T> -> 'U) (value: 'T) =
-        use ptr = fixed &value
-        f ptr
+        NativePtr.pin f value
 
+    [<Obsolete("Use NativePtr.pinArr instead.")>]
     let inline pinArr ([<InlineIfLambda>] f: nativeptr<'T> -> 'U) (array: 'T[])  =
-        use ptr = fixed array
-        f ptr
+        NativePtr.pinArr f array
 
 [<AutoOpen>]
 module MarshalDelegateExtensions =
