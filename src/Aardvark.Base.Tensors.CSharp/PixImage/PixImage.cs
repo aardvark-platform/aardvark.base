@@ -328,6 +328,140 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Processors
+
+        private static readonly Dictionary<IPixProcessor, int> s_processors = new()
+        {
+            { PixProcessor.Instance, 1 }
+        };
+
+        /// <summary>
+        /// Sets the priority of a PixImage processor.
+        /// The priority determines the order in which proocessors are invoked to scale, rotate, or remap an image.
+        /// Processors with higher priority are invoked first.
+        /// If the processor does not exist, it is added with the given priority.
+        /// </summary>
+        /// <param name="processor">The processor to modify.</param>
+        /// <param name="priority">The priority to set.</param>
+        public static void SetProcessor(IPixProcessor processor, int priority)
+        {
+            lock (s_processors)
+            {
+                s_processors[processor] = priority;
+            }
+        }
+
+        /// <summary>
+        /// Adds a PixImage processor.
+        /// Assigns a priority that is greater than the highest priority among existing processors, resulting in a LIFO order.
+        /// If the processor already exists, the priority is modified.
+        /// </summary>
+        /// <param name="processor">The processor to add.</param>
+        public static void AddProcessor(IPixProcessor processor)
+        {
+            lock (s_processors)
+            {
+                var maxPriority = s_processors.Values.Max(-1);
+                s_processors[processor] = maxPriority + 1;
+            }
+        }
+
+        /// <summary>
+        /// Removes a PixImage processor.
+        /// </summary>
+        /// <param name="processor">The processor to remove.</param>
+        public static void RemoveProcessor(IPixProcessor processor)
+        {
+            lock (s_processors) { s_processors.Remove(processor); }
+        }
+
+        /// <summary>
+        /// Gets a dictionary of registered processors with their associated priority.
+        /// Only returns processors that have at least the given minimum capabilities.
+        /// </summary>
+        /// <param name="minCapabilities">The minimum capabilities for a processor to be considered.</param>
+        /// <returns>A dictionary of registered processors.</returns>
+        public static Dictionary<IPixProcessor, int> GetProcessorsWithPriority(PixProcessorCaps minCapabilities = PixProcessorCaps.None)
+        {
+            lock (s_processors)
+            {
+                var result = new Dictionary<IPixProcessor, int>();
+
+                foreach (var p in s_processors)
+                {
+                    if (p.Key.Capabilities.HasFlag(minCapabilities))
+                        result[p.Key] = p.Value;
+                }
+
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of registered processors sorted by priority in descending order.
+        /// Only returns processors that have at least the given minimum capabilities.
+        /// </summary>
+        /// <param name="minCapabilities">The minimum capabilities for a processor to be considered.</param>
+        /// <returns>A list of registered processors.</returns>
+        public static List<IPixProcessor> GetProcessors(PixProcessorCaps minCapabilities = PixProcessorCaps.None)
+        {
+            lock (s_processors)
+            {
+                var list = new List<KeyValuePair<IPixProcessor, int>>();
+
+                foreach (var p in s_processors)
+                {
+                    if (p.Key.Capabilities.HasFlag(minCapabilities))
+                        list.Add(p);
+                }
+
+                list.Sort((x, y) => y.Value - x.Value);
+                return list.Map(x => x.Key);
+            }
+        }
+
+        internal static PixImage<T> InvokeProcessors<T>(
+                        Func<IPixProcessor, PixImage<T>> invoke,
+                        PixProcessorCaps minCapabilities,
+                        string operationDescription)
+        {
+            PixImage<T> result;
+
+            foreach (var p in GetProcessors(minCapabilities))
+            {
+                try
+                {
+                    result = invoke(p);
+                    if (result != null) return result;
+                }
+                catch (Exception e)
+                {
+                    Report.Warn($"Failed to {operationDescription} with {p.Name} image processor: {e.Message}");
+                }
+            }
+
+            var processors = GetProcessors(PixProcessorCaps.None);
+            var errorMessage = $"Cannot {operationDescription}";
+
+            if (processors.Count == 0)
+            {
+                errorMessage += ", no image processors available!";
+            }
+            else
+            {
+                errorMessage += ", available image processors:" + Environment.NewLine;
+
+                foreach (var p in processors)
+                {
+                    errorMessage += $"    - {p.Name}: {p.Capabilities}" + Environment.NewLine;
+                }
+            }
+
+            throw new NotSupportedException(errorMessage);
+        }
+
+        #endregion
+
         #region Constructors
 
         static PixImage()
@@ -1333,29 +1467,45 @@ namespace Aardvark.Base
 
         #region Image Manipulation
 
+        #region Transformed
+
         public override PixImage TransformedPixImage(ImageTrafo trafo)
             => Transformed(trafo);
 
         public PixImage<T> Transformed(ImageTrafo trafo)
             => new PixImage<T>(Format, Volume.Transformed(trafo));
 
+        #endregion
+
+        #region Remapped
+
         public override PixImage RemappedPixImage(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
             => Remapped(xMap, xMap, ip);
 
         public PixImage<T> Remapped(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
-            if (s_remappedFun == null)
-            {
-                throw new NotSupportedException($"No remapping function has been installed via PixImage<{(typeof(T).Name)}>.SetRemappedFun");
-            }
-
-            return new PixImage<T>(Format, s_remappedFun(Volume, xMap, yMap, ip));
+            return InvokeProcessors(
+                (p) => p.Remap(this, xMap, yMap, ip, default),
+                PixProcessorCaps.Remap, "remap image"
+            );
         }
 
-        private static Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> s_remappedFun = null;
-
+        [Obsolete("Use the PixImage processor API instead.")]
         public static void SetRemappedFun(Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> remappedFun)
-            => s_remappedFun = remappedFun;
+        {
+            LegacyPixProcessor.Instance.SetRemapFun<T>(
+                (remappedFun == null) ? null : (pi, xMap, yMap, ip) => new (pi.Format, remappedFun(pi.Volume, xMap, yMap, ip))
+            );
+
+            if (LegacyPixProcessor.Instance.Capabilities != PixProcessorCaps.None)
+                SetProcessor(LegacyPixProcessor.Instance, 0);
+            else
+                RemoveProcessor(LegacyPixProcessor.Instance);
+        }
+
+        #endregion
+
+        #region Resized
 
         public override PixImage ResizedPixImage(V2i newSize, ImageInterpolation ip = ImageInterpolation.Cubic)
             => Scaled((V2d)newSize / (V2d)Size, ip);
@@ -1366,53 +1516,76 @@ namespace Aardvark.Base
         public PixImage<T> Resized(int xSize, int ySize, ImageInterpolation ip = ImageInterpolation.Cubic)
             => Scaled(new V2d(xSize, ySize) / (V2d)Size, ip);
 
+        #endregion
+
+        #region Rotated
+
         public override PixImage RotatedPixImage(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
             => Rotated(angleInRadiansCCW, resize, ip);
 
         public PixImage<T> Rotated(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
-            if (s_rotatedFun == null)
-            {
-                throw new NotSupportedException($"No rotating function has been installed via PixImage<{(typeof(T).Name)}>.SetRotatedFun");
-            }
-
-            return new PixImage<T>(Format, s_rotatedFun(Volume, angleInRadiansCCW, resize, ip));
+            return InvokeProcessors(
+                (p) => p.Rotate(this, angleInRadiansCCW, resize, ip, default),
+                PixProcessorCaps.Rotate, "rotate image"
+            );
         }
 
-        private static Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> s_rotatedFun = null;
-
+        [Obsolete("Use the PixImage processor API instead.")]
         public static void SetRotatedFun(Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> rotatedFun)
-            => s_rotatedFun = rotatedFun;
+        {
+            LegacyPixProcessor.Instance.SetRotateFun<T>(
+                (rotatedFun == null) ? null : (pi, angle, resize, ip) => new (pi.Format, rotatedFun(pi.Volume, angle, resize, ip))
+            );
+
+            if (LegacyPixProcessor.Instance.Capabilities != PixProcessorCaps.None)
+                SetProcessor(LegacyPixProcessor.Instance, 0);
+            else
+                RemoveProcessor(LegacyPixProcessor.Instance);
+        }
+
+        #endregion
+
+        #region Scaled
 
         public override PixImage ScaledPixImage(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
             => Scaled(scaleFactor, ip);
 
         public PixImage<T> Scaled(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
-            if (s_scaledFun == null)
-            {
-                throw new NotSupportedException($"No scaling function has been installed via PixImage<{(typeof(T).Name)}>.SetScaledFun");
-            }
-
-            if (!(scaleFactor.X > 0.0 && scaleFactor.Y > 0.0)) throw new ArgumentOutOfRangeException(nameof(scaleFactor));
+            if (scaleFactor.AnySmallerOrEqual(0))
+                throw new ArgumentOutOfRangeException($"Scale factor must be positive ({scaleFactor}).");
 
             // SuperSample is only available for scale factors < 1; fall back to Cubic
-            if ((scaleFactor.X >= 1.0 || scaleFactor.Y >= 1.0) && ip == ImageInterpolation.SuperSample)
+            if (scaleFactor.AnyGreater(1.0) && ip == ImageInterpolation.SuperSample)
                 ip = ImageInterpolation.Cubic;
 
-            return new PixImage<T>(Format, s_scaledFun(Volume, scaleFactor, ip));
+            return InvokeProcessors(
+                (p) => p.Scale(this, scaleFactor, ip),
+                PixProcessorCaps.Scale, "scale image"
+            );
         }
 
-        private static Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> s_scaledFun = TensorExtensions.Scaled;
-
+        [Obsolete("Use the PixImage processor API instead.")]
         public static void SetScaledFun(Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> scaledFun)
-            => s_scaledFun = scaledFun;
+        {
+            LegacyPixProcessor.Instance.SetScaleFun<T>(
+                (scaledFun == null) ? null : (pi, scaleFactor, ip) => new (pi.Format, scaledFun(pi.Volume, scaleFactor, ip))
+            );
+
+            if (LegacyPixProcessor.Instance.Capabilities != PixProcessorCaps.None)
+                SetProcessor(LegacyPixProcessor.Instance, 0);
+            else
+                RemoveProcessor(LegacyPixProcessor.Instance);
+        }
 
         public PixImage<T> Scaled(double scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
             => Scaled(new V2d(scaleFactor, scaleFactor), ip);
 
         public PixImage<T> Scaled(double xScaleFactor, double yScaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
             => Scaled(new V2d(xScaleFactor, yScaleFactor), ip);
+
+        #endregion
 
         #endregion
 
