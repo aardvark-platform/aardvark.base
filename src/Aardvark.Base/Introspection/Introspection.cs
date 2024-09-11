@@ -2073,8 +2073,12 @@ namespace Aardvark.Base
             }
         }
 
+        private static bool isInitialized = false;
+
         public static void Init()
         {
+            if (isInitialized) return;
+
             Report.BeginTimed("initializing aardvark");
 
             Report.Begin("System Information:");
@@ -2188,6 +2192,8 @@ namespace Aardvark.Base
             }
 
             Report.End();
+
+            isInitialized = true;
         }
 
         private static void LoadAll(IEnumerable<Assembly> xs)

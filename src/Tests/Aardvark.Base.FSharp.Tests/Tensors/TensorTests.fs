@@ -209,8 +209,8 @@ module ``Tensor Tests`` =
         let data = [| 42; 32; 108; -34 |]
         let info = Tensor4Info(V4l(2, 2, 1, 1), V4l(1, 2, 4, 4))
 
-        pinned data (fun ptr ->
-            let nv = NativeTensor4.ofNativeInt<int> info ptr
+        data |> NativePtr.pinArr (fun ptr ->
+            let nv = NativeTensor4<int>(ptr, info)
 
             let mutable index = 0
             nv |> NativeTensor4.iterPtr (fun coord ptr ->
@@ -226,10 +226,10 @@ module ``Tensor Tests`` =
         let dstArray = [| 0L; 0L; 0L; 0L |]
         let info = Tensor4Info(V4l(2, 2, 1, 1), V4l(2, 1, 4, 4))
 
-        pinned srcArray (fun srcPtr ->
-            pinned dstArray (fun dstPtr ->
-                let src = NativeTensor4<int>(NativePtr.ofNativeInt srcPtr, info)
-                let dst = NativeTensor4<int64>(NativePtr.ofNativeInt dstPtr, info)
+        srcArray |> NativePtr.pinArr (fun srcPtr ->
+            dstArray |> NativePtr.pinArr (fun dstPtr ->
+                let src = NativeTensor4<int>(srcPtr, info)
+                let dst = NativeTensor4<int64>(dstPtr, info)
 
                 (src, dst) ||> NativeTensor4.iterPtr2 (fun coord src dst ->
                     let value = NativePtr.read src
