@@ -1,3 +1,8 @@
+### 5.3.4
+- [FSharp] Moved pin utilities to modules; added pinArri, temp
+- Prevent multiple invocations of Aardvark.Init
+- Added new PixProcessor API for plugin-based scaling, rotating and remapping of images (replaces PixImage.SetScaledFun et al.)
+
 ### 5.3.3
 - Optimized ReferenceCountingSet (struct enumerator, internal struct tuples)
 - Restored MD5 hashing extensions (fixes: https://github.com/aardvark-platform/aardvark.base/issues/72)
