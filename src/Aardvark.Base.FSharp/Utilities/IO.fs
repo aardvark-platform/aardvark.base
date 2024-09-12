@@ -23,12 +23,17 @@ module Path =
     let andPath (first: string) (second: string) =
         Path.Combine(first, second)
 
+    /// Normalizes the directory separators of the given path, i.e. replaces
+    /// the alternative separator with the default separator.
+    let normalizeDirectorySeparators (path: string) =
+        path.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
+
     /// Adds a trailing slash unless the path already has one.
     let withTrailingSlash (path: string) =
 #if NET6_0_OR_GREATER
-        if path.EndsWith Path.DirectorySeparatorChar then
+        if path.EndsWith Path.DirectorySeparatorChar || path.EndsWith Path.AltDirectorySeparatorChar then
 #else
-        if path.EndsWith(string Path.DirectorySeparatorChar) then
+        if path.EndsWith(string Path.DirectorySeparatorChar) || path.EndsWith(string Path.AltDirectorySeparatorChar) then
 #endif
             path
         else
@@ -37,9 +42,9 @@ module Path =
     /// Removes the trailing slash from the given path if it has one.
     let withoutTrailingSlash (path: string) =
 #if NET6_0_OR_GREATER
-        if path.EndsWith Path.DirectorySeparatorChar then
+        if path.EndsWith Path.DirectorySeparatorChar || path.EndsWith Path.AltDirectorySeparatorChar then
 #else
-        if path.EndsWith(string Path.DirectorySeparatorChar) then
+        if path.EndsWith(string Path.DirectorySeparatorChar) || path.EndsWith(string Path.AltDirectorySeparatorChar)  then
 #endif
             path.Substring(0, path.Length - 1)
         else
