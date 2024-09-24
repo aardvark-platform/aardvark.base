@@ -914,7 +914,7 @@ namespace Aardvark.Base
         }
 
 
-        internal virtual Tuple<Node, Node, Node> FindNeighbours(T item)
+        internal virtual (Node, Node, Node) FindNeighbours(T item)
         {
             Node current = _root;
             Node left = null;
@@ -958,7 +958,7 @@ namespace Aardvark.Base
                 }
             }
 
-            return Tuple.Create(left, self, right);
+            return (left, self, right);
         }
 
 
@@ -1958,7 +1958,6 @@ namespace Aardvark.Base
             return new TreeSubSet(this, lowerValue, upperValue, true, true);
         }
 
-
         public bool TryFindGreater(T lowerValue, out T result)
         {
             var tup = FindNeighbours(lowerValue);
@@ -2001,6 +2000,32 @@ namespace Aardvark.Base
 
             if (tup.Item3 != null) upper = new Optional<T>(tup.Item3.Item);
             else upper = Optional<T>.None;
+        }
+
+        /// <summary>
+        /// Find the neighbours of the given value
+        /// returns (hasLower, hasValue, hasUpper) and the corresponding values in the out p
+        /// </summary>
+        public (bool, bool, bool) FindNeighboursV(T value, out T lower, out T self, out T upper)
+        {
+            var (l, s, u) = FindNeighbours(value);
+
+            lower = l != null ? l.Item : default;
+            self = s != null ? s.Item : default;
+            upper = u != null ? u.Item : default;
+
+            return (l != null, s != null, u != null);
+        }
+
+
+        /// <summary>
+        /// Checks if the value is present in the set and returns the value (might be different to the value passed in when using custom IComparer)
+        /// </summary>
+        public bool FindValue(T value, out T result)
+        {
+            var val = FindNode(value);
+            result = val != null ? val.Item : default;
+            return val != null;
         }
 
 
