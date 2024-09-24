@@ -11,20 +11,20 @@ open Microsoft.FSharp.NativeInterop
 #nowarn "44"
 
 type FreeList<'k, 'v when 'k : comparison>() =
-    static let comparer = { new IComparer<'k * HashSet<'v>> with member x.Compare((l,_), (r,_)) = compare l r }
+    static let comparer = { new IComparer<struct('k * HashSet<'v>)> with member x.Compare((l,_), (r,_)) = compare l r }
     let sortedSet = SortedSetExt comparer
     let sets = Dictionary<'k, HashSet<'v>>()
 
     let tryGet (minimal : 'k) =
-        let _, self, right = sortedSet.FindNeighbours((minimal, Unchecked.defaultof<_>))
+        let (struct(_, hasSelf, hasRight), _, self, right) = sortedSet.FindNeighboursV((minimal, Unchecked.defaultof<_>))
     
         let fitting =
-            if self.HasValue then Some self.Value
-            elif right.HasValue then Some right.Value
-            else None
+            if hasSelf then ValueSome self
+            elif hasRight then ValueSome right
+            else ValueNone
         
         match fitting with
-            | Some (k,container) -> 
+            | ValueSome (k, container) -> 
 
                 if container.Count <= 0 then
                     raise <| ArgumentException "invalid memory manager state"
@@ -40,7 +40,34 @@ type FreeList<'k, 'v when 'k : comparison>() =
 
                 Some any
 
-            | None -> None
+            | ValueNone -> None
+
+    let tryGetV (minimal : 'k) =
+        let (struct(_, hasSelf, hasRight), _, self, right) = sortedSet.FindNeighboursV((minimal, Unchecked.defaultof<_>))
+    
+        let fitting =
+            if hasSelf then ValueSome self
+            elif hasRight then ValueSome right
+            else ValueNone
+        
+        match fitting with
+            | ValueSome (k, container) -> 
+
+                if container.Count <= 0 then
+                    raise <| ArgumentException "invalid memory manager state"
+
+                let any = container |> Seq.head
+                container.Remove any |> ignore
+
+                // if the container just got empty we remove it from the
+                // sorted set and the cache-dictionary
+                if container.Count = 0 then
+                   sortedSet.Remove(k, container) |> ignore
+                   sets.Remove(k) |> ignore
+
+                ValueSome any
+
+            | ValueNone -> ValueNone
 
     let insert (k : 'k) (v : 'v) =
         match sets.TryGetValue k with
@@ -48,14 +75,14 @@ type FreeList<'k, 'v when 'k : comparison>() =
                 container.Add(v) |> ignore
             | _ ->
                 let container = HashSet [v]
-                sortedSet.Add((k, container)) |> ignore
+                sortedSet.Add(k, container) |> ignore
                 sets.[k] <- container
 
     let remove (k : 'k) (v : 'v) =
-        let _, self, _ = sortedSet.FindNeighbours((k, Unchecked.defaultof<_>))
+        let (hasValue, value) = sortedSet.FindValue((k, Unchecked.defaultof<_>))
    
-        if self.HasValue then
-            let (_,container) = self.Value
+        if hasValue then
+            let struct(_,container) = value
 
             if container.Count <= 0 then
                 raise <| ArgumentException "invalid memory manager state"
@@ -73,10 +100,10 @@ type FreeList<'k, 'v when 'k : comparison>() =
             false
 
     let contains (k : 'k) (v : 'v) =
-        let _, self, _ = sortedSet.FindNeighbours((k, Unchecked.defaultof<_>))
+        let (hasValue, value) = sortedSet.FindValue((k, Unchecked.defaultof<_>))
    
-        if self.HasValue then
-            let (_,container) = self.Value
+        if hasValue then
+            let struct(_,container) = value
             container.Contains v
         else 
             false
@@ -90,6 +117,7 @@ type FreeList<'k, 'v when 'k : comparison>() =
 
 
     member x.TryGetGreaterOrEqual (minimal : 'k) = tryGet minimal
+    member x.TryGetGreaterOrEqualV (minimal : 'k) = tryGetV minimal
     member x.Insert (key : 'k, value : 'v) = insert key value
     member x.Remove (key : 'k, value : 'v) = remove key value
     member x.Contains (key : 'k, value : 'v) = contains key value
@@ -394,8 +422,8 @@ and MemoryManager(capacity : nativeint, config : MemoryManagerConfig) as this =
         if size <= 0n then
             null
         else
-            match freeList.TryGetGreaterOrEqual(size) with
-                | Some block ->
+            match freeList.TryGetGreaterOrEqualV(size) with
+                | ValueSome block ->
                     block.Free <- false
                     allocated <- allocated + block.Size
 
@@ -413,7 +441,7 @@ and MemoryManager(capacity : nativeint, config : MemoryManagerConfig) as this =
                         free rest
 
                     block
-                | None ->
+                | ValueNone ->
                     // if there was no block of sufficient size resize the entire
                     // memory and retry
                     resize size

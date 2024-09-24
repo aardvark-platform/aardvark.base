@@ -214,8 +214,8 @@ type MemoryManager(store : Memory) as this =
 
     member x.Alloc (size : int64) =
         lock x (fun () ->
-            match free.TryGetGreaterOrEqual(size) with
-                | Some b ->
+            match free.TryGetGreaterOrEqualV(size) with
+                | ValueSome b ->
                     b.IsFree <- false
 
                     if b.Size > size then
@@ -232,7 +232,7 @@ type MemoryManager(store : Memory) as this =
                     allocated <- allocated + size
                     b
 
-                | None ->
+                | ValueNone ->
                     x.Resize(false, capacity + size)
                     x.Alloc(size)
         )
