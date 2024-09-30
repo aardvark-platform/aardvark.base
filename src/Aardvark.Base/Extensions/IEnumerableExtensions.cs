@@ -879,6 +879,26 @@ namespace Aardvark.Base
         /// Returns true if elements contains no items or if elements is null,
         /// false otherwise.
         /// </summary>
+        public static bool IsEmptyOrNull<T>(this T[] elements)
+        {
+            if (elements == null) return true;
+            return elements.Length == 0;
+        }
+
+        /// <summary>
+        /// Returns true if elements contains no items or if elements is null,
+        /// false otherwise.
+        /// </summary>
+        public static bool IsEmptyOrNull<T>(this ICollection<T> elements)
+        {
+            if (elements == null) return true;
+            return elements.Count == 0;
+        }
+
+        /// <summary>
+        /// Returns true if elements contains no items or if elements is null,
+        /// false otherwise.
+        /// </summary>
         public static bool IsEmptyOrNull<T>(this IEnumerable<T> elements)
         {
             if (elements == null) return true;
