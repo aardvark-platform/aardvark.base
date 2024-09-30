@@ -879,20 +879,20 @@ namespace Aardvark.Base
         /// Returns true if elements contains no items or if elements is null,
         /// false otherwise.
         /// </summary>
-        public static bool IsEmptyOrNull<T>(this T[] elements)
+        public static bool IsEmptyOrNull<T>(this Array self)
         {
-            if (elements == null) return true;
-            return elements.Length == 0;
+            if (self == null) return true;
+            return self.Length == 0;
         }
 
         /// <summary>
         /// Returns true if elements contains no items or if elements is null,
         /// false otherwise.
         /// </summary>
-        public static bool IsEmptyOrNull<T>(this ICollection<T> elements)
+        public static bool IsEmptyOrNull<T>(this ICollection<T> self)
         {
-            if (elements == null) return true;
-            return elements.Count == 0;
+            if (self == null) return true;
+            return self.Count == 0;
         }
 
         /// <summary>
@@ -2283,10 +2283,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Determines whether an array contains no elements.
+        /// </summary>
+        public static bool IsEmpty<T>(this Array self)
+        {
+            return self.Length == 0;
+        }
+
+        /// <summary>
+        /// Determines whether a sequence contains no elements.
+        /// </summary>
+        public static bool IsEmpty<T>(this ICollection<T> self)
+        {
+            return self.Count == 0;
+        }
+
+        /// <summary>
         /// Determines whether a sequence contains no elements.
         /// </summary>
         public static bool IsEmpty<T>(this IEnumerable<T> self)
         {
+            if (self is ICollection<T> col) return col.Count == 0;
             return !self.Any();
         }
 
