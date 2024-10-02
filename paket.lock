@@ -4,7 +4,7 @@ NUGET
   remote: https://api.nuget.org/v3/index.json
     Aardvark.Base.TypeProviders (4.5.15)
       FSharp.Core (>= 4.2.3)
-    Aardvark.Build (1.0.22)
+    Aardvark.Build (2.0)
     CSharp.Data.Adaptive (1.2.15)
       FSharp.Core (>= 4.7)
       FSharp.Data.Adaptive (1.2.15)
