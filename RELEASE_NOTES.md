@@ -1,3 +1,9 @@
+- [Base] added IsEmpty/IsEmptyOrNull overloads for Array/ICollection with efficient implementation
+- [Base] added FindValue and FindNeighboursV to SortedSet
+- [FSharp] changed MemoryManager/FreeList to use value tuples/options and use new SortedSet methods
+- [FSharp] added Path.normalizeDirectorySeparators
+- [FSharp] fixed Path.withTrailingSlash and Path.withoutTrailingSlash to consider Path.AltDirectorySeparatorChar
+
 ### 5.3.4
 - [FSharp] Moved pin utilities to modules; added pinArri, temp
 - Prevent multiple invocations of Aardvark.Init
