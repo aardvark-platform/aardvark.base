@@ -876,40 +876,24 @@ namespace Aardvark.Base
         #region Comparisons
 
         /// <summary>
-        /// Returns true if elements contains no items or if elements is null,
-        /// false otherwise.
+        /// Returns true if elements contains no items or if elements is null, false otherwise.
         /// </summary>
-        public static bool IsEmptyOrNull<T>(this Array self)
-        {
-            if (self == null) return true;
-            return self.Length == 0;
-        }
+        public static bool IsEmptyOrNull(this Array self) => self == null || self.Length == 0;
 
         /// <summary>
-        /// Returns true if elements contains no items or if elements is null,
-        /// false otherwise.
+        /// Returns true if elements contains no items or if elements is null, false otherwise.
         /// </summary>
-        public static bool IsEmptyOrNull<T>(this ICollection<T> self)
-        {
-            if (self == null) return true;
-            return self.Count == 0;
-        }
+        public static bool IsEmptyOrNull<T>(this ICollection<T> self) => self == null || self.Count == 0;
+      
+        /// <summary>
+        /// Returns true if elements contains no items or if elements is null, false otherwise.
+        /// </summary>
+        public static bool IsEmptyOrNull<T>(this IEnumerable<T> elements) => elements == null || !elements.Any(); // will check for ICollection<T> internally
 
         /// <summary>
-        /// Returns true if elements contains no items or if elements is null,
-        /// false otherwise.
+        /// Returns the input enumeration if it is not null, otherwise an empty enumeration.
         /// </summary>
-        public static bool IsEmptyOrNull<T>(this IEnumerable<T> elements)
-        {
-            if (elements == null) return true;
-            return !elements.Any(); // will check for ICollection<T> internally
-        }
-
-        public static IEnumerable<T> NonNull<T>(IEnumerable<T> elements)
-        {
-            if (elements == null) return Enumerable.Empty<T>();
-            return elements;
-        }
+        public static IEnumerable<T> NonNull<T>(IEnumerable<T> elements) => elements ?? Enumerable.Empty<T>();
 
         /// <summary>
         /// Compares both enumerables using SequenceEqual and additionally checks
@@ -2285,28 +2269,18 @@ namespace Aardvark.Base
         /// <summary>
         /// Determines whether an array contains no elements.
         /// </summary>
-        public static bool IsEmpty<T>(this Array self)
-        {
-            return self.Length == 0;
-        }
+        public static bool IsEmpty(this Array self) => self.Length == 0;
 
         /// <summary>
         /// Determines whether a sequence contains no elements.
         /// </summary>
-        public static bool IsEmpty<T>(this ICollection<T> self)
-        {
-            return self.Count == 0;
-        }
+        public static bool IsEmpty<T>(this ICollection<T> self) => self.Count == 0;
 
         /// <summary>
         /// Determines whether a sequence contains no elements.
         /// </summary>
-        public static bool IsEmpty<T>(this IEnumerable<T> self)
-        {
-            if (self is ICollection<T> col) return col.Count == 0;
-            return !self.Any();
-        }
-
+        public static bool IsEmpty<T>(this IEnumerable<T> self) => !self.Any(); // checks for ICollection internally
+        
         /// <summary>
         /// Returns a sequence that contains only distinct contiguous elements.
         /// </summary>
