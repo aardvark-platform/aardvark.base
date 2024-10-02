@@ -878,7 +878,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if elements contains no items or if elements is null, false otherwise.
         /// </summary>
-        public static bool IsEmptyOrNull(this Array self) => self == null || self.Length == 0;
+        public static bool IsEmptyOrNull<T>(this T[] self) => self == null || self.Length == 0;
 
         /// <summary>
         /// Returns true if elements contains no items or if elements is null, false otherwise.
@@ -2269,7 +2269,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Determines whether an array contains no elements.
         /// </summary>
-        public static bool IsEmpty(this Array self) => self.Length == 0;
+        public static bool IsEmpty<T>(this T[] self) => self.Length == 0;
 
         /// <summary>
         /// Determines whether a sequence contains no elements.
