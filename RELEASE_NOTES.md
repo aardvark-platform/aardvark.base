@@ -1,3 +1,4 @@
+### 5.3.5
 - [Base] added IsEmpty/IsEmptyOrNull overloads for Array/ICollection with efficient implementation
 - [Base] added FindValue and FindNeighboursV to SortedSet
 - [FSharp] changed MemoryManager/FreeList to use value tuples/options and use new SortedSet methods
