@@ -1,4 +1,5 @@
 - Updated System.Text.Json dependency (CVE-2024-43485)
+- Added angle conversion utilities for ranges
 
 ### 5.3.5
 - [Base] added IsEmpty/IsEmptyOrNull overloads for Array/ICollection with efficient implementation

@@ -8981,6 +8981,55 @@ namespace Aardvark.Base
 
     #region Range extensions
 
+    public static partial class Conversion
+    {
+        #region Angles (Radians, Degrees, Gons)
+
+        /// <summary>
+        /// Converts the angles given in degrees to radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1f RadiansFromDegrees(this Range1f degrees)
+            => new(degrees.Min.RadiansFromDegrees(), degrees.Max.RadiansFromDegrees());
+
+        /// <summary>
+        /// Converts the angles given in gons to radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1f RadiansFromGons(this Range1f gons)
+            => new(gons.Min.RadiansFromGons(), gons.Max.RadiansFromGons());
+
+        /// <summary>
+        /// Converts the angles given in radians to degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1f DegreesFromRadians(this Range1f radians)
+            => new(radians.Min.DegreesFromRadians(), radians.Max.DegreesFromRadians());
+
+        /// <summary>
+        /// Converts the angles given in gons to degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1f DegreesFromGons(this Range1f gons)
+            => new(gons.Min.DegreesFromGons(), gons.Max.DegreesFromGons());
+
+        /// <summary>
+        /// Converts the angles given in radians to gons.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1f GonsFromRadians(this Range1f radians)
+            => new(radians.Min.GonsFromRadians(), radians.Max.GonsFromRadians());
+
+        /// <summary>
+        /// Converts the angles given in degrees to gons.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1f GonsFromDegrees(this Range1f degrees)
+            => new(degrees.Min.GonsFromDegrees(), degrees.Max.GonsFromDegrees());
+
+        #endregion
+    }
+
     public static partial class RangeExtensions
     {
         /// <summary>
@@ -9990,6 +10039,55 @@ namespace Aardvark.Base
     }
 
     #region Range extensions
+
+    public static partial class Conversion
+    {
+        #region Angles (Radians, Degrees, Gons)
+
+        /// <summary>
+        /// Converts the angles given in degrees to radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1d RadiansFromDegrees(this Range1d degrees)
+            => new(degrees.Min.RadiansFromDegrees(), degrees.Max.RadiansFromDegrees());
+
+        /// <summary>
+        /// Converts the angles given in gons to radians.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1d RadiansFromGons(this Range1d gons)
+            => new(gons.Min.RadiansFromGons(), gons.Max.RadiansFromGons());
+
+        /// <summary>
+        /// Converts the angles given in radians to degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1d DegreesFromRadians(this Range1d radians)
+            => new(radians.Min.DegreesFromRadians(), radians.Max.DegreesFromRadians());
+
+        /// <summary>
+        /// Converts the angles given in gons to degrees.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1d DegreesFromGons(this Range1d gons)
+            => new(gons.Min.DegreesFromGons(), gons.Max.DegreesFromGons());
+
+        /// <summary>
+        /// Converts the angles given in radians to gons.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1d GonsFromRadians(this Range1d radians)
+            => new(radians.Min.GonsFromRadians(), radians.Max.GonsFromRadians());
+
+        /// <summary>
+        /// Converts the angles given in degrees to gons.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Range1d GonsFromDegrees(this Range1d degrees)
+            => new(degrees.Min.GonsFromDegrees(), degrees.Max.GonsFromDegrees());
+
+        #endregion
+    }
 
     public static partial class RangeExtensions
     {

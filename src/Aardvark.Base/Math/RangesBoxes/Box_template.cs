@@ -2381,6 +2381,28 @@ namespace Aardvark.Base
 
     #region Range extensions
 
+    //# if (ft.IsReal) {
+    public static partial class Conversion
+    {
+        #region Angles (Radians, Degrees, Gons)
+
+        //# var units = new[] { "Radians", "Degrees", "Gons" };
+        //# units.ForEach(u1 => {
+        //# units.ForEach(u2 => { if (u1 == u2) return;
+        //# var n1 = u1.ToLower();
+        //# var n2 = u2.ToLower();
+        /// <summary>
+        /// Converts the angles given in __n2__ to __n1__.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ __u1__From__u2__(this __type__ __n2__)
+            => new(__n2__.Min.__u1__From__u2__(), __n2__.Max.__u1__From__u2__());
+
+        //# }); });
+        #endregion
+    }
+
+    //# }
     public static partial class __bnamecaps__Extensions
     {
         /// <summary>
