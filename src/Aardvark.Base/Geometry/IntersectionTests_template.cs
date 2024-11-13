@@ -881,6 +881,42 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region __ray2t__ intersects __circle2t__
+
+        /// <summary>
+        /// Computes the intersection between the given <see cref="__ray2t__"/> and <see cref="__circle2t__"/>.
+        /// </summary>
+        /// <param name="ray">The ray to intersect.</param>
+        /// <param name="circle">The circle to intersect the ray with.</param>
+        /// <param name="t0">The ray parameter of the first intersection. Set to infinity if there is no intersection.</param>
+        /// <param name="t1">The ray parameter of the second intersection. Set to infinity if there is no intersection.</param>
+        /// <returns>True if there is an intersection, false otherwise.</returns>
+        public static bool Intersects(this __ray2t__ ray, __circle2t__ circle, out __rtype__ t0, out __rtype__ t1)
+        {
+            var p = ray.Origin - circle.Center;
+            var a = ray.Direction.X.Square() + ray.Direction.Y.Square();
+            var b = 2 * ray.Direction.X * p.X + 2 * ray.Direction.Y * p.Y;
+            var c = p.X.Square() + p.Y.Square() - circle.Radius.Square();
+            var d = b.Square() - 4 * a * c;
+
+            if (d < 0)
+            {
+                t0 = __rtype__.PositiveInfinity;
+                t1 = __rtype__.PositiveInfinity;
+                return false;
+            }
+            else
+            {
+                var div = 1 / (a + a);
+                d = d.Sqrt();
+                t0 = (-b + d) * div;
+                t1 = (-b - d) * div;
+                return true;
+            }
+        }
+
+        #endregion
+
 
         #region __plane2t__ intersects __line2t__
 

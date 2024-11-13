@@ -4,6 +4,7 @@
 - Added Ray3.Normalized
 - Added Vec.AngleBetweenSigned for 2D vectors
 - Added Fun.WrapToPi
+- Added 2D ray-circle intersection methods
 
 ### 5.3.5
 - [Base] added IsEmpty/IsEmptyOrNull overloads for Array/ICollection with efficient implementation

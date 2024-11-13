@@ -848,6 +848,42 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region Ray2f intersects Circle2f
+
+        /// <summary>
+        /// Computes the intersection between the given <see cref="Ray2f"/> and <see cref="Circle2f"/>.
+        /// </summary>
+        /// <param name="ray">The ray to intersect.</param>
+        /// <param name="circle">The circle to intersect the ray with.</param>
+        /// <param name="t0">The ray parameter of the first intersection. Set to infinity if there is no intersection.</param>
+        /// <param name="t1">The ray parameter of the second intersection. Set to infinity if there is no intersection.</param>
+        /// <returns>True if there is an intersection, false otherwise.</returns>
+        public static bool Intersects(this Ray2f ray, Circle2f circle, out float t0, out float t1)
+        {
+            var p = ray.Origin - circle.Center;
+            var a = ray.Direction.X.Square() + ray.Direction.Y.Square();
+            var b = 2 * ray.Direction.X * p.X + 2 * ray.Direction.Y * p.Y;
+            var c = p.X.Square() + p.Y.Square() - circle.Radius.Square();
+            var d = b.Square() - 4 * a * c;
+
+            if (d < 0)
+            {
+                t0 = float.PositiveInfinity;
+                t1 = float.PositiveInfinity;
+                return false;
+            }
+            else
+            {
+                var div = 1 / (a + a);
+                d = d.Sqrt();
+                t0 = (-b + d) * div;
+                t1 = (-b - d) * div;
+                return true;
+            }
+        }
+
+        #endregion
+
 
         #region Plane2f intersects Line2f
 
@@ -5019,6 +5055,42 @@ namespace Aardvark.Base
             {
                 t = double.NaN;
                 return false;
+            }
+        }
+
+        #endregion
+
+        #region Ray2d intersects Circle2d
+
+        /// <summary>
+        /// Computes the intersection between the given <see cref="Ray2d"/> and <see cref="Circle2d"/>.
+        /// </summary>
+        /// <param name="ray">The ray to intersect.</param>
+        /// <param name="circle">The circle to intersect the ray with.</param>
+        /// <param name="t0">The ray parameter of the first intersection. Set to infinity if there is no intersection.</param>
+        /// <param name="t1">The ray parameter of the second intersection. Set to infinity if there is no intersection.</param>
+        /// <returns>True if there is an intersection, false otherwise.</returns>
+        public static bool Intersects(this Ray2d ray, Circle2d circle, out double t0, out double t1)
+        {
+            var p = ray.Origin - circle.Center;
+            var a = ray.Direction.X.Square() + ray.Direction.Y.Square();
+            var b = 2 * ray.Direction.X * p.X + 2 * ray.Direction.Y * p.Y;
+            var c = p.X.Square() + p.Y.Square() - circle.Radius.Square();
+            var d = b.Square() - 4 * a * c;
+
+            if (d < 0)
+            {
+                t0 = double.PositiveInfinity;
+                t1 = double.PositiveInfinity;
+                return false;
+            }
+            else
+            {
+                var div = 1 / (a + a);
+                d = d.Sqrt();
+                t0 = (-b + d) * div;
+                t1 = (-b - d) * div;
+                return true;
             }
         }
 
