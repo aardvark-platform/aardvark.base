@@ -470,6 +470,24 @@ namespace Aardvark.Base
         //# });
         #endregion
 
+        #region WrapToPi
+
+        //# fdtypes.ForEach(t => {
+        //# var constant = (t == Meta.DoubleType) ? "Constant" : "ConstantF";
+        /// <summary>
+        /// Wraps the given angle to the [-Pi, Pi] range.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __t.Name__ WrapToPi(this __t.Name__ angleInRadians)
+        {
+            var x = angleInRadians % __constant__.PiTimesTwo;
+            return (x.Abs() > __constant__.Pi) ? x - __constant__.PiTimesTwo * x.Signum() : x;
+        }
+
+        //# });
+        #endregion
+
         #region Saturate
         //# numdectypes.ForEach(t => {
         //# var cast = smalltypes.Contains(t) ? "(" + t.Name + ")" : "";

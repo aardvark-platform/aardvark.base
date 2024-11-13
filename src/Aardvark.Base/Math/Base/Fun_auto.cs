@@ -2040,6 +2040,32 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region WrapToPi
+
+        /// <summary>
+        /// Wraps the given angle to the [-Pi, Pi] range.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float WrapToPi(this float angleInRadians)
+        {
+            var x = angleInRadians % ConstantF.PiTimesTwo;
+            return (x.Abs() > ConstantF.Pi) ? x - ConstantF.PiTimesTwo * x.Signum() : x;
+        }
+
+        /// <summary>
+        /// Wraps the given angle to the [-Pi, Pi] range.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double WrapToPi(this double angleInRadians)
+        {
+            var x = angleInRadians % Constant.PiTimesTwo;
+            return (x.Abs() > Constant.Pi) ? x - Constant.PiTimesTwo * x.Signum() : x;
+        }
+
+        #endregion
+
         #region Saturate
         /// <summary>
         /// Clamps value to interval [0,1].
