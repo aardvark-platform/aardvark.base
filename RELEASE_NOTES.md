@@ -1,3 +1,4 @@
+### 5.3.6
 - Updated System.Text.Json dependency (CVE-2024-43485)
 - Added angle conversion utilities for ranges
 - Added Ray3.Transformed overloads
