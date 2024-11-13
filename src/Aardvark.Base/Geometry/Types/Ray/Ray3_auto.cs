@@ -111,9 +111,44 @@ namespace Aardvark.Base
         /// Returns the ray transformed with the given matrix.
         /// This method is only valid for similarity transformations (uniform scale).
         /// </summary>
-        public readonly Ray3f Transformed(M44f mat) => new Ray3f(
-            mat.TransformPos(Origin), mat.TransformDir(Direction)
-            );
+        public readonly Ray3f Transformed(M44f mat)
+            => new(mat.TransformPos(Origin), mat.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Rot3f"/> transformation.
+        /// </summary>
+        public readonly Ray3f Transformed(Rot3f transform)
+            => new(transform.Transform(Origin), transform.Transform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Scale3f"/> transformation.
+        /// </summary>
+        public readonly Ray3f Transformed(Scale3f transform)
+            => new(transform.Transform(Origin), transform.Transform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Shift3f"/> transformation.
+        /// </summary>
+        public readonly Ray3f Transformed(Shift3f transform)
+            => new(transform.Transform(Origin), Direction);
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Euclidean3f"/> transformation.
+        /// </summary>
+        public readonly Ray3f Transformed(Euclidean3f transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Similarity3f"/> transformation.
+        /// </summary>
+        public readonly Ray3f Transformed(Similarity3f transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Affine3f"/> transformation.
+        /// </summary>
+        public readonly Ray3f Transformed(Affine3f transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
 
         /// <summary>
         /// Returns the angle between this and the given <see cref="Ray3f"/> in radians.
@@ -1835,9 +1870,44 @@ namespace Aardvark.Base
         /// Returns the ray transformed with the given matrix.
         /// This method is only valid for similarity transformations (uniform scale).
         /// </summary>
-        public readonly Ray3d Transformed(M44d mat) => new Ray3d(
-            mat.TransformPos(Origin), mat.TransformDir(Direction)
-            );
+        public readonly Ray3d Transformed(M44d mat)
+            => new(mat.TransformPos(Origin), mat.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        public readonly Ray3d Transformed(Rot3d transform)
+            => new(transform.Transform(Origin), transform.Transform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        public readonly Ray3d Transformed(Scale3d transform)
+            => new(transform.Transform(Origin), transform.Transform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        public readonly Ray3d Transformed(Shift3d transform)
+            => new(transform.Transform(Origin), Direction);
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        public readonly Ray3d Transformed(Euclidean3d transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        public readonly Ray3d Transformed(Similarity3d transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="Affine3d"/> transformation.
+        /// </summary>
+        public readonly Ray3d Transformed(Affine3d transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
 
         /// <summary>
         /// Returns the angle between this and the given <see cref="Ray3d"/> in radians.

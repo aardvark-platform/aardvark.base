@@ -30,6 +30,12 @@ namespace Aardvark.Base
     //#   var circle3t = "Circle3" + tc;
     //#   var cylinder3t = "Cylinder3" + tc;
     //#   var iboundingbox = "IBoundingBox3" + tc;
+    //#   var rot3t = "Rot3" + tc;
+    //#   var scale3t = "Scale3" + tc;
+    //#   var shift3t = "Shift3" + tc;
+    //#   var euclidean3t = "Euclidean3" + tc;
+    //#   var similarity3t = "Similarity3" + tc;
+    //#   var affine3t = "Affine3" + tc;
     //#   var half = isDouble ? "0.5" : "0.5f";
     //#   var eps = isDouble ? "1e-7" : "1e-4f";
     #region __ray3t__
@@ -134,9 +140,44 @@ namespace Aardvark.Base
         /// Returns the ray transformed with the given matrix.
         /// This method is only valid for similarity transformations (uniform scale).
         /// </summary>
-        public readonly __ray3t__ Transformed(__m44t__ mat) => new __ray3t__(
-            mat.TransformPos(Origin), mat.TransformDir(Direction)
-            );
+        public readonly __ray3t__ Transformed(__m44t__ mat)
+            => new(mat.TransformPos(Origin), mat.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="__rot3t__"/> transformation.
+        /// </summary>
+        public readonly __ray3t__ Transformed(__rot3t__ transform)
+            => new(transform.Transform(Origin), transform.Transform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="__scale3t__"/> transformation.
+        /// </summary>
+        public readonly __ray3t__ Transformed(__scale3t__ transform)
+            => new(transform.Transform(Origin), transform.Transform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="__shift3t__"/> transformation.
+        /// </summary>
+        public readonly __ray3t__ Transformed(__shift3t__ transform)
+            => new(transform.Transform(Origin), Direction);
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="__euclidean3t__"/> transformation.
+        /// </summary>
+        public readonly __ray3t__ Transformed(__euclidean3t__ transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="__similarity3t__"/> transformation.
+        /// </summary>
+        public readonly __ray3t__ Transformed(__similarity3t__ transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the given <see cref="__affine3t__"/> transformation.
+        /// </summary>
+        public readonly __ray3t__ Transformed(__affine3t__ transform)
+            => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
 
         /// <summary>
         /// Returns the angle between this and the given <see cref="__ray3t__"/> in radians.
