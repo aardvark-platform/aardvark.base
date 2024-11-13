@@ -139,6 +139,11 @@ namespace Aardvark.Base
             get => new __ray2t__(Origin, -Direction);
         }
 
+        /// <summary>
+        /// Returns the ray with its directional normalized.
+        /// </summary>
+        public readonly __ray2t__ Normalized => new(Origin, Direction.Normalized);
+
         #endregion
 
         #region Ray Arithmetics
@@ -232,6 +237,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ftype__ AngleBetween(__ray2t__ r)
             => Direction.AngleBetween(r.Direction);
+
+        /// <summary>
+        /// Returns the signed angle between this and the given <see cref="__ray2t__"/> in radians.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __ftype__ AngleBetweenSigned(__ray2t__ r)
+            => Direction.AngleBetweenSigned(r.Direction);
 
         /// <summary>
         /// Returns a signed value where left is negative and right positive.

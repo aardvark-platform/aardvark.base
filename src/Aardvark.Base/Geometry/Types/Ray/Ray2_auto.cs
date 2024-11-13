@@ -123,6 +123,11 @@ namespace Aardvark.Base
             get => new Ray2f(Origin, -Direction);
         }
 
+        /// <summary>
+        /// Returns the ray with its directional normalized.
+        /// </summary>
+        public readonly Ray2f Normalized => new(Origin, Direction.Normalized);
+
         #endregion
 
         #region Ray Arithmetics
@@ -216,6 +221,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float AngleBetween(Ray2f r)
             => Direction.AngleBetween(r.Direction);
+
+        /// <summary>
+        /// Returns the signed angle between this and the given <see cref="Ray2f"/> in radians.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly float AngleBetweenSigned(Ray2f r)
+            => Direction.AngleBetweenSigned(r.Direction);
 
         /// <summary>
         /// Returns a signed value where left is negative and right positive.
@@ -650,6 +663,11 @@ namespace Aardvark.Base
             get => new Ray2d(Origin, -Direction);
         }
 
+        /// <summary>
+        /// Returns the ray with its directional normalized.
+        /// </summary>
+        public readonly Ray2d Normalized => new(Origin, Direction.Normalized);
+
         #endregion
 
         #region Ray Arithmetics
@@ -743,6 +761,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly double AngleBetween(Ray2d r)
             => Direction.AngleBetween(r.Direction);
+
+        /// <summary>
+        /// Returns the signed angle between this and the given <see cref="Ray2d"/> in radians.
+        /// The direction vectors of the input rays have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double AngleBetweenSigned(Ray2d r)
+            => Direction.AngleBetweenSigned(r.Direction);
 
         /// <summary>
         /// Returns a signed value where left is negative and right positive.

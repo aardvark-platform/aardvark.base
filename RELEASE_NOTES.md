@@ -2,6 +2,7 @@
 - Added angle conversion utilities for ranges
 - Added Ray3.Transformed overloads
 - Added Ray3.Normalized
+- Added Vec.AngleBetweenSigned for 2D vectors
 
 ### 5.3.5
 - [Base] added IsEmpty/IsEmptyOrNull overloads for Array/ICollection with efficient implementation

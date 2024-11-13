@@ -36,6 +36,7 @@
     <Compile Include="SizeOfTests.fs" />
     <Compile Include="TypeMetaTests.fs" />
     <Compile Include="Program.fs" />
+    <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aardvark.Base.FSharp\Aardvark.Base.FSharp.fsproj" />

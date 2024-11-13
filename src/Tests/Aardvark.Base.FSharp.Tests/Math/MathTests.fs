@@ -4,8 +4,47 @@ open Aardvark.Base
 
 open NUnit.Framework
 open FsUnit
+open FsCheck
+open FsCheck.NUnit
+open System
 
 module MathTests =
+
+    let equalWithin x eps = (new NUnit.Framework.Constraints.EqualConstraint(x)).Within(eps)
+
+    type RotationTestCase2D =
+        {
+            Src: V2d
+            Dst: V2d
+            Angle: float
+        }
+
+    module Gen =
+        let floatUnit =
+            gen {
+               let! n = Arb.generate<uint32>
+               return float n / float UInt32.MaxValue
+            }
+
+        let direction2d =
+            gen {
+                let! t = floatUnit
+                return Rot2d(t * Constant.PiTimesTwo) * V2d.XAxis
+            }
+
+    type Generator private () =
+        static member AngleTestCase =
+            gen {
+                let! t = Gen.floatUnit
+                let angle = (t - 0.5) * Constant.PiTimesTwo
+
+                let! src = Gen.direction2d
+                let rot = Rot2d angle
+                let dst = rot * src
+
+                return { Src = src; Dst = dst; Angle = angle }
+            }
+            |> Arb.fromGen
 
     [<Test>]
     let ``[Math] lerp`` () =
@@ -51,3 +90,18 @@ module MathTests =
         lerp (V2d(50)) (V2d(100)) (V2d(0.5))    |> should equal (Fun.Lerp(V2d(0.5), V2d(50), V2d(100)))
 
         lerp (C4d(50.0)) (C4d(100.0)) 0.5       |> should equal (Fun.Lerp(0.5, C4d(50.0), C4d(100.0)))
+
+    [<Property(Arbitrary = [| typeof<Generator> |])>]
+    let ``[Math] AngleBetween 2D`` (input: RotationTestCase2D) =
+        let result = Vec.AngleBetween(input.Src, input.Dst)
+        result |> should be (equalWithin (abs input.Angle) 0.00001)
+
+    [<Property(Arbitrary = [| typeof<Generator> |])>]
+    let ``[Math] AngleBetweenFast 2D`` (input: RotationTestCase2D) =
+        let result = Vec.AngleBetweenFast(input.Src, input.Dst)
+        result |> should be (equalWithin (abs input.Angle) 0.00001)
+
+    [<Property(Arbitrary = [| typeof<Generator> |])>]
+    let ``[Math] AngleBetweenSigned 2D`` (input: RotationTestCase2D) =
+        let result = Vec.AngleBetweenSigned(input.Src, input.Dst)
+        result |> should be (equalWithin input.Angle 0.00001)

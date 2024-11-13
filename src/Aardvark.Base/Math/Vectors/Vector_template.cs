@@ -2376,6 +2376,19 @@ namespace Aardvark.Base
             return 2 * Fun.Atan2(b.Length, a.Length);
         }
 
+        //# if (d == 2) {
+        /// <summary>
+        /// Computes the signed angle between two given vectors in radians. The input vectors have to be normalized.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ctype__ AngleBetweenSigned(this __vtype__ x, __vtype__ y)
+        {
+            var a = x.X * y.Y - x.Y * y.X;
+            var b = x.X * y.X + x.Y * y.Y;
+            return Fun.Atan2(a, b);
+        }
+
+        //# }
         #endregion
 
         //# }
