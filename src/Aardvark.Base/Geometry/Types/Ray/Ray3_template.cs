@@ -103,6 +103,11 @@ namespace Aardvark.Base
         /// </summary>
         public readonly __ray3t__ Reversed => new __ray3t__(Origin, -Direction);
 
+        /// <summary>
+        /// Returns the ray with its directional normalized.
+        /// </summary>
+        public readonly __ray3t__ Normalized => new(Origin, Direction.Normalized);
+
         #endregion
 
         #region Ray Arithmetics

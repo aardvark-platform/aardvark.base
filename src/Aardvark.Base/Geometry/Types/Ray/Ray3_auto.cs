@@ -74,6 +74,11 @@ namespace Aardvark.Base
         /// </summary>
         public readonly Ray3f Reversed => new Ray3f(Origin, -Direction);
 
+        /// <summary>
+        /// Returns the ray with its directional normalized.
+        /// </summary>
+        public readonly Ray3f Normalized => new(Origin, Direction.Normalized);
+
         #endregion
 
         #region Ray Arithmetics
@@ -1832,6 +1837,11 @@ namespace Aardvark.Base
         /// Returns new ray with flipped direction.
         /// </summary>
         public readonly Ray3d Reversed => new Ray3d(Origin, -Direction);
+
+        /// <summary>
+        /// Returns the ray with its directional normalized.
+        /// </summary>
+        public readonly Ray3d Normalized => new(Origin, Direction.Normalized);
 
         #endregion
 
