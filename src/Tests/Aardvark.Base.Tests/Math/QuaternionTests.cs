@@ -156,6 +156,7 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        [Obsolete]
         public static void MatrixRepresentation()
         {
             var rnd = new RandomSystem(1);

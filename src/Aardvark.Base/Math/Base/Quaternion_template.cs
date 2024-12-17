@@ -446,6 +446,7 @@ namespace Aardvark.Base
         /// a way that quaternion multiplication and addition is equivalent to matrix multiplication and addition.
         /// Note that there are 48 distinct such matrix representations for a single quaternion.
         /// </summary>
+        [Obsolete("Misleading conversion. Do you want a Rot3__tc__ to __m44t__ conversion instead?")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m44t__(__type__ q)
         {

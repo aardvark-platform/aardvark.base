@@ -1,3 +1,5 @@
+- Marked quaternion to matrix conversion obsolete as it is misleading
+
 ### 5.3.6
 - Updated System.Text.Json dependency (CVE-2024-43485)
 - Added angle conversion utilities for ranges

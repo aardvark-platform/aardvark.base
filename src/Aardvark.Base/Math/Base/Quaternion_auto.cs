@@ -420,6 +420,7 @@ namespace Aardvark.Base
         /// a way that quaternion multiplication and addition is equivalent to matrix multiplication and addition.
         /// Note that there are 48 distinct such matrix representations for a single quaternion.
         /// </summary>
+        [Obsolete("Misleading conversion. Do you want a Rot3f to M44f conversion instead?")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44f(QuaternionF q)
         {
@@ -1097,6 +1098,7 @@ namespace Aardvark.Base
         /// a way that quaternion multiplication and addition is equivalent to matrix multiplication and addition.
         /// Note that there are 48 distinct such matrix representations for a single quaternion.
         /// </summary>
+        [Obsolete("Misleading conversion. Do you want a Rot3d to M44d conversion instead?")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44d(QuaternionD q)
         {
