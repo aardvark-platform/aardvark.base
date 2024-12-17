@@ -112,9 +112,11 @@ namespace Aardvark.Base
     //# Action add = () => Out(" + ");
     //# Action andand = () => Out(" && ");
     //# Action oror = () => Out(" || ");
+    //# var fdtypes = new[] { Meta.FloatType, Meta.DoubleType };
     //# foreach (var t in Meta.RangeAndBoxTypes) {
     //#     var lt = t.LimitType; var vt = lt as Meta.VecType;
     //#     int dim = vt != null ? vt.Len : 1;
+    //#     var dlt = dim > 1 ? Meta.VecTypeOf(dim, Meta.DoubleType) : Meta.DoubleType;
     //#     var ft = dim > 1 ? vt.FieldType : lt;
     //#     var vtrep = dim == 1 ? Meta.TryGetVecTypeOf(2, ft) : null;
     //#     var vtype = vtrep?.Name;
@@ -123,6 +125,7 @@ namespace Aardvark.Base
     //#     var fields = dim > 1 ? vt.Fields : null;
     //#     var args = dim > 1 ? fields.ToLower() : null;
     //#     var ltype = lt.Name;
+    //#     var dltype = dlt.Name;
     //#     var lcast = dim > 1 ? "" : ft == Meta.IntType || ft == Meta.DoubleType ? "" : "(" + ltype + ")";
     //#     var ftype = ft.Name;
     //#     var fcast = dim > 1 ? "" : ft == Meta.IntType || ft == Meta.DoubleType ? "" : "(" + ftype + ")";
@@ -937,12 +940,9 @@ namespace Aardvark.Base
         /// <summary>
         /// Linearly interpolates between min and max.
         /// </summary>
-        /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ltype__ Lerp(__ftype__ x)
-        {
-            return Fun.Lerp(x, Min, Max);
-        }
+            => Fun.Lerp(x, Min, Max);
 
         //# if (dim == 1) {
         /// <summary>
@@ -950,9 +950,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ltype__ InvLerp(__ltype__ x)
-        {
-            return Fun.InvLerp(x, Min, Max);
-        }
+            => Fun.InvLerp(x, Min, Max);
 
         //# } else { // dim > 1
         /// <summary>
@@ -960,42 +958,61 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ltype__ Lerp(__ltype__ p)
-        {
-            return new __ltype__(/*# fields.ForEach(f => { */
-                        Fun.Lerp(p.__f__, Min.__f__, Max.__f__)/*# }, comma); */);
-        }
+            => Fun.Lerp(p, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ltype__ Lerp(/*# args.ForEach(a => { */__ftype__ __a__/*# }, comma); */)
-        {
-            return new __ltype__(/*# fields.ForEach(args, (f, a) => { */
-                         Fun.Lerp(__a__, Min.__f__, Max.__f__)/*# }, comma); */);
-        }
+            => Fun.Lerp(new __ltype__(/*# args.ForEach(a => { */__a__/*# }, comma); */), Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ltype__ InvLerp(__ltype__ p)
-        {
-            return new __ltype__(/*# fields.ForEach(f => { */
-                        Fun.InvLerp(p.__f__, Min.__f__, Max.__f__)/*# }, comma); */);
-        }
+            => Fun.InvLerp(p, Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ltype__ InvLerp(/*# args.ForEach(a => { */__ftype__ __a__/*# }, comma); */)
-        {
-            return new __ltype__(/*# fields.ForEach(args, (f, a) => { */
-                        Fun.InvLerp(__a__, Min.__f__, Max.__f__)/*# }, comma); */);
-        }
+            => Fun.InvLerp(new __ltype__(/*# args.ForEach(a => { */__a__/*# }, comma); */), Min, Max);
+
         //# } // dim > 1
         //# } // ftype == "float" || ftype == "double"
+        //# else {
+        //# fdtypes.ForEach(tt => {
+        //# var ttype = tt.Name;
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __ltype__ Lerp(__ttype__ t)
+            => Fun.Lerp(t, Min, Max);
+
+        //# if (dim > 1) {
+        //# var vtt = Meta.VecTypeOf(dim, tt);
+        //# var vttype = vtt.Name;
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __ltype__ Lerp(__vttype__ t)
+            => Fun.Lerp(t, Min, Max);
+
+        //# } // dim > 1
+        //# });
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __dltype__ InvLerp(__ltype__ y)
+            => Fun.InvLerp(y, Min, Max);
+
+        //# } // not real
 
         //# if (dim > 1) {
         /// <summary>

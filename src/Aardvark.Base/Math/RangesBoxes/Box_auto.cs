@@ -573,6 +573,27 @@ namespace Aardvark.Base
             return x < Min ? Min : (x > Max ? Max : x);
         }
 
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly byte Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly byte Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(byte y)
+            => Fun.InvLerp(y, Min, Max);
+
 
         /// <summary>
         /// Returns the range with Min value clamped to splitValue.
@@ -1563,6 +1584,27 @@ namespace Aardvark.Base
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly sbyte Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly sbyte Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(sbyte y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -2555,6 +2597,27 @@ namespace Aardvark.Base
             return x < Min ? Min : (x > Max ? Max : x);
         }
 
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly short Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly short Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(short y)
+            => Fun.InvLerp(y, Min, Max);
+
 
         /// <summary>
         /// Returns the range with Min value clamped to splitValue.
@@ -3545,6 +3608,27 @@ namespace Aardvark.Base
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly ushort Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly ushort Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(ushort y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -4559,6 +4643,27 @@ namespace Aardvark.Base
             return x < Min ? Min : (x > Max ? Max : x);
         }
 
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly int Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly int Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(int y)
+            => Fun.InvLerp(y, Min, Max);
+
 
         /// <summary>
         /// Returns the range with Min value clamped to splitValue.
@@ -5571,6 +5676,27 @@ namespace Aardvark.Base
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly uint Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly uint Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(uint y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -6585,6 +6711,27 @@ namespace Aardvark.Base
             return x < Min ? Min : (x > Max ? Max : x);
         }
 
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly long Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly long Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(long y)
+            => Fun.InvLerp(y, Min, Max);
+
 
         /// <summary>
         /// Returns the range with Min value clamped to splitValue.
@@ -7575,6 +7722,27 @@ namespace Aardvark.Base
         {
             return x < Min ? Min : (x > Max ? Max : x);
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly ulong Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly ulong Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly double InvLerp(ulong y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -8592,21 +8760,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Linearly interpolates between min and max.
         /// </summary>
-        /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float Lerp(float x)
-        {
-            return Fun.Lerp(x, Min, Max);
-        }
+            => Fun.Lerp(x, Min, Max);
 
         /// <summary>
         /// Performs the inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float InvLerp(float x)
-        {
-            return Fun.InvLerp(x, Min, Max);
-        }
+            => Fun.InvLerp(x, Min, Max);
 
 
         /// <summary>
@@ -9673,21 +9836,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Linearly interpolates between min and max.
         /// </summary>
-        /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly double Lerp(double x)
-        {
-            return Fun.Lerp(x, Min, Max);
-        }
+            => Fun.Lerp(x, Min, Max);
 
         /// <summary>
         /// Performs the inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly double InvLerp(double x)
-        {
-            return Fun.InvLerp(x, Min, Max);
-        }
+            => Fun.InvLerp(x, Min, Max);
 
 
         /// <summary>
@@ -10860,6 +11018,41 @@ namespace Aardvark.Base
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
                         p.Y < Min.Y ? Min.Y : (p.Y > Max.Y ? Max.Y : p.Y));
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2i Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2i Lerp(V2f t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2i Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2i Lerp(V2d t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2d InvLerp(V2i y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -12390,6 +12583,41 @@ namespace Aardvark.Base
                         p.X < Min.X ? Min.X : (p.X > Max.X ? Max.X : p.X), 
                         p.Y < Min.Y ? Min.Y : (p.Y > Max.Y ? Max.Y : p.Y));
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2l Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2l Lerp(V2f t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2l Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2l Lerp(V2d t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2d InvLerp(V2l y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -13988,56 +14216,38 @@ namespace Aardvark.Base
         /// <summary>
         /// Linearly interpolates between min and max.
         /// </summary>
-        /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2f Lerp(float x)
-        {
-            return Fun.Lerp(x, Min, Max);
-        }
+            => Fun.Lerp(x, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2f Lerp(V2f p)
-        {
-            return new V2f(
-                        Fun.Lerp(p.X, Min.X, Max.X), 
-                        Fun.Lerp(p.Y, Min.Y, Max.Y));
-        }
+            => Fun.Lerp(p, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2f Lerp(float x, float y)
-        {
-            return new V2f(
-                         Fun.Lerp(x, Min.X, Max.X), 
-                         Fun.Lerp(y, Min.Y, Max.Y));
-        }
+            => Fun.Lerp(new V2f(x, y), Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2f InvLerp(V2f p)
-        {
-            return new V2f(
-                        Fun.InvLerp(p.X, Min.X, Max.X), 
-                        Fun.InvLerp(p.Y, Min.Y, Max.Y));
-        }
+            => Fun.InvLerp(p, Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2f InvLerp(float x, float y)
-        {
-            return new V2f(
-                        Fun.InvLerp(x, Min.X, Max.X), 
-                        Fun.InvLerp(y, Min.Y, Max.Y));
-        }
+            => Fun.InvLerp(new V2f(x, y), Min, Max);
+
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
@@ -15624,56 +15834,38 @@ namespace Aardvark.Base
         /// <summary>
         /// Linearly interpolates between min and max.
         /// </summary>
-        /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2d Lerp(double x)
-        {
-            return Fun.Lerp(x, Min, Max);
-        }
+            => Fun.Lerp(x, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2d Lerp(V2d p)
-        {
-            return new V2d(
-                        Fun.Lerp(p.X, Min.X, Max.X), 
-                        Fun.Lerp(p.Y, Min.Y, Max.Y));
-        }
+            => Fun.Lerp(p, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2d Lerp(double x, double y)
-        {
-            return new V2d(
-                         Fun.Lerp(x, Min.X, Max.X), 
-                         Fun.Lerp(y, Min.Y, Max.Y));
-        }
+            => Fun.Lerp(new V2d(x, y), Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2d InvLerp(V2d p)
-        {
-            return new V2d(
-                        Fun.InvLerp(p.X, Min.X, Max.X), 
-                        Fun.InvLerp(p.Y, Min.Y, Max.Y));
-        }
+            => Fun.InvLerp(p, Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2d InvLerp(double x, double y)
-        {
-            return new V2d(
-                        Fun.InvLerp(x, Min.X, Max.X), 
-                        Fun.InvLerp(y, Min.Y, Max.Y));
-        }
+            => Fun.InvLerp(new V2d(x, y), Min, Max);
+
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
@@ -17205,6 +17397,41 @@ namespace Aardvark.Base
                         p.Y < Min.Y ? Min.Y : (p.Y > Max.Y ? Max.Y : p.Y), 
                         p.Z < Min.Z ? Min.Z : (p.Z > Max.Z ? Max.Z : p.Z));
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3i Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3i Lerp(V3f t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3i Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3i Lerp(V3d t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3d InvLerp(V3i y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -19092,6 +19319,41 @@ namespace Aardvark.Base
                         p.Y < Min.Y ? Min.Y : (p.Y > Max.Y ? Max.Y : p.Y), 
                         p.Z < Min.Z ? Min.Z : (p.Z > Max.Z ? Max.Z : p.Z));
         }
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3l Lerp(float t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3l Lerp(V3f t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3l Lerp(double t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Linearly interpolates between min and max.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3l Lerp(V3d t)
+            => Fun.Lerp(t, Min, Max);
+
+        /// <summary>
+        /// Inverse of Lerp.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V3d InvLerp(V3l y)
+            => Fun.InvLerp(y, Min, Max);
 
 
         /// <summary>
@@ -21049,60 +21311,38 @@ namespace Aardvark.Base
         /// <summary>
         /// Linearly interpolates between min and max.
         /// </summary>
-        /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3f Lerp(float x)
-        {
-            return Fun.Lerp(x, Min, Max);
-        }
+            => Fun.Lerp(x, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3f Lerp(V3f p)
-        {
-            return new V3f(
-                        Fun.Lerp(p.X, Min.X, Max.X), 
-                        Fun.Lerp(p.Y, Min.Y, Max.Y), 
-                        Fun.Lerp(p.Z, Min.Z, Max.Z));
-        }
+            => Fun.Lerp(p, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3f Lerp(float x, float y, float z)
-        {
-            return new V3f(
-                         Fun.Lerp(x, Min.X, Max.X), 
-                         Fun.Lerp(y, Min.Y, Max.Y), 
-                         Fun.Lerp(z, Min.Z, Max.Z));
-        }
+            => Fun.Lerp(new V3f(x, y, z), Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3f InvLerp(V3f p)
-        {
-            return new V3f(
-                        Fun.InvLerp(p.X, Min.X, Max.X), 
-                        Fun.InvLerp(p.Y, Min.Y, Max.Y), 
-                        Fun.InvLerp(p.Z, Min.Z, Max.Z));
-        }
+            => Fun.InvLerp(p, Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3f InvLerp(float x, float y, float z)
-        {
-            return new V3f(
-                        Fun.InvLerp(x, Min.X, Max.X), 
-                        Fun.InvLerp(y, Min.Y, Max.Y), 
-                        Fun.InvLerp(z, Min.Z, Max.Z));
-        }
+            => Fun.InvLerp(new V3f(x, y, z), Min, Max);
+
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
@@ -23047,60 +23287,38 @@ namespace Aardvark.Base
         /// <summary>
         /// Linearly interpolates between min and max.
         /// </summary>
-        /// <param name="x">Position between min and max [0,1].</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3d Lerp(double x)
-        {
-            return Fun.Lerp(x, Min, Max);
-        }
+            => Fun.Lerp(x, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3d Lerp(V3d p)
-        {
-            return new V3d(
-                        Fun.Lerp(p.X, Min.X, Max.X), 
-                        Fun.Lerp(p.Y, Min.Y, Max.Y), 
-                        Fun.Lerp(p.Z, Min.Z, Max.Z));
-        }
+            => Fun.Lerp(p, Min, Max);
 
         /// <summary>
         /// Interpolate linearly in each dimension.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3d Lerp(double x, double y, double z)
-        {
-            return new V3d(
-                         Fun.Lerp(x, Min.X, Max.X), 
-                         Fun.Lerp(y, Min.Y, Max.Y), 
-                         Fun.Lerp(z, Min.Z, Max.Z));
-        }
+            => Fun.Lerp(new V3d(x, y, z), Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3d InvLerp(V3d p)
-        {
-            return new V3d(
-                        Fun.InvLerp(p.X, Min.X, Max.X), 
-                        Fun.InvLerp(p.Y, Min.Y, Max.Y), 
-                        Fun.InvLerp(p.Z, Min.Z, Max.Z));
-        }
+            => Fun.InvLerp(p, Min, Max);
 
         /// <summary>
         /// Inverse of Lerp.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3d InvLerp(double x, double y, double z)
-        {
-            return new V3d(
-                        Fun.InvLerp(x, Min.X, Max.X), 
-                        Fun.InvLerp(y, Min.Y, Max.Y), 
-                        Fun.InvLerp(z, Min.Z, Max.Z));
-        }
+            => Fun.InvLerp(new V3d(x, y, z), Min, Max);
+
 
         /// <summary>
         /// Returns the box with Min value clamped to splitValue.
