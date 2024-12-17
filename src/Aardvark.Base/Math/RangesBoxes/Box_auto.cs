@@ -4177,6 +4177,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Construct a Range1i from a V2i.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Range1i(V2i v)
+        {
+            Min = v.X;
+            Max = v.Y;
+        }
+
+        /// <summary>
         /// Creates a range from minimum and maximum limits.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -4346,6 +4356,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Range1i(Range1d b)
             => new Range1i(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Range1i(V2i v)
+            => new Range1i(v);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator V2i(Range1i r)
+            => new V2i(r.Min, r.Max);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2i ToV2i()
+            => (V2i)this;
 
         #endregion
 
@@ -5168,6 +5190,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Construct a Range1ui from a V2ui.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Range1ui(V2ui v)
+        {
+            Min = v.X;
+            Max = v.Y;
+        }
+
+        /// <summary>
         /// Creates a range from minimum and maximum limits.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5337,6 +5369,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Range1ui(Range1d b)
             => new Range1ui(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Range1ui(V2ui v)
+            => new Range1ui(v);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator V2ui(Range1ui r)
+            => new V2ui(r.Min, r.Max);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2ui ToV2ui()
+            => (V2ui)this;
 
         #endregion
 
@@ -6159,6 +6203,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Construct a Range1l from a V2l.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Range1l(V2l v)
+        {
+            Min = v.X;
+            Max = v.Y;
+        }
+
+        /// <summary>
         /// Creates a range from minimum and maximum limits.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6328,6 +6382,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Range1l(Range1d b)
             => new Range1l(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Range1l(V2l v)
+            => new Range1l(v);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator V2l(Range1l r)
+            => new V2l(r.Min, r.Max);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2l ToV2l()
+            => (V2l)this;
 
         #endregion
 
@@ -8141,6 +8207,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Construct a Range1f from a V2f.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Range1f(V2f v)
+        {
+            Min = v.X;
+            Max = v.Y;
+        }
+
+        /// <summary>
         /// Creates a range from minimum and maximum limits.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -8310,6 +8386,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Range1f(Range1d b)
             => new Range1f(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Range1f(V2f v)
+            => new Range1f(v);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator V2f(Range1f r)
+            => new V2f(r.Min, r.Max);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2f ToV2f()
+            => (V2f)this;
 
         #endregion
 
@@ -9200,6 +9288,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Construct a Range1d from a V2d.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Range1d(V2d v)
+        {
+            Min = v.X;
+            Max = v.Y;
+        }
+
+        /// <summary>
         /// Creates a range from minimum and maximum limits.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9369,6 +9467,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator Range1d(Range1f b)
             => new Range1d(b);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Range1d(V2d v)
+            => new Range1d(v);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator V2d(Range1d r)
+            => new V2d(r.Min, r.Max);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly V2d ToV2d()
+            => (V2d)this;
 
         #endregion
 

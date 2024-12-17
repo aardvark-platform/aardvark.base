@@ -516,6 +516,17 @@ namespace Aardvark.Base
             return VecTypeMapArray[dimensions][fieldType];
         }
 
+        public static VecType TryGetVecTypeOf(int dimensions, SimpleType fieldType)
+        {
+            if (dimensions >= 0 && dimensions < VecTypeMapArray.Length)
+            {
+                if (VecTypeMapArray[dimensions].TryGetValue(fieldType, out var result))
+                    return result;
+            }
+
+            return null;
+        }
+
         public static readonly MatDims[] MatTypeDimensions = new[]
         {
             new MatDims(2, 2), new MatDims(2, 3),

@@ -1,4 +1,5 @@
 - Marked quaternion to matrix conversion obsolete as it is misleading
+- Added conversions between ranges and 2D vectors
 
 ### 5.3.6
 - Updated System.Text.Json dependency (CVE-2024-43485)

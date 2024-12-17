@@ -116,6 +116,8 @@ namespace Aardvark.Base
     //#     var lt = t.LimitType; var vt = lt as Meta.VecType;
     //#     int dim = vt != null ? vt.Len : 1;
     //#     var ft = dim > 1 ? vt.FieldType : lt;
+    //#     var vtrep = dim == 1 ? Meta.TryGetVecTypeOf(2, ft) : null;
+    //#     var vtype = vtrep?.Name;
     //#     var ch = ft.Char;
     //#     int dplus1 = dim + 1;
     //#     var fields = dim > 1 ? vt.Fields : null;
@@ -172,6 +174,18 @@ namespace Aardvark.Base
         }
 
         //#     }
+        //# }
+        //# if (vtype != null) {
+        /// <summary>
+        /// Construct a __type__ from a __vtype__.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public __type__(__vtype__ v)
+        {
+            Min = v.X;
+            Max = v.Y;
+        }
+
         //# }
         /// <summary>
         /// Creates a __bname__ from minimum and maximum limits.
@@ -379,6 +393,20 @@ namespace Aardvark.Base
             => new __type__(b);
 
         //#     }
+        //# }
+        //# if (vtype != null) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __type__(__vtype__ v)
+            => new __type__(v);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator __vtype__(__type__ r)
+            => new __vtype__(r.Min, r.Max);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __vtype__ To__vtype__()
+            => (__vtype__)this;
+
         //# }
         #endregion
 
