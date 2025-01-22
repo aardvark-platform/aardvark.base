@@ -1440,18 +1440,13 @@ namespace Aardvark.Base
         [DllImport("libc")]
         private static extern int symlink(string src, string linkName);
 
-
-        [DllImport("kernel32")]
-        private static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int flags);
-
         private static void CreateSymlink(string baseDir, string src, string dst)
         {
             var os = GetOS();
             if (os == OS.Win32 || os == OS.Unknown) return;
 
             string targetName;
-            string targetPath;
-            if (LdConfig.TryGetPath(dst, out targetPath))
+            if (LdConfig.TryGetPath(dst, out string targetPath))
             {
                 targetName = targetPath;
             }
@@ -1465,23 +1460,23 @@ namespace Aardvark.Base
             {
                 var linkPath = Path.Combine(baseDir, src);
 
-                Report.Line(3, "creating symlink {0} -> {1}", src, targetName);
+                Report.Line(3, $"Creating symlink {src} -> {targetName}");
+
                 if (File.Exists(linkPath))
                 {
-                    Report.Line(3, "deleting old symlink {0}", src);
+                    Report.Line(3, $"Deleting old symlink {src}");
                     File.Delete(linkPath);
                 }
 
                 if (symlink(targetName, linkPath) != 0)
                 {
-                    Report.Warn("could not create symlink {0}", src);
+                    Report.Warn($"Could not create symlink {src}");
                 }
             }
             else
             {
-                Report.Warn("could not create symlink to {0} (does not exist)", targetName);
+                Report.Warn($"Could not create symlink to {targetName} (does not exist)");
             }
-
         }
 
         #endregion
@@ -1524,142 +1519,140 @@ namespace Aardvark.Base
             }
         }
 
-        [Obsolete("Not used internally anymore.")]
-        public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
+        private static readonly Regex nativeLibraryRx =
+            GetOS() switch
+            {
+                OS.Win32 => new Regex(@"\.(dll|exe)$", RegexOptions.Compiled),
+                OS.Linux => new Regex(@"\.so(\.[0-9\-]+)?$", RegexOptions.Compiled),
+                OS.MacOS => new Regex(@"\.dylib$", RegexOptions.Compiled),
+                _ => null
+            };
+
+        /// <summary>
+        /// Returns whether the file path appears to be a native library for the current platform.
+        /// </summary>
+        private static bool IsNativeLibrary(string path)
+            => nativeLibraryRx?.IsMatch(path) ?? false;
+
+        /// <summary>
+        /// Unpacks and lists native dependencies of the given assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly to unpack.</param>
+        /// <param name="outputDir">The output directory for the native dependencies. Defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/> if null or empty.</param>
+        /// <returns>An array of unpacked native library names.</returns>
+        public static string[] UnpackAndListNativeDependencies(Assembly assembly, string outputDir = null)
         {
-            if (a.IsDynamic) return;
+            if (assembly.IsDynamic) return [];
+            if (outputDir.IsNullOrEmpty()) outputDir = IntrospectionProperties.CurrentEntryPath;
+
+            Report.Begin(3, $"Unpacking native dependencies for {assembly.FullName}");
 
             try
             {
-                var symlinks = new Dictionary<string, string>();
-                var info = a.GetManifestResourceInfo("native.zip");
-                if (info == null) return;
-
-                Report.Begin(3, "Unpacking native dependencies for {0}", a.FullName);
-
-
-                using (var s = a.GetManifestResourceStream("native.zip"))
+                try
                 {
-                    using (var archive = new ZipArchive(s))
+                    var info = assembly.GetManifestResourceInfo("native.zip");
+                    if (info == null)
                     {
-                        string arch;
-                        string platform;
-                        GetPlatformAndArch(out platform, out arch);
+                        Report.Line(3, $"Assembly does not contain native dependencies.");
+                        return [];
+                    }
 
-                        var copyPaths = platform + "/" + arch;
-                        var remapFile = "remap.xml";
+                    GetPlatformAndArch(out string platform, out string arch);
 
+                    string[] copyPaths = [ $"{platform}/{arch}/", $"{arch}/" ];
+                    List<string> libNames = [];
+                    Dictionary<string, string> remap = [];
 
-                        foreach (var e in archive.Entries)
+                    bool TryGetLocalName(string entryName, out string localName)
+                    {
+                        foreach(var prefix in copyPaths)
                         {
-                            var name = e.FullName.Replace('\\', '/');
-
-                            if (e.FullName == remapFile)
+                            if (entryName.StartsWith(prefix))
                             {
-                                var doc = System.Xml.Linq.XDocument.Load(e.Open());
-                                symlinks = GetSymlinks(doc);
-                            }
-                            else if (name.StartsWith(copyPaths))
-                            {
-                                name = name.Substring(copyPaths.Length);
-                                var localComponents = name.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
+                                var name = entryName.Substring(prefix.Length);
+                                var parts = name.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
 
-                                if (localComponents.Length != 0)
+                                if (parts.Length > 0)
                                 {
-                                    var localTarget = Path.Combine(localComponents);
-                                    var outputPath = Path.Combine(baseDir, localTarget);
-
-                                    var d = Path.GetDirectoryName(outputPath);
-                                    if (!Directory.Exists(Path.GetDirectoryName(outputPath)))
-                                    {
-                                        Directory.CreateDirectory(d);
-                                    }
-
-                                    if (!File.Exists(outputPath))
-                                    {
-                                        e.ExtractToFile(outputPath);
-                                        Report.Line(3, "unpacked: {0}", outputPath);
-                                    }
-                                    else if(File.GetLastWriteTimeUtc(outputPath) < e.LastWriteTime.UtcDateTime)
-                                    {
-                                        e.ExtractToFile(outputPath, true);
-                                        Report.Line(3, "unpacked: {0} (outdated)", outputPath);
-                                    }
+                                    localName = Path.Combine(parts);
+                                    return true;
                                 }
                             }
                         }
-                    }
-                }
 
-                var myOS = GetOS();
-                foreach(var kvp in symlinks)
+                        localName = null;
+                        return false;
+                    }
+
+                    using var s = assembly.GetManifestResourceStream("native.zip");
+                    using var archive = new ZipArchive(s);
+
+                    foreach (var e in archive.Entries)
+                    {
+                        var entryName = e.FullName.Replace(Path.DirectorySeparatorChar, '/');
+
+                        if (entryName == "remap.xml")
+                        {
+                            using var es = e.Open();
+                            var doc = XDocument.Load(es);
+                            remap = GetSymlinks(doc);
+                        }
+                        else if (TryGetLocalName(entryName, out var localName))
+                        {
+                            var dstPath = Path.Combine(outputDir, localName);
+                            var dstDir = Path.GetDirectoryName(dstPath);
+
+                            if (!File.Exists(dstDir)) Directory.CreateDirectory(dstDir);
+
+                            if (!File.Exists(dstPath) || FileUtils.GetLastWriteTimeSafe(dstPath) < e.LastWriteTime.UtcDateTime)
+                            {
+                                Report.Line(3, $"Unpacking {localName}");
+                                e.ExtractToFile(dstPath, true);
+                            }
+
+                            if (IsNativeLibrary(localName)) libNames.Add(localName);
+                        }
+                    }
+
+                    foreach (var kvp in remap)
+                    {
+                        CreateSymlink(outputDir, kvp.Key, kvp.Value);
+                        if (IsNativeLibrary(kvp.Key)) libNames.Add(kvp.Key);
+                    }
+
+                    return libNames.ToArray();
+                }
+                catch (Exception e)
                 {
-                    var linkName = kvp.Key;
-                    if (myOS == OS.Win32)
-                    {
-                        Report.Warn("could not create symlink {0}", linkName);
-                        //if (!CreateSymbolicLink(kvp.Key, kvp.Value, 0x2))
-                        //{
-                        //    Report.Warn("could not create symlink {0}", kvp.Key);
-                        //}
-                    }
-                    else
-                    {
-                        string targetName;
-                        string targetPath;
-                        if(LdConfig.TryGetPath(kvp.Value, out targetPath))
-                        {
-                            targetName = targetPath;
-                        }
-                        else {
-                            targetName = kvp.Value;
-                            targetPath = Path.Combine(baseDir, targetName);
-                        }
-
-                        if (File.Exists(targetPath))
-                        {
-                            var linkPath = Path.Combine(baseDir, linkName);
-
-                            Report.Line(3, "creating symlink {0} -> {1}", linkName, targetName);
-                            if (File.Exists(linkPath))
-                            {
-                                Report.Line(3, "deleting old symlink {0}", linkName);
-                                File.Delete(linkPath);
-                            }
-
-                            if (symlink(targetName, linkPath) != 0)
-                            {
-                                Report.Warn("could not create symlink {0}", linkName);
-                            }
-                        }
-                        else
-                        {
-                            Report.Warn("could not create symlink to {0} (does not exist)", targetName);
-                        }
-
-                    }
+                    Report.Warn($"Could not unpack native dependencies for {assembly.FullName}: {e.Message}");
+                    return [];
                 }
-
-
-                Report.End(3);
             }
-            catch (Exception e)
+            finally
             {
-                Report.Warn("could not unpack native dependencies for {0}: {1}", a.FullName, e.Message);
                 Report.End(3);
             }
         }
 
-        [Obsolete("Not used internally anymore.")]
-        public static void UnpackNativeDependencies(Assembly a)
-        {
-            var baseDir = IntrospectionProperties.CurrentEntryPath;
-            UnpackNativeDependenciesToBaseDir(a,baseDir);
-        }
+        /// <summary>
+        /// Unpacks native dependencies of the given assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly to unpack.</param>
+        /// <param name="outputDir">The output directory for the native dependencies. Defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/> if null or empty.</param>
+        public static void UnpackNativeDependencies(Assembly assembly, string outputDir)
+            => UnpackAndListNativeDependencies(assembly, outputDir);
 
-        private static readonly Regex soRx = new Regex(@"\.so(\.[0-9\-]+)?$");
-        private static readonly Regex dllRx = new Regex(@"\.(dll|exe)$");
-        private static readonly Regex dylibRx = new Regex(@"\.dylib$");
+        /// <summary>
+        /// Unpacks native dependencies of the given assembly to <see cref="IntrospectionProperties.CurrentEntryPath"/>.
+        /// </summary>
+        /// <param name="assembly">The assembly to unpack.</param>
+        public static void UnpackNativeDependencies(Assembly assembly)
+            => UnpackAndListNativeDependencies(assembly, null);
+
+        [Obsolete("Use UnpackNativeDependencies instead.")]
+        public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
+            => UnpackNativeDependencies(a, baseDir);
 
         /// The path native dlls will be extracted to, each either each library to a separate folder or directly to the NativeLibraryPath
         /// directory (depending on the configuration of SeparateLibraryDirectories).
@@ -1913,140 +1906,59 @@ namespace Aardvark.Base
             {
                 try
                 {
-                    var symlinks = new Dictionary<string, string>();
-                    Report.BeginTimed(3, "Loading native dependencies for {0}", a.FullName);
+                    Report.BeginTimed(3, $"Loading native dependencies for {a.FullName}");
                     try
                     {
-                        GetPlatformAndArch(out string platform, out string arch);
-
-                        var copyPaths = new string[] { platform + "/" + arch + "/", arch + "/" };
-                        var toLoad = new List<string>();
-
-                        using (var s = a.GetManifestResourceStream("native.zip"))
-                        {
-                            if (!Directory.Exists(dstFolder)) Directory.CreateDirectory(dstFolder);
-
-                            var extensions = dllRx;
-                            if (platform == "linux") extensions = soRx;
-                            else if (platform == "mac") extensions = dylibRx;
-
-                            var remap = new Dictionary<string, string>();
-
-                            using (var archive = new ZipArchive(s))
-                            {
-                                foreach (var e in archive.Entries)
-                                {
-                                    var fullName = e.FullName;
-                                    fullName = fullName.Replace('\\', '/');
-
-                                    Report.Line(4, "found: {0}", fullName);
-
-                                    if (fullName == "remap.xml")
-                                    {
-                                        var doc = System.Xml.Linq.XDocument.Load(e.Open());
-                                        remap = GetSymlinks(doc);
-                                        continue;
-                                    }
-
-                                    var rest = "";
-                                    var found = false;
-                                    foreach (var p in copyPaths)
-                                    {
-                                        if (fullName.StartsWith(p))
-                                        {
-                                            rest = fullName.Substring(p.Length);
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (found)
-                                    {
-                                        var localName = Path.Combine(rest.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries));
-                                        var file =
-                                            Path.Combine(
-                                                dstFolder,
-                                                localName
-                                            );
-
-                                        Report.Line(4, "copy {0} to {1}", localName, file);
-
-                                        var dir = Path.GetDirectoryName(file);
-                                        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-
-                                        if (!File.Exists(file)) e.ExtractToFile(file);
-                                        if (extensions.IsMatch(fullName)) toLoad.Add(localName);
-                                    }
-                                }
-                            }
-
-                            foreach (var kvp in remap)
-                            {
-                                CreateSymlink(dstFolder, kvp.Key, kvp.Value);
-                                if (extensions.IsMatch(kvp.Key))
-                                {
-                                    toLoad.Add(kvp.Key);
-                                }
-                            }
-
-                        }
-
+                        var libNames = UnpackAndListNativeDependencies(a, dstFolder);
 
 #if NETCOREAPP3_1_OR_GREATER
-
-                        string[] formats = Array.Empty<string>();
-                        var os = GetOS();
-
-                        if (os == OS.Linux) formats = new[] { "{0}.so", "lib{0}.so", "lib{0}.so.1" };
-                        else if (os == OS.Win32) formats = new[] { "{0}.dll" };
-                        else if (os == OS.MacOS) formats = new[] { "{0}.dylib", "lib{0}.dylib" };
-
                         NativeLibrary.SetDllImportResolver(a, (name, ass, searchPath) =>
                         {
                             return LoadLibrary(ass, name);
                         });
-
 #else
+                        var isWindows = GetOS() == OS.Win32;
 
                         // NOTE: libraries such as IPP are spread over multiple dlls that will now get loaded in an nondeterministic order -> make sure native dependencies between them can be resolved
                         //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directory of the library that should be loaded
                         //        - for some other reason AddDllDirectory does not help loading libraries, even it should provide similar behavior than SetDllDirectory
-                        if (platform == "windows")
+                        if (isWindows)
                             Kernel32.SetDllDirectory(dstFolder);
 
-                        foreach (var file in toLoad)
+                        foreach (var file in libNames)
                         {
                             try
                             {
                                 var ptr = IntPtr.Zero;
                                 var filePath = Path.Combine(dstFolder, file);
-                                if (platform == "windows") ptr = Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
-                                else ptr = Dl.dlopen(filePath, 0x01102);
+                                if (isWindows)
+                                    ptr = Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
+                                else
+                                    ptr = Dl.dlopen(filePath, 0x01102);
 
                                 if (ptr == IntPtr.Zero)
                                 {
-                                    if (platform == "windows")
+                                    if (isWindows)
                                     {
                                         var err = Kernel32.GetLastError();
-                                        Report.Warn("could not load native library: {0} Error={1}", file, err);
+                                        Report.Warn($"Could not load native library {filePath} (Error = {err})");
                                     }
                                     else
                                     {
-                                        Report.Warn("could not load native library: {0}", filePath);
+                                        Report.Warn($"Could not load native library {filePath}");
                                     }
                                 }
                                 else
                                 {
-                                    Report.Line(3, "loaded {0}", file);
+                                    Report.Line(3, $"Loaded {file}");
                                 }
                             }
                             catch (Exception ex)
                             {
-                                Report.Warn("could not load native library {0}: {1}", file, ex.Message);
+                                Report.Warn($"Could not load native library {file}: {ex.Message}");
                             }
                         }
 #endif
-
                     }
                     finally
                     {
@@ -2055,10 +1967,9 @@ namespace Aardvark.Base
                 }
                 catch (Exception e)
                 {
-                    Report.Warn("could not load native dependencies for {0}: {1}", a.FullName, e.Message);
+                    Report.Warn($"Could not load native dependencies for {a.FullName}: {e.Message}");
                 }
             }
-
         }
 
         private static string ArchitectureString(Architecture arch)
@@ -2138,40 +2049,33 @@ namespace Aardvark.Base
                 Kernel32.SetErrorMode(1); // set error mode to SEM_FAILCRITICALERRORS 0x0001: do not display cirital error message boxes
 #endif
 
-            Action<Assembly> loadNativeDependencies = e =>
-                {
-                    if (IntrospectionProperties.NativeLibraryUnpackingAllowed)
-                    {
-                        try
-                        {
-                            // https://github.com/aardvark-platform/aardvark.base/issues/61
-                            var shouldLoad = IntrospectionProperties.UnpackNativeLibrariesFilter(e);
-                            if (shouldLoad)
-                            {
-                                Report.Begin(4, "trying to load native dependencies for {0}", e.FullName);
-                                LoadNativeDependencies(e);
-                                Report.End(4);
-                            }
-                            else
-                            {
-                                Report.Line(4, "skipped LoadNativeDependencies for {0}", e.FullName);
-                            }
-                        }
-                        catch (Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
-                        {
-                            Report.Warn("Could not load native dependencies for {0}: {1}", e.FullName, ex.Message);
-                            Report.End(4);
-                        }
-                    }
-                };
-
-            AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
+            static void loadNativeDependencies(Assembly assembly)
             {
-                loadNativeDependencies(e.LoadedAssembly);
-            };
+                try
+                {
+                    // https://github.com/aardvark-platform/aardvark.base/issues/61
+                    if (IntrospectionProperties.UnpackNativeLibrariesFilter(assembly))
+                    {
+                        LoadNativeDependencies(assembly);
+                    }
+                    else
+                    {
+                        Report.Line(4, "Skipped loading native dependencies for {0}", assembly.FullName);
+                    }
+                }
+                catch (Exception ex) // actually catching exns here might not even be possible due to mscorlib recursive resource bug detection
+                {
+                    Report.Warn($"Could not load native dependencies for {assembly.FullName}: {ex.Message}");
+                }
+            }
 
             if (IntrospectionProperties.NativeLibraryUnpackingAllowed)
             {
+                AppDomain.CurrentDomain.AssemblyLoad += (s, e) =>
+                {
+                    loadNativeDependencies(e.LoadedAssembly);
+                };
+
                 foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     loadNativeDependencies(a);
