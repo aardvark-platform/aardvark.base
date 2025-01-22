@@ -1,6 +1,8 @@
+### 5.3.7
 - Marked quaternion to matrix conversion obsolete as it is misleading
 - Added conversions between ranges and 2D vectors
 - Added Lerp and InvLerp for integer ranges and boxes
+- Unified native dependency unpacking and added Aardvark.UnpackAndListNativeDependencies
 
 ### 5.3.6
 - Updated System.Text.Json dependency (CVE-2024-43485)
