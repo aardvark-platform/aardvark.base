@@ -84,6 +84,16 @@ module Prelude =
 
             res
 
+        /// Computes the sum of the given sequence using the Kahan summation algorithm.
+        let inline stableSumBy (projection: 'T -> float) (source: 'T seq) =
+            let mutable sum = KahanSum.Zero
+            for x in source do sum <- sum + projection x
+            sum.Value
+
+        /// Computes the sum of the given sequence using the Kahan summation algorithm.
+        let inline stableSum (source: float seq) =
+            stableSumBy id source
+
         open System.Collections
         open System.Collections.Generic
 
@@ -158,6 +168,16 @@ module Prelude =
                 | xs -> x::separator::xs
             )
 
+        /// Computes the sum of the given list using the Kahan summation algorithm.
+        let inline stableSumBy (projection: 'T -> float) (list: 'T list) =
+            let mutable sum = KahanSum.Zero
+            for x in list do sum <- sum + projection x
+            sum.Value
+
+        /// Computes the sum of the given list using the Kahan summation algorithm.
+        let inline stableSum (list: float list) =
+            stableSumBy id list
+
     module Array =
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
@@ -193,6 +213,16 @@ module Prelude =
                     | res -> res
 
             loop 0
+
+        /// Computes the sum of the given array using the Kahan summation algorithm.
+        let inline stableSumBy (projection: 'T -> float) (array: 'T[]) =
+            let mutable sum = KahanSum.Zero
+            for x in array do sum <- sum + projection x
+            sum.Value
+
+        /// Computes the sum of the given array using the Kahan summation algorithm.
+        let inline stableSum (array: float[]) =
+            stableSumBy id array
 
     module Disposable =
 

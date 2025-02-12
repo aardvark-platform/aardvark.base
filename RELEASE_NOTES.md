@@ -1,3 +1,5 @@
+- [FSharp] Added stableSum and stableSumBy for List, Array, and Seq
+
 ### 5.3.7
 - Marked quaternion to matrix conversion obsolete as it is misleading
 - Added conversions between ranges and 2D vectors
