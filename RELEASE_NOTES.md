@@ -1,4 +1,6 @@
+### 5.3.8
 - [FSharp] Added stableSum and stableSumBy for List, Array, and Seq
+- added basic BbTree implementation without operations
 
 ### 5.3.7
 - Marked quaternion to matrix conversion obsolete as it is misleading
