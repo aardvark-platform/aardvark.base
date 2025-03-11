@@ -114,9 +114,9 @@ namespace Aardvark.Base
                 return 0.0;
             }
             double seconds; string time; LogOpt opt;
-            if (m_job.Timer != null)
+            if (m_job.IsTimed)
             {
-                seconds = m_job.Timer.ElapsedMilliseconds * 0.001; opt = LogOpt.EndLine | LogOpt.Timed;
+                seconds = m_job.ElapsedSeconds; opt = LogOpt.EndLine | LogOpt.Timed;
                 time = String.Format(CultureInfo.InvariantCulture, "{0:F3} s", seconds);
             }
             else
@@ -176,14 +176,14 @@ namespace Aardvark.Base
             if (progress > 1.0) progress = 1.0;
             m_job.Progress = progress;
             double seconds; string text; LogOpt opt;
-            if (m_job.Timer == null)
+            if (!m_job.IsTimed)
             {
                 seconds = -1.0; opt = LogOpt.None;
                 text = String.Format(CultureInfo.InvariantCulture, "{0,6:F2}%", 100.0 * progress);
             }
             else
             {
-                seconds = m_job.Timer.ElapsedMilliseconds * 0.001; opt = LogOpt.Timed;
+                seconds = m_job.ElapsedSeconds; opt = LogOpt.Timed;
                 text = String.Format(CultureInfo.InvariantCulture, "{0,6:F2}% {1,10:F3} s", 100.0 * progress, seconds);
             }
             target.Log(m_ti, new LogMsg(LogType.Progress, opt, level,

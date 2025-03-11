@@ -10,11 +10,19 @@ namespace Aardvark.Base
         public readonly ReportJob ParentJob;
         public double ChildrenTime;
         internal int Level;
-        internal Stopwatch Timer;
+        internal long StartTime = -1;
         internal double Progress;
         internal bool ReportTests;
         internal TestInfo TestInfo;
         internal bool Disposed;
+
+        internal bool IsTimed => StartTime >= 0;
+
+#if NET8_0_OR_GREATER
+        internal double ElapsedSeconds => Stopwatch.GetElapsedTime(StartTime).TotalSeconds;
+#else
+        internal double ElapsedSeconds => new TimeSpan((Stopwatch.GetTimestamp() - StartTime) * TimeSpan.TicksPerSecond / Stopwatch.Frequency).TotalSeconds;
+#endif
 
         public ReportJob(string message, int level, bool timed, ReportJob parentJob = null)
         {
@@ -27,10 +35,9 @@ namespace Aardvark.Base
             Progress = -1.0;
             ReportTests = false;
             TestInfo = default(TestInfo);
+                        
             if (timed)
-            { Timer = new Stopwatch(); Timer.Start(); }
-            else
-                Timer = null;
+                StartTime = Stopwatch.GetTimestamp();
         }
 
         public void Dispose() { if (!Disposed) Report.End(Level); }
