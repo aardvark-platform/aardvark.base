@@ -26,6 +26,24 @@ module Prelude =
         let unionMany (input : seq<Map<'k, 'v>>) =
             (Map.empty, input) ||> Seq.fold union
 
+        let inline tryFindV (key: 'Key) (map: Map<'Key, 'Value>) =
+            match map.TryGetValue key with
+            | true, value -> ValueSome value
+            | _ -> ValueNone
+
+        let ofSeqWithDuplicates (input: seq<'Key * 'Value>) =
+            let mutable result = Map.empty
+
+            for key, value in input do
+                let set =
+                    match result.TryGetValue key with
+                    | true, set -> set |> Set.add value
+                    | _ -> Set.singleton value
+
+                result <- result |> Map.add key set
+
+            result
+
     module Seq =
         let inline iter' ([<InlineIfLambda>] f : 'a -> 'b) (s : seq<'a>) =
             for i in s do
@@ -43,6 +61,7 @@ module Prelude =
             let xs = xs |> Seq.map (fun a -> f a, a) |> Seq.cache
             (xs |> Seq.filter (fun (r,v) -> not r) |> Seq.map snd, xs |> Seq.filter (fun (r,v) -> r) |> Seq.map snd)
 
+        [<Obsolete("Is anybody actually using this?")>]
         let inline chooseOption ([<InlineIfLambda>] f : 'a -> Option<'b>) (xs : seq<Option<'a>>) : seq<Option<'b>> =
             seq {
                 for x in xs do
@@ -50,6 +69,31 @@ module Prelude =
                      | None -> ()
                      | Some x -> yield f x
             }
+
+        let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (source: 'T seq) : 'U seq =
+            let mutable i = 0
+            let result = ResizeArray<'U>()
+
+            use e = source.GetEnumerator()
+            while e.MoveNext() do
+                match chooser i e.Current with
+                | Some v -> result.Add v
+                | _ -> ()
+
+                i <- i + 1
+
+            result :> 'U seq
+
+        let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U seq) (source: 'T seq) : 'U seq =
+            let mutable i = 0
+            let result = ResizeArray<'U>()
+
+            use e = source.GetEnumerator()
+            while e.MoveNext() do
+                result.AddRange(mapping i e.Current)
+                i <- i + 1
+
+            result :> 'U seq
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
             use e = source.GetEnumerator()
@@ -147,6 +191,24 @@ module Prelude =
         let partition (f : 'a -> bool) (source : list<'a>) =
             partitionAcc f source (System.Collections.Generic.List()) (System.Collections.Generic.List())
 
+        let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (list: 'T list) =
+            let i = ref -1
+
+            let chooser value =
+                i.Value <- i.Value + 1
+                chooser i.Value value
+
+            List.choose chooser list
+
+        let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U list) (list: 'T list) =
+            let i = ref -1
+
+            let mapping value =
+                i.Value <- i.Value + 1
+                mapping i.Value value
+
+            List.collect mapping list
+
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (list : 'T list) =
             match list with
             | [] -> state
@@ -179,6 +241,24 @@ module Prelude =
             stableSumBy id list
 
     module Array =
+
+        let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (array: 'T[]) =
+            let i = ref -1
+
+            let chooser value =
+                i.Value <- i.Value + 1
+                chooser i.Value value
+
+            Array.choose chooser array
+
+        let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U[]) (array: 'T[]) =
+            let i = ref -1
+
+            let mapping value =
+                i.Value <- i.Value + 1
+                mapping i.Value value
+
+            Array.collect mapping array
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
             let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt(folder)

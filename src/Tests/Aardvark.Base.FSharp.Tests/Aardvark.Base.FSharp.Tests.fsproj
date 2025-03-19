@@ -28,6 +28,7 @@
     <Compile Include="Datastructures\SortedSetExt.fs" />
     <Compile Include="Datastructures\MapExt.fs" />
     <Compile Include="Datastructures\OrderMaintenanceTrie.fs" />
+    <Compile Include="Datastructures\FSharpExtensionTests.fs" />
     <Compile Include="EnumTests.fs" />
     <Compile Include="CachesTest.fs" />
     <Compile Include="PureAgTests.fs" />
