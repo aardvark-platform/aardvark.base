@@ -1,3 +1,6 @@
+- [FSharp] Added NativePtr.stackUseArr
+- [Report] Using Stopwatch.GetTimestamp() instead of Stopwatch instance in ReportJob
+
 ### 5.3.8
 - [FSharp] Added stableSum and stableSumBy for List, Array, and Seq
 - added basic BbTree implementation without operations
