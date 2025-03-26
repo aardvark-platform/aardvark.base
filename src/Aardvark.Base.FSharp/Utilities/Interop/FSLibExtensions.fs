@@ -8,6 +8,27 @@ open FSharp.NativeInterop
 [<AutoOpen>]
 module Prelude =
 
+    [<AutoOpen>]
+    module ``Assignment Operators`` =
+
+        // Arithmetic
+        let inline ( += ) (x: byref<'T1>) (y: 'T2) = x <- x + y
+        let inline ( -= ) (x: byref<'T1>) (y: 'T2) = x <- x - y
+        let inline ( *= ) (x: byref<'T1>) (y: 'T2) = x <- x * y
+        let inline ( /= ) (x: byref<'T1>) (y: 'T2) = x <- x / y
+        let inline ( %= ) (x: byref<'T1>) (y: 'T2) = x <- x % y
+
+        // Boolean
+        let inline ( ||= ) (x: byref<bool>) (y: bool) = x <- x || y
+        let inline ( &&= ) (x: byref<bool>) (y: bool) = x <- x && y
+
+        // Bitwise
+        let inline ( |||= ) (x: byref<'T>) (y: 'T) = x <- x ||| y
+        let inline ( &&&= ) (x: byref<'T>) (y: 'T) = x <- x &&& y
+        let inline ( ^^^= ) (x: byref<'T>) (y: 'T) = x <- x ^^^ y
+        let inline ( <<<= ) (value: byref<'T>) (shift: int) = value <- value <<< shift
+        let inline ( >>>= ) (value: byref<'T>) (shift: int) = value <- value >>> shift
+
     let inc (a:byref<int>) = a <- a + 1
     let dec (a:byref<int>) = a <- a - 1
 

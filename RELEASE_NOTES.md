@@ -3,6 +3,7 @@
 - [FSharp] Added Map.tryFindV
 - [FSharp] Added Map.ofSeqWithDuplicates
 - [FSharp] Added choosei, collecti for Seq, List, Array
+- [FSharp] Added assignment operators
 
 ### 5.3.8
 - [FSharp] Added stableSum and stableSumBy for List, Array, and Seq
