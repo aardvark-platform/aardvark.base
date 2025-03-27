@@ -4,6 +4,7 @@
 - [FSharp] Added Map.ofSeqWithDuplicates
 - [FSharp] Added choosei, collecti for Seq, List, Array
 - [FSharp] Added assignment operators
+- [FSharp] Added Type.CLRSize extension property
 
 ### 5.3.8
 - [FSharp] Added stableSum and stableSumBy for List, Array, and Seq

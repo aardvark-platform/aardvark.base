@@ -8,6 +8,10 @@ open FSharp.NativeInterop
 [<AutoOpen>]
 module Prelude =
 
+    type Type with
+        /// The managed size of the type.
+        member inline this.CLRSize = this.GetCLRSize()
+
     [<AutoOpen>]
     module ``Assignment Operators`` =
 
