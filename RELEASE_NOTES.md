@@ -5,6 +5,7 @@
 - [FSharp] Added choosei, collecti for Seq, List, Array
 - [FSharp] Added assignment operators
 - [FSharp] Added Type.CLRSize extension property
+- [Introspection] Made native library loading more robust
 
 ### 5.3.8
 - [FSharp] Added stableSum and stableSumBy for List, Array, and Seq
