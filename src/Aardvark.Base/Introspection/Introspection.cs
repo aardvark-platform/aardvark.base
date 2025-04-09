@@ -1221,31 +1221,22 @@ namespace Aardvark.Base
             bool isPlugin = false;
             bool exists = oldCache.TryGetValue(source.Path, out PluginCache.Data cacheValue);
 
-            if (exists)
+            if (exists && source.LastModified <= cacheValue.LastModified)
             {
-                if (source.LastModified <= cacheValue.LastModified)
-                {
-                    Report.Line(4, $"[IsPlugin] Cache found for: {source.Path}");
-                    isPlugin = cacheValue.IsPlugin;
-                }
-                else
-                {
-                    Report.Line(4, $"[IsPlugin] Retrying to load because cache is outdated: {source.Path}");
-                }
+                Report.Line(4, $"[IsPlugin] Cache found for: {source.Path}");
+                isPlugin = cacheValue.IsPlugin;
             }
             else
             {
-                Report.Line(4, $"[IsPlugin] Retrying to load because not in cache: {source.Path}");
+                if (exists)
+                    Report.Line(4, $"[IsPlugin] Retrying to load because cache is outdated: {source.Path}");
+                else
+                    Report.Line(4, $"[IsPlugin] Retrying to load because not in cache: {source.Path}");
 
                 try
                 {
                     using var s = source.OpenRead();
-
-                    if (ProbeForPlugin(s))
-                    {
-                        Report.Line(4, $"[IsPlugin] Plugin found: {source.Path}");
-                        isPlugin = true;
-                    }
+                    isPlugin = ProbeForPlugin(s);
                 }
                 catch (Exception e)
                 {
@@ -1253,6 +1244,7 @@ namespace Aardvark.Base
                 }
             }
 
+            if (isPlugin) Report.Line(3, $"[IsPlugin] Plugin found: {source.Path}");
             newCache[source.Path] = new PluginCache.Data(source.LastModified, isPlugin);
             return isPlugin;
         }
@@ -1594,7 +1586,11 @@ namespace Aardvark.Base
                             if (entryName.StartsWith(prefix))
                             {
                                 var name = entryName.Substring(prefix.Length);
+#if NET8_0_OR_GREATER
+                                var parts = name.Split('/', StringSplitOptions.RemoveEmptyEntries);
+#else
                                 var parts = name.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
+#endif
 
                                 if (parts.Length > 0)
                                 {
