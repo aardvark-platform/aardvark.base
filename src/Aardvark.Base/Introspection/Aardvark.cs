@@ -1,14 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 #if NET8_0_OR_GREATER
 using System.Runtime.Loader;
@@ -64,7 +57,7 @@ namespace Aardvark.Base
         {
             if (isInitialized) return;
 
-            Report.BeginTimed("initializing aardvark");
+            Report.BeginTimed("Initializing aardvark");
 
             Report.Begin("System Information:");
             Report.Line("System:      {0}", RuntimeInformation.OSDescription);
@@ -149,10 +142,14 @@ namespace Aardvark.Base
                     loadNativeDependencies(e.LoadedAssembly);
                 };
 
+                Report.BeginTimed("Loading native dependencies");
+
                 foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     loadNativeDependencies(a);
                 }
+
+                Report.End();
             }
             else
             {

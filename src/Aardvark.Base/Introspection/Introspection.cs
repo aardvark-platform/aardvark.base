@@ -11,9 +11,8 @@ namespace Aardvark.Base
     public static class Introspection
     {
         private static readonly CultureInfo s_cultureInfoEnUs = new("en-us");
-        private static readonly Dictionary<string, Assembly> s_assemblies;
-        private static readonly HashSet<string> s_assembliesThatFailedToLoad = new HashSet<string>();
-        private static readonly HashSet<Assembly> s_allAssemblies = new HashSet<Assembly>();
+        private static readonly HashSet<string> s_processedAssemblies = new();
+        private static readonly HashSet<Assembly> s_allAssemblies = new();
 
         private static readonly Lazy<string> s_cacheDirectory = new(() =>
         {
@@ -166,8 +165,6 @@ namespace Aardvark.Base
         static Introspection()
         {
             // enumerating all assemblies reachable from entry assembly
-            s_assemblies = new Dictionary<string, Assembly>();
-
             var entryAssembly = IntrospectionProperties.CurrentEntryAssembly ?? typeof(Aardvark).Assembly;
 
             if (entryAssembly == null)
@@ -217,14 +214,15 @@ namespace Aardvark.Base
                         Report.Line(4, $"{Path.GetFileName(file)}");
                         EnumerateAssemblies(name.Name);
                     }
-                    catch
+                    catch (Exception e)
                     {
+                        Report.Warn($"[Introspection] Failed to register assembly '{file}': {e.Message}'");
                     }
                 }
             }
             catch (Exception e)
             {
-                Report.Warn($"Error while registering assemblies in '{path}': {e.Message}");
+                Report.Warn($"[Introspection] Error while registering assemblies in '{path}': {e.Message}");
             }
             finally
             {
@@ -244,30 +242,27 @@ namespace Aardvark.Base
         private static void EnumerateAssemblies(string name, Assembly customAssembly = null)
         {
             if (string.IsNullOrEmpty(name)) return;
-            if (s_assembliesThatFailedToLoad.Contains(name)) return;
-            if (s_assemblies.ContainsKey(name)) return;
+            if (!s_processedAssemblies.Add(name)) return;
 
             if (!IntrospectionProperties.AssemblyFilter(name))
             {
-                Report.Line(4, "[Introspection] Ignoring assembly {0} due to filter", name);
+                Report.Line(4, $"[Introspection] Ignoring assembly {name} due to filter");
                 return;
             }
 
             try
             {
                 var assembly = customAssembly ?? Assembly.Load(name);
-                s_assemblies[name] = assembly;
                 RegisterAssembly(assembly);
-                foreach (var a in assembly.GetReferencedAssemblies())
+
+                foreach (var referencedName in assembly.GetReferencedAssemblies())
                 {
-                    EnumerateAssemblies(a.Name);
+                    EnumerateAssemblies(referencedName.Name);
                 }
             }
-            catch //(Exception e)
+            catch (Exception e)
             {
-                s_assembliesThatFailedToLoad.Add(name);
-                //Report.Warn(e.ToString());
-                //Report.Warn("{0}", name);
+                Report.Warn($"[Introspection] Error while loading assembly {name}: {e.Message}");
             }
         }
 
@@ -332,9 +327,10 @@ namespace Aardvark.Base
                         return decode(lines.Skip(1)).ToArray();
                     }
                 }
-            } catch(Exception e)
+            }
+            catch(Exception e)
             {
-                Report.Warn("Could not get cache for {1}: {0}", e.Message, a.FullName);
+                Report.Warn("[Introspection] Could not get cache for {1}: {0}", e.Message, a.FullName);
             }
 
             Report.Line(4, "[cache miss] {0}", a);
