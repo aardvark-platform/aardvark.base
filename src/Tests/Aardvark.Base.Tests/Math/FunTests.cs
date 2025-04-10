@@ -83,6 +83,7 @@ namespace Aardvark.Tests
             Assert.AreEqual(max, max_ref, "Max not equal to reference");
         }
 
+#if NET8_0_OR_GREATER
         private static double NextAfter(double input, int dir)
             => BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(input) + dir);
 
@@ -237,5 +238,6 @@ namespace Aardvark.Tests
                 }
             }
         }
+#endif
     }
 }

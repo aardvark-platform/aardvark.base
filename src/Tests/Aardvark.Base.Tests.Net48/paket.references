@@ -1,0 +1,6 @@
+group Test
+
+Microsoft.CSharp
+NUnit
+NUnit3TestAdapter
+Microsoft.NET.Test.Sdk

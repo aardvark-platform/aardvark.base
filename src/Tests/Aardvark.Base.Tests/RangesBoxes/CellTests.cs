@@ -255,6 +255,7 @@ namespace Aardvark.Tests
         //    Assert.IsTrue(a == b);
         //}
 
+#if NET8_0_OR_GREATER // Cannot get Newtonsoft.Json to work with the net48 project, paket bug?
         [Test]
         public void CanRoundtripCellWithNewtonsoft()
         {
@@ -272,8 +273,9 @@ namespace Aardvark.Tests
             var b = System.Text.Json.JsonSerializer.Deserialize<Cell>(json);
             Assert.IsTrue(a == b);
         }
+#endif
 
-        #endregion
+#endregion
 
         #region CellIsCenteredAtOrigin
 
