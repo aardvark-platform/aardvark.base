@@ -35,3 +35,4 @@ Aardvark.log
 /.vs
 .idea
 src/Aardvark.sln.DotSettings.user
+src/Tests/Aardvark.Base.TestLib/testlib/build

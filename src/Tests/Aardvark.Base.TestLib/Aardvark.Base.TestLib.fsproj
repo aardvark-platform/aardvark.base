@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Aardvark.Base.TestLib</AssemblyName>
+    <OutputType>Library</OutputType>
+    <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
+    <WarnOn>3389;3390;3395</WarnOn>
+    <OutputPath>..\..\..\bin\$(Configuration)</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="testlib\build.cmd" />
+    <None Include="testlib\build.sh" />
+    <None Include="testlib\CMakeLists.txt" />
+    <None Include="testlib\testliba.cpp" />
+    <None Include="testlib\testliba.h" />
+    <None Include="testlib\testlibb.cpp" />
+    <None Include="testlib\testlibb.h" />
+    <None Include="testlib\testlibc.cpp" />
+    <None Include="testlib\testlibc.h" />
+    <None Include="paket.references" />
+    <Compile Include="Library.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Aardvark.Base\Aardvark.Base.csproj" />
+  </ItemGroup>
+  <Import Project="..\..\..\.paket\Paket.Restore.targets" />
+</Project>

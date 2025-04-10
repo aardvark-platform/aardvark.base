@@ -76,6 +76,8 @@ Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.Base.Fonts.Tests",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aardvark.Base.Tests.Net48", "Tests\Aardvark.Base.Tests.Net48\Aardvark.Base.Tests.Net48.csproj", "{49C6FC06-2BEB-4D10-957C-08117EC7742B}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Aardvark.Base.TestLib", "Tests\Aardvark.Base.TestLib\Aardvark.Base.TestLib.fsproj", "{6EC39FF8-23EA-2603-4D29-907B1C37E3D3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -186,6 +188,10 @@ Global
 		{49C6FC06-2BEB-4D10-957C-08117EC7742B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49C6FC06-2BEB-4D10-957C-08117EC7742B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49C6FC06-2BEB-4D10-957C-08117EC7742B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EC39FF8-23EA-2603-4D29-907B1C37E3D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EC39FF8-23EA-2603-4D29-907B1C37E3D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EC39FF8-23EA-2603-4D29-907B1C37E3D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EC39FF8-23EA-2603-4D29-907B1C37E3D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,6 +222,7 @@ Global
 		{C6C9C0AE-0900-4F21-86C6-2202E44A6013} = {C557CE9D-81EE-4EB3-AB94-B9F9CB2FA19A}
 		{D45E8A40-22A3-44F5-90EA-D42D5D7A522B} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 		{49C6FC06-2BEB-4D10-957C-08117EC7742B} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
+		{6EC39FF8-23EA-2603-4D29-907B1C37E3D3} = {A79411F9-60B3-46C8-8981-6905D9B9F74C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1537AED0-2BB3-4EC3-B2CB-06E22C23B002}

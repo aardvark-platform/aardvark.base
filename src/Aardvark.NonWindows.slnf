@@ -25,6 +25,7 @@
       "Tests\\Aardvark.Base.FSharp.Tests\\Aardvark.Base.FSharp.Tests.fsproj",
       "Tests\\Aardvark.Base.Fonts.Tests\\Aardvark.Base.Fonts.Tests.fsproj",
       "Tests\\Aardvark.Base.Runtime.Tests\\Aardvark.Base.Runtime.Tests.fsproj",
+      "Tests\\Aardvark.Base.TestLib\\Aardvark.Base.TestLib.fsproj",
       "Tests\\Aardvark.Base.Tests\\Aardvark.Base.Tests.csproj",
       "Tests\\Aardvark.Geometry.Tests\\Aardvark.Geometry.Tests.fsproj"
     ]
