@@ -215,6 +215,20 @@ namespace Aardvark.Base
             => SolidAngle(t.P0 - p, t.P1 - p, t.P2 - p);
 
         #endregion
+
+        #region Distance
+
+        /// <summary>
+        /// Gets the distance between the closest point on the triangle [a, b, c] and the given query point.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Distance(V3f a, V3f b, V3f c, V3f query)
+        {
+            var cp = query.GetClosestPointOnTriangle(a, b, c);
+            return (cp - query).Length;
+        }
+
+        #endregion
     }
 
     #endregion
@@ -428,6 +442,20 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double SolidAngle(Triangle3d t, V3d p)
             => SolidAngle(t.P0 - p, t.P1 - p, t.P2 - p);
+
+        #endregion
+
+        #region Distance
+
+        /// <summary>
+        /// Gets the distance between the closest point on the triangle [a, b, c] and the given query point.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double Distance(V3d a, V3d b, V3d c, V3d query)
+        {
+            var cp = query.GetClosestPointOnTriangle(a, b, c);
+            return (cp - query).Length;
+        }
 
         #endregion
     }

@@ -261,45 +261,53 @@ namespace Aardvark.Base
 
         #region __v2t__ - __triangle2t__
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __v2t__ query, __triangle2t__ triangle)
-        {
-            var e01 = triangle.Edge01;
-            var e02 = triangle.Edge02;
+            => query.GetClosestPointOnTriangle(triangle.P0, triangle.P1, triangle.P2);
 
-            var p0q = query - triangle.P0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __v2t__ GetClosestPointOn(this __triangle2t__ triangle, __v2t__ query)
+            => query.GetClosestPointOn(triangle);
+
+        public static __v2t__ GetClosestPointOnTriangle(this __v2t__ query, __v2t__ a, __v2t__ b, __v2t__ c)
+        {
+            var e01 = b - a;
+            var e02 = c - a;
+
+            var p0q = query - a;
             var d1 = Vec.Dot(e01, p0q);
             var d2 = Vec.Dot(e02, p0q);
-            if (d1 <= 0 && d2 <= 0) return triangle.P0; // bary (1,0,0)
+            if (d1 <= 0 && d2 <= 0) return a; // bary (1,0,0)
 
-            var p1q = query - triangle.P1;
+            var p1q = query - b;
             var d3 = Vec.Dot(e01, p1q);
             var d4 = Vec.Dot(e02, p1q);
-            if (d3 >= 0 && d4 <= d3) return triangle.P1; // bary (0,1,0)
+            if (d3 >= 0 && d4 <= d3) return b; // bary (0,1,0)
 
             var vc = d1 * d4 - d3 * d2;
             if (vc <= 0 && d1 >= 0 && d3 <= 0)
             {
                 var t = d1 / (d1 - d3);
-                return triangle.P0 + t * e01;   // bary (1-t,t,0)
+                return a + t * e01;   // bary (1-t,t,0)
             }
 
-            var p2q = query - triangle.P2;
+            var p2q = query - c;
             var d5 = Vec.Dot(e01, p2q);
             var d6 = Vec.Dot(e02, p2q);
-            if (d6 >= 0 && d5 <= d6) return triangle.P2; // bary (0,0,1)
+            if (d6 >= 0 && d5 <= d6) return c; // bary (0,0,1)
 
             var vb = d5 * d2 - d1 * d6;
             if (vb <= 0 && d2 >= 0 && d6 <= 0)
             {
                 var t = d2 / (d2 - d6);
-                return triangle.P0 + t * e02; // bary (1-t,0,t)
+                return a + t * e02; // bary (1-t,0,t)
             }
 
             var va = d3 * d6 - d5 * d4;
             if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0)
             {
                 var t = (d4 - d3) / ((d4 - d3) + (d5 - d6));
-                return triangle.P1 + t * triangle.Edge12; // bary (0, 1-t, t)
+                return b + t * (c - b); // bary (0, 1-t, t)
             }
 
             // var denom = 1.0 / (va + vb + vc);
@@ -308,10 +316,6 @@ namespace Aardvark.Base
             // return triangle.P0 + v * e01 + w * e02; // bary (1-v-w, v, w)
             return query;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static __v2t__ GetClosestPointOn(this __triangle2t__ triangle, __v2t__ query)
-            => query.GetClosestPointOn(triangle);
 
         #endregion
 
@@ -840,6 +844,17 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region __v2t__ - __triangle2t__
+
+        /// <summary>
+        /// returns the minimal distance between the point and the triangle
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype__ GetMinimalDistanceTo(this __v2t__ point, __triangle2t__ t)
+            => Triangle.Distance(t.P0, t.P1, t.P2, point);
+
+        #endregion
+
         #region __line2t__ - __line2t__
         /// <summary>
         /// returns the minimal distance between the given lines.
@@ -997,6 +1012,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype__ GetMinimalDistanceTo(this __box3t__ box, __v3t__ point)
             => point.GetMinimalDistanceTo(box);
+
+        #endregion
+
+        #region __v3t__ - __triangle3t__
+
+        /// <summary>
+        /// returns the minimal distance between the point and the box.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype__ GetMinimalDistanceTo(this __v3t__ point, __triangle3t__ triangle)
+            => Triangle.Distance(triangle.P0, triangle.P1, triangle.P2, point);
+
+        /// <summary>
+        /// returns the minimal distance between the point and the box.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __rtype__ GetMinimalDistanceTo(this __triangle3t__ triangle, __v3t__ point)
+            => point.GetMinimalDistanceTo(triangle);
 
         #endregion
 

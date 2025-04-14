@@ -237,6 +237,20 @@ namespace Aardvark.Base
             => WindingOrder(t.P0, t.P1, t.P2);
 
         #endregion
+
+        #region Distance
+
+        /// <summary>
+        /// Gets the distance between the closest point on the triangle [a, b, c] and the given query point.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Distance(__v2t__ a, __v2t__ b, __v2t__ c, __v2t__ query)
+        {
+            var cp = query.GetClosestPointOnTriangle(a, b, c);
+            return (cp - query).Length;
+        }
+
+        #endregion
     }
 
     #endregion

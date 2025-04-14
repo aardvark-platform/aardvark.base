@@ -230,6 +230,20 @@ namespace Aardvark.Base
             => SolidAngle(t.P0 - p, t.P1 - p, t.P2 - p);
 
         #endregion
+
+        #region Distance
+
+        /// <summary>
+        /// Gets the distance between the closest point on the triangle [a, b, c] and the given query point.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ Distance(__v3t__ a, __v3t__ b, __v3t__ c, __v3t__ query)
+        {
+            var cp = query.GetClosestPointOnTriangle(a, b, c);
+            return (cp - query).Length;
+        }
+
+        #endregion
     }
 
     #endregion

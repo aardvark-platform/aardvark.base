@@ -267,45 +267,53 @@ namespace Aardvark.Base
 
         #region V2f - Triangle2f
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f GetClosestPointOn(this V2f query, Triangle2f triangle)
-        {
-            var e01 = triangle.Edge01;
-            var e02 = triangle.Edge02;
+            => query.GetClosestPointOnTriangle(triangle.P0, triangle.P1, triangle.P2);
 
-            var p0q = query - triangle.P0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2f GetClosestPointOn(this Triangle2f triangle, V2f query)
+            => query.GetClosestPointOn(triangle);
+
+        public static V2f GetClosestPointOnTriangle(this V2f query, V2f a, V2f b, V2f c)
+        {
+            var e01 = b - a;
+            var e02 = c - a;
+
+            var p0q = query - a;
             var d1 = Vec.Dot(e01, p0q);
             var d2 = Vec.Dot(e02, p0q);
-            if (d1 <= 0 && d2 <= 0) return triangle.P0; // bary (1,0,0)
+            if (d1 <= 0 && d2 <= 0) return a; // bary (1,0,0)
 
-            var p1q = query - triangle.P1;
+            var p1q = query - b;
             var d3 = Vec.Dot(e01, p1q);
             var d4 = Vec.Dot(e02, p1q);
-            if (d3 >= 0 && d4 <= d3) return triangle.P1; // bary (0,1,0)
+            if (d3 >= 0 && d4 <= d3) return b; // bary (0,1,0)
 
             var vc = d1 * d4 - d3 * d2;
             if (vc <= 0 && d1 >= 0 && d3 <= 0)
             {
                 var t = d1 / (d1 - d3);
-                return triangle.P0 + t * e01;   // bary (1-t,t,0)
+                return a + t * e01;   // bary (1-t,t,0)
             }
 
-            var p2q = query - triangle.P2;
+            var p2q = query - c;
             var d5 = Vec.Dot(e01, p2q);
             var d6 = Vec.Dot(e02, p2q);
-            if (d6 >= 0 && d5 <= d6) return triangle.P2; // bary (0,0,1)
+            if (d6 >= 0 && d5 <= d6) return c; // bary (0,0,1)
 
             var vb = d5 * d2 - d1 * d6;
             if (vb <= 0 && d2 >= 0 && d6 <= 0)
             {
                 var t = d2 / (d2 - d6);
-                return triangle.P0 + t * e02; // bary (1-t,0,t)
+                return a + t * e02; // bary (1-t,0,t)
             }
 
             var va = d3 * d6 - d5 * d4;
             if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0)
             {
                 var t = (d4 - d3) / ((d4 - d3) + (d5 - d6));
-                return triangle.P1 + t * triangle.Edge12; // bary (0, 1-t, t)
+                return b + t * (c - b); // bary (0, 1-t, t)
             }
 
             // var denom = 1.0 / (va + vb + vc);
@@ -314,10 +322,6 @@ namespace Aardvark.Base
             // return triangle.P0 + v * e01 + w * e02; // bary (1-v-w, v, w)
             return query;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2f GetClosestPointOn(this Triangle2f triangle, V2f query)
-            => query.GetClosestPointOn(triangle);
 
         #endregion
 
@@ -883,45 +887,53 @@ namespace Aardvark.Base
 
         #region V2d - Triangle2d
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d GetClosestPointOn(this V2d query, Triangle2d triangle)
-        {
-            var e01 = triangle.Edge01;
-            var e02 = triangle.Edge02;
+            => query.GetClosestPointOnTriangle(triangle.P0, triangle.P1, triangle.P2);
 
-            var p0q = query - triangle.P0;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static V2d GetClosestPointOn(this Triangle2d triangle, V2d query)
+            => query.GetClosestPointOn(triangle);
+
+        public static V2d GetClosestPointOnTriangle(this V2d query, V2d a, V2d b, V2d c)
+        {
+            var e01 = b - a;
+            var e02 = c - a;
+
+            var p0q = query - a;
             var d1 = Vec.Dot(e01, p0q);
             var d2 = Vec.Dot(e02, p0q);
-            if (d1 <= 0 && d2 <= 0) return triangle.P0; // bary (1,0,0)
+            if (d1 <= 0 && d2 <= 0) return a; // bary (1,0,0)
 
-            var p1q = query - triangle.P1;
+            var p1q = query - b;
             var d3 = Vec.Dot(e01, p1q);
             var d4 = Vec.Dot(e02, p1q);
-            if (d3 >= 0 && d4 <= d3) return triangle.P1; // bary (0,1,0)
+            if (d3 >= 0 && d4 <= d3) return b; // bary (0,1,0)
 
             var vc = d1 * d4 - d3 * d2;
             if (vc <= 0 && d1 >= 0 && d3 <= 0)
             {
                 var t = d1 / (d1 - d3);
-                return triangle.P0 + t * e01;   // bary (1-t,t,0)
+                return a + t * e01;   // bary (1-t,t,0)
             }
 
-            var p2q = query - triangle.P2;
+            var p2q = query - c;
             var d5 = Vec.Dot(e01, p2q);
             var d6 = Vec.Dot(e02, p2q);
-            if (d6 >= 0 && d5 <= d6) return triangle.P2; // bary (0,0,1)
+            if (d6 >= 0 && d5 <= d6) return c; // bary (0,0,1)
 
             var vb = d5 * d2 - d1 * d6;
             if (vb <= 0 && d2 >= 0 && d6 <= 0)
             {
                 var t = d2 / (d2 - d6);
-                return triangle.P0 + t * e02; // bary (1-t,0,t)
+                return a + t * e02; // bary (1-t,0,t)
             }
 
             var va = d3 * d6 - d5 * d4;
             if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0)
             {
                 var t = (d4 - d3) / ((d4 - d3) + (d5 - d6));
-                return triangle.P1 + t * triangle.Edge12; // bary (0, 1-t, t)
+                return b + t * (c - b); // bary (0, 1-t, t)
             }
 
             // var denom = 1.0 / (va + vb + vc);
@@ -930,10 +942,6 @@ namespace Aardvark.Base
             // return triangle.P0 + v * e01 + w * e02; // bary (1-v-w, v, w)
             return query;
         }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static V2d GetClosestPointOn(this Triangle2d triangle, V2d query)
-            => query.GetClosestPointOn(triangle);
 
         #endregion
 
@@ -1433,6 +1441,17 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region V2f - Triangle2f
+
+        /// <summary>
+        /// returns the minimal distance between the point and the triangle
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetMinimalDistanceTo(this V2f point, Triangle2f t)
+            => Triangle.Distance(t.P0, t.P1, t.P2, point);
+
+        #endregion
+
         #region Line2f - Line2f
         /// <summary>
         /// returns the minimal distance between the given lines.
@@ -1590,6 +1609,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetMinimalDistanceTo(this Box3f box, V3f point)
             => point.GetMinimalDistanceTo(box);
+
+        #endregion
+
+        #region V3f - Triangle3f
+
+        /// <summary>
+        /// returns the minimal distance between the point and the box.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetMinimalDistanceTo(this V3f point, Triangle3f triangle)
+            => Triangle.Distance(triangle.P0, triangle.P1, triangle.P2, point);
+
+        /// <summary>
+        /// returns the minimal distance between the point and the box.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float GetMinimalDistanceTo(this Triangle3f triangle, V3f point)
+            => point.GetMinimalDistanceTo(triangle);
 
         #endregion
 
@@ -1883,6 +1920,17 @@ namespace Aardvark.Base
 
         #endregion
 
+        #region V2d - Triangle2d
+
+        /// <summary>
+        /// returns the minimal distance between the point and the triangle
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetMinimalDistanceTo(this V2d point, Triangle2d t)
+            => Triangle.Distance(t.P0, t.P1, t.P2, point);
+
+        #endregion
+
         #region Line2d - Line2d
         /// <summary>
         /// returns the minimal distance between the given lines.
@@ -2040,6 +2088,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetMinimalDistanceTo(this Box3d box, V3d point)
             => point.GetMinimalDistanceTo(box);
+
+        #endregion
+
+        #region V3d - Triangle3d
+
+        /// <summary>
+        /// returns the minimal distance between the point and the box.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetMinimalDistanceTo(this V3d point, Triangle3d triangle)
+            => Triangle.Distance(triangle.P0, triangle.P1, triangle.P2, point);
+
+        /// <summary>
+        /// returns the minimal distance between the point and the box.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double GetMinimalDistanceTo(this Triangle3d triangle, V3d point)
+            => point.GetMinimalDistanceTo(triangle);
 
         #endregion
 
