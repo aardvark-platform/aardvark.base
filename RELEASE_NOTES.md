@@ -1,5 +1,8 @@
+### 5.3.9
+- [Base] Added AliasTable
+- [Base] Added Triangle.Distance
+- [Base] Added Triangle.SolidAngle
 - [FSharp] Added NativePtr.stackUseArr
-- [Report] Using Stopwatch.GetTimestamp() instead of Stopwatch instance in ReportJob
 - [FSharp] Added Map.tryFindV
 - [FSharp] Added Map.ofSeqWithDuplicates
 - [FSharp] Added choosei, collecti for Seq, List, Array
@@ -7,6 +10,7 @@
 - [FSharp] Added Type.CLRSize extension property
 - [Introspection] Made native library loading more robust
 - [Introspection] Fixed issue with plugin cache invalidation
+- [Report] Using Stopwatch.GetTimestamp() instead of Stopwatch instance in ReportJob
 
 ### 5.3.8
 - [FSharp] Added stableSum and stableSumBy for List, Array, and Seq
