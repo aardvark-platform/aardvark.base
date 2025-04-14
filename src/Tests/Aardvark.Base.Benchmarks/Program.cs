@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Configs;
+using Aardvark.Base.Benchmarks.Geometry;
 
 namespace Aardvark.Base.Benchmarks
 {
@@ -10,8 +11,10 @@ namespace Aardvark.Base.Benchmarks
             var cfg = ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator);
             //BenchmarkSwitcher.FromAssembly(typeof(IntegerPowerFloat).Assembly).Run(args, cfg);
 
-            BenchmarkRunner.Run<HashBench>(cfg);
+            //BenchmarkRunner.Run<HashBench>(cfg);
             //BenchmarkRunner.Run<StreamWriterReader>(cfg);
+
+            BenchmarkRunner.Run<SolidAngle>(cfg);
 
             //BenchmarkRunner.Run<V4fLength>();
             //BenchmarkRunner.Run<V3fLeng
