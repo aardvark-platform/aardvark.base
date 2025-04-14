@@ -181,6 +181,55 @@ namespace Aardvark.Base
             => Plane(t.P0, t.P1, t.P2);
 
         #endregion
+
+        #region SolidAngle
+
+        /// <summary>
+        /// Computes the solid angle for a planar triangle as seen from the origin.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ SolidAngle(__type__ t)
+            => SolidAngle(t.P0, t.P1, t.P2);
+
+        /// <summary>
+        /// Computes the solid angle for a planar triangle as seen from the origin.
+        ///
+        /// Van Oosterom, A., and Strackee, J. (1983). 
+        /// The solid angle of a plane triangle.
+        /// IEEE transactions on Biomedical Engineering, (2), 125-126.
+        /// 
+        /// https://en.wikipedia.org/wiki/Solid_angle#Tetrahedron
+        /// </summary>
+        public static __ftype__ SolidAngle(__v3t__ va, __v3t__ vb, __v3t__ vc)
+        {
+            var ma = va.Length;
+            var mb = vb.Length;
+            var mc = vc.Length;
+
+            var numerator = Fun.Abs(Vec.Dot(va, (Vec.Cross(vb, vc))));
+
+            var denom = ma * mb * mc + Vec.Dot(va, vb) * mc + Vec.Dot(va, vc) * mb + Vec.Dot(vb, vc) * ma;
+
+            var halfSA = Fun.Atan2(numerator, denom);
+
+            return 2 * (halfSA >= 0 ? halfSA : halfSA + __pi__);
+        }
+
+        /// <summary>
+        /// Computes the solid angle for a planar triangle as seen from the given point.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ SolidAngle(__v3t__ va, __v3t__ vb, __v3t__ vc, __v3t__ p)
+            => SolidAngle(va - p, vb - p, vc - p);
+
+        /// <summary>
+        /// Computes the solid angle for a planar triangle as seen from the given point.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __ftype__ SolidAngle(__type__ t, __v3t__ p)
+            => SolidAngle(t.P0 - p, t.P1 - p, t.P2 - p);
+
+        #endregion
     }
 
     #endregion
