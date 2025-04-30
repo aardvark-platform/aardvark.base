@@ -37,6 +37,17 @@ namespace Aardvark.Base.Coder
             m_guidSymbol = Symbol.CreateNewGuid();
         }
 
+        /// <summary>
+        /// Creates a shallow copy of the supplied map, but uses entries
+        /// in the supplied override dictionary instead of map entries
+        /// where they exist.
+        /// </summary>
+        public SymMap(SymMap map, SymbolDict<object> overrides, Symbol guidSymbol)
+            : base(map, overrides)
+        {
+            m_guidSymbol = guidSymbol;
+        }
+
         public SymMap(Symbol typeName)
             : base(typeName)
         {
