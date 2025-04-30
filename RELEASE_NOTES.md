@@ -1,3 +1,6 @@
+### 5.3.10
+- [IO] Added SymMap constructor overload
+
 ### 5.3.9
 - [Base] Added AliasTable
 - [Base] Added Triangle.Distance
