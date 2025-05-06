@@ -1,4 +1,5 @@
 - Fixed range constructors for empty and null arrays and sequences
+- Added GrayAlpha pixel format constants
 
 ### 5.3.10
 - [IO] Added SymMap constructor overload
