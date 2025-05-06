@@ -336,7 +336,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__[] values)
         {
-            Min = Max = values[0];
+            Min = __maxvalue__;
+            Max = __minvalue__;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -348,8 +350,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__ftype__[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = __maxvalue__;
+                Max = __minvalue__;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -360,6 +370,7 @@ namespace Aardvark.Base
         {
             Min = __maxvalue__;
             Max = __minvalue__;
+            if (values == null) return;
             foreach (__ftype__ v in values) ExtendBy(v);
         }
 

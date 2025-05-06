@@ -32,11 +32,59 @@ namespace Aardvark.Tests
         }
 
         [Test]
-        public void BoxFromNullArrayShouldBeInvalid()
+        public void BoxFromEmptyListShouldBeInvalid()
         {
-            var ps = (V3d[])null;
+            List<V3d> ps = [];
             var bb = new Box3d(ps);
             Assert.IsTrue(bb.IsInvalid);
+        }
+
+        [Test]
+        public void RangeFromEmptyArrayShouldBeInvalid()
+        {
+            var ps = Array.Empty<double>();
+            var r = new Range1d(ps);
+            Assert.IsTrue(r.IsInvalid);
+        }
+
+        [Test]
+        public void RangeFromEmptyListShouldBeInvalid()
+        {
+            List<double> ps = [];
+            var r = new Range1d(ps);
+            Assert.IsTrue(r.IsInvalid);
+        }
+
+        [Test]
+        public void BoxFromNullArrayShouldBeInvalid()
+        {
+            V3d[] ps = null;
+            var bb = new Box3d(ps);
+            Assert.IsTrue(bb.IsInvalid);
+        }
+
+        [Test]
+        public void BoxFromNullListShouldBeInvalid()
+        {
+            List<V3d> ps = null;
+            var bb = new Box3d(ps);
+            Assert.IsTrue(bb.IsInvalid);
+        }
+
+        [Test]
+        public void RangeFromNullArrayShouldBeInvalid()
+        {
+            double[] ps = null;
+            var r = new Range1d(ps);
+            Assert.IsTrue(r.IsInvalid);
+        }
+
+        [Test]
+        public void RangeFromNullListShouldBeInvalid()
+        {
+            List<double> ps = null;
+            var r = new Range1d(ps);
+            Assert.IsTrue(r.IsInvalid);
         }
 
         #endregion

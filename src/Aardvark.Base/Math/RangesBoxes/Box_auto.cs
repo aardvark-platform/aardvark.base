@@ -298,7 +298,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1b(byte[] values)
         {
-            Min = Max = values[0];
+            Min = byte.MaxValue;
+            Max = byte.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -310,8 +312,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1b(byte[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = byte.MaxValue;
+                Max = byte.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -322,6 +332,7 @@ namespace Aardvark.Base
         {
             Min = byte.MaxValue;
             Max = byte.MinValue;
+            if (values == null) return;
             foreach (byte v in values) ExtendBy(v);
         }
 
@@ -1310,7 +1321,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1sb(sbyte[] values)
         {
-            Min = Max = values[0];
+            Min = sbyte.MaxValue;
+            Max = sbyte.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -1322,8 +1335,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1sb(sbyte[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = sbyte.MaxValue;
+                Max = sbyte.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -1334,6 +1355,7 @@ namespace Aardvark.Base
         {
             Min = sbyte.MaxValue;
             Max = sbyte.MinValue;
+            if (values == null) return;
             foreach (sbyte v in values) ExtendBy(v);
         }
 
@@ -2322,7 +2344,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1s(short[] values)
         {
-            Min = Max = values[0];
+            Min = short.MaxValue;
+            Max = short.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -2334,8 +2358,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1s(short[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = short.MaxValue;
+                Max = short.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -2346,6 +2378,7 @@ namespace Aardvark.Base
         {
             Min = short.MaxValue;
             Max = short.MinValue;
+            if (values == null) return;
             foreach (short v in values) ExtendBy(v);
         }
 
@@ -3334,7 +3367,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1us(ushort[] values)
         {
-            Min = Max = values[0];
+            Min = ushort.MaxValue;
+            Max = ushort.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -3346,8 +3381,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1us(ushort[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = ushort.MaxValue;
+                Max = ushort.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -3358,6 +3401,7 @@ namespace Aardvark.Base
         {
             Min = ushort.MaxValue;
             Max = ushort.MinValue;
+            if (values == null) return;
             foreach (ushort v in values) ExtendBy(v);
         }
 
@@ -4356,7 +4400,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1i(int[] values)
         {
-            Min = Max = values[0];
+            Min = int.MaxValue;
+            Max = int.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -4368,8 +4414,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1i(int[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = int.MaxValue;
+                Max = int.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -4380,6 +4434,7 @@ namespace Aardvark.Base
         {
             Min = int.MaxValue;
             Max = int.MinValue;
+            if (values == null) return;
             foreach (int v in values) ExtendBy(v);
         }
 
@@ -5390,7 +5445,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1ui(uint[] values)
         {
-            Min = Max = values[0];
+            Min = uint.MaxValue;
+            Max = uint.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -5402,8 +5459,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1ui(uint[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = uint.MaxValue;
+                Max = uint.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -5414,6 +5479,7 @@ namespace Aardvark.Base
         {
             Min = uint.MaxValue;
             Max = uint.MinValue;
+            if (values == null) return;
             foreach (uint v in values) ExtendBy(v);
         }
 
@@ -6424,7 +6490,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1l(long[] values)
         {
-            Min = Max = values[0];
+            Min = long.MaxValue;
+            Max = long.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -6436,8 +6504,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1l(long[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = long.MaxValue;
+                Max = long.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -6448,6 +6524,7 @@ namespace Aardvark.Base
         {
             Min = long.MaxValue;
             Max = long.MinValue;
+            if (values == null) return;
             foreach (long v in values) ExtendBy(v);
         }
 
@@ -7448,7 +7525,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1ul(ulong[] values)
         {
-            Min = Max = values[0];
+            Min = ulong.MaxValue;
+            Max = ulong.MinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -7460,8 +7539,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1ul(ulong[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = ulong.MaxValue;
+                Max = ulong.MinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -7472,6 +7559,7 @@ namespace Aardvark.Base
         {
             Min = ulong.MaxValue;
             Max = ulong.MinValue;
+            if (values == null) return;
             foreach (ulong v in values) ExtendBy(v);
         }
 
@@ -8470,7 +8558,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1f(float[] values)
         {
-            Min = Max = values[0];
+            Min = Constant<float>.ParseableMaxValue;
+            Max = Constant<float>.ParseableMinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -8482,8 +8572,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1f(float[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = Constant<float>.ParseableMaxValue;
+                Max = Constant<float>.ParseableMinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -8494,6 +8592,7 @@ namespace Aardvark.Base
         {
             Min = Constant<float>.ParseableMaxValue;
             Max = Constant<float>.ParseableMinValue;
+            if (values == null) return;
             foreach (float v in values) ExtendBy(v);
         }
 
@@ -9546,7 +9645,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1d(double[] values)
         {
-            Min = Max = values[0];
+            Min = Constant<double>.ParseableMaxValue;
+            Max = Constant<double>.ParseableMinValue;
+            if (values == null) return;
             long count = values.LongLength;
             for (long i = 1; i < count; i++) ExtendBy(values[i]);
         }
@@ -9558,8 +9659,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Range1d(double[] values, long start, long count)
         {
-            Min = Max = values[start];
-            for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            if (count <= 0)
+            {
+                Min = Constant<double>.ParseableMaxValue;
+                Max = Constant<double>.ParseableMinValue;
+            }
+            else
+            {
+                Min = Max = values[start];
+                for (long i = start + 1, e = start + count; i < e; i++) ExtendBy(values[i]);
+            }
         }
 
         /// <summary>
@@ -9570,6 +9679,7 @@ namespace Aardvark.Base
         {
             Min = Constant<double>.ParseableMaxValue;
             Max = Constant<double>.ParseableMinValue;
+            if (values == null) return;
             foreach (double v in values) ExtendBy(v);
         }
 
