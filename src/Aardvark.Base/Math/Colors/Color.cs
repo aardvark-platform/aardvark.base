@@ -1638,6 +1638,9 @@ namespace Aardvark.Base
             return HashCode.Combine(Type.GetHashCode(), Format.GetHashCode());
         }
 
+        public override string ToString()
+            => $"{Type.Name}{Format}";
+
         #endregion
 
         #region IEquatable<PixFormat> Members
