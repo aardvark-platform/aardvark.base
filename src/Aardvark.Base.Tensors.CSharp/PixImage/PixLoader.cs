@@ -30,11 +30,36 @@ namespace Aardvark.Base
         public PixJpegSaveParams(int quality = DefaultQuality) : base(PixFileFormat.Jpeg)
         {
             if (quality < 0 || quality > 100)
-                throw new ArgumentException($"Quality must be within 0 - 100, is ${quality}");
+                throw new ArgumentException($"Quality must be within 0 - 100, is ${quality}.");
             Quality = quality;
         }
 
         public const int DefaultQuality = 90;
+    }
+
+    public class PixWebpSaveParams : PixSaveParams
+    {
+        /// <summary>
+        /// Compression quality within 0 - 100.
+        /// For lossy compression, higher quality results in better results with a larger file size.
+        /// For lossless compression, higher quality results in a smaller file size but higher processing time.
+        /// </summary>
+        public int Quality { get; }
+
+        /// <summary>
+        /// Whether to use lossless or lossy compression. Default is lossy.
+        /// </summary>
+        public bool Lossless { get; }
+
+        public PixWebpSaveParams(int quality = DefaultQuality, bool lossless = false) : base(PixFileFormat.Webp)
+        {
+            if (quality < 0 || quality > 100)
+                throw new ArgumentException($"Quality must be within 0 - 100, is ${quality}.");
+            Quality = quality;
+            Lossless = lossless;
+        }
+
+        public const int DefaultQuality = 75;
     }
 
     public class PixPngSaveParams : PixSaveParams
@@ -47,7 +72,7 @@ namespace Aardvark.Base
         public PixPngSaveParams(int compressionLevel = DefaultCompressionLevel) : base(PixFileFormat.Png)
         {
             if (compressionLevel < 0 || compressionLevel > 9)
-                throw new ArgumentException($"Compression level must be within 0 - 9, is ${compressionLevel}");
+                throw new ArgumentException($"Compression level must be within 0 - 9, is ${compressionLevel}.");
             CompressionLevel = compressionLevel;
         }
 

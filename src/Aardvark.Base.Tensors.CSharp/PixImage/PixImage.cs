@@ -48,8 +48,8 @@ namespace Aardvark.Base
         Pfm,
         Pict,
         Raw,
-
         Wmp, // not in FreeImage ?
+        Webp
     }
 
     public interface IPixImageVisitor<T>
@@ -548,6 +548,7 @@ namespace Aardvark.Base
             { ".wmp", PixFileFormat.Wmp },
             { ".pgm", PixFileFormat.Pgm },
             { ".exr", PixFileFormat.Exr },
+            { ".webp", PixFileFormat.Webp },
         };
 
         private static readonly Lazy<Dictionary<PixFileFormat, string>> s_preferredExtensionOfFormat = new(() =>
