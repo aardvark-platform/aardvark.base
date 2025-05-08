@@ -135,6 +135,58 @@ namespace Aardvark.Base
         }
     }
 
+    public enum PixExrCompression
+    {
+        /// <summary>
+        /// Compression scheme is chosen by the image library.
+        /// </summary>
+        Default = 0,
+
+        /// <summary>
+        /// Do not compress the image data.
+        /// </summary>
+        None = 1,
+
+        /// <summary>
+        /// ZLIB compression, in blocks of 16 scan lines.
+        /// </summary>
+        Zip = 2,
+
+        /// <summary>
+        /// PIZ-based wavelet compression.
+        /// </summary>
+        Piz = 3,
+
+        /// <summary>
+        /// 24-bit float compression (lossy).
+        /// </summary>
+        Pxr24 = 4,
+
+        /// <summary>
+        /// 44% float compression (lossy).
+        /// </summary>
+        B44 = 5,
+    }
+
+    public class PixExrSaveParams : PixSaveParams
+    {
+        /// <summary>
+        /// Used compression scheme.
+        /// </summary>
+        public PixExrCompression Compression { get; }
+
+        /// <summary>
+        /// Encode with one luminance and two chroma channels (lossy compression).
+        /// </summary>
+        public bool LuminanceChroma { get; }
+
+        public PixExrSaveParams(PixExrCompression compression = PixExrCompression.Default, bool luminanceChroma = false) : base(PixFileFormat.Exr)
+        {
+            Compression = compression;
+            LuminanceChroma = luminanceChroma;
+        }
+    }
+
     /// <summary>
     /// Interface for PixImage loaders.
     /// </summary>
