@@ -1,3 +1,4 @@
+### 5.3.11
 - Fixed range constructors for empty and null arrays and sequences
 - Added GrayAlpha pixel format constants
 - Added ToString() override for PixFormat
