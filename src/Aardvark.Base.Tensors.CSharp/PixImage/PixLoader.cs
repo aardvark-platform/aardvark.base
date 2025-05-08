@@ -79,6 +79,62 @@ namespace Aardvark.Base
         public const int DefaultCompressionLevel = 6;
     }
 
+    public enum PixTiffCompression
+    {
+        /// <summary>
+        /// Compression scheme is chosen by the image library.
+        /// </summary>
+        Default = 0,
+
+        /// <summary>
+        /// Do not compress the image data.
+        /// </summary>
+        None = 1,
+
+        /// <summary>
+        /// CCITT Group 3 fax encoding.
+        /// </summary>
+        Ccitt3 = 2,
+
+        /// <summary>
+        /// CCITT Group 4 fax encoding.
+        /// </summary>
+        Ccitt4 = 3,
+
+        /// <summary>
+        /// LZW compression.
+        /// </summary>
+        Lzw = 4,
+
+        /// <summary>
+        /// JPEG compression.
+        /// </summary>
+        Jpeg = 5,
+
+        /// <summary>
+        /// Deflate compression, also known as ZLIB compression.
+        /// </summary>
+        Deflate = 6,
+
+        /// <summary>
+        /// PackBits compression.
+        /// </summary>
+        PackBits = 7,
+    }
+
+    public class PixTiffSaveParams : PixSaveParams
+    {
+        /// <summary>
+        /// Used compression scheme.
+        /// </summary>
+        public PixTiffCompression Compression { get; }
+
+        public PixTiffSaveParams(PixTiffCompression compression = PixTiffCompression.Default) : base(PixFileFormat.Tiff)
+        {
+            Compression = compression;
+        }
+    }
+
     /// <summary>
     /// Interface for PixImage loaders.
     /// </summary>

@@ -3,6 +3,7 @@
 - Added ToString() override for PixFormat
 - Added PixFileFormat.Webp and PixWebpSaveParams
 - Added more known image file extensions
+- Added PixTiffSaveParams for choosing the compression scheme when saving TIFF images
 
 ### 5.3.10
 - [IO] Added SymMap constructor overload
