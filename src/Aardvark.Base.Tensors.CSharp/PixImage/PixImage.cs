@@ -537,17 +537,48 @@ namespace Aardvark.Base
 
         private static readonly Dictionary<string, PixFileFormat> s_formatOfExtension = new()
         {
-            { ".tga", PixFileFormat.Targa },
-            { ".png", PixFileFormat.Png },
             { ".bmp", PixFileFormat.Bmp },
+            { ".ico", PixFileFormat.Ico },
             { ".jpg", PixFileFormat.Jpeg },
             { ".jpeg", PixFileFormat.Jpeg },
+            { ".jng", PixFileFormat.Jng },
+            { ".koa", PixFileFormat.Koala },
+            { ".lbm", PixFileFormat.Lbm },
+            { ".iff", PixFileFormat.Iff },
+            { ".mng", PixFileFormat.Mng },
+            { ".pbm", PixFileFormat.Pbm },
+            { ".pcd", PixFileFormat.Pcd },
+            { ".pcx", PixFileFormat.Pcx },
+            { ".pgm", PixFileFormat.Pgm },
+            { ".png", PixFileFormat.Png },
+            { ".ppm", PixFileFormat.Ppm },
+            { ".ras", PixFileFormat.Ras },
+            { ".targa", PixFileFormat.Targa },
+            { ".tga", PixFileFormat.Targa },
             { ".tif", PixFileFormat.Tiff },
             { ".tiff", PixFileFormat.Tiff },
+            { ".wap", PixFileFormat.Wbmp },
+            { ".wbm", PixFileFormat.Wbmp },
+            { ".wbmp", PixFileFormat.Wbmp },
+            { ".psd", PixFileFormat.Psd },
+            { ".cut", PixFileFormat.Cut },
+            { ".xbm", PixFileFormat.Xbm },
+            { ".xpm", PixFileFormat.Xpm },
+            { ".dds", PixFileFormat.Dds },
             { ".gif", PixFileFormat.Gif },
-            { ".wmp", PixFileFormat.Wmp },
-            { ".pgm", PixFileFormat.Pgm },
+            { ".hdr", PixFileFormat.Hdr },
+            { ".g3", PixFileFormat.Faxg3 },
+            { ".sgi", PixFileFormat.Sgi },
             { ".exr", PixFileFormat.Exr },
+            { ".j2c", PixFileFormat.J2k },
+            { ".j2k", PixFileFormat.J2k },
+            { ".jp2", PixFileFormat.Jp2 },
+            { ".pfm", PixFileFormat.Pfm },
+            { ".pic", PixFileFormat.Pict },
+            { ".pict", PixFileFormat.Pict },
+            { ".pct", PixFileFormat.Pict },
+            { ".raw", PixFileFormat.Raw },
+            { ".wmp", PixFileFormat.Wmp },
             { ".webp", PixFileFormat.Webp },
         };
 
@@ -558,6 +589,9 @@ namespace Aardvark.Base
                 {
                     result[kvp.Value] = kvp.Key;
                 }
+                result[PixFileFormat.PbmRaw] = result[PixFileFormat.Pbm];
+                result[PixFileFormat.PgmRaw] = result[PixFileFormat.Pgm];
+                result[PixFileFormat.PpmRaw] = result[PixFileFormat.Ppm];
                 return result;
             },
             LazyThreadSafetyMode.PublicationOnly
