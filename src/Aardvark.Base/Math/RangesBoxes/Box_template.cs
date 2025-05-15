@@ -340,7 +340,7 @@ namespace Aardvark.Base
             Max = __minvalue__;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>

@@ -302,7 +302,7 @@ namespace Aardvark.Base
             Max = byte.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -1325,7 +1325,7 @@ namespace Aardvark.Base
             Max = sbyte.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -2348,7 +2348,7 @@ namespace Aardvark.Base
             Max = short.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -3371,7 +3371,7 @@ namespace Aardvark.Base
             Max = ushort.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -4404,7 +4404,7 @@ namespace Aardvark.Base
             Max = int.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -5449,7 +5449,7 @@ namespace Aardvark.Base
             Max = uint.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -6494,7 +6494,7 @@ namespace Aardvark.Base
             Max = long.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -7529,7 +7529,7 @@ namespace Aardvark.Base
             Max = ulong.MinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -8562,7 +8562,7 @@ namespace Aardvark.Base
             Max = Constant<float>.ParseableMinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
@@ -9649,7 +9649,7 @@ namespace Aardvark.Base
             Max = Constant<double>.ParseableMinValue;
             if (values == null) return;
             long count = values.LongLength;
-            for (long i = 1; i < count; i++) ExtendBy(values[i]);
+            for (long i = 0; i < count; i++) ExtendBy(values[i]);
         }
 
         /// <summary>
