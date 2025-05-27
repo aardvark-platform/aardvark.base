@@ -1,4 +1,5 @@
 - [FSharp] Added null-coalesing operator ||?
+- [FSharp] Added Seq.asArray
 
 ### 5.3.12
 - Fixed regression in range constructors

@@ -103,6 +103,14 @@ module Prelude =
             result
 
     module Seq =
+
+        /// Returns the given sequence as an array.
+        /// If the input is already an array it is returned without creating a copy, otherwise a new array is allocated.
+        let inline asArray (seq: 'T seq) : 'T[] =
+            match seq with
+            | :? ('T[]) as arr -> arr
+            | _ -> Seq.toArray seq
+
         let inline iter' ([<InlineIfLambda>] f : 'a -> 'b) (s : seq<'a>) =
             for i in s do
                 f i |> ignore
