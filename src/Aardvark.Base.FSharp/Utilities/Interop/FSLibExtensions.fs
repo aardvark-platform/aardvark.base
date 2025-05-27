@@ -36,6 +36,39 @@ module Prelude =
     let inc (a:byref<int>) = a <- a + 1
     let dec (a:byref<int>) = a <- a - 1
 
+    module ``Null Coalescing Helpers`` =
+
+        [<AbstractClass; Sealed>]
+        type Coalescing() =
+            static member inline Coalesce(x: 'T option, y: 'T)         = match x with Some x -> x | _ -> y
+            static member inline Coalesce(x: 'T option, y: unit -> 'T) = match x with Some x -> x | _ -> y()
+            static member inline Coalesce(x: 'T option, y: Lazy<'T>)   = match x with Some x -> x | _ -> y.Value
+
+            static member inline Coalesce(x: 'T voption, y: 'T)         = match x with ValueSome x -> x | _ -> y
+            static member inline Coalesce(x: 'T voption, y: unit -> 'T) = match x with ValueSome x -> x | _ -> y()
+            static member inline Coalesce(x: 'T voption, y: Lazy<'T>)   = match x with ValueSome x -> x | _ -> y.Value
+
+            static member inline Coalesce(x: Nullable<'T>, y: 'T)           = if x.HasValue then x.Value else y
+            static member inline Coalesce(x: Nullable<'T>, y: unit -> 'T)   = if x.HasValue then x.Value else y()
+            static member inline Coalesce(x: Nullable<'T>, y: Lazy<'T>)     = if x.HasValue then x.Value else y.Value
+
+            static member inline Coalesce<'T when 'T : null>(x: 'T, y: 'T)         = match x with null -> y | _ -> x
+            static member inline Coalesce<'T when 'T : null>(x: 'T, y: unit -> 'T) = match x with null -> y() | _ -> x
+            static member inline Coalesce<'T when 'T : null>(x: 'T, y: Lazy<'T>)   = match x with null -> y.Value | _ -> x
+
+    let inline private nullCoalesceAux (_ : ^Z) (x : ^T1) (y: ^T2) : 'T3 =
+        ((^Z or ^T1) : (static member Coalesce : ^T1 * ^T2 -> ^T3) (x, y))
+
+    /// <summary>
+    /// Null-coalescing operator. Returns <paramref name="x"/> if it has a value, <paramref name="y"/> otherwise.
+    /// <paramref name="x"/> may be an Option, ValueOption, Nullable or an object of a type that supports null.
+    /// <paramref name="y"/> may be a (lazy) value or a parameterless function returning a value.
+    /// </summary>
+    /// <param name="x">The value to check for null, None, or ValueNone.</param>
+    /// <param name="y">The fallback value. May be a (lazy) value or a parameterless function returning a value.</param>
+    let inline (||?) x y =
+        nullCoalesceAux Unchecked.defaultof<``Null Coalescing Helpers``.Coalescing> x y
+
     let inline isNull (a : 'a) =
         match a with
         | null -> true

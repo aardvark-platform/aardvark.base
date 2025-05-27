@@ -36,6 +36,7 @@
     <Compile Include="ControlTests.fs" />
     <Compile Include="SizeOfTests.fs" />
     <Compile Include="TypeMetaTests.fs" />
+    <Compile Include="NullCoalesceTests.fs" />
     <Compile Include="Program.fs" />
     <None Include="paket.references" />
   </ItemGroup>

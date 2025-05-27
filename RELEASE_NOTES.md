@@ -1,3 +1,5 @@
+- [FSharp] Added null-coalesing operator ||?
+
 ### 5.3.12
 - Fixed regression in range constructors
 
