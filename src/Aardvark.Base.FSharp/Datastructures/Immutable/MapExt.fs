@@ -10,6 +10,7 @@
 namespace Aardvark.Base
 
 open System
+open System.Collections
 open System.Collections.Generic
 open System.Diagnostics
 open Microsoft.FSharp.Core
@@ -2257,30 +2258,35 @@ type MapExt<[<EqualityConditionalOn>]'Key,[<EqualityConditionalOn;ComparisonCond
     interface System.Collections.IEnumerable with
         member __.GetEnumerator() = (MapTree.mkIEnumerator tree :> System.Collections.IEnumerator)
 
-    //interface IDictionary<'Key, 'Value> with 
-    //    member m.Item 
-    //        with get x = m.[x]            
-    //        and  set x v = ignore(x,v); raise (NotSupportedException("SR.GetString(SR.mapCannotBeMutated)"))
+    interface IDictionary<'Key, 'Value> with
+        member m.Item
+            with get x = m.[x]
+            and set _ _ = raise (NotSupportedException("MapExt cannot be mutated."))
+        member m.Keys = KeyCollection(m) :> ICollection<'Key>
+        member m.Values = ValueCollection(m) :> ICollection<'Value>
+        member m.Add(_, _) = raise (NotSupportedException("MapExt cannot be mutated."))
+        member m.ContainsKey k = m.ContainsKey k
+        member m.TryGetValue(k, r) = match m.TryFindV(k) with ValueSome v -> r <- v; true | _ -> false
+        member m.Remove(_) = raise (NotSupportedException("MapExt cannot be mutated."))
 
-    //    // REVIEW: this implementation could avoid copying the Values to an array    
-    //    member s.Keys = ([| for kvp in s -> kvp.Key |] :> ICollection<'Key>)
+    interface ICollection<KeyValuePair<'Key, 'Value>> with
+        member _.Add(_) = raise (NotSupportedException("MapExt cannot be mutated."));
+        member _.Clear() = raise (NotSupportedException("MapExt cannot be mutated."));
+        member _.Remove(_) = raise (NotSupportedException("MapExt cannot be mutated."));
+        member s.Contains(x) = s.ContainsKey(x.Key) && DefaultEquality.equals s.[x.Key] x.Value
+        member _.CopyTo(arr,i) = MapTree.copyToArray tree arr i
+        member s.IsReadOnly = true
+        member s.Count = s.Count
 
-    //    // REVIEW: this implementation could avoid copying the Values to an array    
-    //    member s.Values = ([| for kvp in s -> kvp.Value |] :> ICollection<'Value>)
+    interface IReadOnlyCollection<KeyValuePair<'Key, 'Value>> with
+        member m.Count = m.Count
 
-    //    member s.Add(k,v) = ignore(k,v); raise (NotSupportedException("SR.GetString(SR.mapCannotBeMutated)"))
-    //    member s.ContainsKey(k) = s.ContainsKey(k)
-    //    member s.TryGetValue(k,r) = if s.ContainsKey(k) then (r <- s.[k]; true) else false
-    //    member s.Remove(k : 'Key) = ignore(k); (raise (NotSupportedException("SR.GetString(SR.mapCannotBeMutated)")) : bool)
-
-    //interface ICollection<KeyValuePair<'Key, 'Value>> with 
-    //    member __.Add(x) = ignore(x); raise (NotSupportedException("SR.GetString(SR.mapCannotBeMutated)"));
-    //    member __.Clear() = raise (NotSupportedException("SR.GetString(SR.mapCannotBeMutated)"));
-    //    member __.Remove(x) = ignore(x); raise (NotSupportedException("SR.GetString(SR.mapCannotBeMutated)"));
-    //    member s.Contains(x) = s.ContainsKey(x.Key) && DefaultEquality.equals s.[x.Key] x.Value
-    //    member __.CopyTo(arr,i) = MapTree.copyToArray tree arr i
-    //    member s.IsReadOnly = true
-    //    member s.Count = s.Count
+    interface IReadOnlyDictionary<'Key, 'Value> with
+        member m.Item with get key = m.[key]
+        member m.Keys = KeyCollection(m) :> IEnumerable<'Key>
+        member m.TryGetValue(key, value: byref<'Value>) = match m.TryFindV(key) with ValueSome r -> value <- r; true | _ -> false
+        member m.Values = ValueCollection(m) :> IEnumerable<'Value>
+        member m.ContainsKey key = m.ContainsKey key
 
     interface System.IComparable with 
         member m.CompareTo(obj: obj) = 
@@ -2306,6 +2312,110 @@ and
 
         [<DebuggerBrowsable(DebuggerBrowsableState.RootHidden)>]
         member x.Items = v |> Seq.truncate 10000 |> Seq.toArray
+
+and
+    internal KeyCollection<'Key,'Value when 'Key : comparison>(parent: MapExt<'Key,'Value>) =
+        interface ICollection<'Key> with
+            member _.Add(_) =
+                raise (NotSupportedException("MapExt cannot be mutated."))
+
+            member _.Clear() =
+                raise (NotSupportedException("MapExt cannot be mutated."))
+
+            member _.Remove(_) =
+                raise (NotSupportedException("MapExt cannot be mutated."))
+
+            member _.Contains x =
+                parent.ContainsKey x
+
+            member _.CopyTo(arr, index) =
+                if isNull arr then
+                    nullArg "arr"
+
+                if index < 0 then
+                    invalidArg "index" "index must be positive"
+
+                if index + parent.Count > arr.Length then
+                    invalidArg "index" "array is smaller than index plus the number of items to copy"
+
+                let mutable i = index
+
+                for item in parent do
+                    arr.[i] <- item.Key
+                    i <- i + 1
+
+            member _.IsReadOnly = true
+
+            member _.Count = parent.Count
+
+        interface IEnumerable<'Key> with
+            member _.GetEnumerator() =
+                (seq {
+                    for item in parent do
+                        item.Key
+                })
+                    .GetEnumerator()
+
+        interface IEnumerable with
+            member _.GetEnumerator() =
+                (seq {
+                    for item in parent do
+                        item.Key
+                })
+                    .GetEnumerator()
+                :> IEnumerator
+
+and
+    internal ValueCollection<'Key, 'Value when 'Key: comparison>(parent: MapExt<'Key, 'Value>) =
+        interface ICollection<'Value> with
+            member _.Add(_) =
+                raise (NotSupportedException("MapExt cannot be mutated."))
+
+            member _.Clear() =
+                raise (NotSupportedException("MapExt cannot be mutated."))
+
+            member _.Remove(_) =
+                raise (NotSupportedException("MapExt cannot be mutated."))
+
+            member _.Contains x =
+                parent.Exists(fun _ value -> Unchecked.equals value x)
+
+            member _.CopyTo(arr, index) =
+                if isNull arr then
+                    nullArg "arr"
+
+                if index < 0 then
+                    invalidArg "index" "index must be positive"
+
+                if index + parent.Count > arr.Length then
+                    invalidArg "index" "array is smaller than index plus the number of items to copy"
+
+                let mutable i = index
+
+                for item in parent do
+                    arr.[i] <- item.Value
+                    i <- i + 1
+
+            member _.IsReadOnly = true
+
+            member _.Count = parent.Count
+
+        interface IEnumerable<'Value> with
+            member _.GetEnumerator() =
+                (seq {
+                    for item in parent do
+                        item.Value
+                })
+                    .GetEnumerator()
+
+        interface IEnumerable with
+            member _.GetEnumerator() =
+                (seq {
+                    for item in parent do
+                        item.Value
+                })
+                    .GetEnumerator()
+                :> IEnumerator
 
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]

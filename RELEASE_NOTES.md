@@ -1,5 +1,6 @@
 - [FSharp] Added null-coalesing operator ||?
 - [FSharp] Added Seq.asArray
+- [FSharp] Added IDictionary and IReadOnlyDictionary interfaces for MapExt
 
 ### 5.3.12
 - Fixed regression in range constructors

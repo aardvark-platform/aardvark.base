@@ -3,6 +3,7 @@
 open FsCheck
 open FsCheck.NUnit
 open Aardvark.Base
+open System.Collections.Generic
 
 module MapExt =
 
@@ -51,3 +52,87 @@ module MapExt =
             let actual = me |> MapExt.range min max
             expected = actual
         )
+
+    [<Property>]
+    let ``[MapExt] IDictionary item`` (m: Map<int, int>) =
+        let me = MapExt.ofSeq (Map.toSeq m)
+        let keys = m.Keys |> List.ofSeq
+        
+        keys |> List.map (fun key ->
+            let expected = (m :> IDictionary<_, _>).[key]
+            let actual = (me :> IDictionary<_, _>).[key]
+            expected = actual  
+        )
+        |> List.all
+
+    [<Property>]
+    let ``[MapExt] IDictionary keys`` (m: Map<int, int>) =
+        let me = MapExt.ofSeq (Map.toSeq m)
+        let kc = (me :> IDictionary<_, _>).Keys
+        let keys = m.Keys |> Array.ofSeq |> Array.sort
+
+        let contains =
+            keys |> Array.map kc.Contains
+
+        let enumerated =
+            kc |> Array.ofSeq |> Array.sort
+
+        let copied =
+            let arr = Array.zeroCreate<int> m.Count
+            kc.CopyTo(arr, 0)
+            Array.sort arr
+
+        List.all [
+            kc.Count = m.Count
+            copied = keys
+            enumerated = keys
+            yield! contains
+        ]
+
+    [<Property>]
+    let ``[MapExt] IDictionary values`` (m: Map<int, int>) =
+        let me = MapExt.ofSeq (Map.toSeq m)
+        let vc = (me :> IDictionary<_, _>).Values
+        let values = m.Values |> Array.ofSeq |> Array.sort
+
+        let contains =
+            values |> Array.map vc.Contains
+
+        let enumerated =
+            vc |> Array.ofSeq |> Array.sort
+
+        let copied =
+            let arr = Array.zeroCreate<int> m.Count
+            vc.CopyTo(arr, 0)
+            Array.sort arr
+
+        List.all [
+            vc.Count = m.Count
+            copied = values
+            enumerated = values
+            yield! contains
+        ]
+
+    [<Property>]
+    let ``[MapExt] IDictionary TryGetValue`` (m: Map<int, int>) =
+        let me = MapExt.ofSeq (Map.toSeq m)
+        let keys = m.Keys |> List.ofSeq
+
+        keys |> List.map (fun key ->
+            let exp, expv = (m :> IDictionary<_, _>).TryGetValue key
+            let act, actv = (me :> IDictionary<_, _>).TryGetValue key
+            act = exp && actv = expv
+        )
+        |> List.all
+
+    [<Property>]
+    let ``[MapExt] IReadOnlyDictionary TryGetValue`` (m: Map<int, int>) =
+        let me = MapExt.ofSeq (Map.toSeq m)
+        let keys = m.Keys |> List.ofSeq
+
+        keys |> List.map (fun key ->
+            let exp, expv = (m :> IReadOnlyDictionary<_, _>).TryGetValue key
+            let act, actv = (me :> IReadOnlyDictionary<_, _>).TryGetValue key
+            act = exp && actv = expv
+        )
+        |> List.all
