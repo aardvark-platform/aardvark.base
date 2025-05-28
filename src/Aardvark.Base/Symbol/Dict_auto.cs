@@ -22,7 +22,8 @@ namespace Aardvark.Base
     public class Dict<TKey, TValue>
             : IIntCountable, ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>,
-              ICollection, ICollection<KeyValuePair<TKey, TValue>>
+              ICollection, ICollection<KeyValuePair<TKey, TValue>>,
+              IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
     {
         private uint m_capacity;
         private NextHashKeyValue<TKey, TValue>[] m_firstArray;
@@ -792,6 +793,25 @@ namespace Aardvark.Base
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             return Contains(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Returns true if the Dict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -1719,6 +1739,98 @@ namespace Aardvark.Base
             
             return new Enumerator(this);
             
+        }
+
+        #endregion
+        
+        #region IDictionary<TKey, TValue> Members
+
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => new KeyCollection(this);
+
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => new ValueCollection(this);
+
+        private sealed class KeyCollection(Dict<TKey, TValue> parent) : ICollection<TKey>, ICollection, IReadOnlyCollection<TKey>
+        {
+            public void CopyTo(TKey[] array, int index) => parent.CopyKeysTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<TKey>.IsReadOnly => true;
+
+            void ICollection<TKey>.Add(TKey item) => throw new NotSupportedException();
+
+            void ICollection<TKey>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(TKey item) => parent.ContainsKey(item);
+
+            bool ICollection<TKey>.Remove(TKey item) => throw new NotSupportedException();
+
+            IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TKey>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is TKey[] keys) parent.CopyKeysTo(keys, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(Dict<TKey, TValue> dictionary) : IEnumerator<TKey>, IEnumerator
+            {
+                private Dict<TKey, TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public TKey Current => _inner.Current.Key;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
+        }
+
+        private sealed class ValueCollection(Dict<TKey, TValue> parent) : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
+        {
+            public void CopyTo(TValue[] array, int index) => parent.CopyValuesTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<TValue>.IsReadOnly => true;
+
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
+
+            void ICollection<TValue>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(TValue item) => parent.ContainsValue(item);
+
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException();
+
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TValue>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is TValue[] values) parent.CopyValuesTo(values, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(Dict<TKey, TValue> dictionary) : IEnumerator<TValue>, IEnumerator
+            {
+                private Dict<TKey, TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public TValue Current => _inner.Current.Value;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
         }
 
         #endregion
@@ -2684,7 +2796,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -2941,7 +3053,8 @@ namespace Aardvark.Base
     public class IntDict<TValue>
             : IIntCountable, ICountableDict, IDict<int, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<int, TValue>>,
-              ICollection, ICollection<KeyValuePair<int, TValue>>
+              ICollection, ICollection<KeyValuePair<int, TValue>>,
+              IDictionary<int, TValue>, IReadOnlyDictionary<int, TValue>
     {
         private uint m_capacity;
         private NextIntValue<TValue>[] m_firstArray;
@@ -3512,6 +3625,25 @@ namespace Aardvark.Base
         public bool Contains(KeyValuePair<int, TValue> item)
         {
             return Contains(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Returns true if the IntDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -4118,6 +4250,98 @@ namespace Aardvark.Base
             
             return new Enumerator(this);
             
+        }
+
+        #endregion
+        
+        #region IDictionary<int, TValue> Members
+
+        ICollection<int> IDictionary<int, TValue>.Keys => new KeyCollection(this);
+
+        ICollection<TValue> IDictionary<int, TValue>.Values => new ValueCollection(this);
+
+        private sealed class KeyCollection(IntDict<TValue> parent) : ICollection<int>, ICollection, IReadOnlyCollection<int>
+        {
+            public void CopyTo(int[] array, int index) => parent.CopyKeysTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<int>.IsReadOnly => true;
+
+            void ICollection<int>.Add(int item) => throw new NotSupportedException();
+
+            void ICollection<int>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(int item) => parent.ContainsKey(item);
+
+            bool ICollection<int>.Remove(int item) => throw new NotSupportedException();
+
+            IEnumerator<int> IEnumerable<int>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<int>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is int[] keys) parent.CopyKeysTo(keys, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(IntDict<TValue> dictionary) : IEnumerator<int>, IEnumerator
+            {
+                private IntDict<TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public int Current => _inner.Current.Key;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
+        }
+
+        private sealed class ValueCollection(IntDict<TValue> parent) : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
+        {
+            public void CopyTo(TValue[] array, int index) => parent.CopyValuesTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<TValue>.IsReadOnly => true;
+
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
+
+            void ICollection<TValue>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(TValue item) => parent.ContainsValue(item);
+
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException();
+
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TValue>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is TValue[] values) parent.CopyValuesTo(values, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(IntDict<TValue> dictionary) : IEnumerator<TValue>, IEnumerator
+            {
+                private IntDict<TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public TValue Current => _inner.Current.Value;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
         }
 
         #endregion
@@ -4868,7 +5092,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -5125,7 +5349,8 @@ namespace Aardvark.Base
     public class SymbolDict<TValue>
             : IIntCountable, ICountableDict, IDict<Symbol, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<Symbol, TValue>>,
-              ICollection, ICollection<KeyValuePair<Symbol, TValue>>
+              ICollection, ICollection<KeyValuePair<Symbol, TValue>>,
+              IDictionary<Symbol, TValue>, IReadOnlyDictionary<Symbol, TValue>
     {
         private uint m_capacity;
         private NextSymbolValue<TValue>[] m_firstArray;
@@ -5729,6 +5954,25 @@ namespace Aardvark.Base
         public bool Contains(KeyValuePair<Symbol, TValue> item)
         {
             return Contains(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Returns true if the SymbolDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -6418,6 +6662,98 @@ namespace Aardvark.Base
             
             return new Enumerator(this);
             
+        }
+
+        #endregion
+        
+        #region IDictionary<Symbol, TValue> Members
+
+        ICollection<Symbol> IDictionary<Symbol, TValue>.Keys => new KeyCollection(this);
+
+        ICollection<TValue> IDictionary<Symbol, TValue>.Values => new ValueCollection(this);
+
+        private sealed class KeyCollection(SymbolDict<TValue> parent) : ICollection<Symbol>, ICollection, IReadOnlyCollection<Symbol>
+        {
+            public void CopyTo(Symbol[] array, int index) => parent.CopyKeysTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<Symbol>.IsReadOnly => true;
+
+            void ICollection<Symbol>.Add(Symbol item) => throw new NotSupportedException();
+
+            void ICollection<Symbol>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(Symbol item) => parent.ContainsKey(item);
+
+            bool ICollection<Symbol>.Remove(Symbol item) => throw new NotSupportedException();
+
+            IEnumerator<Symbol> IEnumerable<Symbol>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<Symbol>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is Symbol[] keys) parent.CopyKeysTo(keys, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(SymbolDict<TValue> dictionary) : IEnumerator<Symbol>, IEnumerator
+            {
+                private SymbolDict<TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public Symbol Current => _inner.Current.Key;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
+        }
+
+        private sealed class ValueCollection(SymbolDict<TValue> parent) : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
+        {
+            public void CopyTo(TValue[] array, int index) => parent.CopyValuesTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<TValue>.IsReadOnly => true;
+
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
+
+            void ICollection<TValue>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(TValue item) => parent.ContainsValue(item);
+
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException();
+
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TValue>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is TValue[] values) parent.CopyValuesTo(values, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(SymbolDict<TValue> dictionary) : IEnumerator<TValue>, IEnumerator
+            {
+                private SymbolDict<TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public TValue Current => _inner.Current.Value;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
         }
 
         #endregion
@@ -7188,7 +7524,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -8208,6 +8544,25 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the BigDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            for (ulong fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -9135,7 +9490,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -10082,7 +10437,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -10901,6 +11256,25 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the LongDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            for (ulong fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -11507,7 +11881,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -12237,7 +12611,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -12731,6 +13105,16 @@ namespace Aardvark.Base
                 return m_dict.Contains(item.Key, item.Value);
             }
             finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
+        /// Returns true if the ConcurrentDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            return m_dict.ContainsValue(value);
+            } finally { Monitor.Exit(this); }
         }
 
         /// <summary>
@@ -13546,6 +13930,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the ConcurrentIntDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            return m_dict.ContainsValue(value);
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -14208,6 +14602,16 @@ namespace Aardvark.Base
                 return m_dict.Contains(item.Key, item.Value);
             }
             finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
+        /// Returns true if the ConcurrentSymbolDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            return m_dict.ContainsValue(value);
+            } finally { Monitor.Exit(this); }
         }
 
         /// <summary>
@@ -14985,6 +15389,16 @@ namespace Aardvark.Base
                 return m_dict.Contains(item.Key, item.Value);
             }
             finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
+        /// Returns true if the ConcurrentBigDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            return m_dict.ContainsValue(value);
+            } finally { Monitor.Exit(this); }
         }
 
         /// <summary>
@@ -15775,6 +16189,16 @@ namespace Aardvark.Base
                 return m_dict.Contains(item.Key, item.Value);
             }
             finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
+        /// Returns true if the ConcurrentLongDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            return m_dict.ContainsValue(value);
+            } finally { Monitor.Exit(this); }
         }
 
         /// <summary>
@@ -17062,6 +17486,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the FastConcurrentDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -17972,7 +18417,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -18889,7 +19334,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -19712,6 +20157,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the FastConcurrentIntDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -20285,7 +20751,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -20972,7 +21438,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -21828,6 +22294,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the FastConcurrentSymbolDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -22484,7 +22971,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -23191,7 +23678,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -24218,6 +24705,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the FastConcurrentBigDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            for (ulong fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -25128,7 +25636,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -26036,7 +26544,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -26848,6 +27356,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the FastConcurrentLongDict contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            for (ulong fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -27421,7 +27950,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -28097,7 +28626,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -28290,7 +28819,8 @@ namespace Aardvark.Base
     public class DictIEq<TKey, TValue>
             : IIntCountable, ICountableDict, IDict<TKey, TValue>,
               IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>>,
-              ICollection, ICollection<KeyValuePair<TKey, TValue>>
+              ICollection, ICollection<KeyValuePair<TKey, TValue>>,
+              IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
         where TKey : IEquatable<TKey>
     {
         private uint m_capacity;
@@ -29061,6 +29591,25 @@ namespace Aardvark.Base
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
             return Contains(item.Key, item.Value);
+        }
+
+        /// <summary>
+        /// Returns true if the DictIEq contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -29988,6 +30537,98 @@ namespace Aardvark.Base
             
             return new Enumerator(this);
             
+        }
+
+        #endregion
+        
+        #region IDictionary<TKey, TValue> Members
+
+        ICollection<TKey> IDictionary<TKey, TValue>.Keys => new KeyCollection(this);
+
+        ICollection<TValue> IDictionary<TKey, TValue>.Values => new ValueCollection(this);
+
+        private sealed class KeyCollection(DictIEq<TKey, TValue> parent) : ICollection<TKey>, ICollection, IReadOnlyCollection<TKey>
+        {
+            public void CopyTo(TKey[] array, int index) => parent.CopyKeysTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<TKey>.IsReadOnly => true;
+
+            void ICollection<TKey>.Add(TKey item) => throw new NotSupportedException();
+
+            void ICollection<TKey>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(TKey item) => parent.ContainsKey(item);
+
+            bool ICollection<TKey>.Remove(TKey item) => throw new NotSupportedException();
+
+            IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TKey>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is TKey[] keys) parent.CopyKeysTo(keys, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(DictIEq<TKey, TValue> dictionary) : IEnumerator<TKey>, IEnumerator
+            {
+                private DictIEq<TKey, TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public TKey Current => _inner.Current.Key;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
+        }
+
+        private sealed class ValueCollection(DictIEq<TKey, TValue> parent) : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
+        {
+            public void CopyTo(TValue[] array, int index) => parent.CopyValuesTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<TValue>.IsReadOnly => true;
+
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
+
+            void ICollection<TValue>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(TValue item) => parent.ContainsValue(item);
+
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException();
+
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TValue>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is TValue[] values) parent.CopyValuesTo(values, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(DictIEq<TKey, TValue> dictionary) : IEnumerator<TValue>, IEnumerator
+            {
+                private DictIEq<TKey, TValue>.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public TValue Current => _inner.Current.Value;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
         }
 
         #endregion
@@ -30954,7 +31595,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -31975,6 +32616,25 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the BigDictIEq contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            for (ulong fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -32902,7 +33562,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -33850,7 +34510,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Enumerator
 
         public Enumerator GetEnumerator() { return new Enumerator(this); }
@@ -34345,6 +35005,16 @@ namespace Aardvark.Base
                 return m_dict.Contains(item.Key, item.Value);
             }
             finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
+        /// Returns true if the ConcurrentDictIEq contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            return m_dict.ContainsValue(value);
+            } finally { Monitor.Exit(this); }
         }
 
         /// <summary>
@@ -35201,6 +35871,16 @@ namespace Aardvark.Base
                 return m_dict.Contains(item.Key, item.Value);
             }
             finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
+        /// Returns true if the ConcurrentBigDictIEq contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            return m_dict.ContainsValue(value);
+            } finally { Monitor.Exit(this); }
         }
 
         /// <summary>
@@ -36663,6 +37343,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the FastConcurrentDictIEq contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            for (uint fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -37573,7 +38274,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -38491,7 +39192,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private uint ComputeIncreaseThreshold(uint capacity)
@@ -39519,6 +40220,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Returns true if the FastConcurrentBigDictIEq contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            Monitor.Enter(this); try {
+            for (ulong fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            } finally { Monitor.Exit(this); }
+        }
+
+        /// <summary>
         /// Get the element with the supplied key.
         /// Throws an exception if the element is not found. This is an alias of the indexer.
         /// </summary>
@@ -40429,7 +41151,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)
@@ -41338,7 +42060,7 @@ namespace Aardvark.Base
         }
 
         #endregion
-        
+                
         #region Private Helper Methods
 
         private ulong ComputeIncreaseThreshold(ulong capacity)

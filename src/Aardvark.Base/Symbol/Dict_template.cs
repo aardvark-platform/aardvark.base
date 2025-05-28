@@ -80,7 +80,8 @@ namespace Aardvark.Base
             //# if (!wrapped) {
             : /*# if (!big) { */IIntCountable, /*# } */__idict__,/*# if (!hasValue) { */ IDictSet<__tkey__>,/*# } else { */ IDict<__tkey__, TValue>,/*# } */
               IEnumerable, IEnumerable</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */>/*# if (!big && !concurrent) { */,
-              ICollection, ICollection</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */>/*# } */
+              ICollection, ICollection</*# if (hasValue) { */KeyValuePair</*# } */__tkey__/*# if (hasValue) { */, TValue>/*# } */>/*# if (hasValue) { */,
+              IDictionary<__tkey__, TValue>, IReadOnlyDictionary<__tkey__, TValue>/*# } }*/
         //# }
         //# if (equatable) {
         where TKey : IEquatable<TKey>
@@ -1004,6 +1005,37 @@ namespace Aardvark.Base
             //# } // !wrapped
         }
 
+        //# if (hasValue) {
+        /// <summary>
+        /// Returns true if the __type__ contains the given value.
+        /// </summary>
+        public bool ContainsValue(TValue value)
+        {
+            //# if (concurrent) {
+            Monitor.Enter(this); try {
+            //# }
+            //# if (wrapped) {
+            return m_dict.ContainsValue(value);
+            //# } else { // wrapped
+            for (__uitype__ fi = 0; fi < m_capacity; fi++)
+            {
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0) continue;
+                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                while (ei > 0)
+                {
+                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    ei = m_extraArray[ei].Next;
+                }
+            }
+            return false;
+            //# } // !wrapped 
+            //# if (concurrent) {
+            } finally { Monitor.Exit(this); }
+            //# }
+        }
+
+        //# } // hasValue
         //# foreach (var hasHashPar in new[] { false, true }) { if (hasHashPar && !hasKey) continue;
         //# foreach (var hasDefault in new[] { false, true }) {
         //# foreach (var isCreate in new[] { false, true }) {
@@ -1959,6 +1991,99 @@ namespace Aardvark.Base
         }
 
         #endregion
+        /*# if (hasValue && !big && !concurrent) { */
+        #region IDictionary<__tkey__, TValue> Members
+
+        ICollection<__tkey__> IDictionary<__tkey__, TValue>.Keys => new KeyCollection(this);
+
+        ICollection<TValue> IDictionary<__tkey__, TValue>.Values => new ValueCollection(this);
+
+        private sealed class KeyCollection(__type____tpar__ parent) : ICollection<__tkey__>, ICollection, IReadOnlyCollection<__tkey__>
+        {
+            public void CopyTo(__tkey__[] array, int index) => parent.CopyKeysTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<__tkey__>.IsReadOnly => true;
+
+            void ICollection<__tkey__>.Add(__tkey__ item) => throw new NotSupportedException();
+
+            void ICollection<__tkey__>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(__tkey__ item) => parent.ContainsKey(item);
+
+            bool ICollection<__tkey__>.Remove(__tkey__ item) => throw new NotSupportedException();
+
+            IEnumerator<__tkey__> IEnumerable<__tkey__>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<__tkey__>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is __tkey__[] keys) parent.CopyKeysTo(keys, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(__type____tpar__ dictionary) : IEnumerator<__tkey__>, IEnumerator
+            {
+                private __type____tpar__.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public __tkey__ Current => _inner.Current.Key;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
+        }
+
+        private sealed class ValueCollection(__type____tpar__ parent) : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
+        {
+            public void CopyTo(TValue[] array, int index) => parent.CopyValuesTo(array, index);
+
+            public int Count => parent.Count;
+
+            bool ICollection<TValue>.IsReadOnly => true;
+
+            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
+
+            void ICollection<TValue>.Clear() => throw new NotSupportedException();
+
+            public bool Contains(TValue item) => parent.ContainsValue(item);
+
+            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException();
+
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(parent);
+
+            IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TValue>)this).GetEnumerator();
+
+            void ICollection.CopyTo(Array array, int index)
+            {
+                if (array is TValue[] values) parent.CopyValuesTo(values, index);
+                throw new ArrayTypeMismatchException();
+            }
+
+            bool ICollection.IsSynchronized => false;
+
+            object ICollection.SyncRoot => ((ICollection)parent).SyncRoot;
+
+            private class Enumerator(__type____tpar__ dictionary) : IEnumerator<TValue>, IEnumerator
+            {
+                private __type____tpar__.Enumerator _inner = dictionary.GetEnumerator();
+
+                public void Dispose() => _inner.Dispose();
+                public bool MoveNext() => _inner.MoveNext();
+                public TValue Current => _inner.Current.Value;
+                object IEnumerator.Current => Current;
+                void IEnumerator.Reset() => _inner.Reset();
+            }
+        }
+
+        #endregion
+        //# } // hasValue && !big && !concurrent
         /*# if (!concurrent) { */
         #region Enumerator
 

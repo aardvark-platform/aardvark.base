@@ -1,6 +1,8 @@
 - [FSharp] Added null-coalesing operator ||?
 - [FSharp] Added Seq.asArray
 - [FSharp] Added IDictionary and IReadOnlyDictionary interfaces for MapExt
+- [Base] Added IDictionary and IReadOnlyDictionary interfaces for Dict, IntDict, SymbolDict, DictIEq
+- [Base] Added ContainsValue() for Dict types
 
 ### 5.3.12
 - Fixed regression in range constructors

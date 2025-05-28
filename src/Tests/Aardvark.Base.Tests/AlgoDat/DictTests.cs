@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Aardvark.Base;
@@ -345,6 +346,106 @@ namespace Aardvark.Tests
                 var foo = dict[test];
                 Test.IsTrue(foo == key, $"dict[{test}] == {key}");
             }
+        }
+
+        // Explicitly enumerates the sequences
+        public static IEnumerable<T> Enumerate<T>(IEnumerable<T> data)
+        {
+            var res = new List<T>();
+            foreach (T item in data) { res.Add(item); }
+            return res;
+        }
+
+        [Theory]
+        public void ContainsValue(bool stackDuplicateKeys)
+        {
+            Dict<int, int> dict = new(stackDuplicateKeys)
+            {
+                {1, 2},
+                {2, 3},
+                {3, 4},
+                {42, 5},
+                {-13, 7},
+            };
+
+            if (stackDuplicateKeys)
+            {
+                dict.Add(42, 80);
+                dict.Add(42, -80);
+                Assert.IsTrue(dict.ContainsValue(-80));
+            }
+
+            var actualValues = dict.Values.ToArray();
+            int[] expectedValues = stackDuplicateKeys ? [-80, 2, 3, 4, 5, 7, 80] : [ 2, 3, 4, 5, 7 ];
+            Array.Sort(actualValues);
+
+            Assert.IsTrue(dict.ContainsValue(7));
+            Assert.IsFalse(dict.ContainsValue(6));
+            Assert.AreEqual(expectedValues, actualValues);
+        }
+
+        [Theory]
+        public void IDictionaryKeys(bool stackDuplicateKeys)
+        {
+            Dict<int, int> dict = new(stackDuplicateKeys)
+            {
+                {1, 2},
+                {2, 3},
+                {3, 4},
+                {42, 5},
+                {-13, 7},
+            };
+
+            int[] expectedKeys;
+
+            if (stackDuplicateKeys)
+            {
+                dict.Add(42, 80);
+                dict.Add(42, -80);
+                expectedKeys = [-13, 1, 2, 3, 42, 42, 42];
+            }
+            else
+            {
+                expectedKeys = [-13, 1, 2, 3, 42];
+            }
+
+            var keys = ((IDictionary<int, int>)dict).Keys;
+            var actualKeys = Enumerable.Order(Enumerate(keys));
+
+            Assert.AreEqual(expectedKeys.Length, keys.Count);
+            Assert.AreEqual(expectedKeys, actualKeys);
+        }
+
+        [Theory]
+        public void IDictionaryValues(bool stackDuplicateKeys)
+        {
+            Dict<int, int> dict = new(stackDuplicateKeys)
+            {
+                {1, 2},
+                {2, 3},
+                {3, 4},
+                {42, 5},
+                {-13, 7},
+            };
+
+            int[] expectedValues;
+
+            if (stackDuplicateKeys)
+            {
+                dict.Add(42, 80);
+                dict.Add(42, -80);
+                expectedValues = [-80, 2, 3, 4, 5, 7, 80];
+            }
+            else
+            {
+                expectedValues = [2, 3, 4, 5, 7];
+            }
+
+            var values = ((IDictionary<int, int>)dict).Values;
+            var actualValues = Enumerable.Order(Enumerate(values));
+
+            Assert.AreEqual(expectedValues.Length, values.Count);
+            Assert.AreEqual(expectedValues, actualValues);
         }
     }
 }
