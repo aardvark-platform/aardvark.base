@@ -1,3 +1,4 @@
+### 5.3.13
 - [FSharp] Added null-coalesing operator ||?
 - [FSharp] Added Seq.asArray
 - [FSharp] Added IDictionary and IReadOnlyDictionary interfaces for MapExt
