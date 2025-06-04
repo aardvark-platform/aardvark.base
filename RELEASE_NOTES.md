@@ -1,6 +1,7 @@
 - [FSharp] Added null-coalesing operator ||?
 - [FSharp] Added Seq.asArray
 - [FSharp] Added IDictionary and IReadOnlyDictionary interfaces for MapExt
+- [FSharp] Added tryFindV, tryPickV, pickV, tryHeadV for Seq, List, and Array
 - [Base] Added IDictionary and IReadOnlyDictionary interfaces for Dict, IntDict, SymbolDict, DictIEq
 - [Base] Added ContainsValue() for Dict types
 

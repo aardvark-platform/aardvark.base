@@ -182,6 +182,11 @@ module Prelude =
 
             res
 
+        let inline pickV ([<InlineIfLambda>] chooser) (source : seq<'T>) =
+            match tryPickV chooser source with
+            | ValueNone -> raise <| System.Collections.Generic.KeyNotFoundException()
+            | ValueSome x -> x
+
         let inline tryFindV ([<InlineIfLambda>] predicate) (source: seq<'T>) =
             use e = source.GetEnumerator()
             let mutable res = ValueNone
@@ -193,6 +198,14 @@ module Prelude =
                     res <- ValueSome c
 
             res
+
+        let inline tryHeadV (source: seq<_>) =
+            use e = source.GetEnumerator()
+
+            if (e.MoveNext()) then
+                ValueSome e.Current
+            else
+                ValueNone
 
         /// Computes the sum of the given sequence using the Kahan summation algorithm.
         let inline stableSumBy (projection: 'T -> float) (source: 'T seq) =
@@ -289,6 +302,36 @@ module Prelude =
 
                 acc
 
+        let rec tryPickV chooser list =
+            match list with
+            | [] -> ValueNone
+            | h :: t ->
+                match chooser h with
+                | ValueNone -> tryPickV chooser t
+                | r -> r
+
+        let rec pickV chooser list =
+            match list with
+            | [] -> raise <| System.Collections.Generic.KeyNotFoundException()
+            | h :: t ->
+                match chooser h with
+                | ValueNone -> pickV chooser t
+                | ValueSome r -> r
+
+        let rec tryFindV predicate list =
+            match list with
+            | [] -> ValueNone
+            | h :: t ->
+                if predicate h then
+                    ValueSome h
+                else
+                    tryFindV predicate t
+
+        let inline tryHeadV list =
+            match list with
+            | x :: _ -> ValueSome x
+            | [] -> ValueNone
+
         /// Inserts a separator in between the elements of the given list.
         let inline intersperse (separator: 'T) (list: 'T list) =
             (list, []) ||> List.foldBack (fun x -> function
@@ -359,6 +402,34 @@ module Prelude =
                     | res -> res
 
             loop 0
+
+        let inline pickV ([<InlineIfLambda>] chooser) (array : _[]) =
+            let rec loop i =
+                if i >= array.Length then
+                    raise <| System.Collections.Generic.KeyNotFoundException()
+                else
+                    match chooser array.[i] with
+                    | ValueNone -> loop (i + 1)
+                    | ValueSome res -> res
+
+            loop 0
+
+        let inline tryFindV ([<InlineIfLambda>] predicate) (array: _ array) =
+            let rec loop i =
+                if i >= array.Length then
+                    ValueNone
+                else if predicate array.[i] then
+                    ValueSome array.[i]
+                else
+                    loop (i + 1)
+
+            loop 0
+
+        let inline tryHeadV (array: 'T array) =
+            if array.Length = 0 then
+                ValueNone
+            else
+                ValueSome array.[0]
 
         /// Computes the sum of the given array using the Kahan summation algorithm.
         let inline stableSumBy (projection: 'T -> float) (array: 'T[]) =
