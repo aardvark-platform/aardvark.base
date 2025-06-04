@@ -66,8 +66,8 @@ module Ag =
                 t.Name     
 
     type Scope private(parent : option<Scope>, node : obj, childScopes : ConditionalWeakTable<obj, Scope>) =  
-        let inherited = Dictionary<string, option<obj>>()
-        let anyChild = Dictionary<string, option<obj>>()
+        let inherited = Dictionary<string, obj voption>()
+        let anyChild = Dictionary<string, obj voption>()
 
         let name = 
             lazy (
@@ -94,8 +94,8 @@ module Ag =
         member private x.TryGetAnyChildValue(name : string) =
             lock inherited (fun () ->
                 match anyChild.TryGetValue(name) with
-                | (true, v) -> Some v
-                | _ -> None
+                | (true, v) -> ValueSome v
+                | _ -> ValueNone
             )
 
         static member internal Pseudo(node : obj, childScope : Scope) =
@@ -103,12 +103,12 @@ module Ag =
             cwt.Add(childScope.Node, childScope)
             Scope(None, node, cwt)
 
-        member internal x.SetInherited(name : string, value : option<obj>) =
+        member internal x.SetInherited(name : string, value : obj voption) =
             lock inherited (fun () ->
                 inherited.[name] <- value
             )
 
-        member internal x.SetInheritedForChild(child : obj, name : string, value : option<obj>) =
+        member internal x.SetInheritedForChild(child : obj, name : string, value : obj voption) =
             lock inherited (fun () ->
                 if child = anyObj then
                     anyChild.[name] <- value
@@ -122,11 +122,11 @@ module Ag =
             | (true, d) ->
                 match lock d (fun () -> d.TryGetValue(name)) with
                 | (true, v) -> 
-                    Some v
+                    ValueSome v
                 | _ -> 
-                    None
+                    ValueNone
             | _ ->
-                None
+                ValueNone
                 
 
         member internal x.Locked (action : unit -> 'T) =
@@ -145,48 +145,48 @@ module Ag =
         member internal x.TryGetCacheValue(name : string) =
             lock inherited (fun () ->
                 match inherited.TryGetValue name with
-                | (true, v) -> Some v
-                | _ -> None
+                | (true, v) -> ValueSome v
+                | _ -> ValueNone
             )
 
-        member internal x.SetCacheValue(name : string, value : option<obj>) =
+        member internal x.SetCacheValue(name : string, value : obj voption) =
             lock inherited (fun () ->
                 inherited.[name] <- value
             )
 
-        member internal x.GetOrCreateCache(name : string, create : string -> option<'a>) =
+        member internal x.GetOrCreateCache(name : string, create : string -> 'a voption) =
             lock inherited (fun () ->
                 match inherited.TryGetValue name with
                 | (true, v) -> 
                     match v with
-                    | Some (:? 'a as v) -> Some v
-                    | _ -> None
+                    | ValueSome (:? 'a as v) -> ValueSome v
+                    | _ -> ValueNone
                 | _ ->
                     let res = create name
                     match res with
-                    | Some v -> inherited.[name] <- Some (v :> obj)
-                    | None -> inherited.[name] <- None
+                    | ValueSome v -> inherited.[name] <- ValueSome (v :> obj)
+                    | ValueNone -> inherited.[name] <- ValueNone
                     res
             )
 
-        member internal x.TryGetInheritedCache(name : string) : option<option<obj>> =
+        member internal x.TryGetInheritedCache(name : string) : obj voption voption =
             lock inherited (fun () ->
                 match x.TryGetGlobalValue(name) with
-                | Some v -> Some (Some v)
-                | None -> 
+                | ValueSome v -> ValueSome (ValueSome v)
+                | ValueNone ->
                     match inherited.TryGetValue name with
-                    | (true, v) -> Some v
+                    | (true, v) -> ValueSome v
                     | _ ->
                         match parent with
                         | Some p ->
                             match p.TryGetAnyChildValue(name) with
-                            | Some v ->
+                            | ValueSome v ->
                                 inherited.[name] <- v
-                                Some v
-                            | None ->
-                                None
+                                ValueSome v
+                            | ValueNone ->
+                                ValueNone
                         | None ->
-                            None
+                            ValueNone
             )
 
 
@@ -408,35 +408,29 @@ module Ag =
 
 
 
-        let private instances = ConcurrentDict<Type, option<obj>>(Dict())
+        let private instances = ConcurrentDict<Type, obj voption>(Dict())
 
         let tryCreateInstance (t : Type) =
             instances.GetOrCreate(t, fun t ->
                 let ctor = t.GetConstructor(BindingFlags.NonPublic ||| BindingFlags.Public ||| BindingFlags.Instance, Type.DefaultBinder, [||], null)
                 if isNull ctor then 
-                    None
+                    ValueNone
                 else 
                     let v = ctor.Invoke([||])
-                    Some v
+                    ValueSome v
             )
 
         let isSynMethod (mi : MethodInfo) =
             let pars = mi.GetParameters()
             if pars.Length = 2 && mi.ReturnType <> typeof<System.Void> && mi.ReturnType <> typeof<unit> then
-                if pars.[1].ParameterType.IsAssignableFrom typeof<Scope> then
-                    true
-                else
-                    false
+                pars.[1].ParameterType.IsAssignableFrom typeof<Scope>
             else
                 false
 
         let isInhMethod (mi : MethodInfo) =
             let pars = mi.GetParameters()
             if pars.Length = 2 && (mi.ReturnType = typeof<System.Void> || mi.ReturnType = typeof<unit>) then
-                if pars.[1].ParameterType.IsAssignableFrom typeof<Scope> then
-                    true
-                else
-                    false
+                pars.[1].ParameterType.IsAssignableFrom typeof<Scope>
             else
                 false
 
@@ -490,10 +484,10 @@ module Ag =
                 |> Seq.map (fun (g, meths) -> g, meths |> Seq.toArray)
                 |> Dictionary.ofSeq
 
-            let synCache = ConcurrentDict(Dict<string * Type * Type, option<SynMethod>>())
-            let inhCache = ConcurrentDict(Dict<string * Type, option<InheritMethod>>())
+            let synCache = ConcurrentDict(Dict<string * Type * Type, SynMethod voption>())
+            let inhCache = ConcurrentDict(Dict<string * Type, InheritMethod voption>())
 
-            member x.TryGetSynRule(name : string, nodeType : Type, expectedType : Type) : option<SynMethod> =
+            member x.TryGetSynRule(name : string, nodeType : Type, expectedType : Type) : SynMethod voption =
                 synCache.GetOrCreate((name, nodeType, expectedType), fun (name, nodeType, expectedType) ->
                     match synRules.TryGetValue name with
                     | (true, rules) ->
@@ -501,16 +495,16 @@ module Ag =
                         let applicable = rules |> Array.choose (fun m -> m.TrySpecialize(argTypes, expectedType))
 
                         if applicable.Length = 0 then
-                            None
+                            ValueNone
                         elif applicable.Length = 1 then
                             let m = applicable.[0]
                         
                             let instance =
-                                if m.IsStatic then Some null
+                                if m.IsStatic then ValueSome null
                                 else tryCreateInstance m.DeclaringType
                             match instance with
-                            | Some instance -> createSynMethod instance m nodeType |> Some
-                            | None -> None
+                            | ValueSome instance -> createSynMethod instance m nodeType |> ValueSome
+                            | ValueNone -> ValueNone
                         else
                             let mb = applicable |> Array.map (fun m -> m :> MethodBase)
                             try
@@ -520,23 +514,23 @@ module Ag =
                                         mb, argTypes, null
                                     )
                                 match selected with
-                                | null -> None
+                                | null -> ValueNone
                                 | :? MethodInfo as m ->
                                     let instance =
-                                        if m.IsStatic then Some null
+                                        if m.IsStatic then ValueSome null
                                         else tryCreateInstance m.DeclaringType
                                     match instance with
-                                    | Some instance ->createSynMethod instance m nodeType |> Some
-                                    | None -> None
+                                    | ValueSome instance ->createSynMethod instance m nodeType |> ValueSome
+                                    | ValueNone -> ValueNone
                                 | _ -> 
-                                    None
+                                    ValueNone
                             with _ ->
-                                None
+                                ValueNone
                     | _ ->
-                        None
+                        ValueNone
                 )
          
-            member x.TryGetInhRule(name : string, nodeType : Type) : option<InheritMethod> =
+            member x.TryGetInhRule(name : string, nodeType : Type) : InheritMethod voption =
                 inhCache.GetOrCreate((name, nodeType), fun (name, nodeType) ->
                     match inhRules.TryGetValue name with
                     | (true, rules) ->
@@ -544,16 +538,16 @@ module Ag =
                         let applicable = rules |> Array.choose (fun m -> m.TrySpecialize(argTypes, typeof<System.Void>))
 
                         if applicable.Length = 0 then
-                            None
+                            ValueNone
                         elif applicable.Length = 1 then
                             let m = applicable.[0]
                         
                             let instance =
-                                if m.IsStatic then Some null
+                                if m.IsStatic then ValueSome null
                                 else tryCreateInstance m.DeclaringType
                             match instance with
-                            | Some instance -> createInhMethod instance m nodeType |> Some
-                            | None -> None
+                            | ValueSome instance -> createInhMethod instance m nodeType |> ValueSome
+                            | ValueNone -> ValueNone
                         else
                             let mb = applicable |> Array.map (fun m -> m :> MethodBase)
                             try
@@ -563,49 +557,49 @@ module Ag =
                                         mb, argTypes, null
                                     )
                                 match selected with
-                                | null -> None
+                                | null -> ValueNone
                                 | :? MethodInfo as m ->
                                     let instance =
-                                        if m.IsStatic then Some null
+                                        if m.IsStatic then ValueSome null
                                         else tryCreateInstance m.DeclaringType
                                     match instance with
-                                    | Some instance -> createInhMethod instance m nodeType |> Some
-                                    | None -> None
+                                    | ValueSome instance -> createInhMethod instance m nodeType |> ValueSome
+                                    | ValueNone -> ValueNone
                                 | _ -> 
-                                    None
+                                    ValueNone
                             with _ ->
-                                None
+                                ValueNone
                     | _ ->
-                        None
+                        ValueNone
                 )
 
         let table = lazy (RuleTable())
 
     let hasSynRule (nodeType : Type) (expected : Type) (name : string) =
         match table.Value.TryGetSynRule(name, nodeType, expected) with
-        | Some _ -> true
-        | None -> false
+        | ValueSome _ -> true
+        | ValueNone -> false
 
     let rec internal runinh (scope : Scope) (name : string) =
         match scope.TryGetInheritedCache(name) with
-        | Some v -> 
+        | ValueSome v ->
             v
-        | None ->
+        | ValueNone ->
             match scope.Parent with
             | Some p ->
                 if isNull p.Node then
                     let self = scope.Node.GetType().GetBaseTypesAndSelf()
 
                     let meth =
-                        self |> Array.tryPick (fun t ->
+                        self |> Array.tryPickV (fun t ->
                             let pseudo = typedefof<Root<_>>.MakeGenericType [| t |]
                             match table.Value.TryGetInhRule(name, pseudo) with
-                            | Some m -> Some (t, m)
-                            | None -> None
+                            | ValueSome m -> ValueSome (t, m)
+                            | ValueNone -> ValueNone
                         )
                             
                     match meth with
-                    | Some (t, inh) ->
+                    | ValueSome (t, inh) ->
                         let root = getRootCreator t scope.Node
                         let pseudo = Scope.Pseudo(root, scope)
                         let o = Scope.CurrentScope
@@ -613,59 +607,59 @@ module Ag =
                         inh.Invoke root pseudo
                         Scope.CurrentScope <- o
                         match scope.TryGetInheritedCache(name) with
-                        | Some v ->     
+                        | ValueSome v ->
                             v
-                        | None -> 
+                        | ValueNone ->
                             Log.warn "[Ag] bad root inherit method: %A" inh
-                            None
-                    | None ->
+                            ValueNone
+                    | ValueNone ->
                         // root
-                        None
+                        ValueNone
                 else
 
                     match table.Value.TryGetInhRule(name, p.Node.GetType()) with
-                    | Some inh ->
+                    | ValueSome inh ->
                         let o = Scope.CurrentScope
                         Scope.CurrentScope <- Some p
                         inh.Invoke p.Node p
                         Scope.CurrentScope <- o
                         match scope.TryGetInheritedCache(name) with
-                        | Some v -> v
-                        | None -> 
+                        | ValueSome v -> v
+                        | ValueNone ->
                             Log.warn "[Ag] bad inherit method: %A" inh
-                            None
-                    | None ->
+                            ValueNone
+                    | ValueNone ->
                         let res = runinh p name
                         scope.SetInherited(name, res)
                         res
             | None ->
-                None
+                ValueNone
 
     let internal syn (node : 'a) (scope : Scope) (name : string) (expectedType : Type) =
         if isNull (node :> obj) then 
-            None
+            ValueNone
         else
             let cacheName = "syn." + name
             scope.Enter()
             try
                 let t = node.GetType()
                 match table.Value.TryGetSynRule(name, t, expectedType)  with
-                | Some syn ->
+                | ValueSome syn ->
                     let newScope = scope.GetChildScope(node)
                     if syn.Cache then
                         match newScope.TryGetCacheValue cacheName with
-                        | Some v ->
+                        | ValueSome v ->
                             v
-                        | None -> 
-                            let result = syn.Invoke (node :> obj) newScope |> Some
+                        | ValueNone ->
+                            let result = syn.Invoke (node :> obj) newScope |> ValueSome
                             newScope.SetCacheValue(cacheName, result)
                             result
                     else
                         scope.Exit()
-                        syn.Invoke (node :> obj) newScope |> Some
+                        syn.Invoke (node :> obj) newScope |> ValueSome
 
                 | _ ->
-                    None
+                    ValueNone
                 finally
                     scope.Exit()
 
@@ -682,7 +676,7 @@ module Ag =
         match Scope.CurrentScope with
         | Some s -> 
             // classic aval unpacking here
-            s.SetInheritedForChild(node, name, Some (value :> obj))
+            s.SetInheritedForChild(node, name, ValueSome (value :> obj))
         | None ->
             Scope.SetGlobalValue(node, name, value :> obj)
 
@@ -691,17 +685,17 @@ module Ag =
     type Operators private() =
         static member Get(scope : Scope, name : string) : 'a =
             match runinh scope name with
-            | Some (:? 'a as v) -> v
+            | ValueSome (:? 'a as v) -> v
             | _ -> failwithf "[Ag] could not get inh attribute %s in scope %A" name scope
 
         static member Get(node : 'a, name : string) : Scope -> 'b =
             fun s -> 
                 match syn (node :> obj) s name typeof<'b> with
-                | Some (:? 'b as v) -> 
+                | ValueSome (:? 'b as v) ->
                     v
-                | Some v ->
+                | ValueSome v ->
                     failwithf "[Ag] invalid result for syn attribute %s on node %A: %A" name node v
-                | None ->
+                | ValueNone ->
                     failwithf "[Ag] could not get syn attribute %s on node %A" name node
 
     let inline private opAux (_d : 'd) (a : 'a) (b : 'b) : 'c =
@@ -714,31 +708,47 @@ module Ag =
 type AgScopeExtensions private() =
     [<Extension>]
     static member TryGetInherited(this : Ag.Scope, name : string) =
+        Ag.runinh this name |> ValueOption.toOption
+
+    [<Extension>]
+    static member TryGetInheritedV(this : Ag.Scope, name : string) =
         Ag.runinh this name
         
     [<Extension>]
     static member TryGetInherited<'a>(this : Ag.Scope, name : string) =
         match Ag.runinh this name with
-        | Some (:? 'a as res) -> Some res
+        | ValueSome (:? 'a as res) -> Some res
         | _ -> None
+
+    [<Extension>]
+    static member TryGetInheritedV<'a>(this : Ag.Scope, name : string) =
+        match Ag.runinh this name with
+        | ValueSome (:? 'a as res) -> ValueSome res
+        | _ -> ValueNone
         
     [<Extension>]
     static member GetInherted(this : Ag.Scope, name : string) =
         match Ag.runinh this name with
-        | Some v -> v
-        | None -> failwithf "[Ag] could not get inh attribute %s in scope %A" name this
+        | ValueSome v -> v
+        | ValueNone -> failwithf "[Ag] could not get inh attribute %s in scope %A" name this
         
     [<Extension>]
     static member GetInherted<'a>(this : Ag.Scope, name : string) =
         match Ag.runinh this name with
-        | Some (:? 'a as res) -> res
+        | ValueSome (:? 'a as res) -> res
         | _ -> failwithf "[Ag] could not get inh attribute %s in scope %A" name this
         
     [<Extension>]
     static member TryGetSynthesized<'a>(node : obj, name : string, scope : Ag.Scope) =
         match Ag.syn node scope name typeof<'a> with
-        | Some (:? 'a as res) -> Some res 
+        | ValueSome (:? 'a as res) -> Some res
         | _ -> None
+
+    [<Extension>]
+    static member TryGetSynthesizedV<'a>(node : obj, name : string, scope : Ag.Scope) =
+        match Ag.syn node scope name typeof<'a> with
+        | ValueSome (:? 'a as res) -> ValueSome res
+        | _ -> ValueNone
         
     [<Extension>]
     static member TryGetSynthesized<'a>(scope : Ag.Scope, name : string) =
@@ -748,19 +758,38 @@ type AgScopeExtensions private() =
         | None -> scope.Node.TryGetSynthesized<'a>(name, Ag.Scope.Root)
 
     [<Extension>]
+    static member TryGetSynthesizedV<'a>(scope : Ag.Scope, name : string) =
+        if isNull scope.Node then failwithf "[Ag] cannot get syn attribute for scope with no node: %A" scope
+        match scope.Parent with
+        | Some p -> scope.Node.TryGetSynthesizedV<'a>(name, p)
+        | None -> scope.Node.TryGetSynthesizedV<'a>(name, Ag.Scope.Root)
+
+    [<Extension>]
     static member GetSynthesized<'a>(node : obj, name : string, scope : Ag.Scope) =
         match Ag.syn node scope name typeof<'a> with
-        | Some (:? 'a as res) -> res
+        | ValueSome (:? 'a as res) -> res
         | _ -> failwithf "[Ag] could not get syn attribute %s on node %A" name node
         
     [<Extension>]
     static member TryGetAttributeValue(scope : Ag.Scope, name : string) =
         match scope.TryGetSynthesized(name) with
-        | Some v -> Some v
         | None -> scope.TryGetInherited(name)
+        | r -> r
+
+    [<Extension>]
+    static member TryGetAttributeValueV(scope : Ag.Scope, name : string) =
+        match scope.TryGetSynthesizedV(name) with
+        | ValueNone -> scope.TryGetInheritedV(name)
+        | r -> r
 
     [<Extension>]
     static member TryGetAttributeValue<'a>(scope : Ag.Scope, name : string) =
         match scope.TryGetSynthesized<'a>(name) with
-        | Some v -> Some v
         | None -> scope.TryGetInherited<'a>(name)
+        | r -> r
+
+    [<Extension>]
+    static member TryGetAttributeValueV<'a>(scope : Ag.Scope, name : string) =
+        match scope.TryGetSynthesizedV<'a>(name) with
+        | ValueNone -> scope.TryGetInheritedV<'a>(name)
+        | r -> r

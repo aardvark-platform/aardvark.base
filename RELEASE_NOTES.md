@@ -4,6 +4,7 @@
 - [FSharp] Added tryFindV, tryPickV, pickV, tryHeadV for Seq, List, and Array
 - [Base] Added IDictionary and IReadOnlyDictionary interfaces for Dict, IntDict, SymbolDict, DictIEq
 - [Base] Added ContainsValue() for Dict types
+- [Ag] Use ValueOption internally and added overloads for public API returning ValueOption
 
 ### 5.3.12
 - Fixed regression in range constructors
