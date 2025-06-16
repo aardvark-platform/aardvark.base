@@ -11,6 +11,33 @@ open Aardvark.Base
 open FsUnit
 open NUnit.Framework
 
+module NativeUtilitiesTests =
+
+    [<Test>]
+    let ``[NativePtr] Pin array``() =
+        let array = [| 1UL; 2UL; 3UL; 4UL; 5UL |]
+
+        array |> NativePtr.pinArr (fun ptr ->
+            ptr.[0] <- 42UL
+            ptr.[3] <- 43UL
+            ptr.[4] <- 44UL
+        )
+
+        array |> should equal [| 42UL; 2UL; 3UL; 43UL; 44UL |]
+
+    [<Test>]
+    let ``[NativePtr] Pin array with index``() =
+        let array = [| 1UL; 2UL; 3UL; 4UL; 5UL |]
+
+        (0, array) ||> NativePtr.pinArri (fun ptr -> ptr.[0] <- 42UL)
+        array |> should equal [| 42UL; 2UL; 3UL; 4UL; 5UL |]
+
+        (3, array) ||> NativePtr.pinArri (fun ptr -> ptr.[0] <- 43UL)
+        array |> should equal [| 42UL; 2UL; 3UL; 43UL; 5UL |]
+
+        (4, array) ||> NativePtr.pinArri (fun ptr -> ptr.[0] <- 44UL)
+        array |> should equal [| 42UL; 2UL; 3UL; 43UL; 44UL |]
+
 module MemoryManagerTests =
     
     let create() = new MemoryManager(16n, Marshal.AllocHGlobal, fun ptr _ -> Marshal.FreeHGlobal ptr)

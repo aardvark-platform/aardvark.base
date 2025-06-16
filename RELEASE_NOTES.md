@@ -1,3 +1,5 @@
+- [FSharp] Added workaround for compiler-related bug in NativePtr.pin, pinArr, and pinArri
+
 ### 5.3.13
 - [FSharp] Added null-coalesing operator ||?
 - [FSharp] Added Seq.asArray

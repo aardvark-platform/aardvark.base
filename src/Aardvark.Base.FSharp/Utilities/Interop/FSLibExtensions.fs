@@ -522,18 +522,24 @@ module Prelude =
         /// Pins the given value and invokes the action with the native pointer.
         /// Note: Use a fixed expression with a byref if writing to the original location is required.
         let inline pin<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (value: 'T) =
+            // See: https://github.com/dotnet/fsharp/issues/18689
             use ptr = fixed &value
-            action ptr
+            try action ptr
+            with _ -> reraise()
 
         /// Pins the given array and invokes the action with the native pointer.
-        let inline pinArr<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (array: 'T[])  =
+        let inline pinArr<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (array: 'T[]) =
+            // See: https://github.com/dotnet/fsharp/issues/18689
             use ptr = fixed array
-            action ptr
+            try action ptr
+            with _ -> reraise()
 
         /// Pins the given array at the given index and invokes the action with the native pointer.
-        let inline pinArri<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (index: int) (array: 'T[])  =
+        let inline pinArri<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) (index: int) (array: 'T[]) =
+            // See: https://github.com/dotnet/fsharp/issues/18689
             use ptr = fixed &array.[index]
-            action ptr
+            try action ptr
+            with _ -> reraise()
 
         /// Allocates a temporary native pointer and invokes the action.
         let inline temp<'T, 'U when 'T : unmanaged> ([<InlineIfLambda>] action: nativeptr<'T> -> 'U) =
