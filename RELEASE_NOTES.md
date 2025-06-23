@@ -1,3 +1,4 @@
+### 5.3.14
 - [FSharp] Added workaround for compiler-related bug in NativePtr.pin, pinArr, and pinArri (https://github.com/dotnet/fsharp/issues/18689)
 - [FSharp] Added tryLastV for Seq, List, and Array
 
