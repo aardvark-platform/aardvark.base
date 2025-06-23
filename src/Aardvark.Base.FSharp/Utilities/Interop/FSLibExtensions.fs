@@ -102,144 +102,6 @@ module Prelude =
 
             result
 
-    module Seq =
-
-        /// Returns the given sequence as an array.
-        /// If the input is already an array it is returned without creating a copy, otherwise a new array is allocated.
-        let inline asArray (seq: 'T seq) : 'T[] =
-            match seq with
-            | :? ('T[]) as arr -> arr
-            | _ -> Seq.toArray seq
-
-        let inline iter' ([<InlineIfLambda>] f : 'a -> 'b) (s : seq<'a>) =
-            for i in s do
-                f i |> ignore
-
-        let inline repeat (n : int) ([<InlineIfLambda>] f : unit -> unit) =
-            for i in 1..n do
-                f()
-
-        let inline repeat' (n : int) ([<InlineIfLambda>] f : unit -> 'a) =
-            for i in 1..n do
-                f() |> ignore
-
-        let inline partition ([<InlineIfLambda>] f : 'a -> bool) (xs : seq<'a>) =
-            let xs = xs |> Seq.map (fun a -> f a, a) |> Seq.cache
-            (xs |> Seq.filter (fun (r,v) -> not r) |> Seq.map snd, xs |> Seq.filter (fun (r,v) -> r) |> Seq.map snd)
-
-        [<Obsolete("Is anybody actually using this?")>]
-        let inline chooseOption ([<InlineIfLambda>] f : 'a -> Option<'b>) (xs : seq<Option<'a>>) : seq<Option<'b>> =
-            seq {
-                for x in xs do
-                    match x with
-                     | None -> ()
-                     | Some x -> yield f x
-            }
-
-        let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (source: 'T seq) : 'U seq =
-            let mutable i = 0
-            let result = ResizeArray<'U>()
-
-            use e = source.GetEnumerator()
-            while e.MoveNext() do
-                match chooser i e.Current with
-                | Some v -> result.Add v
-                | _ -> ()
-
-                i <- i + 1
-
-            result :> 'U seq
-
-        let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U seq) (source: 'T seq) : 'U seq =
-            let mutable i = 0
-            let result = ResizeArray<'U>()
-
-            use e = source.GetEnumerator()
-            while e.MoveNext() do
-                result.AddRange(mapping i e.Current)
-                i <- i + 1
-
-            result :> 'U seq
-
-        let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
-            use e = source.GetEnumerator()
-            let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt folder
-            let mutable state = state
-            let mutable i = 0
-
-            while e.MoveNext() do
-                state <- f.Invoke(0, state, e.Current)
-                i <- i + 1
-
-            state
-
-        let inline tryPickV ([<InlineIfLambda>] chooser) (source : seq<'T>) =
-            use e = source.GetEnumerator()
-            let mutable res = ValueNone
-
-            while (ValueOption.isNone res && e.MoveNext()) do
-                res <- chooser e.Current
-
-            res
-
-        let inline pickV ([<InlineIfLambda>] chooser) (source : seq<'T>) =
-            match tryPickV chooser source with
-            | ValueNone -> raise <| System.Collections.Generic.KeyNotFoundException()
-            | ValueSome x -> x
-
-        let inline tryFindV ([<InlineIfLambda>] predicate) (source: seq<'T>) =
-            use e = source.GetEnumerator()
-            let mutable res = ValueNone
-
-            while (ValueOption.isNone res && e.MoveNext()) do
-                let c = e.Current
-
-                if predicate c then
-                    res <- ValueSome c
-
-            res
-
-        let inline tryHeadV (source: seq<_>) =
-            use e = source.GetEnumerator()
-
-            if (e.MoveNext()) then
-                ValueSome e.Current
-            else
-                ValueNone
-
-        /// Computes the sum of the given sequence using the Kahan summation algorithm.
-        let inline stableSumBy (projection: 'T -> float) (source: 'T seq) =
-            let mutable sum = KahanSum.Zero
-            for x in source do sum <- sum + projection x
-            sum.Value
-
-        /// Computes the sum of the given sequence using the Kahan summation algorithm.
-        let inline stableSum (source: float seq) =
-            stableSumBy id source
-
-        open System.Collections
-        open System.Collections.Generic
-
-        let atMost (n : int) (s : seq<'a>) : seq<'a> =
-            let newEnumerator() =
-                let input = s.GetEnumerator()
-                let mutable remaining = n
-                { new IEnumerator<'a> with
-                    member x.MoveNext() =
-                        remaining <- remaining - 1
-                        remaining >= 0 && input.MoveNext()
-                    member x.Current : obj = input.Current :> obj
-                    member x.Dispose() = input.Dispose()
-                    member x.Reset() = input.Reset(); remaining <- n
-                    member x.Current : 'a = input.Current
-                }
-
-            { new IEnumerable<'a> with
-                member x.GetEnumerator() : IEnumerator = newEnumerator() :> IEnumerator
-                member x.GetEnumerator() : IEnumerator<'a> = newEnumerator()
-            }
-
-
     module List =
 
         //Experimental Results show that this implementation is faster than all other ones maintaining the list's order
@@ -332,6 +194,12 @@ module Prelude =
             | x :: _ -> ValueSome x
             | [] -> ValueNone
 
+        let rec tryLastV (list: 'T list) =
+            match list with
+            | [] -> ValueNone
+            | [x] -> ValueSome x
+            | _ :: tail -> tryLastV tail
+
         /// Inserts a separator in between the elements of the given list.
         let inline intersperse (separator: 'T) (list: 'T list) =
             (list, []) ||> List.foldBack (fun x -> function
@@ -348,6 +216,164 @@ module Prelude =
         /// Computes the sum of the given list using the Kahan summation algorithm.
         let inline stableSum (list: float list) =
             stableSumBy id list
+
+    module Seq =
+
+        /// Returns the given sequence as an array.
+        /// If the input is already an array it is returned without creating a copy, otherwise a new array is allocated.
+        let inline asArray (seq: 'T seq) : 'T[] =
+            match seq with
+            | :? ('T[]) as arr -> arr
+            | _ -> Seq.toArray seq
+
+        let inline iter' ([<InlineIfLambda>] f : 'a -> 'b) (s : seq<'a>) =
+            for i in s do
+                f i |> ignore
+
+        let inline repeat (n : int) ([<InlineIfLambda>] f : unit -> unit) =
+            for i in 1..n do
+                f()
+
+        let inline repeat' (n : int) ([<InlineIfLambda>] f : unit -> 'a) =
+            for i in 1..n do
+                f() |> ignore
+
+        let inline partition ([<InlineIfLambda>] f : 'a -> bool) (xs : seq<'a>) =
+            let xs = xs |> Seq.map (fun a -> f a, a) |> Seq.cache
+            (xs |> Seq.filter (fun (r,v) -> not r) |> Seq.map snd, xs |> Seq.filter fst |> Seq.map snd)
+
+        [<Obsolete("Is anybody actually using this?")>]
+        let inline chooseOption ([<InlineIfLambda>] f : 'a -> Option<'b>) (xs : seq<Option<'a>>) : seq<Option<'b>> =
+            seq {
+                for x in xs do
+                    match x with
+                     | None -> ()
+                     | Some x -> yield f x
+            }
+
+        let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (source: 'T seq) : 'U seq =
+            let mutable i = 0
+            let result = ResizeArray<'U>()
+
+            use e = source.GetEnumerator()
+            while e.MoveNext() do
+                match chooser i e.Current with
+                | Some v -> result.Add v
+                | _ -> ()
+
+                i <- i + 1
+
+            result :> 'U seq
+
+        let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U seq) (source: 'T seq) : 'U seq =
+            let mutable i = 0
+            let result = ResizeArray<'U>()
+
+            use e = source.GetEnumerator()
+            while e.MoveNext() do
+                result.AddRange(mapping i e.Current)
+                i <- i + 1
+
+            result :> 'U seq
+
+        let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
+            use e = source.GetEnumerator()
+            let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt folder
+            let mutable state = state
+            let mutable i = 0
+
+            while e.MoveNext() do
+                state <- f.Invoke(0, state, e.Current)
+                i <- i + 1
+
+            state
+
+        let inline tryPickV ([<InlineIfLambda>] chooser) (source : seq<'T>) =
+            use e = source.GetEnumerator()
+            let mutable res = ValueNone
+
+            while (ValueOption.isNone res && e.MoveNext()) do
+                res <- chooser e.Current
+
+            res
+
+        let inline pickV ([<InlineIfLambda>] chooser) (source : seq<'T>) =
+            match tryPickV chooser source with
+            | ValueNone -> raise <| System.Collections.Generic.KeyNotFoundException()
+            | ValueSome x -> x
+
+        let inline tryFindV ([<InlineIfLambda>] predicate) (source: seq<'T>) =
+            use e = source.GetEnumerator()
+            let mutable res = ValueNone
+
+            while (ValueOption.isNone res && e.MoveNext()) do
+                let c = e.Current
+
+                if predicate c then
+                    res <- ValueSome c
+
+            res
+
+        let inline tryHeadV (source: seq<_>) =
+            use e = source.GetEnumerator()
+
+            if (e.MoveNext()) then
+                ValueSome e.Current
+            else
+                ValueNone
+
+        let tryLastV (source: seq<_>) =
+            match source with
+            | :? ('T[]) as a ->
+                if a.Length = 0 then ValueNone
+                else ValueSome(a.[a.Length - 1])
+
+            | :? ('T System.Collections.Generic.IList) as a -> //ResizeArray and other collections
+                if a.Count = 0 then ValueNone
+                else ValueSome(a.[a.Count - 1])
+
+            | :? ('T list) as a -> List.tryLastV a
+
+            | _ ->
+                use e = source.GetEnumerator()
+                if e.MoveNext() then
+                    let mutable res = e.Current
+                    while (e.MoveNext()) do res <- e.Current
+                    ValueSome(res)
+                else
+                    ValueNone
+
+        /// Computes the sum of the given sequence using the Kahan summation algorithm.
+        let inline stableSumBy (projection: 'T -> float) (source: 'T seq) =
+            let mutable sum = KahanSum.Zero
+            for x in source do sum <- sum + projection x
+            sum.Value
+
+        /// Computes the sum of the given sequence using the Kahan summation algorithm.
+        let inline stableSum (source: float seq) =
+            stableSumBy id source
+
+        open System.Collections
+        open System.Collections.Generic
+
+        let atMost (n : int) (s : seq<'a>) : seq<'a> =
+            let newEnumerator() =
+                let input = s.GetEnumerator()
+                let mutable remaining = n
+                { new IEnumerator<'a> with
+                    member x.MoveNext() =
+                        remaining <- remaining - 1
+                        remaining >= 0 && input.MoveNext()
+                    member x.Current : obj = input.Current :> obj
+                    member x.Dispose() = input.Dispose()
+                    member x.Reset() = input.Reset(); remaining <- n
+                    member x.Current : 'a = input.Current
+                }
+
+            { new IEnumerable<'a> with
+                member x.GetEnumerator() : IEnumerator = newEnumerator() :> IEnumerator
+                member x.GetEnumerator() : IEnumerator<'a> = newEnumerator()
+            }
 
     module Array =
 
@@ -426,10 +452,12 @@ module Prelude =
             loop 0
 
         let inline tryHeadV (array: 'T array) =
-            if array.Length = 0 then
-                ValueNone
-            else
-                ValueSome array.[0]
+            if array.Length = 0 then ValueNone
+            else ValueSome array.[0]
+
+        let inline tryLastV (array: 'T array) =
+            if array.Length = 0 then ValueNone
+            else ValueSome array.[array.Length - 1]
 
         /// Computes the sum of the given array using the Kahan summation algorithm.
         let inline stableSumBy (projection: 'T -> float) (array: 'T[]) =
