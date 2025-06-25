@@ -1196,10 +1196,9 @@ namespace Aardvark.Base
 
         #region PowerOfTwo
 
-        //# iltypes.ForEach(t => {
+        //# modtypes.ForEach(t => {
         /// <summary>
-        /// Returns true if the supplied number is 0
-        /// or a power of two.
+        /// Returns true if the supplied number is 0 or a power of two.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -105,3 +105,35 @@ module MathTests =
     let ``[Math] AngleBetweenSigned 2D`` (input: RotationTestCase2D) =
         let result = Vec.AngleBetweenSigned(input.Src, input.Dst)
         result |> should be (equalWithin input.Angle 0.00001)
+
+    let inline isPowerOfTwo (value: 'T) =
+        let rec check i =
+            if i > 63 then false
+            else
+                if uint64 value = (1UL <<< i) then true
+                else check (i + 1)
+        check 0
+
+    [<Property>]
+    let ``[Math] IsPowerOfTwo (int32)`` (value: int32) =
+        let result = value.IsPowerOfTwo()
+        let expected = value = 0 || (value > 0 && isPowerOfTwo value)
+        result |> should be (equal expected)
+
+    [<Property>]
+    let ``[Math] IsPowerOfTwo (uint32)`` (value: uint32) =
+        let result = value.IsPowerOfTwo()
+        let expected = value = 0u || isPowerOfTwo value
+        result |> should be (equal expected)
+
+    [<Property>]
+    let ``[Math] IsPowerOfTwo (int64)`` (value: int64) =
+        let result = value.IsPowerOfTwo()
+        let expected = value = 0L || (value > 0L && isPowerOfTwo value)
+        result |> should be (equal expected)
+
+    [<Property>]
+    let ``[Math] IsPowerOfTwo (uint64)`` (value: uint64) =
+        let result = value.IsPowerOfTwo()
+        let expected = value = 0UL || isPowerOfTwo value
+        result |> should be (equal expected)

@@ -5265,20 +5265,32 @@ namespace Aardvark.Base
         #region PowerOfTwo
 
         /// <summary>
-        /// Returns true if the supplied number is 0
-        /// or a power of two.
+        /// Returns true if the supplied number is 0 or a power of two.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsPowerOfTwo(this int x) => (x & (x - 1)) == 0;
 
         /// <summary>
-        /// Returns true if the supplied number is 0
-        /// or a power of two.
+        /// Returns true if the supplied number is 0 or a power of two.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsPowerOfTwo(this long x) => (x & (x - 1)) == 0;
+
+        /// <summary>
+        /// Returns true if the supplied number is 0 or a power of two.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPowerOfTwo(this uint x) => (x & (x - 1)) == 0;
+
+        /// <summary>
+        /// Returns true if the supplied number is 0 or a power of two.
+        /// </summary>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsPowerOfTwo(this ulong x) => (x & (x - 1)) == 0;
 
         /// <summary>
         /// Returns 2 raised to the power of the value.
