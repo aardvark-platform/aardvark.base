@@ -5414,6 +5414,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the nearest superior power of two of the value.
+        /// For x &lt;= 0, returns 0.
+        /// For x &gt; 2^30, returns int.MinValue.
         /// E.g. x = 401 -> 512.
         /// E.g. x = 256 -> 256.
         /// </summary>
@@ -5431,6 +5433,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the nearest inferior power of two of the value.
+        /// For x &lt;= 0, returns 0.
         /// E.g. x = 401 -> 256.
         /// E.g. x = 512 -> 512.
         /// </summary>
@@ -5449,6 +5452,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the nearest superior power of two of the value.
+        /// For x &lt;= 0, returns 0.
+        /// For x &gt; 2^62, returns long.MinValue.
         /// E.g. x = 401 -> 512.
         /// E.g. x = 256 -> 256.
         /// </summary>
@@ -5467,6 +5472,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the nearest inferior power of two of the value.
+        /// For x &lt;= 0, returns 0.
         /// E.g. x = 401 -> 256.
         /// E.g. x = 512 -> 512.
         /// </summary>
@@ -5474,6 +5480,82 @@ namespace Aardvark.Base
         public static long PrevPowerOfTwo(this long x)
         {
             if (x <= 0) return 0;
+            x >>= 1;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            x |= x >> 32;
+            return ++x;
+        }
+
+        /// <summary>
+        /// Returns the nearest superior power of two of the value.
+        /// For x = 0 and x &gt; 2^31, returns 0.
+        /// E.g. x = 401 -> 512.
+        /// E.g. x = 256 -> 256.
+        /// </summary>
+        [Pure]
+        public static uint NextPowerOfTwo(this uint x)
+        {
+            --x;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            return ++x;
+        }
+
+        /// <summary>
+        /// Returns the nearest inferior power of two of the value.
+        /// For x &lt;= 0, returns 0.
+        /// E.g. x = 401 -> 256.
+        /// E.g. x = 512 -> 512.
+        /// </summary>
+        [Pure]
+        public static uint PrevPowerOfTwo(this uint x)
+        {
+            if (x == 0) return 0;
+            x >>= 1;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            return ++x;
+        }
+
+        /// <summary>
+        /// Returns the nearest superior power of two of the value.
+        /// For x = 0 and x &gt; 2^63, returns 0.
+        /// E.g. x = 401 -> 512.
+        /// E.g. x = 256 -> 256.
+        /// </summary>
+        [Pure]
+        public static ulong NextPowerOfTwo(this ulong x)
+        {
+            --x;
+            x |= x >> 1;
+            x |= x >> 2;
+            x |= x >> 4;
+            x |= x >> 8;
+            x |= x >> 16;
+            x |= x >> 32;
+            return ++x;
+        }
+
+        /// <summary>
+        /// Returns the nearest inferior power of two of the value.
+        /// For x &lt;= 0, returns 0.
+        /// E.g. x = 401 -> 256.
+        /// E.g. x = 512 -> 512.
+        /// </summary>
+        [Pure]
+        public static ulong PrevPowerOfTwo(this ulong x)
+        {
+            if (x == 0) return 0;
             x >>= 1;
             x |= x >> 1;
             x |= x >> 2;

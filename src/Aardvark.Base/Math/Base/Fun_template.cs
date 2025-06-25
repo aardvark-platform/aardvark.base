@@ -1243,9 +1243,22 @@ namespace Aardvark.Base
         }
 
         //# });
-        //# iltypes.ForEach(t => {
+        //# modtypes.ForEach(t => {
+        //# var limit = new Dictionary<Meta.SimpleType, string>
+        //#     {
+        //#         { Meta.IntType, "30" },
+        //#         { Meta.UIntType, "31" },
+        //#         { Meta.LongType, "62" },
+        //#         { Meta.ULongType, "63" }
+        //#     };
         /// <summary>
         /// Returns the nearest superior power of two of the value.
+        //# if (signedtypes.Contains(t)) {
+        /// For x &lt;= 0, returns 0.
+        /// For x &gt; 2^__limit[t]__, returns __t.Name__.MinValue.
+        //# } else {
+        /// For x = 0 and x &gt; 2^__limit[t]__, returns 0.
+        //# }
         /// E.g. x = 401 -> 512.
         /// E.g. x = 256 -> 256.
         /// </summary>
@@ -1258,7 +1271,7 @@ namespace Aardvark.Base
             x |= x >> 4;
             x |= x >> 8;
             x |= x >> 16;
-            //# if (t == Meta.LongType) {
+            //# if (t == Meta.LongType || t == Meta.ULongType) {
             x |= x >> 32;
             //# }
             return ++x;
@@ -1266,20 +1279,25 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the nearest inferior power of two of the value.
+        /// For x &lt;= 0, returns 0.
         /// E.g. x = 401 -> 256.
         /// E.g. x = 512 -> 512.
         /// </summary>
         [Pure]
         public static __t.Name__ PrevPowerOfTwo(this __t.Name__ x)
         {
+            //# if (signedtypes.Contains(t)) {
             if (x <= 0) return 0;
+            //# } else {
+            if (x == 0) return 0;
+            //# }
             x >>= 1;
             x |= x >> 1;
             x |= x >> 2;
             x |= x >> 4;
             x |= x >> 8;
             x |= x >> 16;
-            //# if (t == Meta.LongType) {
+            //# if (t == Meta.LongType || t == Meta.ULongType) {
             x |= x >> 32;
             //# }
             return ++x;

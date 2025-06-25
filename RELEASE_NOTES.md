@@ -1,4 +1,4 @@
-[Math] Added Fun.IsPowerOfTwo overloads for uint32 and uint64
+- [Math] Added Fun.IsPowerOfTwo, Fun.NextPowerOfTwo, Fun.PrevPowerOfTwo overloads for uint32 and uint64
 
 ### 5.3.14
 - [FSharp] Added workaround for compiler-related bug in NativePtr.pin, pinArr, and pinArri (https://github.com/dotnet/fsharp/issues/18689)
