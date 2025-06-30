@@ -1260,7 +1260,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Return all the value with the given key. This method is only
         /// useful if multiple item with the same key are allowed (stackDuplicateKeys=true).
-        /// The order of values is reversed to their additions.
+        /// The order of the values is reversed to their additions (like a stack).
         /// </summary>
         public IEnumerable<TValue> ValuesWithKey(__tkey__ key)
         {
@@ -1308,7 +1308,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed (stackDuplicateKeys=true).
-        /// The order of values is reversed to their additions.
+        /// The order of the values is reversed to their additions (like a stack).
         /// Should be preferred over ValuesWithKey enumeration in
         /// performance critical code.
         /// </summary>
