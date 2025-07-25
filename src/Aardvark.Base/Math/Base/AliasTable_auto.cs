@@ -1,8 +1,23 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
@@ -16,8 +31,8 @@ namespace Aardvark.Base
     /// </summary>
     public class AliasTableF
     {
-        float[] _probablity; // U[i]
-        int[] _alias;         // K[i]
+        readonly float[] _probablity; // U[i]
+        readonly int[] _alias;         // K[i]
 
         public float[] U => _probablity;
         public int[] K => _alias;
@@ -26,7 +41,7 @@ namespace Aardvark.Base
         /// Creates an alias table from a genral PDF that does not integrate to 1.
         /// The normalization factor will be calculated for the construction.
         /// </summary>
-        public AliasTableF FromPdf(float[] pdf, IRandomUniform rnd = null)
+        public static AliasTableF FromPdf(float[] pdf, IRandomUniform rnd = null)
         {
             return new AliasTableF(pdf, 1 / pdf.Sum(), rnd);
         }
@@ -34,7 +49,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates an alias table from an already normalized PDF (integrates to 1).
         /// </summary>
-        public AliasTableF FromNormalizedPdf(float[] pdf, IRandomUniform rnd = null)
+        public static AliasTableF FromNormalizedPdf(float[] pdf, IRandomUniform rnd = null)
         {
             return new AliasTableF(pdf, 1, rnd);
         }
@@ -58,7 +73,7 @@ namespace Aardvark.Base
         {
             if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!");
 
-            if (rnd == null) rnd = new RandomSystem();
+            rnd ??= new RandomSystem();
 
             var n = pdf.Length;
             var overfull = new List<int>(n);
@@ -78,7 +93,11 @@ namespace Aardvark.Base
                 var jj = rnd.UniformInt(underfull.Count); // random underfull
                 var ri = overfull[ii];
                 var rj = underfull[jj];
+#if NETSTANDARD2_0
                 underfull[jj] = underfull[underfull.Count - 1];
+#else
+                underfull[jj] = underfull[^1];
+#endif
                 underfull.RemoveAt(underfull.Count - 1);
                 // rj will become exactly full (with own probability + alias for remainder)
                 _alias[rj] = ri; // K[j] = i
@@ -88,7 +107,11 @@ namespace Aardvark.Base
                 _probablity[ri] = uinew;
                 if (uinew <= 1) // otherwise keep in overfull
                 {
+#if NETSTANDARD2_0
                     overfull[ii] = overfull[overfull.Count - 1];
+#else
+                    overfull[ii] = overfull[^1];
+#endif
                     overfull.RemoveAt(overfull.Count - 1);
                     if (uinew < 1)
                         underfull.Add(ri);
@@ -97,14 +120,22 @@ namespace Aardvark.Base
 
             while (underfull.Count > 0)
             {
+#if NETSTANDARD2_0
                 var i = underfull[underfull.Count - 1];
+#else
+                var i = underfull[^1];
+#endif
                 _probablity[i] = 1;
                 underfull.RemoveAt(underfull.Count - 1);
             }
 
             while (overfull.Count > 0)
             {
+#if NETSTANDARD2_0
                 var i = overfull[overfull.Count - 1];
+#else
+                var i = overfull[^1];
+#endif
                 _probablity[i] = 1;
                 overfull.RemoveAt(overfull.Count - 1);
             }
@@ -131,8 +162,8 @@ namespace Aardvark.Base
     /// </summary>
     public class AliasTableD
     {
-        double[] _probablity; // U[i]
-        int[] _alias;         // K[i]
+        readonly double[] _probablity; // U[i]
+        readonly int[] _alias;         // K[i]
 
         public double[] U => _probablity;
         public int[] K => _alias;
@@ -141,7 +172,7 @@ namespace Aardvark.Base
         /// Creates an alias table from a genral PDF that does not integrate to 1.
         /// The normalization factor will be calculated for the construction.
         /// </summary>
-        public AliasTableD FromPdf(double[] pdf, IRandomUniform rnd = null)
+        public static AliasTableD FromPdf(double[] pdf, IRandomUniform rnd = null)
         {
             return new AliasTableD(pdf, 1 / pdf.Sum(), rnd);
         }
@@ -149,7 +180,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates an alias table from an already normalized PDF (integrates to 1).
         /// </summary>
-        public AliasTableD FromNormalizedPdf(double[] pdf, IRandomUniform rnd = null)
+        public static AliasTableD FromNormalizedPdf(double[] pdf, IRandomUniform rnd = null)
         {
             return new AliasTableD(pdf, 1, rnd);
         }
@@ -173,7 +204,7 @@ namespace Aardvark.Base
         {
             if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!");
 
-            if (rnd == null) rnd = new RandomSystem();
+            rnd ??= new RandomSystem();
 
             var n = pdf.Length;
             var overfull = new List<int>(n);
@@ -193,7 +224,11 @@ namespace Aardvark.Base
                 var jj = rnd.UniformInt(underfull.Count); // random underfull
                 var ri = overfull[ii];
                 var rj = underfull[jj];
+#if NETSTANDARD2_0
                 underfull[jj] = underfull[underfull.Count - 1];
+#else
+                underfull[jj] = underfull[^1];
+#endif
                 underfull.RemoveAt(underfull.Count - 1);
                 // rj will become exactly full (with own probability + alias for remainder)
                 _alias[rj] = ri; // K[j] = i
@@ -203,7 +238,11 @@ namespace Aardvark.Base
                 _probablity[ri] = uinew;
                 if (uinew <= 1) // otherwise keep in overfull
                 {
+#if NETSTANDARD2_0
                     overfull[ii] = overfull[overfull.Count - 1];
+#else
+                    overfull[ii] = overfull[^1];
+#endif
                     overfull.RemoveAt(overfull.Count - 1);
                     if (uinew < 1)
                         underfull.Add(ri);
@@ -212,14 +251,22 @@ namespace Aardvark.Base
 
             while (underfull.Count > 0)
             {
+#if NETSTANDARD2_0
                 var i = underfull[underfull.Count - 1];
+#else
+                var i = underfull[^1];
+#endif
                 _probablity[i] = 1;
                 underfull.RemoveAt(underfull.Count - 1);
             }
 
             while (overfull.Count > 0)
             {
+#if NETSTANDARD2_0
                 var i = overfull[overfull.Count - 1];
+#else
+                var i = overfull[^1];
+#endif
                 _probablity[i] = 1;
                 overfull.RemoveAt(overfull.Count - 1);
             }

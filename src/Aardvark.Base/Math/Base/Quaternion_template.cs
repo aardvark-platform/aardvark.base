@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -240,7 +257,7 @@ namespace Aardvark.Base
         public readonly __type__ Conjugated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(W, -V);
+            get => new(W, -V);
         }
 
         /// <summary>
@@ -262,7 +279,7 @@ namespace Aardvark.Base
         public static __type__ Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(0);
+            get => new(0);
         }
 
         /// <summary>
@@ -271,7 +288,7 @@ namespace Aardvark.Base
         public static __type__ One
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(1, 0, 0, 0);
+            get => new(1, 0, 0, 0);
         }
 
         /// <summary>
@@ -280,7 +297,7 @@ namespace Aardvark.Base
         public static __type__ Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(1, 0, 0, 0);
+            get => new(1, 0, 0, 0);
         }
 
         /// <summary>
@@ -289,7 +306,7 @@ namespace Aardvark.Base
         public static __type__ I
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(0, 1, 0, 0);
+            get => new(0, 1, 0, 0);
         }
 
         /// <summary>
@@ -298,7 +315,7 @@ namespace Aardvark.Base
         public static __type__ J
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(0, 0, 1, 0);
+            get => new(0, 0, 1, 0);
         }
 
         /// <summary>
@@ -307,7 +324,7 @@ namespace Aardvark.Base
         public static __type__ K
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __type__(0, 0, 0, 1);
+            get => new(0, 0, 0, 1);
         }
 
         #endregion
@@ -319,63 +336,63 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__type__ q)
-            => new __type__(/*# qfields.ForEach(f => {*/-q.__f__/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/-q.__f__/*# }, comma);*/);
 
         /// <summary>
         /// Returns the sum of two <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__type__ a, __type__ b)
-            => new __type__(/*# qfields.ForEach(f => {*/a.__f__ + b.__f__/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/a.__f__ + b.__f__/*# }, comma);*/);
 
         /// <summary>
         /// Returns the sum of a <see cref="__type__"/> and a real scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__type__ q, __ftype__ s)
-            => new __type__(q.W + s, q.X, q.Y, q.Z);
+            => new(q.W + s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the sum of a real scalar and a <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__ftype__ s, __type__ q)
-            => new __type__(q.W + s, q.X, q.Y, q.Z);
+            => new(q.W + s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the difference between two <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__type__ a, __type__ b)
-            => new __type__(/*# qfields.ForEach(f => {*/a.__f__ - b.__f__/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/a.__f__ - b.__f__/*# }, comma);*/);
 
         /// <summary>
         /// Returns the difference between a <see cref="__type__"/> and a real scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__type__ q, __ftype__ s)
-            => new __type__(q.W - s, q.X, q.Y, q.Z);
+            => new(q.W - s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the difference between a real scalar and a <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__ftype__ s, __type__ q)
-            => new __type__(s - q.W, -q.X, -q.Y, -q.Z);
+            => new(s - q.W, -q.X, -q.Y, -q.Z);
 
         /// <summary>
         /// Returns the product of a <see cref="__type__"/> and a scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__type__ q, __ftype__ s)
-            => new __type__(/*# qfields.ForEach(f => {*/q.__f__ * s/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/q.__f__ * s/*# }, comma);*/);
 
         /// <summary>
         /// Returns the product of a scalar and a <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__ftype__ s, __type__ q)
-            => new __type__(/*# qfields.ForEach(f => {*/q.__f__ * s/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/q.__f__ * s/*# }, comma);*/);
 
         /// <summary>
         /// Multiplies two <see cref="__type__"/>.
@@ -384,7 +401,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__type__ a, __type__ b)
         {
-            return new __type__(
+            return new(
                 a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
                 a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
                 a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
@@ -403,14 +420,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__type__ q, __ftype__ s)
-            => new __type__(/*# qfields.ForEach(f => {*/q.__f__ / s/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/q.__f__ / s/*# }, comma);*/);
 
         /// <summary>
         /// Divides a scalar by a <see cref="__type__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__ftype__ s, __type__ q)
-            => new __type__(/*# qfields.ForEach(f => {*/s / q.__f__/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/s / q.__f__/*# }, comma);*/);
 
         #endregion
 
@@ -439,7 +456,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __type2__(__type__ q)
-            => new __type2__(q);
+            => new(q);
 
         /// <summary>
         /// Returns this <see cref="__type__"/> as a 4x4 matrix. Quaternions are represented as matrices in such
@@ -450,7 +467,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __m44t__(__type__ q)
         {
-            return new __m44t__(
+            return new(
                 q.W, -q.X, -q.Y, -q.Z,
                 q.X,  q.W, -q.Z,  q.Y,
                 q.Y,  q.Z,  q.W, -q.X,
@@ -463,7 +480,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __v4t__(__type__ q)
-            => new __v4t__(/*# qfields.ForEach(f => {*/q.__f__/*# }, comma);*/);
+            => new(/*# qfields.ForEach(f => {*/q.__f__/*# }, comma);*/);
 
         /// <summary>
         /// Returns all values of a <see cref="__type__"/> instance
@@ -472,7 +489,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __ftype__[](__type__ q)
         {
-            __ftype__[] array = new __ftype__[__qfields.Length__];
+            var array = new __ftype__[__qfields.Length__];
             /*# qfields.ForEach((f, i) => {*/array[__i__] = q.__f__;
             /*# });*/return array;
         }
@@ -512,7 +529,7 @@ namespace Aardvark.Base
             => /*# qfields.ForEach(f => {*/__f__.Equals(other.__f__)/*# }, and);*/;
 
         public override readonly bool Equals(object other)
-            => (other is __type__ o) ? Equals(o) : false;
+            => (other is __type__ o) && Equals(o);
 
         public override readonly string ToString()
         {

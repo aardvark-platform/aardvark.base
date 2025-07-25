@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
@@ -15,7 +32,7 @@ namespace Aardvark.Base
 
     /// <summary>
     /// This enum can be used to store an aggregate sign classification
-    /// of multiple entities whose sign ccan be classified.
+    /// of multiple entities whose sign can be classified.
     /// </summary>
     [Flags]
     public enum Signs
@@ -325,7 +342,11 @@ namespace Aardvark.Base
         /// </summary>
         public static double Entropy<T>(this bool[] xs)
         {
-            if (xs == null) throw new ArgumentNullException("xs");
+#if NETSTANDARD2_0
+            if (xs == null) throw new ArgumentNullException(nameof(xs));
+#else
+            ArgumentNullException.ThrowIfNull(xs);
+#endif
 
             var count = xs.Length;
             var countPos = 0;
@@ -357,8 +378,13 @@ namespace Aardvark.Base
         /// </summary>
         public static double Entropy(this bool[] xs, double[] weights)
         {
-            if (weights == null) throw new ArgumentNullException("weights");
-            if (xs == null) throw new ArgumentNullException("xs");
+#if NETSTANDARD2_0
+            if (weights == null) throw new ArgumentNullException(nameof(weights));
+            if (xs == null) throw new ArgumentNullException(nameof(xs));
+#else
+            ArgumentNullException.ThrowIfNull(weights);
+            ArgumentNullException.ThrowIfNull(xs);
+#endif
             if (weights.Length != xs.Length) throw new ArgumentException("weights.Length != xs.Length");
 
             var count = xs.Length;
@@ -386,7 +412,7 @@ namespace Aardvark.Base
             return H;
         }
 
-        #endregion
+#endregion
 
         #region Step
 
@@ -491,7 +517,7 @@ namespace Aardvark.Base
         /// parameter t in the range [0..1] traverses the approximation
         /// between the two center points.
         /// </summary>
-        public static Tup4<double> BSpline3d(double t) => new Tup4<double>(
+        public static Tup4<double> BSpline3d(double t) => new(
             t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0,
             t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0,
             t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0,
@@ -503,7 +529,7 @@ namespace Aardvark.Base
         /// parameter t in the range [0..1] traverses the approximation
         /// between the two center points.
         /// </summary>
-        public static Tup4<Half> BSpline3h(double t) => new Tup4<Half>(
+        public static Tup4<Half> BSpline3h(double t) => new(
             (Half)(t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0),
             (Half)(t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0),
             (Half)(t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0),
@@ -515,7 +541,7 @@ namespace Aardvark.Base
         /// parameter t in the range [0..1] traverses the approximation
         /// between the two center points.
         /// </summary>
-        public static Tup4<float> BSpline3f(double t) => new Tup4<float>(
+        public static Tup4<float> BSpline3f(double t) => new(
             (float)(t*(t*(t*(-1/6.0) + 3/6.0) - 3/6.0) + 1/6.0),
             (float)(t*(t*(t*( 3/6.0) - 6/6.0)        ) + 4/6.0),
             (float)(t*(t*(t*(-3/6.0) + 3/6.0) + 3/6.0) + 1/6.0),
@@ -527,7 +553,7 @@ namespace Aardvark.Base
         /// parameter t in the range [0..1] traverses the approximation
         /// between the two center points.
         /// </summary>
-        public static Tup6<double> BSpline5d(double t) => new Tup6<double>(
+        public static Tup6<double> BSpline5d(double t) => new(
             t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0,
             t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0,
             t*(t*(t*(t*(t*(-10/120.0) +30/120.0)          ) -60/120.0)          ) +66/120.0,
@@ -541,7 +567,7 @@ namespace Aardvark.Base
         /// parameter t in the range [0..1] traverses the approximation
         /// between the two center points.
         /// </summary>
-        public static Tup6<Half> BSpline5h(double t) => new Tup6<Half>(
+        public static Tup6<Half> BSpline5h(double t) => new(
             (Half)(t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0),
             (Half)(t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0),
             (Half)(t*(t*(t*(t*(t*(-10/120.0) +30/120.0)          ) -60/120.0)          ) +66/120.0),
@@ -555,7 +581,7 @@ namespace Aardvark.Base
         /// parameter t in the range [0..1] traverses the approximation
         /// between the two center points.
         /// </summary>
-        public static Tup6<float> BSpline5f(double t) => new Tup6<float>(
+        public static Tup6<float> BSpline5f(double t) => new(
             (float)(t*(t*(t*(t*(t*( -1/120.0)  +5/120.0) -10/120.0) +10/120.0)  -5/120.0)  +1/120.0),
             (float)(t*(t*(t*(t*(t*(  5/120.0) -20/120.0) +20/120.0) +20/120.0) -50/120.0) +26/120.0),
             (float)(t*(t*(t*(t*(t*(-10/120.0) +30/120.0)          ) -60/120.0)          ) +66/120.0),
@@ -739,11 +765,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this int v)
         {
-            #if NETCOREAPP3_1_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2((uint)v);
-            #else
+#else
                 return Log2Int((float)v);
-            #endif
+#endif
         }
 
         /// <summary>
@@ -752,11 +778,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this uint v)
         {
-            #if NETCOREAPP3_1_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2(v);
-            #else
+#else
                 return Log2Int((float)v);
-            #endif
+#endif
         }
 
         /// <summary>
@@ -765,11 +791,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this long v)
         {
-            #if NETCOREAPP3_1_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2((ulong)v);
-            #else
+#else
                 return Log2Int((double)v);
-            #endif
+#endif
         }
 
         /// <summary>
@@ -778,11 +804,11 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this ulong v)
         {
-            #if NETCOREAPP3_1_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2(v);
-            #else
+#else
                 return Log2Int((double)v);
-            #endif
+#endif
         }
 
         /// <summary>
@@ -1002,16 +1028,10 @@ namespace Aardvark.Base
     /// summation method. This is used in Stats, to maintain higher precision
     /// sums for statistical moment computation.
     /// </summary>
-    public struct KahanSum
+    public struct KahanSum(double sum, double carry)
     {
-        private double m_sum;
-        private double m_carry;
-
-        public KahanSum(double sum, double carry)
-        {
-            m_sum = sum;
-            m_carry = carry;
-        }
+        private double m_sum = sum;
+        private double m_carry = carry;
 
         public KahanSum(double sum)
             : this(sum, 0.0)
@@ -1078,7 +1098,7 @@ namespace Aardvark.Base
             return r;
         }
 
-        public static readonly KahanSum Zero = new KahanSum(0.0);
+        public static readonly KahanSum Zero = new(0.0);
     }
 
     #endregion

@@ -1,4 +1,21 @@
-﻿using System;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
 using System.Linq;
 using System.Globalization;
 using System.ComponentModel;
@@ -72,7 +89,7 @@ namespace Aardvark.Base
         public static __ct__ Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __ct__(0, 0);
+            get => new(0, 0);
         }
 
         /// <summary>
@@ -81,7 +98,7 @@ namespace Aardvark.Base
         public static __ct__ One
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __ct__(1, 0);
+            get => new(1, 0);
         }
 
         /// <summary>
@@ -90,7 +107,7 @@ namespace Aardvark.Base
         public static __ct__ I
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __ct__(0, 1);
+            get => new(0, 1);
         }
 
         /// <summary>
@@ -99,7 +116,7 @@ namespace Aardvark.Base
         public static __ct__ PositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __ct__(__ft__.PositiveInfinity);
+            get => new(__ft__.PositiveInfinity);
         }
 
         /// <summary>
@@ -108,7 +125,7 @@ namespace Aardvark.Base
         public static __ct__ NegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __ct__(__ft__.NegativeInfinity);
+            get => new(__ft__.NegativeInfinity);
         }
 
         /// <summary>
@@ -117,7 +134,7 @@ namespace Aardvark.Base
         public static __ct__ PositiveInfinityI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __ct__(0, __ft__.PositiveInfinity);
+            get => new(0, __ft__.PositiveInfinity);
         }
 
         /// <summary>
@@ -126,7 +143,7 @@ namespace Aardvark.Base
         public static __ct__ NegativeInfinityI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new __ct__(0, __ft__.NegativeInfinity);
+            get => new(0, __ft__.NegativeInfinity);
         }
 
         #endregion
@@ -301,7 +318,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ CreateRadial(__ft__ r, __ft__ phi)
-            => new __ct__(r * Fun.Cos(phi), r * Fun.Sin(phi));
+            => new(r * Fun.Cos(phi), r * Fun.Sin(phi));
 
         /// <summary>
         /// Creates a Orthogonal Complex
@@ -311,7 +328,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ CreateOrthogonal(__ft__ real, __ft__ imag)
-            => new __ct__(real, imag);
+            => new(real, imag);
 
         #endregion
 
@@ -421,63 +438,63 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator __ct2__(__ct__ c)
-            => new __ct2__(c);
+            => new(c);
 
         /// <summary>
         /// Implicit conversion from a <see cref="__ft__"/> to a <see cref="__ct__"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator __ct__(__ft__ a)
-            => new __ct__(a);
+            => new(a);
 
         /// <summary>
         /// Adds two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator +(__ct__ a, __ct__ b)
-            => new __ct__(a.Real + b.Real, a.Imag + b.Imag);
+            => new(a.Real + b.Real, a.Imag + b.Imag);
 
         /// <summary>
         /// Adds a complex number and a real number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator +(__ct__ a, __ft__ b)
-            => new __ct__(a.Real + b, a.Imag);
+            => new(a.Real + b, a.Imag);
 
         /// <summary>
         /// Adds a real number and a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator +(__ft__ a, __ct__ b)
-            => new __ct__(a + b.Real, b.Imag);
+            => new(a + b.Real, b.Imag);
 
         /// <summary>
         /// Subtracts two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ct__ a, __ct__ b)
-            => new __ct__(a.Real - b.Real, a.Imag - b.Imag);
+            => new(a.Real - b.Real, a.Imag - b.Imag);
 
         /// <summary>
         /// Subtracts a real number from a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ct__ a, __ft__ b)
-            => new __ct__(a.Real - b, a.Imag);
+            => new(a.Real - b, a.Imag);
 
         /// <summary>
         /// Subtracts a complex number from a real number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ft__ a, __ct__ b)
-            => new __ct__(a - b.Real, -b.Imag);
+            => new(a - b.Real, -b.Imag);
 
         /// <summary>
         /// Multiplies two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator *(__ct__ a, __ct__ b)
-            => new __ct__(
+            => new(
                 a.Real * b.Real - a.Imag * b.Imag,
                 a.Real * b.Imag + a.Imag * b.Real);
 
@@ -486,14 +503,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator *(__ct__ a, __ft__ b)
-            => new __ct__(a.Real * b, a.Imag * b);
+            => new(a.Real * b, a.Imag * b);
 
         /// <summary>
         /// Multiplies a real number and a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator *(__ft__ a, __ct__ b)
-            => new __ct__(a * b.Real, a * b.Imag);
+            => new(a * b.Real, a * b.Imag);
 
         /// <summary>
         /// Divides two complex numbers.
@@ -502,7 +519,7 @@ namespace Aardvark.Base
         public static __ct__ operator /(__ct__ a, __ct__ b)
         {
             __ft__ t = 1 / b.NormSquared;
-            return new __ct__(
+            return new(
                 t * (a.Real * b.Real + a.Imag * b.Imag),
                 t * (a.Imag * b.Real - a.Real * b.Imag));
         }
@@ -512,7 +529,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator /(__ct__ a, __ft__ b)
-            => new __ct__(a.Real / b, a.Imag / b);
+            => new(a.Real / b, a.Imag / b);
 
         /// <summary>
         /// Divides a real number by a complex number.
@@ -521,7 +538,7 @@ namespace Aardvark.Base
         public static __ct__ operator /(__ft__ a, __ct__ b)
         {
             __ft__ t = 1 / b.NormSquared;
-            return new __ct__(
+            return new(
                 t * (a * b.Real),
                 t * (-a * b.Imag));
         }
@@ -531,7 +548,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator -(__ct__ a)
-            => new __ct__(-a.Real, -a.Imag);
+            => new(-a.Real, -a.Imag);
 
         /// <summary>
         /// Returns the conjugate of a complex number.
@@ -868,7 +885,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log(this __ct__ x)
-            => new __ct__(Log(x.Norm), x.Argument);
+            => new(Log(x.Norm), x.Argument);
 
         /// <summary>
         /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.
@@ -956,7 +973,7 @@ namespace Aardvark.Base
             __ct__ res0 = __ct__.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
             __ct__ res1 = __ct__.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + __constant__.Pi);
 
-            return new __ct__[2] { res0, res1 };
+            return [res0, res1];
         }
 
         /// <summary>

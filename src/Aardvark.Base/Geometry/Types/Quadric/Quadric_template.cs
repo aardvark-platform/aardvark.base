@@ -1,140 +1,155 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
 
-namespace Aardvark.Base
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
+
+namespace Aardvark.Base;
+
+// AUTO GENERATED CODE - DO NOT CHANGE!
+
+//# foreach (var isDouble in new[] { false, true }) {
+//#   var ftype = isDouble ? "double" : "float";
+//#   var ftype2 = isDouble ? "float" : "double";
+//#   var tc = isDouble ? "d" : "f";
+//#   var tc2 = isDouble ? "f" : "d";
+//#   var tccaps = tc.ToUpper();
+//#   var tccaps2 = tc2.ToUpper();
+//#   var type = "Quadric" + tccaps;
+//#   var type2 = "Quadric" + tccaps2;
+//#   var v3t = "V3" + tc;
+//#   var v4t = "V4" + tc;
+//#   var plane3t = "Plane3" + tc;
+//#   var m44t = "M44" + tc;
+//#   var pi = isDouble ? "Constant.Pi" : "ConstantF.Pi";
+//#   var half = isDouble ? "0.5" : "0.5f";
+#region __type__
+
+public struct __type__
 {
-    // AUTO GENERATED CODE - DO NOT CHANGE!
+    __v3t__ m_normal;
+    __m44t__ m_errorQuadric;
 
-    //# foreach (var isDouble in new[] { false, true }) {
-    //#   var ftype = isDouble ? "double" : "float";
-    //#   var ftype2 = isDouble ? "float" : "double";
-    //#   var tc = isDouble ? "d" : "f";
-    //#   var tc2 = isDouble ? "f" : "d";
-    //#   var tccaps = tc.ToUpper();
-    //#   var tccaps2 = tc2.ToUpper();
-    //#   var type = "Quadric" + tccaps;
-    //#   var type2 = "Quadric" + tccaps2;
-    //#   var v3t = "V3" + tc;
-    //#   var v4t = "V4" + tc;
-    //#   var plane3t = "Plane3" + tc;
-    //#   var m44t = "M44" + tc;
-    //#   var pi = isDouble ? "Constant.Pi" : "ConstantF.Pi";
-    //#   var half = isDouble ? "0.5" : "0.5f";
-    #region __type__
+    #region Properties
 
-    public struct __type__
+    public __v3t__ Normal
     {
-        __v3t__ m_normal;
-        __m44t__ m_errorQuadric;
+        readonly get { return m_normal.Normalized; }
+        set { m_normal = value; }
+    }
 
-        #region Properties
+    public __m44t__ ErrorQuadric
+    {
+        readonly get { return m_errorQuadric; }
+        set { m_errorQuadric = value; }
+    }
 
-        public __v3t__ Normal
+    public readonly __ftype__ ErrorOffset => ErrorQuadric.M33;
+
+    public __m44t__ ErrorHeuristic { readonly get; set; }
+
+    #endregion
+
+    public void Create(__plane3t__ plane)
+    {
+        CreateQuadric(plane);
+        CreateHeuristic();
+    }
+
+    #region Create __type__/Heuristic
+
+    public void CreateQuadric(__plane3t__ plane)
+    {
+        Normal = plane.Normal;
+        __ftype__ a = Normal.X;
+        __ftype__ b = Normal.Y;
+        __ftype__ c = Normal.Z;
+
+        // Garland uses "ax + by + cz + d = 0"
+        // Aardvark uses "ax + by + cz - d = 0"
+        __ftype__ d = -plane.Distance;
+
+        m_errorQuadric.M00 = a * a;
+        m_errorQuadric.M11 = b * b;
+        m_errorQuadric.M22 = c * c;
+        m_errorQuadric.M33 = d * d;
+
+        m_errorQuadric.M01 = m_errorQuadric.M10 = a * b;
+        m_errorQuadric.M02 = m_errorQuadric.M20 = a * c;
+        m_errorQuadric.M03 = m_errorQuadric.M30 = a * d;
+        m_errorQuadric.M12 = m_errorQuadric.M21 = b * c;
+        m_errorQuadric.M13 = m_errorQuadric.M31 = b * d;
+        m_errorQuadric.M23 = m_errorQuadric.M32 = c * d;
+    }
+
+    public void CreateHeuristic()
+    {
+        if (m_errorQuadric == __m44t__.Zero)
         {
-            readonly get { return m_normal.Normalized; }
-            set { m_normal = value; }
+            throw new InvalidOperationException("Must call CreateQuadric(...) first");
         }
 
-        public __m44t__ ErrorQuadric
-        {
-            readonly get { return m_errorQuadric; }
-            set { m_errorQuadric = value; }
-        }
-
-        public readonly __ftype__ ErrorOffset => ErrorQuadric.M33;
-
-        public __m44t__ ErrorHeuristic { readonly get; set; }
-
-        #endregion
-
-        public void Create(__plane3t__ plane)
-        {
-            CreateQuadric(plane);
-            CreateHeuristic();
-        }
-
-        #region Create __type__/Heuristic
-
-        public void CreateQuadric(__plane3t__ plane)
-        {
-            Normal = plane.Normal;
-            __ftype__ a = Normal.X;
-            __ftype__ b = Normal.Y;
-            __ftype__ c = Normal.Z;
-
-            // Garland uses "ax + by + cz + d = 0"
-            // Aardvark uses "ax + by + cz - d = 0"
-            __ftype__ d = -plane.Distance;
-
-            m_errorQuadric.M00 = a * a;
-            m_errorQuadric.M11 = b * b;
-            m_errorQuadric.M22 = c * c;
-            m_errorQuadric.M33 = d * d;
-
-            m_errorQuadric.M01 = m_errorQuadric.M10 = a * b;
-            m_errorQuadric.M02 = m_errorQuadric.M20 = a * c;
-            m_errorQuadric.M03 = m_errorQuadric.M30 = a * d;
-            m_errorQuadric.M12 = m_errorQuadric.M21 = b * c;
-            m_errorQuadric.M13 = m_errorQuadric.M31 = b * d;
-            m_errorQuadric.M23 = m_errorQuadric.M32 = c * d;
-        }
-
-        public void CreateHeuristic()
-        {
-            if (m_errorQuadric == __m44t__.Zero)
-            {
-                throw new InvalidOperationException("Must call CreateQuadric(...) first");
-            }
-
-            ErrorHeuristic = ToHeuristic(ErrorQuadric);
-        }
-
-        #endregion
-
-        #region Operator Overload
-
-        public static __type__ operator +(__type__ lhs, __type__ rhs)
-        {
-            var result = new __type__
-            {
-                ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
-                Normal = lhs.Normal + rhs.Normal
-            };
-
-            result.ErrorHeuristic = ToHeuristic(result.ErrorQuadric);
-
-            return result;
-        }
-
-        //public static __type__ operator -(__type__ lhs, __type__ rhs)
-        //{
-        //    __type__ result = new __type__();
-
-        //    result.ErrorQuadric = lhs.ErrorQuadric - rhs.ErrorQuadric;
-
-        //    result.ErrorHeuristic = __type__.ToHeuristic(result.ErrorQuadric);
-
-        //    return result;
-        //}
-
-        #endregion
-
-        #region Static Methods
-
-        static __m44t__ ToHeuristic(__m44t__ quadric)
-        {
-            var result = new __m44t__();
-
-            result = quadric;
-            result.R3 = new __v4t__(0, 0, 0, 1);
-
-            return result;
-        }
-
-        #endregion
+        ErrorHeuristic = ToHeuristic(ErrorQuadric);
     }
 
     #endregion
 
-    //# }
+    #region Operator Overload
+
+    public static __type__ operator +(__type__ lhs, __type__ rhs)
+    {
+        var result = new __type__
+        {
+            ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
+            Normal = lhs.Normal + rhs.Normal
+        };
+
+        result.ErrorHeuristic = ToHeuristic(result.ErrorQuadric);
+
+        return result;
+    }
+
+    //public static __type__ operator -(__type__ lhs, __type__ rhs)
+    //{
+    //    __type__ result = new __type__();
+
+    //    result.ErrorQuadric = lhs.ErrorQuadric - rhs.ErrorQuadric;
+
+    //    result.ErrorHeuristic = __type__.ToHeuristic(result.ErrorQuadric);
+
+    //    return result;
+    //}
+
+    #endregion
+
+    #region Static Methods
+    
+    static __m44t__ ToHeuristic(__m44t__ quadric)
+    {
+        //var result = new __m44t__();
+
+        var result = quadric;
+        result.R3 = new __v4t__(0, 0, 0, 1);
+
+        return result;
+    }
+
+    #endregion
 }
+
+#endregion
+
+//# }

@@ -1,18 +1,34 @@
-﻿namespace Aardvark.Base
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+namespace Aardvark.Base;
+
+/// <summary>
+/// Exposes sequence of editing steps.
+/// </summary>
+public interface IEditableSequence<T>
 {
     /// <summary>
-    /// Exposes sequence of editing steps.
+    /// Sets or gets current version of editable object.
     /// </summary>
-    public interface IEditableSequence<T>
-    {
-        /// <summary>
-        /// Sets or gets current version of editable object.
-        /// </summary>
-        T Current { get; set; }
+    T Current { get; set; }
 
-        /// <summary>
-        /// Sequence of editing steps. 
-        /// </summary>
-        IEvent<T> EditingSteps { get; }
-    }
+    /// <summary>
+    /// Sequence of editing steps. 
+    /// </summary>
+    IEvent<T> EditingSteps { get; }
 }

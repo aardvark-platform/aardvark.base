@@ -1,302 +1,249 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 
-namespace Aardvark.Base
+namespace Aardvark.Base;
+
+/// <summary>
+/// A least-recently-used cache, with specifyable capacity and per-item size-, read-, and delete
+/// function. The indexer is used to access items. Capacity can be changed on the fly. All
+/// operations are synchronized for use in multi-threaded applications.
+/// </summary>
+public class LruCache<TKey, TValue>
 {
+    private class Entry
+    {
+        public long Time;
+        public long Size;
+        public int Index;
+        public TKey Key;
+        public TValue Value;
+        public Action DeleteAct;
+    }
+
+    private readonly object m_lock;
+    private readonly Dict<TKey, Entry> m_cache;
+    private readonly List<Entry> m_heap;
+    private readonly Func<TKey, long> m_sizeFun;
+    private readonly Func<TKey,TValue> m_readFun;
+    private readonly Action<TKey,TValue> m_deleteAct;
+    private long m_capacity;
+    private long m_time;
+    private long m_size;
+
     /// <summary>
-    /// A least-recently-used cache, with specifyable capacity and per-item size-, read-, and delete
-    /// function. The indexer is used to access items. Capacity can be changed on the fly. All
+    /// Creates an LruCache with the specified capacity, per-item (Key) size function,
+    /// per-item (Key) read function, and per-item (key/value) delete action.
+    /// The indexer is used to access items. Capacity can be changed on the fly. All
     /// operations are synchronized for use in multi-threaded applications.
     /// </summary>
-    public class LruCache<TKey, TValue>
+    public LruCache(
+        long capacity,
+        Func<TKey, long> sizeFun,
+        Func<TKey,TValue> readFun,
+        Action<TKey, TValue> deleteAct = null
+    )
     {
-        private class Entry
-        {
-            public long Time;
-            public long Size;
-            public int Index;
-            public TKey Key;
-            public TValue Value;
-            public Action DeleteAct;
-        }
+        m_lock = new object();
+        m_cache = [];
+        m_heap = [];
+        m_sizeFun = sizeFun;
+        m_readFun = readFun;
+        m_deleteAct = deleteAct;
+        m_capacity = capacity;
+        m_time = 0;
+        m_size = 0;
+    }
 
-        private readonly object m_lock;
-        private readonly Dict<TKey, Entry> m_cache;
-        private readonly List<Entry> m_heap;
-        private readonly Func<TKey, long> m_sizeFun;
-        private readonly Func<TKey,TValue> m_readFun;
-        private readonly Action<TKey,TValue> m_deleteAct;
-        private long m_capacity;
-        private long m_time;
-        private long m_size;
-
-        /// <summary>
-        /// Creates an LruCache with the specified capacity, per-item (Key) size function,
-        /// per-item (Key) read function, and per-item (key/value) delete action.
-        /// The indexer is used to access items. Capacity can be changed on the fly. All
-        /// operations are synchronized for use in multi-threaded applications.
-        /// </summary>
-        public LruCache(
-            long capacity,
-            Func<TKey, long> sizeFun,
-            Func<TKey,TValue> readFun,
-            Action<TKey, TValue> deleteAct = null
-        )
+    public LruCache(
+        long capacity
+    )
+    {
+        m_lock = new object();
+        m_cache = [];
+        m_heap = [];
+        m_sizeFun = null;
+        m_readFun = null;
+        m_deleteAct = null;
+        m_capacity = capacity;
+        m_time = 0;
+        m_size = 0;
+    }
+    
+    public long Capacity
+    {
+        get
         {
-            m_lock = new object();
-            m_cache = new Dict<TKey, Entry>();
-            m_heap = new List<Entry>();
-            m_sizeFun = sizeFun;
-            m_readFun = readFun;
-            m_deleteAct = deleteAct;
-            m_capacity = capacity;
-            m_time = 0;
-            m_size = 0;
+            return m_capacity;
         }
-
-        public LruCache(
-            long capacity
-        )
-        {
-            m_lock = new object();
-            m_cache = new Dict<TKey, Entry>();
-            m_heap = new List<Entry>();
-            m_sizeFun = null;
-            m_readFun = null;
-            m_deleteAct = null;
-            m_capacity = capacity;
-            m_time = 0;
-            m_size = 0;
-        }
-        
-        public long Capacity
-        {
-            get
-            {
-                return m_capacity;
-            }
-            set
-            {
-                lock (m_lock)
-                {
-                    m_capacity = value;
-                    Shrink(m_size);
-                }
-            }
-        }
-
-        private void Shrink(long size)
-        {
-            while (size > m_capacity)
-            {
-                var removeKey = Dequeue(m_heap).Key;
-                if (m_cache.TryRemove(removeKey, out Entry entry))
-                {
-                    m_deleteAct?.Invoke(removeKey, entry.Value);
-                    entry.DeleteAct?.Invoke();
-                    size -= entry.Size;
-                }
-                else
-                    throw new InvalidOperationException("tried to remove an item that is not in the cache");  
-                    // this should never ever happen!
-            }
-            m_size = size;
-        }
-
-        /// <summary>
-        /// Accessing items in the cache. If an item is not encountred in the cache,
-        /// it is read using the read function that was specified on cache creation.
-        /// </summary>
-        public TValue this [TKey key]
-        {
-            get
-            {
-                Entry entry;
-                lock (m_lock)
-                {
-                    if (m_cache.TryGetValue(key, out entry))
-                    {
-                        entry.Time = ++m_time;
-                        Sink(m_heap, entry.Index);
-                    }
-                    else
-                    {
-                        var size = m_sizeFun(key);
-                        Shrink(m_size + size);
-                        entry = new Entry
-                        {
-                            Time = ++m_time, Size = size, Key = key, Value = m_readFun(key)
-                        };
-                        m_cache[key] = entry;
-                        Enqueue(m_heap, entry);
-                    }
-                }
-                return entry.Value;
-            }
-        }
-
-        public TValue GetOrAdd(TKey key, long size, Func<TValue> valueFun, Action deleteAct = null)
+        set
         {
             lock (m_lock)
             {
-                if (m_cache.TryGetValue(key, out Entry entry))
+                m_capacity = value;
+                Shrink(m_size);
+            }
+        }
+    }
+
+    private void Shrink(long size)
+    {
+        while (size > m_capacity)
+        {
+            var removeKey = Dequeue(m_heap).Key;
+            if (m_cache.TryRemove(removeKey, out Entry entry))
+            {
+                m_deleteAct?.Invoke(removeKey, entry.Value);
+                entry.DeleteAct?.Invoke();
+                size -= entry.Size;
+            }
+            else
+                throw new InvalidOperationException("tried to remove an item that is not in the cache");  
+                // this should never ever happen!
+        }
+        m_size = size;
+    }
+
+    /// <summary>
+    /// Accessing items in the cache. If an item is not encountred in the cache,
+    /// it is read using the read function that was specified on cache creation.
+    /// </summary>
+    public TValue this [TKey key]
+    {
+        get
+        {
+            Entry entry;
+            lock (m_lock)
+            {
+                if (m_cache.TryGetValue(key, out entry))
                 {
                     entry.Time = ++m_time;
                     Sink(m_heap, entry.Index);
                 }
                 else
                 {
+                    var size = m_sizeFun(key);
                     Shrink(m_size + size);
                     entry = new Entry
                     {
-                        Time = ++m_time,
-                        Size = size,
-                        Key = key,
-                        Value = valueFun(),
-                        DeleteAct = deleteAct,
+                        Time = ++m_time, Size = size, Key = key, Value = m_readFun(key)
                     };
                     m_cache[key] = entry;
                     Enqueue(m_heap, entry);
                 }
-                return entry.Value;
             }
+            return entry.Value;
         }
+    }
 
-        /// <summary>
-        /// Remove the entry with the supplied key from the hash.
-        /// Returns true on success and puts the value of the
-        /// entry into the out parameter.
-        /// </summary>
-        public bool TryRemove(TKey key, out TValue value)
+    public TValue GetOrAdd(TKey key, long size, Func<TValue> valueFun, Action deleteAct = null)
+    {
+        lock (m_lock)
         {
-            lock (m_lock)
+            if (m_cache.TryGetValue(key, out Entry entry))
             {
-                if (m_cache.TryRemove(key, out Entry entry))
-                {
-                    m_size -= entry.Size;
-                    RemoveAt(m_heap, entry.Index);
-                    if (m_deleteAct != null)
-                        m_deleteAct(key, entry.Value);
-                    value = entry.Value;
-                    return true;
-                }
-                value = default;
-                return false;
+                entry.Time = ++m_time;
+                Sink(m_heap, entry.Index);
             }
+            else
+            {
+                Shrink(m_size + size);
+                entry = new Entry
+                {
+                    Time = ++m_time,
+                    Size = size,
+                    Key = key,
+                    Value = valueFun(),
+                    DeleteAct = deleteAct,
+                };
+                m_cache[key] = entry;
+                Enqueue(m_heap, entry);
+            }
+            return entry.Value;
         }
+    }
 
-        /// <summary>
-        /// Remove the entry with the supplied key from the hash.
-        /// Returns true on success.
-        /// </summary>
-        public bool Remove(TKey key)
+    /// <summary>
+    /// Remove the entry with the supplied key from the hash.
+    /// Returns true on success and puts the value of the
+    /// entry into the out parameter.
+    /// </summary>
+    public bool TryRemove(TKey key, out TValue value)
+    {
+        lock (m_lock)
         {
-            lock (m_lock)
+            if (m_cache.TryRemove(key, out Entry entry))
             {
-                if (m_cache.TryRemove(key, out Entry entry))
-                {
-                    m_size -= entry.Size;
-                    RemoveAt(m_heap, entry.Index);
-                    m_deleteAct?.Invoke(key, entry.Value);
-                    entry.DeleteAct?.Invoke();
-                    return true;
-                }
-                return false;
+                m_size -= entry.Size;
+                RemoveAt(m_heap, entry.Index);
+                m_deleteAct?.Invoke(key, entry.Value);
+                value = entry.Value;
+                return true;
             }
+            value = default;
+            return false;
         }
+    }
 
-        /// <summary>
-        /// Reomves an arbitrary element from the heap, and maintains the heap
-        /// conditions.
-        /// </summary>
-        private static void RemoveAt(List<Entry> heap, int index)
+    /// <summary>
+    /// Remove the entry with the supplied key from the hash.
+    /// Returns true on success.
+    /// </summary>
+    public bool Remove(TKey key)
+    {
+        lock (m_lock)
         {
-            var count = heap.Count;
-            if (count == 1) { heap.Clear(); return; }
-            var element = heap[--count];
-            heap.RemoveAt(count);
-            if (index == count) return;
+            if (m_cache.TryRemove(key, out Entry entry))
+            {
+                m_size -= entry.Size;
+                RemoveAt(m_heap, entry.Index);
+                m_deleteAct?.Invoke(key, entry.Value);
+                entry.DeleteAct?.Invoke();
+                return true;
+            }
+            return false;
+        }
+    }
 
-            int i = index;
-            while (i > 0)
-            {
-                int i2 = (i - 1) / 2;
-                if (element.Time > heap[i2].Time) break;
-                heap[i] = heap[i2];
-                heap[i].Index = i;
-                i = i2;
-            }
-            if (i == index)
-            {
-                int i1 = 2 * i + 1;
-                while (i1 < count) // at least one child
-                {
-                    int i2 = i1 + 1;
-                    int ni = (i2 < count // two children?
-                        && heap[i1].Time > heap[i2].Time)
-                        ? i2 : i1; // smaller child
-                    if (heap[ni].Time > element.Time) break;
-                    heap[i] = heap[ni];
-                    heap[i].Index = i;
-                    i = ni; i1 = 2 * i + 1;
-                }
-            }
-            heap[i] = element;
+    /// <summary>
+    /// Reomves an arbitrary element from the heap, and maintains the heap
+    /// conditions.
+    /// </summary>
+    private static void RemoveAt(List<Entry> heap, int index)
+    {
+        var count = heap.Count;
+        if (count == 1) { heap.Clear(); return; }
+        var element = heap[--count];
+        heap.RemoveAt(count);
+        if (index == count) return;
+
+        int i = index;
+        while (i > 0)
+        {
+            int i2 = (i - 1) / 2;
+            if (element.Time > heap[i2].Time) break;
+            heap[i] = heap[i2];
             heap[i].Index = i;
+            i = i2;
         }
-
-        private static void Enqueue(List<Entry> heap, Entry entry)
+        if (i == index)
         {
-            int i = heap.Count;
-            heap.Add(entry);
-            entry.Index = i;
-            while (i > 0)
-            {
-                int i2 = (i - 1) / 2;
-                if (entry.Time > heap[i2].Time) break;
-                heap[i] = heap[i2];
-                heap[i].Index = i;
-                i = i2;
-            }
-            heap[i] = entry;
-            heap[i].Index = i;
-        }
-
-        /// <summary>
-        /// Removes and returns the item at the top of the heap (i.e. the
-        /// 0th position of the list).
-        /// </summary>
-        private static Entry Dequeue(List<Entry> heap)
-        {
-            var result = heap[0];
-            var count = heap.Count;
-            if (count == 1) { heap.Clear(); return result; }
-            var entry = heap[--count];
-            heap.RemoveAt(count);
-            int i = 0, i1 = 1;
-            while (i1 < count) // at least one child
-            {
-                int i2 = i1 + 1;
-                int ni = (i2 < count // two children?
-                    && heap[i1].Time > heap[i2].Time)
-                    ? i2 : i1; // smaller child
-                if (heap[ni].Time > entry.Time) break;
-                heap[i] = heap[ni];
-                heap[i].Index = i; // track index
-                i = ni; i1 = 2 * i + 1;
-            }
-            heap[i] = entry;
-            heap[i].Index = i; // track index
-            return result;
-        }
-
-        /// <summary>
-        /// Sinks an item.
-        /// </summary>
-        private static void Sink(List<Entry> heap, int i)
-        {
-            var count = heap.Count;
-            var entry = heap[i];
             int i1 = 2 * i + 1;
             while (i1 < count) // at least one child
             {
@@ -304,13 +251,81 @@ namespace Aardvark.Base
                 int ni = (i2 < count // two children?
                     && heap[i1].Time > heap[i2].Time)
                     ? i2 : i1; // smaller child
-                if (heap[ni].Time > entry.Time) break;
+                if (heap[ni].Time > element.Time) break;
                 heap[i] = heap[ni];
-                heap[i].Index = i; // track index
+                heap[i].Index = i;
                 i = ni; i1 = 2 * i + 1;
             }
-            heap[i] = entry;
-            heap[i].Index = i; // track index
         }
+        heap[i] = element;
+        heap[i].Index = i;
+    }
+
+    private static void Enqueue(List<Entry> heap, Entry entry)
+    {
+        int i = heap.Count;
+        heap.Add(entry);
+        entry.Index = i;
+        while (i > 0)
+        {
+            int i2 = (i - 1) / 2;
+            if (entry.Time > heap[i2].Time) break;
+            heap[i] = heap[i2];
+            heap[i].Index = i;
+            i = i2;
+        }
+        heap[i] = entry;
+        heap[i].Index = i;
+    }
+
+    /// <summary>
+    /// Removes and returns the item at the top of the heap (i.e. the
+    /// 0th position of the list).
+    /// </summary>
+    private static Entry Dequeue(List<Entry> heap)
+    {
+        var result = heap[0];
+        var count = heap.Count;
+        if (count == 1) { heap.Clear(); return result; }
+        var entry = heap[--count];
+        heap.RemoveAt(count);
+        int i = 0, i1 = 1;
+        while (i1 < count) // at least one child
+        {
+            int i2 = i1 + 1;
+            int ni = (i2 < count // two children?
+                && heap[i1].Time > heap[i2].Time)
+                ? i2 : i1; // smaller child
+            if (heap[ni].Time > entry.Time) break;
+            heap[i] = heap[ni];
+            heap[i].Index = i; // track index
+            i = ni; i1 = 2 * i + 1;
+        }
+        heap[i] = entry;
+        heap[i].Index = i; // track index
+        return result;
+    }
+
+    /// <summary>
+    /// Sinks an item.
+    /// </summary>
+    private static void Sink(List<Entry> heap, int i)
+    {
+        var count = heap.Count;
+        var entry = heap[i];
+        int i1 = 2 * i + 1;
+        while (i1 < count) // at least one child
+        {
+            int i2 = i1 + 1;
+            int ni = (i2 < count // two children?
+                && heap[i1].Time > heap[i2].Time)
+                ? i2 : i1; // smaller child
+            if (heap[ni].Time > entry.Time) break;
+            heap[i] = heap[ni];
+            heap[i].Index = i; // track index
+            i = ni; i1 = 2 * i + 1;
+        }
+        heap[i] = entry;
+        heap[i].Index = i; // track index
     }
 }

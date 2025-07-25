@@ -1,11 +1,31 @@
-﻿using System;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text;
 using static System.Math;
+
+#if NETSTANDARD2_0
+using System.Text;
+#endif
 
 namespace Aardvark.Base
 {
@@ -511,7 +531,7 @@ namespace Aardvark.Base
                 this T[] array, double fraction)
         {
             if (fraction < 0.0 || fraction > 1.0)
-                throw new ArgumentOutOfRangeException("Fraction not in range [0.0, 1.0].");
+                throw new ArgumentOutOfRangeException(nameof(fraction), "Fraction not in range [0.0, 1.0].");
             long take = (long)(array.LongLength * fraction);
             for (long i = 0; i < take; i++) yield return array[i];
         }
@@ -723,7 +743,7 @@ namespace Aardvark.Base
         /// </summary>
         public static void Swap<T>(this T[] self, int i, int j)
         {
-            T help = self[i]; self[i] = self[j]; self[j] = help;
+            (self[j], self[i]) = (self[i], self[j]);
         }
 
         /// <summary>
@@ -731,7 +751,7 @@ namespace Aardvark.Base
         /// </summary>
         public static void Swap<T>(this T[] self, long i, long j)
         {
-            T help = self[i]; self[i] = self[j]; self[j] = help;
+            (self[j], self[i]) = (self[i], self[j]);
         }
 
         /// <summary>
@@ -785,7 +805,7 @@ namespace Aardvark.Base
         public static T[] WithAppended<T>(this T[] array, T item)
             where T : class
         {
-            if (array == null) return new T[] { item };
+            if (array == null) return [item];
             var len = array.Length;
             for (int i = 0; i < len; i++) if (array[i] == item) return array;
             var newArray = new T[len + 1];
@@ -802,7 +822,7 @@ namespace Aardvark.Base
         public static T[] WithPrepended<T>(this T[] array, T item)
             where T : class
         {
-            if (array == null) return new T[] { item };
+            if (array == null) return [item];
             var len = array.Length;
             for (int i = 0; i < len; i++) if (array[i] == item) return array;
             var newArray = new T[len + 1];
@@ -2356,11 +2376,8 @@ namespace Aardvark.Base
             var l = data.GetType().GetElementType().GetCLRSize() * data.Length;
             try
             {
-                using (var stream =
-                       new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read))
-                {
-                    return action(stream);
-                }
+                using var stream = new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read);
+                return action(stream);
             }
             finally
             {
@@ -2374,11 +2391,8 @@ namespace Aardvark.Base
             var l = data.GetType().GetElementType().GetCLRSize() * data.Length;
             try
             {
-                using (var stream =
-                       new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read))
-                {
-                    action(stream);
-                }
+                using var stream = new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read);
+                action(stream);
             }
             finally
             {
@@ -2456,11 +2470,9 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA1.HashData(data);
 #else
-            using (var sha = SHA1.Create())
-            {
-                var hash = sha.ComputeHash(data);
-                return hash;
-            }
+            using var sha = SHA1.Create();
+            var hash = sha.ComputeHash(data);
+            return hash;
 #endif
         }
 
@@ -2473,10 +2485,8 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA1.HashData(data.AsByteSpan());
 #else
-            using(var sha = SHA1.Create())
-            {
-                return data.UseAsStream((stream) => sha.ComputeHash(stream));
-            }
+            using var sha = SHA1.Create();
+            return data.UseAsStream((stream) => sha.ComputeHash(stream));
 #endif
         }
 
@@ -2517,11 +2527,9 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA256.HashData(data);
 #else
-            using (var sha = SHA256.Create())
-            {
-                var hash = sha.ComputeHash(data);
-                return hash;
-            }
+            using var sha = SHA256.Create();
+            var hash = sha.ComputeHash(data);
+            return hash;
 #endif
         }
 
@@ -2534,10 +2542,8 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA256.HashData(data.AsByteSpan());
 #else
-            using(var sha = SHA256.Create())
-            {
-                return data.UseAsStream((stream) => sha.ComputeHash(stream));
-            }
+            using var sha = SHA256.Create();
+            return data.UseAsStream((stream) => sha.ComputeHash(stream));
 #endif
         }
 
@@ -2578,11 +2584,9 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA512.HashData(data);
 #else
-            using (var sha = SHA512.Create())
-            {
-                var hash = sha.ComputeHash(data);
-                return hash;
-            }
+            using var sha = SHA512.Create();
+            var hash = sha.ComputeHash(data);
+            return hash;
 #endif
         }
 
@@ -2595,10 +2599,8 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA512.HashData(data.AsByteSpan());
 #else
-            using(var sha = SHA512.Create())
-            {
-                return data.UseAsStream((stream) => sha.ComputeHash(stream));
-            }
+            using var sha = SHA512.Create();
+            return data.UseAsStream((stream) => sha.ComputeHash(stream));
 #endif
         }
 
@@ -2646,14 +2648,7 @@ namespace Aardvark.Base
         public static uint ComputeAdler32Checksum(this Array data)
         {
             var a = new Adler32();
-            if (data != null)
-            {
-#if NET6_0_OR_GREATER
-                a.Update(data.AsByteSpan());
-#else
-                data.UseAsStream((stream) => a.Update(stream));
-#endif
-            }
+            data?.UseAsStream(a.Update);
             return a.Checksum;
         }
 

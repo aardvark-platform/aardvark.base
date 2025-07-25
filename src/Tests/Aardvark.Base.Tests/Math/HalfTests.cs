@@ -1,8 +1,7 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Globalization;
 using System.Threading;
-using Aardvark.Base;
-using NUnit.Framework;
 using Half = Aardvark.Base.Half;
 
 namespace Aardvark.Tests
@@ -46,8 +45,7 @@ namespace Aardvark.Tests
             float resultExpected = (float)12.34567f;
 
             bool expected = true;
-            float result;
-            bool actual = float.TryParse(value, out result);
+            bool actual = float.TryParse(value, out float result);
             Assert.AreEqual(resultExpected, result);
             Assert.AreEqual(expected, actual);
         }
@@ -61,10 +59,9 @@ namespace Aardvark.Tests
             string value = "777";
             NumberStyles style = NumberStyles.None;
             IFormatProvider provider = CultureInfo.InvariantCulture;
-            Half result;
             Half resultExpected = (Half)777f;
             bool expected = true;
-            bool actual = Half.TryParse(value, style, provider, out result);
+            bool actual = Half.TryParse(value, style, provider, out Half result);
             Assert.AreEqual(resultExpected, result);
             Assert.AreEqual(expected, actual);
         }
@@ -127,7 +124,7 @@ namespace Aardvark.Tests
         [Test]
         public void ToHalfTest1()
         {
-            byte[] value = { 0x11, 0x22, 0x33, 0x44 };
+            byte[] value = [0x11, 0x22, 0x33, 0x44];
             int startIndex = 1;
             Half expected = Half.ToHalf(0x3322);
             Half actual = Half.ToHalf(value, startIndex);
@@ -315,8 +312,8 @@ namespace Aardvark.Tests
         {
             IConvertible target = (Half)146.33f;
             IFormatProvider provider = CultureInfo.InvariantCulture;
-            Decimal expected = new Decimal(146.25f);
-            Decimal actual = target.ToDecimal(provider);
+            var expected = new decimal(146.25f);
+            var actual = target.ToDecimal(provider);
             Assert.AreEqual(expected, actual);
         }
 
@@ -454,10 +451,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_UnaryPlus
+        ///A test for Op_UnaryPlus
         ///</summary>
         [Test]
-        public void op_UnaryPlusTest()
+        public void Op_UnaryPlusTest()
         {
             Half half = (Half)77;
             Half expected = (Half)77;
@@ -466,10 +463,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_UnaryNegation
+        ///A test for Op_UnaryNegation
         ///</summary>
         [Test]
-        public void op_UnaryNegationTest()
+        public void Op_UnaryNegationTest()
         {
             Half half = (Half)77;
             Half expected = (Half)(-77);
@@ -478,10 +475,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Subtraction
+        ///A test for Op_Subtraction
         ///</summary>
         [Test]
-        public void op_SubtractionTest()
+        public void Op_SubtractionTest()
         {
             Half half1 = (Half)77.99;
             Half half2 = (Half)17.88;
@@ -491,10 +488,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Multiply
+        ///A test for Op_Multiply
         ///</summary>
         [Test]
-        public void op_MultiplyTest()
+        public void Op_MultiplyTest()
         {
             Half half1 = (Half)11.1;
             Half half2 = (Half)5;
@@ -504,10 +501,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_LessThanOrEqual
+        ///A test for Op_LessThanOrEqual
         ///</summary>
         [Test]
-        public void op_LessThanOrEqualTest()
+        public void Op_LessThanOrEqualTest()
         {
             {
                 Half half1 = (Half)111;
@@ -526,10 +523,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_LessThan
+        ///A test for Op_LessThan
         ///</summary>
         [Test]
-        public void op_LessThanTest()
+        public void Op_LessThanTest()
         {
             {
                 Half half1 = (Half)111;
@@ -548,10 +545,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Inequality
+        ///A test for Op_Inequality
         ///</summary>
         [Test]
-        public void op_InequalityTest()
+        public void Op_InequalityTest()
         {
             {
                 Half half1 = (Half)0;
@@ -570,10 +567,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Increment
+        ///A test for Op_Increment
         ///</summary>
         [Test]
-        public void op_IncrementTest()
+        public void Op_IncrementTest()
         {
             Half half = (Half)125.33f;
             Half expected = (Half)126.33f;
@@ -582,10 +579,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest10()
+        public void Op_ImplicitTest10()
         {
             Half value = (Half)55.55f;
             float expected = 55.53125f;
@@ -594,10 +591,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest9()
+        public void Op_ImplicitTest9()
         {
             long value = 1295;
             Half expected = (Half)1295;
@@ -606,10 +603,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest8()
+        public void Op_ImplicitTest8()
         {
             sbyte value = -15;
             Half expected = (Half)(-15);
@@ -618,10 +615,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest7()
+        public void Op_ImplicitTest7()
         {
             Half value = Half.Epsilon;
             double expected = 5.9604644775390625e-8;
@@ -630,10 +627,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest6()
+        public void Op_ImplicitTest6()
         {
             short value = 15555;
             Half expected = (Half)15552;
@@ -642,10 +639,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest5()
+        public void Op_ImplicitTest5()
         {
             byte value = 77;
             Half expected = (Half)77;
@@ -654,10 +651,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest4()
+        public void Op_ImplicitTest4()
         {
             int value = 7777;
             Half expected = (Half)7776;
@@ -666,10 +663,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest3()
+        public void Op_ImplicitTest3()
         {
             char value = '@';
             Half expected = 64;
@@ -678,10 +675,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest2()
+        public void Op_ImplicitTest2()
         {
             ushort value = 546;
             Half expected = 546;
@@ -690,10 +687,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest1()
+        public void Op_ImplicitTest1()
         {
             ulong value = 123456UL;
             Half expected = Half.PositiveInfinity;
@@ -702,10 +699,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Implicit
+        ///A test for Op_Implicit
         ///</summary>
         [Test]
-        public void op_ImplicitTest()
+        public void Op_ImplicitTest()
         {
             uint value = 728;
             Half expected = 728;
@@ -715,10 +712,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_GreaterThanOrEqual
+        ///A test for Op_GreaterThanOrEqual
         ///</summary>
         [Test]
-        public void op_GreaterThanOrEqualTest()
+        public void Op_GreaterThanOrEqualTest()
         {
             {
                 Half half1 = (Half)111;
@@ -737,10 +734,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_GreaterThan
+        ///A test for Op_GreaterThan
         ///</summary>
         [Test]
-        public void op_GreaterThanTest()
+        public void Op_GreaterThanTest()
         {
             {
                 Half half1 = (Half)111;
@@ -759,10 +756,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest12()
+        public void Op_ExplicitTest12()
         {
             Half value = 1245;
             uint expected = 1245;
@@ -771,10 +768,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest11()
+        public void Op_ExplicitTest11()
         {
             Half value = 3333;
             ushort expected = 3332;
@@ -783,10 +780,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest10()
+        public void Op_ExplicitTest10()
         {
             float value = 0.1234f;
             Half expected = (Half)0.1234f;
@@ -795,10 +792,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest9()
+        public void Op_ExplicitTest9()
         {
             Half value = 9777;
             Decimal expected = 9776;
@@ -807,10 +804,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest8()
+        public void Op_ExplicitTest8()
         {
             Half value = (Half)5.5;
             sbyte expected = 5;
@@ -819,10 +816,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest7()
+        public void Op_ExplicitTest7()
         {
             Half value = 666;
             ulong expected = 666;
@@ -831,10 +828,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest6()
+        public void Op_ExplicitTest6()
         {
             double value = -666.66;
             Half expected = (Half)(-666.66);
@@ -843,10 +840,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest5()
+        public void Op_ExplicitTest5()
         {
             Half value = (Half)33.3;
             short expected = 33;
@@ -855,10 +852,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest4()
+        public void Op_ExplicitTest4()
         {
             Half value = 12345;
             long expected = 12344;
@@ -867,10 +864,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest3()
+        public void Op_ExplicitTest3()
         {
             Half value = (Half)15.15;
             int expected = 15;
@@ -879,22 +876,22 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest2()
+        public void Op_ExplicitTest2()
         {
-            Decimal value = new Decimal(333.1);
+            var value = new decimal(333.1);
             Half expected = (Half)333.1;
             Half actual = ((Half)(value));
             Assert.AreEqual(expected, actual);
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest1()
+        public void Op_ExplicitTest1()
         {
             Half value = (Half)(-77);
             byte expected = unchecked((byte)(-77));
@@ -903,10 +900,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Explicit
+        ///A test for Op_Explicit
         ///</summary>
         [Test]
-        public void op_ExplicitTest()
+        public void Op_ExplicitTest()
         {
             Half value = 64;
             char expected = '@';
@@ -915,10 +912,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Equality
+        ///A test for Op_Equality
         ///</summary>
         [Test]
-        public void op_EqualityTest()
+        public void Op_EqualityTest()
         {
             {
                 Half half1 = Half.MaxValue;
@@ -937,10 +934,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Division
+        ///A test for Op_Division
         ///</summary>
         [Test]
-        public void op_DivisionTest()
+        public void Op_DivisionTest()
         {
             Half half1 = 333;
             Half half2 = 3;
@@ -950,10 +947,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Decrement
+        ///A test for Op_Decrement
         ///</summary>
         [Test]
-        public void op_DecrementTest()
+        public void Op_DecrementTest()
         {
             Half half = 1234;
             Half expected = 1233;
@@ -962,10 +959,10 @@ namespace Aardvark.Tests
         }
 
         /// <summary>
-        ///A test for op_Addition
+        ///A test for Op_Addition
         ///</summary>
         [Test]
-        public void op_AdditionTest()
+        public void Op_AdditionTest()
         {
             Half half1 = (Half)1234.5f;
             Half half2 = (Half)1234.5f;
@@ -980,8 +977,8 @@ namespace Aardvark.Tests
         [Test]
         public void NegateTest()
         {
-            Half half = new Half(658.51);
-            Half expected = new Half(-658.51);
+            Half half = new(658.51);
+            Half expected = new(-658.51);
             Half actual = Half.Negate(half);
             Assert.AreEqual(expected, actual);
         }
@@ -1018,9 +1015,9 @@ namespace Aardvark.Tests
         [Test]
         public void MaxTest()
         {
-            Half val1 = new Half(333);
-            Half val2 = new Half(332);
-            Half expected = new Half(333);
+            Half val1 = new(333);
+            Half val2 = new(332);
+            Half expected = new(333);
             Half actual = Half.Max(val1, val2);
             Assert.AreEqual(expected, actual);
         }
@@ -1117,9 +1114,8 @@ namespace Aardvark.Tests
         [Test]
         public void GetTypeCodeTest()
         {
-            Half target = new Half();
             TypeCode expected = (TypeCode)255;
-            TypeCode actual = target.GetTypeCode();
+            TypeCode actual = Half.GetTypeCode();
             Assert.AreEqual(expected, actual);
         }
 
@@ -1142,7 +1138,7 @@ namespace Aardvark.Tests
         public void GetBytesTest()
         {
             Half value = Half.ToHalf(0x1234);
-            byte[] expected = { 0x34, 0x12 };
+            byte[] expected = [0x34, 0x12];
             byte[] actual = Half.GetBytes(value);
             Assert.AreEqual(expected[0], actual[0]);
             Assert.AreEqual(expected[1], actual[1]);
@@ -1154,7 +1150,7 @@ namespace Aardvark.Tests
         [Test]
         public void GetBitsTest()
         {
-            Half value = new Half(555.555);
+            var value = new Half(555.555);
             ushort expected = 24663;
             ushort actual = Half.GetBits(value);
             Assert.AreEqual(expected, actual);
@@ -1189,14 +1185,14 @@ namespace Aardvark.Tests
         public void EqualsTest()
         {
             {
-                Half target = new Half();
+                var target = new Half();
                 object obj = new Single();
                 bool expected = false;
                 bool actual = target.Equals(obj);
                 Assert.AreEqual(expected, actual);
             }
             {
-                Half target = new Half();
+                var target = new Half();
                 object obj = (Half)111;
                 bool expected = false;
                 bool actual = target.Equals(obj);
@@ -1207,7 +1203,7 @@ namespace Aardvark.Tests
         [Test]
         public void ZeroTest()
         {
-            Half expected = new Half(0);
+            var expected = new Half(0);
             Half actual = Half.Zero;
             Assert.AreEqual(expected, actual);
         }
@@ -1215,7 +1211,7 @@ namespace Aardvark.Tests
         [Test]
         public void OneTest()
         {
-            Half expected = new Half(1);
+            var expected = new Half(1);
             Half actual = Half.One;
             Assert.AreEqual(expected, actual);
         }
@@ -1304,7 +1300,7 @@ namespace Aardvark.Tests
         public void HalfConstructorTest6()
         {
             long value = 44;
-            Half target = new Half(value);
+            var target = new Half(value);
             Assert.AreEqual((long)target, 44);
         }
 
@@ -1315,7 +1311,7 @@ namespace Aardvark.Tests
         public void HalfConstructorTest5()
         {
             int value = 789; // TODO: Initialize to an appropriate value
-            Half target = new Half(value);
+            var target = new Half(value);
             Assert.AreEqual((int)target, 789);
         }
 
@@ -1326,7 +1322,7 @@ namespace Aardvark.Tests
         public void HalfConstructorTest4()
         {
             float value = -0.1234f;
-            Half target = new Half(value);
+            var target = new Half(value);
             Assert.AreEqual(target, (Half)(-0.1233521f));
         }
 
@@ -1337,7 +1333,7 @@ namespace Aardvark.Tests
         public void HalfConstructorTest3()
         {
             double value = 11.11;
-            Half target = new Half(value);
+            var target = new Half(value);
             Assert.AreEqual((double)target, 11.109375);
         }
 
@@ -1348,7 +1344,7 @@ namespace Aardvark.Tests
         public void HalfConstructorTest2()
         {
             ulong value = 99999999;
-            Half target = new Half(value);
+            var target = new Half(value);
             Assert.AreEqual(target, Half.PositiveInfinity);
         }
 
@@ -1359,7 +1355,7 @@ namespace Aardvark.Tests
         public void HalfConstructorTest1()
         {
             uint value = 3330;
-            Half target = new Half(value);
+            var target = new Half(value);
             Assert.AreEqual((uint)target, (uint)3330);
         }
 
@@ -1369,8 +1365,8 @@ namespace Aardvark.Tests
         [Test]
         public void HalfConstructorTest()
         {
-            Decimal value = new Decimal(-11.11);
-            Half target = new Half(value);
+            var value = new decimal(-11.11);
+            var target = new Half(value);
             Assert.AreEqual((Decimal)target, (Decimal)(-11.10938));
         }
     }

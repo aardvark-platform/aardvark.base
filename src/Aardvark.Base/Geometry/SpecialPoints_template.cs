@@ -1,3 +1,20 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -101,7 +118,7 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __v2t__ query, __line2t__ line)
-            => GetClosestPointOn(query, line, out __rtype__ t);
+            => GetClosestPointOn(query, line, out _);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __line2t__ line, __v2t__ query)
@@ -128,7 +145,7 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __v2t__ query, __ray2t__ ray)
-            => GetClosestPointOn(query, ray, out __rtype__ t);
+            => GetClosestPointOn(query, ray, out _);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __ray2t__ ray, __v2t__ query)
@@ -418,7 +435,7 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOn(this __v3t__ query, __line3t__ line)
-            => query.GetClosestPointOnLine(line.P0, line.P1, out __rtype__ t);
+            => query.GetClosestPointOnLine(line.P0, line.P1, out _);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOn(this __line3t__ line, __v3t__ query)
@@ -434,7 +451,7 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOnLine(this __v3t__ query, __v3t__ p0, __v3t__ p1)
-            => query.GetClosestPointOnLine(p0, p1, out __rtype__ t);
+            => query.GetClosestPointOnLine(p0, p1, out _);
 
         public static __v3t__ GetClosestPointOnLine(this __v3t__ query, __v3t__ p0, __v3t__ p1, out __rtype__ t)
         {
@@ -466,7 +483,7 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOn(this __v3t__ query, __ray3t__ ray)
-            => GetClosestPointOn(query, ray, out __rtype__ t);
+            => GetClosestPointOn(query, ray, out _);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOn(this __ray3t__ ray, __v3t__ query)
@@ -766,7 +783,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype__ GetMinimalDistanceTo(this __ray2t__ ray0, __ray2t__ ray1)
-            => ray0.GetMinimalDistanceTo(ray1, out __rtype__ t0, out __rtype__ t1);
+            => ray0.GetMinimalDistanceTo(ray1, out _, out _);
 
         /// <summary>
         /// returns the minimal distance between the given rays.
@@ -793,7 +810,7 @@ namespace Aardvark.Base
                 // change by lui: added normalization (ortherwise in case the directions are not normalized t0 and t1 are wrong)
                 t1 = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1);
                 t0 = (t1 * uDotv - a.Dot(u)) / ray0.Direction.Length;
-                t1 = t1 / ray1.Direction.Length;
+                t1 /= ray1.Direction.Length;
             }
 
             return (t1 * ray1.Direction - a - t0 * ray0.Direction).Length;
@@ -1130,7 +1147,7 @@ namespace Aardvark.Base
         {
             var r1 = line.__ray3t__;
 
-            var distance = ray.GetMinimalDistanceTo(r1, out __rtype__ t0, out __rtype__ t1);
+            var distance = ray.GetMinimalDistanceTo(r1, out _, out __rtype__ t1);
 
             if (t1 >= 0 && t1 <= 1) return distance;
             else
@@ -1192,7 +1209,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype__ GetMinimalDistanceTo(this __ray3t__ ray0, __ray3t__ ray1)
-            => ray0.GetMinimalDistanceTo(ray1, out __rtype__ t0, out __rtype__ t1);
+            => ray0.GetMinimalDistanceTo(ray1, out _, out _);
 
         /// <summary>
         /// returns the minimal distance between the given rays.
@@ -1219,7 +1236,7 @@ namespace Aardvark.Base
                 // change by lui: added normalization (ortherwise in case the directions are not normalized t0 and t1 are wrong)
                 t1 = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1);
                 t0 = (t1 * uDotv - a.Dot(u)) / ray0.Direction.Length;
-                t1 = t1 / ray1.Direction.Length;
+                t1 /= ray1.Direction.Length;
             }
 
             return (t1 * ray1.Direction - a - t0 * ray0.Direction).Length;

@@ -1,4 +1,20 @@
-﻿using Aardvark.Base;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,10 +40,10 @@ namespace Aardvark.Base.Coder.Legacy
             public long UncompressedSize;
         }
 
-        private string[] m_ZipFileNames = Array.Empty<string>();
-        private WeakReference[] m_ZipFileStreams = Array.Empty<WeakReference>();
-        private readonly SymbolDict<SubFileHeader> m_Files = new SymbolDict<SubFileHeader>();
-        private readonly SymbolSet m_Directories = new SymbolSet();
+        private string[] m_ZipFileNames = [];
+        private WeakReference[] m_ZipFileStreams = [];
+        private readonly SymbolDict<SubFileHeader> m_Files = [];
+        private readonly SymbolSet m_Directories = [];
         private readonly bool m_contentCaseSensitive = false;
 
         #endregion
@@ -97,7 +113,7 @@ namespace Aardvark.Base.Coder.Legacy
             Report.BeginTimed("Init Zip container '" + containerPath + "'.");
 
             FileStream mainFileStream = null;
-            FileStream[] zipStreams = Array.Empty<FileStream>();
+            FileStream[] zipStreams = [];
 
             try
             {
@@ -130,10 +146,19 @@ namespace Aardvark.Base.Coder.Legacy
                     // Segment n-1 = filename.z(n-1)
                     // Segment n = filename.zip
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
                     var baseName =
+#if NETSTANDARD2_0
                         0 == containerPath.Substring(containerPath.Length - 4).ToLower().CompareTo(".zip") ?
                         containerPath.Substring(0, containerPath.Length - 4) :
+#else
+                        0 == containerPath[^4..].ToLowerInvariant().CompareTo(".zip") ?
+                        containerPath[..^4] :
+#endif
                         containerPath;
+#pragma warning restore CA1862 // Use the 'StringComparison' method overloads to perform case-insensitive string comparisons
+#pragma warning restore IDE0079 // Remove unnecessary suppression
                     baseName += ".z";
 
                     for (int i = 0; i < zipEoCDR.cd_diskId; i++)
@@ -177,9 +202,9 @@ namespace Aardvark.Base.Coder.Legacy
                 Report.End();
 
                 foreach (var stream in zipStreams)
-                    if (stream != null) stream.Close();
+                    stream?.Close();
 
-                if (mainFileStream != null) mainFileStream.Close();
+                mainFileStream?.Close();
 
                 return false;
             }
@@ -192,14 +217,12 @@ namespace Aardvark.Base.Coder.Legacy
         {
             if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentNullException(nameof(fileName));
 
-            using (var fileStream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.None))
-            {
-                // Load End Of Central Directory Record
-                var zipEoCDR = new TZipEndOfCentralDirectoryRecord();
-                zipEoCDR.Load(fileStream);
+            using var fileStream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.None);
+            // Load End Of Central Directory Record
+            var zipEoCDR = new TZipEndOfCentralDirectoryRecord();
+            zipEoCDR.Load(fileStream);
 
-                if (zipEoCDR.Position > 0) return true;
-            }
+            if (zipEoCDR.Position > 0) return true;
 
             return false;
         }
@@ -242,9 +265,7 @@ namespace Aardvark.Base.Coder.Legacy
 
             var dirLevel = path.Count(c => c == '\\');
 
-            return dirs
-                .Where(dir => dir.Count(c => c == '\\') == dirLevel + 1)
-                .ToArray();
+            return [.. dirs.Where(dir => dir.Count(c => c == '\\') == dirLevel + 1)];
         }
 
         /// <summary>
@@ -263,9 +284,7 @@ namespace Aardvark.Base.Coder.Legacy
 
             var dirLevel = path.Count(c => c == '\\');
 
-            return dirs
-                .Where(dir => dir.Count(c => c == '\\') == dirLevel + 1)
-                .ToArray();
+            return [.. dirs.Where(dir => dir.Count(c => c == '\\') == dirLevel + 1)];
         }
 
         public Stream GetStream(string fileName)
@@ -275,8 +294,7 @@ namespace Aardvark.Base.Coder.Legacy
         }
         public Stream GetStream(Symbol fileName)
         {
-            SubFileHeader fileHeader;
-            if (m_Files.TryGetValue(fileName, out fileHeader))
+            if (m_Files.TryGetValue(fileName, out SubFileHeader fileHeader))
             {
                 var totalStreamsLength = 0L;
                 var fileIndex = fileHeader.ZipFileIndex;
@@ -301,7 +319,7 @@ namespace Aardvark.Base.Coder.Legacy
                     totalStreamsLength += fileStreams.Last().Length;
                 }
 
-                return new UberStream(fileStreams.ToArray(), fileHeader.LocalHeaderOffset + fileHeader.LocalHeaderSize, fileHeader.UncompressedSize);
+                return new UberStream([.. fileStreams], fileHeader.LocalHeaderOffset + fileHeader.LocalHeaderSize, fileHeader.UncompressedSize);
             }
             else return null;
         }
@@ -324,6 +342,7 @@ namespace Aardvark.Base.Coder.Legacy
         public void Dispose()
         {
             CloseAllFileStreams();
+            GC.SuppressFinalize(this);
         }
 
         #endregion
@@ -339,7 +358,7 @@ namespace Aardvark.Base.Coder.Legacy
 
             if (stream == null || !stream.CanRead)
             {
-                if (stream != null) stream.Close();
+                stream?.Close();
                 stream = File.Open(m_ZipFileNames[fileIndex],
                     FileMode.Open, FileAccess.Read, FileShare.Read);
                 m_ZipFileStreams[fileIndex].Target = stream;
@@ -382,7 +401,11 @@ namespace Aardvark.Base.Coder.Legacy
                 }
                 else
                 {
+#if NETSTANDARD2_0
                     this.m_Directories.Add(fileName.Substring(0, cd_fileHeader.filename.Length - 1));
+#else
+                    this.m_Directories.Add(fileName[..(cd_fileHeader.filename.Length - 1)]);
+#endif
                 }
             }
         }
@@ -397,7 +420,7 @@ namespace Aardvark.Base.Coder.Legacy
             //.Replace('?', 'ä');
         }
 
-        #endregion
+#endregion
 
 
     }

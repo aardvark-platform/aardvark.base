@@ -1,85 +1,102 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 
-namespace Aardvark.Base
+namespace Aardvark.Base;
+
+public static class Prime
 {
-    public static class Prime
+    const int c_initialPrimeCount = 64;
+    const int c_maxPrimeCount = 1 << 24;
+
+    public static bool IsTrueFor(long value)
     {
-        const int c_initialPrimeCount = 64;
-        const int c_maxPrimeCount = 1 << 24;
+        if (value < 0) return false;
+        if (value < isPrimeArray.Length) return isPrimeArray[value];
 
-        public static bool IsTrueFor(long value)
+        int root = (int)Fun.Sqrt(value);
+        int directMaxPrime = Fun.Min(primeArray[primeCount - 1], root);
+        int pi;
+        for (pi = 0; primeArray[pi] <= directMaxPrime; pi++)
+            if (value % primeArray[pi] == 0) return false;
+
+        if (directMaxPrime == root) return true;
+
+        while (true)
         {
-            if (value < 0) return false;
-            if (value < isPrimeArray.Length) return isPrimeArray[value];
+            int p = Prime.WithIndex(pi);
+            if (p > root) break;
+            if (value % p == 0) return false;
+            pi++;
+        }
+        return true;
+    }
 
-            int root = (int)Fun.Sqrt(value);
-            int directMaxPrime = Fun.Min(primeArray[primeCount - 1], root);
-            int pi;
-            for (pi = 0; primeArray[pi] <= directMaxPrime; pi++)
-                if (value % primeArray[pi] == 0) return false;
+    /// <summary>
+    /// Returns the prime number with the supplied index. Indices start at
+    /// zero and the first prime number is 2. Thus
+    /// 'Prime.WithIndex(0) == 2'.
+    /// </summary>
+    public static int WithIndex(int primeIndex)
+    {
+        if (primeIndex >= primeCount) CalculateUpToIndex(primeIndex);
+        return primeArray[primeIndex];
+    }
 
-            if (directMaxPrime == root) return true;
+    /// <summary>
+    /// Returns the inverse of the prime number with the supplied index.
+    /// Indices start at zero and the first prime number is 2. Thus
+    /// 'Prime.InverseWithIndex(0) == 0.5'.
+    /// </summary>
+    public static double InverseWithIndex(int primeIndex)
+    {
+        if (primeIndex >= primeCount) CalculateUpToIndex(primeIndex);
+        return primeInverseArray[primeIndex];
+    }
 
-            while (true)
-            {
-                int p = Prime.WithIndex(pi);
-                if (p > root) break;
-                if (value % p == 0) return false;
-                pi++;
-            }
-            return true;
+    /// <summary>
+    /// The number of primes that have already been calculated.
+    /// </summary>
+    private static int primeCount;
+
+    private static int candidate = 5;
+    private static int root = 3;
+    private static int square = 9;
+    private static int step = 2;
+
+    private static int logIndexCount = 3;
+    private static int logIndexTrigger = 8;
+
+    private static void CalculateUpToIndex(int last)
+    {
+        if (last >= c_maxPrimeCount)
+            throw new ArgumentException("exceeded prime table size limit");
+        if (last >= primeCapacity)
+        {
+            while (last >= primeCapacity) primeCapacity *= 2;
+            Array.Resize(ref primeArray, primeCapacity);
+            Array.Resize(ref primeInverseArray, primeCapacity);
         }
 
-        /// <summary>
-        /// Returns the prime number with the supplied index. Indices start at
-        /// zero and the first prime number is 2. Thus
-        /// 'Prime.WithIndex(0) == 2'.
-        /// </summary>
-        public static int WithIndex(int primeIndex)
+        while (primeCount <= last)
         {
-            if (primeIndex >= primeCount) CalculateUpToIndex(primeIndex);
-            return primeArray[primeIndex];
-        }
-
-        /// <summary>
-        /// Returns the inverse of the prime number with the supplied index.
-        /// Indices start at zero and the first prime number is 2. Thus
-        /// 'Prime.InverseWithIndex(0) == 0.5'.
-        /// </summary>
-        public static double InverseWithIndex(int primeIndex)
-        {
-            if (primeIndex >= primeCount) CalculateUpToIndex(primeIndex);
-            return primeInverseArray[primeIndex];
-        }
-
-        /// <summary>
-        /// The number of primes that have already been calculated.
-        /// </summary>
-        private static int primeCount;
-
-        private static int candidate = 5;
-        private static int root = 3;
-        private static int square = 9;
-        private static int step = 2;
-
-        private static int logIndexCount = 3;
-        private static int logIndexTrigger = 8;
-
-        private static void CalculateUpToIndex(int last)
-        {
-            if (last >= c_maxPrimeCount)
-                throw new ArgumentException("exceeded prime table size limit");
-            if (last >= primeCapacity)
+            for (bool found = false; !found; )
             {
-                while (last >= primeCapacity) primeCapacity *= 2;
-                Array.Resize(ref primeArray, primeCapacity);
-                Array.Resize(ref primeInverseArray, primeCapacity);
-            }
-
-            while (primeCount <= last)
-            {
-                for (bool found = false; !found; )
-                {
 	                candidate += step;
 	                step = 6 - step;
 	                if (candidate > square)
@@ -87,7 +104,7 @@ namespace Aardvark.Base
 		                ++root;
 		                square = root * root;
 	                }
-            	    
+        	    
 	                found = true;
 	                for (int pi = 2; primeArray[pi] <= root; pi++)
 		                if (candidate % primeArray[pi] == 0)
@@ -95,46 +112,45 @@ namespace Aardvark.Base
 		                    found = false; break;
 		                }
 	            }
-                if (candidate > logIndexTrigger)
-                {
-                    primeLogIndexArray[logIndexCount++] = primeCount;
-                    logIndexTrigger *= 2;
-                }
+            if (candidate > logIndexTrigger)
+            {
+                primeLogIndexArray[logIndexCount++] = primeCount;
+                logIndexTrigger *= 2;
+            }
 	            primeArray[primeCount] = candidate;
 	            primeInverseArray[primeCount] = 1.0/(double)candidate;
 	            ++primeCount;
-            }
         }
-
-        static Prime()
-        {
-            primeCapacity = c_initialPrimeCount;
-
-            primeArray[0] = 2;
-            primeArray[1] = 3;
-            primeArray[2] = 5;
-            primeInverseArray[0] = 1/2.0;
-            primeInverseArray[1] = 1/3.0;
-            primeInverseArray[2] = 1/5.0;
-
-            primeLogIndexArray[0] = -1;
-            primeLogIndexArray[1] = 0;
-            primeLogIndexArray[2] = 2;
-
-            primeCount = 3;
-
-            CalculateUpToIndex(c_initialPrimeCount - 1);
-
-            int isPrimeCount = primeArray[c_initialPrimeCount - 1] + 1;
-            isPrimeArray = new bool[isPrimeCount];
-            for (int pi = 0; pi < primeCount; pi++)
-                isPrimeArray[primeArray[pi]] = true;
-        }
-
-        private static int primeCapacity;
-        private static int[] primeArray = new int[c_initialPrimeCount];
-        private static double[] primeInverseArray = new double[c_initialPrimeCount];
-        private static readonly bool[] isPrimeArray;
-        private static readonly int[] primeLogIndexArray = new int[64];
     }
+
+    static Prime()
+    {
+        primeCapacity = c_initialPrimeCount;
+
+        primeArray[0] = 2;
+        primeArray[1] = 3;
+        primeArray[2] = 5;
+        primeInverseArray[0] = 1/2.0;
+        primeInverseArray[1] = 1/3.0;
+        primeInverseArray[2] = 1/5.0;
+
+        primeLogIndexArray[0] = -1;
+        primeLogIndexArray[1] = 0;
+        primeLogIndexArray[2] = 2;
+
+        primeCount = 3;
+
+        CalculateUpToIndex(c_initialPrimeCount - 1);
+
+        int isPrimeCount = primeArray[c_initialPrimeCount - 1] + 1;
+        isPrimeArray = new bool[isPrimeCount];
+        for (int pi = 0; pi < primeCount; pi++)
+            isPrimeArray[primeArray[pi]] = true;
+    }
+
+    private static int primeCapacity;
+    private static int[] primeArray = new int[c_initialPrimeCount];
+    private static double[] primeInverseArray = new double[c_initialPrimeCount];
+    private static readonly bool[] isPrimeArray;
+    private static readonly int[] primeLogIndexArray = new int[64];
 }

@@ -1,357 +1,372 @@
-using Aardvark.Base;
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
-namespace Aardvark.Base.Coder
+namespace Aardvark.Base.Coder;
+
+// AUTO GENERATED CODE - DO NOT CHANGE!
+
+//# var directlyCodeableTypes = Meta.DirectlyCodeableTypes.Map(t =>t.Name);
+//# var geometryTypes = Meta.GeometryTypes.Map(t => t.Name);
+//# var specialSimpleTypes = new[] { "bool", "char", "string", "Type", "Guid", "Symbol" };
+//# {
+//# var structTypes = new List<string>();
+//# var tensorTypes = new List<string>();
+public partial class NewXmlWritingCoder
 {
-    // AUTO GENERATED CODE - DO NOT CHANGE!
-
-    //# var directlyCodeableTypes = Meta.DirectlyCodeableTypes.Map(t =>t.Name);
-    //# var geometryTypes = Meta.GeometryTypes.Map(t => t.Name);
-    //# var specialSimpleTypes = new[] { "bool", "char", "string", "Type", "Guid", "Symbol" };
-    //# {
-    //# var structTypes = new List<string>();
-    //# var tensorTypes = new List<string>();
-    public partial class NewXmlWritingCoder
-    {
-        #region Vectors
-
-        //# foreach (var t in Meta.VecTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
-        //# }
-
-        #endregion
-
-        #region Matrices
-
-        //# foreach (var t in Meta.MatTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
-        //# }
-
-        #endregion
-
-        #region Ranges and Boxes
-
-        //# foreach (var t in Meta.RangeAndBoxTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
-        //# }
-
-        #endregion
-
-        #region Geometry Types
-
-        //# foreach (var isDouble in new[] { false, true }) {
-        //#   var ftype = isDouble ? "Double" : "Float";
-        //#   var tc = isDouble ? "d" : "f";
-        public void CodeCircle2__tc__(ref Circle2__tc__ v) { throw new NotImplementedException(); }
-        public void CodeLine2__tc__(ref Line2__tc__ v) { throw new NotImplementedException(); }
-        public void CodeLine3__tc__(ref Line3__tc__ v) { throw new NotImplementedException(); }
-        public void CodePlane2__tc__(ref Plane2__tc__ v) { throw new NotImplementedException(); }
-        public void CodePlane3__tc__(ref Plane3__tc__ v) { throw new NotImplementedException(); }
-        public void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v) { throw new NotImplementedException(); }
-        public void CodeQuad2__tc__(ref Quad2__tc__ v) { throw new NotImplementedException(); }
-        public void CodeQuad3__tc__(ref Quad3__tc__ v) { throw new NotImplementedException(); }
-        public void CodeRay2__tc__(ref Ray2__tc__ v) { throw new NotImplementedException(); }
-        public void CodeRay3__tc__(ref Ray3__tc__ v) { throw new NotImplementedException(); }
-        public void CodeSphere3__tc__(ref Sphere3__tc__ v) { throw new NotImplementedException(); }
-        public void CodeTriangle2__tc__(ref Triangle2__tc__ v) { throw new NotImplementedException(); }
-        public void CodeTriangle3__tc__(ref Triangle3__tc__ v) { throw new NotImplementedException(); }
-
-        //# }
-        #endregion
-
-        #region Colors
-
-        //# foreach (var t in Meta.ColorTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
-        //# }
-
-        #endregion
-
-        #region Trafos
-
-        //# foreach (var t in Meta.TrafoTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
-        //# }
-
-        #endregion
-
-        #region Tensors
-
-        //# foreach (var t in geometryTypes) structTypes.Add(t);
-        //# var simpleTypes = directlyCodeableTypes.Concat(specialSimpleTypes).Concat(geometryTypes);
-        //# var genericTensorTypes = new[] { "Vector", "Matrix", "Volume", "Tensor" };
-        //# genericTensorTypes.ForEach(tt => {
-        //#     simpleTypes.ForEach(t => {
-        //#         var type = tt + "<" + t + ">";
-        //#         tensorTypes.Add(type);
-        //# var name = Meta.GetXmlTypeName(type);
-        public void Code__name__(ref __type__ value)
-        {
-            throw new NotImplementedException();
-        }
-
-        //#     });
-        //# });
-        #endregion
-
-        #region Arrays
-
-        //# structTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName(t + "[]");
-        public void Code__name__(ref __t__[] v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-
-        #region Multi-Dimensional Arrays
-
-        //# directlyCodeableTypes.ForEach(t => {
-        //# var name2d = Meta.GetXmlTypeName(t + "[,]");
-        public void Code__name2d__(ref __t__[,] v) { throw new NotImplementedException(); }
-        //# var name3d = Meta.GetXmlTypeName(t + "[,,]");
-        public void Code__name3d__(ref __t__[, ,] v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-
-        #region Jagged Multi-Dimensional Arrays
-
-        //# directlyCodeableTypes.ForEach(t => {
-        //# var name2d = Meta.GetXmlTypeName(t + "[][]");
-        public void Code__name2d__(ref __t__[][] v) { throw new NotImplementedException(); }
-        //# var name3d = Meta.GetXmlTypeName(t + "[][][]");
-        public void Code__name3d__(ref __t__[][][] v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-
-        #region Lists
-
-        //# structTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName("List<" + t + ">");
-        public void Code__name__(ref List<__t__> v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-
-        #region Arrays of Tensors
-
-        //# tensorTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName(t + "[]");
-        public void Code__name__(ref __t__[] v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-
-        #region Lists of Tensors
-
-        //# tensorTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName("List<" + t + ">");
-        public void Code__name__(ref List<__t__> v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-    }
-
-    //# } {
-    //# var structTypes = new List<string>();
-    //# var tensorTypes = new List<string>();
-    public partial class XmlWritingCoder
-    {
-        #region Vectors
-
-        //# foreach (var t in Meta.VecTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
-        //# }
-
-        #endregion
-
-        #region Matrices
-
-        //# foreach (var t in Meta.MatTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
-        //# }
-
-        #endregion
-
-        #region Ranges and Boxes
-
-        //# foreach (var t in Meta.RangeAndBoxTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
-        //# }
-
-        #endregion
-
-        #region Geometry Types
-
-        //# foreach (var isDouble in new[] { false, true }) {
-        //#   var ftype = isDouble ? "Double" : "Float";
-        //#   var tc = isDouble ? "d" : "f";
-        public void CodeCircle2__tc__(ref Circle2__tc__ v) { AddValue(v.ToString()); }
-        public void CodeLine2__tc__(ref Line2__tc__ v) { AddValue(v.ToString()); }
-        public void CodeLine3__tc__(ref Line3__tc__ v) { AddValue(v.ToString()); }
-        public void CodePlane2__tc__(ref Plane2__tc__ v) { AddValue(v.ToString()); }
-        public void CodePlane3__tc__(ref Plane3__tc__ v) { AddValue(v.ToString()); }
-        public void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v) { AddValue(v.ToString()); }
-        public void CodeQuad2__tc__(ref Quad2__tc__ v) { AddValue(v.ToString()); }
-        public void CodeQuad3__tc__(ref Quad3__tc__ v) { AddValue(v.ToString()); }
-        public void CodeRay2__tc__(ref Ray2__tc__ v) { AddValue(v.ToString()); }
-        public void CodeRay3__tc__(ref Ray3__tc__ v) { AddValue(v.ToString()); }
-        public void CodeSphere3__tc__(ref Sphere3__tc__ v) { AddValue(v.ToString()); }
-        public void CodeTriangle2__tc__(ref Triangle2__tc__ v) { AddValue(v.ToString()); }
-        public void CodeTriangle3__tc__(ref Triangle3__tc__ v) { AddValue(v.ToString()); }
-
-        //# }
-        #endregion
-
-        #region Colors
-
-        //# foreach (var t in Meta.ColorTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
-        //# }
-
-        #endregion
-
-        #region Trafos
-
-        //# foreach (var t in Meta.TrafoTypes) { structTypes.Add(t.Name);
-        //# var name = Meta.GetXmlTypeName(t.Name);
-        public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
-        //# }
-
-        #endregion
-
-        #region Tensors
-
-        //# foreach (var t in geometryTypes) structTypes.Add(t);
-        //# var simpleTypes = directlyCodeableTypes.Concat(specialSimpleTypes).Concat(geometryTypes);
-        //# var genericTensorTypes = new[] { "Vector", "Matrix", "Volume", "Tensor" };
-        //# var genericTensorSizes = new[] { "long", "V2l", "V3l", "long[]" };
-        //# genericTensorTypes.ForEach((tt, ti) => {
-        //#     var ts = genericTensorSizes[ti]; var tsn = Meta.GetXmlTypeName(ts);
-        //#     simpleTypes.ForEach(t => {
-        //#         var type = tt + "<" + t + ">";
-        //#         tensorTypes.Add(type);
-        //# var dname = Meta.GetXmlTypeName(t + "[]");
-        //# var name = Meta.GetXmlTypeName(type);
-        public void Code__name__(ref __type__ value)
-        {
-            var item = new XElement("__tt__");
-            m_elementStack.Push(m_element);
-            m_element = item;
-
-            var element = new XElement("Data");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var data = value.Data; Code__dname__(ref data);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Origin");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var origin = value.Origin; CodeLong(ref origin);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Length");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var size = value.Size; Code__tsn__(ref size);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            element = new XElement("Delta");
-            m_elementStack.Push(m_element);
-            m_element = element;
-
-            var delta = value.Delta; Code__tsn__(ref delta);
-
-            m_element = m_elementStack.Pop();
-            m_element.Add(element);
-
-            m_element = m_elementStack.Pop();
-            AddValue(item);
-        }
-
-        //#     });
-        //# });
-        #endregion
-
-        #region Arrays
-
-        //# structTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName(t + "[]");
-        public void Code__name__(ref __t__[] v) { CodeArrayOfStruct(v); }
-        //# });
-
-        #endregion
-
-        #region Multi-Dimensional Arrays
-
-        //# directlyCodeableTypes.ForEach(t => {
-        //# var name2d = Meta.GetXmlTypeName(t + "[,]");
-        public void Code__name2d__(ref __t__[,] v) { throw new NotImplementedException(); }
-        //# var name3d = Meta.GetXmlTypeName(t + "[,,]");
-        public void Code__name3d__(ref __t__[, ,] v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-
-        #region Multi-Dimensional Arrays
-
-        //# directlyCodeableTypes.ForEach(t => {
-        //# var name2d = Meta.GetXmlTypeName(t + "[][]");
-        public void Code__name2d__(ref __t__[][] v) { throw new NotImplementedException(); }
-        //# var name3d = Meta.GetXmlTypeName(t + "[][][]");
-        public void Code__name3d__(ref __t__[][][] v) { throw new NotImplementedException(); }
-        //# });
-
-        #endregion
-
-        #region Lists
-
-        //# structTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName("List<" + t + ">");
-        public void Code__name__(ref List<__t__> v) { CodeListOfStruct(v); }
-        //# });
-
-        #endregion
-
-        #region Arrays of Tensors
-
-        //# tensorTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName(t + "[]");
-        public void Code__name__(ref __t__[] v) { CodeArrayOf(v); }
-        //# });
-
-        #endregion
-
-        #region Lists of Tensors
-
-        //# tensorTypes.ForEach(t => {
-        //# var name = Meta.GetXmlTypeName("List<" + t + ">");
-        public void Code__name__(ref List<__t__> v) { CodeListOf(v); }
-        //# });
-
-        #endregion
-    }
+    #region Vectors
+
+    //# foreach (var t in Meta.VecTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
     //# }
+
+    #endregion
+
+    #region Matrices
+
+    //# foreach (var t in Meta.MatTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
+    //# }
+
+    #endregion
+
+    #region Ranges and Boxes
+
+    //# foreach (var t in Meta.RangeAndBoxTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
+    //# }
+
+    #endregion
+
+    #region Geometry Types
+
+    //# foreach (var isDouble in new[] { false, true }) {
+    //#   var ftype = isDouble ? "Double" : "Float";
+    //#   var tc = isDouble ? "d" : "f";
+    public void CodeCircle2__tc__(ref Circle2__tc__ v) { throw new NotImplementedException(); }
+    public void CodeLine2__tc__(ref Line2__tc__ v) { throw new NotImplementedException(); }
+    public void CodeLine3__tc__(ref Line3__tc__ v) { throw new NotImplementedException(); }
+    public void CodePlane2__tc__(ref Plane2__tc__ v) { throw new NotImplementedException(); }
+    public void CodePlane3__tc__(ref Plane3__tc__ v) { throw new NotImplementedException(); }
+    public void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v) { throw new NotImplementedException(); }
+    public void CodeQuad2__tc__(ref Quad2__tc__ v) { throw new NotImplementedException(); }
+    public void CodeQuad3__tc__(ref Quad3__tc__ v) { throw new NotImplementedException(); }
+    public void CodeRay2__tc__(ref Ray2__tc__ v) { throw new NotImplementedException(); }
+    public void CodeRay3__tc__(ref Ray3__tc__ v) { throw new NotImplementedException(); }
+    public void CodeSphere3__tc__(ref Sphere3__tc__ v) { throw new NotImplementedException(); }
+    public void CodeTriangle2__tc__(ref Triangle2__tc__ v) { throw new NotImplementedException(); }
+    public void CodeTriangle3__tc__(ref Triangle3__tc__ v) { throw new NotImplementedException(); }
+
+    //# }
+    #endregion
+
+    #region Colors
+
+    //# foreach (var t in Meta.ColorTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
+    //# }
+
+    #endregion
+
+    #region Trafos
+
+    //# foreach (var t in Meta.TrafoTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { throw new NotImplementedException(); }
+    //# }
+
+    #endregion
+
+    #region Tensors
+
+    //# foreach (var t in geometryTypes) structTypes.Add(t);
+    //# var simpleTypes = directlyCodeableTypes.Concat(specialSimpleTypes).Concat(geometryTypes);
+    //# var genericTensorTypes = new[] { "Vector", "Matrix", "Volume", "Tensor" };
+    //# genericTensorTypes.ForEach(tt => {
+    //#     simpleTypes.ForEach(t => {
+    //#         var type = tt + "<" + t + ">";
+    //#         tensorTypes.Add(type);
+    //# var name = Meta.GetXmlTypeName(type);
+    public void Code__name__(ref __type__ value)
+    {
+        throw new NotImplementedException();
+    }
+
+    //#     });
+    //# });
+    #endregion
+
+    #region Arrays
+
+    //# structTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName(t + "[]");
+    public void Code__name__(ref __t__[] v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
+
+    #region Multi-Dimensional Arrays
+
+    //# directlyCodeableTypes.ForEach(t => {
+    //# var name2d = Meta.GetXmlTypeName(t + "[,]");
+    public void Code__name2d__(ref __t__[,] v) { throw new NotImplementedException(); }
+    //# var name3d = Meta.GetXmlTypeName(t + "[,,]");
+    public void Code__name3d__(ref __t__[, ,] v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
+
+    #region Jagged Multi-Dimensional Arrays
+
+    //# directlyCodeableTypes.ForEach(t => {
+    //# var name2d = Meta.GetXmlTypeName(t + "[][]");
+    public void Code__name2d__(ref __t__[][] v) { throw new NotImplementedException(); }
+    //# var name3d = Meta.GetXmlTypeName(t + "[][][]");
+    public void Code__name3d__(ref __t__[][][] v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
+
+    #region Lists
+
+    //# structTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName("List<" + t + ">");
+    public void Code__name__(ref List<__t__> v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
+
+    #region Arrays of Tensors
+
+    //# tensorTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName(t + "[]");
+    public void Code__name__(ref __t__[] v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
+
+    #region Lists of Tensors
+
+    //# tensorTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName("List<" + t + ">");
+    public void Code__name__(ref List<__t__> v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
 }
+
+//# } {
+//# var structTypes = new List<string>();
+//# var tensorTypes = new List<string>();
+public partial class XmlWritingCoder
+{
+    #region Vectors
+
+    //# foreach (var t in Meta.VecTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
+    //# }
+
+    #endregion
+
+    #region Matrices
+
+    //# foreach (var t in Meta.MatTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
+    //# }
+
+    #endregion
+
+    #region Ranges and Boxes
+
+    //# foreach (var t in Meta.RangeAndBoxTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
+    //# }
+
+    #endregion
+
+    #region Geometry Types
+
+    //# foreach (var isDouble in new[] { false, true }) {
+    //#   var ftype = isDouble ? "Double" : "Float";
+    //#   var tc = isDouble ? "d" : "f";
+    public void CodeCircle2__tc__(ref Circle2__tc__ v) { AddValue(v.ToString()); }
+    public void CodeLine2__tc__(ref Line2__tc__ v) { AddValue(v.ToString()); }
+    public void CodeLine3__tc__(ref Line3__tc__ v) { AddValue(v.ToString()); }
+    public void CodePlane2__tc__(ref Plane2__tc__ v) { AddValue(v.ToString()); }
+    public void CodePlane3__tc__(ref Plane3__tc__ v) { AddValue(v.ToString()); }
+    public void CodePlaneWithPoint3__tc__(ref PlaneWithPoint3__tc__ v) { AddValue(v.ToString()); }
+    public void CodeQuad2__tc__(ref Quad2__tc__ v) { AddValue(v.ToString()); }
+    public void CodeQuad3__tc__(ref Quad3__tc__ v) { AddValue(v.ToString()); }
+    public void CodeRay2__tc__(ref Ray2__tc__ v) { AddValue(v.ToString()); }
+    public void CodeRay3__tc__(ref Ray3__tc__ v) { AddValue(v.ToString()); }
+    public void CodeSphere3__tc__(ref Sphere3__tc__ v) { AddValue(v.ToString()); }
+    public void CodeTriangle2__tc__(ref Triangle2__tc__ v) { AddValue(v.ToString()); }
+    public void CodeTriangle3__tc__(ref Triangle3__tc__ v) { AddValue(v.ToString()); }
+
+    //# }
+    #endregion
+
+    #region Colors
+
+    //# foreach (var t in Meta.ColorTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
+    //# }
+
+    #endregion
+
+    #region Trafos
+
+    //# foreach (var t in Meta.TrafoTypes) { structTypes.Add(t.Name);
+    //# var name = Meta.GetXmlTypeName(t.Name);
+    public void Code__name__(ref __t.Name__ v) { AddValue(v.ToString()); }
+    //# }
+
+    #endregion
+
+    #region Tensors
+
+    //# foreach (var t in geometryTypes) structTypes.Add(t);
+    //# var simpleTypes = directlyCodeableTypes.Concat(specialSimpleTypes).Concat(geometryTypes);
+    //# var genericTensorTypes = new[] { "Vector", "Matrix", "Volume", "Tensor" };
+    //# var genericTensorSizes = new[] { "long", "V2l", "V3l", "long[]" };
+    //# genericTensorTypes.ForEach((tt, ti) => {
+    //#     var ts = genericTensorSizes[ti]; var tsn = Meta.GetXmlTypeName(ts);
+    //#     simpleTypes.ForEach(t => {
+    //#         var type = tt + "<" + t + ">";
+    //#         tensorTypes.Add(type);
+    //# var dname = Meta.GetXmlTypeName(t + "[]");
+    //# var name = Meta.GetXmlTypeName(type);
+    public void Code__name__(ref __type__ value)
+    {
+        var item = new XElement("__tt__");
+        m_elementStack.Push(m_element);
+        m_element = item;
+
+        var element = new XElement("Data");
+        m_elementStack.Push(m_element);
+        m_element = element;
+
+        var data = value.Data; Code__dname__(ref data);
+
+        m_element = m_elementStack.Pop();
+        m_element.Add(element);
+
+        element = new XElement("Origin");
+        m_elementStack.Push(m_element);
+        m_element = element;
+
+        var origin = value.Origin; CodeLong(ref origin);
+
+        m_element = m_elementStack.Pop();
+        m_element.Add(element);
+
+        element = new XElement("Length");
+        m_elementStack.Push(m_element);
+        m_element = element;
+
+        var size = value.Size; Code__tsn__(ref size);
+
+        m_element = m_elementStack.Pop();
+        m_element.Add(element);
+
+        element = new XElement("Delta");
+        m_elementStack.Push(m_element);
+        m_element = element;
+
+        var delta = value.Delta; Code__tsn__(ref delta);
+
+        m_element = m_elementStack.Pop();
+        m_element.Add(element);
+
+        m_element = m_elementStack.Pop();
+        AddValue(item);
+    }
+
+    //#     });
+    //# });
+    #endregion
+
+    #region Arrays
+
+    //# structTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName(t + "[]");
+    public void Code__name__(ref __t__[] v) { CodeArrayOfStruct(v); }
+    //# });
+
+    #endregion
+
+    #region Multi-Dimensional Arrays
+
+    //# directlyCodeableTypes.ForEach(t => {
+    //# var name2d = Meta.GetXmlTypeName(t + "[,]");
+    public void Code__name2d__(ref __t__[,] v) { throw new NotImplementedException(); }
+    //# var name3d = Meta.GetXmlTypeName(t + "[,,]");
+    public void Code__name3d__(ref __t__[, ,] v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
+
+    #region Multi-Dimensional Arrays
+
+    //# directlyCodeableTypes.ForEach(t => {
+    //# var name2d = Meta.GetXmlTypeName(t + "[][]");
+    public void Code__name2d__(ref __t__[][] v) { throw new NotImplementedException(); }
+    //# var name3d = Meta.GetXmlTypeName(t + "[][][]");
+    public void Code__name3d__(ref __t__[][][] v) { throw new NotImplementedException(); }
+    //# });
+
+    #endregion
+
+    #region Lists
+
+    //# structTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName("List<" + t + ">");
+    public void Code__name__(ref List<__t__> v) { CodeListOfStruct(v); }
+    //# });
+
+    #endregion
+
+    #region Arrays of Tensors
+
+    //# tensorTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName(t + "[]");
+    public void Code__name__(ref __t__[] v) { CodeArrayOf(v); }
+    //# });
+
+    #endregion
+
+    #region Lists of Tensors
+
+    //# tensorTypes.ForEach(t => {
+    //# var name = Meta.GetXmlTypeName("List<" + t + ">");
+    public void Code__name__(ref List<__t__> v) { CodeListOf(v); }
+    //# });
+
+    #endregion
+}
+//# }

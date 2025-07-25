@@ -1,275 +1,291 @@
-﻿using System;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Aardvark.Base
+namespace Aardvark.Base;
+
+public static partial class Telemetry
 {
-    public static partial class Telemetry
+    public class UtilizationView : IProbe<double>
     {
-        public class UtilizationView : IProbe<double>
+        private readonly Stopwatch m_stopwatch = new();
+        private readonly Func<TimeSpan> m_baseValue;
+
+        private UtilizationView(Func<TimeSpan> baseValue)
         {
-            private readonly Stopwatch m_stopwatch = new Stopwatch();
-            private readonly Func<TimeSpan> m_baseValue;
+            m_baseValue = baseValue;
+            m_stopwatch.Start();
 
-            private UtilizationView(Func<TimeSpan> baseValue)
+            OnReset += (s, e) =>
             {
-                m_baseValue = baseValue;
-                m_stopwatch.Start();
-
-                OnReset += (s, e) =>
-                {
-                    m_stopwatch.Restart();
-                };
-            }
-
-            public UtilizationView(IProbe<TimeSpan> time)
-                : this(() => time.Value)
-            {
-            }
-
-            public double Value => m_baseValue().Ticks / m_stopwatch.Elapsed.Ticks;
-
-            public double ValueDouble => Value;
+                m_stopwatch.Restart();
+            };
         }
 
-        public class RatePerSecondView : IProbe<double>
+        public UtilizationView(IProbe<TimeSpan> time)
+            : this(() => time.Value)
         {
-            private readonly IProbe m_counter;
-            private readonly Stopwatch m_stopwatch = new Stopwatch();
-            private double m_lastValue;
-            private long m_lastTicks;
-            private double m_result;
+        }
 
-            public RatePerSecondView(IProbe counter)
+        public double Value => m_baseValue().Ticks / m_stopwatch.Elapsed.Ticks;
+
+        public double ValueDouble => Value;
+    }
+
+    public class RatePerSecondView : IProbe<double>
+    {
+        private readonly IProbe m_counter;
+        private readonly Stopwatch m_stopwatch = new();
+        private double m_lastValue;
+        private long m_lastTicks;
+        private double m_result;
+
+        public RatePerSecondView(IProbe counter)
+        {
+            if (counter is null) throw new ArgumentNullException(nameof(counter));
+            m_counter = counter;
+            m_stopwatch.Start();
+            m_lastValue = counter.ValueDouble;
+
+            OnReset += (s, e) =>
             {
-                if (counter is null) throw new ArgumentNullException(nameof(counter));
-                m_counter = counter;
-                m_stopwatch.Start();
-                m_lastValue = counter.ValueDouble;
+                m_stopwatch.Restart();
+                m_lastValue = 0;
+                m_lastTicks = 0;
+                m_result = 0;
+            };
+        }
 
-                OnReset += (s, e) =>
-                {
-                    m_stopwatch.Restart();
-                    m_lastValue = 0;
-                    m_lastTicks = 0;
-                    m_result = 0;
-                };
-            }
-
-            /// <summary>
-            /// Rate per second.
-            /// </summary>
-            public double Value
+        /// <summary>
+        /// Rate per second.
+        /// </summary>
+        public double Value
+        {
+            get
             {
-                get
+                var t = m_stopwatch.ElapsedTicks;
+                var dt = t - m_lastTicks;
+
+                if (dt > Stopwatch.Frequency)
                 {
-                    var t = m_stopwatch.ElapsedTicks;
-                    var dt = t - m_lastTicks;
-
-                    if (dt > Stopwatch.Frequency)
-                    {
-                        var x = m_counter.ValueDouble;
-                        var dx = x - m_lastValue;
-                        m_lastTicks = t;
-                        m_lastValue = x;
-                        m_result = (dx * Stopwatch.Frequency) / (double)dt;
-                    }
-
-                    return m_result;
+                    var x = m_counter.ValueDouble;
+                    var dx = x - m_lastValue;
+                    m_lastTicks = t;
+                    m_lastValue = x;
+                    m_result = (dx * Stopwatch.Frequency) / (double)dt;
                 }
-            }
 
-            public double ValueDouble => Value;
+                return m_result;
+            }
         }
 
-        public class RatioView : IProbe<double>
+        public double ValueDouble => Value;
+    }
+
+    public class RatioView : IProbe<double>
+    {
+        private readonly Func<double> m_f;
+
+        public RatioView(IProbe nominator, IProbe denominator)
         {
-            private readonly Func<double> m_f;
-
-            public RatioView(IProbe nominator, IProbe denominator)
-            {
-                if (nominator is null) throw new ArgumentNullException(nameof(nominator));
-                if (denominator is null) throw new ArgumentNullException(nameof(denominator));
-                m_f = () => nominator.ValueDouble / denominator.ValueDouble;
-            }
-
-            public RatioView(IProbe nominator, double denominator)
-            {
-                if (nominator is null) throw new ArgumentNullException(nameof(nominator));
-                if (denominator == 0.0) throw new ArgumentOutOfRangeException(nameof(denominator));
-                m_f = () => nominator.ValueDouble / denominator;
-            }
-
-            /// <summary>
-            /// Ratio.
-            /// </summary>
-            public double Value => m_f();
-
-            public double ValueDouble => Value;
+            if (nominator is null) throw new ArgumentNullException(nameof(nominator));
+            if (denominator is null) throw new ArgumentNullException(nameof(denominator));
+            m_f = () => nominator.ValueDouble / denominator.ValueDouble;
         }
 
-        public class SumView : IProbe<double>
+        public RatioView(IProbe nominator, double denominator)
         {
-            private readonly Func<double> m_f;
-
-            public SumView(IProbe one, params IProbe[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                m_f = () => one.ValueDouble + others.Sum(x => x.ValueDouble);
-            }
-
-            public SumView(IProbe one, params double[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                var x = others.Sum();
-                m_f = () => one.ValueDouble + x;
-            }
-
-            /// <summary>
-            /// Ratio.
-            /// </summary>
-            public double Value => m_f();
-
-            public double ValueDouble => Value;
+            if (nominator is null) throw new ArgumentNullException(nameof(nominator));
+            if (denominator == 0.0) throw new ArgumentOutOfRangeException(nameof(denominator));
+            m_f = () => nominator.ValueDouble / denominator;
         }
 
-        public class SubtractView : IProbe<double>
+        /// <summary>
+        /// Ratio.
+        /// </summary>
+        public double Value => m_f();
+
+        public double ValueDouble => Value;
+    }
+
+    public class SumView : IProbe<double>
+    {
+        private readonly Func<double> m_f;
+
+        public SumView(IProbe one, params IProbe[] others)
         {
-            private readonly Func<double> m_f;
-
-            public SubtractView(IProbe one, params IProbe[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                m_f = () => one.ValueDouble - others.Sum(x => x.ValueDouble);
-            }
-
-            public SubtractView(IProbe one, params double[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                var x = others.Sum();
-                m_f = () => one.ValueDouble - x;
-            }
-
-            /// <summary>
-            /// Ratio.
-            /// </summary>
-            public double Value => m_f();
-
-            public double ValueDouble => Value;
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            m_f = () => one.ValueDouble + others.Sum(x => x.ValueDouble);
         }
 
-        public class MultiplyView : IProbe<double>
+        public SumView(IProbe one, params double[] others)
         {
-            private readonly Func<double> m_f;
-
-            public MultiplyView(IProbe one, IProbe other)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (other is null) throw new ArgumentNullException(nameof(other));
-                m_f = () => one.ValueDouble * other.ValueDouble;
-            }
-
-            public MultiplyView(IProbe one, double other)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                m_f = () => one.ValueDouble * other;
-            }
-
-            /// <summary>
-            /// Ratio.
-            /// </summary>
-            public double Value => m_f();
-
-            public double ValueDouble => Value;
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            var x = others.Sum();
+            m_f = () => one.ValueDouble + x;
         }
 
-        public class MinView : IProbe<double>
+        /// <summary>
+        /// Ratio.
+        /// </summary>
+        public double Value => m_f();
+
+        public double ValueDouble => Value;
+    }
+
+    public class SubtractView : IProbe<double>
+    {
+        private readonly Func<double> m_f;
+
+        public SubtractView(IProbe one, params IProbe[] others)
         {
-            private readonly Func<double> m_f;
-
-            public MinView(IProbe one, params IProbe[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                m_f = () => Math.Min(one.ValueDouble, others.Min(x => x.ValueDouble));
-            }
-
-            public MinView(IProbe one, params double[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                var x = others.Min();
-                m_f = () => Math.Min(one.ValueDouble, x);
-            }
-
-            /// <summary>
-            /// Ratio.
-            /// </summary>
-            public double Value => m_f();
-
-            public double ValueDouble => Value;
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            m_f = () => one.ValueDouble - others.Sum(x => x.ValueDouble);
         }
 
-        public class MaxView : IProbe<double>
+        public SubtractView(IProbe one, params double[] others)
         {
-            private readonly Func<double> m_f;
-
-            public MaxView(IProbe one, params IProbe[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                m_f = () => Math.Max(one.ValueDouble, others.Max(x => x.ValueDouble));
-            }
-
-            public MaxView(IProbe one, params double[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-                var x = others.Max();
-                m_f = () => Math.Max(one.ValueDouble, x);
-            }
-
-            /// <summary>
-            /// Ratio.
-            /// </summary>
-            public double Value => m_f();
-
-            public double ValueDouble => Value;
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            var x = others.Sum();
+            m_f = () => one.ValueDouble - x;
         }
 
-        public class AvgView : IProbe<double>
+        /// <summary>
+        /// Ratio.
+        /// </summary>
+        public double Value => m_f();
+
+        public double ValueDouble => Value;
+    }
+
+    public class MultiplyView : IProbe<double>
+    {
+        private readonly Func<double> m_f;
+
+        public MultiplyView(IProbe one, IProbe other)
         {
-            private readonly Func<double> m_f;
-
-            public AvgView(IProbe one, params IProbe[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-
-                double d = (1 + others.Length);
-                m_f = () => (one.ValueDouble + others.Sum(x => x.ValueDouble)) / d;
-            }
-
-            public AvgView(IProbe one, params double[] others)
-            {
-                if (one is null) throw new ArgumentNullException(nameof(one));
-                if (others is null) throw new ArgumentNullException(nameof(others));
-
-                var x = others.Sum();
-                double d = (1 + others.Length);
-                m_f = () => (one.ValueDouble + x) / d;
-            }
-
-            /// <summary>
-            /// Ratio.
-            /// </summary>
-            public double Value => m_f();
-
-            public double ValueDouble => Value;
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (other is null) throw new ArgumentNullException(nameof(other));
+            m_f = () => one.ValueDouble * other.ValueDouble;
         }
+
+        public MultiplyView(IProbe one, double other)
+        {
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            m_f = () => one.ValueDouble * other;
+        }
+
+        /// <summary>
+        /// Ratio.
+        /// </summary>
+        public double Value => m_f();
+
+        public double ValueDouble => Value;
+    }
+
+    public class MinView : IProbe<double>
+    {
+        private readonly Func<double> m_f;
+
+        public MinView(IProbe one, params IProbe[] others)
+        {
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            m_f = () => Math.Min(one.ValueDouble, others.Min(x => x.ValueDouble));
+        }
+
+        public MinView(IProbe one, params double[] others)
+        {
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            var x = others.Min();
+            m_f = () => Math.Min(one.ValueDouble, x);
+        }
+
+        /// <summary>
+        /// Ratio.
+        /// </summary>
+        public double Value => m_f();
+
+        public double ValueDouble => Value;
+    }
+
+    public class MaxView : IProbe<double>
+    {
+        private readonly Func<double> m_f;
+
+        public MaxView(IProbe one, params IProbe[] others)
+        {
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            m_f = () => Math.Max(one.ValueDouble, others.Max(x => x.ValueDouble));
+        }
+
+        public MaxView(IProbe one, params double[] others)
+        {
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+            var x = others.Max();
+            m_f = () => Math.Max(one.ValueDouble, x);
+        }
+
+        /// <summary>
+        /// Ratio.
+        /// </summary>
+        public double Value => m_f();
+
+        public double ValueDouble => Value;
+    }
+
+    public class AvgView : IProbe<double>
+    {
+        private readonly Func<double> m_f;
+
+        public AvgView(IProbe one, params IProbe[] others)
+        {
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+
+            double d = (1 + others.Length);
+            m_f = () => (one.ValueDouble + others.Sum(x => x.ValueDouble)) / d;
+        }
+
+        public AvgView(IProbe one, params double[] others)
+        {
+            if (one is null) throw new ArgumentNullException(nameof(one));
+            if (others is null) throw new ArgumentNullException(nameof(others));
+
+            var x = others.Sum();
+            double d = (1 + others.Length);
+            m_f = () => (one.ValueDouble + x) / d;
+        }
+
+        /// <summary>
+        /// Ratio.
+        /// </summary>
+        public double Value => m_f();
+
+        public double ValueDouble => Value;
     }
 }

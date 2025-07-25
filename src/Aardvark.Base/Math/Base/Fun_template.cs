@@ -1,3 +1,20 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -522,7 +539,7 @@ namespace Aardvark.Base
             bool repeat, bool mirror
             )
         {
-            t = t / tMax;
+            t /= tMax;
             if (!repeat)
             {
                 if (t >= 1) return 1;
@@ -530,7 +547,7 @@ namespace Aardvark.Base
             }
             if (mirror)
             {
-                t = t - Floor(t * __half__) * 2;
+                t -= Floor(t * __half__) * 2;
                 return t < 1 ? t : 2 - t;
             }
             else
@@ -547,7 +564,7 @@ namespace Aardvark.Base
         [Pure]
         public static __t.Name__ MapToUnitInterval(this __t.Name__ t, __t.Name__ tMax, bool repeat)
         {
-            t = t / tMax;
+            t /= tMax;
             if (!repeat)
             {
                 if (t >= 1) return 1;
@@ -562,7 +579,7 @@ namespace Aardvark.Base
         [Pure]
         public static __t.Name__ MapToUnitInterval(this __t.Name__ t, __t.Name__ tMax)
         {
-            t = t / tMax;
+            t /= tMax;
             if (t > 1) return 1;
             if (t < 0) return 0;
             return t;
@@ -1905,7 +1922,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Swap<T>(ref T a, ref T b)
         {
-            T t = a; a = b; b = t;
+            (b, a) = (a, b);
         }
 
         /// <summary>
@@ -2074,17 +2091,17 @@ namespace Aardvark.Base
         public static void AggregateSigns(
                 this (__type__, __type__) values, __type__ epsilon,
                 out int negativeCount, out int zeroCount, out int positiveCount)
-            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+            => AggregateSigns([values.Item1, values.Item2], epsilon, out negativeCount, out zeroCount, out positiveCount);
 
         public static void AggregateSigns(
                 this (__type__, __type__, __type__) values, __type__ epsilon,
                 out int negativeCount, out int zeroCount, out int positiveCount)
-            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+            => AggregateSigns([values.Item1, values.Item2, values.Item3], epsilon, out negativeCount, out zeroCount, out positiveCount);
 
         public static void AggregateSigns(
                 this (__type__, __type__, __type__, __type__) values, __type__ epsilon,
                 out int negativeCount, out int zeroCount, out int positiveCount)
-            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon, out negativeCount, out zeroCount, out positiveCount);
+            => AggregateSigns([values.Item1, values.Item2, values.Item3, values.Item4], epsilon, out negativeCount, out zeroCount, out positiveCount);
 
         public static Signs AggregateSigns(this IEnumerable<__type__> values, __type__ epsilon)
         {
@@ -2099,13 +2116,13 @@ namespace Aardvark.Base
         }
 
         public static Signs AggregateSigns(this (__type__, __type__) values, __type__ epsilon)
-            => AggregateSigns(new[] { values.Item1, values.Item2 }, epsilon);
+            => AggregateSigns([values.Item1, values.Item2], epsilon);
 
         public static Signs AggregateSigns(this (__type__, __type__, __type__) values, __type__ epsilon)
-            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3 }, epsilon);
+            => AggregateSigns([values.Item1, values.Item2, values.Item3], epsilon);
 
         public static Signs AggregateSigns(this (__type__, __type__, __type__, __type__) values, __type__ epsilon)
-            => AggregateSigns(new[] { values.Item1, values.Item2, values.Item3, values.Item4 }, epsilon);
+            => AggregateSigns([values.Item1, values.Item2, values.Item3, values.Item4], epsilon);
 
         //# });
         #endregion

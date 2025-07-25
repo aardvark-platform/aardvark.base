@@ -1,4 +1,21 @@
-﻿using Aardvark.Base.Sorting;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using Aardvark.Base.Sorting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -217,7 +234,7 @@ namespace Aardvark.Base
             int n = idx.Length;
             var hull = new int[n + 1];
             // the output array hull[] will be used as the stack
-            int bot = 0, top = -1;  // indices for bottom and top of the stack
+            int bot, top = -1;  // indices for bottom and top of the stack
             int i;                // array scan index
 
             // Get the indices of points with min x-coord and min|max y-coord
@@ -307,7 +324,7 @@ namespace Aardvark.Base
 
         private static int[] Simplify(__v2t__[] polyline, __rtype__ eps, int indexFirst, int indexLast)
         {
-            if (indexFirst == indexLast - 1) return new[] { indexFirst, indexLast };
+            if (indexFirst == indexLast - 1) return [indexFirst, indexLast];
 
             var pFirst = polyline[indexFirst]; var pLast = polyline[indexLast];
             var line = new __line2t__(pFirst, pLast);
@@ -319,7 +336,7 @@ namespace Aardvark.Base
                 if (d > distMax) { distMax = d; indexMax = i; }
             }
 
-            if (distMax < eps) return new[] { indexFirst, indexLast };
+            if (distMax < eps) return [indexFirst, indexLast];
 
             var left = Simplify(polyline, eps, indexFirst, indexMax);
             var right = Simplify(polyline, eps, indexMax, indexLast);
@@ -400,7 +417,7 @@ namespace Aardvark.Base
 
             // ------------- superquad vertices at the end of vertex array
             var box = new __box2t__(pa.Take(vc)).EnlargedBy(__zerodotone__);
-            __v2t__ center = box.Center, size = box.Size;
+            __v2t__ center/* = box.Center, size = box.Size*/;
             pa[vc + 0] = box.Min;
             pa[vc + 1] = new __v2t__(box.Min.X, box.Max.Y);
             pa[vc + 2] = box.Max;
@@ -496,7 +513,7 @@ namespace Aardvark.Base
         public static __box3t__ ComputeBoxContaining(
                 this IEnumerable<__v3t__> points, __rtype__ percentile)
         {
-            if (percentile < 0 || percentile > 1) throw new ArgumentOutOfRangeException();
+            if (percentile < 0 || percentile > 1) throw new ArgumentOutOfRangeException(nameof(percentile));
             var pa = points.ToArray();
             long offset = (long)(pa.Length * percentile) / 2;
             long mid = pa.Length / 2;

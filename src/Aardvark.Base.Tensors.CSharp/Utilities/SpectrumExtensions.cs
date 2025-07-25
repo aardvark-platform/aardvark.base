@@ -1,48 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System.Linq;
 
-namespace Aardvark.Base
+namespace Aardvark.Base;
+
+public static class SpectrumExtensions
 {
-    public static class SpectrumExtensions
+    public static M33d CreateConversionMatrix()
     {
-        public static M33d CreateConversionMatrix()
-        {
-            // for spectral to xyz conversion see: http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
+        // for spectral to xyz conversion see: http://www.brucelindbloom.com/index.html?Eqn_Spect_to_XYZ.html
 
-            var specS0Vec = new Vector<double>(SpectralData.SpecS0_380_780_10nm);
-            var specS1Vec = new Vector<double>(SpectralData.SpecS1_380_780_10nm);
-            var specS2Vec = new Vector<double>(SpectralData.SpecS2_380_780_10nm);
+        var specS0Vec = new Vector<double>(SpectralData.SpecS0_380_780_10nm);
+        var specS1Vec = new Vector<double>(SpectralData.SpecS1_380_780_10nm);
+        var specS2Vec = new Vector<double>(SpectralData.SpecS2_380_780_10nm);
 
-            var cieXVec = new Vector<double>(SpectralData.Ciexyz31X_380_780_10nm);
-            var cieYVec = new Vector<double>(SpectralData.Ciexyz31Y_380_780_10nm);
-            var cieZVec = new Vector<double>(SpectralData.Ciexyz31Z_380_780_10nm);
+        var cieXVec = new Vector<double>(SpectralData.Ciexyz31X_380_780_10nm);
+        var cieYVec = new Vector<double>(SpectralData.Ciexyz31Y_380_780_10nm);
+        var cieZVec = new Vector<double>(SpectralData.Ciexyz31Z_380_780_10nm);
 
-            var specM = new M33d
-            (
-                cieXVec.DotProduct(specS0Vec), cieXVec.DotProduct(specS1Vec), cieXVec.DotProduct(specS2Vec),
-                cieYVec.DotProduct(specS0Vec), cieYVec.DotProduct(specS1Vec), cieYVec.DotProduct(specS2Vec),
-                cieZVec.DotProduct(specS0Vec), cieZVec.DotProduct(specS1Vec), cieZVec.DotProduct(specS2Vec)
-            );
+        var specM = new M33d
+        (
+            cieXVec.DotProduct(specS0Vec), cieXVec.DotProduct(specS1Vec), cieXVec.DotProduct(specS2Vec),
+            cieYVec.DotProduct(specS0Vec), cieYVec.DotProduct(specS1Vec), cieYVec.DotProduct(specS2Vec),
+            cieZVec.DotProduct(specS0Vec), cieZVec.DotProduct(specS1Vec), cieZVec.DotProduct(specS2Vec)
+        );
 
-            var cieN = 1.0 / cieYVec.Data.Sum(); // cie response curve integral normalization
+        var cieN = 1.0 / cieYVec.Data.Sum(); // cie response curve integral normalization
 
-            // sun spectral radiance (S0, S1, S2) is expressed in micro-meters => 
-            // convert to wavelengthes in nm (unit of color matching functions) -> scale by 1/1000 
-            // the cie response functions are in 10nm steps -> scale by 10
+        // sun spectral radiance (S0, S1, S2) is expressed in micro-meters => 
+        // convert to wavelengthes in nm (unit of color matching functions) -> scale by 1/1000 
+        // the cie response functions are in 10nm steps -> scale by 10
 
-            var specN = 1.0 / 1000 * 10;         // spectrum unit converions (1 micro meter to 10 nano meter)
+        var specN = 1.0 / 1000 * 10;         // spectrum unit converions (1 micro meter to 10 nano meter)
 
-            var norm = cieN * specN;             // normalization of color space conversion matrix
+        var norm = cieN * specN;             // normalization of color space conversion matrix
 
-            return specM * norm;
-        }
-
-        /// <summary>
-        /// conversion matrix from sun color spectrum in (S0, S1, S2) to CIE XYZ color space
-        /// </summary>
-        public static readonly M33d SecM = CreateConversionMatrix();
-
+        return specM * norm;
     }
+
+    /// <summary>
+    /// conversion matrix from sun color spectrum in (S0, S1, S2) to CIE XYZ color space
+    /// </summary>
+    public static readonly M33d SecM = CreateConversionMatrix();
+
 }

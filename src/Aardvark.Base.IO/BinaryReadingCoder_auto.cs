@@ -1,3 +1,20 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using Aardvark.Base;
 using System;
 using System.Collections.Generic;
@@ -492,8 +509,8 @@ namespace Aardvark.Base.Coder
         {
             byte[] data = null; CodeByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<byte>(data, origin, size, delta);
         }
 
@@ -501,8 +518,8 @@ namespace Aardvark.Base.Coder
         {
             sbyte[] data = null; CodeSByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<sbyte>(data, origin, size, delta);
         }
 
@@ -510,8 +527,8 @@ namespace Aardvark.Base.Coder
         {
             short[] data = null; CodeShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<short>(data, origin, size, delta);
         }
 
@@ -519,8 +536,8 @@ namespace Aardvark.Base.Coder
         {
             ushort[] data = null; CodeUShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<ushort>(data, origin, size, delta);
         }
 
@@ -528,8 +545,8 @@ namespace Aardvark.Base.Coder
         {
             int[] data = null; CodeIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<int>(data, origin, size, delta);
         }
 
@@ -537,8 +554,8 @@ namespace Aardvark.Base.Coder
         {
             uint[] data = null; CodeUIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<uint>(data, origin, size, delta);
         }
 
@@ -546,8 +563,8 @@ namespace Aardvark.Base.Coder
         {
             long[] data = null; CodeLongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<long>(data, origin, size, delta);
         }
 
@@ -555,8 +572,8 @@ namespace Aardvark.Base.Coder
         {
             ulong[] data = null; CodeULongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<ulong>(data, origin, size, delta);
         }
 
@@ -564,8 +581,8 @@ namespace Aardvark.Base.Coder
         {
             float[] data = null; CodeFloatArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<float>(data, origin, size, delta);
         }
 
@@ -573,8 +590,8 @@ namespace Aardvark.Base.Coder
         {
             double[] data = null; CodeDoubleArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<double>(data, origin, size, delta);
         }
 
@@ -582,8 +599,8 @@ namespace Aardvark.Base.Coder
         {
             Fraction[] data = null; CodeFractionArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Fraction>(data, origin, size, delta);
         }
 
@@ -591,8 +608,8 @@ namespace Aardvark.Base.Coder
         {
             V2i[] data = null; CodeV2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V2i>(data, origin, size, delta);
         }
 
@@ -600,8 +617,8 @@ namespace Aardvark.Base.Coder
         {
             V2l[] data = null; CodeV2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V2l>(data, origin, size, delta);
         }
 
@@ -609,8 +626,8 @@ namespace Aardvark.Base.Coder
         {
             V2f[] data = null; CodeV2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V2f>(data, origin, size, delta);
         }
 
@@ -618,8 +635,8 @@ namespace Aardvark.Base.Coder
         {
             V2d[] data = null; CodeV2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V2d>(data, origin, size, delta);
         }
 
@@ -627,8 +644,8 @@ namespace Aardvark.Base.Coder
         {
             V3i[] data = null; CodeV3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V3i>(data, origin, size, delta);
         }
 
@@ -636,8 +653,8 @@ namespace Aardvark.Base.Coder
         {
             V3l[] data = null; CodeV3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V3l>(data, origin, size, delta);
         }
 
@@ -645,8 +662,8 @@ namespace Aardvark.Base.Coder
         {
             V3f[] data = null; CodeV3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V3f>(data, origin, size, delta);
         }
 
@@ -654,8 +671,8 @@ namespace Aardvark.Base.Coder
         {
             V3d[] data = null; CodeV3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V3d>(data, origin, size, delta);
         }
 
@@ -663,8 +680,8 @@ namespace Aardvark.Base.Coder
         {
             V4i[] data = null; CodeV4iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V4i>(data, origin, size, delta);
         }
 
@@ -672,8 +689,8 @@ namespace Aardvark.Base.Coder
         {
             V4l[] data = null; CodeV4lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V4l>(data, origin, size, delta);
         }
 
@@ -681,8 +698,8 @@ namespace Aardvark.Base.Coder
         {
             V4f[] data = null; CodeV4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V4f>(data, origin, size, delta);
         }
 
@@ -690,8 +707,8 @@ namespace Aardvark.Base.Coder
         {
             V4d[] data = null; CodeV4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<V4d>(data, origin, size, delta);
         }
 
@@ -699,8 +716,8 @@ namespace Aardvark.Base.Coder
         {
             M22i[] data = null; CodeM22iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M22i>(data, origin, size, delta);
         }
 
@@ -708,8 +725,8 @@ namespace Aardvark.Base.Coder
         {
             M22l[] data = null; CodeM22lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M22l>(data, origin, size, delta);
         }
 
@@ -717,8 +734,8 @@ namespace Aardvark.Base.Coder
         {
             M22f[] data = null; CodeM22fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M22f>(data, origin, size, delta);
         }
 
@@ -726,8 +743,8 @@ namespace Aardvark.Base.Coder
         {
             M22d[] data = null; CodeM22dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M22d>(data, origin, size, delta);
         }
 
@@ -735,8 +752,8 @@ namespace Aardvark.Base.Coder
         {
             M23i[] data = null; CodeM23iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M23i>(data, origin, size, delta);
         }
 
@@ -744,8 +761,8 @@ namespace Aardvark.Base.Coder
         {
             M23l[] data = null; CodeM23lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M23l>(data, origin, size, delta);
         }
 
@@ -753,8 +770,8 @@ namespace Aardvark.Base.Coder
         {
             M23f[] data = null; CodeM23fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M23f>(data, origin, size, delta);
         }
 
@@ -762,8 +779,8 @@ namespace Aardvark.Base.Coder
         {
             M23d[] data = null; CodeM23dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M23d>(data, origin, size, delta);
         }
 
@@ -771,8 +788,8 @@ namespace Aardvark.Base.Coder
         {
             M33i[] data = null; CodeM33iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M33i>(data, origin, size, delta);
         }
 
@@ -780,8 +797,8 @@ namespace Aardvark.Base.Coder
         {
             M33l[] data = null; CodeM33lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M33l>(data, origin, size, delta);
         }
 
@@ -789,8 +806,8 @@ namespace Aardvark.Base.Coder
         {
             M33f[] data = null; CodeM33fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M33f>(data, origin, size, delta);
         }
 
@@ -798,8 +815,8 @@ namespace Aardvark.Base.Coder
         {
             M33d[] data = null; CodeM33dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M33d>(data, origin, size, delta);
         }
 
@@ -807,8 +824,8 @@ namespace Aardvark.Base.Coder
         {
             M34i[] data = null; CodeM34iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M34i>(data, origin, size, delta);
         }
 
@@ -816,8 +833,8 @@ namespace Aardvark.Base.Coder
         {
             M34l[] data = null; CodeM34lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M34l>(data, origin, size, delta);
         }
 
@@ -825,8 +842,8 @@ namespace Aardvark.Base.Coder
         {
             M34f[] data = null; CodeM34fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M34f>(data, origin, size, delta);
         }
 
@@ -834,8 +851,8 @@ namespace Aardvark.Base.Coder
         {
             M34d[] data = null; CodeM34dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M34d>(data, origin, size, delta);
         }
 
@@ -843,8 +860,8 @@ namespace Aardvark.Base.Coder
         {
             M44i[] data = null; CodeM44iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M44i>(data, origin, size, delta);
         }
 
@@ -852,8 +869,8 @@ namespace Aardvark.Base.Coder
         {
             M44l[] data = null; CodeM44lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M44l>(data, origin, size, delta);
         }
 
@@ -861,8 +878,8 @@ namespace Aardvark.Base.Coder
         {
             M44f[] data = null; CodeM44fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M44f>(data, origin, size, delta);
         }
 
@@ -870,8 +887,8 @@ namespace Aardvark.Base.Coder
         {
             M44d[] data = null; CodeM44dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<M44d>(data, origin, size, delta);
         }
 
@@ -879,8 +896,8 @@ namespace Aardvark.Base.Coder
         {
             C3b[] data = null; CodeC3bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C3b>(data, origin, size, delta);
         }
 
@@ -888,8 +905,8 @@ namespace Aardvark.Base.Coder
         {
             C3us[] data = null; CodeC3usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C3us>(data, origin, size, delta);
         }
 
@@ -897,8 +914,8 @@ namespace Aardvark.Base.Coder
         {
             C3ui[] data = null; CodeC3uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C3ui>(data, origin, size, delta);
         }
 
@@ -906,8 +923,8 @@ namespace Aardvark.Base.Coder
         {
             C3f[] data = null; CodeC3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C3f>(data, origin, size, delta);
         }
 
@@ -915,8 +932,8 @@ namespace Aardvark.Base.Coder
         {
             C3d[] data = null; CodeC3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C3d>(data, origin, size, delta);
         }
 
@@ -924,8 +941,8 @@ namespace Aardvark.Base.Coder
         {
             C4b[] data = null; CodeC4bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C4b>(data, origin, size, delta);
         }
 
@@ -933,8 +950,8 @@ namespace Aardvark.Base.Coder
         {
             C4us[] data = null; CodeC4usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C4us>(data, origin, size, delta);
         }
 
@@ -942,8 +959,8 @@ namespace Aardvark.Base.Coder
         {
             C4ui[] data = null; CodeC4uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C4ui>(data, origin, size, delta);
         }
 
@@ -951,8 +968,8 @@ namespace Aardvark.Base.Coder
         {
             C4f[] data = null; CodeC4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C4f>(data, origin, size, delta);
         }
 
@@ -960,8 +977,8 @@ namespace Aardvark.Base.Coder
         {
             C4d[] data = null; CodeC4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<C4d>(data, origin, size, delta);
         }
 
@@ -969,8 +986,8 @@ namespace Aardvark.Base.Coder
         {
             Range1b[] data = null; CodeRange1bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1b>(data, origin, size, delta);
         }
 
@@ -978,8 +995,8 @@ namespace Aardvark.Base.Coder
         {
             Range1sb[] data = null; CodeRange1sbArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1sb>(data, origin, size, delta);
         }
 
@@ -987,8 +1004,8 @@ namespace Aardvark.Base.Coder
         {
             Range1s[] data = null; CodeRange1sArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1s>(data, origin, size, delta);
         }
 
@@ -996,8 +1013,8 @@ namespace Aardvark.Base.Coder
         {
             Range1us[] data = null; CodeRange1usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1us>(data, origin, size, delta);
         }
 
@@ -1005,8 +1022,8 @@ namespace Aardvark.Base.Coder
         {
             Range1i[] data = null; CodeRange1iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1i>(data, origin, size, delta);
         }
 
@@ -1014,8 +1031,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ui[] data = null; CodeRange1uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1ui>(data, origin, size, delta);
         }
 
@@ -1023,8 +1040,8 @@ namespace Aardvark.Base.Coder
         {
             Range1l[] data = null; CodeRange1lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1l>(data, origin, size, delta);
         }
 
@@ -1032,8 +1049,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ul[] data = null; CodeRange1ulArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1ul>(data, origin, size, delta);
         }
 
@@ -1041,8 +1058,8 @@ namespace Aardvark.Base.Coder
         {
             Range1f[] data = null; CodeRange1fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1f>(data, origin, size, delta);
         }
 
@@ -1050,8 +1067,8 @@ namespace Aardvark.Base.Coder
         {
             Range1d[] data = null; CodeRange1dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Range1d>(data, origin, size, delta);
         }
 
@@ -1059,8 +1076,8 @@ namespace Aardvark.Base.Coder
         {
             Box2i[] data = null; CodeBox2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box2i>(data, origin, size, delta);
         }
 
@@ -1068,8 +1085,8 @@ namespace Aardvark.Base.Coder
         {
             Box2l[] data = null; CodeBox2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box2l>(data, origin, size, delta);
         }
 
@@ -1077,8 +1094,8 @@ namespace Aardvark.Base.Coder
         {
             Box2f[] data = null; CodeBox2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box2f>(data, origin, size, delta);
         }
 
@@ -1086,8 +1103,8 @@ namespace Aardvark.Base.Coder
         {
             Box2d[] data = null; CodeBox2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box2d>(data, origin, size, delta);
         }
 
@@ -1095,8 +1112,8 @@ namespace Aardvark.Base.Coder
         {
             Box3i[] data = null; CodeBox3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box3i>(data, origin, size, delta);
         }
 
@@ -1104,8 +1121,8 @@ namespace Aardvark.Base.Coder
         {
             Box3l[] data = null; CodeBox3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box3l>(data, origin, size, delta);
         }
 
@@ -1113,8 +1130,8 @@ namespace Aardvark.Base.Coder
         {
             Box3f[] data = null; CodeBox3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box3f>(data, origin, size, delta);
         }
 
@@ -1122,8 +1139,8 @@ namespace Aardvark.Base.Coder
         {
             Box3d[] data = null; CodeBox3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Box3d>(data, origin, size, delta);
         }
 
@@ -1131,8 +1148,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3f[] data = null; CodeEuclidean3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Euclidean3f>(data, origin, size, delta);
         }
 
@@ -1140,8 +1157,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3d[] data = null; CodeEuclidean3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Euclidean3d>(data, origin, size, delta);
         }
 
@@ -1149,8 +1166,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2f[] data = null; CodeRot2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Rot2f>(data, origin, size, delta);
         }
 
@@ -1158,8 +1175,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2d[] data = null; CodeRot2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Rot2d>(data, origin, size, delta);
         }
 
@@ -1167,8 +1184,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3f[] data = null; CodeRot3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Rot3f>(data, origin, size, delta);
         }
 
@@ -1176,8 +1193,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3d[] data = null; CodeRot3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Rot3d>(data, origin, size, delta);
         }
 
@@ -1185,8 +1202,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3f[] data = null; CodeScale3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Scale3f>(data, origin, size, delta);
         }
 
@@ -1194,8 +1211,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3d[] data = null; CodeScale3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Scale3d>(data, origin, size, delta);
         }
 
@@ -1203,8 +1220,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3f[] data = null; CodeShift3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Shift3f>(data, origin, size, delta);
         }
 
@@ -1212,8 +1229,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3d[] data = null; CodeShift3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Shift3d>(data, origin, size, delta);
         }
 
@@ -1221,8 +1238,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2f[] data = null; CodeTrafo2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Trafo2f>(data, origin, size, delta);
         }
 
@@ -1230,8 +1247,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2d[] data = null; CodeTrafo2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Trafo2d>(data, origin, size, delta);
         }
 
@@ -1239,8 +1256,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3f[] data = null; CodeTrafo3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Trafo3f>(data, origin, size, delta);
         }
 
@@ -1248,8 +1265,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3d[] data = null; CodeTrafo3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Trafo3d>(data, origin, size, delta);
         }
 
@@ -1257,8 +1274,8 @@ namespace Aardvark.Base.Coder
         {
             bool[] data = null; CodeBoolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<bool>(data, origin, size, delta);
         }
 
@@ -1266,8 +1283,8 @@ namespace Aardvark.Base.Coder
         {
             char[] data = null; CodeCharArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<char>(data, origin, size, delta);
         }
 
@@ -1275,8 +1292,8 @@ namespace Aardvark.Base.Coder
         {
             string[] data = null; CodeStringArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<string>(data, origin, size, delta);
         }
 
@@ -1284,8 +1301,8 @@ namespace Aardvark.Base.Coder
         {
             Type[] data = null; CodeTypeArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Type>(data, origin, size, delta);
         }
 
@@ -1293,8 +1310,8 @@ namespace Aardvark.Base.Coder
         {
             Guid[] data = null; CodeGuidArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Guid>(data, origin, size, delta);
         }
 
@@ -1302,8 +1319,8 @@ namespace Aardvark.Base.Coder
         {
             Symbol[] data = null; CodeSymbolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Symbol>(data, origin, size, delta);
         }
 
@@ -1311,8 +1328,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2d[] data = null; CodeCircle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Circle2d>(data, origin, size, delta);
         }
 
@@ -1320,8 +1337,8 @@ namespace Aardvark.Base.Coder
         {
             Line2d[] data = null; CodeLine2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Line2d>(data, origin, size, delta);
         }
 
@@ -1329,8 +1346,8 @@ namespace Aardvark.Base.Coder
         {
             Line3d[] data = null; CodeLine3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Line3d>(data, origin, size, delta);
         }
 
@@ -1338,8 +1355,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2d[] data = null; CodePlane2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Plane2d>(data, origin, size, delta);
         }
 
@@ -1347,8 +1364,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3d[] data = null; CodePlane3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Plane3d>(data, origin, size, delta);
         }
 
@@ -1356,8 +1373,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3d[] data = null; CodePlaneWithPoint3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<PlaneWithPoint3d>(data, origin, size, delta);
         }
 
@@ -1365,8 +1382,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2d[] data = null; CodeQuad2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Quad2d>(data, origin, size, delta);
         }
 
@@ -1374,8 +1391,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3d[] data = null; CodeQuad3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Quad3d>(data, origin, size, delta);
         }
 
@@ -1383,8 +1400,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2d[] data = null; CodeRay2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Ray2d>(data, origin, size, delta);
         }
 
@@ -1392,8 +1409,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3d[] data = null; CodeRay3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Ray3d>(data, origin, size, delta);
         }
 
@@ -1401,8 +1418,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3d[] data = null; CodeSphere3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Sphere3d>(data, origin, size, delta);
         }
 
@@ -1410,8 +1427,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2d[] data = null; CodeTriangle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Triangle2d>(data, origin, size, delta);
         }
 
@@ -1419,8 +1436,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3d[] data = null; CodeTriangle3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Triangle3d>(data, origin, size, delta);
         }
 
@@ -1428,8 +1445,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2f[] data = null; CodeCircle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Circle2f>(data, origin, size, delta);
         }
 
@@ -1437,8 +1454,8 @@ namespace Aardvark.Base.Coder
         {
             Line2f[] data = null; CodeLine2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Line2f>(data, origin, size, delta);
         }
 
@@ -1446,8 +1463,8 @@ namespace Aardvark.Base.Coder
         {
             Line3f[] data = null; CodeLine3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Line3f>(data, origin, size, delta);
         }
 
@@ -1455,8 +1472,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2f[] data = null; CodePlane2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Plane2f>(data, origin, size, delta);
         }
 
@@ -1464,8 +1481,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3f[] data = null; CodePlane3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Plane3f>(data, origin, size, delta);
         }
 
@@ -1473,8 +1490,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<PlaneWithPoint3f>(data, origin, size, delta);
         }
 
@@ -1482,8 +1499,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2f[] data = null; CodeQuad2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Quad2f>(data, origin, size, delta);
         }
 
@@ -1491,8 +1508,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3f[] data = null; CodeQuad3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Quad3f>(data, origin, size, delta);
         }
 
@@ -1500,8 +1517,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2f[] data = null; CodeRay2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Ray2f>(data, origin, size, delta);
         }
 
@@ -1509,8 +1526,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3f[] data = null; CodeRay3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Ray3f>(data, origin, size, delta);
         }
 
@@ -1518,8 +1535,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3f[] data = null; CodeSphere3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Sphere3f>(data, origin, size, delta);
         }
 
@@ -1527,8 +1544,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2f[] data = null; CodeTriangle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Triangle2f>(data, origin, size, delta);
         }
 
@@ -1536,8 +1553,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3f[] data = null; CodeTriangle3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long size = default(long); CodeLong(ref size);
-            long delta = default(long); CodeLong(ref delta);
+            long size = default; CodeLong(ref size);
+            long delta = default; CodeLong(ref delta);
             value = new Vector<Triangle3f>(data, origin, size, delta);
         }
 
@@ -1545,8 +1562,8 @@ namespace Aardvark.Base.Coder
         {
             byte[] data = null; CodeByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<byte>(data, origin, size, delta);
         }
 
@@ -1554,8 +1571,8 @@ namespace Aardvark.Base.Coder
         {
             sbyte[] data = null; CodeSByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<sbyte>(data, origin, size, delta);
         }
 
@@ -1563,8 +1580,8 @@ namespace Aardvark.Base.Coder
         {
             short[] data = null; CodeShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<short>(data, origin, size, delta);
         }
 
@@ -1572,8 +1589,8 @@ namespace Aardvark.Base.Coder
         {
             ushort[] data = null; CodeUShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<ushort>(data, origin, size, delta);
         }
 
@@ -1581,8 +1598,8 @@ namespace Aardvark.Base.Coder
         {
             int[] data = null; CodeIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<int>(data, origin, size, delta);
         }
 
@@ -1590,8 +1607,8 @@ namespace Aardvark.Base.Coder
         {
             uint[] data = null; CodeUIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<uint>(data, origin, size, delta);
         }
 
@@ -1599,8 +1616,8 @@ namespace Aardvark.Base.Coder
         {
             long[] data = null; CodeLongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<long>(data, origin, size, delta);
         }
 
@@ -1608,8 +1625,8 @@ namespace Aardvark.Base.Coder
         {
             ulong[] data = null; CodeULongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<ulong>(data, origin, size, delta);
         }
 
@@ -1617,8 +1634,8 @@ namespace Aardvark.Base.Coder
         {
             float[] data = null; CodeFloatArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<float>(data, origin, size, delta);
         }
 
@@ -1626,8 +1643,8 @@ namespace Aardvark.Base.Coder
         {
             double[] data = null; CodeDoubleArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<double>(data, origin, size, delta);
         }
 
@@ -1635,8 +1652,8 @@ namespace Aardvark.Base.Coder
         {
             Fraction[] data = null; CodeFractionArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Fraction>(data, origin, size, delta);
         }
 
@@ -1644,8 +1661,8 @@ namespace Aardvark.Base.Coder
         {
             V2i[] data = null; CodeV2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V2i>(data, origin, size, delta);
         }
 
@@ -1653,8 +1670,8 @@ namespace Aardvark.Base.Coder
         {
             V2l[] data = null; CodeV2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V2l>(data, origin, size, delta);
         }
 
@@ -1662,8 +1679,8 @@ namespace Aardvark.Base.Coder
         {
             V2f[] data = null; CodeV2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V2f>(data, origin, size, delta);
         }
 
@@ -1671,8 +1688,8 @@ namespace Aardvark.Base.Coder
         {
             V2d[] data = null; CodeV2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V2d>(data, origin, size, delta);
         }
 
@@ -1680,8 +1697,8 @@ namespace Aardvark.Base.Coder
         {
             V3i[] data = null; CodeV3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V3i>(data, origin, size, delta);
         }
 
@@ -1689,8 +1706,8 @@ namespace Aardvark.Base.Coder
         {
             V3l[] data = null; CodeV3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V3l>(data, origin, size, delta);
         }
 
@@ -1698,8 +1715,8 @@ namespace Aardvark.Base.Coder
         {
             V3f[] data = null; CodeV3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V3f>(data, origin, size, delta);
         }
 
@@ -1707,8 +1724,8 @@ namespace Aardvark.Base.Coder
         {
             V3d[] data = null; CodeV3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V3d>(data, origin, size, delta);
         }
 
@@ -1716,8 +1733,8 @@ namespace Aardvark.Base.Coder
         {
             V4i[] data = null; CodeV4iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V4i>(data, origin, size, delta);
         }
 
@@ -1725,8 +1742,8 @@ namespace Aardvark.Base.Coder
         {
             V4l[] data = null; CodeV4lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V4l>(data, origin, size, delta);
         }
 
@@ -1734,8 +1751,8 @@ namespace Aardvark.Base.Coder
         {
             V4f[] data = null; CodeV4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V4f>(data, origin, size, delta);
         }
 
@@ -1743,8 +1760,8 @@ namespace Aardvark.Base.Coder
         {
             V4d[] data = null; CodeV4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<V4d>(data, origin, size, delta);
         }
 
@@ -1752,8 +1769,8 @@ namespace Aardvark.Base.Coder
         {
             M22i[] data = null; CodeM22iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M22i>(data, origin, size, delta);
         }
 
@@ -1761,8 +1778,8 @@ namespace Aardvark.Base.Coder
         {
             M22l[] data = null; CodeM22lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M22l>(data, origin, size, delta);
         }
 
@@ -1770,8 +1787,8 @@ namespace Aardvark.Base.Coder
         {
             M22f[] data = null; CodeM22fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M22f>(data, origin, size, delta);
         }
 
@@ -1779,8 +1796,8 @@ namespace Aardvark.Base.Coder
         {
             M22d[] data = null; CodeM22dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M22d>(data, origin, size, delta);
         }
 
@@ -1788,8 +1805,8 @@ namespace Aardvark.Base.Coder
         {
             M23i[] data = null; CodeM23iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M23i>(data, origin, size, delta);
         }
 
@@ -1797,8 +1814,8 @@ namespace Aardvark.Base.Coder
         {
             M23l[] data = null; CodeM23lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M23l>(data, origin, size, delta);
         }
 
@@ -1806,8 +1823,8 @@ namespace Aardvark.Base.Coder
         {
             M23f[] data = null; CodeM23fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M23f>(data, origin, size, delta);
         }
 
@@ -1815,8 +1832,8 @@ namespace Aardvark.Base.Coder
         {
             M23d[] data = null; CodeM23dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M23d>(data, origin, size, delta);
         }
 
@@ -1824,8 +1841,8 @@ namespace Aardvark.Base.Coder
         {
             M33i[] data = null; CodeM33iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M33i>(data, origin, size, delta);
         }
 
@@ -1833,8 +1850,8 @@ namespace Aardvark.Base.Coder
         {
             M33l[] data = null; CodeM33lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M33l>(data, origin, size, delta);
         }
 
@@ -1842,8 +1859,8 @@ namespace Aardvark.Base.Coder
         {
             M33f[] data = null; CodeM33fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M33f>(data, origin, size, delta);
         }
 
@@ -1851,8 +1868,8 @@ namespace Aardvark.Base.Coder
         {
             M33d[] data = null; CodeM33dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M33d>(data, origin, size, delta);
         }
 
@@ -1860,8 +1877,8 @@ namespace Aardvark.Base.Coder
         {
             M34i[] data = null; CodeM34iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M34i>(data, origin, size, delta);
         }
 
@@ -1869,8 +1886,8 @@ namespace Aardvark.Base.Coder
         {
             M34l[] data = null; CodeM34lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M34l>(data, origin, size, delta);
         }
 
@@ -1878,8 +1895,8 @@ namespace Aardvark.Base.Coder
         {
             M34f[] data = null; CodeM34fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M34f>(data, origin, size, delta);
         }
 
@@ -1887,8 +1904,8 @@ namespace Aardvark.Base.Coder
         {
             M34d[] data = null; CodeM34dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M34d>(data, origin, size, delta);
         }
 
@@ -1896,8 +1913,8 @@ namespace Aardvark.Base.Coder
         {
             M44i[] data = null; CodeM44iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M44i>(data, origin, size, delta);
         }
 
@@ -1905,8 +1922,8 @@ namespace Aardvark.Base.Coder
         {
             M44l[] data = null; CodeM44lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M44l>(data, origin, size, delta);
         }
 
@@ -1914,8 +1931,8 @@ namespace Aardvark.Base.Coder
         {
             M44f[] data = null; CodeM44fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M44f>(data, origin, size, delta);
         }
 
@@ -1923,8 +1940,8 @@ namespace Aardvark.Base.Coder
         {
             M44d[] data = null; CodeM44dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<M44d>(data, origin, size, delta);
         }
 
@@ -1932,8 +1949,8 @@ namespace Aardvark.Base.Coder
         {
             C3b[] data = null; CodeC3bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C3b>(data, origin, size, delta);
         }
 
@@ -1941,8 +1958,8 @@ namespace Aardvark.Base.Coder
         {
             C3us[] data = null; CodeC3usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C3us>(data, origin, size, delta);
         }
 
@@ -1950,8 +1967,8 @@ namespace Aardvark.Base.Coder
         {
             C3ui[] data = null; CodeC3uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C3ui>(data, origin, size, delta);
         }
 
@@ -1959,8 +1976,8 @@ namespace Aardvark.Base.Coder
         {
             C3f[] data = null; CodeC3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C3f>(data, origin, size, delta);
         }
 
@@ -1968,8 +1985,8 @@ namespace Aardvark.Base.Coder
         {
             C3d[] data = null; CodeC3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C3d>(data, origin, size, delta);
         }
 
@@ -1977,8 +1994,8 @@ namespace Aardvark.Base.Coder
         {
             C4b[] data = null; CodeC4bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C4b>(data, origin, size, delta);
         }
 
@@ -1986,8 +2003,8 @@ namespace Aardvark.Base.Coder
         {
             C4us[] data = null; CodeC4usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C4us>(data, origin, size, delta);
         }
 
@@ -1995,8 +2012,8 @@ namespace Aardvark.Base.Coder
         {
             C4ui[] data = null; CodeC4uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C4ui>(data, origin, size, delta);
         }
 
@@ -2004,8 +2021,8 @@ namespace Aardvark.Base.Coder
         {
             C4f[] data = null; CodeC4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C4f>(data, origin, size, delta);
         }
 
@@ -2013,8 +2030,8 @@ namespace Aardvark.Base.Coder
         {
             C4d[] data = null; CodeC4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<C4d>(data, origin, size, delta);
         }
 
@@ -2022,8 +2039,8 @@ namespace Aardvark.Base.Coder
         {
             Range1b[] data = null; CodeRange1bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1b>(data, origin, size, delta);
         }
 
@@ -2031,8 +2048,8 @@ namespace Aardvark.Base.Coder
         {
             Range1sb[] data = null; CodeRange1sbArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1sb>(data, origin, size, delta);
         }
 
@@ -2040,8 +2057,8 @@ namespace Aardvark.Base.Coder
         {
             Range1s[] data = null; CodeRange1sArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1s>(data, origin, size, delta);
         }
 
@@ -2049,8 +2066,8 @@ namespace Aardvark.Base.Coder
         {
             Range1us[] data = null; CodeRange1usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1us>(data, origin, size, delta);
         }
 
@@ -2058,8 +2075,8 @@ namespace Aardvark.Base.Coder
         {
             Range1i[] data = null; CodeRange1iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1i>(data, origin, size, delta);
         }
 
@@ -2067,8 +2084,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ui[] data = null; CodeRange1uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1ui>(data, origin, size, delta);
         }
 
@@ -2076,8 +2093,8 @@ namespace Aardvark.Base.Coder
         {
             Range1l[] data = null; CodeRange1lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1l>(data, origin, size, delta);
         }
 
@@ -2085,8 +2102,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ul[] data = null; CodeRange1ulArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1ul>(data, origin, size, delta);
         }
 
@@ -2094,8 +2111,8 @@ namespace Aardvark.Base.Coder
         {
             Range1f[] data = null; CodeRange1fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1f>(data, origin, size, delta);
         }
 
@@ -2103,8 +2120,8 @@ namespace Aardvark.Base.Coder
         {
             Range1d[] data = null; CodeRange1dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Range1d>(data, origin, size, delta);
         }
 
@@ -2112,8 +2129,8 @@ namespace Aardvark.Base.Coder
         {
             Box2i[] data = null; CodeBox2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box2i>(data, origin, size, delta);
         }
 
@@ -2121,8 +2138,8 @@ namespace Aardvark.Base.Coder
         {
             Box2l[] data = null; CodeBox2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box2l>(data, origin, size, delta);
         }
 
@@ -2130,8 +2147,8 @@ namespace Aardvark.Base.Coder
         {
             Box2f[] data = null; CodeBox2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box2f>(data, origin, size, delta);
         }
 
@@ -2139,8 +2156,8 @@ namespace Aardvark.Base.Coder
         {
             Box2d[] data = null; CodeBox2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box2d>(data, origin, size, delta);
         }
 
@@ -2148,8 +2165,8 @@ namespace Aardvark.Base.Coder
         {
             Box3i[] data = null; CodeBox3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box3i>(data, origin, size, delta);
         }
 
@@ -2157,8 +2174,8 @@ namespace Aardvark.Base.Coder
         {
             Box3l[] data = null; CodeBox3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box3l>(data, origin, size, delta);
         }
 
@@ -2166,8 +2183,8 @@ namespace Aardvark.Base.Coder
         {
             Box3f[] data = null; CodeBox3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box3f>(data, origin, size, delta);
         }
 
@@ -2175,8 +2192,8 @@ namespace Aardvark.Base.Coder
         {
             Box3d[] data = null; CodeBox3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Box3d>(data, origin, size, delta);
         }
 
@@ -2184,8 +2201,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3f[] data = null; CodeEuclidean3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Euclidean3f>(data, origin, size, delta);
         }
 
@@ -2193,8 +2210,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3d[] data = null; CodeEuclidean3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Euclidean3d>(data, origin, size, delta);
         }
 
@@ -2202,8 +2219,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2f[] data = null; CodeRot2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Rot2f>(data, origin, size, delta);
         }
 
@@ -2211,8 +2228,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2d[] data = null; CodeRot2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Rot2d>(data, origin, size, delta);
         }
 
@@ -2220,8 +2237,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3f[] data = null; CodeRot3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Rot3f>(data, origin, size, delta);
         }
 
@@ -2229,8 +2246,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3d[] data = null; CodeRot3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Rot3d>(data, origin, size, delta);
         }
 
@@ -2238,8 +2255,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3f[] data = null; CodeScale3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Scale3f>(data, origin, size, delta);
         }
 
@@ -2247,8 +2264,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3d[] data = null; CodeScale3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Scale3d>(data, origin, size, delta);
         }
 
@@ -2256,8 +2273,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3f[] data = null; CodeShift3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Shift3f>(data, origin, size, delta);
         }
 
@@ -2265,8 +2282,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3d[] data = null; CodeShift3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Shift3d>(data, origin, size, delta);
         }
 
@@ -2274,8 +2291,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2f[] data = null; CodeTrafo2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Trafo2f>(data, origin, size, delta);
         }
 
@@ -2283,8 +2300,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2d[] data = null; CodeTrafo2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Trafo2d>(data, origin, size, delta);
         }
 
@@ -2292,8 +2309,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3f[] data = null; CodeTrafo3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Trafo3f>(data, origin, size, delta);
         }
 
@@ -2301,8 +2318,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3d[] data = null; CodeTrafo3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Trafo3d>(data, origin, size, delta);
         }
 
@@ -2310,8 +2327,8 @@ namespace Aardvark.Base.Coder
         {
             bool[] data = null; CodeBoolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<bool>(data, origin, size, delta);
         }
 
@@ -2319,8 +2336,8 @@ namespace Aardvark.Base.Coder
         {
             char[] data = null; CodeCharArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<char>(data, origin, size, delta);
         }
 
@@ -2328,8 +2345,8 @@ namespace Aardvark.Base.Coder
         {
             string[] data = null; CodeStringArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<string>(data, origin, size, delta);
         }
 
@@ -2337,8 +2354,8 @@ namespace Aardvark.Base.Coder
         {
             Type[] data = null; CodeTypeArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Type>(data, origin, size, delta);
         }
 
@@ -2346,8 +2363,8 @@ namespace Aardvark.Base.Coder
         {
             Guid[] data = null; CodeGuidArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Guid>(data, origin, size, delta);
         }
 
@@ -2355,8 +2372,8 @@ namespace Aardvark.Base.Coder
         {
             Symbol[] data = null; CodeSymbolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Symbol>(data, origin, size, delta);
         }
 
@@ -2364,8 +2381,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2d[] data = null; CodeCircle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Circle2d>(data, origin, size, delta);
         }
 
@@ -2373,8 +2390,8 @@ namespace Aardvark.Base.Coder
         {
             Line2d[] data = null; CodeLine2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Line2d>(data, origin, size, delta);
         }
 
@@ -2382,8 +2399,8 @@ namespace Aardvark.Base.Coder
         {
             Line3d[] data = null; CodeLine3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Line3d>(data, origin, size, delta);
         }
 
@@ -2391,8 +2408,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2d[] data = null; CodePlane2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Plane2d>(data, origin, size, delta);
         }
 
@@ -2400,8 +2417,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3d[] data = null; CodePlane3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Plane3d>(data, origin, size, delta);
         }
 
@@ -2409,8 +2426,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3d[] data = null; CodePlaneWithPoint3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<PlaneWithPoint3d>(data, origin, size, delta);
         }
 
@@ -2418,8 +2435,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2d[] data = null; CodeQuad2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Quad2d>(data, origin, size, delta);
         }
 
@@ -2427,8 +2444,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3d[] data = null; CodeQuad3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Quad3d>(data, origin, size, delta);
         }
 
@@ -2436,8 +2453,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2d[] data = null; CodeRay2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Ray2d>(data, origin, size, delta);
         }
 
@@ -2445,8 +2462,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3d[] data = null; CodeRay3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Ray3d>(data, origin, size, delta);
         }
 
@@ -2454,8 +2471,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3d[] data = null; CodeSphere3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Sphere3d>(data, origin, size, delta);
         }
 
@@ -2463,8 +2480,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2d[] data = null; CodeTriangle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Triangle2d>(data, origin, size, delta);
         }
 
@@ -2472,8 +2489,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3d[] data = null; CodeTriangle3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Triangle3d>(data, origin, size, delta);
         }
 
@@ -2481,8 +2498,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2f[] data = null; CodeCircle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Circle2f>(data, origin, size, delta);
         }
 
@@ -2490,8 +2507,8 @@ namespace Aardvark.Base.Coder
         {
             Line2f[] data = null; CodeLine2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Line2f>(data, origin, size, delta);
         }
 
@@ -2499,8 +2516,8 @@ namespace Aardvark.Base.Coder
         {
             Line3f[] data = null; CodeLine3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Line3f>(data, origin, size, delta);
         }
 
@@ -2508,8 +2525,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2f[] data = null; CodePlane2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Plane2f>(data, origin, size, delta);
         }
 
@@ -2517,8 +2534,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3f[] data = null; CodePlane3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Plane3f>(data, origin, size, delta);
         }
 
@@ -2526,8 +2543,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<PlaneWithPoint3f>(data, origin, size, delta);
         }
 
@@ -2535,8 +2552,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2f[] data = null; CodeQuad2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Quad2f>(data, origin, size, delta);
         }
 
@@ -2544,8 +2561,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3f[] data = null; CodeQuad3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Quad3f>(data, origin, size, delta);
         }
 
@@ -2553,8 +2570,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2f[] data = null; CodeRay2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Ray2f>(data, origin, size, delta);
         }
 
@@ -2562,8 +2579,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3f[] data = null; CodeRay3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Ray3f>(data, origin, size, delta);
         }
 
@@ -2571,8 +2588,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3f[] data = null; CodeSphere3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Sphere3f>(data, origin, size, delta);
         }
 
@@ -2580,8 +2597,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2f[] data = null; CodeTriangle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Triangle2f>(data, origin, size, delta);
         }
 
@@ -2589,8 +2606,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3f[] data = null; CodeTriangle3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V2l size = default(V2l); CodeV2l(ref size);
-            V2l delta = default(V2l); CodeV2l(ref delta);
+            V2l size = default; CodeV2l(ref size);
+            V2l delta = default; CodeV2l(ref delta);
             value = new Matrix<Triangle3f>(data, origin, size, delta);
         }
 
@@ -2598,8 +2615,8 @@ namespace Aardvark.Base.Coder
         {
             byte[] data = null; CodeByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<byte>(data, origin, size, delta);
         }
 
@@ -2607,8 +2624,8 @@ namespace Aardvark.Base.Coder
         {
             sbyte[] data = null; CodeSByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<sbyte>(data, origin, size, delta);
         }
 
@@ -2616,8 +2633,8 @@ namespace Aardvark.Base.Coder
         {
             short[] data = null; CodeShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<short>(data, origin, size, delta);
         }
 
@@ -2625,8 +2642,8 @@ namespace Aardvark.Base.Coder
         {
             ushort[] data = null; CodeUShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<ushort>(data, origin, size, delta);
         }
 
@@ -2634,8 +2651,8 @@ namespace Aardvark.Base.Coder
         {
             int[] data = null; CodeIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<int>(data, origin, size, delta);
         }
 
@@ -2643,8 +2660,8 @@ namespace Aardvark.Base.Coder
         {
             uint[] data = null; CodeUIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<uint>(data, origin, size, delta);
         }
 
@@ -2652,8 +2669,8 @@ namespace Aardvark.Base.Coder
         {
             long[] data = null; CodeLongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<long>(data, origin, size, delta);
         }
 
@@ -2661,8 +2678,8 @@ namespace Aardvark.Base.Coder
         {
             ulong[] data = null; CodeULongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<ulong>(data, origin, size, delta);
         }
 
@@ -2670,8 +2687,8 @@ namespace Aardvark.Base.Coder
         {
             float[] data = null; CodeFloatArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<float>(data, origin, size, delta);
         }
 
@@ -2679,8 +2696,8 @@ namespace Aardvark.Base.Coder
         {
             double[] data = null; CodeDoubleArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<double>(data, origin, size, delta);
         }
 
@@ -2688,8 +2705,8 @@ namespace Aardvark.Base.Coder
         {
             Fraction[] data = null; CodeFractionArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Fraction>(data, origin, size, delta);
         }
 
@@ -2697,8 +2714,8 @@ namespace Aardvark.Base.Coder
         {
             V2i[] data = null; CodeV2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V2i>(data, origin, size, delta);
         }
 
@@ -2706,8 +2723,8 @@ namespace Aardvark.Base.Coder
         {
             V2l[] data = null; CodeV2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V2l>(data, origin, size, delta);
         }
 
@@ -2715,8 +2732,8 @@ namespace Aardvark.Base.Coder
         {
             V2f[] data = null; CodeV2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V2f>(data, origin, size, delta);
         }
 
@@ -2724,8 +2741,8 @@ namespace Aardvark.Base.Coder
         {
             V2d[] data = null; CodeV2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V2d>(data, origin, size, delta);
         }
 
@@ -2733,8 +2750,8 @@ namespace Aardvark.Base.Coder
         {
             V3i[] data = null; CodeV3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V3i>(data, origin, size, delta);
         }
 
@@ -2742,8 +2759,8 @@ namespace Aardvark.Base.Coder
         {
             V3l[] data = null; CodeV3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V3l>(data, origin, size, delta);
         }
 
@@ -2751,8 +2768,8 @@ namespace Aardvark.Base.Coder
         {
             V3f[] data = null; CodeV3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V3f>(data, origin, size, delta);
         }
 
@@ -2760,8 +2777,8 @@ namespace Aardvark.Base.Coder
         {
             V3d[] data = null; CodeV3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V3d>(data, origin, size, delta);
         }
 
@@ -2769,8 +2786,8 @@ namespace Aardvark.Base.Coder
         {
             V4i[] data = null; CodeV4iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V4i>(data, origin, size, delta);
         }
 
@@ -2778,8 +2795,8 @@ namespace Aardvark.Base.Coder
         {
             V4l[] data = null; CodeV4lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V4l>(data, origin, size, delta);
         }
 
@@ -2787,8 +2804,8 @@ namespace Aardvark.Base.Coder
         {
             V4f[] data = null; CodeV4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V4f>(data, origin, size, delta);
         }
 
@@ -2796,8 +2813,8 @@ namespace Aardvark.Base.Coder
         {
             V4d[] data = null; CodeV4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<V4d>(data, origin, size, delta);
         }
 
@@ -2805,8 +2822,8 @@ namespace Aardvark.Base.Coder
         {
             M22i[] data = null; CodeM22iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M22i>(data, origin, size, delta);
         }
 
@@ -2814,8 +2831,8 @@ namespace Aardvark.Base.Coder
         {
             M22l[] data = null; CodeM22lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M22l>(data, origin, size, delta);
         }
 
@@ -2823,8 +2840,8 @@ namespace Aardvark.Base.Coder
         {
             M22f[] data = null; CodeM22fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M22f>(data, origin, size, delta);
         }
 
@@ -2832,8 +2849,8 @@ namespace Aardvark.Base.Coder
         {
             M22d[] data = null; CodeM22dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M22d>(data, origin, size, delta);
         }
 
@@ -2841,8 +2858,8 @@ namespace Aardvark.Base.Coder
         {
             M23i[] data = null; CodeM23iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M23i>(data, origin, size, delta);
         }
 
@@ -2850,8 +2867,8 @@ namespace Aardvark.Base.Coder
         {
             M23l[] data = null; CodeM23lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M23l>(data, origin, size, delta);
         }
 
@@ -2859,8 +2876,8 @@ namespace Aardvark.Base.Coder
         {
             M23f[] data = null; CodeM23fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M23f>(data, origin, size, delta);
         }
 
@@ -2868,8 +2885,8 @@ namespace Aardvark.Base.Coder
         {
             M23d[] data = null; CodeM23dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M23d>(data, origin, size, delta);
         }
 
@@ -2877,8 +2894,8 @@ namespace Aardvark.Base.Coder
         {
             M33i[] data = null; CodeM33iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M33i>(data, origin, size, delta);
         }
 
@@ -2886,8 +2903,8 @@ namespace Aardvark.Base.Coder
         {
             M33l[] data = null; CodeM33lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M33l>(data, origin, size, delta);
         }
 
@@ -2895,8 +2912,8 @@ namespace Aardvark.Base.Coder
         {
             M33f[] data = null; CodeM33fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M33f>(data, origin, size, delta);
         }
 
@@ -2904,8 +2921,8 @@ namespace Aardvark.Base.Coder
         {
             M33d[] data = null; CodeM33dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M33d>(data, origin, size, delta);
         }
 
@@ -2913,8 +2930,8 @@ namespace Aardvark.Base.Coder
         {
             M34i[] data = null; CodeM34iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M34i>(data, origin, size, delta);
         }
 
@@ -2922,8 +2939,8 @@ namespace Aardvark.Base.Coder
         {
             M34l[] data = null; CodeM34lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M34l>(data, origin, size, delta);
         }
 
@@ -2931,8 +2948,8 @@ namespace Aardvark.Base.Coder
         {
             M34f[] data = null; CodeM34fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M34f>(data, origin, size, delta);
         }
 
@@ -2940,8 +2957,8 @@ namespace Aardvark.Base.Coder
         {
             M34d[] data = null; CodeM34dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M34d>(data, origin, size, delta);
         }
 
@@ -2949,8 +2966,8 @@ namespace Aardvark.Base.Coder
         {
             M44i[] data = null; CodeM44iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M44i>(data, origin, size, delta);
         }
 
@@ -2958,8 +2975,8 @@ namespace Aardvark.Base.Coder
         {
             M44l[] data = null; CodeM44lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M44l>(data, origin, size, delta);
         }
 
@@ -2967,8 +2984,8 @@ namespace Aardvark.Base.Coder
         {
             M44f[] data = null; CodeM44fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M44f>(data, origin, size, delta);
         }
 
@@ -2976,8 +2993,8 @@ namespace Aardvark.Base.Coder
         {
             M44d[] data = null; CodeM44dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<M44d>(data, origin, size, delta);
         }
 
@@ -2985,8 +3002,8 @@ namespace Aardvark.Base.Coder
         {
             C3b[] data = null; CodeC3bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C3b>(data, origin, size, delta);
         }
 
@@ -2994,8 +3011,8 @@ namespace Aardvark.Base.Coder
         {
             C3us[] data = null; CodeC3usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C3us>(data, origin, size, delta);
         }
 
@@ -3003,8 +3020,8 @@ namespace Aardvark.Base.Coder
         {
             C3ui[] data = null; CodeC3uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C3ui>(data, origin, size, delta);
         }
 
@@ -3012,8 +3029,8 @@ namespace Aardvark.Base.Coder
         {
             C3f[] data = null; CodeC3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C3f>(data, origin, size, delta);
         }
 
@@ -3021,8 +3038,8 @@ namespace Aardvark.Base.Coder
         {
             C3d[] data = null; CodeC3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C3d>(data, origin, size, delta);
         }
 
@@ -3030,8 +3047,8 @@ namespace Aardvark.Base.Coder
         {
             C4b[] data = null; CodeC4bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C4b>(data, origin, size, delta);
         }
 
@@ -3039,8 +3056,8 @@ namespace Aardvark.Base.Coder
         {
             C4us[] data = null; CodeC4usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C4us>(data, origin, size, delta);
         }
 
@@ -3048,8 +3065,8 @@ namespace Aardvark.Base.Coder
         {
             C4ui[] data = null; CodeC4uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C4ui>(data, origin, size, delta);
         }
 
@@ -3057,8 +3074,8 @@ namespace Aardvark.Base.Coder
         {
             C4f[] data = null; CodeC4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C4f>(data, origin, size, delta);
         }
 
@@ -3066,8 +3083,8 @@ namespace Aardvark.Base.Coder
         {
             C4d[] data = null; CodeC4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<C4d>(data, origin, size, delta);
         }
 
@@ -3075,8 +3092,8 @@ namespace Aardvark.Base.Coder
         {
             Range1b[] data = null; CodeRange1bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1b>(data, origin, size, delta);
         }
 
@@ -3084,8 +3101,8 @@ namespace Aardvark.Base.Coder
         {
             Range1sb[] data = null; CodeRange1sbArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1sb>(data, origin, size, delta);
         }
 
@@ -3093,8 +3110,8 @@ namespace Aardvark.Base.Coder
         {
             Range1s[] data = null; CodeRange1sArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1s>(data, origin, size, delta);
         }
 
@@ -3102,8 +3119,8 @@ namespace Aardvark.Base.Coder
         {
             Range1us[] data = null; CodeRange1usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1us>(data, origin, size, delta);
         }
 
@@ -3111,8 +3128,8 @@ namespace Aardvark.Base.Coder
         {
             Range1i[] data = null; CodeRange1iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1i>(data, origin, size, delta);
         }
 
@@ -3120,8 +3137,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ui[] data = null; CodeRange1uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1ui>(data, origin, size, delta);
         }
 
@@ -3129,8 +3146,8 @@ namespace Aardvark.Base.Coder
         {
             Range1l[] data = null; CodeRange1lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1l>(data, origin, size, delta);
         }
 
@@ -3138,8 +3155,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ul[] data = null; CodeRange1ulArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1ul>(data, origin, size, delta);
         }
 
@@ -3147,8 +3164,8 @@ namespace Aardvark.Base.Coder
         {
             Range1f[] data = null; CodeRange1fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1f>(data, origin, size, delta);
         }
 
@@ -3156,8 +3173,8 @@ namespace Aardvark.Base.Coder
         {
             Range1d[] data = null; CodeRange1dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Range1d>(data, origin, size, delta);
         }
 
@@ -3165,8 +3182,8 @@ namespace Aardvark.Base.Coder
         {
             Box2i[] data = null; CodeBox2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box2i>(data, origin, size, delta);
         }
 
@@ -3174,8 +3191,8 @@ namespace Aardvark.Base.Coder
         {
             Box2l[] data = null; CodeBox2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box2l>(data, origin, size, delta);
         }
 
@@ -3183,8 +3200,8 @@ namespace Aardvark.Base.Coder
         {
             Box2f[] data = null; CodeBox2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box2f>(data, origin, size, delta);
         }
 
@@ -3192,8 +3209,8 @@ namespace Aardvark.Base.Coder
         {
             Box2d[] data = null; CodeBox2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box2d>(data, origin, size, delta);
         }
 
@@ -3201,8 +3218,8 @@ namespace Aardvark.Base.Coder
         {
             Box3i[] data = null; CodeBox3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box3i>(data, origin, size, delta);
         }
 
@@ -3210,8 +3227,8 @@ namespace Aardvark.Base.Coder
         {
             Box3l[] data = null; CodeBox3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box3l>(data, origin, size, delta);
         }
 
@@ -3219,8 +3236,8 @@ namespace Aardvark.Base.Coder
         {
             Box3f[] data = null; CodeBox3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box3f>(data, origin, size, delta);
         }
 
@@ -3228,8 +3245,8 @@ namespace Aardvark.Base.Coder
         {
             Box3d[] data = null; CodeBox3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Box3d>(data, origin, size, delta);
         }
 
@@ -3237,8 +3254,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3f[] data = null; CodeEuclidean3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Euclidean3f>(data, origin, size, delta);
         }
 
@@ -3246,8 +3263,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3d[] data = null; CodeEuclidean3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Euclidean3d>(data, origin, size, delta);
         }
 
@@ -3255,8 +3272,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2f[] data = null; CodeRot2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Rot2f>(data, origin, size, delta);
         }
 
@@ -3264,8 +3281,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2d[] data = null; CodeRot2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Rot2d>(data, origin, size, delta);
         }
 
@@ -3273,8 +3290,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3f[] data = null; CodeRot3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Rot3f>(data, origin, size, delta);
         }
 
@@ -3282,8 +3299,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3d[] data = null; CodeRot3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Rot3d>(data, origin, size, delta);
         }
 
@@ -3291,8 +3308,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3f[] data = null; CodeScale3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Scale3f>(data, origin, size, delta);
         }
 
@@ -3300,8 +3317,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3d[] data = null; CodeScale3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Scale3d>(data, origin, size, delta);
         }
 
@@ -3309,8 +3326,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3f[] data = null; CodeShift3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Shift3f>(data, origin, size, delta);
         }
 
@@ -3318,8 +3335,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3d[] data = null; CodeShift3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Shift3d>(data, origin, size, delta);
         }
 
@@ -3327,8 +3344,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2f[] data = null; CodeTrafo2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Trafo2f>(data, origin, size, delta);
         }
 
@@ -3336,8 +3353,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2d[] data = null; CodeTrafo2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Trafo2d>(data, origin, size, delta);
         }
 
@@ -3345,8 +3362,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3f[] data = null; CodeTrafo3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Trafo3f>(data, origin, size, delta);
         }
 
@@ -3354,8 +3371,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3d[] data = null; CodeTrafo3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Trafo3d>(data, origin, size, delta);
         }
 
@@ -3363,8 +3380,8 @@ namespace Aardvark.Base.Coder
         {
             bool[] data = null; CodeBoolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<bool>(data, origin, size, delta);
         }
 
@@ -3372,8 +3389,8 @@ namespace Aardvark.Base.Coder
         {
             char[] data = null; CodeCharArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<char>(data, origin, size, delta);
         }
 
@@ -3381,8 +3398,8 @@ namespace Aardvark.Base.Coder
         {
             string[] data = null; CodeStringArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<string>(data, origin, size, delta);
         }
 
@@ -3390,8 +3407,8 @@ namespace Aardvark.Base.Coder
         {
             Type[] data = null; CodeTypeArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Type>(data, origin, size, delta);
         }
 
@@ -3399,8 +3416,8 @@ namespace Aardvark.Base.Coder
         {
             Guid[] data = null; CodeGuidArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Guid>(data, origin, size, delta);
         }
 
@@ -3408,8 +3425,8 @@ namespace Aardvark.Base.Coder
         {
             Symbol[] data = null; CodeSymbolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Symbol>(data, origin, size, delta);
         }
 
@@ -3417,8 +3434,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2d[] data = null; CodeCircle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Circle2d>(data, origin, size, delta);
         }
 
@@ -3426,8 +3443,8 @@ namespace Aardvark.Base.Coder
         {
             Line2d[] data = null; CodeLine2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Line2d>(data, origin, size, delta);
         }
 
@@ -3435,8 +3452,8 @@ namespace Aardvark.Base.Coder
         {
             Line3d[] data = null; CodeLine3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Line3d>(data, origin, size, delta);
         }
 
@@ -3444,8 +3461,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2d[] data = null; CodePlane2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Plane2d>(data, origin, size, delta);
         }
 
@@ -3453,8 +3470,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3d[] data = null; CodePlane3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Plane3d>(data, origin, size, delta);
         }
 
@@ -3462,8 +3479,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3d[] data = null; CodePlaneWithPoint3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<PlaneWithPoint3d>(data, origin, size, delta);
         }
 
@@ -3471,8 +3488,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2d[] data = null; CodeQuad2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Quad2d>(data, origin, size, delta);
         }
 
@@ -3480,8 +3497,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3d[] data = null; CodeQuad3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Quad3d>(data, origin, size, delta);
         }
 
@@ -3489,8 +3506,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2d[] data = null; CodeRay2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Ray2d>(data, origin, size, delta);
         }
 
@@ -3498,8 +3515,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3d[] data = null; CodeRay3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Ray3d>(data, origin, size, delta);
         }
 
@@ -3507,8 +3524,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3d[] data = null; CodeSphere3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Sphere3d>(data, origin, size, delta);
         }
 
@@ -3516,8 +3533,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2d[] data = null; CodeTriangle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Triangle2d>(data, origin, size, delta);
         }
 
@@ -3525,8 +3542,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3d[] data = null; CodeTriangle3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Triangle3d>(data, origin, size, delta);
         }
 
@@ -3534,8 +3551,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2f[] data = null; CodeCircle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Circle2f>(data, origin, size, delta);
         }
 
@@ -3543,8 +3560,8 @@ namespace Aardvark.Base.Coder
         {
             Line2f[] data = null; CodeLine2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Line2f>(data, origin, size, delta);
         }
 
@@ -3552,8 +3569,8 @@ namespace Aardvark.Base.Coder
         {
             Line3f[] data = null; CodeLine3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Line3f>(data, origin, size, delta);
         }
 
@@ -3561,8 +3578,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2f[] data = null; CodePlane2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Plane2f>(data, origin, size, delta);
         }
 
@@ -3570,8 +3587,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3f[] data = null; CodePlane3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Plane3f>(data, origin, size, delta);
         }
 
@@ -3579,8 +3596,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<PlaneWithPoint3f>(data, origin, size, delta);
         }
 
@@ -3588,8 +3605,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2f[] data = null; CodeQuad2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Quad2f>(data, origin, size, delta);
         }
 
@@ -3597,8 +3614,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3f[] data = null; CodeQuad3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Quad3f>(data, origin, size, delta);
         }
 
@@ -3606,8 +3623,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2f[] data = null; CodeRay2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Ray2f>(data, origin, size, delta);
         }
 
@@ -3615,8 +3632,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3f[] data = null; CodeRay3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Ray3f>(data, origin, size, delta);
         }
 
@@ -3624,8 +3641,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3f[] data = null; CodeSphere3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Sphere3f>(data, origin, size, delta);
         }
 
@@ -3633,8 +3650,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2f[] data = null; CodeTriangle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Triangle2f>(data, origin, size, delta);
         }
 
@@ -3642,8 +3659,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3f[] data = null; CodeTriangle3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            V3l size = default(V3l); CodeV3l(ref size);
-            V3l delta = default(V3l); CodeV3l(ref delta);
+            V3l size = default; CodeV3l(ref size);
+            V3l delta = default; CodeV3l(ref delta);
             value = new Volume<Triangle3f>(data, origin, size, delta);
         }
 
@@ -3651,8 +3668,8 @@ namespace Aardvark.Base.Coder
         {
             byte[] data = null; CodeByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<byte>(data, origin, size, delta);
         }
 
@@ -3660,8 +3677,8 @@ namespace Aardvark.Base.Coder
         {
             sbyte[] data = null; CodeSByteArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<sbyte>(data, origin, size, delta);
         }
 
@@ -3669,8 +3686,8 @@ namespace Aardvark.Base.Coder
         {
             short[] data = null; CodeShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<short>(data, origin, size, delta);
         }
 
@@ -3678,8 +3695,8 @@ namespace Aardvark.Base.Coder
         {
             ushort[] data = null; CodeUShortArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<ushort>(data, origin, size, delta);
         }
 
@@ -3687,8 +3704,8 @@ namespace Aardvark.Base.Coder
         {
             int[] data = null; CodeIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<int>(data, origin, size, delta);
         }
 
@@ -3696,8 +3713,8 @@ namespace Aardvark.Base.Coder
         {
             uint[] data = null; CodeUIntArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<uint>(data, origin, size, delta);
         }
 
@@ -3705,8 +3722,8 @@ namespace Aardvark.Base.Coder
         {
             long[] data = null; CodeLongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<long>(data, origin, size, delta);
         }
 
@@ -3714,8 +3731,8 @@ namespace Aardvark.Base.Coder
         {
             ulong[] data = null; CodeULongArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<ulong>(data, origin, size, delta);
         }
 
@@ -3723,8 +3740,8 @@ namespace Aardvark.Base.Coder
         {
             float[] data = null; CodeFloatArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<float>(data, origin, size, delta);
         }
 
@@ -3732,8 +3749,8 @@ namespace Aardvark.Base.Coder
         {
             double[] data = null; CodeDoubleArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<double>(data, origin, size, delta);
         }
 
@@ -3741,8 +3758,8 @@ namespace Aardvark.Base.Coder
         {
             Fraction[] data = null; CodeFractionArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Fraction>(data, origin, size, delta);
         }
 
@@ -3750,8 +3767,8 @@ namespace Aardvark.Base.Coder
         {
             V2i[] data = null; CodeV2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V2i>(data, origin, size, delta);
         }
 
@@ -3759,8 +3776,8 @@ namespace Aardvark.Base.Coder
         {
             V2l[] data = null; CodeV2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V2l>(data, origin, size, delta);
         }
 
@@ -3768,8 +3785,8 @@ namespace Aardvark.Base.Coder
         {
             V2f[] data = null; CodeV2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V2f>(data, origin, size, delta);
         }
 
@@ -3777,8 +3794,8 @@ namespace Aardvark.Base.Coder
         {
             V2d[] data = null; CodeV2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V2d>(data, origin, size, delta);
         }
 
@@ -3786,8 +3803,8 @@ namespace Aardvark.Base.Coder
         {
             V3i[] data = null; CodeV3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V3i>(data, origin, size, delta);
         }
 
@@ -3795,8 +3812,8 @@ namespace Aardvark.Base.Coder
         {
             V3l[] data = null; CodeV3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V3l>(data, origin, size, delta);
         }
 
@@ -3804,8 +3821,8 @@ namespace Aardvark.Base.Coder
         {
             V3f[] data = null; CodeV3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V3f>(data, origin, size, delta);
         }
 
@@ -3813,8 +3830,8 @@ namespace Aardvark.Base.Coder
         {
             V3d[] data = null; CodeV3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V3d>(data, origin, size, delta);
         }
 
@@ -3822,8 +3839,8 @@ namespace Aardvark.Base.Coder
         {
             V4i[] data = null; CodeV4iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V4i>(data, origin, size, delta);
         }
 
@@ -3831,8 +3848,8 @@ namespace Aardvark.Base.Coder
         {
             V4l[] data = null; CodeV4lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V4l>(data, origin, size, delta);
         }
 
@@ -3840,8 +3857,8 @@ namespace Aardvark.Base.Coder
         {
             V4f[] data = null; CodeV4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V4f>(data, origin, size, delta);
         }
 
@@ -3849,8 +3866,8 @@ namespace Aardvark.Base.Coder
         {
             V4d[] data = null; CodeV4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<V4d>(data, origin, size, delta);
         }
 
@@ -3858,8 +3875,8 @@ namespace Aardvark.Base.Coder
         {
             M22i[] data = null; CodeM22iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M22i>(data, origin, size, delta);
         }
 
@@ -3867,8 +3884,8 @@ namespace Aardvark.Base.Coder
         {
             M22l[] data = null; CodeM22lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M22l>(data, origin, size, delta);
         }
 
@@ -3876,8 +3893,8 @@ namespace Aardvark.Base.Coder
         {
             M22f[] data = null; CodeM22fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M22f>(data, origin, size, delta);
         }
 
@@ -3885,8 +3902,8 @@ namespace Aardvark.Base.Coder
         {
             M22d[] data = null; CodeM22dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M22d>(data, origin, size, delta);
         }
 
@@ -3894,8 +3911,8 @@ namespace Aardvark.Base.Coder
         {
             M23i[] data = null; CodeM23iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M23i>(data, origin, size, delta);
         }
 
@@ -3903,8 +3920,8 @@ namespace Aardvark.Base.Coder
         {
             M23l[] data = null; CodeM23lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M23l>(data, origin, size, delta);
         }
 
@@ -3912,8 +3929,8 @@ namespace Aardvark.Base.Coder
         {
             M23f[] data = null; CodeM23fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M23f>(data, origin, size, delta);
         }
 
@@ -3921,8 +3938,8 @@ namespace Aardvark.Base.Coder
         {
             M23d[] data = null; CodeM23dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M23d>(data, origin, size, delta);
         }
 
@@ -3930,8 +3947,8 @@ namespace Aardvark.Base.Coder
         {
             M33i[] data = null; CodeM33iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M33i>(data, origin, size, delta);
         }
 
@@ -3939,8 +3956,8 @@ namespace Aardvark.Base.Coder
         {
             M33l[] data = null; CodeM33lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M33l>(data, origin, size, delta);
         }
 
@@ -3948,8 +3965,8 @@ namespace Aardvark.Base.Coder
         {
             M33f[] data = null; CodeM33fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M33f>(data, origin, size, delta);
         }
 
@@ -3957,8 +3974,8 @@ namespace Aardvark.Base.Coder
         {
             M33d[] data = null; CodeM33dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M33d>(data, origin, size, delta);
         }
 
@@ -3966,8 +3983,8 @@ namespace Aardvark.Base.Coder
         {
             M34i[] data = null; CodeM34iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M34i>(data, origin, size, delta);
         }
 
@@ -3975,8 +3992,8 @@ namespace Aardvark.Base.Coder
         {
             M34l[] data = null; CodeM34lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M34l>(data, origin, size, delta);
         }
 
@@ -3984,8 +4001,8 @@ namespace Aardvark.Base.Coder
         {
             M34f[] data = null; CodeM34fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M34f>(data, origin, size, delta);
         }
 
@@ -3993,8 +4010,8 @@ namespace Aardvark.Base.Coder
         {
             M34d[] data = null; CodeM34dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M34d>(data, origin, size, delta);
         }
 
@@ -4002,8 +4019,8 @@ namespace Aardvark.Base.Coder
         {
             M44i[] data = null; CodeM44iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M44i>(data, origin, size, delta);
         }
 
@@ -4011,8 +4028,8 @@ namespace Aardvark.Base.Coder
         {
             M44l[] data = null; CodeM44lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M44l>(data, origin, size, delta);
         }
 
@@ -4020,8 +4037,8 @@ namespace Aardvark.Base.Coder
         {
             M44f[] data = null; CodeM44fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M44f>(data, origin, size, delta);
         }
 
@@ -4029,8 +4046,8 @@ namespace Aardvark.Base.Coder
         {
             M44d[] data = null; CodeM44dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<M44d>(data, origin, size, delta);
         }
 
@@ -4038,8 +4055,8 @@ namespace Aardvark.Base.Coder
         {
             C3b[] data = null; CodeC3bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C3b>(data, origin, size, delta);
         }
 
@@ -4047,8 +4064,8 @@ namespace Aardvark.Base.Coder
         {
             C3us[] data = null; CodeC3usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C3us>(data, origin, size, delta);
         }
 
@@ -4056,8 +4073,8 @@ namespace Aardvark.Base.Coder
         {
             C3ui[] data = null; CodeC3uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C3ui>(data, origin, size, delta);
         }
 
@@ -4065,8 +4082,8 @@ namespace Aardvark.Base.Coder
         {
             C3f[] data = null; CodeC3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C3f>(data, origin, size, delta);
         }
 
@@ -4074,8 +4091,8 @@ namespace Aardvark.Base.Coder
         {
             C3d[] data = null; CodeC3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C3d>(data, origin, size, delta);
         }
 
@@ -4083,8 +4100,8 @@ namespace Aardvark.Base.Coder
         {
             C4b[] data = null; CodeC4bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C4b>(data, origin, size, delta);
         }
 
@@ -4092,8 +4109,8 @@ namespace Aardvark.Base.Coder
         {
             C4us[] data = null; CodeC4usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C4us>(data, origin, size, delta);
         }
 
@@ -4101,8 +4118,8 @@ namespace Aardvark.Base.Coder
         {
             C4ui[] data = null; CodeC4uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C4ui>(data, origin, size, delta);
         }
 
@@ -4110,8 +4127,8 @@ namespace Aardvark.Base.Coder
         {
             C4f[] data = null; CodeC4fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C4f>(data, origin, size, delta);
         }
 
@@ -4119,8 +4136,8 @@ namespace Aardvark.Base.Coder
         {
             C4d[] data = null; CodeC4dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<C4d>(data, origin, size, delta);
         }
 
@@ -4128,8 +4145,8 @@ namespace Aardvark.Base.Coder
         {
             Range1b[] data = null; CodeRange1bArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1b>(data, origin, size, delta);
         }
 
@@ -4137,8 +4154,8 @@ namespace Aardvark.Base.Coder
         {
             Range1sb[] data = null; CodeRange1sbArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1sb>(data, origin, size, delta);
         }
 
@@ -4146,8 +4163,8 @@ namespace Aardvark.Base.Coder
         {
             Range1s[] data = null; CodeRange1sArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1s>(data, origin, size, delta);
         }
 
@@ -4155,8 +4172,8 @@ namespace Aardvark.Base.Coder
         {
             Range1us[] data = null; CodeRange1usArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1us>(data, origin, size, delta);
         }
 
@@ -4164,8 +4181,8 @@ namespace Aardvark.Base.Coder
         {
             Range1i[] data = null; CodeRange1iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1i>(data, origin, size, delta);
         }
 
@@ -4173,8 +4190,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ui[] data = null; CodeRange1uiArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1ui>(data, origin, size, delta);
         }
 
@@ -4182,8 +4199,8 @@ namespace Aardvark.Base.Coder
         {
             Range1l[] data = null; CodeRange1lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1l>(data, origin, size, delta);
         }
 
@@ -4191,8 +4208,8 @@ namespace Aardvark.Base.Coder
         {
             Range1ul[] data = null; CodeRange1ulArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1ul>(data, origin, size, delta);
         }
 
@@ -4200,8 +4217,8 @@ namespace Aardvark.Base.Coder
         {
             Range1f[] data = null; CodeRange1fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1f>(data, origin, size, delta);
         }
 
@@ -4209,8 +4226,8 @@ namespace Aardvark.Base.Coder
         {
             Range1d[] data = null; CodeRange1dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Range1d>(data, origin, size, delta);
         }
 
@@ -4218,8 +4235,8 @@ namespace Aardvark.Base.Coder
         {
             Box2i[] data = null; CodeBox2iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box2i>(data, origin, size, delta);
         }
 
@@ -4227,8 +4244,8 @@ namespace Aardvark.Base.Coder
         {
             Box2l[] data = null; CodeBox2lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box2l>(data, origin, size, delta);
         }
 
@@ -4236,8 +4253,8 @@ namespace Aardvark.Base.Coder
         {
             Box2f[] data = null; CodeBox2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box2f>(data, origin, size, delta);
         }
 
@@ -4245,8 +4262,8 @@ namespace Aardvark.Base.Coder
         {
             Box2d[] data = null; CodeBox2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box2d>(data, origin, size, delta);
         }
 
@@ -4254,8 +4271,8 @@ namespace Aardvark.Base.Coder
         {
             Box3i[] data = null; CodeBox3iArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box3i>(data, origin, size, delta);
         }
 
@@ -4263,8 +4280,8 @@ namespace Aardvark.Base.Coder
         {
             Box3l[] data = null; CodeBox3lArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box3l>(data, origin, size, delta);
         }
 
@@ -4272,8 +4289,8 @@ namespace Aardvark.Base.Coder
         {
             Box3f[] data = null; CodeBox3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box3f>(data, origin, size, delta);
         }
 
@@ -4281,8 +4298,8 @@ namespace Aardvark.Base.Coder
         {
             Box3d[] data = null; CodeBox3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Box3d>(data, origin, size, delta);
         }
 
@@ -4290,8 +4307,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3f[] data = null; CodeEuclidean3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Euclidean3f>(data, origin, size, delta);
         }
 
@@ -4299,8 +4316,8 @@ namespace Aardvark.Base.Coder
         {
             Euclidean3d[] data = null; CodeEuclidean3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Euclidean3d>(data, origin, size, delta);
         }
 
@@ -4308,8 +4325,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2f[] data = null; CodeRot2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Rot2f>(data, origin, size, delta);
         }
 
@@ -4317,8 +4334,8 @@ namespace Aardvark.Base.Coder
         {
             Rot2d[] data = null; CodeRot2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Rot2d>(data, origin, size, delta);
         }
 
@@ -4326,8 +4343,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3f[] data = null; CodeRot3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Rot3f>(data, origin, size, delta);
         }
 
@@ -4335,8 +4352,8 @@ namespace Aardvark.Base.Coder
         {
             Rot3d[] data = null; CodeRot3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Rot3d>(data, origin, size, delta);
         }
 
@@ -4344,8 +4361,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3f[] data = null; CodeScale3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Scale3f>(data, origin, size, delta);
         }
 
@@ -4353,8 +4370,8 @@ namespace Aardvark.Base.Coder
         {
             Scale3d[] data = null; CodeScale3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Scale3d>(data, origin, size, delta);
         }
 
@@ -4362,8 +4379,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3f[] data = null; CodeShift3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Shift3f>(data, origin, size, delta);
         }
 
@@ -4371,8 +4388,8 @@ namespace Aardvark.Base.Coder
         {
             Shift3d[] data = null; CodeShift3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Shift3d>(data, origin, size, delta);
         }
 
@@ -4380,8 +4397,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2f[] data = null; CodeTrafo2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Trafo2f>(data, origin, size, delta);
         }
 
@@ -4389,8 +4406,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo2d[] data = null; CodeTrafo2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Trafo2d>(data, origin, size, delta);
         }
 
@@ -4398,8 +4415,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3f[] data = null; CodeTrafo3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Trafo3f>(data, origin, size, delta);
         }
 
@@ -4407,8 +4424,8 @@ namespace Aardvark.Base.Coder
         {
             Trafo3d[] data = null; CodeTrafo3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Trafo3d>(data, origin, size, delta);
         }
 
@@ -4416,8 +4433,8 @@ namespace Aardvark.Base.Coder
         {
             bool[] data = null; CodeBoolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<bool>(data, origin, size, delta);
         }
 
@@ -4425,8 +4442,8 @@ namespace Aardvark.Base.Coder
         {
             char[] data = null; CodeCharArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<char>(data, origin, size, delta);
         }
 
@@ -4434,8 +4451,8 @@ namespace Aardvark.Base.Coder
         {
             string[] data = null; CodeStringArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<string>(data, origin, size, delta);
         }
 
@@ -4443,8 +4460,8 @@ namespace Aardvark.Base.Coder
         {
             Type[] data = null; CodeTypeArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Type>(data, origin, size, delta);
         }
 
@@ -4452,8 +4469,8 @@ namespace Aardvark.Base.Coder
         {
             Guid[] data = null; CodeGuidArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Guid>(data, origin, size, delta);
         }
 
@@ -4461,8 +4478,8 @@ namespace Aardvark.Base.Coder
         {
             Symbol[] data = null; CodeSymbolArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Symbol>(data, origin, size, delta);
         }
 
@@ -4470,8 +4487,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2d[] data = null; CodeCircle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Circle2d>(data, origin, size, delta);
         }
 
@@ -4479,8 +4496,8 @@ namespace Aardvark.Base.Coder
         {
             Line2d[] data = null; CodeLine2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Line2d>(data, origin, size, delta);
         }
 
@@ -4488,8 +4505,8 @@ namespace Aardvark.Base.Coder
         {
             Line3d[] data = null; CodeLine3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Line3d>(data, origin, size, delta);
         }
 
@@ -4497,8 +4514,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2d[] data = null; CodePlane2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Plane2d>(data, origin, size, delta);
         }
 
@@ -4506,8 +4523,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3d[] data = null; CodePlane3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Plane3d>(data, origin, size, delta);
         }
 
@@ -4515,8 +4532,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3d[] data = null; CodePlaneWithPoint3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<PlaneWithPoint3d>(data, origin, size, delta);
         }
 
@@ -4524,8 +4541,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2d[] data = null; CodeQuad2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Quad2d>(data, origin, size, delta);
         }
 
@@ -4533,8 +4550,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3d[] data = null; CodeQuad3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Quad3d>(data, origin, size, delta);
         }
 
@@ -4542,8 +4559,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2d[] data = null; CodeRay2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Ray2d>(data, origin, size, delta);
         }
 
@@ -4551,8 +4568,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3d[] data = null; CodeRay3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Ray3d>(data, origin, size, delta);
         }
 
@@ -4560,8 +4577,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3d[] data = null; CodeSphere3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Sphere3d>(data, origin, size, delta);
         }
 
@@ -4569,8 +4586,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2d[] data = null; CodeTriangle2dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Triangle2d>(data, origin, size, delta);
         }
 
@@ -4578,8 +4595,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3d[] data = null; CodeTriangle3dArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Triangle3d>(data, origin, size, delta);
         }
 
@@ -4587,8 +4604,8 @@ namespace Aardvark.Base.Coder
         {
             Circle2f[] data = null; CodeCircle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Circle2f>(data, origin, size, delta);
         }
 
@@ -4596,8 +4613,8 @@ namespace Aardvark.Base.Coder
         {
             Line2f[] data = null; CodeLine2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Line2f>(data, origin, size, delta);
         }
 
@@ -4605,8 +4622,8 @@ namespace Aardvark.Base.Coder
         {
             Line3f[] data = null; CodeLine3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Line3f>(data, origin, size, delta);
         }
 
@@ -4614,8 +4631,8 @@ namespace Aardvark.Base.Coder
         {
             Plane2f[] data = null; CodePlane2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Plane2f>(data, origin, size, delta);
         }
 
@@ -4623,8 +4640,8 @@ namespace Aardvark.Base.Coder
         {
             Plane3f[] data = null; CodePlane3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Plane3f>(data, origin, size, delta);
         }
 
@@ -4632,8 +4649,8 @@ namespace Aardvark.Base.Coder
         {
             PlaneWithPoint3f[] data = null; CodePlaneWithPoint3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<PlaneWithPoint3f>(data, origin, size, delta);
         }
 
@@ -4641,8 +4658,8 @@ namespace Aardvark.Base.Coder
         {
             Quad2f[] data = null; CodeQuad2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Quad2f>(data, origin, size, delta);
         }
 
@@ -4650,8 +4667,8 @@ namespace Aardvark.Base.Coder
         {
             Quad3f[] data = null; CodeQuad3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Quad3f>(data, origin, size, delta);
         }
 
@@ -4659,8 +4676,8 @@ namespace Aardvark.Base.Coder
         {
             Ray2f[] data = null; CodeRay2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Ray2f>(data, origin, size, delta);
         }
 
@@ -4668,8 +4685,8 @@ namespace Aardvark.Base.Coder
         {
             Ray3f[] data = null; CodeRay3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Ray3f>(data, origin, size, delta);
         }
 
@@ -4677,8 +4694,8 @@ namespace Aardvark.Base.Coder
         {
             Sphere3f[] data = null; CodeSphere3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Sphere3f>(data, origin, size, delta);
         }
 
@@ -4686,8 +4703,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle2f[] data = null; CodeTriangle2fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Triangle2f>(data, origin, size, delta);
         }
 
@@ -4695,8 +4712,8 @@ namespace Aardvark.Base.Coder
         {
             Triangle3f[] data = null; CodeTriangle3fArray(ref data);
             long origin = 0L; CodeLong(ref origin);
-            long[] size = default(long[]); CodeLongArray(ref size);
-            long[] delta = default(long[]); CodeLongArray(ref delta);
+            long[] size = default; CodeLongArray(ref size);
+            long[] delta = default; CodeLongArray(ref delta);
             value = new Tensor<Triangle3f>(data, origin, size, delta);
         }
 

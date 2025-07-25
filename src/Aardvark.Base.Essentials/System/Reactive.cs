@@ -1,195 +1,185 @@
-﻿using System;
+﻿/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace Aardvark.Base
+namespace Aardvark.Base;
+
+public sealed class Unit
 {
-    public sealed class Unit
+    private Unit() { }
+
+    public static Unit Default { get { return null; } }
+}
+
+internal class SubjectDisposable<T>(Dictionary<IObserver<T>, int> store, IObserver<T> self) : IDisposable
+{
+    private Dictionary<IObserver<T>, int> m_store = store;
+    private IObserver<T> m_self = self;
+
+    public void Dispose()
     {
-        private Unit() { }
+        if (m_self == null) return;
 
-        public static Unit Default { get { return null; } }
-    }
-
-    internal class SubjectDisposable<T> : IDisposable
-    {
-        private Dictionary<IObserver<T>, int> m_store;
-        private IObserver<T> m_self;
-
-        public SubjectDisposable(Dictionary<IObserver<T>, int> store, IObserver<T> self)
+        lock(m_store)
         {
-            m_store = store;
-            m_self = self;
-        }
-
-        public void Dispose()
-        {
-            if (m_self == null) return;
-
-            lock(m_store)
+            if(m_store.TryGetValue(m_self, out var cnt))
             {
-                if(m_store.TryGetValue(m_self, out var cnt))
-                {
-                    cnt--;
-                    if (cnt > 0) m_store[m_self] = cnt;
-                    else m_store.Remove(m_self);
-                }
-                m_store = null;
-                m_self = null;
+                cnt--;
+                if (cnt > 0) m_store[m_self] = cnt;
+                else m_store.Remove(m_self);
             }
-        }
-
-    }
-
-
-    internal class Subject<T> : IObservable<T>, IObserver<T>
-    {
-        private readonly Dictionary<IObserver<T>, int> m_observers;
-
-        public Subject()
-        {
-            m_observers = new Dictionary<IObserver<T>, int>();
-        }
-
-        public void OnCompleted()
-        {
-            IObserver<T>[] arr = null;
-            lock (m_observers)
-            {
-                arr = m_observers.Keys.ToArray(m_observers.Count);
-            }
-            foreach (var obs in arr)
-            {
-                obs.OnCompleted();
-            }
-        }
-
-        public void OnNext(T value)
-        {
-            IObserver<T>[] arr = null;
-            lock (m_observers)
-            {
-                arr = m_observers.Keys.ToArray(m_observers.Count);
-            }
-            foreach (var obs in arr)
-            {
-                obs.OnNext(value);
-            }
-        }
-
-        public void OnError(Exception e)
-        {
-            IObserver<T>[] arr = null;
-            lock (m_observers)
-            {
-                arr = m_observers.Keys.ToArray(m_observers.Count);
-            }
-            foreach (var obs in arr)
-            {
-                obs.OnError(e);
-            }
-        }
-
-        public IDisposable Subscribe(IObserver<T> obs)
-        {
-            lock (m_observers)
-            {
-                if(m_observers.TryGetValue(obs, out var cnt))
-                {
-                    m_observers[obs] = cnt + 1;
-                }
-                else
-                {
-                    m_observers[obs] = 1;
-                }
-
-                return new SubjectDisposable<T>(m_observers, obs);
-            }
-        }
-
-    }
-
-    internal class LambdaObserver<T> : IObserver<T>
-    {
-        private readonly Action<T> m_action;
-
-        public LambdaObserver(Action<T> action)
-        {
-            m_action = action;
-        }
-
-        public void OnNext(T value)
-        {
-            m_action(value);
-        }
-
-        public void OnCompleted()
-        { }
-
-        public void OnError(Exception e)
-        { }
-    }
-
-    internal class MapObserver<T1, T2> : IObserver<T1>
-    {
-        private readonly Func<T1, T2> m_mapping;
-        private readonly IObserver<T2> m_target;
-
-        public MapObserver(IObserver<T2> target, Func<T1, T2> mapping)
-        {
-            m_mapping = mapping;
-            m_target = target;
-        }
-
-        public void OnNext(T1 value)
-        {
-            m_target.OnNext(m_mapping(value));
-        }
-        public void OnCompleted()
-        {
-            m_target.OnCompleted();
-        }
-        public void OnError(Exception error)
-        {
-            m_target.OnError(error);
+            m_store = null;
+            m_self = null;
         }
     }
 
-    internal class MapObservable<T1, T2> : IObservable<T2>
+}
+
+
+internal class Subject<T> : IObservable<T>, IObserver<T>
+{
+    private readonly Dictionary<IObserver<T>, int> m_observers;
+
+    public Subject()
     {
-        private readonly IObservable<T1> m_input;
-        private readonly Func<T1, T2> m_mapping;
-
-        public MapObservable(IObservable<T1> input, Func<T1, T2> mapping)
-        {
-            m_input = input;
-            m_mapping = mapping;
-        }
-
-        public IDisposable Subscribe(IObserver<T2> obs)
-        {
-            return m_input.Subscribe(new MapObserver<T1, T2>(obs, m_mapping));
-        }
-
+        m_observers = [];
     }
 
-    internal class NoDisposable : IDisposable
+    public void OnCompleted()
     {
-        public NoDisposable() { }
-        public void Dispose()
-        {}
-    }
-    internal class NeverObservable<T> : IObservable<T>
-    {
-        public NeverObservable()
+        IObserver<T>[] arr = null;
+        lock (m_observers)
         {
-
+            arr = m_observers.Keys.ToArray(m_observers.Count);
         }
-        public IDisposable Subscribe(IObserver<T> observer)
+        foreach (var obs in arr)
         {
-            return new NoDisposable();
+            obs.OnCompleted();
         }
     }
 
+    public void OnNext(T value)
+    {
+        IObserver<T>[] arr = null;
+        lock (m_observers)
+        {
+            arr = m_observers.Keys.ToArray(m_observers.Count);
+        }
+        foreach (var obs in arr)
+        {
+            obs.OnNext(value);
+        }
+    }
 
+    public void OnError(Exception e)
+    {
+        IObserver<T>[] arr = null;
+        lock (m_observers)
+        {
+            arr = m_observers.Keys.ToArray(m_observers.Count);
+        }
+        foreach (var obs in arr)
+        {
+            obs.OnError(e);
+        }
+    }
+
+    public IDisposable Subscribe(IObserver<T> obs)
+    {
+        lock (m_observers)
+        {
+            if(m_observers.TryGetValue(obs, out var cnt))
+            {
+                m_observers[obs] = cnt + 1;
+            }
+            else
+            {
+                m_observers[obs] = 1;
+            }
+
+            return new SubjectDisposable<T>(m_observers, obs);
+        }
+    }
+
+}
+
+internal class LambdaObserver<T>(Action<T> action) : IObserver<T>
+{
+    private readonly Action<T> m_action = action;
+
+    public void OnNext(T value)
+    {
+        m_action(value);
+    }
+
+    public void OnCompleted()
+    { }
+
+    public void OnError(Exception e)
+    { }
+}
+
+internal class MapObserver<T1, T2>(IObserver<T2> target, Func<T1, T2> mapping) : IObserver<T1>
+{
+    private readonly Func<T1, T2> m_mapping = mapping;
+    private readonly IObserver<T2> m_target = target;
+
+    public void OnNext(T1 value)
+    {
+        m_target.OnNext(m_mapping(value));
+    }
+    public void OnCompleted()
+    {
+        m_target.OnCompleted();
+    }
+    public void OnError(Exception error)
+    {
+        m_target.OnError(error);
+    }
+}
+
+internal class MapObservable<T1, T2>(IObservable<T1> input, Func<T1, T2> mapping) : IObservable<T2>
+{
+    private readonly IObservable<T1> m_input = input;
+    private readonly Func<T1, T2> m_mapping = mapping;
+
+    public IDisposable Subscribe(IObserver<T2> obs)
+    {
+        return m_input.Subscribe(new MapObserver<T1, T2>(obs, m_mapping));
+    }
+
+}
+
+internal class NoDisposable : IDisposable
+{
+    public NoDisposable() { }
+    public void Dispose()
+    {}
+}
+internal class NeverObservable<T> : IObservable<T>
+{
+    public NeverObservable()
+    {
+
+    }
+    public IDisposable Subscribe(IObserver<T> observer)
+    {
+        return new NoDisposable();
+    }
 }

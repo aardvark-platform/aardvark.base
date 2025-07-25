@@ -1,31 +1,40 @@
-using Aardvark.Base;
-using System;
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using Aardvark.Base.Sorting;
+using System;
 
 namespace Aardvark.Base
 {
-    public struct BbTreeHit
+    public struct BbTreeHit(int nodeIndex, double rayT)
     {
-        public int NodeIndex;
-        public double RayT;
-        
-        public BbTreeHit(int nodeIndex, double rayT)
-        {
-            NodeIndex = nodeIndex;
-            RayT = rayT;
-        }
+        public int NodeIndex = nodeIndex;
+        public double RayT = rayT;
     }
-    
-    
+
     public class BbTree
     {
-        private int m_nodeCount;
+        private readonly int m_nodeCount;
         private Box3d m_box;
-        private int[] m_indexArray;
-        private int[] m_leafArray;
-        private Box3d[] m_boxes;
+        private readonly int[] m_indexArray;
+        private readonly int[] m_leafArray;
+        private readonly Box3d[] m_boxes;
 
-        private Box3dAndFlags[] m_combinedBoxArray;
+        private readonly Box3dAndFlags[] m_combinedBoxArray;
         public Box3d[] m_leftBoxArray;
         public Box3d[] m_rightBoxArray;
 
@@ -130,7 +139,7 @@ namespace Aardvark.Base
             public int LeafCount;
         }
 
-        private int CalculateSplit(
+        private static int CalculateSplit(
                 InParams inParams,
                 int[] indexArray,
                 int start,
@@ -215,10 +224,10 @@ namespace Aardvark.Base
         private int Create(InParams inParams, int[] indices, int start, int count, Box3d box)
         {
             int ni = inParams.NodeCount++;
-            int[] sortedIndices;
-            Box3d leftBox, rightBox;
-            var leftCount = CalculateSplit(inParams, indices, start, count, box,
-                                           out sortedIndices, out leftBox, out rightBox);
+            var leftCount = CalculateSplit(
+                inParams, indices, start, count, box,
+                out int[] sortedIndices, out Box3d leftBox, out Box3d rightBox
+                );
             var rightCount = count - leftCount;
 
             m_indexArray[2 * ni] = leftCount > inParams.LeafLimit

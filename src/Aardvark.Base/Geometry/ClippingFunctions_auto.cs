@@ -1,7 +1,23 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base
 {
@@ -19,15 +35,14 @@ namespace Aardvark.Base
 
             bool tempenter = false;
             int tempindex = -1;
-            V2f temppoint = V2f.NaN;
-            float templength = float.MaxValue;
+            float templength/* = float.MaxValue*/;
 
-            Line2f line = new Line2f(start, end);
+            var line = new Line2f(start, end);
 
             int i = 0;
             foreach (var l in poly.EdgeLines)
             {
-                if (line.Intersects(l, 4 * float.Epsilon, out temppoint))
+                if (line.Intersects(l, 4 * float.Epsilon, out var temppoint))
                 {
                     templength = (temppoint - line.P0).Length;
                     if (templength < min)
@@ -67,8 +82,7 @@ namespace Aardvark.Base
             int index = 0;
 
             Line2f l;
-            int i0 = 0;
-            int i1 = 1;
+            int i0, i1;
             for (int i = 1; i <= poly.Length; i++)
             {
                 if (i < poly.Length)
@@ -181,8 +195,7 @@ namespace Aardvark.Base
             }
 
             var dir = line.P1 - line.P0;
-            resulting = (from r in resulting select r).OrderBy(x => x.Dot(dir)).ToList();
-
+            resulting = [.. (from r in resulting select r).OrderBy(x => x.Dot(dir))];
             var counter = resulting.Count;
             var lines = new List<Line2f>();
             for (int i = 0; i < counter - 1; i += 2)
@@ -254,23 +267,14 @@ namespace Aardvark.Base
         /// </summary>
         public static Polygon2f ClippedByConvex(this Polygon2f poly, Polygon2f second)
         {
-            V2f[][] arr = new V2f[2][];
-            arr[0] = AllVertices(poly).ToArray();
-            arr[1] = AllVertices(second).ToArray();
-
-            Polygon2f[] polygon = new Polygon2f[2];
-            polygon[0] = poly;
-            polygon[1] = second;
+            V2f[][] arr = [[.. AllVertices(poly)], [.. AllVertices(second)]];
+            Polygon2f[] polygon = [poly, second];
 
             bool current = false;
             int currentIndex = 0;
-            int otherIndex = 1;
+            int otherIndex;
 
-            bool enter = false;
-            int index = -1;
-            V2f point = V2f.NaN;
-
-            List<V2f> points = new List<V2f>();
+            List<V2f> points = [];
 
             for (int i = 1; i < arr[currentIndex].Length; i = (i + 1) % arr[currentIndex].Length)
             {
@@ -281,7 +285,7 @@ namespace Aardvark.Base
                 V2f start = arr[currentIndex][i - 1];
                 V2f end = arr[currentIndex][i];
 
-                if (Intersects(arr[otherIndex], start, end, ref points, out enter, out index, out point))
+                if (Intersects(arr[otherIndex], start, end, ref points, out var enter, out var index, out var point))
                 {
                     if (enter)
                     {
@@ -306,7 +310,7 @@ namespace Aardvark.Base
                         i = index;
                         current = !current;
                         currentIndex = (current ? 1 : 0);
-                        otherIndex = (current ? 0 : 1);
+                        // otherIndex = (current ? 0 : 1); // unncessary assignment
                     }
                 }
                 else
@@ -334,13 +338,13 @@ namespace Aardvark.Base
             List<int[]> i0 = SubPrimitives.ComputeNonConcaveSubPolygons(p0, relativeEpsilon);
             List<int[]> i1 = SubPrimitives.ComputeNonConcaveSubPolygons(p1, relativeEpsilon);
 
-            List<Polygon2f> polys = new List<Polygon2f>();
+            List<Polygon2f> polys = [];
             for (int i = 0; i < i0.Count; i++)
             {
                 for (int u = 0; u < i1.Count; u++)
                 {
-                    Polygon2f q0 = new Polygon2f(from o in i0[i] select p0[o]);
-                    Polygon2f q1 = new Polygon2f(from o in i1[u] select p1[o]);
+                    var q0 = new Polygon2f(from o in i0[i] select p0[o]);
+                    var q1 = new Polygon2f(from o in i1[u] select p1[o]);
 
                     Polygon2f r = q0.ClippedByConvex(q1);
                     if (r.PointCount > 0) polys.Add(r);
@@ -362,7 +366,7 @@ namespace Aardvark.Base
 
         public static IEnumerable<Polygon2f> Union(List<Polygon2f> p)
         {
-            List<Polygon2f> polys = new List<Polygon2f>();
+            List<Polygon2f> polys = [];
             polys.Add(p[0]);
             List<Polygon2f> temp;
 
@@ -371,7 +375,7 @@ namespace Aardvark.Base
                 bool found = false;
                 for (int u = 0; u < polys.Count; u++)
                 {
-                    temp = polys[u].Union(p[i]).ToList();
+                    temp = [.. polys[u].Union(p[i])];
 
                     if (temp.Count == 1)
                     {
@@ -396,17 +400,11 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<Polygon2f> Union(this Polygon2f p0, Polygon2f p1)
         {
-            Polygon2f[] arr = new Polygon2f[2];
-            arr[0] = p0;
-            arr[1] = p1;
-
+            Polygon2f[] arr = [p0, p1];
             int current = 0;
             int other = 1;
 
-            List<V2f> points = new List<V2f>();
-            bool enter = false;
-            int index = -1;
-            V2f point = V2f.NaN;
+            List<V2f> points = [];
 
             bool firstIntersectionFound = false;
             V2f firstIntersectionPoint = V2f.NaN;
@@ -416,7 +414,7 @@ namespace Aardvark.Base
                 V2f start = arr[current][(i + arr[current].PointCount - 1) % arr[current].PointCount];
                 V2f end = arr[current][i];
 
-                if (arr[other].ClosestIntersection(start, end, out enter, out index, out point))
+                if (arr[other].ClosestIntersection(start, end, out var enter, out var index, out var point))
                 {
                     if (!firstIntersectionFound)
                     {
@@ -481,8 +479,8 @@ namespace Aardvark.Base
 
         public static IEnumerable<Polygon2f> Union(this Box2f b0, Box2f b1)
         {
-            Polygon2f p0 = new Polygon2f(b0.ComputeCornersCCW());
-            Polygon2f p1 = new Polygon2f(b1.ComputeCornersCCW());
+            var p0 = new Polygon2f(b0.ComputeCornersCCW());
+            var p1 = new Polygon2f(b1.ComputeCornersCCW());
 
             return p0.Union(p1);
         }
@@ -501,15 +499,14 @@ namespace Aardvark.Base
 
             bool tempenter = false;
             int tempindex = -1;
-            V2d temppoint = V2d.NaN;
-            double templength = double.MaxValue;
+            double templength/* = double.MaxValue*/;
 
-            Line2d line = new Line2d(start, end);
+            var line = new Line2d(start, end);
 
             int i = 0;
             foreach (var l in poly.EdgeLines)
             {
-                if (line.Intersects(l, 4 * double.Epsilon, out temppoint))
+                if (line.Intersects(l, 4 * double.Epsilon, out var temppoint))
                 {
                     templength = (temppoint - line.P0).Length;
                     if (templength < min)
@@ -549,8 +546,7 @@ namespace Aardvark.Base
             int index = 0;
 
             Line2d l;
-            int i0 = 0;
-            int i1 = 1;
+            int i0, i1;
             for (int i = 1; i <= poly.Length; i++)
             {
                 if (i < poly.Length)
@@ -663,8 +659,7 @@ namespace Aardvark.Base
             }
 
             var dir = line.P1 - line.P0;
-            resulting = (from r in resulting select r).OrderBy(x => x.Dot(dir)).ToList();
-
+            resulting = [.. (from r in resulting select r).OrderBy(x => x.Dot(dir))];
             var counter = resulting.Count;
             var lines = new List<Line2d>();
             for (int i = 0; i < counter - 1; i += 2)
@@ -736,23 +731,14 @@ namespace Aardvark.Base
         /// </summary>
         public static Polygon2d ClippedByConvex(this Polygon2d poly, Polygon2d second)
         {
-            V2d[][] arr = new V2d[2][];
-            arr[0] = AllVertices(poly).ToArray();
-            arr[1] = AllVertices(second).ToArray();
-
-            Polygon2d[] polygon = new Polygon2d[2];
-            polygon[0] = poly;
-            polygon[1] = second;
+            V2d[][] arr = [[.. AllVertices(poly)], [.. AllVertices(second)]];
+            Polygon2d[] polygon = [poly, second];
 
             bool current = false;
             int currentIndex = 0;
-            int otherIndex = 1;
+            int otherIndex;
 
-            bool enter = false;
-            int index = -1;
-            V2d point = V2d.NaN;
-
-            List<V2d> points = new List<V2d>();
+            List<V2d> points = [];
 
             for (int i = 1; i < arr[currentIndex].Length; i = (i + 1) % arr[currentIndex].Length)
             {
@@ -763,7 +749,7 @@ namespace Aardvark.Base
                 V2d start = arr[currentIndex][i - 1];
                 V2d end = arr[currentIndex][i];
 
-                if (Intersects(arr[otherIndex], start, end, ref points, out enter, out index, out point))
+                if (Intersects(arr[otherIndex], start, end, ref points, out var enter, out var index, out var point))
                 {
                     if (enter)
                     {
@@ -788,7 +774,7 @@ namespace Aardvark.Base
                         i = index;
                         current = !current;
                         currentIndex = (current ? 1 : 0);
-                        otherIndex = (current ? 0 : 1);
+                        // otherIndex = (current ? 0 : 1); // unncessary assignment
                     }
                 }
                 else
@@ -816,13 +802,13 @@ namespace Aardvark.Base
             List<int[]> i0 = SubPrimitives.ComputeNonConcaveSubPolygons(p0, relativeEpsilon);
             List<int[]> i1 = SubPrimitives.ComputeNonConcaveSubPolygons(p1, relativeEpsilon);
 
-            List<Polygon2d> polys = new List<Polygon2d>();
+            List<Polygon2d> polys = [];
             for (int i = 0; i < i0.Count; i++)
             {
                 for (int u = 0; u < i1.Count; u++)
                 {
-                    Polygon2d q0 = new Polygon2d(from o in i0[i] select p0[o]);
-                    Polygon2d q1 = new Polygon2d(from o in i1[u] select p1[o]);
+                    var q0 = new Polygon2d(from o in i0[i] select p0[o]);
+                    var q1 = new Polygon2d(from o in i1[u] select p1[o]);
 
                     Polygon2d r = q0.ClippedByConvex(q1);
                     if (r.PointCount > 0) polys.Add(r);
@@ -844,7 +830,7 @@ namespace Aardvark.Base
 
         public static IEnumerable<Polygon2d> Union(List<Polygon2d> p)
         {
-            List<Polygon2d> polys = new List<Polygon2d>();
+            List<Polygon2d> polys = [];
             polys.Add(p[0]);
             List<Polygon2d> temp;
 
@@ -853,7 +839,7 @@ namespace Aardvark.Base
                 bool found = false;
                 for (int u = 0; u < polys.Count; u++)
                 {
-                    temp = polys[u].Union(p[i]).ToList();
+                    temp = [.. polys[u].Union(p[i])];
 
                     if (temp.Count == 1)
                     {
@@ -878,17 +864,11 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<Polygon2d> Union(this Polygon2d p0, Polygon2d p1)
         {
-            Polygon2d[] arr = new Polygon2d[2];
-            arr[0] = p0;
-            arr[1] = p1;
-
+            Polygon2d[] arr = [p0, p1];
             int current = 0;
             int other = 1;
 
-            List<V2d> points = new List<V2d>();
-            bool enter = false;
-            int index = -1;
-            V2d point = V2d.NaN;
+            List<V2d> points = [];
 
             bool firstIntersectionFound = false;
             V2d firstIntersectionPoint = V2d.NaN;
@@ -898,7 +878,7 @@ namespace Aardvark.Base
                 V2d start = arr[current][(i + arr[current].PointCount - 1) % arr[current].PointCount];
                 V2d end = arr[current][i];
 
-                if (arr[other].ClosestIntersection(start, end, out enter, out index, out point))
+                if (arr[other].ClosestIntersection(start, end, out var enter, out var index, out var point))
                 {
                     if (!firstIntersectionFound)
                     {
@@ -963,8 +943,8 @@ namespace Aardvark.Base
 
         public static IEnumerable<Polygon2d> Union(this Box2d b0, Box2d b1)
         {
-            Polygon2d p0 = new Polygon2d(b0.ComputeCornersCCW());
-            Polygon2d p1 = new Polygon2d(b1.ComputeCornersCCW());
+            var p0 = new Polygon2d(b0.ComputeCornersCCW());
+            var p1 = new Polygon2d(b1.ComputeCornersCCW());
 
             return p0.Union(p1);
         }

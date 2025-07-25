@@ -1,240 +1,255 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
-using System.Runtime.CompilerServices;
 
-namespace Aardvark.Base
+namespace Aardvark.Base;
+
+// AUTO GENERATED CODE - DO NOT CHANGE!
+
+#region QuadricF
+
+public struct QuadricF
 {
-    // AUTO GENERATED CODE - DO NOT CHANGE!
+    V3f m_normal;
+    M44f m_errorQuadric;
 
-    #region QuadricF
+    #region Properties
 
-    public struct QuadricF
+    public V3f Normal
     {
-        V3f m_normal;
-        M44f m_errorQuadric;
+        readonly get { return m_normal.Normalized; }
+        set { m_normal = value; }
+    }
 
-        #region Properties
+    public M44f ErrorQuadric
+    {
+        readonly get { return m_errorQuadric; }
+        set { m_errorQuadric = value; }
+    }
 
-        public V3f Normal
+    public readonly float ErrorOffset => ErrorQuadric.M33;
+
+    public M44f ErrorHeuristic { readonly get; set; }
+
+    #endregion
+
+    public void Create(Plane3f plane)
+    {
+        CreateQuadric(plane);
+        CreateHeuristic();
+    }
+
+    #region Create QuadricF/Heuristic
+
+    public void CreateQuadric(Plane3f plane)
+    {
+        Normal = plane.Normal;
+        float a = Normal.X;
+        float b = Normal.Y;
+        float c = Normal.Z;
+
+        // Garland uses "ax + by + cz + d = 0"
+        // Aardvark uses "ax + by + cz - d = 0"
+        float d = -plane.Distance;
+
+        m_errorQuadric.M00 = a * a;
+        m_errorQuadric.M11 = b * b;
+        m_errorQuadric.M22 = c * c;
+        m_errorQuadric.M33 = d * d;
+
+        m_errorQuadric.M01 = m_errorQuadric.M10 = a * b;
+        m_errorQuadric.M02 = m_errorQuadric.M20 = a * c;
+        m_errorQuadric.M03 = m_errorQuadric.M30 = a * d;
+        m_errorQuadric.M12 = m_errorQuadric.M21 = b * c;
+        m_errorQuadric.M13 = m_errorQuadric.M31 = b * d;
+        m_errorQuadric.M23 = m_errorQuadric.M32 = c * d;
+    }
+
+    public void CreateHeuristic()
+    {
+        if (m_errorQuadric == M44f.Zero)
         {
-            readonly get { return m_normal.Normalized; }
-            set { m_normal = value; }
+            throw new InvalidOperationException("Must call CreateQuadric(...) first");
         }
 
-        public M44f ErrorQuadric
-        {
-            readonly get { return m_errorQuadric; }
-            set { m_errorQuadric = value; }
-        }
-
-        public readonly float ErrorOffset => ErrorQuadric.M33;
-
-        public M44f ErrorHeuristic { readonly get; set; }
-
-        #endregion
-
-        public void Create(Plane3f plane)
-        {
-            CreateQuadric(plane);
-            CreateHeuristic();
-        }
-
-        #region Create QuadricF/Heuristic
-
-        public void CreateQuadric(Plane3f plane)
-        {
-            Normal = plane.Normal;
-            float a = Normal.X;
-            float b = Normal.Y;
-            float c = Normal.Z;
-
-            // Garland uses "ax + by + cz + d = 0"
-            // Aardvark uses "ax + by + cz - d = 0"
-            float d = -plane.Distance;
-
-            m_errorQuadric.M00 = a * a;
-            m_errorQuadric.M11 = b * b;
-            m_errorQuadric.M22 = c * c;
-            m_errorQuadric.M33 = d * d;
-
-            m_errorQuadric.M01 = m_errorQuadric.M10 = a * b;
-            m_errorQuadric.M02 = m_errorQuadric.M20 = a * c;
-            m_errorQuadric.M03 = m_errorQuadric.M30 = a * d;
-            m_errorQuadric.M12 = m_errorQuadric.M21 = b * c;
-            m_errorQuadric.M13 = m_errorQuadric.M31 = b * d;
-            m_errorQuadric.M23 = m_errorQuadric.M32 = c * d;
-        }
-
-        public void CreateHeuristic()
-        {
-            if (m_errorQuadric == M44f.Zero)
-            {
-                throw new InvalidOperationException("Must call CreateQuadric(...) first");
-            }
-
-            ErrorHeuristic = ToHeuristic(ErrorQuadric);
-        }
-
-        #endregion
-
-        #region Operator Overload
-
-        public static QuadricF operator +(QuadricF lhs, QuadricF rhs)
-        {
-            var result = new QuadricF
-            {
-                ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
-                Normal = lhs.Normal + rhs.Normal
-            };
-
-            result.ErrorHeuristic = ToHeuristic(result.ErrorQuadric);
-
-            return result;
-        }
-
-        //public static QuadricF operator -(QuadricF lhs, QuadricF rhs)
-        //{
-        //    QuadricF result = new QuadricF();
-
-        //    result.ErrorQuadric = lhs.ErrorQuadric - rhs.ErrorQuadric;
-
-        //    result.ErrorHeuristic = QuadricF.ToHeuristic(result.ErrorQuadric);
-
-        //    return result;
-        //}
-
-        #endregion
-
-        #region Static Methods
-
-        static M44f ToHeuristic(M44f quadric)
-        {
-            var result = new M44f();
-
-            result = quadric;
-            result.R3 = new V4f(0, 0, 0, 1);
-
-            return result;
-        }
-
-        #endregion
+        ErrorHeuristic = ToHeuristic(ErrorQuadric);
     }
 
     #endregion
 
-    #region QuadricD
+    #region Operator Overload
 
-    public struct QuadricD
+    public static QuadricF operator +(QuadricF lhs, QuadricF rhs)
     {
-        V3d m_normal;
-        M44d m_errorQuadric;
-
-        #region Properties
-
-        public V3d Normal
+        var result = new QuadricF
         {
-            readonly get { return m_normal.Normalized; }
-            set { m_normal = value; }
-        }
+            ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
+            Normal = lhs.Normal + rhs.Normal
+        };
 
-        public M44d ErrorQuadric
-        {
-            readonly get { return m_errorQuadric; }
-            set { m_errorQuadric = value; }
-        }
+        result.ErrorHeuristic = ToHeuristic(result.ErrorQuadric);
 
-        public readonly double ErrorOffset => ErrorQuadric.M33;
-
-        public M44d ErrorHeuristic { readonly get; set; }
-
-        #endregion
-
-        public void Create(Plane3d plane)
-        {
-            CreateQuadric(plane);
-            CreateHeuristic();
-        }
-
-        #region Create QuadricD/Heuristic
-
-        public void CreateQuadric(Plane3d plane)
-        {
-            Normal = plane.Normal;
-            double a = Normal.X;
-            double b = Normal.Y;
-            double c = Normal.Z;
-
-            // Garland uses "ax + by + cz + d = 0"
-            // Aardvark uses "ax + by + cz - d = 0"
-            double d = -plane.Distance;
-
-            m_errorQuadric.M00 = a * a;
-            m_errorQuadric.M11 = b * b;
-            m_errorQuadric.M22 = c * c;
-            m_errorQuadric.M33 = d * d;
-
-            m_errorQuadric.M01 = m_errorQuadric.M10 = a * b;
-            m_errorQuadric.M02 = m_errorQuadric.M20 = a * c;
-            m_errorQuadric.M03 = m_errorQuadric.M30 = a * d;
-            m_errorQuadric.M12 = m_errorQuadric.M21 = b * c;
-            m_errorQuadric.M13 = m_errorQuadric.M31 = b * d;
-            m_errorQuadric.M23 = m_errorQuadric.M32 = c * d;
-        }
-
-        public void CreateHeuristic()
-        {
-            if (m_errorQuadric == M44d.Zero)
-            {
-                throw new InvalidOperationException("Must call CreateQuadric(...) first");
-            }
-
-            ErrorHeuristic = ToHeuristic(ErrorQuadric);
-        }
-
-        #endregion
-
-        #region Operator Overload
-
-        public static QuadricD operator +(QuadricD lhs, QuadricD rhs)
-        {
-            var result = new QuadricD
-            {
-                ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
-                Normal = lhs.Normal + rhs.Normal
-            };
-
-            result.ErrorHeuristic = ToHeuristic(result.ErrorQuadric);
-
-            return result;
-        }
-
-        //public static QuadricD operator -(QuadricD lhs, QuadricD rhs)
-        //{
-        //    QuadricD result = new QuadricD();
-
-        //    result.ErrorQuadric = lhs.ErrorQuadric - rhs.ErrorQuadric;
-
-        //    result.ErrorHeuristic = QuadricD.ToHeuristic(result.ErrorQuadric);
-
-        //    return result;
-        //}
-
-        #endregion
-
-        #region Static Methods
-
-        static M44d ToHeuristic(M44d quadric)
-        {
-            var result = new M44d();
-
-            result = quadric;
-            result.R3 = new V4d(0, 0, 0, 1);
-
-            return result;
-        }
-
-        #endregion
+        return result;
     }
+
+    //public static QuadricF operator -(QuadricF lhs, QuadricF rhs)
+    //{
+    //    QuadricF result = new QuadricF();
+
+    //    result.ErrorQuadric = lhs.ErrorQuadric - rhs.ErrorQuadric;
+
+    //    result.ErrorHeuristic = QuadricF.ToHeuristic(result.ErrorQuadric);
+
+    //    return result;
+    //}
 
     #endregion
 
+    #region Static Methods
+    
+    static M44f ToHeuristic(M44f quadric)
+    {
+        //var result = new M44f();
+
+        var result = quadric;
+        result.R3 = new V4f(0, 0, 0, 1);
+
+        return result;
+    }
+
+    #endregion
 }
+
+#endregion
+
+#region QuadricD
+
+public struct QuadricD
+{
+    V3d m_normal;
+    M44d m_errorQuadric;
+
+    #region Properties
+
+    public V3d Normal
+    {
+        readonly get { return m_normal.Normalized; }
+        set { m_normal = value; }
+    }
+
+    public M44d ErrorQuadric
+    {
+        readonly get { return m_errorQuadric; }
+        set { m_errorQuadric = value; }
+    }
+
+    public readonly double ErrorOffset => ErrorQuadric.M33;
+
+    public M44d ErrorHeuristic { readonly get; set; }
+
+    #endregion
+
+    public void Create(Plane3d plane)
+    {
+        CreateQuadric(plane);
+        CreateHeuristic();
+    }
+
+    #region Create QuadricD/Heuristic
+
+    public void CreateQuadric(Plane3d plane)
+    {
+        Normal = plane.Normal;
+        double a = Normal.X;
+        double b = Normal.Y;
+        double c = Normal.Z;
+
+        // Garland uses "ax + by + cz + d = 0"
+        // Aardvark uses "ax + by + cz - d = 0"
+        double d = -plane.Distance;
+
+        m_errorQuadric.M00 = a * a;
+        m_errorQuadric.M11 = b * b;
+        m_errorQuadric.M22 = c * c;
+        m_errorQuadric.M33 = d * d;
+
+        m_errorQuadric.M01 = m_errorQuadric.M10 = a * b;
+        m_errorQuadric.M02 = m_errorQuadric.M20 = a * c;
+        m_errorQuadric.M03 = m_errorQuadric.M30 = a * d;
+        m_errorQuadric.M12 = m_errorQuadric.M21 = b * c;
+        m_errorQuadric.M13 = m_errorQuadric.M31 = b * d;
+        m_errorQuadric.M23 = m_errorQuadric.M32 = c * d;
+    }
+
+    public void CreateHeuristic()
+    {
+        if (m_errorQuadric == M44d.Zero)
+        {
+            throw new InvalidOperationException("Must call CreateQuadric(...) first");
+        }
+
+        ErrorHeuristic = ToHeuristic(ErrorQuadric);
+    }
+
+    #endregion
+
+    #region Operator Overload
+
+    public static QuadricD operator +(QuadricD lhs, QuadricD rhs)
+    {
+        var result = new QuadricD
+        {
+            ErrorQuadric = lhs.ErrorQuadric + rhs.ErrorQuadric,
+            Normal = lhs.Normal + rhs.Normal
+        };
+
+        result.ErrorHeuristic = ToHeuristic(result.ErrorQuadric);
+
+        return result;
+    }
+
+    //public static QuadricD operator -(QuadricD lhs, QuadricD rhs)
+    //{
+    //    QuadricD result = new QuadricD();
+
+    //    result.ErrorQuadric = lhs.ErrorQuadric - rhs.ErrorQuadric;
+
+    //    result.ErrorHeuristic = QuadricD.ToHeuristic(result.ErrorQuadric);
+
+    //    return result;
+    //}
+
+    #endregion
+
+    #region Static Methods
+    
+    static M44d ToHeuristic(M44d quadric)
+    {
+        //var result = new M44d();
+
+        var result = quadric;
+        result.R3 = new V4d(0, 0, 0, 1);
+
+        return result;
+    }
+
+    #endregion
+}
+
+#endregion
+

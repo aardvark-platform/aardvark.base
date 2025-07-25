@@ -1,3 +1,20 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Linq;
 using System.Globalization;
@@ -60,7 +77,7 @@ namespace Aardvark.Base
         public static ComplexF Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexF(0, 0);
+            get => new(0, 0);
         }
 
         /// <summary>
@@ -69,7 +86,7 @@ namespace Aardvark.Base
         public static ComplexF One
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexF(1, 0);
+            get => new(1, 0);
         }
 
         /// <summary>
@@ -78,7 +95,7 @@ namespace Aardvark.Base
         public static ComplexF I
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexF(0, 1);
+            get => new(0, 1);
         }
 
         /// <summary>
@@ -87,7 +104,7 @@ namespace Aardvark.Base
         public static ComplexF PositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexF(float.PositiveInfinity);
+            get => new(float.PositiveInfinity);
         }
 
         /// <summary>
@@ -96,7 +113,7 @@ namespace Aardvark.Base
         public static ComplexF NegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexF(float.NegativeInfinity);
+            get => new(float.NegativeInfinity);
         }
 
         /// <summary>
@@ -105,7 +122,7 @@ namespace Aardvark.Base
         public static ComplexF PositiveInfinityI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexF(0, float.PositiveInfinity);
+            get => new(0, float.PositiveInfinity);
         }
 
         /// <summary>
@@ -114,7 +131,7 @@ namespace Aardvark.Base
         public static ComplexF NegativeInfinityI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexF(0, float.NegativeInfinity);
+            get => new(0, float.NegativeInfinity);
         }
 
         #endregion
@@ -289,7 +306,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF CreateRadial(float r, float phi)
-            => new ComplexF(r * Fun.Cos(phi), r * Fun.Sin(phi));
+            => new(r * Fun.Cos(phi), r * Fun.Sin(phi));
 
         /// <summary>
         /// Creates a Orthogonal Complex
@@ -299,7 +316,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF CreateOrthogonal(float real, float imag)
-            => new ComplexF(real, imag);
+            => new(real, imag);
 
         #endregion
 
@@ -409,63 +426,63 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ComplexD(ComplexF c)
-            => new ComplexD(c);
+            => new(c);
 
         /// <summary>
         /// Implicit conversion from a <see cref="float"/> to a <see cref="ComplexF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ComplexF(float a)
-            => new ComplexF(a);
+            => new(a);
 
         /// <summary>
         /// Adds two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator +(ComplexF a, ComplexF b)
-            => new ComplexF(a.Real + b.Real, a.Imag + b.Imag);
+            => new(a.Real + b.Real, a.Imag + b.Imag);
 
         /// <summary>
         /// Adds a complex number and a real number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator +(ComplexF a, float b)
-            => new ComplexF(a.Real + b, a.Imag);
+            => new(a.Real + b, a.Imag);
 
         /// <summary>
         /// Adds a real number and a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator +(float a, ComplexF b)
-            => new ComplexF(a + b.Real, b.Imag);
+            => new(a + b.Real, b.Imag);
 
         /// <summary>
         /// Subtracts two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(ComplexF a, ComplexF b)
-            => new ComplexF(a.Real - b.Real, a.Imag - b.Imag);
+            => new(a.Real - b.Real, a.Imag - b.Imag);
 
         /// <summary>
         /// Subtracts a real number from a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(ComplexF a, float b)
-            => new ComplexF(a.Real - b, a.Imag);
+            => new(a.Real - b, a.Imag);
 
         /// <summary>
         /// Subtracts a complex number from a real number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(float a, ComplexF b)
-            => new ComplexF(a - b.Real, -b.Imag);
+            => new(a - b.Real, -b.Imag);
 
         /// <summary>
         /// Multiplies two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator *(ComplexF a, ComplexF b)
-            => new ComplexF(
+            => new(
                 a.Real * b.Real - a.Imag * b.Imag,
                 a.Real * b.Imag + a.Imag * b.Real);
 
@@ -474,14 +491,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator *(ComplexF a, float b)
-            => new ComplexF(a.Real * b, a.Imag * b);
+            => new(a.Real * b, a.Imag * b);
 
         /// <summary>
         /// Multiplies a real number and a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator *(float a, ComplexF b)
-            => new ComplexF(a * b.Real, a * b.Imag);
+            => new(a * b.Real, a * b.Imag);
 
         /// <summary>
         /// Divides two complex numbers.
@@ -490,7 +507,7 @@ namespace Aardvark.Base
         public static ComplexF operator /(ComplexF a, ComplexF b)
         {
             float t = 1 / b.NormSquared;
-            return new ComplexF(
+            return new(
                 t * (a.Real * b.Real + a.Imag * b.Imag),
                 t * (a.Imag * b.Real - a.Real * b.Imag));
         }
@@ -500,7 +517,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator /(ComplexF a, float b)
-            => new ComplexF(a.Real / b, a.Imag / b);
+            => new(a.Real / b, a.Imag / b);
 
         /// <summary>
         /// Divides a real number by a complex number.
@@ -509,7 +526,7 @@ namespace Aardvark.Base
         public static ComplexF operator /(float a, ComplexF b)
         {
             float t = 1 / b.NormSquared;
-            return new ComplexF(
+            return new(
                 t * (a * b.Real),
                 t * (-a * b.Imag));
         }
@@ -519,7 +536,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator -(ComplexF a)
-            => new ComplexF(-a.Real, -a.Imag);
+            => new(-a.Real, -a.Imag);
 
         /// <summary>
         /// Returns the conjugate of a complex number.
@@ -856,7 +873,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log(this ComplexF x)
-            => new ComplexF(Log(x.Norm), x.Argument);
+            => new(Log(x.Norm), x.Argument);
 
         /// <summary>
         /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.
@@ -938,7 +955,7 @@ namespace Aardvark.Base
             ComplexF res0 = ComplexF.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
             ComplexF res1 = ComplexF.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + ConstantF.Pi);
 
-            return new ComplexF[2] { res0, res1 };
+            return [res0, res1];
         }
 
         /// <summary>
@@ -1078,7 +1095,7 @@ namespace Aardvark.Base
         public static ComplexD Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexD(0, 0);
+            get => new(0, 0);
         }
 
         /// <summary>
@@ -1087,7 +1104,7 @@ namespace Aardvark.Base
         public static ComplexD One
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexD(1, 0);
+            get => new(1, 0);
         }
 
         /// <summary>
@@ -1096,7 +1113,7 @@ namespace Aardvark.Base
         public static ComplexD I
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexD(0, 1);
+            get => new(0, 1);
         }
 
         /// <summary>
@@ -1105,7 +1122,7 @@ namespace Aardvark.Base
         public static ComplexD PositiveInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexD(double.PositiveInfinity);
+            get => new(double.PositiveInfinity);
         }
 
         /// <summary>
@@ -1114,7 +1131,7 @@ namespace Aardvark.Base
         public static ComplexD NegativeInfinity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexD(double.NegativeInfinity);
+            get => new(double.NegativeInfinity);
         }
 
         /// <summary>
@@ -1123,7 +1140,7 @@ namespace Aardvark.Base
         public static ComplexD PositiveInfinityI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexD(0, double.PositiveInfinity);
+            get => new(0, double.PositiveInfinity);
         }
 
         /// <summary>
@@ -1132,7 +1149,7 @@ namespace Aardvark.Base
         public static ComplexD NegativeInfinityI
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new ComplexD(0, double.NegativeInfinity);
+            get => new(0, double.NegativeInfinity);
         }
 
         #endregion
@@ -1307,7 +1324,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD CreateRadial(double r, double phi)
-            => new ComplexD(r * Fun.Cos(phi), r * Fun.Sin(phi));
+            => new(r * Fun.Cos(phi), r * Fun.Sin(phi));
 
         /// <summary>
         /// Creates a Orthogonal Complex
@@ -1317,7 +1334,7 @@ namespace Aardvark.Base
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD CreateOrthogonal(double real, double imag)
-            => new ComplexD(real, imag);
+            => new(real, imag);
 
         #endregion
 
@@ -1427,63 +1444,63 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ComplexF(ComplexD c)
-            => new ComplexF(c);
+            => new(c);
 
         /// <summary>
         /// Implicit conversion from a <see cref="double"/> to a <see cref="ComplexD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator ComplexD(double a)
-            => new ComplexD(a);
+            => new(a);
 
         /// <summary>
         /// Adds two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator +(ComplexD a, ComplexD b)
-            => new ComplexD(a.Real + b.Real, a.Imag + b.Imag);
+            => new(a.Real + b.Real, a.Imag + b.Imag);
 
         /// <summary>
         /// Adds a complex number and a real number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator +(ComplexD a, double b)
-            => new ComplexD(a.Real + b, a.Imag);
+            => new(a.Real + b, a.Imag);
 
         /// <summary>
         /// Adds a real number and a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator +(double a, ComplexD b)
-            => new ComplexD(a + b.Real, b.Imag);
+            => new(a + b.Real, b.Imag);
 
         /// <summary>
         /// Subtracts two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(ComplexD a, ComplexD b)
-            => new ComplexD(a.Real - b.Real, a.Imag - b.Imag);
+            => new(a.Real - b.Real, a.Imag - b.Imag);
 
         /// <summary>
         /// Subtracts a real number from a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(ComplexD a, double b)
-            => new ComplexD(a.Real - b, a.Imag);
+            => new(a.Real - b, a.Imag);
 
         /// <summary>
         /// Subtracts a complex number from a real number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(double a, ComplexD b)
-            => new ComplexD(a - b.Real, -b.Imag);
+            => new(a - b.Real, -b.Imag);
 
         /// <summary>
         /// Multiplies two complex numbers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator *(ComplexD a, ComplexD b)
-            => new ComplexD(
+            => new(
                 a.Real * b.Real - a.Imag * b.Imag,
                 a.Real * b.Imag + a.Imag * b.Real);
 
@@ -1492,14 +1509,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator *(ComplexD a, double b)
-            => new ComplexD(a.Real * b, a.Imag * b);
+            => new(a.Real * b, a.Imag * b);
 
         /// <summary>
         /// Multiplies a real number and a complex number.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator *(double a, ComplexD b)
-            => new ComplexD(a * b.Real, a * b.Imag);
+            => new(a * b.Real, a * b.Imag);
 
         /// <summary>
         /// Divides two complex numbers.
@@ -1508,7 +1525,7 @@ namespace Aardvark.Base
         public static ComplexD operator /(ComplexD a, ComplexD b)
         {
             double t = 1 / b.NormSquared;
-            return new ComplexD(
+            return new(
                 t * (a.Real * b.Real + a.Imag * b.Imag),
                 t * (a.Imag * b.Real - a.Real * b.Imag));
         }
@@ -1518,7 +1535,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator /(ComplexD a, double b)
-            => new ComplexD(a.Real / b, a.Imag / b);
+            => new(a.Real / b, a.Imag / b);
 
         /// <summary>
         /// Divides a real number by a complex number.
@@ -1527,7 +1544,7 @@ namespace Aardvark.Base
         public static ComplexD operator /(double a, ComplexD b)
         {
             double t = 1 / b.NormSquared;
-            return new ComplexD(
+            return new(
                 t * (a * b.Real),
                 t * (-a * b.Imag));
         }
@@ -1537,7 +1554,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator -(ComplexD a)
-            => new ComplexD(-a.Real, -a.Imag);
+            => new(-a.Real, -a.Imag);
 
         /// <summary>
         /// Returns the conjugate of a complex number.
@@ -1874,7 +1891,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log(this ComplexD x)
-            => new ComplexD(Log(x.Norm), x.Argument);
+            => new(Log(x.Norm), x.Argument);
 
         /// <summary>
         /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.
@@ -2017,7 +2034,7 @@ namespace Aardvark.Base
             ComplexD res0 = ComplexD.CreateRadial(Sqrt(number.Norm), number.Argument / 2);
             ComplexD res1 = ComplexD.CreateRadial(Sqrt(number.Norm), number.Argument / 2 + Constant.Pi);
 
-            return new ComplexD[2] { res0, res1 };
+            return [res0, res1];
         }
 
         /// <summary>

@@ -1,3 +1,20 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -7,10 +24,10 @@ namespace Aardvark.Base
     public static partial class GeometryFun
     {
         private static readonly int[] c_cubeEdgeVertex0 =
-            new int[] { 0, 2, 4, 6, 0, 1, 4, 5, 0, 1, 2, 3 };
+            [ 0, 2, 4, 6, 0, 1, 4, 5, 0, 1, 2, 3 ];
 
         private static readonly int[] c_cubeEdgeVertex1 =
-            new int[] { 1, 3, 5, 7, 2, 3, 6, 7, 4, 5, 6, 7 };
+            [ 1, 3, 5, 7, 2, 3, 6, 7, 4, 5, 6, 7 ];
 
         // Contains-tests should return true if the contained object is
         // either entirely inside the containing object or lies on the
@@ -275,13 +292,13 @@ namespace Aardvark.Base
 
         internal static V3i InsideTriangleFlags(ref V2f p0, ref V2f p1, ref V2f p2, ref V2f point)
         {
-            V2f n0 = new V2f(p0.Y - p1.Y, p1.X - p0.X);
-            V2f n1 = new V2f(p1.Y - p2.Y, p2.X - p1.X);
-            V2f n2 = new V2f(p2.Y - p0.Y, p0.X - p2.X);
+            var n0 = new V2f(p0.Y - p1.Y, p1.X - p0.X);
+            var n1 = new V2f(p1.Y - p2.Y, p2.X - p1.X);
+            var n2 = new V2f(p2.Y - p0.Y, p0.X - p2.X);
 
-            int t0 = Fun.Sign(n0.Dot(point - p0));
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
+            var t0 = Fun.Sign(n0.Dot(point - p0));
+            var t1 = Fun.Sign(n1.Dot(point - p1));
+            var t2 = Fun.Sign(n2.Dot(point - p2));
 
             if (t0 == 0) t1 = 1;
             if (t1 == 0) t1 = 1;
@@ -292,11 +309,11 @@ namespace Aardvark.Base
 
         internal static V3i InsideTriangleFlags(ref V2f p0, ref V2f p1, ref V2f p2, ref V2f point, int t0)
         {
-            V2f n1 = new V2f(p1.Y - p2.Y, p2.X - p1.X);
-            V2f n2 = new V2f(p2.Y - p0.Y, p0.X - p2.X);
+            var n1 = new V2f(p1.Y - p2.Y, p2.X - p1.X);
+            var n2 = new V2f(p2.Y - p0.Y, p0.X - p2.X);
 
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
+            var t1 = Fun.Sign(n1.Dot(point - p1));
+            var t2 = Fun.Sign(n2.Dot(point - p2));
 
             if (t1 == 0) t1 = 1;
             if (t2 == 0) t2 = 1;
@@ -396,7 +413,7 @@ namespace Aardvark.Base
         /// Returns true if point is within given eps to polygon.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this Polygon3f polygon, Plane3f supportingPlane, Euclidean3f world2plane, Polygon2f poly2d, float eps, V3f point, out float distance)
+        public static bool Contains(this Polygon3f _, Plane3f supportingPlane, Euclidean3f world2plane, Polygon2f poly2d, float eps, V3f point, out float distance)
         {
             distance = supportingPlane.Height(point);
             if (distance < -eps || distance > eps) return false;
@@ -407,7 +424,7 @@ namespace Aardvark.Base
         /// Returns true if point is within given eps to polygon.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this Polygon3f polygon, Plane3f supportingPlane, M44f world2plane, Polygon2f poly2d, float eps, V3f point, out float distance)
+        public static bool Contains(this Polygon3f _, Plane3f supportingPlane, M44f world2plane, Polygon2f poly2d, float eps, V3f point, out float distance)
         {
             distance = supportingPlane.Height(point);
             if (distance < -eps || distance > eps) return false;
@@ -666,7 +683,7 @@ namespace Aardvark.Base
             V2f p0, V2f p1
             )
         {
-            V2f n = new V2f(-ray.Direction.Y, ray.Direction.X);
+            var n = new V2f(-ray.Direction.Y, ray.Direction.X);
 
             float d0 = n.Dot(p0 - ray.Origin);
             float d1 = n.Dot(p1 - ray.Origin);
@@ -771,7 +788,7 @@ namespace Aardvark.Base
             if (!r0.Direction.IsParallelTo(r1.Direction)) return true;
             else
             {
-                V2f n0 = new V2f(-r0.Direction.Y, r0.Direction.X);
+                var n0 = new V2f(-r0.Direction.Y, r0.Direction.X);
 
                 if (Fun.IsTiny(n0.Dot(r1.Origin - r0.Origin))) return true;
                 else return false;
@@ -1023,12 +1040,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the Plane2d and the Ray2d intersect.
-        /// point holds the Intersection-Point if an intersection is found (else V2d.NaN)
+        /// Point holds the Intersection-Point if an intersection is found (else V2d.NaN)
         /// ATTENTION: Works only with Normalized Plane2ds
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(this Plane2f plane, Ray2f ray, out V2f point)
-            => plane.Intersects(ray, out float t, out point);
+            => plane.Intersects(ray, out _, out point);
 
         /// <summary>
         /// Returns true if the Plane2f and the Ray2f intersect.
@@ -1360,7 +1377,7 @@ namespace Aardvark.Base
              * Getting a Normal-Vector for the Ray and calculating
              * the Normal Distances for every Box-Point:
              */
-            V2f n = new V2f(-ray.Direction.Y, ray.Direction.X);
+            var n = new V2f(-ray.Direction.Y, ray.Direction.X);
 
             float d0 = n.Dot(box.Min - ray.Origin);                                            //n.Dot(box.p0 - ray.Origin)
             float d1 = n.X * (box.Max.X - ray.Origin.X) + n.Y * (box.Min.Y - ray.Origin.Y);    //n.Dot(box.p1 - ray.Origin)
@@ -1373,7 +1390,7 @@ namespace Aardvark.Base
              * This means the Box and the Ray have an Intersection
              */
 
-            Range1f r = new Range1f(d0, d1, d2, d3);
+            var r = new Range1f(d0, d1, d2, d3);
             return r.Contains(0);
         }
 
@@ -1586,7 +1603,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// returns true if the Quad and the line between p0 and p1 intersect or the quad contains the line
+        /// Returns true if the Quad and the line between p0 and p1 intersect or the quad contains the line
         /// </summary>
         public static bool IntersectsLine(
             this Quad2f quad,
@@ -1596,7 +1613,7 @@ namespace Aardvark.Base
             if (quad.Contains(p0)) return true;
             if (quad.Contains(p1)) return true;
 
-            Line2f line = new Line2f(p0, p1);
+            var line = new Line2f(p0, p1);
             if (line.IntersectsLine(quad.P0, quad.P1)) return true;
             if (line.IntersectsLine(quad.P1, quad.P2)) return true;
             if (line.IntersectsLine(quad.P2, quad.P3)) return true;
@@ -2633,7 +2650,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the triangles intersect.
-        /// line holds the cutting-line of the two triangles.
+        /// Line holds the cutting-line of the two triangles.
         /// </summary>
         public static bool Intersects(
             this Triangle3f t0,
@@ -2641,7 +2658,7 @@ namespace Aardvark.Base
             out Line3f line
             )
         {
-            List<V3f> points = new List<V3f>();
+            List<V3f> points = [];
 
             if (t0.IntersectsLine(t1.P0, t1.P1, out V3f temp)) points.Add(temp);
             if (t0.IntersectsLine(t1.P1, t1.P2, out temp)) points.Add(temp);
@@ -2704,7 +2721,7 @@ namespace Aardvark.Base
             this Quad3f quad,
             V3f p0, V3f p1)
         {
-            Ray3f ray = new Ray3f(p0, p1 - p0);
+            var ray = new Ray3f(p0, p1 - p0);
             if (quad.Intersects(ray, 0, 1, out _))
             {
                 return true;
@@ -2724,7 +2741,7 @@ namespace Aardvark.Base
             V3f p0, V3f p1,
             out V3f point)
         {
-            Ray3f ray = new Ray3f(p0, p1 - p0);
+            var ray = new Ray3f(p0, p1 - p0);
             if (quad.Intersects(ray, 0, 1, out float t))
             {
                 point = ray.GetPointOnRay(t);
@@ -2836,7 +2853,7 @@ namespace Aardvark.Base
             V3f p0, V3f p1, V3f p2
             )
         {
-            Triangle3f tri = new Triangle3f(p0, p1, p2);
+            var tri = new Triangle3f(p0, p1, p2);
             return quad.Intersects(tri);
         }
 
@@ -3306,22 +3323,22 @@ namespace Aardvark.Base
 
                 if (distance == cylinder.Radius) //one tangent line
                 {
-                    rays = new[] { new Ray3f(center, axis) };
+                    rays = [new Ray3f(center, axis)];
                     return true;
                 }
                 else //two intersection lines
                 {
                     var offset = axis.Cross(plane.Normal);
                     var extent = (cylinder.Radius.Square() - distance.Square()).Sqrt();
-                    rays = new[]
-                    {
+                    rays =
+                    [
                         new Ray3f(center - extent * offset, axis),
                         new Ray3f(center + extent * offset, axis)
-                    };
+                    ];
                     return true;
                 }
             }
-            rays = Array.Empty<Ray3f>();
+            rays = [];
             return false;
         }
 
@@ -3765,7 +3782,7 @@ namespace Aardvark.Base
                 around the box. Intersect the four space diagonals of the box
                 with the triangle to test for intersection.
             --------------------------------------------------------------- */
-            Ray3f ray = new Ray3f(box.Min, box.Size);
+            var ray = new Ray3f(box.Min, box.Size);
             if (ray.IntersectsTriangle(p0, p1, p2, 0, 1)) return true;
 
             ray.Origin.X = box.Max.X;
@@ -3844,7 +3861,7 @@ namespace Aardvark.Base
                 around the box. Intersect the four space diagonals of the box
                 with the triangle to test for intersection.
             --------------------------------------------------------------- */
-            Ray3f ray = new Ray3f(box.Min, box.Size);
+            var ray = new Ray3f(box.Min, box.Size);
             if (ray.IntersectsQuad(p0, p1, p2, p3, 0, 1)) return true;
 
             ray.Origin.X = box.Max.X;
@@ -3909,7 +3926,7 @@ namespace Aardvark.Base
 
             int[] tris = poly.ComputeTriangulationOfConcavePolygon(1E-5f);
 
-            Ray3f ray = new Ray3f(box.Min, box.Size);
+            var ray = new Ray3f(box.Min, box.Size);
             if (ray.Intersects(poly, tris, 0, 1)) return true;
 
             ray.Origin.X = box.Max.X;
@@ -4487,13 +4504,13 @@ namespace Aardvark.Base
 
         internal static V3i InsideTriangleFlags(ref V2d p0, ref V2d p1, ref V2d p2, ref V2d point)
         {
-            V2d n0 = new V2d(p0.Y - p1.Y, p1.X - p0.X);
-            V2d n1 = new V2d(p1.Y - p2.Y, p2.X - p1.X);
-            V2d n2 = new V2d(p2.Y - p0.Y, p0.X - p2.X);
+            var n0 = new V2d(p0.Y - p1.Y, p1.X - p0.X);
+            var n1 = new V2d(p1.Y - p2.Y, p2.X - p1.X);
+            var n2 = new V2d(p2.Y - p0.Y, p0.X - p2.X);
 
-            int t0 = Fun.Sign(n0.Dot(point - p0));
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
+            var t0 = Fun.Sign(n0.Dot(point - p0));
+            var t1 = Fun.Sign(n1.Dot(point - p1));
+            var t2 = Fun.Sign(n2.Dot(point - p2));
 
             if (t0 == 0) t1 = 1;
             if (t1 == 0) t1 = 1;
@@ -4504,11 +4521,11 @@ namespace Aardvark.Base
 
         internal static V3i InsideTriangleFlags(ref V2d p0, ref V2d p1, ref V2d p2, ref V2d point, int t0)
         {
-            V2d n1 = new V2d(p1.Y - p2.Y, p2.X - p1.X);
-            V2d n2 = new V2d(p2.Y - p0.Y, p0.X - p2.X);
+            var n1 = new V2d(p1.Y - p2.Y, p2.X - p1.X);
+            var n2 = new V2d(p2.Y - p0.Y, p0.X - p2.X);
 
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
+            var t1 = Fun.Sign(n1.Dot(point - p1));
+            var t2 = Fun.Sign(n2.Dot(point - p2));
 
             if (t1 == 0) t1 = 1;
             if (t2 == 0) t2 = 1;
@@ -4608,7 +4625,7 @@ namespace Aardvark.Base
         /// Returns true if point is within given eps to polygon.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this Polygon3d polygon, Plane3d supportingPlane, Euclidean3d world2plane, Polygon2d poly2d, double eps, V3d point, out double distance)
+        public static bool Contains(this Polygon3d _, Plane3d supportingPlane, Euclidean3d world2plane, Polygon2d poly2d, double eps, V3d point, out double distance)
         {
             distance = supportingPlane.Height(point);
             if (distance < -eps || distance > eps) return false;
@@ -4619,7 +4636,7 @@ namespace Aardvark.Base
         /// Returns true if point is within given eps to polygon.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this Polygon3d polygon, Plane3d supportingPlane, M44d world2plane, Polygon2d poly2d, double eps, V3d point, out double distance)
+        public static bool Contains(this Polygon3d _, Plane3d supportingPlane, M44d world2plane, Polygon2d poly2d, double eps, V3d point, out double distance)
         {
             distance = supportingPlane.Height(point);
             if (distance < -eps || distance > eps) return false;
@@ -4878,7 +4895,7 @@ namespace Aardvark.Base
             V2d p0, V2d p1
             )
         {
-            V2d n = new V2d(-ray.Direction.Y, ray.Direction.X);
+            var n = new V2d(-ray.Direction.Y, ray.Direction.X);
 
             double d0 = n.Dot(p0 - ray.Origin);
             double d1 = n.Dot(p1 - ray.Origin);
@@ -4983,7 +5000,7 @@ namespace Aardvark.Base
             if (!r0.Direction.IsParallelTo(r1.Direction)) return true;
             else
             {
-                V2d n0 = new V2d(-r0.Direction.Y, r0.Direction.X);
+                var n0 = new V2d(-r0.Direction.Y, r0.Direction.X);
 
                 if (Fun.IsTiny(n0.Dot(r1.Origin - r0.Origin))) return true;
                 else return false;
@@ -5235,12 +5252,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the Plane2d and the Ray2d intersect.
-        /// point holds the Intersection-Point if an intersection is found (else V2d.NaN)
+        /// Point holds the Intersection-Point if an intersection is found (else V2d.NaN)
         /// ATTENTION: Works only with Normalized Plane2ds
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(this Plane2d plane, Ray2d ray, out V2d point)
-            => plane.Intersects(ray, out double t, out point);
+            => plane.Intersects(ray, out _, out point);
 
         /// <summary>
         /// Returns true if the Plane2d and the Ray2d intersect.
@@ -5572,7 +5589,7 @@ namespace Aardvark.Base
              * Getting a Normal-Vector for the Ray and calculating
              * the Normal Distances for every Box-Point:
              */
-            V2d n = new V2d(-ray.Direction.Y, ray.Direction.X);
+            var n = new V2d(-ray.Direction.Y, ray.Direction.X);
 
             double d0 = n.Dot(box.Min - ray.Origin);                                            //n.Dot(box.p0 - ray.Origin)
             double d1 = n.X * (box.Max.X - ray.Origin.X) + n.Y * (box.Min.Y - ray.Origin.Y);    //n.Dot(box.p1 - ray.Origin)
@@ -5585,7 +5602,7 @@ namespace Aardvark.Base
              * This means the Box and the Ray have an Intersection
              */
 
-            Range1d r = new Range1d(d0, d1, d2, d3);
+            var r = new Range1d(d0, d1, d2, d3);
             return r.Contains(0);
         }
 
@@ -5798,7 +5815,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// returns true if the Quad and the line between p0 and p1 intersect or the quad contains the line
+        /// Returns true if the Quad and the line between p0 and p1 intersect or the quad contains the line
         /// </summary>
         public static bool IntersectsLine(
             this Quad2d quad,
@@ -5808,7 +5825,7 @@ namespace Aardvark.Base
             if (quad.Contains(p0)) return true;
             if (quad.Contains(p1)) return true;
 
-            Line2d line = new Line2d(p0, p1);
+            var line = new Line2d(p0, p1);
             if (line.IntersectsLine(quad.P0, quad.P1)) return true;
             if (line.IntersectsLine(quad.P1, quad.P2)) return true;
             if (line.IntersectsLine(quad.P2, quad.P3)) return true;
@@ -6845,7 +6862,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns true if the triangles intersect.
-        /// line holds the cutting-line of the two triangles.
+        /// Line holds the cutting-line of the two triangles.
         /// </summary>
         public static bool Intersects(
             this Triangle3d t0,
@@ -6853,7 +6870,7 @@ namespace Aardvark.Base
             out Line3d line
             )
         {
-            List<V3d> points = new List<V3d>();
+            List<V3d> points = [];
 
             if (t0.IntersectsLine(t1.P0, t1.P1, out V3d temp)) points.Add(temp);
             if (t0.IntersectsLine(t1.P1, t1.P2, out temp)) points.Add(temp);
@@ -6916,7 +6933,7 @@ namespace Aardvark.Base
             this Quad3d quad,
             V3d p0, V3d p1)
         {
-            Ray3d ray = new Ray3d(p0, p1 - p0);
+            var ray = new Ray3d(p0, p1 - p0);
             if (quad.Intersects(ray, 0, 1, out _))
             {
                 return true;
@@ -6936,7 +6953,7 @@ namespace Aardvark.Base
             V3d p0, V3d p1,
             out V3d point)
         {
-            Ray3d ray = new Ray3d(p0, p1 - p0);
+            var ray = new Ray3d(p0, p1 - p0);
             if (quad.Intersects(ray, 0, 1, out double t))
             {
                 point = ray.GetPointOnRay(t);
@@ -7048,7 +7065,7 @@ namespace Aardvark.Base
             V3d p0, V3d p1, V3d p2
             )
         {
-            Triangle3d tri = new Triangle3d(p0, p1, p2);
+            var tri = new Triangle3d(p0, p1, p2);
             return quad.Intersects(tri);
         }
 
@@ -7518,22 +7535,22 @@ namespace Aardvark.Base
 
                 if (distance == cylinder.Radius) //one tangent line
                 {
-                    rays = new[] { new Ray3d(center, axis) };
+                    rays = [new Ray3d(center, axis)];
                     return true;
                 }
                 else //two intersection lines
                 {
                     var offset = axis.Cross(plane.Normal);
                     var extent = (cylinder.Radius.Square() - distance.Square()).Sqrt();
-                    rays = new[]
-                    {
+                    rays =
+                    [
                         new Ray3d(center - extent * offset, axis),
                         new Ray3d(center + extent * offset, axis)
-                    };
+                    ];
                     return true;
                 }
             }
-            rays = Array.Empty<Ray3d>();
+            rays = [];
             return false;
         }
 
@@ -7977,7 +7994,7 @@ namespace Aardvark.Base
                 around the box. Intersect the four space diagonals of the box
                 with the triangle to test for intersection.
             --------------------------------------------------------------- */
-            Ray3d ray = new Ray3d(box.Min, box.Size);
+            var ray = new Ray3d(box.Min, box.Size);
             if (ray.IntersectsTriangle(p0, p1, p2, 0, 1)) return true;
 
             ray.Origin.X = box.Max.X;
@@ -8056,7 +8073,7 @@ namespace Aardvark.Base
                 around the box. Intersect the four space diagonals of the box
                 with the triangle to test for intersection.
             --------------------------------------------------------------- */
-            Ray3d ray = new Ray3d(box.Min, box.Size);
+            var ray = new Ray3d(box.Min, box.Size);
             if (ray.IntersectsQuad(p0, p1, p2, p3, 0, 1)) return true;
 
             ray.Origin.X = box.Max.X;
@@ -8121,7 +8138,7 @@ namespace Aardvark.Base
 
             int[] tris = poly.ComputeTriangulationOfConcavePolygon(1E-5);
 
-            Ray3d ray = new Ray3d(box.Min, box.Size);
+            var ray = new Ray3d(box.Min, box.Size);
             if (ray.Intersects(poly, tris, 0, 1)) return true;
 
             ray.Origin.X = box.Max.X;

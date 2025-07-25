@@ -1,3 +1,20 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -214,7 +231,7 @@ namespace Aardvark.Base
         public readonly QuaternionF Conjugated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionF(W, -V);
+            get => new(W, -V);
         }
 
         /// <summary>
@@ -236,7 +253,7 @@ namespace Aardvark.Base
         public static QuaternionF Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionF(0);
+            get => new(0);
         }
 
         /// <summary>
@@ -245,7 +262,7 @@ namespace Aardvark.Base
         public static QuaternionF One
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionF(1, 0, 0, 0);
+            get => new(1, 0, 0, 0);
         }
 
         /// <summary>
@@ -254,7 +271,7 @@ namespace Aardvark.Base
         public static QuaternionF Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionF(1, 0, 0, 0);
+            get => new(1, 0, 0, 0);
         }
 
         /// <summary>
@@ -263,7 +280,7 @@ namespace Aardvark.Base
         public static QuaternionF I
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionF(0, 1, 0, 0);
+            get => new(0, 1, 0, 0);
         }
 
         /// <summary>
@@ -272,7 +289,7 @@ namespace Aardvark.Base
         public static QuaternionF J
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionF(0, 0, 1, 0);
+            get => new(0, 0, 1, 0);
         }
 
         /// <summary>
@@ -281,7 +298,7 @@ namespace Aardvark.Base
         public static QuaternionF K
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionF(0, 0, 0, 1);
+            get => new(0, 0, 0, 1);
         }
 
         #endregion
@@ -293,63 +310,63 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator -(QuaternionF q)
-            => new QuaternionF(-q.W, -q.X, -q.Y, -q.Z);
+            => new(-q.W, -q.X, -q.Y, -q.Z);
 
         /// <summary>
         /// Returns the sum of two <see cref="QuaternionF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator +(QuaternionF a, QuaternionF b)
-            => new QuaternionF(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            => new(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
         /// <summary>
         /// Returns the sum of a <see cref="QuaternionF"/> and a real scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator +(QuaternionF q, float s)
-            => new QuaternionF(q.W + s, q.X, q.Y, q.Z);
+            => new(q.W + s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the sum of a real scalar and a <see cref="QuaternionF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator +(float s, QuaternionF q)
-            => new QuaternionF(q.W + s, q.X, q.Y, q.Z);
+            => new(q.W + s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the difference between two <see cref="QuaternionF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator -(QuaternionF a, QuaternionF b)
-            => new QuaternionF(a.W - b.W, a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+            => new(a.W - b.W, a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
         /// <summary>
         /// Returns the difference between a <see cref="QuaternionF"/> and a real scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator -(QuaternionF q, float s)
-            => new QuaternionF(q.W - s, q.X, q.Y, q.Z);
+            => new(q.W - s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the difference between a real scalar and a <see cref="QuaternionF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator -(float s, QuaternionF q)
-            => new QuaternionF(s - q.W, -q.X, -q.Y, -q.Z);
+            => new(s - q.W, -q.X, -q.Y, -q.Z);
 
         /// <summary>
         /// Returns the product of a <see cref="QuaternionF"/> and a scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator *(QuaternionF q, float s)
-            => new QuaternionF(q.W * s, q.X * s, q.Y * s, q.Z * s);
+            => new(q.W * s, q.X * s, q.Y * s, q.Z * s);
 
         /// <summary>
         /// Returns the product of a scalar and a <see cref="QuaternionF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator *(float s, QuaternionF q)
-            => new QuaternionF(q.W * s, q.X * s, q.Y * s, q.Z * s);
+            => new(q.W * s, q.X * s, q.Y * s, q.Z * s);
 
         /// <summary>
         /// Multiplies two <see cref="QuaternionF"/>.
@@ -358,7 +375,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator *(QuaternionF a, QuaternionF b)
         {
-            return new QuaternionF(
+            return new(
                 a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
                 a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
                 a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
@@ -377,14 +394,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator /(QuaternionF q, float s)
-            => new QuaternionF(q.W / s, q.X / s, q.Y / s, q.Z / s);
+            => new(q.W / s, q.X / s, q.Y / s, q.Z / s);
 
         /// <summary>
         /// Divides a scalar by a <see cref="QuaternionF"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF operator /(float s, QuaternionF q)
-            => new QuaternionF(s / q.W, s / q.X, s / q.Y, s / q.Z);
+            => new(s / q.W, s / q.X, s / q.Y, s / q.Z);
 
         #endregion
 
@@ -413,7 +430,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator QuaternionD(QuaternionF q)
-            => new QuaternionD(q);
+            => new(q);
 
         /// <summary>
         /// Returns this <see cref="QuaternionF"/> as a 4x4 matrix. Quaternions are represented as matrices in such
@@ -424,7 +441,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44f(QuaternionF q)
         {
-            return new M44f(
+            return new(
                 q.W, -q.X, -q.Y, -q.Z,
                 q.X,  q.W, -q.Z,  q.Y,
                 q.Y,  q.Z,  q.W, -q.X,
@@ -437,7 +454,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator V4f(QuaternionF q)
-            => new V4f(q.W, q.X, q.Y, q.Z);
+            => new(q.W, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns all values of a <see cref="QuaternionF"/> instance
@@ -446,7 +463,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator float[](QuaternionF q)
         {
-            float[] array = new float[4];
+            var array = new float[4];
             array[0] = q.W;
             array[1] = q.X;
             array[2] = q.Y;
@@ -489,7 +506,7 @@ namespace Aardvark.Base
             => W.Equals(other.W) && X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
         public override readonly bool Equals(object other)
-            => (other is QuaternionF o) ? Equals(o) : false;
+            => (other is QuaternionF o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -892,7 +909,7 @@ namespace Aardvark.Base
         public readonly QuaternionD Conjugated
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionD(W, -V);
+            get => new(W, -V);
         }
 
         /// <summary>
@@ -914,7 +931,7 @@ namespace Aardvark.Base
         public static QuaternionD Zero
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionD(0);
+            get => new(0);
         }
 
         /// <summary>
@@ -923,7 +940,7 @@ namespace Aardvark.Base
         public static QuaternionD One
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionD(1, 0, 0, 0);
+            get => new(1, 0, 0, 0);
         }
 
         /// <summary>
@@ -932,7 +949,7 @@ namespace Aardvark.Base
         public static QuaternionD Identity
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionD(1, 0, 0, 0);
+            get => new(1, 0, 0, 0);
         }
 
         /// <summary>
@@ -941,7 +958,7 @@ namespace Aardvark.Base
         public static QuaternionD I
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionD(0, 1, 0, 0);
+            get => new(0, 1, 0, 0);
         }
 
         /// <summary>
@@ -950,7 +967,7 @@ namespace Aardvark.Base
         public static QuaternionD J
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionD(0, 0, 1, 0);
+            get => new(0, 0, 1, 0);
         }
 
         /// <summary>
@@ -959,7 +976,7 @@ namespace Aardvark.Base
         public static QuaternionD K
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => new QuaternionD(0, 0, 0, 1);
+            get => new(0, 0, 0, 1);
         }
 
         #endregion
@@ -971,63 +988,63 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator -(QuaternionD q)
-            => new QuaternionD(-q.W, -q.X, -q.Y, -q.Z);
+            => new(-q.W, -q.X, -q.Y, -q.Z);
 
         /// <summary>
         /// Returns the sum of two <see cref="QuaternionD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator +(QuaternionD a, QuaternionD b)
-            => new QuaternionD(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            => new(a.W + b.W, a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
         /// <summary>
         /// Returns the sum of a <see cref="QuaternionD"/> and a real scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator +(QuaternionD q, double s)
-            => new QuaternionD(q.W + s, q.X, q.Y, q.Z);
+            => new(q.W + s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the sum of a real scalar and a <see cref="QuaternionD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator +(double s, QuaternionD q)
-            => new QuaternionD(q.W + s, q.X, q.Y, q.Z);
+            => new(q.W + s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the difference between two <see cref="QuaternionD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator -(QuaternionD a, QuaternionD b)
-            => new QuaternionD(a.W - b.W, a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+            => new(a.W - b.W, a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
         /// <summary>
         /// Returns the difference between a <see cref="QuaternionD"/> and a real scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator -(QuaternionD q, double s)
-            => new QuaternionD(q.W - s, q.X, q.Y, q.Z);
+            => new(q.W - s, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns the difference between a real scalar and a <see cref="QuaternionD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator -(double s, QuaternionD q)
-            => new QuaternionD(s - q.W, -q.X, -q.Y, -q.Z);
+            => new(s - q.W, -q.X, -q.Y, -q.Z);
 
         /// <summary>
         /// Returns the product of a <see cref="QuaternionD"/> and a scalar.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator *(QuaternionD q, double s)
-            => new QuaternionD(q.W * s, q.X * s, q.Y * s, q.Z * s);
+            => new(q.W * s, q.X * s, q.Y * s, q.Z * s);
 
         /// <summary>
         /// Returns the product of a scalar and a <see cref="QuaternionD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator *(double s, QuaternionD q)
-            => new QuaternionD(q.W * s, q.X * s, q.Y * s, q.Z * s);
+            => new(q.W * s, q.X * s, q.Y * s, q.Z * s);
 
         /// <summary>
         /// Multiplies two <see cref="QuaternionD"/>.
@@ -1036,7 +1053,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator *(QuaternionD a, QuaternionD b)
         {
-            return new QuaternionD(
+            return new(
                 a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z,
                 a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
                 a.W * b.Y + a.Y * b.W + a.Z * b.X - a.X * b.Z,
@@ -1055,14 +1072,14 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator /(QuaternionD q, double s)
-            => new QuaternionD(q.W / s, q.X / s, q.Y / s, q.Z / s);
+            => new(q.W / s, q.X / s, q.Y / s, q.Z / s);
 
         /// <summary>
         /// Divides a scalar by a <see cref="QuaternionD"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD operator /(double s, QuaternionD q)
-            => new QuaternionD(s / q.W, s / q.X, s / q.Y, s / q.Z);
+            => new(s / q.W, s / q.X, s / q.Y, s / q.Z);
 
         #endregion
 
@@ -1091,7 +1108,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator QuaternionF(QuaternionD q)
-            => new QuaternionF(q);
+            => new(q);
 
         /// <summary>
         /// Returns this <see cref="QuaternionD"/> as a 4x4 matrix. Quaternions are represented as matrices in such
@@ -1102,7 +1119,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator M44d(QuaternionD q)
         {
-            return new M44d(
+            return new(
                 q.W, -q.X, -q.Y, -q.Z,
                 q.X,  q.W, -q.Z,  q.Y,
                 q.Y,  q.Z,  q.W, -q.X,
@@ -1115,7 +1132,7 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator V4d(QuaternionD q)
-            => new V4d(q.W, q.X, q.Y, q.Z);
+            => new(q.W, q.X, q.Y, q.Z);
 
         /// <summary>
         /// Returns all values of a <see cref="QuaternionD"/> instance
@@ -1124,7 +1141,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator double[](QuaternionD q)
         {
-            double[] array = new double[4];
+            var array = new double[4];
             array[0] = q.W;
             array[1] = q.X;
             array[2] = q.Y;
@@ -1167,7 +1184,7 @@ namespace Aardvark.Base
             => W.Equals(other.W) && X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 
         public override readonly bool Equals(object other)
-            => (other is QuaternionD o) ? Equals(o) : false;
+            => (other is QuaternionD o) && Equals(o);
 
         public override readonly string ToString()
         {

@@ -1,7 +1,27 @@
+/*
+    Copyright 2006-2025. The Aardvark Platform Team.
+
+        https://aardvark.graphics
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable CA1510 // Use ArgumentNullException throw helper
+#pragma warning restore IDE0079 // Remove unnecessary suppression
 
 namespace Aardvark.Base
 {
@@ -23,7 +43,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static byte Min(this IEnumerable<byte> sequence, byte minValue = byte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -44,8 +64,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static byte MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, byte> element_valueSelector, byte minValue = byte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -70,8 +90,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static byte MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, byte> element_valueSelector, ref TSeq minElement, byte minValue = byte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -99,8 +119,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, byte> element_valueSelector, byte minValue = byte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -120,8 +140,8 @@ namespace Aardvark.Base
         /// </summary>
         public static byte MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, byte> element_valueSelector, byte minValue = byte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -137,8 +157,8 @@ namespace Aardvark.Base
         /// </summary>
         public static byte MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, byte> element_valueSelector, ref TSeq minElement, byte minValue = byte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -159,8 +179,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, byte> element_valueSelector, byte minValue = byte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -187,7 +207,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static byte Max(this IEnumerable<byte> sequence, byte maxValue = byte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -208,8 +228,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static byte MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, byte> element_valueSelector, byte maxValue = byte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -234,8 +254,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static byte MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, byte> element_valueSelector, ref TSeq maxElement, byte maxValue = byte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -263,8 +283,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, byte> element_valueSelector, byte maxValue = byte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -284,8 +304,8 @@ namespace Aardvark.Base
         /// </summary>
         public static byte MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, byte> element_valueSelector, byte maxValue = byte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -301,8 +321,8 @@ namespace Aardvark.Base
         /// </summary>
         public static byte MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, byte> element_valueSelector, ref TSeq maxElement, byte maxValue = byte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -323,8 +343,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, byte> element_valueSelector, byte maxValue = byte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -455,7 +475,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static sbyte Min(this IEnumerable<sbyte> sequence, sbyte minValue = sbyte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -476,8 +496,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static sbyte MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, sbyte> element_valueSelector, sbyte minValue = sbyte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -502,8 +522,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static sbyte MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, sbyte> element_valueSelector, ref TSeq minElement, sbyte minValue = sbyte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -531,8 +551,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, sbyte> element_valueSelector, sbyte minValue = sbyte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -552,8 +572,8 @@ namespace Aardvark.Base
         /// </summary>
         public static sbyte MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, sbyte> element_valueSelector, sbyte minValue = sbyte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -569,8 +589,8 @@ namespace Aardvark.Base
         /// </summary>
         public static sbyte MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, sbyte> element_valueSelector, ref TSeq minElement, sbyte minValue = sbyte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -591,8 +611,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, sbyte> element_valueSelector, sbyte minValue = sbyte.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -619,7 +639,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static sbyte Max(this IEnumerable<sbyte> sequence, sbyte maxValue = sbyte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -640,8 +660,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static sbyte MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, sbyte> element_valueSelector, sbyte maxValue = sbyte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -666,8 +686,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static sbyte MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, sbyte> element_valueSelector, ref TSeq maxElement, sbyte maxValue = sbyte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -695,8 +715,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, sbyte> element_valueSelector, sbyte maxValue = sbyte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -716,8 +736,8 @@ namespace Aardvark.Base
         /// </summary>
         public static sbyte MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, sbyte> element_valueSelector, sbyte maxValue = sbyte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -733,8 +753,8 @@ namespace Aardvark.Base
         /// </summary>
         public static sbyte MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, sbyte> element_valueSelector, ref TSeq maxElement, sbyte maxValue = sbyte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -755,8 +775,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, sbyte> element_valueSelector, sbyte maxValue = sbyte.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -887,7 +907,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static short Min(this IEnumerable<short> sequence, short minValue = short.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -908,8 +928,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static short MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, short> element_valueSelector, short minValue = short.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -934,8 +954,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static short MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, short> element_valueSelector, ref TSeq minElement, short minValue = short.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -963,8 +983,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, short> element_valueSelector, short minValue = short.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -984,8 +1004,8 @@ namespace Aardvark.Base
         /// </summary>
         public static short MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, short> element_valueSelector, short minValue = short.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -1001,8 +1021,8 @@ namespace Aardvark.Base
         /// </summary>
         public static short MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, short> element_valueSelector, ref TSeq minElement, short minValue = short.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -1023,8 +1043,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, short> element_valueSelector, short minValue = short.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -1051,7 +1071,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static short Max(this IEnumerable<short> sequence, short maxValue = short.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -1072,8 +1092,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static short MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, short> element_valueSelector, short maxValue = short.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1098,8 +1118,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static short MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, short> element_valueSelector, ref TSeq maxElement, short maxValue = short.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1127,8 +1147,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, short> element_valueSelector, short maxValue = short.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -1148,8 +1168,8 @@ namespace Aardvark.Base
         /// </summary>
         public static short MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, short> element_valueSelector, short maxValue = short.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -1165,8 +1185,8 @@ namespace Aardvark.Base
         /// </summary>
         public static short MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, short> element_valueSelector, ref TSeq maxElement, short maxValue = short.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -1187,8 +1207,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, short> element_valueSelector, short maxValue = short.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -1319,7 +1339,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static ushort Min(this IEnumerable<ushort> sequence, ushort minValue = ushort.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -1340,8 +1360,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ushort MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ushort> element_valueSelector, ushort minValue = ushort.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1366,8 +1386,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ushort MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ushort> element_valueSelector, ref TSeq minElement, ushort minValue = ushort.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1395,8 +1415,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ushort> element_valueSelector, ushort minValue = ushort.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -1416,8 +1436,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ushort MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, ushort> element_valueSelector, ushort minValue = ushort.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -1433,8 +1453,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ushort MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, ushort> element_valueSelector, ref TSeq minElement, ushort minValue = ushort.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -1455,8 +1475,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, ushort> element_valueSelector, ushort minValue = ushort.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -1483,7 +1503,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static ushort Max(this IEnumerable<ushort> sequence, ushort maxValue = ushort.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -1504,8 +1524,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ushort MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ushort> element_valueSelector, ushort maxValue = ushort.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1530,8 +1550,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ushort MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ushort> element_valueSelector, ref TSeq maxElement, ushort maxValue = ushort.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1559,8 +1579,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ushort> element_valueSelector, ushort maxValue = ushort.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -1580,8 +1600,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ushort MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, ushort> element_valueSelector, ushort maxValue = ushort.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -1597,8 +1617,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ushort MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, ushort> element_valueSelector, ref TSeq maxElement, ushort maxValue = ushort.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -1619,8 +1639,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, ushort> element_valueSelector, ushort maxValue = ushort.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -1751,7 +1771,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static int Min(this IEnumerable<int> sequence, int minValue = int.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -1772,8 +1792,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static int MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, int> element_valueSelector, int minValue = int.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1798,8 +1818,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static int MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, int> element_valueSelector, ref TSeq minElement, int minValue = int.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1827,8 +1847,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, int> element_valueSelector, int minValue = int.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -1848,8 +1868,8 @@ namespace Aardvark.Base
         /// </summary>
         public static int MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, int> element_valueSelector, int minValue = int.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -1865,8 +1885,8 @@ namespace Aardvark.Base
         /// </summary>
         public static int MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, int> element_valueSelector, ref TSeq minElement, int minValue = int.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -1887,8 +1907,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, int> element_valueSelector, int minValue = int.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -1915,7 +1935,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static int Max(this IEnumerable<int> sequence, int maxValue = int.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -1936,8 +1956,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static int MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, int> element_valueSelector, int maxValue = int.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1962,8 +1982,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static int MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, int> element_valueSelector, ref TSeq maxElement, int maxValue = int.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -1991,8 +2011,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, int> element_valueSelector, int maxValue = int.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -2012,8 +2032,8 @@ namespace Aardvark.Base
         /// </summary>
         public static int MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, int> element_valueSelector, int maxValue = int.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -2029,8 +2049,8 @@ namespace Aardvark.Base
         /// </summary>
         public static int MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, int> element_valueSelector, ref TSeq maxElement, int maxValue = int.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -2051,8 +2071,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, int> element_valueSelector, int maxValue = int.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -2183,7 +2203,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static uint Min(this IEnumerable<uint> sequence, uint minValue = uint.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -2204,8 +2224,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static uint MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, uint> element_valueSelector, uint minValue = uint.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2230,8 +2250,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static uint MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, uint> element_valueSelector, ref TSeq minElement, uint minValue = uint.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2259,8 +2279,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, uint> element_valueSelector, uint minValue = uint.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -2280,8 +2300,8 @@ namespace Aardvark.Base
         /// </summary>
         public static uint MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, uint> element_valueSelector, uint minValue = uint.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -2297,8 +2317,8 @@ namespace Aardvark.Base
         /// </summary>
         public static uint MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, uint> element_valueSelector, ref TSeq minElement, uint minValue = uint.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -2319,8 +2339,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, uint> element_valueSelector, uint minValue = uint.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -2347,7 +2367,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static uint Max(this IEnumerable<uint> sequence, uint maxValue = uint.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -2368,8 +2388,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static uint MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, uint> element_valueSelector, uint maxValue = uint.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2394,8 +2414,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static uint MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, uint> element_valueSelector, ref TSeq maxElement, uint maxValue = uint.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2423,8 +2443,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, uint> element_valueSelector, uint maxValue = uint.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -2444,8 +2464,8 @@ namespace Aardvark.Base
         /// </summary>
         public static uint MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, uint> element_valueSelector, uint maxValue = uint.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -2461,8 +2481,8 @@ namespace Aardvark.Base
         /// </summary>
         public static uint MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, uint> element_valueSelector, ref TSeq maxElement, uint maxValue = uint.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -2483,8 +2503,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, uint> element_valueSelector, uint maxValue = uint.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -2615,7 +2635,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static long Min(this IEnumerable<long> sequence, long minValue = long.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -2636,8 +2656,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static long MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, long> element_valueSelector, long minValue = long.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2662,8 +2682,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static long MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, long> element_valueSelector, ref TSeq minElement, long minValue = long.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2691,8 +2711,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, long> element_valueSelector, long minValue = long.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -2712,8 +2732,8 @@ namespace Aardvark.Base
         /// </summary>
         public static long MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, long> element_valueSelector, long minValue = long.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -2729,8 +2749,8 @@ namespace Aardvark.Base
         /// </summary>
         public static long MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, long> element_valueSelector, ref TSeq minElement, long minValue = long.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -2751,8 +2771,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, long> element_valueSelector, long minValue = long.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -2779,7 +2799,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static long Max(this IEnumerable<long> sequence, long maxValue = long.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -2800,8 +2820,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static long MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, long> element_valueSelector, long maxValue = long.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2826,8 +2846,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static long MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, long> element_valueSelector, ref TSeq maxElement, long maxValue = long.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -2855,8 +2875,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, long> element_valueSelector, long maxValue = long.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -2876,8 +2896,8 @@ namespace Aardvark.Base
         /// </summary>
         public static long MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, long> element_valueSelector, long maxValue = long.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -2893,8 +2913,8 @@ namespace Aardvark.Base
         /// </summary>
         public static long MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, long> element_valueSelector, ref TSeq maxElement, long maxValue = long.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -2915,8 +2935,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, long> element_valueSelector, long maxValue = long.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -3047,7 +3067,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static ulong Min(this IEnumerable<ulong> sequence, ulong minValue = ulong.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -3068,8 +3088,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ulong MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ulong> element_valueSelector, ulong minValue = ulong.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3094,8 +3114,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ulong MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ulong> element_valueSelector, ref TSeq minElement, ulong minValue = ulong.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3123,8 +3143,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ulong> element_valueSelector, ulong minValue = ulong.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -3144,8 +3164,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ulong MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, ulong> element_valueSelector, ulong minValue = ulong.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -3161,8 +3181,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ulong MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, ulong> element_valueSelector, ref TSeq minElement, ulong minValue = ulong.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -3183,8 +3203,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, ulong> element_valueSelector, ulong minValue = ulong.MaxValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -3211,7 +3231,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static ulong Max(this IEnumerable<ulong> sequence, ulong maxValue = ulong.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -3232,8 +3252,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ulong MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ulong> element_valueSelector, ulong maxValue = ulong.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3258,8 +3278,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static ulong MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ulong> element_valueSelector, ref TSeq maxElement, ulong maxValue = ulong.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3287,8 +3307,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, ulong> element_valueSelector, ulong maxValue = ulong.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -3308,8 +3328,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ulong MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, ulong> element_valueSelector, ulong maxValue = ulong.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -3325,8 +3345,8 @@ namespace Aardvark.Base
         /// </summary>
         public static ulong MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, ulong> element_valueSelector, ref TSeq maxElement, ulong maxValue = ulong.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -3347,8 +3367,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, ulong> element_valueSelector, ulong maxValue = ulong.MinValue)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -3479,7 +3499,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static float Min(this IEnumerable<float> sequence, float minValue = float.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -3500,8 +3520,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static float MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, float> element_valueSelector, float minValue = float.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3526,8 +3546,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static float MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, float> element_valueSelector, ref TSeq minElement, float minValue = float.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3555,8 +3575,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, float> element_valueSelector, float minValue = float.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -3576,8 +3596,8 @@ namespace Aardvark.Base
         /// </summary>
         public static float MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, float> element_valueSelector, float minValue = float.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -3593,8 +3613,8 @@ namespace Aardvark.Base
         /// </summary>
         public static float MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, float> element_valueSelector, ref TSeq minElement, float minValue = float.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -3615,8 +3635,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, float> element_valueSelector, float minValue = float.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -3643,7 +3663,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static float Max(this IEnumerable<float> sequence, float maxValue = float.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -3664,8 +3684,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static float MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, float> element_valueSelector, float maxValue = float.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3690,8 +3710,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static float MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, float> element_valueSelector, ref TSeq maxElement, float maxValue = float.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3719,8 +3739,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, float> element_valueSelector, float maxValue = float.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -3740,8 +3760,8 @@ namespace Aardvark.Base
         /// </summary>
         public static float MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, float> element_valueSelector, float maxValue = float.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -3757,8 +3777,8 @@ namespace Aardvark.Base
         /// </summary>
         public static float MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, float> element_valueSelector, ref TSeq maxElement, float maxValue = float.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -3779,8 +3799,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, float> element_valueSelector, float maxValue = float.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -3911,7 +3931,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static double Min(this IEnumerable<double> sequence, double minValue = double.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value < minValue) minValue = value;
             return minValue;
@@ -3932,8 +3952,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static double MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, double> element_valueSelector, double minValue = double.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3958,8 +3978,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static double MinValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, double> element_valueSelector, ref TSeq minElement, double minValue = double.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -3987,8 +4007,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MinElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, double> element_valueSelector, double minValue = double.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -4008,8 +4028,8 @@ namespace Aardvark.Base
         /// </summary>
         public static double MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, double> element_valueSelector, double minValue = double.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -4025,8 +4045,8 @@ namespace Aardvark.Base
         /// </summary>
         public static double MinValue<TSeq>(this TSeq[] sequence, Func<TSeq, double> element_valueSelector, ref TSeq minElement, double minValue = double.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -4047,8 +4067,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MinElement<TSeq>(this TSeq[] sequence, Func<TSeq, double> element_valueSelector, double minValue = double.PositiveInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var minElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -4075,7 +4095,7 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence is null.</exception>
         public static double Max(this IEnumerable<double> sequence, double maxValue = double.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
             foreach (var value in sequence)
                 if (value > maxValue) maxValue = value;
             return maxValue;
@@ -4096,8 +4116,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static double MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, double> element_valueSelector, double maxValue = double.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -4122,8 +4142,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static double MaxValue<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, double> element_valueSelector, ref TSeq maxElement, double maxValue = double.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             foreach (var element in sequence)
             {
                 var value = element_valueSelector(element);
@@ -4151,8 +4171,8 @@ namespace Aardvark.Base
         /// <exception cref="System.ArgumentNullException">sequence or selector is null.</exception>
         public static TSeq MaxElement<TSeq>(this IEnumerable<TSeq> sequence, Func<TSeq, double> element_valueSelector, double maxValue = double.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             foreach (var element in sequence)
             {
@@ -4172,8 +4192,8 @@ namespace Aardvark.Base
         /// </summary>
         public static double MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, double> element_valueSelector, double maxValue = double.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var value = element_valueSelector(sequence[i]);
@@ -4189,8 +4209,8 @@ namespace Aardvark.Base
         /// </summary>
         public static double MaxValue<TSeq>(this TSeq[] sequence, Func<TSeq, double> element_valueSelector, ref TSeq maxElement, double maxValue = double.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             for (long i = 0; i < sequence.LongLength; i++)
             {
                 var element = sequence[i];
@@ -4211,8 +4231,8 @@ namespace Aardvark.Base
         /// </summary>
         public static TSeq MaxElement<TSeq>(this TSeq[] sequence, Func<TSeq, double> element_valueSelector, double maxValue = double.NegativeInfinity)
         {
-            if (sequence == null) throw new ArgumentNullException("sequence");
-            if (element_valueSelector == null) throw new ArgumentNullException("element_valueSelector");
+            if (sequence == null) throw new ArgumentNullException(nameof(sequence));
+            if (element_valueSelector == null) throw new ArgumentNullException(nameof(element_valueSelector));
             var maxElement = default(TSeq);
             for (long i = 0; i < sequence.LongLength; i++)
             {
@@ -4331,7 +4351,9 @@ namespace Aardvark.Base
     }
 }
 
+#pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Aardvark.Base.CSharp
+#pragma warning restore IDE0130 // Namespace does not match folder structure
 {
     /// <summary>
     /// The following extensions reside in the special namespace
