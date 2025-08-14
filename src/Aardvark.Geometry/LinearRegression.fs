@@ -209,7 +209,7 @@ type LinearRegression2d =
 
 
             let _a = 1.0
-            let b = xx + yy
+            let b = -(xx + yy)
             let c = xx*yy - sqr xy
 
 
@@ -220,8 +220,14 @@ type LinearRegression2d =
                 let goodness = 1.0 - abs l0 / abs l1
                 
                 if goodness > 1E-5 then
-                    let normal = V2d(xx - l0, xy) |> Vec.normalize
-                    let normal = V2d(-normal.Y, normal.X)
+                    let a = V2d(xx - l0, xy)
+                    let b = V2d(xy, yy - l0)
+                    
+                    let dd = 
+                        if Vec.length a > Vec.length b then a
+                        else b
+                        
+                    let normal = V2d(-dd.Y, dd.X) |> Vec.normalize
                     struct(Plane2d(normal, x._reference + avg), goodness)
                 else
                     struct(Plane2d.Invalid, goodness)
@@ -239,14 +245,21 @@ type LinearRegression2d =
             let xy = (x._off - avg.X * x._sum.Y) / (n - 1.0)
             
             let _a = 1.0
-            let b = xx + yy
+            let b = -(xx + yy)
             let c = xx*yy - sqr xy
 
             let struct (l0, l1) = sortTupleAbs (Polynomial.RealRootsOfNormed(b, c))
             if Fun.IsTiny l1 then
                 struct (Trafo2d.Identity, x._reference + avg)
             else
-                let vx = V2d(xx - l0, xy) |> Vec.normalize
+                let vx =
+                    let a = V2d(xx - l0, xy)
+                    let b = V2d(xy, yy - l0)
+                    
+                    let dd = 
+                        if Vec.length a > Vec.length b then a
+                        else b
+                    Vec.normalize dd
                 let vy = V2d(-vx.Y, vx.X)
                
                 let s0 = if l0 < 0.0 then 0.0 else sqrt l0
