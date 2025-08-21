@@ -2,7 +2,7 @@ framework: netstandard2.0, net8.0
 storage: none
 source https://api.nuget.org/v3/index.json
 
-nuget Aardvark.Build               ~> 2.0.0
+nuget Aardvark.Build               ~> 2.0.4
 
 nuget FSharp.Core                  >= 8.0.0 lowest_matching: true
 nuget System.Collections.Immutable >= 8.0.0 lowest_matching: true
