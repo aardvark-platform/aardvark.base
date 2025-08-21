@@ -1,4 +1,5 @@
 - [FSharp] Added PinnedValue and PinnedValue<'T> utility for pinning values and arrays with IDisposable semantics
+- [FSharp] Added explicit type parameters to NativePtr functions
 
 ### 5.3.15
 - [Geometry] fixed GetPlane/GetTrafo for LinearRegression2d

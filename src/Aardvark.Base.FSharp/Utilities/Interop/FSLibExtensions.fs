@@ -506,31 +506,31 @@ module Prelude =
         [<GeneralizableValue>]
         let inline zero<'a when 'a : unmanaged> : nativeptr<'a> = NativePtr.ofNativeInt 0n
 
-        let inline cast (ptr : nativeptr<'a>) : nativeptr<'b> =
+        let inline cast<'a, 'b when 'a : unmanaged and 'b : unmanaged> (ptr : nativeptr<'a>) : nativeptr<'b> =
             ptr |> NativePtr.toNativeInt |> NativePtr.ofNativeInt
 
-        let inline step (count : int) (ptr : nativeptr<'a>) =
+        let inline step<'a when 'a : unmanaged> (count : int) (ptr : nativeptr<'a>) =
             NativePtr.add ptr count
 
-        let inline toArray (cnt : int) (ptr : nativeptr<'a>) =
+        let inline toArray<'a when 'a : unmanaged> (cnt : int) (ptr : nativeptr<'a>) =
             Array.init cnt (NativePtr.get ptr)
 
-        let inline toSeq (cnt : int) (ptr : nativeptr<'a>) =
+        let inline toSeq<'a when 'a : unmanaged> (cnt : int) (ptr : nativeptr<'a>) =
             Seq.init cnt (NativePtr.get ptr)
 
-        let inline toList (cnt : int) (ptr : nativeptr<'a>) =
+        let inline toList<'a when 'a : unmanaged> (cnt : int) (ptr : nativeptr<'a>) =
             List.init cnt (NativePtr.get ptr)
 
-        let inline isNull (ptr : nativeptr<'a>) =
+        let inline isNull<'a when 'a : unmanaged> (ptr : nativeptr<'a>) =
             ptr |> NativePtr.toNativeInt = 0n
 
         let alloc<'a when 'a: unmanaged> (size : int) =
             size * sizeof<'a> |> Marshal.AllocHGlobal |> NativePtr.ofNativeInt<'a>
 
-        let free (ptr : nativeptr<'a>) =
+        let free<'a when 'a : unmanaged> (ptr : nativeptr<'a>) =
             ptr |> NativePtr.toNativeInt |> Marshal.FreeHGlobal
 
-        let inline stackUse (elements : seq<'a>) =
+        let inline stackUse<'a when 'a : unmanaged> (elements : seq<'a>) =
             let arr = elements |> Seq.toArray
             let ptr = NativePtr.stackalloc arr.Length
             for i in 0..arr.Length-1 do
@@ -538,12 +538,12 @@ module Prelude =
             ptr
 
         /// Allocates and initializes native memory on the stack from the given array and mapping function.
-        let inline stackUseArr ([<InlineIfLambda>] mapping: 'T -> 'U) (data: 'T[]) =
+        let inline stackUseArr<'T, 'U when 'T : unmanaged and 'U : unmanaged> ([<InlineIfLambda>] mapping: 'T -> 'U) (data: 'T[]) =
             let ptr = NativePtr.stackalloc<'U> data.Length
             for i = 0 to data.Length - 1 do ptr.[i] <- mapping data.[i]
             ptr
 
-        let toStream (count : int) (ptr : nativeptr<'a>) : Stream =
+        let toStream<'a when 'a : unmanaged> (count : int) (ptr : nativeptr<'a>) : Stream =
             let l = int64 <| sizeof<'a> * count
             new System.IO.UnmanagedMemoryStream(cast ptr, l,l, FileAccess.ReadWrite) :> _
 
