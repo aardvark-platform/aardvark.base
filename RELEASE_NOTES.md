@@ -1,3 +1,5 @@
+- [FSharp] Added PinnedValue and PinnedValue<'T> utility for pinning values and arrays with IDisposable semantics
+
 ### 5.3.15
 - [Geometry] fixed GetPlane/GetTrafo for LinearRegression2d
 - [Math] Added Fun.IsPowerOfTwo, Fun.NextPowerOfTwo, Fun.PrevPowerOfTwo overloads for uint32 and uint64
