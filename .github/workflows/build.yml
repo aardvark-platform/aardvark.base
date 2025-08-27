@@ -1,0 +1,33 @@
+name: Build
+
+on: 
+  push:
+    paths-ignore:
+    - 'README.md'
+    - 'docs/'
+  pull_request:
+    paths-ignore:
+    - 'README.md'
+    - 'docs/'
+    
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            os: [ubuntu-latest, windows-latest, macos-latest]
+            include:
+              - os: ubuntu-latest
+                run-build: sh ./build.sh
+              - os: windows-latest
+                run-build: .\build.cmd
+              - os: macos-latest
+                run-build: bash ./build.sh
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
+    - name: Build
+      run: ${{ matrix.run-build }}
