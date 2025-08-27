@@ -289,7 +289,7 @@ namespace Aardvark.Base
 
                 if (loaders.Count == 0)
                 {
-                    errorMessage += $" - No {loaderDesc}s available!";
+                    errorMessage += $" - No {loaderDesc}s available. Install {loaderDesc}s by referencing Aardvark.PixImage.* packages.";
                 }
                 else
                 {
