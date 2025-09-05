@@ -8,7 +8,8 @@ using System.Text.Json.Serialization;
 namespace Aardvark.Base
 {
     /// <summary>
-    /// A 2^Exponent sized square positioned at (X,Y) * 2^Exponent.
+    /// An axis-aligned square in a hierarchical spatial grid where all cells have power-of-two sizes.
+    /// Position is (X,Y) * 2^Exponent, size is 2^Exponent.
     /// </summary>
     [DataContract]
     public readonly partial struct Cell2d : IEquatable<Cell2d>
@@ -24,16 +25,19 @@ namespace Aardvark.Base
         public static Cell2d Invalid => new Cell2d(long.MinValue, long.MinValue, int.MinValue);
 
         /// <summary>
+        /// Grid coordinate at resolution 2^Exponent.
         /// </summary>
         [DataMember]
         public readonly long X;
 
         /// <summary>
+        /// Grid coordinate at resolution 2^Exponent.
         /// </summary>
         [DataMember]
         public readonly long Y;
 
         /// <summary>
+        /// Power of two defining both cell size and grid resolution.
         /// </summary>
         [DataMember(Name = "E")]
         public readonly int Exponent;
@@ -65,17 +69,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Cell with min corner at index*2^exponent and dimension 2^exponent.
+        /// Cell with min corner at index*2^exponent and size 2^exponent.
         /// </summary>
         public Cell2d(V2l index, int exponent) : this(index.X, index.Y, exponent) { }
 
         /// <summary>
-        /// Cell with min corner at index*2^exponent and dimension 2^exponent.
+        /// Cell with min corner at index*2^exponent and size 2^exponent.
         /// </summary>
         public Cell2d(V2i index, int exponent) : this(index.X, index.Y, exponent) { }
 
         /// <summary>
-        /// Special cell, which is centered at origin, with dimension 2^exponent.
+        /// Special cell, which is centered at origin, with size 2^exponent.
         /// </summary>
         public Cell2d(int exponent)
         {
@@ -115,7 +119,7 @@ namespace Aardvark.Base
         public Cell2d(IEnumerable<V2d> ps) : this(new Box2d(ps)) { }
 
         /// <summary>
-        /// Smallest cell that contains given point.
+        /// Smallest cell containing the given point.
         /// </summary>
         public Cell2d(V2d p) : this(new Box2d(p)) { }
 
@@ -168,12 +172,13 @@ namespace Aardvark.Base
         #endregion
 
         /// <summary>
+        /// Grid coordinates as a vector.
         /// </summary>
         [JsonIgnore]
         public V2l XY => new V2l(X, Y);
 
         /// <summary>
-        /// Gets whether this cell is a special cell centered at origin.
+        /// True if special cell centered at the origin.
         /// </summary>
         [JsonIgnore]
         public bool IsCenteredAtOrigin => X == long.MaxValue && Y == long.MaxValue;
@@ -286,14 +291,13 @@ namespace Aardvark.Base
         public Cell2d Parent => IsCenteredAtOrigin ? new Cell2d(Exponent + 1) : new Cell2d(X >> 1, Y >> 1, Exponent + 1);
 
         /// <summary>
-        /// True if one corner of this cell touches the origin.
-        /// Centered cells DO NOT touch the origin.
+        /// True if any corner of this cell is exactly at the origin.
         /// </summary>
         [JsonIgnore]
         public bool TouchesOrigin => !IsCenteredAtOrigin && (X == -1 || X == 0) && (Y == -1 || Y == 0);
 
         /// <summary>
-        /// Gets cell's bounds.
+        /// Cell's bounds as Box2d.
         /// </summary>
         [JsonIgnore]
         public Box2d BoundingBox => ComputeBoundingBox(X, Y, Exponent);
@@ -395,7 +399,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns smallest common root of a and b.
+        /// Smallest cell that contains both input cells.
         /// </summary>
         public static Cell2d GetCommonRoot(Cell2d a, Cell2d b)
         {
@@ -449,7 +453,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns smallest common root of cells.
+        /// Smallest cell that contains all input cells.
         /// </summary>
         public static Cell2d GetCommonRoot(params Cell2d[] cells)
         {
@@ -462,8 +466,7 @@ namespace Aardvark.Base
         #region operators
 
         /// <summary>
-        /// Scales down cell by 'd' powers of two.
-        /// BoundingBox.Min stays the same, except for cells centered at origin, which stay centered.
+        /// Makes cell 2^d times smaller. Minimum corner stays at the same position.
         /// </summary>
         public static Cell2d operator >>(Cell2d a, int d)
         {
@@ -479,8 +482,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Scales up cell by 'd' powers of two.
-        /// BoundingBox.Min will snap to the next smaller or equal position allowed by the new cell size, except for cells centered at origin, which stay centered.
+        /// Makes cell 2^d times larger. Minimum corner moves to the origin of the coarse cell containing it.
         /// </summary>
         public static Cell2d operator <<(Cell2d a, int d)
         {
@@ -569,7 +571,7 @@ namespace Aardvark.Base
                 1 => new Cell2d(exponent: int.Parse(xs[0])),
                 3 => new Cell2d(x: long.Parse(xs[0]), y: long.Parse(xs[1]), exponent: int.Parse(xs[2])),
                 _ => throw new FormatException(
-                    $"Expected [<x>,<y>,<z>,<exponent>], or [<exponent>], but found {s}. " +
+                    $"Expected [<x>,<y>,<exponent>], or [<exponent>], but found {s}. " +
                     $"Error 47575d6f-072a-4166-ac83-5c4effa33427."
                     )
             };

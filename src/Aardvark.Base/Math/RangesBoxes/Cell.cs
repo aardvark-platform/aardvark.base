@@ -8,10 +8,11 @@ using System.Text.Json.Serialization;
 namespace Aardvark.Base
 {
     /// <summary>
-    /// A 2^Exponent sized cube positioned at (X,Y,Z) * 2^Exponent.
+    /// An axis-aligned cube in a hierarchical spatial grid where all cells have power-of-two sizes.
+    /// Position is (X,Y,Z) * 2^Exponent, size is 2^Exponent.
     /// </summary>
     [DataContract]
-    public partial struct Cell : IEquatable<Cell>
+    public readonly partial struct Cell : IEquatable<Cell>
     {
         /// <summary>
         /// Unit cell (0, 0, 0, 0) -> Box3d[(0.0, 0.0, 0.0), (1.0, 1.0, 1.0)]
@@ -24,21 +25,25 @@ namespace Aardvark.Base
         public static Cell Invalid => new Cell(long.MinValue, long.MinValue, long.MinValue, int.MinValue);
 
         /// <summary>
+        /// Grid coordinate at resolution 2^Exponent.
         /// </summary>
         [DataMember]
         public readonly long X;
 
         /// <summary>
+        /// Grid coordinate at resolution 2^Exponent.
         /// </summary>
         [DataMember]
         public readonly long Y;
 
         /// <summary>
+        /// Grid coordinate at resolution 2^Exponent.
         /// </summary>
         [DataMember]
         public readonly long Z;
 
         /// <summary>
+        /// Power of two defining both cell size and grid resolution.
         /// </summary>
         [DataMember(Name = "E")]
         public readonly int Exponent;
@@ -62,12 +67,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Cell with min corner at index*2^exponent and dimension 2^exponent.
+        /// Cell with min corner at index*2^exponent and size 2^exponent.
         /// </summary>
         public Cell(V3l index, int exponent) : this(index.X, index.Y, index.Z, exponent) { }
 
         /// <summary>
-        /// Special cell, which is centered at origin, with dimension 2^exponent.
+        /// Special cell, which is centered at origin, with size 2^exponent.
         /// </summary>
         public Cell(int exponent)
         {
@@ -107,7 +112,7 @@ namespace Aardvark.Base
         public Cell(IEnumerable<V3d> ps) : this(new Box3d(ps)) { }
 
         /// <summary>
-        /// Smallest cell that contains given point.
+        /// Smallest cell containing the given point.
         /// </summary>
         public Cell(V3d p) : this(new Box3d(p)) { }
 
@@ -162,12 +167,13 @@ namespace Aardvark.Base
         #endregion
 
         /// <summary>
+        /// Grid coordinates as a vector.
         /// </summary>
         [JsonIgnore]
-        public V3l XYZ => new V3l(X, Y, Y);
+        public V3l XYZ => new V3l(X, Y, Z);
 
         /// <summary>
-        /// Gets whether this cell is a special cell centered at origin.
+        /// True if special cell centered at the origin.
         /// </summary>
         [JsonIgnore]
         public bool IsCenteredAtOrigin => X == long.MaxValue && Y == long.MaxValue && Z == long.MaxValue;
@@ -253,7 +259,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets indices of the 8 subcells.
+        /// The 8 subcells created by splitting each axis in half.
         /// </summary>
         [JsonIgnore]
         public Cell[] Children
@@ -285,14 +291,13 @@ namespace Aardvark.Base
         public Cell Parent => IsCenteredAtOrigin ? new Cell(Exponent + 1) : new Cell(X >> 1, Y >> 1, Z >> 1, Exponent + 1);
 
         /// <summary>
-        /// True if one corner of this cell touches the origin.
-        /// Centered cells DO NOT touch the origin.
+        /// True if any corner of this cell is exactly at the origin.
         /// </summary>
         [JsonIgnore]
         public bool TouchesOrigin => !IsCenteredAtOrigin && (X == -1 || X == 0) && (Y == -1 || Y == 0) && (Z == -1 || Z == 0);
 
         /// <summary>
-        /// Gets cell's bounds.
+        /// Cell's bounds as Box3d.
         /// </summary>
         [JsonIgnore]
         public Box3d BoundingBox => ComputeBoundingBox(X, Y, Z, Exponent);
@@ -306,7 +311,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Computes cell's center.
+        /// Computes geometric center point of this cell.
         /// </summary>
         public V3d GetCenter() => BoundingBox.Center;
 
@@ -400,7 +405,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns smallest common root of a and b.
+        /// Smallest cell that contains both input cells.
         /// </summary>
         public static Cell GetCommonRoot(Cell a, Cell b)
         {
@@ -454,7 +459,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns smallest common root of cells.
+        /// Smallest cell that contains all input cells.
         /// </summary>
         public static Cell GetCommonRoot(params Cell[] cells)
         {
@@ -467,8 +472,7 @@ namespace Aardvark.Base
         #region operators
 
         /// <summary>
-        /// Scales down cell by 'd' powers of two.
-        /// BoundingBox.Min stays the same, except for cells centered at origin, which stay centered.
+        /// Makes cell 2^d times smaller. Minimum corner stays at the same position.
         /// </summary>
         public static Cell operator >>(Cell a, int d)
         {
@@ -484,8 +488,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Scales up cell by 'd' powers of two.
-        /// BoundingBox.Min will snap to the next smaller or equal position allowed by the new cell size, except for cells centered at origin, which stay centered.
+        /// Makes cell 2^d times larger. Minimum corner moves to the origin of the coarse cell containing it.
         /// </summary>
         public static Cell operator <<(Cell a, int d)
         {
