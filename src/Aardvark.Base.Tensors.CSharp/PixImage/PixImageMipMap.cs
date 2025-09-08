@@ -93,8 +93,8 @@ namespace Aardvark.Base
             }
         }
 
-        private static PixImageMipMap TryLoadFromFileWithLoader(IPixLoader loader, string filename)
-            => PixImage.TryInvokeLoader(
+        private static PixImageMipMap LoadFromFileWithLoader(IPixLoader loader, string filename)
+            => PixImage.InvokeLoader(
                     loader, l => LoadMipmapFromFileWithLoader(loader, filename), PixImage.NotNull,
                     $"load image mipmap from file '{filename}'"
             );
@@ -108,7 +108,7 @@ namespace Aardvark.Base
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         public static PixImageMipMap Load(string filename, IPixLoader loader = null)
             => PixImage.InvokeLoaders(
-                    PixImage.LoaderType.Decoder, loader, filename, (l, f) => TryLoadFromFileWithLoader(l, f), PixImage.Ignore, PixImage.NotNull,
+                    PixImage.LoaderType.Decoder, loader, filename, LoadFromFileWithLoader, PixImage.Ignore, PixImage.NotNull,
                     $"Could not load image mipmap from file '{filename}'"
             );
 
@@ -129,8 +129,8 @@ namespace Aardvark.Base
             }
         }
 
-        private static PixImageMipMap TryLoadFromStreamWithLoader(IPixLoader loader, Stream stream)
-            => PixImage.TryInvokeLoader(
+        private static PixImageMipMap LoadFromStreamWithLoader(IPixLoader loader, Stream stream)
+            => PixImage.InvokeLoader(
                     loader, l => LoadMipmapFromStreamWithLoader(l, stream), PixImage.NotNull,
                     $"load image mipmap from {PixImage.GetStreamDescription(stream)}"
             );
@@ -145,7 +145,7 @@ namespace Aardvark.Base
         /// <exception cref="NotSupportedException">if the stream is not seekable and multiple loaders are invoked.</exception>
         public static PixImageMipMap Load(Stream stream, IPixLoader loader = null)
             => PixImage.InvokeLoadersWithStream(
-                PixImage.LoaderType.Decoder, loader, stream, (l, s) => TryLoadFromStreamWithLoader(l, s), PixImage.NotNull,
+                PixImage.LoaderType.Decoder, loader, stream, LoadFromStreamWithLoader, PixImage.NotNull,
                 $"Could not load image mipmap from {PixImage.GetStreamDescription(stream)}"
             );
 
