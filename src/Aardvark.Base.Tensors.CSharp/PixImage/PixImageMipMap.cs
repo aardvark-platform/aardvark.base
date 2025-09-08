@@ -102,6 +102,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given file.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The image file to load.</param>
         /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
@@ -138,6 +142,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The image stream to load.</param>
         /// <param name="loader">The loader to use first, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>

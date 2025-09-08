@@ -738,6 +738,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given file without doing any conversions.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The image file to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
@@ -751,6 +755,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given file.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The image file to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
@@ -777,6 +785,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given stream without doing any conversions.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The image stream to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
@@ -791,6 +803,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The image stream to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>The loaded image.</returns>
@@ -860,6 +876,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given file.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="saveParams">The save parameters to use.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
@@ -879,6 +899,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given file.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="fileFormat">The image format of the file.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
@@ -891,6 +915,10 @@ namespace Aardvark.Base
         /// Saves the image to the given file.
         /// The image file format is determined by the extension of the filename.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be saved.</exception>
@@ -901,6 +929,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given JPEG file.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
@@ -913,6 +945,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given PNG file.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The file to save the image to.</param>
         /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
         /// <param name="normalizeFilename">Indicates if the filename is to be normalized according to the image file format.</param>
@@ -935,6 +971,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The stream to save the image to.</param>
         /// <param name="saveParams">The save parameters to use.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
@@ -949,6 +989,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The stream to save the image to.</param>
         /// <param name="fileFormat">The image format of the stream.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
@@ -960,6 +1004,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given JPEG stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The stream to save the image to.</param>
         /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
@@ -971,6 +1019,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Saves the image to the given PNG stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The file to save the image to.</param>
         /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
@@ -982,6 +1034,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Writes the image to a memory stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="saveParams">The save parameters to use.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
@@ -996,6 +1052,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Writes the image to a memory stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="fileFormat">The image format of the stream.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
@@ -1006,6 +1066,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Writes the image to a JPEG memory stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="quality">The quality of the JPEG file. Must be within 0 - 100.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
@@ -1016,6 +1080,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Writes the image to a PNG memory stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="compressionLevel">The compression level of the PNG file. Must be within 0 - 9.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A memory stream containing the image data.</returns>
@@ -1036,6 +1104,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads basic information about an image from a file without loading its content.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The image file to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A PixImageInfo instance containing basic information about the image.</returns>
@@ -1059,6 +1131,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads basic information about an image from a stream without loading its content.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The image stream to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <returns>A PixImageInfo instance containing basic information about the image.</returns>
@@ -1400,6 +1476,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given file.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="filename">The image file to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
@@ -1418,6 +1498,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads an image from the given stream.
         /// </summary>
+        /// <remarks>
+        /// Install image loaders by referencing Aardvark.PixImage.* packages or by
+        /// manually calling <see cref="PixImage.AddLoader"/> or <see cref="PixImage.SetLoader"/>.
+        /// </remarks>
         /// <param name="stream">The image stream to load.</param>
         /// <param name="loader">The loader to use, or null if no specific loader is to be used.</param>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
