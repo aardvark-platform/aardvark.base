@@ -1,5 +1,8 @@
+### 5.3.16
+- Fixed Cell.XYZ bug and improved doc comments
 - [FSharp] Added PinnedValue and PinnedValue<'T> utility for pinning values and arrays with IDisposable semantics
 - [FSharp] Added explicit type parameters to NativePtr functions
+- [PixImage] Improved error messages regarding image loaders
 
 ### 5.3.15
 - [Geometry] fixed GetPlane/GetTrafo for LinearRegression2d
