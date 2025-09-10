@@ -69,10 +69,22 @@ module Prelude =
     let inline (||?) x y =
         nullCoalesceAux Unchecked.defaultof<``Null Coalescing Helpers``.Coalescing> x y
 
+    [<Obsolete("Use NullCheck.isNull instead.")>]
     let inline isNull (a : 'a) =
         match a with
         | null -> true
         | _ -> false
+
+    [<AutoOpen>]
+    module NullCheck =
+
+        /// Returns whether the given object is null.
+        let inline isNull (obj: obj) =
+            Object.ReferenceEquals(obj, null)
+
+        /// Returns whether the given object is not null.
+        let inline notNull (obj: obj) =
+            not <| isNull obj
 
     module Map =
         let union (l : Map<'k, 'v>) (r : Map<'k, 'v>) =

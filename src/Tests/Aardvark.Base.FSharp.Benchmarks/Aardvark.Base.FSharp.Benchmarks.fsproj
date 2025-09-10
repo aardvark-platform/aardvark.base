@@ -30,6 +30,7 @@
     <Compile Include="DynamicDispatchBench.fs" />
     <Compile Include="TypePatternsBench.fs" />
     <Compile Include="ReferenceCountingSetBench.fs" />
+    <Compile Include="NullCheckBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

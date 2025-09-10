@@ -1,3 +1,5 @@
+- [FSharp] Added non-generic isNull and notNull
+
 ### 5.3.16
 - Fixed Cell.XYZ bug and improved doc comments
 - [FSharp] Added PinnedValue and PinnedValue<'T> utility for pinning values and arrays with IDisposable semantics
