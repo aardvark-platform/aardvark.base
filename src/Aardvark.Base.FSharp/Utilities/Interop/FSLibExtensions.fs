@@ -562,7 +562,7 @@ module Prelude =
             ptr
 
         /// Allocates and initializes native memory on the stack from the given array and mapping function.
-        let inline stackUseArr<'T, 'U when 'T : unmanaged and 'U : unmanaged> ([<InlineIfLambda>] mapping: 'T -> 'U) (data: 'T[]) =
+        let inline stackUseArr<'T, 'U when 'U : unmanaged> ([<InlineIfLambda>] mapping: 'T -> 'U) (data: 'T[]) =
             let ptr = NativePtr.stackalloc<'U> data.Length
             for i = 0 to data.Length - 1 do ptr.[i] <- mapping data.[i]
             ptr
