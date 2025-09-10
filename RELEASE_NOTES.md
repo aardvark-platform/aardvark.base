@@ -1,4 +1,5 @@
 - [FSharp] Added non-generic isNull and notNull
+- [FSharp] Added generic inc and dec
 
 ### 5.3.16
 - Fixed Cell.XYZ bug and improved doc comments

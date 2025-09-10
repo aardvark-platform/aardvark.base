@@ -33,8 +33,20 @@ module Prelude =
         let inline ( <<<= ) (value: byref<'T>) (shift: int) = value <- value <<< shift
         let inline ( >>>= ) (value: byref<'T>) (shift: int) = value <- value >>> shift
 
+    [<Obsolete>]
     let inc (a:byref<int>) = a <- a + 1
+
+    [<Obsolete>]
     let dec (a:byref<int>) = a <- a - 1
+
+    [<AutoOpen>]
+    module ``Generic Increments`` =
+
+        /// Increments the given value by one.
+        let inline inc (value: byref<'T>) = value <- value + LanguagePrimitives.GenericOne<'T>
+
+        /// Decrements the given value by one.
+        let inline dec (value: byref<'T>) = value <- value - LanguagePrimitives.GenericOne<'T>
 
     module ``Null Coalescing Helpers`` =
 
