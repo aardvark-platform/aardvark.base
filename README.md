@@ -1,14 +1,70 @@
+# Aardvark.Base
+
 ![Windows](https://github.com/aardvark-platform/aardvark.base/workflows/Windows/badge.svg)
 ![MacOS](https://github.com/aardvark-platform/aardvark.base/workflows/MacOS/badge.svg)
 ![Linux](https://github.com/aardvark-platform/aardvark.base/workflows/Linux/badge.svg)
+[![NuGet](https://img.shields.io/nuget/v/Aardvark.Base.svg)](https://www.nuget.org/packages/Aardvark.Base/)
 
-[![Discord](https://badgen.net/discord/online-members/UyecnhM)](https://discord.gg/UyecnhM)
-[![license](https://img.shields.io/github/license/aardvark-platform/aardvark.base.svg)](https://github.com/aardvark-platform/aardvark.base/blob/master/LICENSE)
+High-performance .NET foundation for visual computing, real-time graphics and geometry processing. Cross-platform (Windows/Linux/macOS), targets .NET Standard 2.0 and .NET 8.0.
 
-[The Aardvark Platform](https://aardvarkians.com/) |
-[Gallery](https://github.com/aardvark-platform/aardvark.docs/wiki/Gallery) | 
-[Packages&Repositories](https://github.com/aardvark-platform/aardvark.docs/wiki/Packages-and-Repositories)
+Foundation of the [Aardvark Platform](https://github.com/aardvark-platform) ecosystem, powering advanced libraries for rendering (Aardvark.Rendering), UI (Aardvark.Media), VR/AR applications, and scientific visualization.
 
-Aardvark.Base is the foundation of the open-source [Aardvark Platform](https://github.com/aardvark-platform) for visual computing, real-time graphics, and visualization. It consists of multiple platform-independent packages (netstandard2.0) that deliver essential tools for visual computing, including vectors, matrices, algorithms, data structures, or image loaders. Supported platforms are windows, linux, macOS.
+## Core Components
 
-You can find demos and code in the Gallery and Packages&Repositories links above. [This repository's wiki](https://github.com/aardvark-platform/aardvark.base/wiki) hosts technical documentation. For more information, please refer to the [aardvark.docs wiki](https://github.com/aardvark-platform/aardvark.docs/wiki).
+**Mathematics & Geometry**
+- Vectors, matrices, quaternions, transformations (2D/3D/4D)
+- Ranges, boxes, spheres, planes, rays, frustums
+- Polygons, meshes, BVH acceleration structures
+- Linear/ellipsoid regression, geometric algorithms
+
+**Image Processing**
+- PixImage with full tensor capabilities
+- Format support: JPEG, PNG, TIFF, EXR, WebP, DDS
+- Mipmaps, cube maps, volume textures
+- Hardware-accelerated scaling and transformations
+
+**Data Structures & Algorithms**
+- Incremental/reactive programming primitives
+- Efficient collections (IntDict, SymbolDict, MapExt)
+- Spatial indexing (KdTree, BVH)
+- Fast serialization/deserialization
+
+## Quick Start
+
+```csharp
+using Aardvark.Base;
+
+// Vectors and matrices
+var v = new V3d(1, 2, 3);
+var m = M44d.RotationX(45.0.RadiansFromDegrees());
+var transformed = m.TransformPos(v);
+
+// Image processing
+var image = PixImage.Load("image.jpg");
+var scaled = image.Scaled(0.5);
+scaled.Save("output.png");
+
+// Geometry
+var box = new Box3d(V3d.Zero, V3d.One);
+var ray = new Ray3d(V3d.Zero, V3d.XAxis);
+var hit = ray.Intersects(box, out double t);
+```
+
+## Installation
+
+```
+dotnet add package Aardvark.Base
+dotnet add package Aardvark.Base.FSharp  # F# extensions
+```
+
+## Resources
+
+- [Gallery](https://github.com/aardvark-platform/aardvark.docs/wiki/Gallery)
+- [Documentation](https://github.com/aardvark-platform/aardvark.base/wiki)
+- [API Reference](https://aardvarkians.com/)
+- [Platform Overview](https://github.com/aardvark-platform/aardvark.docs/wiki)
+- [Discord Community](https://discord.gg/UyecnhM)
+
+## License
+
+[Apache 2.0](LICENSE)
