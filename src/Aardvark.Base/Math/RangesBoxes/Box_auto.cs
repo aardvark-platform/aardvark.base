@@ -359,40 +359,31 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1sb b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1s b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1us b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1i b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1ui b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1l b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1ul b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1f b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1b(Range1d b)
-            => new Range1b(b);
+        public static explicit operator Range1b(Range1d b) => new(b);
 
         #endregion
 
@@ -401,17 +392,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1b Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1b(byte.MaxValue, byte.MinValue); }
+        public static Range1b Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(byte.MaxValue, byte.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1b Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1b(byte.MinValue, byte.MaxValue); }
+        public static Range1b Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(byte.MinValue, byte.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1b Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1b(0, 1); }
+        public static Range1b Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -777,7 +768,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1b o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -837,7 +828,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -1382,40 +1373,31 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1b b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1s b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1us b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1i b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1ui b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1l b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1ul b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1f b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1sb(Range1d b)
-            => new Range1sb(b);
+        public static explicit operator Range1sb(Range1d b) => new(b);
 
         #endregion
 
@@ -1424,17 +1406,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1sb Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1sb(sbyte.MaxValue, sbyte.MinValue); }
+        public static Range1sb Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(sbyte.MaxValue, sbyte.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1sb Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1sb(sbyte.MinValue, sbyte.MaxValue); }
+        public static Range1sb Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(sbyte.MinValue, sbyte.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1sb Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1sb(0, 1); }
+        public static Range1sb Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -1800,7 +1782,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -1860,7 +1842,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -2405,40 +2387,31 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1b b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1sb b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1us b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1i b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1ui b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1l b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1ul b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1f b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1s(Range1d b)
-            => new Range1s(b);
+        public static explicit operator Range1s(Range1d b) => new(b);
 
         #endregion
 
@@ -2447,17 +2420,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1s Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1s(short.MaxValue, short.MinValue); }
+        public static Range1s Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(short.MaxValue, short.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1s Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1s(short.MinValue, short.MaxValue); }
+        public static Range1s Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(short.MinValue, short.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1s Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1s(0, 1); }
+        public static Range1s Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -2823,7 +2796,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1s o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -2883,7 +2856,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -3428,40 +3401,31 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1b b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1sb b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1s b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1i b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1ui b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1l b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1ul b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1f b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1us(Range1d b)
-            => new Range1us(b);
+        public static explicit operator Range1us(Range1d b) => new(b);
 
         #endregion
 
@@ -3470,17 +3434,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1us Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1us(ushort.MaxValue, ushort.MinValue); }
+        public static Range1us Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(ushort.MaxValue, ushort.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1us Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1us(ushort.MinValue, ushort.MaxValue); }
+        public static Range1us Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(ushort.MinValue, ushort.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1us Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1us(0, 1); }
+        public static Range1us Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -3846,7 +3810,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1us o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -3906,7 +3870,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -4461,52 +4425,40 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1b b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1sb b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1s b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1us b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1ui b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1l b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1ul b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1f b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(Range1d b)
-            => new Range1i(b);
+        public static explicit operator Range1i(Range1d b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1i(V2i v)
-            => new Range1i(v);
+        public static explicit operator Range1i(V2i v) => new(v);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V2i(Range1i r)
-            => new V2i(r.Min, r.Max);
+        public static explicit operator V2i(Range1i r) => new(r.Min, r.Max);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly V2i ToV2i()
-            => (V2i)this;
+        public readonly V2i ToV2i() => (V2i)this;
 
         #endregion
 
@@ -4515,17 +4467,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1i Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1i(int.MaxValue, int.MinValue); }
+        public static Range1i Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(int.MaxValue, int.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1i Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1i(int.MinValue, int.MaxValue); }
+        public static Range1i Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(int.MinValue, int.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1i Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1i(0, 1); }
+        public static Range1i Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -4891,7 +4843,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1i o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -4951,7 +4903,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -5506,52 +5458,40 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1b b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1sb b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1s b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1us b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1i b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1l b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1ul b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1f b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(Range1d b)
-            => new Range1ui(b);
+        public static explicit operator Range1ui(Range1d b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ui(V2ui v)
-            => new Range1ui(v);
+        public static explicit operator Range1ui(V2ui v) => new(v);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V2ui(Range1ui r)
-            => new V2ui(r.Min, r.Max);
+        public static explicit operator V2ui(Range1ui r) => new(r.Min, r.Max);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly V2ui ToV2ui()
-            => (V2ui)this;
+        public readonly V2ui ToV2ui() => (V2ui)this;
 
         #endregion
 
@@ -5560,17 +5500,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1ui Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1ui(uint.MaxValue, uint.MinValue); }
+        public static Range1ui Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(uint.MaxValue, uint.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1ui Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1ui(uint.MinValue, uint.MaxValue); }
+        public static Range1ui Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(uint.MinValue, uint.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1ui Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1ui(0, 1); }
+        public static Range1ui Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -5936,7 +5876,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1ui o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -5996,7 +5936,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -6551,52 +6491,40 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1b b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1sb b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1s b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1us b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1i b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1ui b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1ul b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1f b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(Range1d b)
-            => new Range1l(b);
+        public static explicit operator Range1l(Range1d b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1l(V2l v)
-            => new Range1l(v);
+        public static explicit operator Range1l(V2l v) => new(v);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V2l(Range1l r)
-            => new V2l(r.Min, r.Max);
+        public static explicit operator V2l(Range1l r) => new(r.Min, r.Max);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly V2l ToV2l()
-            => (V2l)this;
+        public readonly V2l ToV2l() => (V2l)this;
 
         #endregion
 
@@ -6605,17 +6533,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1l Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1l(long.MaxValue, long.MinValue); }
+        public static Range1l Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(long.MaxValue, long.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1l Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1l(long.MinValue, long.MaxValue); }
+        public static Range1l Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(long.MinValue, long.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1l Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1l(0, 1); }
+        public static Range1l Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -6981,7 +6909,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1l o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -7041,7 +6969,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -7586,40 +7514,31 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1b b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1sb b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1s b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1us b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1i b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1ui b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1l b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1f b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1ul(Range1d b)
-            => new Range1ul(b);
+        public static explicit operator Range1ul(Range1d b) => new(b);
 
         #endregion
 
@@ -7628,17 +7547,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1ul Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1ul(ulong.MaxValue, ulong.MinValue); }
+        public static Range1ul Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(ulong.MaxValue, ulong.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1ul Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1ul(ulong.MinValue, ulong.MaxValue); }
+        public static Range1ul Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(ulong.MinValue, ulong.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1ul Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1ul(0, 1); }
+        public static Range1ul Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -8004,7 +7923,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1ul o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -8064,7 +7983,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -8619,52 +8538,40 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1b b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1sb b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1s b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1us b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1i b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1ui b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1l b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1ul b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(Range1d b)
-            => new Range1f(b);
+        public static explicit operator Range1f(Range1d b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1f(V2f v)
-            => new Range1f(v);
+        public static explicit operator Range1f(V2f v) => new(v);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V2f(Range1f r)
-            => new V2f(r.Min, r.Max);
+        public static explicit operator V2f(Range1f r) => new(r.Min, r.Max);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly V2f ToV2f()
-            => (V2f)this;
+        public readonly V2f ToV2f() => (V2f)this;
 
         #endregion
 
@@ -8673,17 +8580,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1f Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1f(Constant<float>.ParseableMaxValue, Constant<float>.ParseableMinValue); }
+        public static Range1f Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(Constant<float>.ParseableMaxValue, Constant<float>.ParseableMinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1f Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1f(Constant<float>.ParseableMinValue, Constant<float>.ParseableMaxValue); }
+        public static Range1f Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(Constant<float>.ParseableMinValue, Constant<float>.ParseableMaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1f Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1f(0, 1); }
+        public static Range1f Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -9042,7 +8949,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1f o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -9102,7 +9009,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -9706,52 +9613,40 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1b b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1b b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1sb b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1sb b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1s b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1s b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1us b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1us b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1i b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1ui b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1ui b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1l b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1ul b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1ul b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(Range1f b)
-            => new Range1d(b);
+        public static explicit operator Range1d(Range1f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Range1d(V2d v)
-            => new Range1d(v);
+        public static explicit operator Range1d(V2d v) => new(v);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator V2d(Range1d r)
-            => new V2d(r.Min, r.Max);
+        public static explicit operator V2d(Range1d r) => new(r.Min, r.Max);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public readonly V2d ToV2d()
-            => (V2d)this;
+        public readonly V2d ToV2d() => (V2d)this;
 
         #endregion
 
@@ -9760,17 +9655,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Range1d Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1d(Constant<double>.ParseableMaxValue, Constant<double>.ParseableMinValue); }
+        public static Range1d Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(Constant<double>.ParseableMaxValue, Constant<double>.ParseableMinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Range1d Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1d(Constant<double>.ParseableMinValue, Constant<double>.ParseableMaxValue); }
+        public static Range1d Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(Constant<double>.ParseableMinValue, Constant<double>.ParseableMaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Range1d Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Range1d(0, 1); }
+        public static Range1d Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(0, 1); }
         #endregion
 
         #region Properties
@@ -10129,7 +10024,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1d o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -10189,7 +10084,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string begin, string between, string end)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return begin + Min.ToString(format, fp) + between + Max.ToString(format, fp) + end;
         }
 
@@ -10672,7 +10567,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2i(V2i[] points)
+        public Box2i(V2i[] points) : this((ReadOnlySpan<V2i>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box2i(ReadOnlySpan<V2i> points)
         {
             Min = V2i.MaxValue;
             Max = V2i.MinValue;
@@ -10739,16 +10640,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2i(Box2l b)
-            => new Box2i(b);
+        public static explicit operator Box2i(Box2l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2i(Box2f b)
-            => new Box2i(b);
+        public static explicit operator Box2i(Box2f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2i(Box2d b)
-            => new Box2i(b);
+        public static explicit operator Box2i(Box2d b) => new(b);
 
         #endregion
 
@@ -10757,17 +10655,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box2i Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2i(V2i.MaxValue, V2i.MinValue); }
+        public static Box2i Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2i.MaxValue, V2i.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box2i Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2i(V2i.MinValue, V2i.MaxValue); }
+        public static Box2i Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2i.MinValue, V2i.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box2i Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2i(V2i.Zero, V2i.One); }
+        public static Box2i Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2i.Zero, V2i.One); }
         #endregion
 
         #region Properties
@@ -11540,7 +11438,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box2i o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -11600,7 +11498,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -11793,24 +11691,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2i[] ComputeCorners()
         {
-            return new V2i[] {
+            return [
                 Min,
-                new V2i(Max.X, Min.Y),
-                new V2i(Min.X, Max.Y),
+                new(Max.X, Min.Y),
+                new(Min.X, Max.Y),
                 Max
-            };
+            ];
         }
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2i[] ComputeCornersCCW()
         {
-            return new V2i[] {
+            return [
                 Min,
-                new V2i(Max.X, Min.Y),
+                new(Max.X, Min.Y),
                 Max,
-                new V2i(Min.X, Max.Y),
-            };
+                new(Min.X, Max.Y),
+            ];
         }
 
         /// <summary>
@@ -12237,7 +12135,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2l(V2l[] points)
+        public Box2l(V2l[] points) : this((ReadOnlySpan<V2l>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box2l(ReadOnlySpan<V2l> points)
         {
             Min = V2l.MaxValue;
             Max = V2l.MinValue;
@@ -12304,16 +12208,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2l(Box2i b)
-            => new Box2l(b);
+        public static explicit operator Box2l(Box2i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2l(Box2f b)
-            => new Box2l(b);
+        public static explicit operator Box2l(Box2f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2l(Box2d b)
-            => new Box2l(b);
+        public static explicit operator Box2l(Box2d b) => new(b);
 
         #endregion
 
@@ -12322,17 +12223,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box2l Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2l(V2l.MaxValue, V2l.MinValue); }
+        public static Box2l Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2l.MaxValue, V2l.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box2l Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2l(V2l.MinValue, V2l.MaxValue); }
+        public static Box2l Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2l.MinValue, V2l.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box2l Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2l(V2l.Zero, V2l.One); }
+        public static Box2l Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2l.Zero, V2l.One); }
         #endregion
 
         #region Properties
@@ -13105,7 +13006,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box2l o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -13165,7 +13066,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -13358,24 +13259,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2l[] ComputeCorners()
         {
-            return new V2l[] {
+            return [
                 Min,
-                new V2l(Max.X, Min.Y),
-                new V2l(Min.X, Max.Y),
+                new(Max.X, Min.Y),
+                new(Min.X, Max.Y),
                 Max
-            };
+            ];
         }
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2l[] ComputeCornersCCW()
         {
-            return new V2l[] {
+            return [
                 Min,
-                new V2l(Max.X, Min.Y),
+                new(Max.X, Min.Y),
                 Max,
-                new V2l(Min.X, Max.Y),
-            };
+                new(Min.X, Max.Y),
+            ];
         }
 
         /// <summary>
@@ -13802,7 +13703,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2f(V2f[] points)
+        public Box2f(V2f[] points) : this((ReadOnlySpan<V2f>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box2f(ReadOnlySpan<V2f> points)
         {
             Min = V2f.MaxValue;
             Max = V2f.MinValue;
@@ -13869,16 +13776,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2f(Box2i b)
-            => new Box2f(b);
+        public static explicit operator Box2f(Box2i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2f(Box2l b)
-            => new Box2f(b);
+        public static explicit operator Box2f(Box2l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2f(Box2d b)
-            => new Box2f(b);
+        public static explicit operator Box2f(Box2d b) => new(b);
 
         #endregion
 
@@ -13887,17 +13791,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box2f Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2f(V2f.MaxValue, V2f.MinValue); }
+        public static Box2f Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2f.MaxValue, V2f.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box2f Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2f(V2f.MinValue, V2f.MaxValue); }
+        public static Box2f Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2f.MinValue, V2f.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box2f Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2f(V2f.Zero, V2f.One); }
+        public static Box2f Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2f.Zero, V2f.One); }
         #endregion
 
         #region Properties
@@ -14734,7 +14638,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box2f o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -14794,7 +14698,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -14987,24 +14891,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2f[] ComputeCorners()
         {
-            return new V2f[] {
+            return [
                 Min,
-                new V2f(Max.X, Min.Y),
-                new V2f(Min.X, Max.Y),
+                new(Max.X, Min.Y),
+                new(Min.X, Max.Y),
                 Max
-            };
+            ];
         }
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2f[] ComputeCornersCCW()
         {
-            return new V2f[] {
+            return [
                 Min,
-                new V2f(Max.X, Min.Y),
+                new(Max.X, Min.Y),
                 Max,
-                new V2f(Min.X, Max.Y),
-            };
+                new(Min.X, Max.Y),
+            ];
         }
 
         /// <summary>
@@ -15420,7 +15324,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box2d(V2d[] points)
+        public Box2d(V2d[] points) : this((ReadOnlySpan<V2d>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box2d(ReadOnlySpan<V2d> points)
         {
             Min = V2d.MaxValue;
             Max = V2d.MinValue;
@@ -15487,16 +15397,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2d(Box2i b)
-            => new Box2d(b);
+        public static explicit operator Box2d(Box2i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2d(Box2l b)
-            => new Box2d(b);
+        public static explicit operator Box2d(Box2l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box2d(Box2f b)
-            => new Box2d(b);
+        public static explicit operator Box2d(Box2f b) => new(b);
 
         #endregion
 
@@ -15505,17 +15412,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box2d Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2d(V2d.MaxValue, V2d.MinValue); }
+        public static Box2d Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2d.MaxValue, V2d.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box2d Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2d(V2d.MinValue, V2d.MaxValue); }
+        public static Box2d Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2d.MinValue, V2d.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box2d Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box2d(V2d.Zero, V2d.One); }
+        public static Box2d Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V2d.Zero, V2d.One); }
         #endregion
 
         #region Properties
@@ -16352,7 +16259,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box2d o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -16412,7 +16319,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -16605,24 +16512,24 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2d[] ComputeCorners()
         {
-            return new V2d[] {
+            return [
                 Min,
-                new V2d(Max.X, Min.Y),
-                new V2d(Min.X, Max.Y),
+                new(Max.X, Min.Y),
+                new(Min.X, Max.Y),
                 Max
-            };
+            ];
         }
 
         // TODO: Comment and implement for dimensions other than 2.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V2d[] ComputeCornersCCW()
         {
-            return new V2d[] {
+            return [
                 Min,
-                new V2d(Max.X, Min.Y),
+                new(Max.X, Min.Y),
                 Max,
-                new V2d(Min.X, Max.Y),
-            };
+                new(Min.X, Max.Y),
+            ];
         }
 
         /// <summary>
@@ -17040,7 +16947,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3i(V3i[] points)
+        public Box3i(V3i[] points) : this((ReadOnlySpan<V3i>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box3i(ReadOnlySpan<V3i> points)
         {
             Min = V3i.MaxValue;
             Max = V3i.MinValue;
@@ -17109,16 +17022,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3i(Box3l b)
-            => new Box3i(b);
+        public static explicit operator Box3i(Box3l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3i(Box3f b)
-            => new Box3i(b);
+        public static explicit operator Box3i(Box3f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3i(Box3d b)
-            => new Box3i(b);
+        public static explicit operator Box3i(Box3d b) => new(b);
 
         #endregion
 
@@ -17127,17 +17037,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box3i Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3i(V3i.MaxValue, V3i.MinValue); }
+        public static Box3i Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3i.MaxValue, V3i.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box3i Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3i(V3i.MinValue, V3i.MaxValue); }
+        public static Box3i Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3i.MinValue, V3i.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box3i Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3i(V3i.Zero, V3i.One); }
+        public static Box3i Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3i.Zero, V3i.One); }
         #endregion
 
         #region Properties
@@ -17888,7 +17798,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box3i o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -17948,7 +17858,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -18128,16 +18038,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3i[] ComputeCorners()
         {
-            return new V3i[] {
+            return [
                 Min,
-                new V3i(Max.X, Min.Y, Min.Z),
-                new V3i(Min.X, Max.Y, Min.Z),
-                new V3i(Max.X, Max.Y, Min.Z),
-                new V3i(Min.X, Min.Y, Max.Z),
-                new V3i(Max.X, Min.Y, Max.Z),
-                new V3i(Min.X, Max.Y, Max.Z),
+                new(Max.X, Min.Y, Min.Z),
+                new(Min.X, Max.Y, Min.Z),
+                new(Max.X, Max.Y, Min.Z),
+                new(Min.X, Min.Y, Max.Z),
+                new(Max.X, Min.Y, Max.Z),
+                new(Min.X, Max.Y, Max.Z),
                 Max
-            };
+            ];
         }
 
 
@@ -18455,45 +18365,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 4, 6, 2 };
+                        return [0, 4, 6, 2];
                     }
                 }
             }
@@ -18503,46 +18413,46 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
-                    }
+                        return [0, 1, 3, 7, 6, 4];
+                }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 3, 7, 4 };
-                    }
+                        return [0, 3, 7, 4];
+            }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
-                    }
+                        return [1, 3, 2, 6, 4, 5];
+}
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 2, 6, 5 };
-                    }
+                        return [1, 2, 6, 5];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 2, 7, 5 };
-                    }
+                        return [0, 2, 7, 5];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 3, 6, 4 };
-                    }
+                        return [1, 3, 6, 4];
+}
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 3, 7, 5 };
-                    }
+                        return [1, 3, 7, 5];
+}
                 }
             }
             else
@@ -18551,41 +18461,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 3, 5, 4 };
-                    }
+                        return [2, 3, 5, 4];
+        }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 1, 7, 6 };
-                    }
+                        return [0, 1, 7, 6];
+    }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 1, 5, 4 };
-                    }
+                        return [0, 1, 5, 4];
+}
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 6, 7, 1 };
-                    }
+                        return [0, 6, 7, 1];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 4, 5, 3 };
-                    }
+                        return [2, 4, 5, 3];
+}
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 6, 7, 3 };
-                    }
+                        return [2, 6, 7, 3];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 2, 3, 1 };
+                        return [0, 2, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 5, 7, 6 };
+                        return [4, 5, 7, 6];
                     }
                     else
                     { //  X  Y  Z
@@ -18607,45 +18517,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
+                        return [1, 3, 2, 6, 4, 5];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 2, 6, 5 };
+                        return [1, 2, 6, 5];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
+                        return [0, 1, 3, 7, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 3, 7, 4 };
+                        return [0, 3, 7, 4];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 3, 6, 4 };
+                        return [1, 3, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 2, 7, 5 };
+                        return [0, 2, 7, 5];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 2, 6, 4 };
+                        return [0, 2, 6, 4];
                     }
                 }
             }
@@ -18655,45 +18565,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 5, 7, 3 };
+                        return [1, 5, 7, 3];
                     }
                 }
             }
@@ -18703,41 +18613,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 4, 5, 3 };
+                        return [2, 4, 5, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 6, 7, 1 };
+                        return [0, 6, 7, 1];
                     }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 4, 5, 1 };
+                        return [0, 4, 5, 1];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 1, 7, 6 };
+                        return [0, 1, 7, 6];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 3, 5, 4 };
+                        return [2, 3, 5, 4];
                     }
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 3, 7, 6 };
+                        return [2, 3, 7, 6];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 1, 3, 2 };
+                        return [0, 1, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 6, 7, 5 };
+                        return [4, 6, 7, 5];
                     }
                     else
                     { //  X  Y  Z
@@ -18962,7 +18872,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3l(V3l[] points)
+        public Box3l(V3l[] points) : this((ReadOnlySpan<V3l>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box3l(ReadOnlySpan<V3l> points)
         {
             Min = V3l.MaxValue;
             Max = V3l.MinValue;
@@ -19031,16 +18947,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3l(Box3i b)
-            => new Box3l(b);
+        public static explicit operator Box3l(Box3i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3l(Box3f b)
-            => new Box3l(b);
+        public static explicit operator Box3l(Box3f b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3l(Box3d b)
-            => new Box3l(b);
+        public static explicit operator Box3l(Box3d b) => new(b);
 
         #endregion
 
@@ -19049,17 +18962,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box3l Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3l(V3l.MaxValue, V3l.MinValue); }
+        public static Box3l Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3l.MaxValue, V3l.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box3l Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3l(V3l.MinValue, V3l.MaxValue); }
+        public static Box3l Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3l.MinValue, V3l.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box3l Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3l(V3l.Zero, V3l.One); }
+        public static Box3l Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3l.Zero, V3l.One); }
         #endregion
 
         #region Properties
@@ -19810,7 +19723,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box3l o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -19870,7 +19783,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -20050,16 +19963,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3l[] ComputeCorners()
         {
-            return new V3l[] {
+            return [
                 Min,
-                new V3l(Max.X, Min.Y, Min.Z),
-                new V3l(Min.X, Max.Y, Min.Z),
-                new V3l(Max.X, Max.Y, Min.Z),
-                new V3l(Min.X, Min.Y, Max.Z),
-                new V3l(Max.X, Min.Y, Max.Z),
-                new V3l(Min.X, Max.Y, Max.Z),
+                new(Max.X, Min.Y, Min.Z),
+                new(Min.X, Max.Y, Min.Z),
+                new(Max.X, Max.Y, Min.Z),
+                new(Min.X, Min.Y, Max.Z),
+                new(Max.X, Min.Y, Max.Z),
+                new(Min.X, Max.Y, Max.Z),
                 Max
-            };
+            ];
         }
 
 
@@ -20377,45 +20290,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 4, 6, 2 };
+                        return [0, 4, 6, 2];
                     }
                 }
             }
@@ -20425,46 +20338,46 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
-                    }
+                        return [0, 1, 3, 7, 6, 4];
+                }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 3, 7, 4 };
-                    }
+                        return [0, 3, 7, 4];
+            }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
-                    }
+                        return [1, 3, 2, 6, 4, 5];
+}
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 2, 6, 5 };
-                    }
+                        return [1, 2, 6, 5];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 2, 7, 5 };
-                    }
+                        return [0, 2, 7, 5];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 3, 6, 4 };
-                    }
+                        return [1, 3, 6, 4];
+}
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 3, 7, 5 };
-                    }
+                        return [1, 3, 7, 5];
+}
                 }
             }
             else
@@ -20473,41 +20386,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 3, 5, 4 };
-                    }
+                        return [2, 3, 5, 4];
+        }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 1, 7, 6 };
-                    }
+                        return [0, 1, 7, 6];
+    }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 1, 5, 4 };
-                    }
+                        return [0, 1, 5, 4];
+}
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 6, 7, 1 };
-                    }
+                        return [0, 6, 7, 1];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 4, 5, 3 };
-                    }
+                        return [2, 4, 5, 3];
+}
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 6, 7, 3 };
-                    }
+                        return [2, 6, 7, 3];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 2, 3, 1 };
+                        return [0, 2, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 5, 7, 6 };
+                        return [4, 5, 7, 6];
                     }
                     else
                     { //  X  Y  Z
@@ -20529,45 +20442,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
+                        return [1, 3, 2, 6, 4, 5];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 2, 6, 5 };
+                        return [1, 2, 6, 5];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
+                        return [0, 1, 3, 7, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 3, 7, 4 };
+                        return [0, 3, 7, 4];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 3, 6, 4 };
+                        return [1, 3, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 2, 7, 5 };
+                        return [0, 2, 7, 5];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 2, 6, 4 };
+                        return [0, 2, 6, 4];
                     }
                 }
             }
@@ -20577,45 +20490,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 5, 7, 3 };
+                        return [1, 5, 7, 3];
                     }
                 }
             }
@@ -20625,41 +20538,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 4, 5, 3 };
+                        return [2, 4, 5, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 6, 7, 1 };
+                        return [0, 6, 7, 1];
                     }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 4, 5, 1 };
+                        return [0, 4, 5, 1];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 1, 7, 6 };
+                        return [0, 1, 7, 6];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 3, 5, 4 };
+                        return [2, 3, 5, 4];
                     }
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 3, 7, 6 };
+                        return [2, 3, 7, 6];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 1, 3, 2 };
+                        return [0, 1, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 6, 7, 5 };
+                        return [4, 6, 7, 5];
                     }
                     else
                     { //  X  Y  Z
@@ -20884,7 +20797,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3f(V3f[] points)
+        public Box3f(V3f[] points) : this((ReadOnlySpan<V3f>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box3f(ReadOnlySpan<V3f> points)
         {
             Min = V3f.MaxValue;
             Max = V3f.MinValue;
@@ -20953,16 +20872,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3f(Box3i b)
-            => new Box3f(b);
+        public static explicit operator Box3f(Box3i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3f(Box3l b)
-            => new Box3f(b);
+        public static explicit operator Box3f(Box3l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3f(Box3d b)
-            => new Box3f(b);
+        public static explicit operator Box3f(Box3d b) => new(b);
 
         #endregion
 
@@ -20971,17 +20887,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box3f Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3f(V3f.MaxValue, V3f.MinValue); }
+        public static Box3f Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3f.MaxValue, V3f.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box3f Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3f(V3f.MinValue, V3f.MaxValue); }
+        public static Box3f Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3f.MinValue, V3f.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box3f Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3f(V3f.Zero, V3f.One); }
+        public static Box3f Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3f.Zero, V3f.One); }
         #endregion
 
         #region Properties
@@ -21798,7 +21714,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box3f o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -21858,7 +21774,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -22038,16 +21954,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3f[] ComputeCorners()
         {
-            return new V3f[] {
+            return [
                 Min,
-                new V3f(Max.X, Min.Y, Min.Z),
-                new V3f(Min.X, Max.Y, Min.Z),
-                new V3f(Max.X, Max.Y, Min.Z),
-                new V3f(Min.X, Min.Y, Max.Z),
-                new V3f(Max.X, Min.Y, Max.Z),
-                new V3f(Min.X, Max.Y, Max.Z),
+                new(Max.X, Min.Y, Min.Z),
+                new(Min.X, Max.Y, Min.Z),
+                new(Max.X, Max.Y, Min.Z),
+                new(Min.X, Min.Y, Max.Z),
+                new(Max.X, Min.Y, Max.Z),
+                new(Min.X, Max.Y, Max.Z),
                 Max
-            };
+            ];
         }
 
 
@@ -22353,45 +22269,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 4, 6, 2 };
+                        return [0, 4, 6, 2];
                     }
                 }
             }
@@ -22401,46 +22317,46 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
-                    }
+                        return [0, 1, 3, 7, 6, 4];
+                }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 3, 7, 4 };
-                    }
+                        return [0, 3, 7, 4];
+            }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
-                    }
+                        return [1, 3, 2, 6, 4, 5];
+}
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 2, 6, 5 };
-                    }
+                        return [1, 2, 6, 5];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 2, 7, 5 };
-                    }
+                        return [0, 2, 7, 5];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 3, 6, 4 };
-                    }
+                        return [1, 3, 6, 4];
+}
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 3, 7, 5 };
-                    }
+                        return [1, 3, 7, 5];
+}
                 }
             }
             else
@@ -22449,41 +22365,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 3, 5, 4 };
-                    }
+                        return [2, 3, 5, 4];
+        }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 1, 7, 6 };
-                    }
+                        return [0, 1, 7, 6];
+    }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 1, 5, 4 };
-                    }
+                        return [0, 1, 5, 4];
+}
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 6, 7, 1 };
-                    }
+                        return [0, 6, 7, 1];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 4, 5, 3 };
-                    }
+                        return [2, 4, 5, 3];
+}
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 6, 7, 3 };
-                    }
+                        return [2, 6, 7, 3];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 2, 3, 1 };
+                        return [0, 2, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 5, 7, 6 };
+                        return [4, 5, 7, 6];
                     }
                     else
                     { //  X  Y  Z
@@ -22505,45 +22421,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
+                        return [1, 3, 2, 6, 4, 5];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 2, 6, 5 };
+                        return [1, 2, 6, 5];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
+                        return [0, 1, 3, 7, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 3, 7, 4 };
+                        return [0, 3, 7, 4];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 3, 6, 4 };
+                        return [1, 3, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 2, 7, 5 };
+                        return [0, 2, 7, 5];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 2, 6, 4 };
+                        return [0, 2, 6, 4];
                     }
                 }
             }
@@ -22553,45 +22469,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 5, 7, 3 };
+                        return [1, 5, 7, 3];
                     }
                 }
             }
@@ -22601,41 +22517,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 4, 5, 3 };
+                        return [2, 4, 5, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 6, 7, 1 };
+                        return [0, 6, 7, 1];
                     }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 4, 5, 1 };
+                        return [0, 4, 5, 1];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 1, 7, 6 };
+                        return [0, 1, 7, 6];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 3, 5, 4 };
+                        return [2, 3, 5, 4];
                     }
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 3, 7, 6 };
+                        return [2, 3, 7, 6];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 1, 3, 2 };
+                        return [0, 1, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 6, 7, 5 };
+                        return [4, 6, 7, 5];
                     }
                     else
                     { //  X  Y  Z
@@ -22860,7 +22776,13 @@ namespace Aardvark.Base
         /// Creates box as the bounding box of given points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Box3d(V3d[] points)
+        public Box3d(V3d[] points) : this((ReadOnlySpan<V3d>)points) { }
+
+        /// <summary>
+        /// Creates box as the bounding box of given points.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Box3d(ReadOnlySpan<V3d> points)
         {
             Min = V3d.MaxValue;
             Max = V3d.MinValue;
@@ -22929,16 +22851,13 @@ namespace Aardvark.Base
         #region Conversions
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3d(Box3i b)
-            => new Box3d(b);
+        public static explicit operator Box3d(Box3i b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3d(Box3l b)
-            => new Box3d(b);
+        public static explicit operator Box3d(Box3l b) => new(b);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static explicit operator Box3d(Box3f b)
-            => new Box3d(b);
+        public static explicit operator Box3d(Box3f b) => new(b);
 
         #endregion
 
@@ -22947,17 +22866,17 @@ namespace Aardvark.Base
         /// <summary>
         /// A range with crossed limits.
         /// </summary>
-        public static Box3d Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3d(V3d.MaxValue, V3d.MinValue); }
+        public static Box3d Invalid { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3d.MaxValue, V3d.MinValue); }
 
         /// <summary>
         /// The largest possible range.
         /// </summary>
-        public static Box3d Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3d(V3d.MinValue, V3d.MaxValue); }
+        public static Box3d Infinite { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3d.MinValue, V3d.MaxValue); }
 
         /// <summary>
         /// The unit interval [0, 1].
         /// </summary>
-        public static Box3d Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new Box3d(V3d.Zero, V3d.One); }
+        public static Box3d Unit { [MethodImpl(MethodImplOptions.AggressiveInlining)] get => new(V3d.Zero, V3d.One); }
         #endregion
 
         #region Properties
@@ -23774,7 +23693,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Box3d o) ? Equals(o) : false;
+            (obj is Range1sb o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -23834,7 +23753,7 @@ namespace Aardvark.Base
         /// </summary>
         public readonly string ToString(string format, IFormatProvider fp, string beginB, string betweenB, string endB, string beginV, string betweenV, string endV)
         {
-            if (fp == null) fp = CultureInfo.InvariantCulture;
+            fp ??= CultureInfo.InvariantCulture;
             return beginB + Min.ToString(format, fp, beginV, betweenV, endV) + betweenB + Max.ToString(format, fp, beginV, betweenV, endV) + endB;
         }
 
@@ -24014,16 +23933,16 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3d[] ComputeCorners()
         {
-            return new V3d[] {
+            return [
                 Min,
-                new V3d(Max.X, Min.Y, Min.Z),
-                new V3d(Min.X, Max.Y, Min.Z),
-                new V3d(Max.X, Max.Y, Min.Z),
-                new V3d(Min.X, Min.Y, Max.Z),
-                new V3d(Max.X, Min.Y, Max.Z),
-                new V3d(Min.X, Max.Y, Max.Z),
+                new(Max.X, Min.Y, Min.Z),
+                new(Min.X, Max.Y, Min.Z),
+                new(Max.X, Max.Y, Min.Z),
+                new(Min.X, Min.Y, Max.Z),
+                new(Max.X, Min.Y, Max.Z),
+                new(Min.X, Max.Y, Max.Z),
                 Max
-            };
+            ];
         }
 
 
@@ -24329,45 +24248,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 4, 6, 2 };
+                        return [0, 4, 6, 2];
                     }
                 }
             }
@@ -24377,46 +24296,46 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
-                    }
+                        return [0, 1, 3, 7, 6, 4];
+                }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 3, 7, 4 };
-                    }
+                        return [0, 3, 7, 4];
+            }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
-                    }
+                        return [1, 3, 2, 6, 4, 5];
+}
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 2, 6, 5 };
-                    }
+                        return [1, 2, 6, 5];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 2, 7, 5 };
-                    }
+                        return [0, 2, 7, 5];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 3, 6, 4 };
-                    }
+                        return [1, 3, 6, 4];
+}
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 3, 7, 5 };
-                    }
+                        return [1, 3, 7, 5];
+}
                 }
             }
             else
@@ -24425,41 +24344,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 3, 5, 4 };
-                    }
+                        return [2, 3, 5, 4];
+        }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 1, 7, 6 };
-                    }
+                        return [0, 1, 7, 6];
+    }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 1, 5, 4 };
-                    }
+                        return [0, 1, 5, 4];
+}
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 6, 7, 1 };
-                    }
+                        return [0, 6, 7, 1];
+    }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 4, 5, 3 };
-                    }
+                        return [2, 4, 5, 3];
+}
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 6, 7, 3 };
-                    }
+                        return [2, 6, 7, 3];
+}
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 2, 3, 1 };
+                        return [0, 2, 3, 1];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 5, 7, 6 };
+                        return [4, 5, 7, 6];
                     }
                     else
                     { //  X  Y  Z
@@ -24481,45 +24400,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X -Y -Z
-                        return new[] { 1, 3, 2, 6, 4, 5 };
+                        return [1, 3, 2, 6, 4, 5];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X -Y +Z
-                        return new[] { 0, 2, 6, 7, 5, 1 };
+                        return [0, 2, 6, 7, 5, 1];
                     }
                     else
                     { // -X -Y  Z
-                        return new[] { 1, 2, 6, 5 };
+                        return [1, 2, 6, 5];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X +Y -Z
-                        return new[] { 0, 1, 3, 7, 6, 4 };
+                        return [0, 1, 3, 7, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X +Y +Z
-                        return new[] { 0, 2, 3, 7, 5, 4 };
+                        return [0, 2, 3, 7, 5, 4];
                     }
                     else
                     { // -X +Y  Z
-                        return new[] { 0, 3, 7, 4 };
+                        return [0, 3, 7, 4];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // -X  Y -Z
-                        return new[] { 1, 3, 6, 4 };
+                        return [1, 3, 6, 4];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // -X  Y +Z
-                        return new[] { 0, 2, 7, 5 };
+                        return [0, 2, 7, 5];
                     }
                     else
                     { // -X  Y  Z
-                        return new[] { 0, 2, 6, 4 };
+                        return [0, 2, 6, 4];
                     }
                 }
             }
@@ -24529,45 +24448,45 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X -Y -Z
-                        return new[] { 0, 4, 5, 7, 3, 2 };
+                        return [0, 4, 5, 7, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X -Y +Z
-                        return new[] { 0, 4, 6, 7, 3, 1 };
+                        return [0, 4, 6, 7, 3, 1];
                     }
                     else
                     { // +X -Y  Z
-                        return new[] { 0, 4, 7, 3 };
+                        return [0, 4, 7, 3];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X +Y -Z
-                        return new[] { 0, 1, 5, 7, 6, 2 };
+                        return [0, 1, 5, 7, 6, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X +Y +Z
-                        return new[] { 1, 5, 4, 6, 2, 3 };
+                        return [1, 5, 4, 6, 2, 3];
                     }
                     else
                     { // +X +Y  Z
-                        return new[] { 1, 5, 6, 2 };
+                        return [1, 5, 6, 2];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { // +X  Y -Z
-                        return new[] { 0, 5, 7, 2 };
+                        return [0, 5, 7, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { // +X  Y +Z
-                        return new[] { 1, 4, 6, 3 };
+                        return [1, 4, 6, 3];
                     }
                     else
                     { // +X  Y  Z
-                        return new[] { 1, 5, 7, 3 };
+                        return [1, 5, 7, 3];
                     }
                 }
             }
@@ -24577,41 +24496,41 @@ namespace Aardvark.Base
                 { //-Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X -Y -Z
-                        return new[] { 2, 4, 5, 3 };
+                        return [2, 4, 5, 3];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X -Y +Z
-                        return new[] { 0, 6, 7, 1 };
+                        return [0, 6, 7, 1];
                     }
                     else
                     { //  X -Y  Z
-                        return new[] { 0, 4, 5, 1 };
+                        return [0, 4, 5, 1];
                     }
                 }
                 else if (fromPosition.Y > box.Max.Y)
                 { // +Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X +Y -Z
-                        return new[] { 0, 1, 7, 6 };
+                        return [0, 1, 7, 6];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X +Y +Z
-                        return new[] { 2, 3, 5, 4 };
+                        return [2, 3, 5, 4];
                     }
                     else
                     { //  X +Y  Z
-                        return new[] { 2, 3, 7, 6 };
+                        return [2, 3, 7, 6];
                     }
                 }
                 else
                 { // Y
                     if (fromPosition.Z < box.Min.Z)
                     { //  X  Y -Z
-                        return new[] { 0, 1, 3, 2 };
+                        return [0, 1, 3, 2];
                     }
                     else if (fromPosition.Z > box.Max.Z)
                     { //  X  Y +Z
-                        return new[] { 4, 6, 7, 5 };
+                        return [4, 6, 7, 5];
                     }
                     else
                     { //  X  Y  Z
