@@ -178,6 +178,7 @@ module TypeInfo =
     let VectorFields = Set.ofList ['X'; 'Y'; 'Z'; 'W']
 
     [<AutoOpen>]
+    [<System.Obsolete("Use TypeMeta.Patterns module instead.")>]
     module Patterns =
 
         [<return: Struct>]
