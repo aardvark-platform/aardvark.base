@@ -582,5 +582,189 @@ namespace Aardvark.Tests.Images
         }
 
         #endregion
+
+        #region  Stitch
+
+        [Test]
+        public void Stitch()
+        {
+            // Arrange tiles with varying sizes and null at [0,0]; ensure tiles do not align perfectly
+            // Grid layout (rows x columns):
+            // . G(2x2)
+            // B(3x1) R(3x2)
+            var red = new PixImage<byte>(Col.Format.RGB, new V2i(3, 2));
+            red.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(255, 0, 0));
+
+            var green = new PixImage<byte>(Col.Format.RGB, new V2i(2, 2));
+            green.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(0, 255, 0));
+
+            var blue = new PixImage<byte>(Col.Format.RGB, new V2i(3, 1));
+            blue.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(0, 0, 255));
+
+            // Note: null at [0,0], sizes cause gaps (non-perfect alignment)
+            var grid = new[]
+            {
+                new[] { null,  green },
+                new[] { blue,  red }
+            };
+
+            // Act (generic overload)
+            var stitched = grid.Stitch();
+
+            // Assert size:
+            // sizesX = [max(0,3)=3, max(2,3)=3] -> 6; sizesY = [max(0,2)=2, max(1,2)=2] -> 4
+            Assert.AreEqual(new V2i(6, 4), stitched.Size);
+
+            var m = stitched.GetMatrix<C3b>();
+
+            // Top-left 3x2 should be black (null tile)
+            for (int y = 0; y < 2; y++)
+                for (int x = 0; x < 3; x++)
+                    Assert.AreEqual(new C3b(0, 0, 0), m[x, y], $"Expected black at ({x},{y})");
+
+            // Top-right area width is 3 but green is only 2 wide -> last column should be black
+            for (int y = 0; y < 2; y++)
+            {
+                for (int x = 3; x < 5; x++) Assert.AreEqual(new C3b(0, 255, 0), m[x, y], $"Expected green at ({x},{y})");
+                Assert.AreEqual(new C3b(0, 0, 0), m[5, y], $"Expected black gap at (5,{y})");
+            }
+
+            // Bottom-left row height is 2 but blue is only 1 high -> y=2 blue, y=3 black
+            for (int x = 0; x < 3; x++) Assert.AreEqual(new C3b(0, 0, 255), m[x, 2], $"Expected blue at ({x},2)");
+            for (int x = 0; x < 3; x++) Assert.AreEqual(new C3b(0, 0, 0), m[x, 3], $"Expected black at ({x},3)");
+
+            // Bottom-right 3x2 should be red
+            for (int y = 2; y < 4; y++)
+                for (int x = 3; x < 6; x++)
+                    Assert.AreEqual(new C3b(255, 0, 0), m[x, y], $"Expected red at ({x},{y})");
+
+            // Also test non-generic overload with base PixImage[][] dispatch and compare size and a sample pixel
+            PixImage[][] baseGrid =
+            [
+                [null, green],
+                [blue, red]
+            ];
+            var stitchedBase = baseGrid.Stitch();
+            Assert.IsNotNull(stitchedBase);
+            Assert.AreEqual(stitched.Size, stitchedBase.Size);
+            // Check a few sample pixels
+            var mb = stitchedBase.AsPixImage<byte>().GetMatrix<C3b>();
+            Assert.AreEqual(new C3b(0, 0, 0), mb[0, 0]);    // null tile area
+            Assert.AreEqual(new C3b(0, 255, 0), mb[3, 0]);  // green start
+            Assert.AreEqual(new C3b(0, 0, 0), mb[5, 0]);    // green gap column
+            Assert.AreEqual(new C3b(0, 0, 255), mb[0, 2]);  // blue row
+            Assert.AreEqual(new C3b(255, 0, 0), mb[3, 2]);  // red area
+
+            // Mismatching formats should throw
+            var gray = new PixImage<byte>(Col.Format.Gray, new V2i(1, 1));
+            var badGrid = new PixImage<byte>[][] { [red, gray] };
+            Assert.Throws<ArgumentException>(() => badGrid.Stitch());
+
+            // Null and empty inputs should return null (extension methods accept null receivers)
+            Assert.IsNull(PixImageExtensions.Stitch(null));
+            Assert.IsNull(Array.Empty<PixImage<byte>[]>().Stitch());
+        }
+
+        [Test]
+        public void StitchSquare()
+        {
+            // Arrange: 5 images with varying sizes to force gaps when arranged in a 3x3 near-square grid
+            // Index mapping (row-major into 3x3):
+            // [0]=R(2x1) [1]=G(1x2) [2]=B(3x1)
+            // [3]=Y(1x1) [4]=M(2x2) [5]=null (implicit)
+            // Row2 is entirely null
+            var red = new PixImage<byte>(Col.Format.RGB, new V2i(2, 1));
+            red.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(255, 0, 0));
+
+            var green = new PixImage<byte>(Col.Format.RGB, new V2i(1, 2));
+            green.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(0, 255, 0));
+
+            var blue = new PixImage<byte>(Col.Format.RGB, new V2i(3, 1));
+            blue.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(0, 0, 255));
+
+            var yellow = new PixImage<byte>(Col.Format.RGB, new V2i(1, 1));
+            yellow.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(255, 255, 0));
+
+            var magenta = new PixImage<byte>(Col.Format.RGB, new V2i(2, 2));
+            magenta.GetMatrix<C3b>().SetByCoord((x, y) => new C3b(255, 0, 255));
+
+            var list = new PixImage<byte>[] { red, green, blue, yellow, magenta };
+
+            // Act (generic overload)
+            var stitched = list.StitchSquare();
+
+            // Compute expected stitched size:
+            // squareSize = ceil(sqrt(5)) = 3
+            // Column widths = max per column across rows:
+            // col0: max(2,1,0)=2; col1: max(1,2,0)=2; col2: max(3,0,0)=3 -> width = 7
+            // Row heights = max per row across columns:
+            // row0: max(1,2,1)=2; row1: max(1,2,0)=2; row2: 0 -> height = 4
+            Assert.AreEqual(new V2i(7, 4), stitched.Size);
+
+            var m = stitched.GetMatrix<C3b>();
+
+            // Validate row 0 placements and gaps
+            // Red (2x1) at x=[0..1], y=0; gap at y=1
+            Assert.AreEqual(new C3b(255, 0, 0), m[0, 0]);
+            Assert.AreEqual(new C3b(255, 0, 0), m[1, 0]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[0, 1]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[1, 1]);
+
+            // Green (1x2) at x=2, y=[0..1]; gap column x=3 should be black (since column width=2)
+            Assert.AreEqual(new C3b(0, 255, 0), m[2, 0]);
+            Assert.AreEqual(new C3b(0, 255, 0), m[2, 1]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[3, 0]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[3, 1]);
+
+            // Blue (3x1) at x=[4..6], y=0; gap at y=1 for the whole band
+            Assert.AreEqual(new C3b(0, 0, 255), m[4, 0]);
+            Assert.AreEqual(new C3b(0, 0, 255), m[5, 0]);
+            Assert.AreEqual(new C3b(0, 0, 255), m[6, 0]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[4, 1]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[5, 1]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[6, 1]);
+
+            // Validate row 1 placements and gaps (y=2..3)
+            // Yellow (1x1) at (0,2); rest of its cell should be black
+            Assert.AreEqual(new C3b(255, 255, 0), m[0, 2]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[1, 2]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[0, 3]);
+
+            // Magenta (2x2) at x=[2..3], y=[2..3]
+            Assert.AreEqual(new C3b(255, 0, 255), m[2, 2]);
+            Assert.AreEqual(new C3b(255, 0, 255), m[3, 2]);
+            Assert.AreEqual(new C3b(255, 0, 255), m[2, 3]);
+            Assert.AreEqual(new C3b(255, 0, 255), m[3, 3]);
+
+            // Right-most band in row 1 (x=4..6) should be black (no image in that cell)
+            Assert.AreEqual(new C3b(0, 0, 0), m[4, 2]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[5, 2]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[6, 2]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[4, 3]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[5, 3]);
+            Assert.AreEqual(new C3b(0, 0, 0), m[6, 3]);
+
+            // Also test non-generic overload with base PixImage[] dispatch
+            PixImage[] baseList = [red, green, blue, yellow, magenta];
+            var stitchedBase = baseList.StitchSquare();
+            Assert.IsNotNull(stitchedBase);
+            Assert.AreEqual(stitched.Size, stitchedBase.Size);
+            var mb = stitchedBase.AsPixImage<byte>().GetMatrix<C3b>();
+            Assert.AreEqual(new C3b(255, 0, 0), mb[0, 0]);   // red
+            Assert.AreEqual(new C3b(0, 255, 0), mb[2, 1]);   // green column
+            Assert.AreEqual(new C3b(0, 0, 255), mb[6, 0]);   // blue
+            Assert.AreEqual(new C3b(255, 255, 0), mb[0, 2]); // yellow
+            Assert.AreEqual(new C3b(255, 0, 255), mb[3, 3]); // magenta
+
+            // Mismatching formats should throw
+            var gray = new PixImage<byte>(Col.Format.Gray, new V2i(1, 1));
+            Assert.Throws<ArgumentException>(() => new PixImage<byte>[] { red, gray }.StitchSquare());
+
+            // Null and empty inputs should return null (extension methods accept null receivers)
+            Assert.IsNull(PixImageExtensions.StitchSquare<byte>(null));
+            Assert.IsNull(Array.Empty<PixImage<byte>>().StitchSquare());
+        }
+
+        #endregion
     }
 }

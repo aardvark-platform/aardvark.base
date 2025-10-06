@@ -1,28 +1,55 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
+using System.Reflection;
 
 namespace Aardvark.Base
 {
+    /// <summary>
+    /// Extension methods for common PixImage conversions and utilities.
+    /// </summary>
     public static class PixImageExtensions
     {
         #region Black and White Conversions
 
+        /// <summary>
+        /// Converts a single-channel byte image to a black and white matrix using the specified threshold.
+        /// </summary>
+        /// <param name="pixImage">The source image (must have one channel).</param>
+        /// <param name="threshold">Threshold in [0,255]; below yields 0, above or equal yields 255.</param>
+        /// <returns>A thresholded matrix with values 0 or 255.</returns>
         public static Matrix<byte> ToBlackAndWhiteMatrix(this PixImage<byte> pixImage, int threshold)
         {
             if (pixImage.ChannelCount != 1) throw new ArgumentOutOfRangeException(nameof(pixImage.ChannelCount));
-            return pixImage.GetChannel(Col.Channel.Gray).MapWindow<byte>(b => (byte)(b < threshold ? 0 : 255));
+            return pixImage.GetChannel(Col.Channel.Gray).MapWindow(b => (byte)(b < threshold ? 0 : 255));
         }
 
+        /// <summary>
+        /// Converts a single-channel byte image to a black and white matrix using a default threshold of 128.
+        /// </summary>
+        /// <param name="pixImage">The source image (must have one channel).</param>
+        /// <returns>A thresholded matrix with values 0 or 255.</returns>
         public static Matrix<byte> ToBlackAndWhiteMatrix(this PixImage<byte> pixImage)
         {
             return pixImage.ToBlackAndWhiteMatrix(128);
         }
 
+        /// <summary>
+        /// Converts a single-channel byte image to a black and white PixImage using the specified threshold.
+        /// </summary>
+        /// <param name="pixImage">The source image (must have one channel).</param>
+        /// <param name="threshold">Threshold in [0,255]; below yields 0, above or equal yields 255.</param>
+        /// <returns>A new black and white PixImage.</returns>
         public static PixImage<byte> ToBlackAndWhitePixImage(this PixImage<byte> pixImage, int threshold)
         {
             return new PixImage<byte>(Col.Format.BW, pixImage.ToBlackAndWhiteMatrix(threshold));
         }
 
+        /// <summary>
+        /// Converts a single-channel byte image to a black and white PixImage using a default threshold of 128.
+        /// </summary>
+        /// <param name="pixImage">The source image (must have one channel).</param>
+        /// <returns>A new black and white PixImage.</returns>
         public static PixImage<byte> ToBlackAndWhitePixImage(this PixImage<byte> pixImage)
         {
             return new PixImage<byte>(Col.Format.BW, pixImage.ToBlackAndWhiteMatrix());
@@ -32,65 +59,99 @@ namespace Aardvark.Base
 
         #region Grayscale Conversions
 
+        /// <summary>
+        /// Converts a byte PixImage to a single-channel grayscale matrix.
+        /// If the image already has a single channel in BW or Gray format, the channel is returned as-is.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale matrix of bytes.</returns>
         public static Matrix<byte> ToGrayscaleMatrix(this PixImage<byte> pixImage)
         {
-            if (pixImage.ChannelCount == 1L)
-            {
-                if (pixImage.Format == Col.Format.BW || pixImage.Format == Col.Format.Gray)
-                    return pixImage.Volume.AsMatrixWindow();
-            }
-            return pixImage.GetMatrix<C3b>().MapWindow<byte>(Col.ToGrayByte);
+            if (pixImage.ChannelCount == 1L && pixImage.Format is Col.Format.BW or Col.Format.Gray) return pixImage.Volume.AsMatrixWindow();
+            return pixImage.GetMatrix<C3b>().MapWindow(Col.ToGrayByte);
         }
 
+        /// <summary>
+        /// Converts a byte PixImage to a single-channel grayscale PixImage.
+        /// If the image already has a single channel in Gray format, it is returned unmodified.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale PixImage of bytes.</returns>
         public static PixImage<byte> ToGrayscalePixImage(this PixImage<byte> pixImage)
         {
-            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
-                return pixImage;
+            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray) return pixImage;
             return new PixImage<byte>(pixImage.ToGrayscaleMatrix());
         }
 
+        /// <summary>
+        /// Converts a ushort PixImage to a single-channel grayscale matrix.
+        /// If the image already has a single channel in BW or Gray format, the channel is returned as-is.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale matrix of ushorts.</returns>
         public static Matrix<ushort> ToGrayscaleMatrix(this PixImage<ushort> pixImage)
         {
-            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
-                return pixImage.Volume.AsMatrixWindow();
-            return pixImage.GetMatrix<C3us>().MapWindow<ushort>(Col.ToGrayUShort);
+            if (pixImage.ChannelCount == 1L && pixImage.Format is Col.Format.BW or Col.Format.Gray) return pixImage.Volume.AsMatrixWindow();
+            return pixImage.GetMatrix<C3us>().MapWindow(Col.ToGrayUShort);
         }
 
+        /// <summary>
+        /// Converts a ushort PixImage to a single-channel grayscale PixImage.
+        /// If the image already has a single channel in Gray format, it is returned unmodified.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale PixImage of ushorts.</returns>
         public static PixImage<ushort> ToGrayscalePixImage(this PixImage<ushort> pixImage)
         {
-            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
-                return pixImage;
+            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray) return pixImage;
             return new PixImage<ushort>(pixImage.ToGrayscaleMatrix());
         }
 
+        /// <summary>
+        /// Converts a float PixImage to a single-channel grayscale matrix.
+        /// If the image already has a single channel in BW or Gray format, the channel is returned as-is.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale matrix of floats.</returns>
         public static Matrix<float> ToGrayscaleMatrix(this PixImage<float> pixImage)
         {
-            if (pixImage.ChannelCount == 1L)
-            {
-                if (pixImage.Format == Col.Format.BW || pixImage.Format == Col.Format.Gray)
-                    return pixImage.Volume.AsMatrixWindow();
-            }
-            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.ToGrayFloat);
+            if (pixImage.ChannelCount == 1L && pixImage.Format is Col.Format.BW or Col.Format.Gray) return pixImage.Volume.AsMatrixWindow();
+            return pixImage.GetMatrix<C3f>().MapWindow(Col.ToGrayFloat);
         }
 
+        /// <summary>
+        /// Converts a float PixImage to a single-channel grayscale PixImage.
+        /// If the image already has a single channel in Gray format, it is returned unmodified.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale PixImage of floats.</returns>
         public static PixImage<float> ToGrayscalePixImage(this PixImage<float> pixImage)
         {
-            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
-                return pixImage;
+            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray) return pixImage;
             return new PixImage<float>(pixImage.ToGrayscaleMatrix());
         }
 
+        /// <summary>
+        /// Converts a float PixImage to a single-channel grayscale matrix and clamps the result to [0,1].
+        /// If the image already has a single channel in BW or Gray format, the channel is returned as-is.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale matrix of floats in [0,1].</returns>
         public static Matrix<float> ToClampedGrayscaleMatrix(this PixImage<float> pixImage)
         {
-            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
-                return pixImage.Volume.AsMatrixWindow();
-            return pixImage.GetMatrix<C3f>().MapWindow<float>(Col.ToGrayFloatClamped);
+            if (pixImage.ChannelCount == 1L && pixImage.Format is Col.Format.BW or Col.Format.Gray) return pixImage.Volume.AsMatrixWindow();
+            return pixImage.GetMatrix<C3f>().MapWindow(Col.ToGrayFloatClamped);
         }
 
+        /// <summary>
+        /// Converts a float PixImage to a single-channel grayscale PixImage with values clamped to [0,1].
+        /// If the image already has a single channel in Gray format, it is returned unmodified.
+        /// </summary>
+        /// <param name="pixImage">The source image.</param>
+        /// <returns>A grayscale PixImage of floats in [0,1].</returns>
         public static PixImage<float> ToClampedGrayscalePixImage(this PixImage<float> pixImage)
         {
-            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray)
-                return pixImage;
+            if (pixImage.ChannelCount == 1L && pixImage.Format == Col.Format.Gray) return pixImage;
             return new PixImage<float>(pixImage.ToClampedGrayscaleMatrix());
         }
 
@@ -98,36 +159,67 @@ namespace Aardvark.Base
 
         #region Inversion
 
+        /// <summary>
+        /// Creates a new image with each pixel value inverted as <c>255 - value</c>.
+        /// </summary>
+        /// <param name="pixImage">The source image; it is not modified.</param>
+        /// <returns>A new PixImage containing the inverted pixel values.</returns>
         public static PixImage<byte> Inverted(this PixImage<byte> pixImage)
         {
             return new PixImage<byte>(pixImage.Volume.MapToImageWindow(b => (byte)(255 - b)));
         }
 
+        /// <summary>
+        /// Creates a new image with each pixel value inverted as <c>0xFFFF - value</c>.
+        /// </summary>
+        /// <param name="pixImage">The source image; it is not modified.</param>
+        /// <returns>A new PixImage containing the inverted pixel values.</returns>
         public static PixImage<ushort> Inverted(this PixImage<ushort> pixImage)
         {
             return new PixImage<ushort>(pixImage.Volume.MapToImageWindow(us => (ushort)(65535 - us)));
         }
 
+        /// <summary>
+        /// Creates a new image with each pixel value inverted as <c>0xFFFFFFFF - value</c>.
+        /// </summary>
+        /// <param name="pixImage">The source image; it is not modified.</param>
+        /// <returns>A new PixImage containing the inverted pixel values.</returns>
         public static PixImage<uint> Inverted(this PixImage<uint> pixImage)
         {
-            return new PixImage<uint>(pixImage.Volume.MapToImageWindow(ui => (uint)(0xffffffffu - ui)));
+            return new PixImage<uint>(pixImage.Volume.MapToImageWindow(ui => 0xffffffffu - ui));
         }
 
+        /// <summary>
+        /// Creates a new image with each pixel value inverted as <c>1 - value</c>.
+        /// </summary>
+        /// <remarks>
+        /// Values are assumed to be normalized to [0,1]; this method does not clamp out-of-range values.
+        /// </remarks>
+        /// <param name="pixImage">The source image; it is not modified.</param>
+        /// <returns>A new PixImage containing the inverted pixel values.</returns>
         public static PixImage<float> Inverted(this PixImage<float> pixImage)
         {
-            return new PixImage<float>(pixImage.Volume.MapToImageWindow(f => (float)(1.0f - f)));
+            return new PixImage<float>(pixImage.Volume.MapToImageWindow(f => 1.0f - f));
         }
 
+        /// <summary>
+        /// Creates a new image with each pixel value inverted as <c>1 - value</c>.
+        /// </summary>
+        /// <remarks>
+        /// Values are assumed to be normalized to [0,1]; this method does not clamp out-of-range values.
+        /// </remarks>
+        /// <param name="pixImage">The source image; it is not modified.</param>
+        /// <returns>A new PixImage containing the inverted pixel values.</returns>
         public static PixImage<double> Inverted(this PixImage<double> pixImage)
         {
             return new PixImage<double>(pixImage.Volume.MapToImageWindow(d => 1.0 - d));
         }
 
         /// <summary>
-        /// In-place invert. No Copy is created.
+        /// Inverts pixel values in place as <c>255 - value</c>. No copy is created.
         /// </summary>
-        /// <param name="pixImage">Returns this pixImage.</param>
-        /// <returns></returns>
+        /// <param name="pixImage">The image to invert; the same instance is returned.</param>
+        /// <returns>The same instance after in-place inversion.</returns>
         public static PixImage<byte> Invert(this PixImage<byte> pixImage)
         {
             pixImage.Volume.Apply(b => (byte)(255 - b));
@@ -135,10 +227,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// In-place invert. No Copy is created.
+        /// Inverts pixel values in place as <c>0xFFFF - value</c>. No copy is created.
         /// </summary>
-        /// <param name="pixImage">Returns this pixImage.</param>
-        /// <returns></returns>
+        /// <param name="pixImage">The image to invert; the same instance is returned.</param>
+        /// <returns>The same instance after in-place inversion.</returns>
         public static PixImage<ushort> Invert(this PixImage<ushort> pixImage)
         {
             pixImage.Volume.Apply(us => (ushort)(65535 - us));
@@ -146,32 +238,38 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// In-place invert. No Copy is created.
+        /// Inverts pixel values in place as <c>0xFFFFFFFF - value</c>. No copy is created.
         /// </summary>
-        /// <param name="pixImage">Returns this pixImage.</param>
-        /// <returns></returns>
+        /// <param name="pixImage">The image to invert; the same instance is returned.</param>
+        /// <returns>The same instance after in-place inversion.</returns>
         public static PixImage<uint> Invert(this PixImage<uint> pixImage)
         {
-            pixImage.Volume.Apply(ui => (uint)(0xffffffffu - ui));
+            pixImage.Volume.Apply(ui => 0xffffffffu - ui);
             return pixImage;
         }
 
         /// <summary>
-        /// In-place invert. No Copy is created.
+        /// Inverts pixel values in place as <c>1 - value</c>. No copy is created.
         /// </summary>
-        /// <param name="pixImage">Returns this pixImage.</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// Values are assumed to be normalized to [0,1]; this method does not clamp out-of-range values.
+        /// </remarks>
+        /// <param name="pixImage">The image to invert; the same instance is returned.</param>
+        /// <returns>The same instance after in-place inversion.</returns>
         public static PixImage<float> Invert(this PixImage<float> pixImage)
         {
-            pixImage.Volume.Apply(f => (float)(1.0f - f));
+            pixImage.Volume.Apply(f => 1.0f - f);
             return pixImage;
         }
 
         /// <summary>
-        /// In-place invert. No Copy is created.
+        /// Inverts pixel values in place as <c>1 - value</c>. No copy is created.
         /// </summary>
-        /// <param name="pixImage">Returns this pixImage.</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// Values are assumed to be normalized to [0,1]; this method does not clamp out-of-range values.
+        /// </remarks>
+        /// <param name="pixImage">The image to invert; the same instance is returned.</param>
+        /// <returns>The same instance after in-place inversion.</returns>
         public static PixImage<double> Invert(this PixImage<double> pixImage)
         {
             pixImage.Volume.Apply(d => 1.0 - d);
@@ -182,25 +280,75 @@ namespace Aardvark.Base
 
         #region Stitching
 
+        #region  Dispatch
+
+        private static class Dispatch
+        {
+            private delegate PixImage StitchDelegate(PixImage[][] images, Col.Format format);
+            private delegate PixImage StitchSquareDelegate(PixImage[] images, Col.Format format);
+
+            private static class StitchDispatcher
+            {
+                public static PixImage Stitch<T>(PixImage[][] images, Col.Format format)
+                    => images.Map(ia => ia.Map(pi => pi?.ToPixImage<T>(format))).Stitch();
+
+                public static PixImage StitchSquare<T>(PixImage[] images, Col.Format format)
+                    => images.Map(pi => pi?.ToPixImage<T>(format)).StitchSquare();
+            }
+
+            private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
+
+            private static readonly MethodInfo s_stitchMethod = typeof(StitchDispatcher).GetMethod(nameof(StitchDispatcher.Stitch), flags);
+            private static readonly ConcurrentDictionary<Type, StitchDelegate> s_stitchDelegates = new();
+
+            private static readonly MethodInfo s_stitchSquareMethod = typeof(StitchDispatcher).GetMethod(nameof(StitchDispatcher.StitchSquare), flags);
+            private static readonly ConcurrentDictionary<Type, StitchSquareDelegate> s_stitchSquareDelegates = new();
+
+            public static PixImage Stitch(PixImage[][] images)
+            {
+                var first = images.SelectMany(ia => ia).WhereNotNull().First();
+
+                var stitch = s_stitchDelegates.GetOrAdd(first.PixFormat.Type, t => {
+                    var mi = s_stitchMethod.MakeGenericMethod(t);
+                    return (StitchDelegate)Delegate.CreateDelegate(typeof(StitchDelegate), mi);
+                });
+
+                return stitch(images, first.PixFormat.Format);
+            }
+
+            public static PixImage StitchSquare(PixImage[] images)
+            {
+                var first = images.WhereNotNull().First();
+
+                var stitch = s_stitchSquareDelegates.GetOrAdd(first.PixFormat.Type, t => {
+                    var mi = s_stitchSquareMethod.MakeGenericMethod(t);
+                    return (StitchSquareDelegate)Delegate.CreateDelegate(typeof(StitchSquareDelegate), mi);
+                });
+
+                return stitch(images, first.PixFormat.Format);
+            }
+        }
+
+        #endregion
+
         /// <summary>
-        /// Stitches the images provided in the 2D array into one large image according to the position in the array. 
-        /// The array is treated as column-major. Therefore, the array
-        /// {{1, 2, 3}}                    
-        /// {{4, 5, 6}} 
-        /// produces the image 
-        /// 1 2 3
-        /// 4 6 7
-        /// Null-items are allowed an result in black spot at the corresponding position. 
-        /// The color format of all images must be equal and have byte format.
+        /// Stitches the images provided in the 2D jagged array into one large image according to their positions.
+        /// The outer array enumerates rows (Y), the inner arrays enumerate columns (X).
+        /// For example, the array<br/>
+        /// {{1, 2, 3}}<br/>
+        /// {{4, 5, 6}}<br/>
+        /// produces the image<br/>
+        /// 1 2 3<br/>
+        /// 4 5 6<br/>
+        /// Null entries are allowed and result in black gaps at the corresponding positions.
+        /// All images must share the same color format.
         /// </summary>
         /// <param name="images">The 2D image array that should be stitched.</param>
-        /// <returns>Stitched image</returns>
+        /// <returns>The stitched image, or null if the input is null or empty.</returns>
         public static PixImage<T> Stitch<T>(this PixImage<T>[][] images)
         {
-            if (images.IsEmptyOrNull())
-            {
-                return null;
-            }
+            if (images.IsEmptyOrNull()) return null;
+
             // Find largest extensions
             var numRows = images.Length;
             var numColumns = images.Max(img => img.Length);
@@ -214,17 +362,10 @@ namespace Aardvark.Base
             // The first image in the array, used to determine the color format
             var fst = images.First(img => img.Length > 0).First(img => img != null);
 
-            if (fst == null)
-            {
-                Report.Line("Empty image array!");
-                return null;
-            }
-
             // Assure that the color format fits
             if (images.TrueForAny(imgs => imgs.Where(i => i != null).TrueForAny(img => img.Format != fst.Format)))
             {
-                Report.Line("Color format not matching!");
-                return null;
+                throw new ArgumentException("Mismatching color formats.");
             }
 
             // Allocate new image
@@ -245,63 +386,61 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Stitches the images provided in the 2D array into one large image according to the position in the array. 
-        /// The array is treated as column-major. Therefore, the array
-        /// {{1, 2, 3}}                    
-        /// {{4, 5, 6}} 
-        /// produces the image 
-        /// 1 2 3
-        /// 4 6 7
-        /// Null-items are allowed an result in black spot at the corresponding position. 
-        /// The color format of all images must be equal and have byte format.
+        /// Stitches the images provided in the 2D jagged array into one large image according to their positions.
+        /// The outer array enumerates rows (Y), the inner arrays enumerate columns (X).
+        /// For example, the array<br/>
+        /// {{1, 2, 3}}<br/>
+        /// {{4, 5, 6}}<br/>
+        /// produces the image<br/>
+        /// 1 2 3<br/>
+        /// 4 5 6<br/>
+        /// Null entries are allowed and result in black gaps at the corresponding positions.
+        /// All images must share the same color format. The pixel type will be inferred from the first non-null image.
         /// </summary>
         /// <param name="images">The 2D image array that should be stitched.</param>
-        /// <returns>Stitched image</returns>
+        /// <returns>The stitched image.</returns>
         public static PixImage Stitch(this PixImage[][] images)
-        {
-            var first = images.SelectMany(ia => ia).WhereNotNull().First();
-            if (first.PixFormat.Type == typeof(byte))
-                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<byte>())).Stitch();
-            if (first.PixFormat.Type == typeof(ushort))
-                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<ushort>())).Stitch();
-            if (first.PixFormat.Type == typeof(float))
-                return images.Map(ia => ia.Map(pi => pi?.ToPixImage<float>())).Stitch();
-            throw new NotImplementedException();
-        }
+            => images.IsEmptyOrNull() ? null : Dispatch.Stitch(images);
 
         /// <summary>
-        /// Stitches the images provided to a new image with next best square size. 
-        /// {1, 2}         {1, 2, 3}             {1, 2, 3, 4, 5 }
-        /// produces the image 
-        /// 1               1 2                   1, 2, 3
-        ///                 3 X                   4, 5
-        /// The color format of all images must be equal and have byte format.
+        /// Stitches the provided images into a new image arranged in a near-square grid.
+        /// All images must share the same color format. If the last row is incomplete, missing cells are left black.
         /// </summary>
+        /// <example>
+        /// {1, 2} -> {1, 2}<br/>
+        /// {1, 2, 3} -> {1, 2}, {3}<br/>
+        /// {1, 2, 3, 4, 5} -> {1, 2, 3}, {4, 5}<br/>
+        /// </example>
         /// <param name="images">The image array that should be stitched.</param>
-        /// <returns>Stitched image</returns>
-        public static PixImage StitchSquare(this PixImage[] images)
+        /// <returns>The stitched image, or null if the input is empty or null.</returns>
+        public static PixImage<T> StitchSquare<T>(this PixImage<T>[] images)
         {
+            if (images.IsEmptyOrNull()) return null;
+
             var squareSize = (int)Fun.Ceiling(Fun.Sqrt(images.Length));
-            var array = new PixImage[squareSize][].SetByIndex(
-                            row => new PixImage[squareSize].SetByIndex(
-                                col => { var ii = squareSize * row + col; return ii < images.Length ? images[ii] : null; }));
+            var array =
+                new PixImage<T>[squareSize][].SetByIndex(
+                    row => new PixImage<T>[squareSize].SetByIndex(
+                        col => { var ii = squareSize * row + col; return ii < images.Length ? images[ii] : null; }
+                    )
+                );
             return array.Stitch();
         }
 
         /// <summary>
-        /// Stitches the images provided to a new image with next best square size. 
-        /// {1, 2, 3}      {1, 2}       {1, 2, 3, 4, 5 }
-        /// produces the image 
-        /// 1 2             1            1, 2, 3
-        /// 3 X                          4, 5
-        /// The color format of all images must be equal and have byte format.
+        /// Stitches the provided images into a new image arranged in a near-square grid.
+        /// All images must share the same color format. If the last row is incomplete, missing cells are left black.
+        /// The pixel type will be inferred from the first non-null image.
         /// </summary>
+        /// <example>
+        /// {1, 2} -> {1, 2}<br/>
+        /// {1, 2, 3} -> {1, 2}, {3}<br/>
+        /// {1, 2, 3, 4, 5} -> {1, 2, 3}, {4, 5}<br/>
+        /// </example>
         /// <param name="images">The image array that should be stitched.</param>
-        /// <returns>Stitched image</returns>
-        public static PixImage<T> StitchSquare<T>(this PixImage<T>[] images)
-        {
-            return images.Map(pi => (PixImage)pi).StitchSquare().ToPixImage<T>();
-        }
+        /// <returns>The stitched image, or null if the input is empty or null.</returns>
+        public static PixImage StitchSquare(this PixImage[] images)
+            => images.IsEmptyOrNull() ? null : Dispatch.StitchSquare(images);
 
         #endregion
     }
