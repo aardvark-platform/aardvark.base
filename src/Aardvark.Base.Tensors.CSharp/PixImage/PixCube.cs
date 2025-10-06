@@ -3,8 +3,13 @@
 namespace Aardvark.Base
 {
     /// <summary>
-    /// Enumeration of cube faces. The integer value of the enum also gives the index of the face in a texture array representing a cubemap.
+    /// Enumerates the six faces of a cube map.
     /// </summary>
+    /// <remarks>
+    /// The integer value of each member matches the index of the corresponding face
+    /// in a texture array that represents a cube map. This is the conventional order
+    /// used throughout the library.
+    /// </remarks>
     public enum CubeSide
     {
         PositiveX = 0,
@@ -16,8 +21,11 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// Bit field of cube face sides. The index of a bit represents the index of the face in a texture array representing a cubemap.
+    /// Bitmask flags for selecting cube faces.
     /// </summary>
+    /// <remarks>
+    /// The bit position of each flag corresponds to the <see cref="CubeSide"/> index.
+    /// </remarks>
     [Flags]
     public enum CubeSideFlags
     {
@@ -31,30 +39,32 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// A cube map consisting of six image mipmaps.
+    /// Represents a cube map consisting of six image mipmap chains (one per face).
     /// </summary>
+    /// <seealso cref="PixImageMipMap"/>
+    /// <seealso cref="CubeSide"/>
     public class PixCube : IPix
     {
         /// <summary>
-        /// Array of image mipmaps representing the cube sides.
+        /// The six mipmap chains that make up the cube map, ordered by <see cref="CubeSide"/>.
         /// </summary>
         public PixImageMipMap[] MipMapArray;
 
         #region Constructors
 
         /// <summary>
-        /// Creates a cube map from a mipmap array.
-        /// The order of the array follows the <see cref="CubeSide"/> enumeration.
+        /// Initializes a new <see cref="PixCube"/> from an array of mipmap chains.
+        /// The order of the array must follow the <see cref="CubeSide"/> enumeration.
         /// </summary>
-        /// <param name="sides">An array of mipmaps representing the sides of the mipmap.</param>
+        /// <param name="sides">The six mipmap chains representing the cube faces.</param>
         public PixCube(PixImageMipMap[] sides)
             => MipMapArray = sides;
 
         /// <summary>
-        /// Creates a cube map from an image array.
-        /// The order of the array follows the <see cref="CubeSide"/> enumeration.
+        /// Initializes a new <see cref="PixCube"/> from an array of base-level images.
+        /// The order of the array must follow the <see cref="CubeSide"/> enumeration.
         /// </summary>
-        /// <param name="sides">An array of images representing the sides of the mipmap.</param>
+        /// <param name="sides">The six images representing the cube faces.</param>
         public PixCube(PixImage[] sides)
             => MipMapArray = sides.Map(image => new PixImageMipMap(image));
 
@@ -63,7 +73,7 @@ namespace Aardvark.Base
         #region Properties
 
         /// <summary>
-        /// Gets or sets an image mipmap of the sides array.
+        /// Gets or sets the mipmap chain for the specified cube <paramref name="side"/>.
         /// </summary>
         public PixImageMipMap this[CubeSide side]
         {
@@ -72,7 +82,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the format of the cube map.
+        /// Gets the pixel format of the cube map (taken from the first face).
         /// </summary>
         public PixFormat PixFormat => MipMapArray[0].PixFormat;
 

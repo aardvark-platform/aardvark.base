@@ -20,6 +20,9 @@ namespace Aardvark.Base
         }
     }
 
+    /// <summary>
+    /// Save parameters for JPEG images.
+    /// </summary>
     public class PixJpegSaveParams : PixSaveParams
     {
         /// <summary>
@@ -27,9 +30,14 @@ namespace Aardvark.Base
         /// </summary>
         public int Quality { get; }
 
+        /// <summary>
+        /// Creates JPEG save parameters.
+        /// </summary>
+        /// <param name="quality">Compression quality from 0 (lowest) to 100 (highest). Default is <see cref="DefaultQuality"/>.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="quality"/> is outside the range 0–100.</exception>
         public PixJpegSaveParams(int quality = DefaultQuality) : base(PixFileFormat.Jpeg)
         {
-            if (quality < 0 || quality > 100)
+            if (quality is < 0 or > 100)
                 throw new ArgumentException($"Quality must be within 0 - 100, is ${quality}.");
             Quality = quality;
         }
@@ -37,6 +45,9 @@ namespace Aardvark.Base
         public const int DefaultQuality = 90;
     }
 
+    /// <summary>
+    /// Save parameters for WebP images.
+    /// </summary>
     public class PixWebpSaveParams : PixSaveParams
     {
         /// <summary>
@@ -51,9 +62,15 @@ namespace Aardvark.Base
         /// </summary>
         public bool Lossless { get; }
 
+        /// <summary>
+        /// Creates WebP save parameters.
+        /// </summary>
+        /// <param name="quality">Compression quality from 0 (lowest) to 100 (highest). Default is <see cref="DefaultQuality"/>.</param>
+        /// <param name="lossless">True to use lossless compression; false for lossy (default).</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="quality"/> is outside the range 0–100.</exception>
         public PixWebpSaveParams(int quality = DefaultQuality, bool lossless = false) : base(PixFileFormat.Webp)
         {
-            if (quality < 0 || quality > 100)
+            if (quality is < 0 or > 100)
                 throw new ArgumentException($"Quality must be within 0 - 100, is ${quality}.");
             Quality = quality;
             Lossless = lossless;
@@ -62,6 +79,9 @@ namespace Aardvark.Base
         public const int DefaultQuality = 75;
     }
 
+    /// <summary>
+    /// Save parameters for PNG images.
+    /// </summary>
     public class PixPngSaveParams : PixSaveParams
     {
         /// <summary>
@@ -69,9 +89,14 @@ namespace Aardvark.Base
         /// </summary>
         public int CompressionLevel { get; }
 
+        /// <summary>
+        /// Creates PNG save parameters.
+        /// </summary>
+        /// <param name="compressionLevel">Compression level from 0 (no compression) to 9 (maximum compression). Default is <see cref="DefaultCompressionLevel"/>.</param>
+        /// <exception cref="ArgumentException">Thrown if <paramref name="compressionLevel"/> is outside the range 0–9.</exception>
         public PixPngSaveParams(int compressionLevel = DefaultCompressionLevel) : base(PixFileFormat.Png)
         {
-            if (compressionLevel < 0 || compressionLevel > 9)
+            if (compressionLevel is < 0 or > 9)
                 throw new ArgumentException($"Compression level must be within 0 - 9, is ${compressionLevel}.");
             CompressionLevel = compressionLevel;
         }
@@ -79,6 +104,9 @@ namespace Aardvark.Base
         public const int DefaultCompressionLevel = 6;
     }
 
+    /// <summary>
+    /// Supported compression schemes for TIFF files.
+    /// </summary>
     public enum PixTiffCompression
     {
         /// <summary>
@@ -122,6 +150,9 @@ namespace Aardvark.Base
         PackBits = 7,
     }
 
+    /// <summary>
+    /// Save parameters for TIFF images.
+    /// </summary>
     public class PixTiffSaveParams : PixSaveParams
     {
         /// <summary>
@@ -129,12 +160,19 @@ namespace Aardvark.Base
         /// </summary>
         public PixTiffCompression Compression { get; }
 
+        /// <summary>
+        /// Creates TIFF save parameters.
+        /// </summary>
+        /// <param name="compression">The compression scheme to use. Default is <see cref="PixTiffCompression.Default"/>.</param>
         public PixTiffSaveParams(PixTiffCompression compression = PixTiffCompression.Default) : base(PixFileFormat.Tiff)
         {
             Compression = compression;
         }
     }
 
+    /// <summary>
+    /// Supported compression schemes for OpenEXR (EXR) files.
+    /// </summary>
     public enum PixExrCompression
     {
         /// <summary>
@@ -168,6 +206,9 @@ namespace Aardvark.Base
         B44 = 5,
     }
 
+    /// <summary>
+    /// Save parameters for OpenEXR (EXR) images.
+    /// </summary>
     public class PixExrSaveParams : PixSaveParams
     {
         /// <summary>
@@ -180,6 +221,11 @@ namespace Aardvark.Base
         /// </summary>
         public bool LuminanceChroma { get; }
 
+        /// <summary>
+        /// Creates OpenEXR (EXR) save parameters.
+        /// </summary>
+        /// <param name="compression">The compression scheme to use. Default is <see cref="PixExrCompression.Default"/>.</param>
+        /// <param name="luminanceChroma">If true, encodes as one luminance and two chroma channels (lossy).</param>
         public PixExrSaveParams(PixExrCompression compression = PixExrCompression.Default, bool luminanceChroma = false) : base(PixFileFormat.Exr)
         {
             Compression = compression;
@@ -218,7 +264,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads a PixImage from a stream.
         /// </summary>
-        /// <param name="stream">The strean to load.</param>
+        /// <param name="stream">The stream to load.</param>
         /// <returns>The loaded PixImage.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         PixImage LoadFromStream(Stream stream);
@@ -274,7 +320,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Loads a PixImageMipMap from a stream.
         /// </summary>
-        /// <param name="stream">The strean to load.</param>
+        /// <param name="stream">The stream to load.</param>
         /// <returns>The loaded PixImageMipMap.</returns>
         /// <exception cref="ImageLoadException">if the image could not be loaded.</exception>
         PixImageMipMap LoadMipmapFromStream(Stream stream);
