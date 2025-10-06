@@ -1407,10 +1407,30 @@ namespace Aardvark.Base
 
         private static OS GetOS()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) return OS.Win32;
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return OS.MacOS;
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) return OS.Linux;
-            else return OS.Unknown;
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? OS.Win32 :
+                   RuntimeInformation.IsOSPlatform(OSPlatform.OSX)     ? OS.MacOS :
+                   RuntimeInformation.IsOSPlatform(OSPlatform.Linux)   ? OS.Linux :
+                   OS.Unknown;
+        }
+
+        /// <summary>
+        /// Gets the current operating system platform as an <see cref="OSPlatform"/> value.
+        /// </summary>
+        /// <remarks>
+        /// The method checks <see cref="System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(OSPlatform)"/>
+        /// and returns one of <see cref="OSPlatform.Windows"/>, <see cref="OSPlatform.OSX"/>, or <see cref="OSPlatform.Linux"/>.
+        /// If none of these are detected, an <see cref="OSPlatform"/> with the name "UNKNOWN" is returned via
+        /// <see cref="OSPlatform.Create(string)"/>. This can happen on unsupported or future platforms.
+        /// </remarks>
+        /// <returns>
+        /// The current platform descriptor.
+        /// </returns>
+        public static OSPlatform GetOSPlatform()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? OSPlatform.Windows :
+                   RuntimeInformation.IsOSPlatform(OSPlatform.OSX)     ? OSPlatform.OSX :
+                   RuntimeInformation.IsOSPlatform(OSPlatform.Linux)   ? OSPlatform.Linux :
+                   OSPlatform.Create("UNKNOWN");
         }
 
         private static Dictionary<string, string> GetSymlinks(XDocument document)
@@ -1496,43 +1516,23 @@ namespace Aardvark.Base
 
         #endregion
 
-        private static void GetPlatformAndArch(out string platform, out string arch)
+        private static string PlatformString(OSPlatform platform)
         {
-            switch (RuntimeInformation.ProcessArchitecture)
-            {
-                case Architecture.X86:
-                    arch = "x86";
-                    break;
-                case Architecture.X64:
-                    arch = "AMD64";
-                    break;
-                case Architecture.Arm:
-                    arch = "ARM";
-                    break;
-                case Architecture.Arm64:
-                    arch = "ARM64";
-                    break;
-                default:
-                    arch = "unknown";
-                    break;
-            }
-
-            switch (GetOS())
-            {
-                case OS.Win32:
-                    platform = "windows";
-                    break;
-                case OS.Linux:
-                    platform = "linux";
-                    break;
-                case OS.MacOS:
-                    platform = "mac";
-                    break;
-                default:
-                    platform = "unknown";
-                    break;
-            }
+            return platform == OSPlatform.Windows ? "windows" :
+                   platform == OSPlatform.OSX     ? "mac" :
+                   platform == OSPlatform.Linux   ? "linux" :
+                   "unknown";
         }
+
+        private static string ArchitectureString(Architecture arch) =>
+            arch switch
+            {
+                Architecture.X86   => "x86",
+                Architecture.X64   => "AMD64",
+                Architecture.Arm   => "ARM",
+                Architecture.Arm64 => "ARM64",
+                _                  => arch.ToString()
+            };
 
         private static readonly Regex nativeLibraryRx =
             GetOS() switch
@@ -1550,12 +1550,17 @@ namespace Aardvark.Base
             => nativeLibraryRx?.IsMatch(path) ?? false;
 
         /// <summary>
-        /// Unpacks and lists native dependencies of the given assembly.
+        /// Extracts native libraries embedded in the specified assembly and returns their relative file names.
         /// </summary>
-        /// <param name="assembly">The assembly to unpack.</param>
-        /// <param name="outputDir">The output directory for the native dependencies. Defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/> if null or empty.</param>
-        /// <returns>An array of unpacked native library names.</returns>
-        public static string[] UnpackAndListNativeDependencies(Assembly assembly, string outputDir = null)
+        /// <param name="assembly">The assembly whose embedded native dependencies should be unpacked. Dynamic assemblies are ignored.</param>
+        /// <param name="platform">The target operating system platform used to select the appropriate files from the archive.</param>
+        /// <param name="architecture">The target CPU architecture used to select the appropriate files from the archive.</param>
+        /// <param name="outputDir">Destination directory where files are extracted. If <c>null</c> or empty, defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/>.</param>
+        /// <returns>
+        /// An array of relative paths (using the archive's internal folder structure) of the native libraries that were present
+        /// for the given platform/architecture combination. The returned paths are relative to <paramref name="outputDir"/>.
+        /// </returns>
+        public static string[] UnpackAndListNativeDependencies(Assembly assembly, OSPlatform platform, Architecture architecture, string outputDir = null)
         {
             if (assembly.IsDynamic) return [];
             if (outputDir.IsNullOrEmpty()) outputDir = IntrospectionProperties.CurrentEntryPath;
@@ -1564,89 +1569,87 @@ namespace Aardvark.Base
 
             try
             {
-                try
+                var info = assembly.GetManifestResourceInfo("native.zip");
+                if (info == null)
                 {
-                    var info = assembly.GetManifestResourceInfo("native.zip");
-                    if (info == null)
-                    {
-                        Report.Line(3, $"Assembly does not contain native dependencies.");
-                        return [];
-                    }
-
-                    GetPlatformAndArch(out string platform, out string arch);
-
-                    string[] copyPaths = [ $"{platform}/{arch}/", $"{arch}/" ];
-                    List<string> libNames = [];
-                    Dictionary<string, string> remap = [];
-
-                    bool TryGetLocalName(string entryName, out string localName)
-                    {
-                        foreach(var prefix in copyPaths)
-                        {
-                            if (entryName.StartsWith(prefix))
-                            {
-                                var name = entryName.Substring(prefix.Length);
-#if NET8_0_OR_GREATER
-                                var parts = name.Split('/', StringSplitOptions.RemoveEmptyEntries);
-#else
-                                var parts = name.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
-#endif
-
-                                if (parts.Length > 0)
-                                {
-                                    localName = Path.Combine(parts);
-                                    return true;
-                                }
-                            }
-                        }
-
-                        localName = null;
-                        return false;
-                    }
-
-                    using var s = assembly.GetManifestResourceStream("native.zip");
-                    using var archive = new ZipArchive(s);
-
-                    foreach (var e in archive.Entries)
-                    {
-                        var entryName = e.FullName.Replace(Path.DirectorySeparatorChar, '/');
-
-                        if (entryName == "remap.xml")
-                        {
-                            using var es = e.Open();
-                            var doc = XDocument.Load(es);
-                            remap = GetSymlinks(doc);
-                        }
-                        else if (TryGetLocalName(entryName, out var localName))
-                        {
-                            var dstPath = Path.Combine(outputDir, localName);
-                            var dstDir = Path.GetDirectoryName(dstPath);
-
-                            if (!File.Exists(dstDir)) Directory.CreateDirectory(dstDir);
-
-                            if (!File.Exists(dstPath) || FileUtils.GetLastWriteTimeSafe(dstPath) < e.LastWriteTime.UtcDateTime)
-                            {
-                                Report.Line(3, $"Unpacking {localName}");
-                                e.ExtractToFile(dstPath, true);
-                            }
-
-                            if (IsNativeLibrary(localName)) libNames.Add(localName);
-                        }
-                    }
-
-                    foreach (var kvp in remap)
-                    {
-                        CreateSymlink(outputDir, kvp.Key, kvp.Value);
-                        if (IsNativeLibrary(kvp.Key)) libNames.Add(kvp.Key);
-                    }
-
-                    return libNames.ToArray();
-                }
-                catch (Exception e)
-                {
-                    Report.Warn($"Could not unpack native dependencies for {assembly.FullName}: {e.Message}");
+                    Report.Line(3, $"Assembly does not contain native dependencies.");
                     return [];
                 }
+
+                var platformString = PlatformString(platform);
+                var architectureString = ArchitectureString(architecture);
+
+                string[] copyPaths = [ $"{platformString}/{architectureString}/", $"{architectureString}/" ];
+                List<string> libNames = [];
+                Dictionary<string, string> remap = [];
+
+                bool TryGetLocalName(string entryName, out string localName)
+                {
+                    foreach(var prefix in copyPaths)
+                    {
+                        if (entryName.StartsWith(prefix))
+                        {
+                            var name = entryName.Substring(prefix.Length);
+#if NET8_0_OR_GREATER
+                            var parts = name.Split('/', StringSplitOptions.RemoveEmptyEntries);
+#else
+                            var parts = name.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
+#endif
+
+                            if (parts.Length > 0)
+                            {
+                                localName = Path.Combine(parts);
+                                return true;
+                            }
+                        }
+                    }
+
+                    localName = null;
+                    return false;
+                }
+
+                using var stream = assembly.GetManifestResourceStream("native.zip");
+                using var archive = new ZipArchive(stream);
+
+                foreach (var e in archive.Entries)
+                {
+                    var entryName = e.FullName.Replace(Path.DirectorySeparatorChar, '/');
+
+                    if (entryName == "remap.xml")
+                    {
+                        using var es = e.Open();
+                        var doc = XDocument.Load(es);
+                        remap = GetSymlinks(doc);
+                    }
+                    else if (TryGetLocalName(entryName, out var localName))
+                    {
+                        var dstPath = Path.Combine(outputDir, localName);
+                        var dstDir = Path.GetDirectoryName(dstPath);
+
+                        if (!File.Exists(dstDir)) Directory.CreateDirectory(dstDir);
+
+                        if (!File.Exists(dstPath) || FileUtils.GetLastWriteTimeSafe(dstPath) < e.LastWriteTime.UtcDateTime)
+                        {
+                            Report.Line(3, $"Unpacking {localName}");
+                            e.ExtractToFile(dstPath, true);
+                        }
+
+                        if (IsNativeLibrary(localName)) libNames.Add(localName);
+                    }
+                }
+
+                foreach (var kvp in remap)
+                {
+                    CreateSymlink(outputDir, kvp.Key, kvp.Value);
+                    if (IsNativeLibrary(kvp.Key)) libNames.Add(kvp.Key);
+                }
+
+                return libNames.ToArray();
+            }
+            catch (Exception e)
+            {
+                Report.Warn($"Could not unpack native dependencies for {assembly.FullName}: {e.Message}");
+                return [];
             }
             finally
             {
@@ -1655,19 +1658,42 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Unpacks native dependencies of the given assembly.
+        /// Extracts native libraries embedded in <paramref name="assembly"/> for the current OS platform and process architecture.
         /// </summary>
-        /// <param name="assembly">The assembly to unpack.</param>
-        /// <param name="outputDir">The output directory for the native dependencies. Defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/> if null or empty.</param>
+        /// <param name="assembly">The assembly whose embedded native dependencies should be unpacked.</param>
+        /// <param name="outputDir">Destination directory where files are extracted. If <c>null</c> or empty, defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/>.</param>
+        /// <returns>
+        /// An array of relative paths of the native libraries that were present for the current platform and architecture.
+        /// The paths are relative to <paramref name="outputDir"/>.
+        /// </returns>
+        public static string[] UnpackAndListNativeDependencies(Assembly assembly, string outputDir = null)
+            => UnpackAndListNativeDependencies(assembly, GetOSPlatform(), RuntimeInformation.ProcessArchitecture, outputDir);
+
+        /// <summary>
+        /// Extracts native libraries embedded in <paramref name="assembly"/> for the specified platform and architecture.
+        /// </summary>
+        /// <param name="assembly">The assembly whose embedded native dependencies should be unpacked.</param>
+        /// <param name="platform">The target operating system platform used to select the appropriate files from the archive.</param>
+        /// <param name="architecture">The target CPU architecture used to select the appropriate files from the archive.</param>
+        /// <param name="outputDir">Destination directory where files are extracted. If <c>null</c> or empty, defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/>.</param>
+        public static void UnpackNativeDependencies(Assembly assembly, OSPlatform platform, Architecture architecture, string outputDir = null)
+            => UnpackAndListNativeDependencies(assembly, platform, architecture, outputDir);
+
+        /// <summary>
+        /// Extracts native libraries embedded in <paramref name="assembly"/> for the current OS platform and process architecture.
+        /// </summary>
+        /// <param name="assembly">The assembly whose embedded native dependencies should be unpacked.</param>
+        /// <param name="outputDir">Destination directory where files are extracted. If <c>null</c> or empty, defaults to <see cref="IntrospectionProperties.CurrentEntryPath"/>.</param>
         public static void UnpackNativeDependencies(Assembly assembly, string outputDir)
             => UnpackAndListNativeDependencies(assembly, outputDir);
 
         /// <summary>
-        /// Unpacks native dependencies of the given assembly to <see cref="IntrospectionProperties.CurrentEntryPath"/>.
+        /// Extracts native libraries embedded in <paramref name="assembly"/> to <see cref="IntrospectionProperties.CurrentEntryPath"/>
+        /// using the current OS platform and process architecture.
         /// </summary>
-        /// <param name="assembly">The assembly to unpack.</param>
+        /// <param name="assembly">The assembly whose embedded native dependencies should be unpacked.</param>
         public static void UnpackNativeDependencies(Assembly assembly)
-            => UnpackAndListNativeDependencies(assembly, null);
+            => UnpackAndListNativeDependencies(assembly);
 
         [Obsolete("Use UnpackNativeDependencies instead.")]
         public static void UnpackNativeDependenciesToBaseDir(Assembly a, string baseDir)
@@ -1684,7 +1710,7 @@ namespace Aardvark.Base
         public static string NativeLibraryPath = Path.Combine(Path.GetTempPath(), "aardvark-native");
 
         /// Specify if native libraries should be extracted each to its own sub folder or directory to the NativeLibraryPath
-        /// NOTE: When using global shared NativeLibraryPath, SeparateLibraryDirectories should not be set to false, as this there might be version conflicts
+        /// NOTE: When using global shared NativeLibraryPath, SeparateLibraryDirectories should not be set to false, as there might be version conflicts
         public static bool SeparateLibraryDirectories = true;
 
         private static readonly Lazy<string> s_nativeLibraryCacheDirectory =
@@ -1740,7 +1766,8 @@ namespace Aardvark.Base
                             var guid = new Guid(hash);
 #endif
 
-                            GetPlatformAndArch(out var platform, out var arch);
+                            var platform = PlatformString(GetOSPlatform());
+                            var arch = ArchitectureString(RuntimeInformation.ProcessArchitecture);
                             dstFolder = Path.Combine(dstFolder, assembly.GetName().Name, guid.ToString(), platform, arch);
                         }
 
@@ -1968,18 +1995,6 @@ namespace Aardvark.Base
                 {
                     Report.Warn($"Could not load native dependencies for {a.FullName}: {e.Message}");
                 }
-            }
-        }
-
-        private static string ArchitectureString(Architecture arch)
-        {
-            switch (arch)
-            {
-                case Architecture.X86: return "x86";
-                case Architecture.X64: return "x64";
-                case Architecture.Arm: return "arm";
-                case Architecture.Arm64: return "arm64";
-                default: return arch.ToString();
             }
         }
 
