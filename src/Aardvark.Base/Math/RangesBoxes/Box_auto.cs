@@ -768,7 +768,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1b o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -2796,7 +2796,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1s o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -3810,7 +3810,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1us o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -4843,7 +4843,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1i o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -5876,7 +5876,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1ui o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -6909,7 +6909,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1l o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -7923,7 +7923,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1ul o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -8949,7 +8949,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1f o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -10024,7 +10024,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Range1d o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -11438,7 +11438,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box2i o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -13006,7 +13006,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box2l o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -14638,7 +14638,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box2f o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -16259,7 +16259,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box2d o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -17798,7 +17798,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box3i o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -19723,7 +19723,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box3l o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -21714,7 +21714,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box3f o) && Equals(o);
 
         public override readonly string ToString()
         {
@@ -23693,7 +23693,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is Box3d o) && Equals(o);
 
         public override readonly string ToString()
         {

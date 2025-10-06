@@ -1514,7 +1514,7 @@ namespace Aardvark.Base
             => Min.Equals(other.Min) && Max.Equals(other.Max);
 
         public override readonly bool Equals(object obj) =>
-            (obj is Range1sb o) && Equals(o);
+            (obj is __type__ o) && Equals(o);
 
         public override readonly string ToString()
         {
