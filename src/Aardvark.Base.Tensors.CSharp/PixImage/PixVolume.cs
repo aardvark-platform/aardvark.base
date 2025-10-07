@@ -40,9 +40,7 @@ namespace Aardvark.Base
 
         #region Constructors
 
-        public PixVolume()
-            : this(Col.Format.None)
-        { }
+        public PixVolume() : this(Col.Format.None) { }
 
         public PixVolume(Col.Format format)
         {
@@ -59,7 +57,7 @@ namespace Aardvark.Base
         public abstract Array Array { get; }
 
         /// <summary>
-        /// Gets the pixel format including element type and channel semantics.
+        /// Gets the pixel format of the volume.
         /// </summary>
         public abstract PixFormat PixFormat { get; }
 
@@ -623,7 +621,7 @@ namespace Aardvark.Base
         /// <returns>A new <see cref="PixImage{T}"/> containing the converted data.</returns>
         public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun)
         {
-            return Copy<Tv>(fun, Format);
+            return Copy(fun, Format);
         }
 
         /// <summary>

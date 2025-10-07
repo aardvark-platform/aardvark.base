@@ -54,7 +54,7 @@ namespace Aardvark.Base
         public V2i BaseSize => BaseImage?.Size ?? V2i.Zero;
 
         /// <summary>
-        /// Returns the format of the mipmap.
+        /// Gets the pixel format of the base image.
         /// </summary>
         /// <exception cref="InvalidOperationException">if the mipmap is empty.</exception>
         public PixFormat PixFormat => BaseImage?.PixFormat ?? throw new InvalidOperationException("Cannot determine format of empty PixImageMipMap.");
@@ -94,16 +94,14 @@ namespace Aardvark.Base
             {
                 return mipLoader.LoadMipmapFromFile(filename);
             }
-            else
-            {
-                var pi = loader.LoadFromFile(filename);
-                return (pi != null) ? new PixImageMipMap(pi) : null;
-            }
+
+            var pi = loader.LoadFromFile(filename);
+            return (pi != null) ? new PixImageMipMap(pi) : null;
         }
 
         private static PixImageMipMap LoadFromFileWithLoader(IPixLoader loader, string filename)
             => PixImage.InvokeLoader(
-                    loader, l => LoadMipmapFromFileWithLoader(loader, filename), PixImage.NotNull,
+                    loader, l => LoadMipmapFromFileWithLoader(l, filename), PixImage.NotNull,
                     $"load image mipmap from file '{filename}'"
             );
 

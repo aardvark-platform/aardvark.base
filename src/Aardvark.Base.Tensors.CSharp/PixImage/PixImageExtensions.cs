@@ -84,7 +84,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Converts a ushort PixImage to a single-channel grayscale matrix.
+        /// Converts an ushort PixImage to a single-channel grayscale matrix.
         /// If the image already has a single channel in BW or Gray format, the channel is returned as-is.
         /// </summary>
         /// <param name="pixImage">The source image.</param>
@@ -96,7 +96,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Converts a ushort PixImage to a single-channel grayscale PixImage.
+        /// Converts an ushort PixImage to a single-channel grayscale PixImage.
         /// If the image already has a single channel in Gray format, it is returned unmodified.
         /// </summary>
         /// <param name="pixImage">The source image.</param>

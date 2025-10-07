@@ -74,16 +74,11 @@ namespace Aardvark.Base
         /// </summary>
         private class PgmPixLoader : IPixLoader
         {
-            public string Name { get; }
+            public string Name => "Aardvark PGM";
 
             public bool CanEncode => true;
 
             public bool CanDecode => false;
-
-            public PgmPixLoader()
-            {
-                Name = "Aardvark PGM";
-            }
 
             public PixImage LoadFromFile(string filename) => null;
 
@@ -441,13 +436,11 @@ namespace Aardvark.Base
                         PixProcessorCaps minCapabilities,
                         string operationDescription)
         {
-            PixImage<T> result;
-
             foreach (var p in GetProcessors(minCapabilities))
             {
                 try
                 {
-                    result = invoke(p);
+                    var result = invoke(p);
                     if (result != null) return result;
                 }
                 catch (Exception e)
@@ -456,7 +449,7 @@ namespace Aardvark.Base
                 }
             }
 
-            var processors = GetProcessors(PixProcessorCaps.None);
+            var processors = GetProcessors();
             var errorMessage = $"Cannot {operationDescription}";
 
             if (processors.Count == 0)
@@ -485,9 +478,7 @@ namespace Aardvark.Base
             AddLoader(new PgmPixLoader());
         }
 
-        public PixImage()
-            : this(Col.Format.None)
-        { }
+        public PixImage() : this(Col.Format.None) { }
 
         public PixImage(Col.Format format)
         {
@@ -836,9 +827,9 @@ namespace Aardvark.Base
             if (Path.HasExtension(fileName))
             {
                 var ext = Path.GetExtension(fileName).ToLowerInvariant();
-                if (s_formatOfExtension.ContainsKey(ext))
+                if (s_formatOfExtension.TryGetValue(ext, out var value))
                 {
-                    if (s_formatOfExtension[ext] != format)
+                    if (value != format)
                     {
                         // conflicting extension
                         // e.g. NormalizedFileName("foo.jpg", PixFileFormat.Png)
@@ -1248,7 +1239,7 @@ namespace Aardvark.Base
     /// is specified as type parameter.
     /// </summary>
     [Serializable]
-    public partial class PixImage<T> : PixImage
+    public class PixImage<T> : PixImage
     {
         public Volume<T> Volume;
 
@@ -1620,7 +1611,7 @@ namespace Aardvark.Base
         public PixImage<T> Remapped(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
             return InvokeProcessors(
-                (p) => p.Remap(this, xMap, yMap, ip, default),
+                (p) => p.Remap(this, xMap, yMap, ip),
                 PixProcessorCaps.Remap, "remap image"
             );
         }
@@ -1661,7 +1652,7 @@ namespace Aardvark.Base
         public PixImage<T> Rotated(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
         {
             return InvokeProcessors(
-                (p) => p.Rotate(this, angleInRadiansCCW, resize, ip, default),
+                (p) => p.Rotate(this, angleInRadiansCCW, resize, ip),
                 PixProcessorCaps.Rotate, "rotate image"
             );
         }
@@ -1733,10 +1724,8 @@ namespace Aardvark.Base
         public PixImage<T> SubImage(long x, long y, long xSize, long ySize)
         {
             if (x < 0 || y < 0 || x + xSize > Size.X || y + ySize > Size.Y)
-                throw new ArgumentOutOfRangeException(
-                                        "subregion out of image boundary");
-            return new PixImage<T>(Format,
-                    Volume.SubVolume(x, y, 0, xSize, ySize, ChannelCount));
+                throw new ArgumentOutOfRangeException(null, "Subregion out of image boundary.");
+            return new PixImage<T>(Format, Volume.SubVolume(x, y, 0, xSize, ySize, ChannelCount));
         }
 
         /// <summary>
@@ -1768,7 +1757,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns a specified region as a new PixImage.
         /// The supplied pos and size are rounded to the nearest integer.
-        /// Note that this may be different from SubImage(Box2d box), since
+        /// Note that this may be different from <see cref="SubImage(Box2d)"/>, since
         /// rounding the size and rounding the Max of the box may
         /// result in different integer sizes.
         /// No data is copied, the internal Volumue is only a view on the original one.
@@ -1793,7 +1782,7 @@ namespace Aardvark.Base
         /// Coords in normalized [0, 1] coords of 'this'.
         /// The supplied pos and size are converted to pixel coordinates and
         /// rounded to the nearest integer. Note that this may be different
-        /// from SubImage01(Box2d box) since rounding the size and rounding
+        /// from <see cref="SubImage01(Box2d)"/> since rounding the size and rounding
         /// the Max of the box may result in different integer sizes.
         /// No data is copied, the internal Volumue is only a view on the original one.
         /// </summary>
@@ -1859,10 +1848,7 @@ namespace Aardvark.Base
             if (Format != image.Format)
                 throw new ArgumentException("wrong PixImage.Format");
 
-            if (Size == image.Size)
-                Volume.Set(image.Volume);
-            else
-                Volume.Set(image.Resized(Size, ip).Volume);
+            Volume.Set(Size == image.Size ? image.Volume : image.Resized(Size, ip).Volume);
         }
 
         #endregion
@@ -1919,7 +1905,7 @@ namespace Aardvark.Base
         /// <typeparam name="Tv"></typeparam>
         /// <param name="fun"></param>
         /// <returns></returns>
-        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun) => Copy<Tv>(fun, Format);
+        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun) => Copy(fun, Format);
 
         /// <summary>
         /// Copy function for color conversions. Note that the
@@ -1990,7 +1976,7 @@ namespace Aardvark.Base
 
         #region IPixImageVisitor
 
-        public override TResult Visit<TResult>(IPixImageVisitor<TResult> visitor) => visitor.Visit<T>(this);
+        public override TResult Visit<TResult>(IPixImageVisitor<TResult> visitor) => visitor.Visit(this);
 
         #endregion
     }
