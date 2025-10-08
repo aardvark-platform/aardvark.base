@@ -1340,6 +1340,7 @@ namespace Aardvark.Base
                 (byte)(c0.B - (c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator +(C3b c0, C3us c1)
         {
@@ -1349,6 +1350,7 @@ namespace Aardvark.Base
                 (byte)(c0.B + Col.UShortToByte(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3us c1)
         {
@@ -1358,6 +1360,7 @@ namespace Aardvark.Base
                 (byte)(c0.B - Col.UShortToByte(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator +(C3b c0, C3ui c1)
         {
@@ -1367,6 +1370,7 @@ namespace Aardvark.Base
                 (byte)(c0.B + Col.UIntToByte(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3ui c1)
         {
@@ -1376,6 +1380,7 @@ namespace Aardvark.Base
                 (byte)(c0.B - Col.UIntToByte(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator +(C3b c0, C3f c1)
         {
@@ -1385,6 +1390,7 @@ namespace Aardvark.Base
                 (byte)(c0.B + Col.FloatToByte(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3f c1)
         {
@@ -1394,6 +1400,7 @@ namespace Aardvark.Base
                 (byte)(c0.B - Col.FloatToByte(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator +(C3b c0, C3d c1)
         {
@@ -1403,6 +1410,7 @@ namespace Aardvark.Base
                 (byte)(c0.B + Col.DoubleToByte(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator -(C3b c0, C3d c1)
         {
@@ -1412,36 +1420,42 @@ namespace Aardvark.Base
                 (byte)(c0.B - Col.DoubleToByte(c1.B)));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator *(C3b col, byte scalar)
         {
             return new C3b((byte)(col.R * scalar), (byte)(col.G * scalar), (byte)(col.B * scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator *(byte scalar, C3b col)
         {
             return new C3b((byte)(scalar * col.R), (byte)(scalar * col.G), (byte)(scalar * col.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator /(C3b col, byte scalar)
         {
             return new C3b((byte)(col.R / scalar), (byte)(col.G / scalar), (byte)(col.B / scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator /(byte scalar, C3b col)
         {
             return new C3b((byte)(scalar / col.R), (byte)(scalar / col.G), (byte)(scalar / col.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator *(C3b c0, C3b c1)
         {
             return new C3b((byte)(c0.R * c1.R), (byte)(c0.G * c1.G), (byte)(c0.B * c1.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b operator /(C3b c0, C3b c1)
         {
@@ -3616,6 +3630,7 @@ namespace Aardvark.Base
                 (ushort)Fun.Round(scalar / col.B));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator +(C3us c0, C3b c1)
         {
@@ -3625,6 +3640,7 @@ namespace Aardvark.Base
                 (ushort)(c0.B + Col.ByteToUShort(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3b c1)
         {
@@ -3652,6 +3668,7 @@ namespace Aardvark.Base
                 (ushort)(c0.B - (c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator +(C3us c0, C3ui c1)
         {
@@ -3661,6 +3678,7 @@ namespace Aardvark.Base
                 (ushort)(c0.B + Col.UIntToUShort(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3ui c1)
         {
@@ -3670,6 +3688,7 @@ namespace Aardvark.Base
                 (ushort)(c0.B - Col.UIntToUShort(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator +(C3us c0, C3f c1)
         {
@@ -3679,6 +3698,7 @@ namespace Aardvark.Base
                 (ushort)(c0.B + Col.FloatToUShort(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3f c1)
         {
@@ -3688,6 +3708,7 @@ namespace Aardvark.Base
                 (ushort)(c0.B - Col.FloatToUShort(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator +(C3us c0, C3d c1)
         {
@@ -3697,6 +3718,7 @@ namespace Aardvark.Base
                 (ushort)(c0.B + Col.DoubleToUShort(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator -(C3us c0, C3d c1)
         {
@@ -3706,36 +3728,42 @@ namespace Aardvark.Base
                 (ushort)(c0.B - Col.DoubleToUShort(c1.B)));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator *(C3us col, ushort scalar)
         {
             return new C3us((ushort)(col.R * scalar), (ushort)(col.G * scalar), (ushort)(col.B * scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator *(ushort scalar, C3us col)
         {
             return new C3us((ushort)(scalar * col.R), (ushort)(scalar * col.G), (ushort)(scalar * col.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator /(C3us col, ushort scalar)
         {
             return new C3us((ushort)(col.R / scalar), (ushort)(col.G / scalar), (ushort)(col.B / scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator /(ushort scalar, C3us col)
         {
             return new C3us((ushort)(scalar / col.R), (ushort)(scalar / col.G), (ushort)(scalar / col.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator *(C3us c0, C3us c1)
         {
             return new C3us((ushort)(c0.R * c1.R), (ushort)(c0.G * c1.G), (ushort)(c0.B * c1.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us operator /(C3us c0, C3us c1)
         {
@@ -5833,6 +5861,7 @@ namespace Aardvark.Base
                 (uint)Fun.Round(scalar / col.B));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator +(C3ui c0, C3b c1)
         {
@@ -5842,6 +5871,7 @@ namespace Aardvark.Base
                 (uint)(c0.B + Col.ByteToUInt(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3b c1)
         {
@@ -5851,6 +5881,7 @@ namespace Aardvark.Base
                 (uint)(c0.B - Col.ByteToUInt(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator +(C3ui c0, C3us c1)
         {
@@ -5860,6 +5891,7 @@ namespace Aardvark.Base
                 (uint)(c0.B + Col.UShortToUInt(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3us c1)
         {
@@ -5887,6 +5919,7 @@ namespace Aardvark.Base
                 (uint)(c0.B - (c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator +(C3ui c0, C3f c1)
         {
@@ -5896,6 +5929,7 @@ namespace Aardvark.Base
                 (uint)(c0.B + Col.FloatToUInt(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3f c1)
         {
@@ -5905,6 +5939,7 @@ namespace Aardvark.Base
                 (uint)(c0.B - Col.FloatToUInt(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator +(C3ui c0, C3d c1)
         {
@@ -5914,6 +5949,7 @@ namespace Aardvark.Base
                 (uint)(c0.B + Col.DoubleToUInt(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator -(C3ui c0, C3d c1)
         {
@@ -5923,36 +5959,42 @@ namespace Aardvark.Base
                 (uint)(c0.B - Col.DoubleToUInt(c1.B)));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator *(C3ui col, uint scalar)
         {
             return new C3ui((uint)(col.R * scalar), (uint)(col.G * scalar), (uint)(col.B * scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator *(uint scalar, C3ui col)
         {
             return new C3ui((uint)(scalar * col.R), (uint)(scalar * col.G), (uint)(scalar * col.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator /(C3ui col, uint scalar)
         {
             return new C3ui((uint)(col.R / scalar), (uint)(col.G / scalar), (uint)(col.B / scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator /(uint scalar, C3ui col)
         {
             return new C3ui((uint)(scalar / col.R), (uint)(scalar / col.G), (uint)(scalar / col.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator *(C3ui c0, C3ui c1)
         {
             return new C3ui((uint)(c0.R * c1.R), (uint)(c0.G * c1.G), (uint)(c0.B * c1.B));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui operator /(C3ui c0, C3ui c1)
         {
@@ -7917,38 +7959,7 @@ namespace Aardvark.Base
 
         #region Color Arithmetic
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3f operator *(C3f col, float scalar)
-        {
-            return new C3f(
-                col.R * scalar, 
-                col.G * scalar, 
-                col.B * scalar);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3f operator *(float scalar, C3f col)
-            => col * scalar;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3f operator /(C3f col, float scalar)
-        {
-            float f = 1 / scalar;
-            return new C3f(
-                col.R * f, 
-                col.G * f, 
-                col.B * f);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3f operator /(float scalar, C3f col)
-        {
-            return new C3f(
-                scalar / col.R, 
-                scalar / col.G, 
-                scalar / col.B);
-        }
-
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator +(C3f c0, C3b c1)
         {
@@ -7958,6 +7969,7 @@ namespace Aardvark.Base
                 (float)(c0.B + Col.ByteToFloat(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator -(C3f c0, C3b c1)
         {
@@ -7967,6 +7979,7 @@ namespace Aardvark.Base
                 (float)(c0.B - Col.ByteToFloat(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator +(C3f c0, C3us c1)
         {
@@ -7976,6 +7989,7 @@ namespace Aardvark.Base
                 (float)(c0.B + Col.UShortToFloat(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator -(C3f c0, C3us c1)
         {
@@ -7985,6 +7999,7 @@ namespace Aardvark.Base
                 (float)(c0.B - Col.UShortToFloat(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator +(C3f c0, C3ui c1)
         {
@@ -7994,6 +8009,7 @@ namespace Aardvark.Base
                 (float)(c0.B + Col.UIntToFloat(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator -(C3f c0, C3ui c1)
         {
@@ -8021,6 +8037,7 @@ namespace Aardvark.Base
                 (float)(c0.B - (c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator +(C3f c0, C3d c1)
         {
@@ -8030,6 +8047,7 @@ namespace Aardvark.Base
                 (float)(c0.B + (float)(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3f operator -(C3f c0, C3d c1)
         {
@@ -8037,6 +8055,30 @@ namespace Aardvark.Base
                 (float)(c0.R - (float)(c1.R)), 
                 (float)(c0.G - (float)(c1.G)), 
                 (float)(c0.B - (float)(c1.B)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f operator *(C3f col, float scalar)
+        {
+            return new C3f((float)(col.R * scalar), (float)(col.G * scalar), (float)(col.B * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f operator *(float scalar, C3f col)
+        {
+            return new C3f((float)(scalar * col.R), (float)(scalar * col.G), (float)(scalar * col.B));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f operator /(C3f col, float scalar)
+        {
+            return new C3f((float)(col.R / scalar), (float)(col.G / scalar), (float)(col.B / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3f operator /(float scalar, C3f col)
+        {
+            return new C3f((float)(scalar / col.R), (float)(scalar / col.G), (float)(scalar / col.B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -10033,38 +10075,7 @@ namespace Aardvark.Base
 
         #region Color Arithmetic
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3d operator *(C3d col, double scalar)
-        {
-            return new C3d(
-                col.R * scalar, 
-                col.G * scalar, 
-                col.B * scalar);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3d operator *(double scalar, C3d col)
-            => col * scalar;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3d operator /(C3d col, double scalar)
-        {
-            double f = 1 / scalar;
-            return new C3d(
-                col.R * f, 
-                col.G * f, 
-                col.B * f);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C3d operator /(double scalar, C3d col)
-        {
-            return new C3d(
-                scalar / col.R, 
-                scalar / col.G, 
-                scalar / col.B);
-        }
-
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator +(C3d c0, C3b c1)
         {
@@ -10074,6 +10085,7 @@ namespace Aardvark.Base
                 (double)(c0.B + Col.ByteToDouble(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator -(C3d c0, C3b c1)
         {
@@ -10083,6 +10095,7 @@ namespace Aardvark.Base
                 (double)(c0.B - Col.ByteToDouble(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator +(C3d c0, C3us c1)
         {
@@ -10092,6 +10105,7 @@ namespace Aardvark.Base
                 (double)(c0.B + Col.UShortToDouble(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator -(C3d c0, C3us c1)
         {
@@ -10101,6 +10115,7 @@ namespace Aardvark.Base
                 (double)(c0.B - Col.UShortToDouble(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator +(C3d c0, C3ui c1)
         {
@@ -10110,6 +10125,7 @@ namespace Aardvark.Base
                 (double)(c0.B + Col.UIntToDouble(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator -(C3d c0, C3ui c1)
         {
@@ -10119,6 +10135,7 @@ namespace Aardvark.Base
                 (double)(c0.B - Col.UIntToDouble(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator +(C3d c0, C3f c1)
         {
@@ -10128,6 +10145,7 @@ namespace Aardvark.Base
                 (double)(c0.B + (double)(c1.B)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3d operator -(C3d c0, C3f c1)
         {
@@ -10153,6 +10171,30 @@ namespace Aardvark.Base
                 (double)(c0.R - (c1.R)), 
                 (double)(c0.G - (c1.G)), 
                 (double)(c0.B - (c1.B)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d operator *(C3d col, double scalar)
+        {
+            return new C3d((double)(col.R * scalar), (double)(col.G * scalar), (double)(col.B * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d operator *(double scalar, C3d col)
+        {
+            return new C3d((double)(scalar * col.R), (double)(scalar * col.G), (double)(scalar * col.B));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d operator /(C3d col, double scalar)
+        {
+            return new C3d((double)(col.R / scalar), (double)(col.G / scalar), (double)(col.B / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C3d operator /(double scalar, C3d col)
+        {
+            return new C3d((double)(scalar / col.R), (double)(scalar / col.G), (double)(scalar / col.B));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -12686,6 +12728,7 @@ namespace Aardvark.Base
                 (byte)(c0.A - (c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator +(C4b c0, C4us c1)
         {
@@ -12696,6 +12739,7 @@ namespace Aardvark.Base
                 (byte)(c0.A + Col.UShortToByte(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4us c1)
         {
@@ -12706,6 +12750,7 @@ namespace Aardvark.Base
                 (byte)(c0.A - Col.UShortToByte(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator +(C4b c0, C4ui c1)
         {
@@ -12716,6 +12761,7 @@ namespace Aardvark.Base
                 (byte)(c0.A + Col.UIntToByte(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4ui c1)
         {
@@ -12726,6 +12772,7 @@ namespace Aardvark.Base
                 (byte)(c0.A - Col.UIntToByte(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator +(C4b c0, C4f c1)
         {
@@ -12736,6 +12783,7 @@ namespace Aardvark.Base
                 (byte)(c0.A + Col.FloatToByte(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4f c1)
         {
@@ -12746,6 +12794,7 @@ namespace Aardvark.Base
                 (byte)(c0.A - Col.FloatToByte(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator +(C4b c0, C4d c1)
         {
@@ -12756,6 +12805,7 @@ namespace Aardvark.Base
                 (byte)(c0.A + Col.DoubleToByte(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator -(C4b c0, C4d c1)
         {
@@ -12766,36 +12816,42 @@ namespace Aardvark.Base
                 (byte)(c0.A - Col.DoubleToByte(c1.A)));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator *(C4b col, byte scalar)
         {
             return new C4b((byte)(col.R * scalar), (byte)(col.G * scalar), (byte)(col.B * scalar), (byte)(col.A * scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator *(byte scalar, C4b col)
         {
             return new C4b((byte)(scalar * col.R), (byte)(scalar * col.G), (byte)(scalar * col.B), (byte)(scalar * col.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator /(C4b col, byte scalar)
         {
             return new C4b((byte)(col.R / scalar), (byte)(col.G / scalar), (byte)(col.B / scalar), (byte)(col.A / scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator /(byte scalar, C4b col)
         {
             return new C4b((byte)(scalar / col.R), (byte)(scalar / col.G), (byte)(scalar / col.B), (byte)(scalar / col.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator *(C4b c0, C4b c1)
         {
             return new C4b((byte)(c0.R * c1.R), (byte)(c0.G * c1.G), (byte)(c0.B * c1.B), (byte)(c0.A * c1.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b operator /(C4b c0, C4b c1)
         {
@@ -15243,6 +15299,7 @@ namespace Aardvark.Base
                 (ushort)Fun.Round(scalar / col.A));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator +(C4us c0, C4b c1)
         {
@@ -15253,6 +15310,7 @@ namespace Aardvark.Base
                 (ushort)(c0.A + Col.ByteToUShort(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4b c1)
         {
@@ -15283,6 +15341,7 @@ namespace Aardvark.Base
                 (ushort)(c0.A - (c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator +(C4us c0, C4ui c1)
         {
@@ -15293,6 +15352,7 @@ namespace Aardvark.Base
                 (ushort)(c0.A + Col.UIntToUShort(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4ui c1)
         {
@@ -15303,6 +15363,7 @@ namespace Aardvark.Base
                 (ushort)(c0.A - Col.UIntToUShort(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator +(C4us c0, C4f c1)
         {
@@ -15313,6 +15374,7 @@ namespace Aardvark.Base
                 (ushort)(c0.A + Col.FloatToUShort(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4f c1)
         {
@@ -15323,6 +15385,7 @@ namespace Aardvark.Base
                 (ushort)(c0.A - Col.FloatToUShort(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator +(C4us c0, C4d c1)
         {
@@ -15333,6 +15396,7 @@ namespace Aardvark.Base
                 (ushort)(c0.A + Col.DoubleToUShort(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator -(C4us c0, C4d c1)
         {
@@ -15343,36 +15407,42 @@ namespace Aardvark.Base
                 (ushort)(c0.A - Col.DoubleToUShort(c1.A)));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator *(C4us col, ushort scalar)
         {
             return new C4us((ushort)(col.R * scalar), (ushort)(col.G * scalar), (ushort)(col.B * scalar), (ushort)(col.A * scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator *(ushort scalar, C4us col)
         {
             return new C4us((ushort)(scalar * col.R), (ushort)(scalar * col.G), (ushort)(scalar * col.B), (ushort)(scalar * col.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator /(C4us col, ushort scalar)
         {
             return new C4us((ushort)(col.R / scalar), (ushort)(col.G / scalar), (ushort)(col.B / scalar), (ushort)(col.A / scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator /(ushort scalar, C4us col)
         {
             return new C4us((ushort)(scalar / col.R), (ushort)(scalar / col.G), (ushort)(scalar / col.B), (ushort)(scalar / col.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator *(C4us c0, C4us c1)
         {
             return new C4us((ushort)(c0.R * c1.R), (ushort)(c0.G * c1.G), (ushort)(c0.B * c1.B), (ushort)(c0.A * c1.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us operator /(C4us c0, C4us c1)
         {
@@ -17726,6 +17796,7 @@ namespace Aardvark.Base
                 (uint)Fun.Round(scalar / col.A));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator +(C4ui c0, C4b c1)
         {
@@ -17736,6 +17807,7 @@ namespace Aardvark.Base
                 (uint)(c0.A + Col.ByteToUInt(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4b c1)
         {
@@ -17746,6 +17818,7 @@ namespace Aardvark.Base
                 (uint)(c0.A - Col.ByteToUInt(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator +(C4ui c0, C4us c1)
         {
@@ -17756,6 +17829,7 @@ namespace Aardvark.Base
                 (uint)(c0.A + Col.UShortToUInt(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4us c1)
         {
@@ -17786,6 +17860,7 @@ namespace Aardvark.Base
                 (uint)(c0.A - (c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator +(C4ui c0, C4f c1)
         {
@@ -17796,6 +17871,7 @@ namespace Aardvark.Base
                 (uint)(c0.A + Col.FloatToUInt(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4f c1)
         {
@@ -17806,6 +17882,7 @@ namespace Aardvark.Base
                 (uint)(c0.A - Col.FloatToUInt(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator +(C4ui c0, C4d c1)
         {
@@ -17816,6 +17893,7 @@ namespace Aardvark.Base
                 (uint)(c0.A + Col.DoubleToUInt(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator -(C4ui c0, C4d c1)
         {
@@ -17826,36 +17904,42 @@ namespace Aardvark.Base
                 (uint)(c0.A - Col.DoubleToUInt(c1.A)));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator *(C4ui col, uint scalar)
         {
             return new C4ui((uint)(col.R * scalar), (uint)(col.G * scalar), (uint)(col.B * scalar), (uint)(col.A * scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator *(uint scalar, C4ui col)
         {
             return new C4ui((uint)(scalar * col.R), (uint)(scalar * col.G), (uint)(scalar * col.B), (uint)(scalar * col.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator /(C4ui col, uint scalar)
         {
             return new C4ui((uint)(col.R / scalar), (uint)(col.G / scalar), (uint)(col.B / scalar), (uint)(col.A / scalar));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator /(uint scalar, C4ui col)
         {
             return new C4ui((uint)(scalar / col.R), (uint)(scalar / col.G), (uint)(scalar / col.B), (uint)(scalar / col.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator *(C4ui c0, C4ui c1)
         {
             return new C4ui((uint)(c0.R * c1.R), (uint)(c0.G * c1.G), (uint)(c0.B * c1.B), (uint)(c0.A * c1.A));
         }
 
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui operator /(C4ui c0, C4ui c1)
         {
@@ -19988,41 +20072,7 @@ namespace Aardvark.Base
 
         #region Color Arithmetic
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4f operator *(C4f col, float scalar)
-        {
-            return new C4f(
-                col.R * scalar, 
-                col.G * scalar, 
-                col.B * scalar, 
-                col.A * scalar);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4f operator *(float scalar, C4f col)
-            => col * scalar;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4f operator /(C4f col, float scalar)
-        {
-            float f = 1 / scalar;
-            return new C4f(
-                col.R * f, 
-                col.G * f, 
-                col.B * f, 
-                col.A * f);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4f operator /(float scalar, C4f col)
-        {
-            return new C4f(
-                scalar / col.R, 
-                scalar / col.G, 
-                scalar / col.B, 
-                scalar / col.A);
-        }
-
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator +(C4f c0, C4b c1)
         {
@@ -20033,6 +20083,7 @@ namespace Aardvark.Base
                 (float)(c0.A + Col.ByteToFloat(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator -(C4f c0, C4b c1)
         {
@@ -20043,6 +20094,7 @@ namespace Aardvark.Base
                 (float)(c0.A - Col.ByteToFloat(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator +(C4f c0, C4us c1)
         {
@@ -20053,6 +20105,7 @@ namespace Aardvark.Base
                 (float)(c0.A + Col.UShortToFloat(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator -(C4f c0, C4us c1)
         {
@@ -20063,6 +20116,7 @@ namespace Aardvark.Base
                 (float)(c0.A - Col.UShortToFloat(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator +(C4f c0, C4ui c1)
         {
@@ -20073,6 +20127,7 @@ namespace Aardvark.Base
                 (float)(c0.A + Col.UIntToFloat(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator -(C4f c0, C4ui c1)
         {
@@ -20103,6 +20158,7 @@ namespace Aardvark.Base
                 (float)(c0.A - (c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator +(C4f c0, C4d c1)
         {
@@ -20113,6 +20169,7 @@ namespace Aardvark.Base
                 (float)(c0.A + (float)(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4f operator -(C4f c0, C4d c1)
         {
@@ -20121,6 +20178,30 @@ namespace Aardvark.Base
                 (float)(c0.G - (float)(c1.G)), 
                 (float)(c0.B - (float)(c1.B)), 
                 (float)(c0.A - (float)(c1.A)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f operator *(C4f col, float scalar)
+        {
+            return new C4f((float)(col.R * scalar), (float)(col.G * scalar), (float)(col.B * scalar), (float)(col.A * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f operator *(float scalar, C4f col)
+        {
+            return new C4f((float)(scalar * col.R), (float)(scalar * col.G), (float)(scalar * col.B), (float)(scalar * col.A));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f operator /(C4f col, float scalar)
+        {
+            return new C4f((float)(col.R / scalar), (float)(col.G / scalar), (float)(col.B / scalar), (float)(col.A / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4f operator /(float scalar, C4f col)
+        {
+            return new C4f((float)(scalar / col.R), (float)(scalar / col.G), (float)(scalar / col.B), (float)(scalar / col.A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22288,41 +22369,7 @@ namespace Aardvark.Base
 
         #region Color Arithmetic
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4d operator *(C4d col, double scalar)
-        {
-            return new C4d(
-                col.R * scalar, 
-                col.G * scalar, 
-                col.B * scalar, 
-                col.A * scalar);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4d operator *(double scalar, C4d col)
-            => col * scalar;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4d operator /(C4d col, double scalar)
-        {
-            double f = 1 / scalar;
-            return new C4d(
-                col.R * f, 
-                col.G * f, 
-                col.B * f, 
-                col.A * f);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static C4d operator /(double scalar, C4d col)
-        {
-            return new C4d(
-                scalar / col.R, 
-                scalar / col.G, 
-                scalar / col.B, 
-                scalar / col.A);
-        }
-
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator +(C4d c0, C4b c1)
         {
@@ -22333,6 +22380,7 @@ namespace Aardvark.Base
                 (double)(c0.A + Col.ByteToDouble(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator -(C4d c0, C4b c1)
         {
@@ -22343,6 +22391,7 @@ namespace Aardvark.Base
                 (double)(c0.A - Col.ByteToDouble(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator +(C4d c0, C4us c1)
         {
@@ -22353,6 +22402,7 @@ namespace Aardvark.Base
                 (double)(c0.A + Col.UShortToDouble(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator -(C4d c0, C4us c1)
         {
@@ -22363,6 +22413,7 @@ namespace Aardvark.Base
                 (double)(c0.A - Col.UShortToDouble(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator +(C4d c0, C4ui c1)
         {
@@ -22373,6 +22424,7 @@ namespace Aardvark.Base
                 (double)(c0.A + Col.UIntToDouble(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator -(C4d c0, C4ui c1)
         {
@@ -22383,6 +22435,7 @@ namespace Aardvark.Base
                 (double)(c0.A - Col.UIntToDouble(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator +(C4d c0, C4f c1)
         {
@@ -22393,6 +22446,7 @@ namespace Aardvark.Base
                 (double)(c0.A + (double)(c1.A)));
         }
 
+        [Obsolete("Use operator with operands of same type instead.")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4d operator -(C4d c0, C4f c1)
         {
@@ -22421,6 +22475,30 @@ namespace Aardvark.Base
                 (double)(c0.G - (c1.G)), 
                 (double)(c0.B - (c1.B)), 
                 (double)(c0.A - (c1.A)));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d operator *(C4d col, double scalar)
+        {
+            return new C4d((double)(col.R * scalar), (double)(col.G * scalar), (double)(col.B * scalar), (double)(col.A * scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d operator *(double scalar, C4d col)
+        {
+            return new C4d((double)(scalar * col.R), (double)(scalar * col.G), (double)(scalar * col.B), (double)(scalar * col.A));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d operator /(C4d col, double scalar)
+        {
+            return new C4d((double)(col.R / scalar), (double)(col.G / scalar), (double)(col.B / scalar), (double)(col.A / scalar));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static C4d operator /(double scalar, C4d col)
+        {
+            return new C4d((double)(scalar / col.R), (double)(scalar / col.G), (double)(scalar / col.B), (double)(scalar / col.A));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

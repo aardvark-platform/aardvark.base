@@ -200,22 +200,6 @@ namespace Aardvark.Base
     //#         { Meta.FloatType, "(double)" },
     //#         { Meta.DoubleType, "" },
     //#     };
-    //# var btoftmap = new Dictionary<Meta.SimpleType, string>
-    //#     {
-    //#         { Meta.ByteType, "" },
-    //#         { Meta.UShortType, "Col.ByteToUShort" },
-    //#         { Meta.UIntType, "Col.ByteToUInt" },
-    //#         { Meta.FloatType, "Col.ByteToFloat" },
-    //#         { Meta.DoubleType, "Col.ByteToDouble" },
-    //#     };
-    //# var fttobmap = new Dictionary<Meta.SimpleType, string>
-    //#     {
-    //#         { Meta.ByteType, "" },
-    //#         { Meta.UShortType, "Col.UShortToByte" },
-    //#         { Meta.UIntType, "Col.UIntToByte" },
-    //#         { Meta.FloatType, "Col.FloatToByteClamped" },
-    //#         { Meta.DoubleType, "Col.DoubleToByteClamped" },
-    //#     };
     //# var maxvalmap = new Dictionary<Meta.SimpleType, string>
     //#     {
     //#         { Meta.ByteType, "255" },
@@ -252,8 +236,6 @@ namespace Aardvark.Base
     //#     var f_to_ft = ftoftmap[ft];
     //#     var d_to_ft = dtoftmap[ft];
     //#     var ft_to_d = fttodmap[ft];
-    //#     var b_to_ft = btoftmap[ft];
-    //#     var ft_to_b = fttobmap[ft];
     //#     var fabs_p = isReal ? "Fun.Abs(" : "";
     //#     var q_fabs = isReal ? ")" : "";
     //#     var getptr = "&" + ((ft == Meta.ByteType) ? fields[2] : fields[0]);
@@ -884,19 +866,14 @@ namespace Aardvark.Base
 
         #region Color Arithmetic
 
+        //# if (!ft.IsReal) {
         //# fdtypes.ForEach(rt => {
         //# var rtype = rt.Name;
-        //# if (!ft.IsReal || ft == rt) {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__type__ col, __rtype__ scalar)
         {
-            //# if (fdtypes.Contains(ft)) {
-            return new __type__(/*# fields.ForEach(f => { */
-                col.__f__ * scalar/*# }, comma); */);
-            //# } else {
             return new __type__(/*# fields.ForEach(f => { */
                 (__ftype__)Fun.Round(col.__f__ * scalar)/*# }, comma); */);
-            //# }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -907,34 +884,28 @@ namespace Aardvark.Base
         public static __type__ operator /(__type__ col, __rtype__ scalar)
         {
             __rtype__ f = 1 / scalar;
-            //# if (fdtypes.Contains(ft)) {
-            return new __type__(/*# fields.ForEach(f => { */
-                col.__f__ * f/*# }, comma); */);
-            //# } else {
             return new __type__(/*# fields.ForEach(f => { */
                 (__ftype__)Fun.Round(col.__f__ * f)/*# }, comma); */);
-            //# }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__rtype__ scalar, __type__ col)
         {
-            //# if (fdtypes.Contains(ft)) {
-            return new __type__(/*# fields.ForEach(f => { */
-                scalar / col.__f__/*# }, comma); */);
-            //# } else {
             return new __type__(/*# fields.ForEach(f => { */
                 (__ftype__)Fun.Round(scalar / col.__f__)/*# }, comma); */);
-            //# }
         }
 
-        //# } });
+        //# });
+        //# }
         //# foreach (var t1 in Meta.ColorTypes) { if (t1.HasAlpha != t.HasAlpha) continue;
         //#
         //#     var type1 = t1.Name; var ft1 = t1.FieldType;
         //#     var ft1_from_ft = t1 != t
         //#         ? (ft.IsReal && ft1.IsReal ? "(" + ftype + ")" : "Col." + ft1.Caps + "To" + ft.Caps)
         //#         : "";
+        //#     if (t1 != t) {
+        [Obsolete("Use operator with operands of same type instead.")]
+        //#     }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__type__ c0, __type1__ c1)
         {
@@ -942,6 +913,9 @@ namespace Aardvark.Base
                 (__ftype__)(c0.__f__ + __ft1_from_ft__(c1.__f__))/*# }, comma); */);
         }
 
+        //#     if (t1 != t) {
+        [Obsolete("Use operator with operands of same type instead.")]
+        //#     }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__type__ c0, __type1__ c1)
         {
@@ -951,30 +925,43 @@ namespace Aardvark.Base
 
         //# } // t1
         //# if (!ft.IsReal) {
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__type__ col, __ftype__ scalar)
         {
             return new __type__(/*# fields.ForEach(f => { */(__ftype__)(col.__f__ * scalar)/*# }, comma); */);
         }
 
+        //# if (!ft.IsReal) {
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__ftype__ scalar, __type__ col)
         {
             return new __type__(/*# fields.ForEach(f => { */(__ftype__)(scalar * col.__f__)/*# }, comma); */);
         }
 
+        //# if (!ft.IsReal) {
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__type__ col, __ftype__ scalar)
         {
             return new __type__(/*# fields.ForEach(f => { */(__ftype__)(col.__f__ / scalar)/*# }, comma); */);
         }
 
+        //# if (!ft.IsReal) {
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__ftype__ scalar, __type__ col)
         {
             return new __type__(/*# fields.ForEach(f => { */(__ftype__)(scalar / col.__f__)/*# }, comma); */);
         }
 
+        //# if (!ft.IsReal) {
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
         //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__type__ c0, __type__ c1)
@@ -982,6 +969,9 @@ namespace Aardvark.Base
             return new __type__(/*# fields.ForEach(f => { */(__ftype__)(c0.__f__ * c1.__f__)/*# }, comma); */);
         }
 
+        //# if (!ft.IsReal) {
+        [Obsolete("Multiplication and division of integer-based colors is unreasonable.")]
+        //# }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__type__ c0, __type__ c1)
         {
