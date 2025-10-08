@@ -237,5 +237,52 @@ namespace Aardvark.Tests
 
             Assert.True(Fun.ApproximateEquals(col, res));
         }
+
+        [Test]
+        public void C4fArithmetic()
+        {
+            var rnd = new RandomSystem(1);
+            var c0 = rnd.UniformC4f();
+            var c1 = rnd.UniformC4f();
+
+            Assert.AreEqual( c0.ToV4f() * c1.ToV4f(), (c0   * c1).ToV4f()   );
+            Assert.AreEqual( c0.ToV4f() * c1.R,       (c0   * c1.R).ToV4f() );
+            Assert.AreEqual( c0.R       * c1.ToV4f(), (c0.R * c1).ToV4f()   );
+
+            Assert.AreEqual( c0.ToV4f() / c1.ToV4f(), (c0   / c1).ToV4f()   );
+            Assert.AreEqual( c0.ToV4f() / c1.R,       (c0   / c1.R).ToV4f() );
+            Assert.AreEqual( c0.R       / c1.ToV4f(), (c0.R / c1).ToV4f()   );
+
+            Assert.AreEqual( c0.ToV4f() + c1.ToV4f(), (c0   + c1).ToV4f()   );
+            Assert.AreEqual( c0.ToV4f() + c1.R,       (c0   + c1.R).ToV4f() );
+            Assert.AreEqual( c0.R       + c1.ToV4f(), (c0.R + c1).ToV4f()   );
+
+            Assert.AreEqual( c0.ToV4f() - c1.ToV4f(), (c0   - c1).ToV4f()   );
+            Assert.AreEqual( c0.ToV4f() - c1.R,       (c0   - c1.R).ToV4f() );
+            Assert.AreEqual( c0.R       - c1.ToV4f(), (c0.R - c1).ToV4f()   );
+        }
+
+        [Test]
+        public void C4bArithmetic()
+        {
+            var c0 = new C4b(199, 203, 151, 130);
+            var c1 = new C4b(35, 11, 66, 47);
+
+            Assert.AreEqual( c0.ToV4i() + c1.ToV4i(),      (c0   + c1).ToV4i()   );
+            Assert.AreEqual( c0.ToV4i() + c1.R,            (c0   + c1.R).ToV4i() );
+            Assert.AreEqual( c1.R       + c0.ToV4i(),      (c1.R + c0).ToV4i()   );
+
+            Assert.AreEqual( C3b.White.ToV4i(),            (c0   + c0).ToV4i()   );
+            Assert.AreEqual( C3b.White.ToV4i(),            (c0   + c0.R).ToV4i() );
+            Assert.AreEqual( C3b.White.ToV4i(),            (c0.R + c0).ToV4i()   );
+
+            Assert.AreEqual( c0.ToV4i() - c1.ToV4i(),      (c0   - c1).ToV4i()   );
+            Assert.AreEqual( c0.ToV4i() - c1.R,            (c0   - c1.R).ToV4i() );
+            Assert.AreEqual( c0.R       - c1.ToV4i(),      (c0.R - c1).ToV4i()   );
+
+            Assert.AreEqual( V4i.Zero,                     (c1   - c0).ToV4i()   );
+            Assert.AreEqual( V4i.Zero,                     (c1   - c0.R).ToV4i() );
+            Assert.AreEqual( V4i.Zero,                     (c1.R - c0).ToV4i()   );
+        }
     }
 }

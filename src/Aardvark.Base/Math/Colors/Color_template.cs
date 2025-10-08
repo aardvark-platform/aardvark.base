@@ -176,29 +176,37 @@ namespace Aardvark.Base
     //# Func<Meta.SimpleType, Meta.SimpleType, bool> coltovecsupported =
     //#     (cft, vft) => (!cft.IsReal || vft.IsReal) && (cft != Meta.UIntType || vft != Meta.IntType);
     //#
-    //# var ftoftmap = new Dictionary<Meta.SimpleType, string>
+    //# var f_to_ft_map = new Dictionary<Meta.SimpleType, string>
     //#     {
-    //#         { Meta.ByteType, "Col.FloatToByteClamped" },
+    //#         { Meta.ByteType,   "Col.FloatToByteClamped"   },
     //#         { Meta.UShortType, "Col.FloatToUShortClamped" },
-    //#         { Meta.UIntType, "Col.FloatToUIntClamped" },
-    //#         { Meta.FloatType, "" },
-    //#         { Meta.DoubleType, "(double)" },
+    //#         { Meta.UIntType,   "Col.FloatToUIntClamped"   },
+    //#         { Meta.FloatType,  ""                         },
+    //#         { Meta.DoubleType, "(double)"                 },
     //#     };
-    //# var dtoftmap = new Dictionary<Meta.SimpleType, string>
+    //# var d_to_ft_map = new Dictionary<Meta.SimpleType, string>
     //#     {
-    //#         { Meta.ByteType, "Col.DoubleToByteClamped" },
+    //#         { Meta.ByteType,   "Col.DoubleToByteClamped"   },
     //#         { Meta.UShortType, "Col.DoubleToUShortClamped" },
-    //#         { Meta.UIntType, "Col.DoubleToUIntClamped" },
-    //#         { Meta.FloatType, "(float)" },
-    //#         { Meta.DoubleType, "" },
+    //#         { Meta.UIntType,   "Col.DoubleToUIntClamped"   },
+    //#         { Meta.FloatType,  "(float)"                   },
+    //#         { Meta.DoubleType, ""                          },
     //#     };
-    //# var fttodmap = new Dictionary<Meta.SimpleType, string>
+    //# var ft_to_f_map = new Dictionary<Meta.SimpleType, string>
     //#     {
-    //#         { Meta.ByteType, "Col.ByteToDouble" },
+    //#         { Meta.ByteType,   "Col.ByteToFloat"   },
+    //#         { Meta.UShortType, "Col.UShortToFloat" },
+    //#         { Meta.UIntType,   "Col.UIntToFloat"   },
+    //#         { Meta.FloatType,  ""                  },
+    //#         { Meta.DoubleType, "(float)"           },
+    //#     };
+    //# var ft_to_d_map = new Dictionary<Meta.SimpleType, string>
+    //#     {
+    //#         { Meta.ByteType,   "Col.ByteToDouble"   },
     //#         { Meta.UShortType, "Col.UShortToDouble" },
-    //#         { Meta.UIntType, "Col.UIntToDouble" },
-    //#         { Meta.FloatType, "(double)" },
-    //#         { Meta.DoubleType, "" },
+    //#         { Meta.UIntType,   "Col.UIntToDouble"   },
+    //#         { Meta.FloatType,  "(double)"           },
+    //#         { Meta.DoubleType, ""                   },
     //#     };
     //# var maxvalmap = new Dictionary<Meta.SimpleType, string>
     //#     {
@@ -233,9 +241,10 @@ namespace Aardvark.Base
     //#     var channels = t.Channels;
     //#     var args = fields.ToLower();
     //#     var cargs = channels.ToLower();
-    //#     var f_to_ft = ftoftmap[ft];
-    //#     var d_to_ft = dtoftmap[ft];
-    //#     var ft_to_d = fttodmap[ft];
+    //#     var f_to_ft = f_to_ft_map[ft];
+    //#     var d_to_ft = d_to_ft_map[ft];
+    //#     var ft_to_f = ft_to_f_map[ft];
+    //#     var ft_to_d = ft_to_d_map[ft];
     //#     var fabs_p = isReal ? "Fun.Abs(" : "";
     //#     var q_fabs = isReal ? ")" : "";
     //#     var getptr = "&" + ((ft == Meta.ByteType) ? fields[2] : fields[0]);
@@ -287,7 +296,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a color from the given <see cref="float"/> values.
         //# if (!isDouble) {
-        /// The values are mapped from [0, 1] to the <see cref="__type__"/> color range.
+        /// The values are mapped and clamped from [0, 1] to the <see cref="__type__"/> color range.
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -303,7 +312,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a color from the given <see cref="double"/> values.
         //# if (!isFloat) {
-        /// The values are mapped from [0, 1] to the <see cref="__type__"/> color range.
+        /// The values are mapped and clamped from [0, 1] to the <see cref="__type__"/> color range.
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -360,7 +369,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a color from the given <see cref="float"/> RGB values.
         //# if (!isDouble) {
-        /// The values are mapped from [0, 1] to the <see cref="__type__"/> color range.
+        /// The values are mapped and clamped from [0, 1] to the <see cref="__type__"/> color range.
         //# }
         /// The alpha channel is set to __maxval__.
         /// </summary>
@@ -378,7 +387,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a color from the given <see cref="double"/> RGB values.
         //# if (!isFloat) {
-        /// The values are mapped from [0, 1] to the <see cref="__type__"/> color range.
+        /// The values are mapped and clamped from [0, 1] to the <see cref="__type__"/> color range.
         //# }
         /// The alpha channel is set to __maxval__.
         /// </summary>
@@ -412,7 +421,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a color from a single <see cref="__ftype1__"/> value.
         //# if (ismapped(ft, ft1)) {
-        /// The value is mapped from [0, 1] to the <see cref="__type__"/> color range.
+        /// The value is mapped and clamped from [0, 1] to the <see cref="__type__"/> color range.
         //# }
         //# if (t.HasAlpha) {
         /// The alpha channel is set to __maxval__.
@@ -869,11 +878,13 @@ namespace Aardvark.Base
         //# if (!ft.IsReal) {
         //# fdtypes.ForEach(rt => {
         //# var rtype = rt.Name;
+        //# var ft_to_r = (rt == Meta.FloatType) ? ft_to_f : ft_to_d;
+        //# var r_to_ft = (rt == Meta.FloatType) ? f_to_ft : d_to_ft;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator *(__type__ col, __rtype__ scalar)
         {
             return new __type__(/*# fields.ForEach(f => { */
-                (__ftype__)Fun.Round(col.__f__ * scalar)/*# }, comma); */);
+                __r_to_ft__(__ft_to_r__(col.__f__) * scalar)/*# }, comma); */);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -882,30 +893,24 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__type__ col, __rtype__ scalar)
-        {
-            __rtype__ f = 1 / scalar;
-            return new __type__(/*# fields.ForEach(f => { */
-                (__ftype__)Fun.Round(col.__f__ * f)/*# }, comma); */);
-        }
+            => col * (1 / scalar);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator /(__rtype__ scalar, __type__ col)
         {
             return new __type__(/*# fields.ForEach(f => { */
-                (__ftype__)Fun.Round(scalar / col.__f__)/*# }, comma); */);
+                __r_to_ft__(scalar / __ft_to_r__(col.__f__))/*# }, comma); */);
         }
 
         //# });
         //# }
         //# foreach (var t1 in Meta.ColorTypes) { if (t1.HasAlpha != t.HasAlpha) continue;
-        //#
+        //#     if (t1 == t) continue;
         //#     var type1 = t1.Name; var ft1 = t1.FieldType;
         //#     var ft1_from_ft = t1 != t
         //#         ? (ft.IsReal && ft1.IsReal ? "(" + ftype + ")" : "Col." + ft1.Caps + "To" + ft.Caps)
         //#         : "";
-        //#     if (t1 != t) {
         [Obsolete("Use operator with operands of same type instead.")]
-        //#     }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__type__ c0, __type1__ c1)
         {
@@ -913,9 +918,7 @@ namespace Aardvark.Base
                 (__ftype__)(c0.__f__ + __ft1_from_ft__(c1.__f__))/*# }, comma); */);
         }
 
-        //#     if (t1 != t) {
         [Obsolete("Use operator with operands of same type instead.")]
-        //#     }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__type__ c0, __type1__ c1)
         {
@@ -979,27 +982,67 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator +(__type__ c0, __type__ c1)
+        {
+            //# if (ft.IsReal) {
+            return new __type__(/*# fields.ForEach(f => { */c0.__f__ + c1.__f__/*# }, comma); */);
+            //# } else {
+            return new __type__(/*# fields.ForEach(f => { */
+                (__t.MaxValue__ - c0.__f__ > c1.__f__) ? c0.__f__ + c1.__f__ : __t.MaxValue__/*# }, comma); */
+            );
+            //# }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__type__ col, __ftype__ scalar)
         {
-            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(col.__f__ + scalar)/*# }, comma); */);
+            //# if (ft.IsReal) {
+            return new __type__(/*# fields.ForEach(f => { */col.__f__ + scalar/*# }, comma); */);
+            //# } else {
+            return new __type__(/*# fields.ForEach(f => { */
+                (__t.MaxValue__ - col.__f__ > scalar) ? col.__f__ + scalar : __t.MaxValue__/*# }, comma); */
+            );
+            //# }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator +(__ftype__ scalar, __type__ col)
+            => col + scalar;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static __type__ operator -(__type__ c0, __type__ c1)
         {
-            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(scalar + col.__f__)/*# }, comma); */);
+            //# if (ft.IsReal) {
+            return new __type__(/*# fields.ForEach(f => { */c0.__f__ - c1.__f__/*# }, comma); */);
+            //# } else {
+            return new __type__(/*# fields.ForEach(f => { */
+                (c0.__f__ > c1.__f__) ? c0.__f__ - c1.__f__ : 0/*# }, comma); */
+            );
+            //# }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__type__ col, __ftype__ scalar)
         {
-            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(col.__f__ - scalar)/*# }, comma); */);
+            //# if (ft.IsReal) {
+            return new __type__(/*# fields.ForEach(f => { */col.__f__ - scalar/*# }, comma); */);
+            //# } else {
+            return new __type__(/*# fields.ForEach(f => { */
+                (col.__f__ > scalar) ? col.__f__ - scalar : 0/*# }, comma); */
+            );
+            //# }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ operator -(__ftype__ scalar, __type__ col)
         {
-            return new __type__(/*# fields.ForEach(f => { */(__ftype__)(scalar - col.__f__)/*# }, comma); */);
+            //# if (ft.IsReal) {
+            return new __type__(/*# fields.ForEach(f => { */scalar - col.__f__/*# }, comma); */);
+            //# } else {
+            return new __type__(/*# fields.ForEach(f => { */
+                (scalar > col.__f__) ? scalar - col.__f__ : 0/*# }, comma); */
+            );
+            //# }
         }
 
         /// <summary>
