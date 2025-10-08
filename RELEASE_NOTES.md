@@ -1,3 +1,13 @@
+### 5.3.18
+- Added ReadOnlySpan overloads for Cell, Cell2d, and range types
+- [Tensors] Added and improved XML documentation
+- [Tensors] Added PixImage and PixVolume constructors for data arrays
+- [Color] Added over- and underflow checks for integer-based arithmetic operators
+- [Color] Deprecated addition and subtraction of different types
+- [Color] Deprecated integer-based multiplication and division
+- [FSharpMath] Added min, max overloads for uint vectors
+- [Introspection] Added overloads for unpacking native dependencies for a specific platform
+
 ### 5.3.17
 - [FSharp] Added non-generic isNull and notNull
 - [FSharp] Added generic inc and dec
