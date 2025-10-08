@@ -279,12 +279,18 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        #region  Default
+
         /// <summary>
         /// Initializes a new empty PixVolume instance without allocating storage.
         /// Intended for serializers or deferred initialization scenarios. The
         /// <see cref="Tensor4"/> field must be assigned before use.
         /// </summary>
         public PixVolume() { }
+
+        #endregion
+
+        #region From Tensor
 
         /// <summary>
         /// Creates a new PixVolume backed by the given tensor and using the specified color format.
@@ -307,6 +313,10 @@ namespace Aardvark.Base
             : this(Col.FormatDefaultOf(typeof(T), tensor4.SW), tensor4)
         { }
 
+        #endregion
+
+        #region From Dimensions
+
         /// <summary>
         /// Allocates a new volume with the given 3D size and channel count using the default color format for the element type.
         /// </summary>
@@ -320,7 +330,6 @@ namespace Aardvark.Base
         public PixVolume(V3l size, long channels)
             : this(Col.FormatDefaultOf(typeof(T), channels), CreateTensor4<T>(size.X, size.Y, size.Z, channels))
         { }
-
 
         /// <summary>
         /// Allocates a new volume with the given dimensions and channel count using the default color format for the element type.
@@ -401,6 +410,126 @@ namespace Aardvark.Base
         public PixVolume(Col.Format format, long width, long height, long depth, long channels)
             : this(format, CreateTensor4<T>(width, height, depth, channels))
         { }
+
+        #endregion
+
+        #region From Array
+
+        /// <summary>
+        /// Creates a new PixVolume backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image tensor with the specified dimensions.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="depth">Depth in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(Col.Format format, T[] data, int width, int height, int depth, int channels)
+            : this(format, data.CreateImageTensor4(new V4l(width, height, depth, channels)))
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, T[], int, int, int, int)"/>
+        public PixVolume(Col.Format format, T[] data, long width, long height, long depth, long channels)
+            : this(format, data.CreateImageTensor4(new V4l(width, height, depth, channels)))
+        { }
+
+        /// <summary>
+        /// Creates a new PixVolume backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image tensor with the specified dimensions.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="size">Volume size in pixels (width, height, depth).</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(Col.Format format, T[] data, V3i size, int channels)
+            : this(format, data, size.X, size.Y, size.Z, channels)
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, T[], V3i, int)"/>
+        public PixVolume(Col.Format format, T[] data, V3l size, long channels)
+            : this(format, data, size.X, size.Y, size.Z, channels)
+        { }
+
+        /// <summary>
+        /// Creates a new PixVolume backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image tensor with the specified dimensions.
+        /// The number of channels is derived from <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="depth">Depth in pixels.</param>
+        public PixVolume(Col.Format format, T[] data, int width, int height, int depth)
+            : this(format, data, width, height, depth, format.ChannelCount())
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, T[], int, int, int)"/>
+        public PixVolume(Col.Format format, T[] data, long width, long height, long depth)
+            : this(format, data, width, height, depth, format.ChannelCount())
+        { }
+
+        /// <summary>
+        /// Creates a new PixVolume backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image tensor with the specified dimensions.
+        /// The number of channels is derived from <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="size">Volume size in pixels (width, height, depth).</param>
+        public PixVolume(Col.Format format, T[] data, V3i size)
+            : this(format, data, size.X, size.Y, size.Z)
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, T[], V3i)"/>
+        public PixVolume(Col.Format format, T[] data, V3l size)
+            : this(format, data, size.X, size.Y, size.Z)
+        { }
+
+        /// <summary>
+        /// Creates a new PixVolume backed by the given array and using the default color format for the element type.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image tensor with the specified dimensions.
+        /// </summary>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="depth">Depth in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(T[] data, int width, int height, int depth, int channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), data, width, height, depth, channels)
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(T[], int, int, int, int)"/>
+        public PixVolume(T[] data, long width, long height, long depth, long channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), data, width, height, depth, channels)
+        { }
+
+        /// <summary>
+        /// Creates a new PixVolume backed by the given array and using the default color format for the element type.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image tensor with the specified dimensions.
+        /// </summary>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="size">Volume size in pixels (width, height, depth).</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(T[] data, V3i size, int channels)
+            : this(data, size.X, size.Y, size.Z, channels)
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(T[], V3i, int)"/>
+        public PixVolume(T[] data, V3l size, long channels)
+            : this(data, size.X, size.Y, size.Z, channels)
+        { }
+
+        #endregion
+
+        #region From Copy
 
         /// <summary>
         /// Creates a typed copy of the given volume. Always allocates new storage and copies data.
@@ -536,6 +665,8 @@ namespace Aardvark.Base
             Tensor4 = tensor4;
             Format = format;
         }
+
+        #endregion
 
         #endregion
 

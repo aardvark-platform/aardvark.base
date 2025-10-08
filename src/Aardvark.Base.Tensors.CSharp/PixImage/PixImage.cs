@@ -730,7 +730,7 @@ namespace Aardvark.Base
                     => new PixImage<T>(format, width, height, channels);
 
                 public static PixImage CreateArray<T>(Array data, Col.Format format, long width, long height, long channels)
-                    => new PixImage<T>(format, ((T[])data).CreateImageVolume(new V3l(width, height, channels)));
+                    => new PixImage<T>(format, (T[])data, width, height, channels);
             }
 
             private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
@@ -1457,12 +1457,19 @@ namespace Aardvark.Base
 
         #region Constructors
 
+        #region  Default
+
         /// <summary>
         /// Initializes a new empty PixImage instance without allocating storage.
         /// Intended for serializers or deferred initialization scenarios. The
         /// <see cref="Volume"/> field must be assigned before use.
         /// </summary>
         public PixImage() { }
+
+
+        #endregion
+
+        #region From Volume
 
         /// <summary>
         /// Creates a new PixImage backed by the given volume and using the specified color format.
@@ -1484,6 +1491,10 @@ namespace Aardvark.Base
         public PixImage(Volume<T> volume)
             : this(Col.FormatDefaultOf(typeof(T), volume.SZ), volume)
         { }
+
+        #endregion
+
+        #region  From Dimensions
 
         /// <summary>
         /// Allocates a new image with the given 2D size and channel count using the default color format for the element type.
@@ -1581,6 +1592,10 @@ namespace Aardvark.Base
             : this(format, CreateVolume<T>(width, height, channels))
         { }
 
+        #endregion
+
+        #region From PixImageInfo
+
         /// <summary>
         /// Initializes a new image from meta information (without loading pixel data).
         /// </summary>
@@ -1591,6 +1606,10 @@ namespace Aardvark.Base
         {
             if (info.Format.Type != typeof(T)) throw new ArgumentException($"Expected element type {typeof(T)} but format has type {info.Format.Type}.");
         }
+
+        #endregion
+
+        #region From Channel Matrices
 
         /// <summary>
         /// Creates an image from the given channel matrices with the default color format.
@@ -1662,6 +1681,123 @@ namespace Aardvark.Base
 
             Volume = volume;
         }
+
+        #endregion
+
+        #region From Array
+
+        /// <summary>
+        /// Creates a new PixImage backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image volume with the specified dimensions.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(Col.Format format, T[] data, int width, int height, int channels)
+            : this(format, data.CreateImageVolume(new V3l(width, height, channels)))
+        { }
+
+        /// <inheritdoc cref="PixImage{T}(Col.Format, T[], int, int, int)"/>
+        public PixImage(Col.Format format, T[] data, long width, long height, long channels)
+            : this(format, data.CreateImageVolume(new V3l(width, height, channels)))
+        { }
+
+        /// <summary>
+        /// Creates a new PixImage backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image volume with the specified dimensions.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="size">Image size in pixels (width, height).</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(Col.Format format, T[] data, V2i size, int channels)
+            : this(format, data, size.X, size.Y, channels)
+        { }
+
+        /// <inheritdoc cref="PixImage{T}(Col.Format, T[], V2i, int)"/>
+        public PixImage(Col.Format format, T[] data, V2l size, long channels)
+            : this(format, data, size.X, size.Y, channels)
+        { }
+
+        /// <summary>
+        /// Creates a new PixImage backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image volume with the specified dimensions.
+        /// The number of channels is derived from <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        public PixImage(Col.Format format, T[] data, int width, int height)
+            : this(format, data, width, height, format.ChannelCount())
+        { }
+
+        /// <inheritdoc cref="PixImage{T}(Col.Format, T[], int, int)"/>
+        public PixImage(Col.Format format, T[] data, long width, long height)
+            : this(format, data, width, height, format.ChannelCount())
+        { }
+
+        /// <summary>
+        /// Creates a new PixImage backed by the given array and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image volume with the specified dimensions.
+        /// The number of channels is derived from <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="size">Image size in pixels (width, height).</param>
+        public PixImage(Col.Format format, T[] data, V2i size)
+            : this(format, data, size.X, size.Y)
+        { }
+
+        /// <inheritdoc cref="PixImage{T}(Col.Format, T[], V2i)"/>
+        public PixImage(Col.Format format, T[] data, V2l size)
+            : this(format, data, size.X, size.Y)
+        { }
+
+        /// <summary>
+        /// Creates a new PixImage backed by the given array and using the default color format for the element type.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image volume with the specified dimensions.
+        /// </summary>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(T[] data, int width, int height, int channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), data, width, height, channels)
+        { }
+
+        /// <inheritdoc cref="PixImage{T}(T[], int, int, int)"/>
+        public PixImage(T[] data, long width, long height, long channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), data, width, height, channels)
+        { }
+
+        /// <summary>
+        /// Creates a new PixImage backed by the given array and using the default color format for the element type.
+        /// No data is copied; the instance takes a reference to <paramref name="data"/>.
+        /// The data array is interpreted as an image volume with the specified dimensions.
+        /// </summary>
+        /// <param name="data">Backing array in image layout. Not copied.</param>
+        /// <param name="size">Image size in pixels (width, height).</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(T[] data, V2i size, int channels)
+            : this(data, size.X, size.Y, channels)
+        { }
+
+        /// <inheritdoc cref="PixImage{T}(T[], V2i, int)"/>
+        public PixImage(T[] data, V2l size, long channels)
+            : this(data, size.X, size.Y, channels)
+        { }
+
+        #endregion
+
+        #region From Copy
 
         /// <summary>
         /// Creates a typed copy of the given image. Always allocates new storage and copies data.
@@ -1800,7 +1936,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Constructors from File / Stream
+        #region From File / Stream
 
         /// <summary>
         /// Loads an image from the given file.
@@ -1845,6 +1981,8 @@ namespace Aardvark.Base
             Volume = image.Volume;
             Format = image.Format;
         }
+
+        #endregion
 
         #endregion
 
