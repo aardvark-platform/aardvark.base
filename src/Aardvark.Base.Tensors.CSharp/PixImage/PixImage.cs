@@ -10,6 +10,9 @@ using System.Threading;
 
 namespace Aardvark.Base
 {
+    /// <summary>
+    /// Supported file formats for loading and saving images.
+    /// </summary>
     public enum PixFileFormat
     {
         Unknown,
@@ -53,16 +56,39 @@ namespace Aardvark.Base
         Webp
     }
 
-    public interface IPixImageVisitor<T>
+    /// <summary>
+    /// Defines a visitor for strongly typed PixImage instances.
+    /// Use this to dispatch operations based on the underlying pixel data type without reflection.
+    /// </summary>
+    /// <typeparam name="TResult">The result type produced by the visitor.</typeparam>
+    public interface IPixImageVisitor<TResult>
     {
-        T Visit<TData>(PixImage<TData> image);
+        /// <summary>
+        /// Visits the given PixImage with element type <typeparamref name="TData"/>.
+        /// </summary>
+        /// <typeparam name="TData">The pixel element type (e.g. byte, float, etc.).</typeparam>
+        /// <param name="image">The typed PixImage instance to visit.</param>
+        /// <returns>The visitor-specific result.</returns>
+        TResult Visit<TData>(PixImage<TData> image);
     }
 
+    /// <summary>
+    /// Lightweight description of a <see cref="PixImage"/>, containing its pixel format and dimensions.
+    /// </summary>
+    /// <param name="Format">The pixel format (channel type and color format).</param>
+    /// <param name="Size">The 2D size in pixels (X = width, Y = height).</param>
     public record PixImageInfo(PixFormat Format, V2i Size);
 
+    /// <summary>
+    /// Base (non-generic) 2D pixel container abstraction. Provides format, size and conversion utilities
+    /// for images independent of the underlying element type.
+    /// </summary>
     [Serializable]
     public abstract partial class PixImage : IPix
     {
+        /// <summary>
+        /// Color format describing the channel layout and semantics.
+        /// </summary>
         public Col.Format Format;
 
         #region Loaders
@@ -114,7 +140,7 @@ namespace Aardvark.Base
 
         #endregion
 
-        private static readonly Dictionary<IPixLoader, int> s_loaders = new Dictionary<IPixLoader, int>();
+        private static readonly Dictionary<IPixLoader, int> s_loaders = new();
 
         /// <summary>
         /// Sets the priority of a PixImage loader.
@@ -489,44 +515,89 @@ namespace Aardvark.Base
 
         #region Properties
 
+        /// <summary>
+        /// Gets the underlying storage as a System.Array of the element type.
+        /// </summary>
         public abstract Array Array { get; }
 
+        /// <summary>
+        /// Gets the pixel format of the image (channel type and color format).
+        /// </summary>
         public abstract PixFormat PixFormat { get; }
 
+        /// <summary>
+        /// Gets structural information about the underlying 3D tensor including size and layout.
+        /// </summary>
         public abstract VolumeInfo VolumeInfo { get; }
 
+        /// <summary>
+        /// Gets the size in bytes of a single channel element (e.g. 1 for byte, 4 for float).
+        /// </summary>
         public abstract int BytesPerChannel { get; }
 
-        public PixImageInfo Info => new PixImageInfo(PixFormat, Size);
+        /// <summary>
+        /// Gets a lightweight summary of this image's format and size.
+        /// </summary>
+        public PixImageInfo Info => new(PixFormat, Size);
 
         /// <summary>
-        /// Size.X * Size.Y.
+        /// Gets the total number of pixels (Width * Height).
         /// </summary>
         public int NumberOfPixels => Size.X * Size.Y;
 
         /// <summary>
-        /// Width/height.
+        /// Gets the aspect ratio defined as Width / Height.
         /// </summary>
         public double AspectRatio => Size.X / (double)Size.Y;
 
+        /// <summary>
+        /// Gets the 2D size of the image in pixels.
+        /// </summary>
         public V2i Size => (V2i)VolumeInfo.Size.XY;
 
+        /// <summary>
+        /// Gets the 2D size of the image in pixels as 64-bit integers.
+        /// </summary>
         public V2l SizeL => VolumeInfo.Size.XY;
 
+        /// <summary>
+        /// Gets the image width in pixels.
+        /// </summary>
         public int Width => Size.X;
 
+        /// <summary>
+        /// Gets the image width in pixels as a 64-bit integer.
+        /// </summary>
         public long WidthL => SizeL.X;
 
+        /// <summary>
+        /// Gets the image height in pixels.
+        /// </summary>
         public int Height => Size.Y;
 
+        /// <summary>
+        /// Gets the image height in pixels as a 64-bit integer.
+        /// </summary>
         public long HeightL => SizeL.Y;
 
+        /// <summary>
+        /// Gets the number of channels per pixel.
+        /// </summary>
         public int ChannelCount => (int)VolumeInfo.Size.Z;
 
+        /// <summary>
+        /// Gets the number of channels per pixel as a 64-bit integer.
+        /// </summary>
         public long ChannelCountL => VolumeInfo.Size.Z;
 
+        /// <summary>
+        /// Gets the stride (number of bytes between two vertically adjacent pixels).
+        /// </summary>
         public int Stride => BytesPerChannel * (int)VolumeInfo.DY;
 
+        /// <summary>
+        /// Gets the stride (number of bytes between two vertically adjacent pixels) as a 64-bit integer.
+        /// </summary>
         public long StrideL => BytesPerChannel * VolumeInfo.DY;
 
         #region Obsolete
@@ -650,16 +721,16 @@ namespace Aardvark.Base
         // Helper class to create PixImage from given Type
         private static class Dispatch
         {
-            private delegate PixImage CreateDelegate(Col.Format format, long sizeX, long sizeY, long channels);
-            private delegate PixImage CreateArrayDelegate(Array data, Col.Format format, long sizeX, long sizeY, long channels);
+            private delegate PixImage CreateDelegate(Col.Format format, long width, long height, long channels);
+            private delegate PixImage CreateArrayDelegate(Array data, Col.Format format, long width, long height, long channels);
 
             private static class CreateDispatcher
             {
-                public static PixImage Create<T>(Col.Format format, long sizeX, long sizeY, long channels)
-                    => new PixImage<T>(format, sizeX, sizeY, channels);
+                public static PixImage Create<T>(Col.Format format, long width, long height, long channels)
+                    => new PixImage<T>(format, width, height, channels);
 
-                public static PixImage CreateArray<T>(Array data, Col.Format format, long sizeX, long sizeY, long channels)
-                    => new PixImage<T>(format, ((T[])data).CreateImageVolume(new V3l(sizeX, sizeY, channels)));
+                public static PixImage CreateArray<T>(Array data, Col.Format format, long width, long height, long channels)
+                    => new PixImage<T>(format, ((T[])data).CreateImageVolume(new V3l(width, height, channels)));
             }
 
             private const BindingFlags flags = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
@@ -670,24 +741,24 @@ namespace Aardvark.Base
             private static readonly MethodInfo s_createArrayMethod = typeof(CreateDispatcher).GetMethod(nameof(CreateDispatcher.CreateArray), flags);
             private static readonly ConcurrentDictionary<Type, CreateArrayDelegate> s_createArrayDelegates = new();
 
-            public static PixImage Create(PixFormat format, long sizeX, long sizeY, long channels)
+            public static PixImage Create(PixFormat format, long width, long height, long channels)
             {
                 var create = s_createDelegates.GetOrAdd(format.Type, t => {
                     var mi = s_createMethod.MakeGenericMethod(t);
                     return (CreateDelegate)Delegate.CreateDelegate(typeof(CreateDelegate), mi);
                 });
 
-                return create(format.Format, sizeX, sizeY, channels);
+                return create(format.Format, width, height, channels);
             }
 
-            public static PixImage Create(Array array, Col.Format format, long sizeX, long sizeY, long channels)
+            public static PixImage Create(Array array, Col.Format format, long width, long height, long channels)
             {
                 var create = s_createArrayDelegates.GetOrAdd(array.GetType().GetElementType(), t => {
                     var mi = s_createArrayMethod.MakeGenericMethod(t);
                     return (CreateArrayDelegate)Delegate.CreateDelegate(typeof(CreateArrayDelegate), mi);
                 });
 
-                return create(array, format, sizeX, sizeY, channels);
+                return create(array, format, width, height, channels);
             }
         }
 
@@ -697,24 +768,71 @@ namespace Aardvark.Base
 
         #region Static Creator Functions
 
-        public static PixImage Create(PixFormat format, long sizeX, long sizeY, long channelCount)
-            => Dispatch.Create(format, sizeX, sizeY, channelCount);
+        /// <summary>
+        /// Creates a new PixImage with the specified pixel format and dimensions.
+        /// </summary>
+        /// <param name="format">The pixel format (defines channel type and color format).</param>
+        /// <param name="width">The image width in pixels.</param>
+        /// <param name="height">The image height in pixels.</param>
+        /// <param name="channels">The number of channels per pixel.</param>
+        /// <returns>A new PixImage instance.</returns>
+        public static PixImage Create(PixFormat format, long width, long height, long channels)
+            => Dispatch.Create(format, width, height, channels);
 
-        public static PixImage Create(PixFormat format, long sizeX, long sizeY)
-            => Dispatch.Create(format, sizeX, sizeY, format.ChannelCount);
+        /// <summary>
+        /// Creates a new PixImage with the specified format and dimensions using the format's default channel count.
+        /// </summary>
+        /// <param name="format">The pixel format (defines channel type and color format).</param>
+        /// <param name="width">The image width in pixels.</param>
+        /// <param name="height">The image height in pixels.</param>
+        /// <returns>A new PixImage instance.</returns>
+        public static PixImage Create(PixFormat format, long width, long height)
+            => Dispatch.Create(format, width, height, format.ChannelCount);
 
-        public static PixImage Create(Array array, Col.Format format, long sizeX, long sizeY, long channelCount)
-            => Dispatch.Create(array, format, sizeX, sizeY, channelCount);
+        /// <summary>
+        /// Wraps the given array as a PixImage using the provided color format and dimensions.
+        /// </summary>
+        /// <param name="array">The underlying data array.</param>
+        /// <param name="format">The color format describing the channel layout and semantics.</param>
+        /// <param name="width">The image width in pixels.</param>
+        /// <param name="height">The image height in pixels.</param>
+        /// <param name="channels">The number of channels per pixel.</param>
+        /// <returns>A new PixImage instance referencing the provided array.</returns>
+        public static PixImage Create(Array array, Col.Format format, long width, long height, long channels)
+            => Dispatch.Create(array, format, width, height, channels);
 
-        public static PixImage Create(Array array, Col.Format format, long sizeX, long sizeY)
-            => Dispatch.Create(array, format, sizeX, sizeY, format.ChannelCount());
+        /// <summary>
+        /// Wraps the given array as a PixImage using the format's default channel count.
+        /// </summary>
+        /// <param name="array">The underlying data array.</param>
+        /// <param name="format">The color format describing the channel layout and semantics.</param>
+        /// <param name="width">The image width in pixels.</param>
+        /// <param name="height">The image height in pixels.</param>
+        /// <returns>A new PixImage instance referencing the provided array.</returns>
+        public static PixImage Create(Array array, Col.Format format, long width, long height)
+            => Dispatch.Create(array, format, width, height, format.ChannelCount());
 
+        /// <summary>
+        /// Creates a 3D volume with image-friendly memory layout for the given size.
+        /// </summary>
+        /// <typeparam name="T">Element type of the volume.</typeparam>
+        /// <param name="size">The volume size as (width, height, channels).</param>
+        /// <returns>A new volume with the requested size.</returns>
         public static Volume<T> CreateVolume<T>(V3i size) => size.ToV3l().CreateImageVolume<T>();
 
+        /// <inheritdoc cref="CreateVolume{T}(V3i)"/>
         public static Volume<T> CreateVolume<T>(V3l size) => size.CreateImageVolume<T>();
 
-        public static Volume<T> CreateVolume<T>(long sizeX, long sizeY, long channelCount)
-            => new V3l(sizeX, sizeY, channelCount).CreateImageVolume<T>();
+        /// <summary>
+        /// Creates a 3D volume with image-friendly memory layout for the given dimensions.
+        /// </summary>
+        /// <typeparam name="T">Element type of the volume.</typeparam>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        /// <returns>A new volume with the requested size.</returns>
+        public static Volume<T> CreateVolume<T>(long width, long height, long channels)
+            => new V3l(width, height, channels).CreateImageVolume<T>();
 
         #endregion
 
@@ -815,12 +933,16 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Makes the file name valid for the given format.
-        /// E.g. for PixFileFormat.Png:
-        /// "foo.png" -> "foo.png",
-        /// "foo" -> "foo.png",
-        /// "foo.jpg" -> "foo.jpg.png",
-        /// "foo.2011" -> "foo.2011.png",
         /// </summary>
+        /// <example>
+        /// E.g. for <see cref="PixFileFormat.Png"/>:
+        /// <code>
+        /// "foo.png" -> "foo.png"
+        /// "foo" -> "foo.png"
+        /// "foo.jpg" -> "foo.jpg.png"
+        /// "foo.2011" -> "foo.2011.png"
+        /// </code>
+        /// </example>
         public static string NormalizedFileName(string fileName, PixFileFormat format)
         {
             bool appendExtension = false;
@@ -1141,47 +1263,127 @@ namespace Aardvark.Base
 
         #region Conversions
 
+        /// <summary>
+        /// Attempts to cast this instance to <see cref="PixImage{T}"/>. Returns null if the element type differs.
+        /// </summary>
+        /// <typeparam name="T">Target element type.</typeparam>
+        /// <returns>The typed image or null.</returns>
         public PixImage<T> AsPixImage<T>() => this as PixImage<T>;
 
-        public PixImage<T1> ToPixImage<T1>() => AsPixImage<T1>() ?? new PixImage<T1>(this);
+        /// <summary>
+        /// Returns a typed view of this image. If the element type differs, a new image with converted element type is created by copying.
+        /// </summary>
+        /// <typeparam name="T">Target element type.</typeparam>
+        /// <returns>A typed image of <typeparamref name="T"/>.</returns>
+        public PixImage<T> ToPixImage<T>() => AsPixImage<T>() ?? new PixImage<T>(this);
 
+        /// <summary>
+        /// Converts this image to the specified color format while keeping the underlying element type.
+        /// If this image already has the requested format, returns the same instance;
+        /// in that case no data conversion or additional allocation is performed.
+        /// </summary>
+        /// <param name="format">Target color format.</param>
+        /// <returns>An image in the requested format; this instance if no conversion is required.</returns>
         public abstract PixImage ToPixImage(Col.Format format);
 
+        /// <summary>
+        /// Converts this image to the specified color format and element type.
+        /// If this image already has the requested format and element type, returns the same instance;
+        /// in that case no data conversion or additional allocation is performed.
+        /// </summary>
+        /// <param name="format">Target color format.</param>
+        /// <typeparam name="T">Target element type.</typeparam>
+        /// <returns>A typed image in the requested format; this instance if no conversion is required.</returns>
         public PixImage<T> ToPixImage<T>(Col.Format format)
         {
-            if (this is PixImage<T> castImage && castImage.Format == format && castImage.ChannelCount == format.ChannelCount())
-                return castImage;
+            if (this is PixImage<T> image && image.Format == format && image.ChannelCount == format.ChannelCount()) return image;
             return new PixImage<T>(format, this);
         }
 
+        /// <summary>
+        /// Returns a representation with canonical, densely packed memory layout.
+        /// If this image is already in the correct layout, returns the same instance;
+        /// in that case no data conversion or additional allocation is performed.
+        /// </summary>
         public abstract PixImage ToCanonicalDenseLayout();
 
         #endregion
 
         #region Copy
 
+        /// <summary>
+        /// Copies a single channel to the target matrix (must match in size).
+        /// If the element type differs, the data are reinterpreted.
+        /// </summary>
+        /// <typeparam name="Tv">Element type of the destination matrix.</typeparam>
+        /// <param name="channelIndex">Index of the channel in this matrix.</param>
+        /// <param name="target">Destination matrix receiving the channel data.</param>
+        /// <exception cref="NotSupportedException">if the element type <typeparamref name="Tv"/> is invalid.</exception>
         public abstract void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target);
 
+        /// <summary>
+        /// Copies the entire underlying volume to the given target volume (must match in size).
+        /// If the element type differs, the data are reinterpreted.
+        /// </summary>
+        /// <typeparam name="Tv">Element type of the destination volume.</typeparam>
+        /// <param name="target">Destination volume.</param>
+        /// <exception cref="NotSupportedException">if the element type <typeparamref name="Tv"/> is invalid.</exception>
         public abstract void CopyVolumeTo<Tv>(Volume<Tv> target);
 
+        /// <summary>
+        /// Creates a deep copy of this image.
+        /// </summary>
         public abstract PixImage CopyToPixImage();
 
+        /// <summary>
+        /// Creates a deep copy of this image using the canonical dense memory layout.
+        /// </summary>
         public abstract PixImage CopyToPixImageWithCanonicalDenseLayout();
-
 
         #endregion
 
         #region Image Manipulation
 
+        /// <summary>
+        /// Returns a transformed copy of this image using the specified image transformation.
+        /// </summary>
+        /// <param name="trafo">The image transformation to apply.</param>
+        /// <returns>A new PixImage with the transformation applied.</returns>
         public abstract PixImage TransformedPixImage(ImageTrafo trafo);
 
-        public abstract PixImage RemappedPixImage(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic);
+        /// <summary>
+        /// Returns a remapped copy of this image using the provided per-pixel coordinate maps.
+        /// </summary>
+        /// <param name="mapX">Matrix of X-coordinate samples mapping destination pixels to source X.</param>
+        /// <param name="mapY">Matrix of Y-coordinate samples mapping destination pixels to source Y.</param>
+        /// <param name="interpolation">The interpolation method to use during resampling.</param>
+        /// <returns>A new PixImage generated by sampling the source with the given maps.</returns>
+        public abstract PixImage RemappedPixImage(Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation = ImageInterpolation.Cubic);
 
-        public abstract PixImage ResizedPixImage(V2i size, ImageInterpolation ip = ImageInterpolation.Cubic);
+        /// <summary>
+        /// Returns a resized copy of this image.
+        /// </summary>
+        /// <param name="size">Requested output size in pixels.</param>
+        /// <param name="interpolation">The interpolation method to use during resampling.</param>
+        /// <returns>A new PixImage with the given size.</returns>
+        public abstract PixImage ResizedPixImage(V2i size, ImageInterpolation interpolation = ImageInterpolation.Cubic);
 
-        public abstract PixImage RotatedPixImage(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic);
+        /// <summary>
+        /// Returns a rotated copy of this image around its center.
+        /// </summary>
+        /// <param name="angleInRadians">Rotation angle in radians, counter-clockwise.</param>
+        /// <param name="resize">When <c>true</c>, the output image is resized to fully contain the rotated content; otherwise it keeps the original size.</param>
+        /// <param name="interpolation">The interpolation method to use during resampling.</param>
+        /// <returns>A new PixImage containing the rotated image.</returns>
+        public abstract PixImage RotatedPixImage(double angleInRadians, bool resize = true, ImageInterpolation interpolation = ImageInterpolation.Cubic);
 
-        public abstract PixImage ScaledPixImage(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic);
+        /// <summary>
+        /// Returns a scaled copy of this image by the given factors.
+        /// </summary>
+        /// <param name="scaleFactor">The scale factor to apply in X and Y (1.0 keeps the size).</param>
+        /// <param name="interpolation">The interpolation method to use during resampling.</param>
+        /// <returns>A new PixImage scaled by the given factors.</returns>
+        public abstract PixImage ScaledPixImage(V2d scaleFactor, ImageInterpolation interpolation = ImageInterpolation.Cubic);
 
         #endregion
 
@@ -1229,125 +1431,229 @@ namespace Aardvark.Base
 
         #region IPixImageVisitor
 
-        public abstract T Visit<T>(IPixImageVisitor<T> visitor);
+        /// <summary>
+        /// Dispatches the current instance to a visitor based on its element type.
+        /// </summary>
+        /// <typeparam name="TResult">The result type produced by the visitor.</typeparam>
+        /// <param name="visitor">The visitor implementation.</param>
+        /// <returns>The visitor-specific result.</returns>
+        public abstract TResult Visit<TResult>(IPixImageVisitor<TResult> visitor);
 
         #endregion
     }
 
     /// <summary>
-    /// The generic PixImage stores an image with a specific channel type that
-    /// is specified as type parameter.
+    /// 2D pixel container with element type <typeparamref name="T"/>.
+    /// Provides access to the underlying 3D volume.
     /// </summary>
+    /// <typeparam name="T">Per-channel element type.</typeparam>
     [Serializable]
     public class PixImage<T> : PixImage
     {
+        /// <summary>
+        /// The underlying 3D volume storing the image data.
+        /// </summary>
         public Volume<T> Volume;
 
         #region Constructors
 
+        /// <summary>
+        /// Initializes a new empty PixImage instance without allocating storage.
+        /// Intended for serializers or deferred initialization scenarios. The
+        /// <see cref="Volume"/> field must be assigned before use.
+        /// </summary>
+        public PixImage() { }
+
+        /// <summary>
+        /// Creates a new PixImage backed by the given volume and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="volume"/>.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="volume">Backing volume in image layout. Not copied.</param>
         public PixImage(Col.Format format, Volume<T> volume)
             : base(format)
         {
             Volume = volume;
         }
 
-        public PixImage() { }
-
+        /// <summary>
+        /// Creates a new PixImage backed by the given volume and using the default color format for the element type.
+        /// No data is copied; the instance takes a reference to <paramref name="volume"/>.
+        /// </summary>
+        /// <param name="volume">Backing volume in image layout. Not copied.</param>
         public PixImage(Volume<T> volume)
             : this(Col.FormatDefaultOf(typeof(T), volume.SZ), volume)
         { }
 
-        public PixImage(V2i size, long channelCount)
-            : this(Col.FormatDefaultOf(typeof(T), channelCount),
-                   CreateVolume<T>(size.X, size.Y, channelCount))
+        /// <summary>
+        /// Allocates a new image with the given 2D size and channel count using the default color format for the element type.
+        /// </summary>
+        /// <param name="size">Image size in pixels (width, height).</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(V2i size, int channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateVolume<T>(size.X, size.Y, channels))
         { }
 
-        public PixImage(V2l size, long channelCount)
-            : this(Col.FormatDefaultOf(typeof(T), channelCount),
-                   CreateVolume<T>(size.X, size.Y, channelCount))
+        /// <inheritdoc cref="PixImage{T}(V2i, int)"/>
+        public PixImage(V2l size, long channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateVolume<T>(size.X, size.Y, channels))
         { }
 
-        public PixImage(long sizeX, long sizeY, long channelCount)
-            : this(Col.FormatDefaultOf(typeof(T), channelCount),
-                   CreateVolume<T>(sizeX, sizeY, channelCount))
+        /// <summary>
+        /// Allocates a new image with the given dimensions and channel count using the default color format for the element type.
+        /// </summary>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(int width, int height, int channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateVolume<T>(width, height, channels))
         { }
 
+        /// <inheritdoc cref="PixImage{T}(int, int, int)"/>
+        public PixImage(long width, long height, long channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateVolume<T>(width, height, channels))
+        { }
+
+        /// <summary>
+        /// Allocates a new image with the given size and channel format. The number of channels is
+        /// derived from <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="size">Image size in pixels (width, height).</param>
         public PixImage(Col.Format format, V2i size)
             : this(format, CreateVolume<T>(size.X, size.Y, format.ChannelCount()))
         { }
 
+        /// <inheritdoc cref="PixImage{T}(Col.Format, V2i)"/>
         public PixImage(Col.Format format, V2l size)
             : this(format, CreateVolume<T>(size.X, size.Y, format.ChannelCount()))
         { }
 
-        public PixImage(Col.Format format, long sizeX, long sizeY)
-            : this(format, CreateVolume<T>(sizeX, sizeY, format.ChannelCount()))
+        /// <summary>
+        /// Allocates a new image with the given dimensions and channel format. The number of channels is
+        /// derived from <paramref name="format"/>.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        public PixImage(Col.Format format, int width, int height)
+            : this(format, CreateVolume<T>(width, height, format.ChannelCount()))
         { }
 
-        public PixImage(Col.Format format, V2i size, long channelCount)
-            : this(format, CreateVolume<T>(size.X, size.Y, channelCount))
+        /// <inheritdoc cref="PixImage{T}(Col.Format, int, int)"/>
+        public PixImage(Col.Format format, long width, long height)
+            : this(format, CreateVolume<T>(width, height, format.ChannelCount()))
         { }
 
-        public PixImage(Col.Format format, V2l size, long channelCount)
-            : this(format, CreateVolume<T>(size.X, size.Y, channelCount))
+        /// <summary>
+        /// Allocates a new image with the given size, explicit channel count and format.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="size">Image size in pixels (width, height).</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(Col.Format format, V2i size, int channels)
+            : this(format, CreateVolume<T>(size.X, size.Y, channels))
         { }
 
-        public PixImage(Col.Format format, long sizeX, long sizeY, long channelCount)
-            : this(format, CreateVolume<T>(sizeX, sizeY, channelCount))
+        /// <inheritdoc cref="PixImage{T}(Col.Format, V2i, int)"/>
+        public PixImage(Col.Format format, V2l size, long channels)
+            : this(format, CreateVolume<T>(size.X, size.Y, channels))
         { }
 
+        [Obsolete("Use PixImage<T>(Col.Format, V2i, int) or PixImage<T>(Col.Format, V2l, long) instead.")]
+        public PixImage(Col.Format format, V2i size, long channels)
+            : this(format, CreateVolume<T>(size.X, size.Y, channels))
+        { }
+
+        /// <summary>
+        /// Allocates a new image with the given dimensions, explicit channel count and format.
+        /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixImage(Col.Format format, int width, int height, int channels)
+            : this(format, CreateVolume<T>(width, height, channels))
+        { }
+
+        /// <inheritdoc cref="PixImage{T}(Col.Format, int, int, int)"/>
+        public PixImage(Col.Format format, long width, long height, long channels)
+            : this(format, CreateVolume<T>(width, height, channels))
+        { }
+
+        /// <summary>
+        /// Initializes a new image from meta information (without loading pixel data).
+        /// </summary>
+        /// <param name="info">Image metadata (size, format, type).</param>
+        /// <exception cref="ArgumentException">if the element type <typeparamref name="T"/> does not match <c>info.Format.Type</c>.</exception>
         public PixImage(PixImageInfo info)
             : this(info.Format.Format, info.Size)
         {
-            if (info.Format.Type != typeof(T)) throw new Exception("Attempt to create PixImage from PixImageInfo with different Type T.");
+            if (info.Format.Type != typeof(T)) throw new ArgumentException($"Expected element type {typeof(T)} but format has type {info.Format.Type}.");
         }
 
         /// <summary>
-        /// Create a pixel image from all the given channels in the default format.
-        /// Note, that the channels have to be supplied in the canonical order:
-        /// red, green, blue, (alpha).
+        /// Creates an image from the given channel matrices with the default color format.
+        /// The channel data are copied to a newly allocated volume.
         /// </summary>
+        /// <param name="channels">Sequence of channel matrices in canonical order (red, green, blue, alpha).</param>
+        /// <exception cref="ArgumentException">if <paramref name="channels"/> is null or empty.</exception>
+        /// <exception cref="ArgumentException">if fewer channels are provided than expected by the default color format.</exception>
+        /// <exception cref="ArgumentException">if the channel matrices differ in size.</exception>
         public PixImage(IEnumerable<Matrix<T>> channels)
             : this(channels.ToArray())
         { }
 
         /// <summary>
-        /// Create a pixel image from all the given channels in the default format.
-        /// Note, that the channels have to be supplied in the canonical order:
-        /// red, green, blue, (alpha).
+        /// Creates an image from the given channel matrices with the default color format.
+        /// The channel data are copied to a newly allocated volume.
         /// </summary>
+        /// <param name="channels">Array of channel matrices in canonical order (red, green, blue, alpha).</param>
+        /// <exception cref="ArgumentException">if <paramref name="channels"/> is null or empty.</exception>
+        /// <exception cref="ArgumentException">if fewer channels are provided than expected by the default color format.</exception>
+        /// <exception cref="ArgumentException">if the channel matrices differ in size.</exception>
         public PixImage(params Matrix<T>[] channels)
             : this(Col.FormatDefaultOf(typeof(T), channels.Length), channels)
         { }
 
         /// <summary>
-        /// Create a pixel image from all the given channels in the specified format.
-        /// Note, that the channels have to be supplied in the canonical order: red,
-        /// green, blue, (alpha).
+        /// Creates an image from the given channel matrices and color format.
+        /// The channel data are copied to a newly allocated volume.
         /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="channels">Sequence of channel matrices in canonical order (red, green, blue, alpha).</param>
+        /// <exception cref="ArgumentException">if <paramref name="channels"/> is null or empty.</exception>
+        /// <exception cref="ArgumentException">if fewer channels are provided than expected by <paramref name="format"/>.</exception>
+        /// <exception cref="ArgumentException">if the channel matrices differ in size.</exception>
         public PixImage(Col.Format format, IEnumerable<Matrix<T>> channels)
             : this(format, channels.ToArray())
         { }
 
         /// <summary>
-        /// Create a pixel image from all the given channels in the specified format.
-        /// Note, that the channels have to be supplied in the canonical order: red,
-        /// green, blue, (alpha).
+        /// Creates an image from the given channel matrices and color format.
+        /// The channel data are copied to a newly allocated volume.
         /// </summary>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="channels">Array of channel matrices in canonical order (red, green, blue, alpha).</param>
+        /// <exception cref="ArgumentException">if <paramref name="channels"/> is null or empty.</exception>
+        /// <exception cref="ArgumentException">if fewer channels are provided than expected by <paramref name="format"/>.</exception>
+        /// <exception cref="ArgumentException">if the channel matrices differ in size.</exception>
         public PixImage(Col.Format format, params Matrix<T>[] channels)
             : base(format)
         {
-            int ch = channels.Length;
+            int channelCount = format.ChannelCount();
+            if (channels.IsEmptyOrNull()) throw new ArgumentException("Channels cannot be null or empty.");
+            if (channels.Length < channelCount) throw new ArgumentException($"Color format expects {channelCount} but got only {channels.Length}.");
+
             var ch0 = channels[0];
 
             var sx = ch0.SX;
             var sy = ch0.SY;
 
-            var volume = CreateVolume<T>(sx, sy, ch);
+            var volume = CreateVolume<T>(sx, sy, channelCount);
             var order = format.ChannelOrder();
-            if (ch != format.ChannelCount())
-                throw new ArgumentException("the specified format needs a different number of channels");
-            for (int i = 0; i < ch; i++)
+
+            for (int i = 0; i < channelCount; i++)
             {
                 var mat = volume.SubXYMatrix(order[i]);
                 var channel = channels[i];
@@ -1358,36 +1664,68 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy constructor: ALWAYS creates a copy of the data!
+        /// Creates a typed copy of the given image. Always allocates new storage and copies data.
+        /// The channel count is taken from <paramref name="source"/>, the element type becomes
+        /// <typeparamref name="T"/> (conversion may occur).
         /// </summary>
-        public PixImage(PixImage pixImage)
-            : this(Col.FormatDefaultOf(typeof(T), pixImage.Format.ChannelCount()), pixImage)
+        /// <param name="source">Source image to copy from.</param>
+        /// <remarks>
+        /// <inheritdoc cref="PixImage{T}(Col.Format, PixImage)" path="/remarks"/>
+        /// </remarks>
+        public PixImage(PixImage source)
+            : this(Col.FormatDefaultOf(typeof(T), source.Format.ChannelCount()), source)
         { }
 
         /// <summary>
-        /// Copy constructor: ALWAYS creates a copy of the data!
+        /// Creates a typed copy of the given image in the requested color format. Always allocates new storage
+        /// and copies or converts channel data as needed.
         /// </summary>
-        public PixImage(Col.Format format, PixImage pixImage)
+        /// <param name="format">Target color format for the new image.</param>
+        /// <param name="source">Source image to copy from.</param>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>
+        /// Premultiplied state must match between <paramref name="format"/> and <paramref name="source"/>;
+        /// otherwise a <see cref="NotImplementedException"/> is thrown.
+        /// </item>
+        /// <item>
+        /// If the formats match and sizes are equal, a straight copy is performed.
+        /// </item>
+        /// <item>
+        /// Missing alpha is filled with the maximum value of <typeparamref name="T"/>.
+        /// </item>
+        /// <item>
+        /// Gray can be computed from RGB for a few common element types; unsupported combinations throw.
+        /// </item>
+        /// <item>
+        /// Expanding RG to RGB sets blue to zero.
+        /// </item>
+        /// <item>
+        /// Other unmapped conversions throw <see cref="NotSupportedException"/>.
+        /// </item>
+        /// </list>
+        /// </remarks>
+        public PixImage(Col.Format format, PixImage source)
         {
-            if (format.IsPremultiplied() != pixImage.Format.IsPremultiplied())
+            if (format.IsPremultiplied() != source.Format.IsPremultiplied())
             {
                 throw new NotImplementedException(
                     "Conversion between alpha and premultiplied alpha formats not implemented yet."
                 );
             }
 
-            var srcInfo = pixImage.VolumeInfo;
+            var srcInfo = source.VolumeInfo;
             var dstChannels = Col.ChannelsOfFormat(format);
             var volume = CreateVolume<T>(srcInfo.Size.X, srcInfo.Size.Y, dstChannels.Length);
             volume.F = srcInfo.F;
 
-            if (format == pixImage.Format && srcInfo.Size == volume.Size)
+            if (format == source.Format && srcInfo.Size == volume.Size)
             {
-                pixImage.CopyVolumeTo(volume);
+                source.CopyVolumeTo(volume);
             }
             else
             {
-                var srcChannels = Col.ChannelsOfFormat(pixImage.Format);
+                var srcChannels = Col.ChannelsOfFormat(source.Format);
 
                 for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
                 {
@@ -1406,14 +1744,14 @@ namespace Aardvark.Base
                     if (srcIndex > -1)
                     {
                         // Channel exists in source image, just copy
-                        if (pixImage is PixImage<T> pi)
+                        if (source is PixImage<T> pi)
                         {
                             matrix.Set(pi.GetChannelInFormatOrder(srcIndex));
                         }
                         else
                         {
-                            var order = pixImage.Format.ChannelOrder();
-                            pixImage.CopyChannelTo(order[srcIndex], matrix); // CopyChannelTo uses canonical order
+                            var order = source.Format.ChannelOrder();
+                            source.CopyChannelTo(order[srcIndex], matrix); // CopyChannelTo uses canonical order
                         }
                     }
                     else if (channel == Col.Channel.Alpha || channel == Col.Channel.PremultipliedAlpha)
@@ -1426,22 +1764,22 @@ namespace Aardvark.Base
                              srcChannels.Contains(Col.Channel.Green) &&
                              srcChannels.Contains(Col.Channel.Blue))
                     {
-                        var t1 = pixImage.PixFormat.Type;
+                        var t1 = source.PixFormat.Type;
                         var t2 = typeof(T);
 
                         if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
                         {
-                            toGray(pixImage, matrix);
+                            toGray(source, matrix);
                         }
                         else
                         {
                             throw new NotImplementedException(
-                                $"Conversion from {t1} image with format {pixImage.Format} to {t2} grayscale not implemented."
+                                $"Conversion from {t1} image with format {source.Format} to {t2} grayscale not implemented."
                             );
                         }
                     }
                     else if (channel == Col.Channel.Blue &&
-                             pixImage.Format == Col.Format.RG &&
+                             source.Format == Col.Format.RG &&
                              dstChannels.Contains(Col.Channel.Red) &&
                              dstChannels.Contains(Col.Channel.Green))
                     {
@@ -1450,7 +1788,7 @@ namespace Aardvark.Base
                     else
                     {
                         throw new NotSupportedException(
-                            $"Conversion from format {pixImage.Format} to format {format} is not supported."
+                            $"Conversion from format {source.Format} to format {format} is not supported."
                         );
                     }
                 }
@@ -1477,9 +1815,9 @@ namespace Aardvark.Base
         public PixImage(string filename, IPixLoader loader = null)
         {
             var loadImage = LoadRaw(filename, loader);
-            var channelCount = loadImage.Format.ChannelCount();
+            var channels = loadImage.Format.ChannelCount();
 
-            if (!(loadImage is PixImage<T> image) || image.ChannelCount != channelCount)
+            if (loadImage is not PixImage<T> image || image.ChannelCount != channels)
                 image = new PixImage<T>(loadImage);
 
             Volume = image.Volume;
@@ -1499,9 +1837,9 @@ namespace Aardvark.Base
         public PixImage(Stream stream, IPixLoader loader = null)
         {
             var loadImage = LoadRaw(stream, loader);
-            var channelCount = loadImage.Format.ChannelCount();
+            var channels = loadImage.Format.ChannelCount();
 
-            if (!(loadImage is PixImage<T> image) || image.ChannelCount != channelCount)
+            if (loadImage is not PixImage<T> image || image.ChannelCount != channels)
                 image = new PixImage<T>(loadImage);
 
             Volume = image.Volume;
@@ -1512,39 +1850,35 @@ namespace Aardvark.Base
 
         #region Static Creator Functions
 
+        /// <inheritdoc cref="PixImage{T}(Matrix{T}[])"/>
         public static PixImage<T> Create(params Matrix<T>[] channels)
-            => new PixImage<T>(channels);
+            => new(channels);
 
-        /// <summary>
-        /// Create a pixel image from all the given channels in the specified format.
-        /// Note, that the channels have to be supplied in the canonical order: red,
-        /// green, blue, (alpha).
-        /// <param name="format">the color format</param>
-        /// <param name="channels">channel matrices</param>
-        /// </summary>
+        /// <inheritdoc cref="PixImage{T}(Col.Format, Matrix{T}[])"/>
         public static PixImage<T> Create(Col.Format format, params Matrix<T>[] channels)
-            => new PixImage<T>(format, channels);
+            => new(format, channels);
 
-        /// <summary>
-        /// Create a pixel image from all the given channels in the specified format.
-        /// Note, that the channels have to be supplied in the canonical order: red,
-        /// green, blue, (alpha).
-        /// </summary>
+        /// <inheritdoc cref="PixImage{T}(Col.Format, Matrix{T}[])"/>
         public static PixImage<T> Create<Td>(Col.Format format, params Matrix<Td, T>[] channels)
         {
-            long ch = channels.Length;
+            int channelCount = format.ChannelCount();
+            if (channels.IsEmptyOrNull()) throw new ArgumentException("Channels cannot be null or empty.");
+            if (channels.Length < channelCount) throw new ArgumentException($"Color format expects {channelCount} but got only {channels.Length}.");
+
             var ch0 = channels[0];
 
             var sx = ch0.SX;
             var sy = ch0.SY;
 
-            var volume = CreateVolume<T>(sx, sy, ch);
+            var volume = CreateVolume<T>(sx, sy, channelCount);
             var order = format.ChannelOrder();
 
-            if (ch != format.ChannelCount())
-                throw new ArgumentException("the specified format needs a different number of channels");
-            channels.ForEach((channel, ci) =>
-                volume.SubXYMatrix(order[ci]).Set(channel));
+            for (int i = 0; i < channelCount; i++)
+            {
+                var mat = volume.SubXYMatrix(order[i]);
+                var channel = channels[i];
+                if (channel.IsValid) mat.Set(channel);
+            }
 
             return new PixImage<T>(format, volume);
         }
@@ -1553,19 +1887,25 @@ namespace Aardvark.Base
 
         #region Properties
 
+        /// <summary>
+        /// Gets the underlying storage as a <typeparamref name="T"/> array.
+        /// </summary>
         public T[] Data => Volume.Data;
 
+        /// <inheritdoc />
         public override Array Array => Volume.Array;
 
+        /// <inheritdoc />
         public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
 
+        /// <inheritdoc />
         public override VolumeInfo VolumeInfo => Volume.Info;
 
+        /// <inheritdoc />
         public override int BytesPerChannel => typeof(T).GetCLRSize();
 
         /// <summary>
-        /// Returns the channels of the image in canonical order: red, green,
-        /// blue, (alpha).
+        /// Gets the channel matrices of the image in canonical order (red, green, blue, alpha).
         /// </summary>
         public IEnumerable<Matrix<T>> Channels
         {
@@ -1578,15 +1918,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the array containing the cahnnels in canonical order: red,
-        /// green, blue, (alpha).
+        /// Gets the channel matrices of the image as array in canonical order (red, green, blue, alpha).
         /// </summary>
         public Matrix<T>[] ChannelArray => Channels.ToArray();
 
         /// <summary>
-        /// Returns the matrix representation of the volume if there is only
-        /// one channel. Fails if there are multiple channels.
+        /// Returns the matrix representation of the volume if there is only one channel.
         /// </summary>
+        /// <exception cref="InvalidOperationException">if there are multiple channels.</exception>
         public Matrix<T> Matrix => Volume.AsMatrixWindow();
 
         #endregion
@@ -1595,23 +1934,26 @@ namespace Aardvark.Base
 
         #region Transformed
 
+        /// <inheritdoc />
         public override PixImage TransformedPixImage(ImageTrafo trafo)
             => Transformed(trafo);
 
-        public PixImage<T> Transformed(ImageTrafo trafo)
-            => new PixImage<T>(Format, Volume.Transformed(trafo));
+        /// <inheritdoc cref="TransformedPixImage" />
+        public PixImage<T> Transformed(ImageTrafo trafo) => new(Format, Volume.Transformed(trafo));
 
         #endregion
 
         #region Remapped
 
-        public override PixImage RemappedPixImage(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Remapped(xMap, xMap, ip);
+        /// <inheritdoc />
+        public override PixImage RemappedPixImage(Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Remapped(mapX, mapX, interpolation);
 
-        public PixImage<T> Remapped(Matrix<float> xMap, Matrix<float> yMap, ImageInterpolation ip = ImageInterpolation.Cubic)
+        /// <inheritdoc cref="RemappedPixImage" />
+        public PixImage<T> Remapped(Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation = ImageInterpolation.Cubic)
         {
             return InvokeProcessors(
-                (p) => p.Remap(this, xMap, yMap, ip),
+                (p) => p.Remap(this, mapX, mapY, interpolation),
                 PixProcessorCaps.Remap, "remap image"
             );
         }
@@ -1620,7 +1962,7 @@ namespace Aardvark.Base
         public static void SetRemappedFun(Func<Volume<T>, Matrix<float>, Matrix<float>, ImageInterpolation, Volume<T>> remappedFun)
         {
             LegacyPixProcessor.Instance.SetRemapFun<T>(
-                (remappedFun == null) ? null : (pi, xMap, yMap, ip) => new (pi.Format, remappedFun(pi.Volume, xMap, yMap, ip))
+                (remappedFun == null) ? null : (pi, xMap, yMap, ip) => new PixImage<T>(pi.Format, remappedFun(pi.Volume, xMap, yMap, ip))
             );
 
             if (LegacyPixProcessor.Instance.Capabilities != PixProcessorCaps.None)
@@ -1633,26 +1975,37 @@ namespace Aardvark.Base
 
         #region Resized
 
-        public override PixImage ResizedPixImage(V2i newSize, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Scaled((V2d)newSize / (V2d)Size, ip);
+        /// <inheritdoc />
+        public override PixImage ResizedPixImage(V2i size, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Scaled((V2d)size / (V2d)Size, interpolation);
 
-        public PixImage<T> Resized(V2i newSize, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Scaled((V2d)newSize / (V2d)Size, ip);
+        /// <inheritdoc cref="ResizedPixImage" />
+        public PixImage<T> Resized(V2i size, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Scaled((V2d)size / (V2d)Size, interpolation);
 
-        public PixImage<T> Resized(int xSize, int ySize, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Scaled(new V2d(xSize, ySize) / (V2d)Size, ip);
+        /// <summary>
+        /// Returns a resized copy of this image.
+        /// </summary>
+        /// <param name="width">Requested output width in pixels.</param>
+        /// <param name="height">Requested output height in pixels.</param>
+        /// <param name="interpolation">The interpolation method to use during resampling.</param>
+        /// <returns>A new PixImage with the given size.</returns>
+        public PixImage<T> Resized(int width, int height, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Scaled(new V2d(width, height) / (V2d)Size, interpolation);
 
         #endregion
 
         #region Rotated
 
-        public override PixImage RotatedPixImage(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Rotated(angleInRadiansCCW, resize, ip);
+        /// <inheritdoc />
+        public override PixImage RotatedPixImage(double angleInRadians, bool resize = true, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Rotated(angleInRadians, resize, interpolation);
 
-        public PixImage<T> Rotated(double angleInRadiansCCW, bool resize = true, ImageInterpolation ip = ImageInterpolation.Cubic)
+        /// <inheritdoc cref="RotatedPixImage" />
+        public PixImage<T> Rotated(double angleInRadians, bool resize = true, ImageInterpolation interpolation = ImageInterpolation.Cubic)
         {
             return InvokeProcessors(
-                (p) => p.Rotate(this, angleInRadiansCCW, resize, ip),
+                (p) => p.Rotate(this, angleInRadians, resize, interpolation),
                 PixProcessorCaps.Rotate, "rotate image"
             );
         }
@@ -1661,7 +2014,7 @@ namespace Aardvark.Base
         public static void SetRotatedFun(Func<Volume<T>, double, bool, ImageInterpolation, Volume<T>> rotatedFun)
         {
             LegacyPixProcessor.Instance.SetRotateFun<T>(
-                (rotatedFun == null) ? null : (pi, angle, resize, ip) => new (pi.Format, rotatedFun(pi.Volume, angle, resize, ip))
+                (rotatedFun == null) ? null : (pi, angle, resize, ip) => new PixImage<T>(pi.Format, rotatedFun(pi.Volume, angle, resize, ip))
             );
 
             if (LegacyPixProcessor.Instance.Capabilities != PixProcessorCaps.None)
@@ -1674,20 +2027,22 @@ namespace Aardvark.Base
 
         #region Scaled
 
-        public override PixImage ScaledPixImage(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Scaled(scaleFactor, ip);
+        /// <inheritdoc />
+        public override PixImage ScaledPixImage(V2d scaleFactor, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Scaled(scaleFactor, interpolation);
 
-        public PixImage<T> Scaled(V2d scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
+        /// <inheritdoc cref="ScaledPixImage" />
+        public PixImage<T> Scaled(V2d scaleFactor, ImageInterpolation interpolation = ImageInterpolation.Cubic)
         {
             if (scaleFactor.AnySmallerOrEqual(0))
                 throw new ArgumentOutOfRangeException($"Scale factor must be positive ({scaleFactor}).");
 
             // SuperSample is only available for scale factors < 1; fall back to Cubic
-            if (scaleFactor.AnyGreater(1.0) && ip == ImageInterpolation.SuperSample)
-                ip = ImageInterpolation.Cubic;
+            if (scaleFactor.AnyGreater(1.0) && interpolation == ImageInterpolation.SuperSample)
+                interpolation = ImageInterpolation.Cubic;
 
             return InvokeProcessors(
-                (p) => p.Scale(this, scaleFactor, ip),
+                (p) => p.Scale(this, scaleFactor, interpolation),
                 PixProcessorCaps.Scale, "scale image"
             );
         }
@@ -1696,7 +2051,7 @@ namespace Aardvark.Base
         public static void SetScaledFun(Func<Volume<T>, V2d, ImageInterpolation, Volume<T>> scaledFun)
         {
             LegacyPixProcessor.Instance.SetScaleFun<T>(
-                (scaledFun == null) ? null : (pi, scaleFactor, ip) => new (pi.Format, scaledFun(pi.Volume, scaleFactor, ip))
+                (scaledFun == null) ? null : (pi, scaleFactor, ip) => new PixImage<T>(pi.Format, scaledFun(pi.Volume, scaleFactor, ip))
             );
 
             if (LegacyPixProcessor.Instance.Capabilities != PixProcessorCaps.None)
@@ -1705,11 +2060,20 @@ namespace Aardvark.Base
                 RemoveProcessor(LegacyPixProcessor.Instance);
         }
 
-        public PixImage<T> Scaled(double scaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Scaled(new V2d(scaleFactor, scaleFactor), ip);
 
-        public PixImage<T> Scaled(double xScaleFactor, double yScaleFactor, ImageInterpolation ip = ImageInterpolation.Cubic)
-            => Scaled(new V2d(xScaleFactor, yScaleFactor), ip);
+        /// <inheritdoc cref="ScaledPixImage" />
+        public PixImage<T> Scaled(double scaleFactor, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Scaled(new V2d(scaleFactor, scaleFactor), interpolation);
+
+        /// <summary>
+        /// Returns a scaled copy of this image by the given factors.
+        /// </summary>
+        /// <param name="scaleFactorX">The scale factor to apply in X (1.0 keeps the width).</param>
+        /// <param name="scaleFactorY">The scale factor to apply in Y (1.0 keeps the height).</param>
+        /// <param name="interpolation">The interpolation method to use during resampling.</param>
+        /// <returns>A new PixImage scaled by the given factors.</returns>
+        public PixImage<T> Scaled(double scaleFactorX, double scaleFactorY, ImageInterpolation interpolation = ImageInterpolation.Cubic)
+            => Scaled(new V2d(scaleFactorX, scaleFactorY), interpolation);
 
         #endregion
 
@@ -1718,60 +2082,55 @@ namespace Aardvark.Base
         #region SubImages
 
         /// <summary>
-        /// Returns a specified region as new PixImage.
-        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// Returns the specified region as new PixImage.
+        /// No data is copied, the internal <see cref="Volume{T}"/> is only a view of the original one.
         /// </summary>
-        public PixImage<T> SubImage(long x, long y, long xSize, long ySize)
+        /// <exception cref="ArgumentOutOfRangeException">if the region is out of bounds.</exception>
+        public PixImage<T> SubImage(long x, long y, long width, long height)
         {
-            if (x < 0 || y < 0 || x + xSize > Size.X || y + ySize > Size.Y)
+            if (x < 0 || y < 0 || x + width > Size.X || y + height > Size.Y)
                 throw new ArgumentOutOfRangeException(null, "Subregion out of image boundary.");
-            return new PixImage<T>(Format, Volume.SubVolume(x, y, 0, xSize, ySize, ChannelCount));
+            return new PixImage<T>(Format, Volume.SubVolume(x, y, 0, width, height, ChannelCount));
         }
 
-        /// <summary>
-        /// Returns a specified region as new PixImage.
-        /// No data is copied, the internal Volumue is only a view on the original one.
-        /// </summary>
-        public PixImage<T> SubImage(V2i pos, V2i size) => SubImage(pos.X, pos.Y, size.X, size.Y);
+        /// <inheritdoc cref="SubImage(long, long, long, long)"/>
+        public PixImage<T> SubImage(V2i offset, V2i size) => SubImage(offset.X, offset.Y, size.X, size.Y);
 
-        /// <summary>
-        /// Returns a specified region as new PixImage.
-        /// No data is copied, the internal Volumue is only a view on the original one.
-        /// </summary>
-        public PixImage<T> SubImage(V2l pos, V2l size) => SubImage(pos.X, pos.Y, size.X, size.Y);
+        /// <inheritdoc cref="SubImage(long, long, long, long)"/>
+        public PixImage<T> SubImage(V2l offset, V2l size) => SubImage(offset.X, offset.Y, size.X, size.Y);
 
-        /// <summary>
-        /// Returns a specified region as new PixImage.
-        /// No data is copied, the internal Volumue is only a view on the original one.
-        /// </summary>
+        /// <inheritdoc cref="SubImage(long, long, long, long)"/>
         public PixImage<T> SubImage(Box2i box) => SubImage(box.Min, box.Size);
 
         /// <summary>
         /// Returns a square region around the center as new PixImage.
-        /// SquareRadius is the given radius around the center.
-        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// <paramref name="squareRadius"/> is the given radius around the center.
+        /// No data is copied, the internal <see cref="Volume{T}"/> is only a view of the original one.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">if the region is out of bounds.</exception>
         public PixImage<T> SubImage(V2i center, int squareRadius)
             => SubImage(center - squareRadius, V2i.II * squareRadius * 2 + 1);
 
         /// <summary>
         /// Returns a specified region as a new PixImage.
-        /// The supplied pos and size are rounded to the nearest integer.
+        /// The supplied offset and size are rounded to the nearest integer.
         /// Note that this may be different from <see cref="SubImage(Box2d)"/>, since
         /// rounding the size and rounding the Max of the box may
         /// result in different integer sizes.
-        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// No data is copied, the internal <see cref="Volume{T}"/> is only a view onf the original one.
         /// </summary>
-        public PixImage<T> SubImage(V2d pos, V2d size) => SubImage(new V2i(pos + 0.5), new V2i(size + 0.5));
+        /// <exception cref="ArgumentOutOfRangeException">if the region is out of bounds.</exception>
+        public PixImage<T> SubImage(V2d offset, V2d size) => SubImage(new V2i(offset + 0.5), new V2i(size + 0.5));
 
         /// <summary>
         /// Returns a specified region as a new PixImage.
         /// Min and Max of the supplied box are rounded to the nearest integer.
-        /// Note that this may be different from SubImage(V2d pos, V2d size),
+        /// Note that this may be different from <see cref="SubImage(V2d, V2d)"/>,
         /// since rounding the Max of the box and rounding the size may
         /// result in different integer sizes.
-        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// No data is copied, the internal <see cref="Volume{T}"/> is only a view onf the original one.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">if the region is out of bounds.</exception>
         public PixImage<T> SubImage(Box2d box)
         {
             var min = new V2i(box.Min + 0.5);
@@ -1784,11 +2143,12 @@ namespace Aardvark.Base
         /// rounded to the nearest integer. Note that this may be different
         /// from <see cref="SubImage01(Box2d)"/> since rounding the size and rounding
         /// the Max of the box may result in different integer sizes.
-        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// No data is copied, the internal <see cref="Volume{T}"/> is only a view onf the original one.
         /// </summary>
-        public PixImage<T> SubImage01(V2d pos, V2d size)
+        /// <exception cref="ArgumentOutOfRangeException">if the region is out of bounds.</exception>
+        public PixImage<T> SubImage01(V2d offset, V2d size)
         {
-            var iPos = (V2i)(pos * (V2d)Size + 0.5);
+            var iPos = (V2i)(offset * (V2d)Size + 0.5);
             var iSize = (V2i)(size * (V2d)Size + 0.5);
             return SubImage(iPos, iSize);
         }
@@ -1797,10 +2157,11 @@ namespace Aardvark.Base
         /// Coords in normalized [0, 1] coords of 'this'.
         /// Min and Max of the supplied box are converted to pixel coordinates
         /// and rounded to the nearest integer. Note that this may be different
-        /// from SubImage01(V2d pos, V2d size), since rounding the Max of the
+        /// from <see cref="SubImage01(V2d, V2d)"/>, since rounding the Max of the
         /// box and rounding the size may result in different integer sizes.
-        /// No data is copied, the internal Volumue is only a view on the original one.
+        /// No data is copied, the internal <see cref="Volume{T}"/> is only a view onf the original one.
         /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">if the region is out of bounds.</exception>
         public PixImage<T> SubImage01(Box2d bounds)
         {
             var iMin = (V2i)(bounds.Min * (V2d)Size + 0.5);
@@ -1816,68 +2177,74 @@ namespace Aardvark.Base
         /// Set a subregion of the image to the contents of another image.
         /// The size of the subregion is determined by the other image.
         /// </summary>
-        public void Set(int x, int y, PixImage<T> img) => Set(new V2i(x, y), img);
+        /// <exception cref="ArgumentException">if the format of <paramref name="image"/> does not match the format of this instance.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">if the region is out of bounds.</exception>
+        public void Set(int x, int y, PixImage<T> image) => Set(new V2i(x, y), image);
+
+        /// <inheritdoc cref="Set(int, int, PixImage{T})"/>
+        public void Set(V2i offset, PixImage<T> image) => SubImage(offset, image.Size).Set(image);
 
         /// <summary>
-        /// Set a subregion of the image to the contents of another image.
-        /// The size of the subregion is dtermined by the other image.
+        /// Set the image contents of the image to the contents of another image.
         /// </summary>
-        public void Set(V2i pos, PixImage<T> image) => SubImage(pos, image.Size).Set(image);
-
-        /// <summary>
-        /// Set the image contents of the image to the contents of another
-        /// image. The sizes of the image and the other image have to match.
-        /// </summary>
+        /// <exception cref="ArgumentException">if the format of <paramref name="image"/> does not match the format of this instance.</exception>
+        /// <exception cref="ArgumentException">if the size of <paramref name="image"/> does not match the size of this instance.</exception>
         public void Set(PixImage<T> image)
         {
-            if (Format != image.Format)
-                throw new ArgumentException("wrong PixImage.Format");
-            if (Size != image.Size)
-                throw new ArgumentException("size mismatch");
+            if (Format != image.Format) throw new ArgumentException($"Format mismatch. Expected {Format} but got {image.Format}.");
+            if (Size != image.Size) throw new ArgumentException($"Size mismatch. Expected  {Size} but got {image.Size}.");
             Volume.Set(image.Volume);
         }
 
         /// <summary>
-        /// Set the image contents of the image to the contents of another
-        /// image. The contents of the other image are resized to match.
+        /// Set the image contents of the image to the contents of another image.
+        /// The contents of the other image are resized to match.
         /// </summary>
-        public void SetResized(
-                PixImage<T> image,
-                ImageInterpolation ip = ImageInterpolation.Cubic)
+        /// <exception cref="ArgumentException">if the format of <paramref name="image"/> does not match the format of this instance.</exception>
+        public void SetResized(PixImage<T> image, ImageInterpolation interpolation = ImageInterpolation.Cubic)
         {
-            if (Format != image.Format)
-                throw new ArgumentException("wrong PixImage.Format");
-
-            Volume.Set(Size == image.Size ? image.Volume : image.Resized(Size, ip).Volume);
+            if (Format != image.Format) throw new ArgumentException($"Format mismatch. Expected {Format} but got {image.Format}.");
+            Volume.Set(Size == image.Size ? image.Volume : image.Resized(Size, interpolation).Volume);
         }
 
         #endregion
 
         #region Conversions
 
-        public override PixImage ToPixImage(Col.Format format)
+        /// <inheritdoc cref="ToFormat"/>
+        public override PixImage ToPixImage(Col.Format format) => ToFormat(format);
+
+        /// <summary>
+        /// Converts this image to the specified color format. If the current format already matches
+        /// and the channel counts are equal, the current instance is returned; otherwise a new instance
+        /// with converted channels is created.
+        /// </summary>
+        /// <param name="format">Target color format.</param>
+        /// <returns>An image in the requested format.</returns>
+        public PixImage<T> ToFormat(Col.Format format)
         {
-            if (Format == format && ChannelCount == format.ChannelCount())
-                return this;
+            if (Format == format && ChannelCount == format.ChannelCount()) return this;
             return new PixImage<T>(format, this);
         }
 
-        public PixImage<T> ToFormat(Col.Format format) => Format == format ? this : new PixImage<T>(format, this);
-
+        /// <inheritdoc cref="ToCanonicalDenseLayout" />
         public PixImage<T> ToImageLayout() => !Volume.HasImageLayout() ? new PixImage<T>(Format, this) : this;
 
+        /// <inheritdoc />
         public override PixImage ToCanonicalDenseLayout() => ToImageLayout();
 
         #endregion
 
         #region Copy
 
+        /// <inheritdoc />
         public override void CopyChannelTo<Tv>(long channelIndex, Matrix<Tv> target)
         {
             var subMatrix = GetChannel<Tv>(channelIndex);
             target.Set(subMatrix);
         }
 
+        /// <inheritdoc />
         public override void CopyVolumeTo<Tv>(Volume<Tv> target)
         {
             if (Volume is Volume<Tv> source)
@@ -1886,40 +2253,42 @@ namespace Aardvark.Base
                 target.Set(Volume.AsVolume<T, Tv>());
         }
 
+        /// <summary>
+        /// Creates a deep copy using canonical image layout regardless of the current layout.
+        /// If already in image layout, the data is copied; otherwise, data is transformed to image layout.
+        /// </summary>
         public PixImage<T> CopyToImageLayout()
         {
-            if (Volume.HasImageLayout())
-                return new PixImage<T>(Format, Volume.CopyToImage());
-            return new PixImage<T>(this);
+            return Volume.HasImageLayout() ? new PixImage<T>(Format, Volume.CopyToImage()) : new PixImage<T>(this);
         }
 
-        public PixImage<T> Copy() => new PixImage<T>(Format, Volume.CopyToImageWindow());
+        /// <inheritdoc cref="CopyToPixImage" />
+        public PixImage<T> Copy() => new(Format, Volume.CopyToImageWindow());
 
+        /// <inheritdoc />
         public override PixImage CopyToPixImage() => Copy();
 
+        /// <inheritdoc />
         public override PixImage CopyToPixImageWithCanonicalDenseLayout() => CopyToImageLayout();
 
         /// <summary>
-        /// Copy function for color conversions.
+        /// Applies a per-pixel conversion function and returns a new image in the same color format.
         /// </summary>
-        /// <typeparam name="Tv"></typeparam>
-        /// <param name="fun"></param>
-        /// <returns></returns>
-        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun) => Copy(fun, Format);
+        /// <typeparam name="Tv">View type used for the conversion (e.g. a color type such as <see cref="C3f"/> or <see cref="C4ui"/>).</typeparam>
+        /// <param name="mapping">Unary transformation applied to each pixel value.</param>
+        /// <exception cref="NotSupportedException">if the view type is invalid for the format and element type.</exception>
+        public PixImage<T> Copy<Tv>(Func<Tv, Tv> mapping) => Copy(mapping, Format);
 
         /// <summary>
-        /// Copy function for color conversions. Note that the
-        /// new color format must have the same number of channels
-        /// as the old one, and the result of the supplied conversion
-        /// function is reinterpreted as a color in the new format.
+        /// Applies a per-pixel conversion function and returns a new image with the specified color format.
         /// </summary>
-        /// <typeparam name="Tv"></typeparam>
-        /// <param name="fun"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun, Col.Format format)
+        /// <typeparam name="Tv">View type used for the conversion (e.g. a color type such as <see cref="C3f"/> or <see cref="C4ui"/>).</typeparam>
+        /// <param name="mapping">Unary transformation applied to each pixel value.</param>
+        /// <param name="format">Target color format.</param>
+        /// <exception cref="NotSupportedException">if the view type is invalid for the format and element type.</exception>
+        public PixImage<T> Copy<Tv>(Func<Tv, Tv> mapping, Col.Format format)
         {
-            var mat = GetMatrix<Tv>().MapWindow(fun);
+            var mat = GetMatrix<Tv>().MapWindow(mapping);
             var vol = new Volume<T>(mat.Data, Volume.Info);
             return new PixImage<T>(format, vol);
         }
@@ -1929,9 +2298,10 @@ namespace Aardvark.Base
         #region Obtaining Matrices
 
         /// <summary>
-        /// Returns the specified channel, based on the canonical channel
-        /// order: red, green, blue, (alpha).
+        /// Returns the specified channel using the canonical order (red, green, blue, alpha).
         /// </summary>
+        /// <param name="channelIndex">Index within the canonical order of channels.</param>
+        /// <returns>A matrix window over the selected channel.</returns>
         public Matrix<T> GetChannel(long channelIndex)
         {
             var order = Format.ChannelOrder();
@@ -1939,30 +2309,38 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the specified channel.
+        /// Returns the specified channel by semantic name according to the current format.
         /// </summary>
+        /// <param name="channel">The channel to access (e.g. Red, Green, Blue, Alpha, Gray).</param>
+        /// <returns>A matrix window over the selected channel.</returns>
         public Matrix<T> GetChannel(Col.Channel channel)
             => GetChannelInFormatOrder(Format.ChannelIndex(channel));
 
         /// <summary>
-        /// Returns the specified channel (based on the canonical order) with
-        /// a different view type.
+        /// Returns the specified channel (using the canonical order) with a different view type.
         /// </summary>
+        /// <typeparam name="Tv">Element view type of the returned matrix.</typeparam>
+        /// <param name="channelIndex">Index within the canonical order of channels.</param>
+        /// <returns>A typed matrix window over the selected channel.</returns>
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible.</exception>
         public Matrix<T, Tv> GetChannel<Tv>(long channelIndex)
             => GetChannelInFormatOrder<Tv>(Format.ChannelOrder()[channelIndex]);
 
         /// <summary>
-        /// Returns the specified channel based on the order of the image's
-        /// color format.
+        /// Returns the specified channel based on the order of the color format.
         /// </summary>
+        /// <param name="formatChannelIndex">Index of the channel in the current format's order.</param>
+        /// <returns>A matrix window over the selected channel.</returns>
         public Matrix<T> GetChannelInFormatOrder(long formatChannelIndex)
             => Volume.SubXYMatrixWindow(formatChannelIndex);
 
         /// <summary>
-        /// Returns the specified channel based on the order of the image's
-        /// color format with a different view type.
-        /// <param name="formatChannelIndex">formatChannelIndex</param>
+        /// Returns the specified channel based on the order of the color format with a different view type.
         /// </summary>
+        /// <typeparam name="Tv">Element view type of the returned matrix.</typeparam>
+        /// <param name="formatChannelIndex">Index of the channel in the current format's order.</param>
+        /// <returns>A typed matrix window over the selected channel.</returns>
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible.</exception>
         public Matrix<T, Tv> GetChannelInFormatOrder<Tv>(long formatChannelIndex)
         {
             var matrix = Volume.SubXYMatrix<Tv>(formatChannelIndex);
@@ -1970,12 +2348,19 @@ namespace Aardvark.Base
             return matrix;
         }
 
+        /// <summary>
+        /// Reinterprets the underlying 3D image volume as a matrix of the specified type.
+        /// </summary>
+        /// <typeparam name="Tv">Element view type of the returned matrix (e.g. a color type such as <see cref="C3f"/> or <see cref="C4ui"/>).</typeparam>
+        /// <returns>A typed matrix window over the whole 3D image volume.</returns>
+        /// <exception cref="NotSupportedException">if the view type is invalid for the format and element type.</exception>
         public Matrix<T, Tv> GetMatrix<Tv>() => Volume.GetMatrix<T, Tv>(Format.GetIntent());
 
         #endregion
 
         #region IPixImageVisitor
 
+        /// <inheritdoc/>
         public override TResult Visit<TResult>(IPixImageVisitor<TResult> visitor) => visitor.Visit(this);
 
         #endregion

@@ -8,8 +8,8 @@ namespace Aardvark.Base
     /// Defines a visitor for strongly typed PixVolume instances.
     /// Use this to dispatch operations based on the underlying pixel data type without reflection.
     /// </summary>
-    /// <typeparam name="T">The result type produced by the visitor.</typeparam>
-    public interface IPixVolumeVisitor<T>
+    /// <typeparam name="TResult">The result type produced by the visitor.</typeparam>
+    public interface IPixVolumeVisitor<TResult>
     {
         /// <summary>
         /// Visits the given PixVolume with element type <typeparamref name="TData"/>.
@@ -17,24 +17,24 @@ namespace Aardvark.Base
         /// <typeparam name="TData">The pixel element type (e.g. byte, float, etc.).</typeparam>
         /// <param name="volume">The typed PixVolume instance to visit.</param>
         /// <returns>The visitor-specific result.</returns>
-        T Visit<TData>(PixVolume<TData> volume);
+        TResult Visit<TData>(PixVolume<TData> volume);
     }
 
     /// <summary>
-    /// Lightweight description of a pix volume, containing its pixel format and 3D size (Width, Height, Depth).
+    /// Lightweight description of a <see cref="PixVolume"/>, containing its pixel format and dimensions.
     /// </summary>
-    /// <param name="Format">The pixel layout and channel information.</param>
+    /// <param name="Format">The pixel format (channel type and color format).</param>
     /// <param name="Size">The 3D size in pixels (X = width, Y = height, Z = depth).</param>
     public record PixVolumeInfo(PixFormat Format, V3i Size);
 
     /// <summary>
     /// Base (non-generic) 3D pixel container abstraction. Provides format, size and conversion utilities
-    /// for volumes (Width x Height x Depth x Channels) independent of the underlying element type.
+    /// for image volumes independent of the underlying element type.
     /// </summary>
     public abstract class PixVolume : IPix
     {
         /// <summary>
-        /// The color format describing channel semantics and ordering (e.g. RGB, RGBA, Gray, etc.).
+        /// Color format describing channel layout and semantics.
         /// </summary>
         public Col.Format Format;
 
@@ -57,12 +57,12 @@ namespace Aardvark.Base
         public abstract Array Array { get; }
 
         /// <summary>
-        /// Gets the pixel format of the volume.
+        /// Gets the pixel format of the volume (channel type and color format).
         /// </summary>
         public abstract PixFormat PixFormat { get; }
 
         /// <summary>
-        /// Gets structural information about the underlying 4D tensor (X,Y,Z,Channel) including size and layout.
+        /// Gets structural information about the underlying 4D tensor including size and layout.
         /// </summary>
         public abstract Tensor4Info Tensor4Info { get; }
 
@@ -117,12 +117,12 @@ namespace Aardvark.Base
         public long DepthL => SizeL.Z;
 
         /// <summary>
-        /// Gets the number of channels in the color format.
+        /// Gets the number of channels per voxel.
         /// </summary>
         public int ChannelCount => (int)Tensor4Info.Size.W;
 
         /// <summary>
-        /// Gets the number of channels in the color format as a 64-bit integer.
+        /// Gets the number of channels per voxel as a 64-bit integer.
         /// </summary>
         public long ChannelCountL => Tensor4Info.Size.W;
 
@@ -131,7 +131,7 @@ namespace Aardvark.Base
         #region Static Creator Functions
 
         /// <summary>
-        /// Creates a 4D tensor with image-friendly memory layout for the given size (X,Y,Z,Channel).
+        /// Creates a 4D tensor with image-friendly memory layout for the given size.
         /// </summary>
         /// <typeparam name="T">Element type of the tensor.</typeparam>
         /// <param name="size">The tensor size as (width, height, depth, channels).</param>
@@ -142,17 +142,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates a 4D tensor with image-friendly memory layout for the given dimensions (X,Y,Z,Channel).
+        /// Creates a 4D tensor with image-friendly memory layout for the given dimensions.
         /// </summary>
         /// <typeparam name="T">Element type of the tensor.</typeparam>
-        /// <param name="sizeX">Width in pixels.</param>
-        /// <param name="sizeY">Height in pixels.</param>
-        /// <param name="sizeZ">Depth in pixels.</param>
-        /// <param name="channelCount">Number of channels.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="depth">Depth in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
         /// <returns>A new tensor with the requested size.</returns>
-        public static Tensor4<T> CreateTensor4<T>(long sizeX, long sizeY, long sizeZ, long channelCount)
+        public static Tensor4<T> CreateTensor4<T>(long width, long height, long depth, long channels)
         {
-            return new V4l(sizeX, sizeY, sizeZ, channelCount).CreateImageTensor4<T>();
+            return new V4l(width, height, depth, channels).CreateImageTensor4<T>();
         }
 
         #endregion
@@ -176,39 +176,44 @@ namespace Aardvark.Base
         /// <summary>
         /// Attempts to cast this instance to <see cref="PixVolume{T}"/>. Returns null if the element type differs.
         /// </summary>
-        /// <typeparam name="T">Desired element type.</typeparam>
+        /// <typeparam name="T">Target element type.</typeparam>
         /// <returns>The typed volume or null.</returns>
         public PixVolume<T> AsPixVolume<T>() => this as PixVolume<T>;
 
         /// <summary>
         /// Returns a typed view of this volume. If the element type differs, a new volume with converted element type is created by copying.
         /// </summary>
-        /// <typeparam name="T1">Desired element type.</typeparam>
-        /// <returns>A typed volume of <typeparamref name="T1"/>.</returns>
-        public PixVolume<T1> ToPixVolume<T1>() => AsPixVolume<T1>() ?? new PixVolume<T1>(this);
+        /// <typeparam name="T">Target element type.</typeparam>
+        /// <returns>A typed volume of <typeparamref name="T"/>.</returns>
+        public PixVolume<T> ToPixVolume<T>() => AsPixVolume<T>() ?? new PixVolume<T>(this);
 
         /// <summary>
-        /// Converts this volume to the specified channel format. May re-map or compute channels as needed.
+        /// Converts this volume to the specified color format while keeping the underlying element type.
+        /// If this volume already has the requested format, returns the same instance;
+        /// in that case no data conversion or additional allocation is performed.
         /// </summary>
         /// <param name="format">Target color format.</param>
-        /// <returns>A volume in the requested format.</returns>
+        /// <returns>A volume in the requested format; this instance if no conversion is required.</returns>
         public abstract PixVolume ToPixVolume(Col.Format format);
 
         /// <summary>
-        /// Returns a typed volume in the desired channel format. Creates a new instance if a cast is not possible.
+        /// Converts this volume to the specified color format and element type.
+        /// If this volume already has the requested format and element type, returns the same instance;
+        /// in that case no data conversion or additional allocation is performed.
         /// </summary>
-        /// <typeparam name="T">Desired element type.</typeparam>
         /// <param name="format">Target color format.</param>
-        /// <returns>A <see cref="PixVolume{T}"/> in the requested format.</returns>
+        /// <typeparam name="T">Target element type.</typeparam>
+        /// <returns>A typed volume in the requested format; this instance if no conversion is required.</returns>
         public PixVolume<T> ToPixVolume<T>(Col.Format format)
         {
-            if (this is PixVolume<T> castVolume && castVolume.Format == format && castVolume.ChannelCount == format.ChannelCount())
-                return castVolume;
+            if (this is PixVolume<T> volume && volume.Format == format && volume.ChannelCount == format.ChannelCount()) return volume;
             return new PixVolume<T>(format, this);
         }
 
         /// <summary>
-        /// Returns a representation with canonical, densely packed memory layout (X,Y,Z,Channel) if necessary.
+        /// Returns a representation with canonical, densely packed memory layout.
+        /// If this volume is already in the correct layout, returns the same instance;
+        /// in that case no data conversion or additional allocation is performed.
         /// </summary>
         public abstract PixVolume ToCanonicalDenseLayout();
 
@@ -217,27 +222,31 @@ namespace Aardvark.Base
         #region Copy
 
         /// <summary>
-        /// Copies a single channel to the target volume.
+        /// Copies a single channel to the target volume (must match in size).
+        /// If the element type differs, the data are reinterpreted.
         /// </summary>
         /// <typeparam name="Tv">Element type of the destination volume.</typeparam>
         /// <param name="channelIndex">Index of the channel in this volume.</param>
         /// <param name="target">Destination volume receiving the channel data.</param>
+        /// <exception cref="NotSupportedException">if the element type <typeparamref name="Tv"/> is invalid.</exception>
         public abstract void CopyChannelTo<Tv>(long channelIndex, Volume<Tv> target);
 
         /// <summary>
-        /// Copies the entire underlying tensor to the given target tensor (same shape required).
+        /// Copies the entire underlying tensor to the given target tensor (must match in size).
+        /// If the element type differs, the data are reinterpreted.
         /// </summary>
         /// <typeparam name="Tv">Element type of the destination tensor.</typeparam>
         /// <param name="target">Destination tensor.</param>
+        /// <exception cref="NotSupportedException">if the element type <typeparamref name="Tv"/> is invalid.</exception>
         public abstract void CopyTensor4To<Tv>(Tensor4<Tv> target);
 
         /// <summary>
-        /// Creates a deep copy of this volume, preserving layout and format.
+        /// Creates a deep copy of this volume.
         /// </summary>
         public abstract PixVolume CopyToPixVolume();
 
         /// <summary>
-        /// Creates a deep copy of this volume with canonical dense layout (X,Y,Z,Channel).
+        /// Creates a deep copy of this volume with canonical dense layout.
         /// </summary>
         public abstract PixVolume CopyToPixVolumeWithCanonicalDenseLayout();
 
@@ -257,29 +266,18 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// Strongly typed 3D pixel volume with element type <typeparamref name="T"/>.
-    /// Provides access to the underlying 4D tensor and convenience constructors.
+    /// 3D pixel container with element type <typeparamref name="T"/>.
+    /// Provides access to the underlying 4D tensor.
     /// </summary>
+    /// <typeparam name="T">Per-channel element type.</typeparam>
     public class PixVolume<T> : PixVolume
     {
         /// <summary>
-        /// The underlying 4D tensor storing the data.
+        /// The underlying 4D tensor storing the volume data.
         /// </summary>
         public Tensor4<T> Tensor4;
 
         #region Constructors
-
-        /// <summary>
-        /// Creates a new PixVolume backed by the given tensor and using the specified color format.
-        /// No data is copied; the instance takes a reference to <paramref name="tensor4"/>.
-        /// </summary>
-        /// <param name="format">Channel layout and semantics (e.g. RGB, RGBA, Gray).</param>
-        /// <param name="tensor4">Backing tensor in image layout. Not copied.</param>
-        public PixVolume(Col.Format format, Tensor4<T> tensor4)
-            : base(format)
-        {
-            Tensor4 = tensor4;
-        }
 
         /// <summary>
         /// Initializes a new empty PixVolume instance without allocating storage.
@@ -289,36 +287,69 @@ namespace Aardvark.Base
         public PixVolume() { }
 
         /// <summary>
-        /// Allocates a new volume with the given 3D size and channel count using the default
-        /// color format for element type <typeparamref name="T"/> and the specified number of channels.
+        /// Creates a new PixVolume backed by the given tensor and using the specified color format.
+        /// No data is copied; the instance takes a reference to <paramref name="tensor4"/>.
         /// </summary>
-        /// <param name="size">Volume size in pixels (width, height, depth).</param>
-        /// <param name="channelCount">Number of channels to allocate.</param>
-        public PixVolume(V3i size, int channelCount)
-            : this(Col.FormatDefaultOf(typeof(T), channelCount),
-                   CreateTensor4<T>(size.X, size.Y, size.Z, channelCount))
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="tensor4">Backing tensor in image layout. Not copied.</param>
+        public PixVolume(Col.Format format, Tensor4<T> tensor4)
+            : base(format)
+        {
+            Tensor4 = tensor4;
+        }
+
+        /// <summary>
+        /// Creates a new PixVolume backed by the given tensor and using the default color format for the element type.
+        /// No data is copied; the instance takes a reference to <paramref name="tensor4"/>.
+        /// </summary>
+        /// <param name="tensor4">Backing tensor in image layout. Not copied.</param>
+        public PixVolume(Tensor4<T> tensor4)
+            : this(Col.FormatDefaultOf(typeof(T), tensor4.SW), tensor4)
         { }
 
         /// <summary>
-        /// Allocates a new volume with the given dimensions and channel count using the default
-        /// color format for element type <typeparamref name="T"/> and the specified number of channels.
+        /// Allocates a new volume with the given 3D size and channel count using the default color format for the element type.
         /// </summary>
-        /// <param name="sizeX">Width in pixels.</param>
-        /// <param name="sizeY">Height in pixels.</param>
-        /// <param name="sizeZ">Depth in pixels.</param>
-        /// <param name="channelCount">Number of channels to allocate.</param>
-        public PixVolume(int sizeX, int sizeY, int sizeZ, int channelCount)
-            : this(Col.FormatDefaultOf(typeof(T), channelCount),
-                   CreateTensor4<T>(sizeX, sizeY, sizeZ, channelCount))
+        /// <param name="size">Volume size in pixels (width, height, depth).</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(V3i size, int channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateTensor4<T>(size.X, size.Y, size.Z, channels))
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(V3i, int)"/>
+        public PixVolume(V3l size, long channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateTensor4<T>(size.X, size.Y, size.Z, channels))
+        { }
+
+
+        /// <summary>
+        /// Allocates a new volume with the given dimensions and channel count using the default color format for the element type.
+        /// </summary>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="depth">Depth in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(int width, int height, int depth, int channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateTensor4<T>(width, height, depth, channels))
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(int, int, int, int)"/>
+        public PixVolume(long width, long height, long depth, long channels)
+            : this(Col.FormatDefaultOf(typeof(T), channels), CreateTensor4<T>(width, height, depth, channels))
         { }
 
         /// <summary>
         /// Allocates a new volume with the given size and channel format. The number of channels is
         /// derived from <paramref name="format"/>.
         /// </summary>
-        /// <param name="format">Target color format that defines channel semantics and count.</param>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
         /// <param name="size">Volume size in pixels (width, height, depth).</param>
         public PixVolume(Col.Format format, V3i size)
+            : this(format, CreateTensor4<T>(size.X, size.Y, size.Z, Col.ChannelCount(format)))
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, V3i)"/>
+        public PixVolume(Col.Format format, V3l size)
             : this(format, CreateTensor4<T>(size.X, size.Y, size.Z, Col.ChannelCount(format)))
         { }
 
@@ -326,48 +357,62 @@ namespace Aardvark.Base
         /// Allocates a new volume with the given dimensions and channel format. The number of channels is
         /// derived from <paramref name="format"/>.
         /// </summary>
-        /// <param name="format">Target color format that defines channel semantics and count.</param>
-        /// <param name="sizeX">Width in pixels.</param>
-        /// <param name="sizeY">Height in pixels.</param>
-        /// <param name="sizeZ">Depth in pixels.</param>
-        public PixVolume(Col.Format format, int sizeX, int sizeY, int sizeZ)
-            : this(format, CreateTensor4<T>(sizeX, sizeY, sizeZ, Col.ChannelCount(format)))
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="depth">Depth in pixels.</param>
+        public PixVolume(Col.Format format, int width, int height, int depth)
+            : this(format, CreateTensor4<T>(width, height, depth, Col.ChannelCount(format)))
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, int, int, int)"/>
+        public PixVolume(Col.Format format, long width, long height, long depth)
+            : this(format, CreateTensor4<T>(width, height, depth, Col.ChannelCount(format)))
         { }
 
         /// <summary>
         /// Allocates a new volume with the given size, explicit channel count and format.
         /// </summary>
-        /// <param name="format">Target color format that defines channel semantics.</param>
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
         /// <param name="size">Volume size in pixels (width, height, depth).</param>
-        /// <param name="channelCount">Number of channels to allocate.</param>
-        public PixVolume(Col.Format format, V3i size, int channelCount)
-            : this(format, CreateTensor4<T>(size.X, size.Y, size.Z, channelCount))
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(Col.Format format, V3i size, int channels)
+            : this(format, CreateTensor4<T>(size.X, size.Y, size.Z, channels))
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, V3i, int)"/>
+        public PixVolume(Col.Format format, V3l size, long channels)
+            : this(format, CreateTensor4<T>(size.X, size.Y, size.Z, channels))
         { }
 
         /// <summary>
         /// Allocates a new volume with the given dimensions, explicit channel count and format.
         /// </summary>
-        /// <param name="format">Target color format that defines channel semantics.</param>
-        /// <param name="sizeX">Width in pixels.</param>
-        /// <param name="sizeY">Height in pixels.</param>
-        /// <param name="sizeZ">Depth in pixels.</param>
-        /// <param name="channelCount">Number of channels to allocate.</param>
-        public PixVolume(Col.Format format, int sizeX, int sizeY, int sizeZ, int channelCount)
-            : this(format, CreateTensor4<T>(sizeX, sizeY, sizeZ, channelCount))
+        /// <param name="format">Color format describing the channel layout and semantics.</param>
+        /// <param name="width">Width in pixels.</param>
+        /// <param name="height">Height in pixels.</param>
+        /// <param name="depth">Depth in pixels.</param>
+        /// <param name="channels">Number of channels.</param>
+        public PixVolume(Col.Format format, int width, int height, int depth, int channels)
+            : this(format, CreateTensor4<T>(width, height, depth, channels))
+        { }
+
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, int, int, int, int)"/>
+        public PixVolume(Col.Format format, long width, long height, long depth, long channels)
+            : this(format, CreateTensor4<T>(width, height, depth, channels))
         { }
 
         /// <summary>
         /// Creates a typed copy of the given volume. Always allocates new storage and copies data.
-        /// The channel count is taken from <paramref name="pixVolume"/>, the element type becomes
+        /// The channel count is taken from <paramref name="source"/>, the element type becomes
         /// <typeparamref name="T"/> (conversion may occur).
         /// </summary>
-        /// <param name="pixVolume">Source volume to copy from.</param>
+        /// <param name="source">Source volume to copy from.</param>
         /// <remarks>
-        /// The color format of the new instance is <see cref="Col.FormatDefaultOf(Type, long)"/> for
-        /// element type <typeparamref name="T"/> and the source channel count.
+        /// <inheritdoc cref="PixVolume{T}(Col.Format, PixVolume)" path="/remarks"/>
         /// </remarks>
-        public PixVolume(PixVolume pixVolume)
-            : this(Col.FormatDefaultOf(typeof(T), pixVolume.Format.ChannelCount()), pixVolume)
+        public PixVolume(PixVolume source)
+            : this(Col.FormatDefaultOf(typeof(T), source.Format.ChannelCount()), source)
         { }
 
         /// <summary>
@@ -375,11 +420,11 @@ namespace Aardvark.Base
         /// and copies or converts channel data as needed.
         /// </summary>
         /// <param name="format">Target color format for the new volume.</param>
-        /// <param name="pixVolume">Source volume to copy from.</param>
+        /// <param name="source">Source volume to copy from.</param>
         /// <remarks>
         /// <list type="bullet">
         /// <item>
-        /// Premultiplied state must match between <paramref name="format"/> and <paramref name="pixVolume"/>; otherwise a
+        /// Premultiplied state must match between <paramref name="format"/> and <paramref name="source"/>; otherwise a
         ///   <see cref="NotImplementedException"/> is thrown.
         /// </item>
         /// <item>
@@ -399,27 +444,27 @@ namespace Aardvark.Base
         /// </item>
         /// </list>
         /// </remarks>
-        public PixVolume(Col.Format format, PixVolume pixVolume)
+        public PixVolume(Col.Format format, PixVolume source)
         {
-            if (format.IsPremultiplied() != pixVolume.Format.IsPremultiplied())
+            if (format.IsPremultiplied() != source.Format.IsPremultiplied())
             {
                 throw new NotImplementedException(
                     "Conversion between alpha and premultiplied alpha formats not implemented yet."
                 );
             }
 
-            var srcInfo = pixVolume.Tensor4Info;
+            var srcInfo = source.Tensor4Info;
             var dstChannels = Col.ChannelsOfFormat(format);
             var tensor4 = CreateTensor4<T>(srcInfo.Size.X, srcInfo.Size.Y, srcInfo.Size.Z, dstChannels.Length);
-            tensor4.F = pixVolume.Tensor4Info.F;
+            tensor4.F = source.Tensor4Info.F;
 
-            if (format == pixVolume.Format && srcInfo.Size == tensor4.Size)
+            if (format == source.Format && srcInfo.Size == tensor4.Size)
             {
-                pixVolume.CopyTensor4To(tensor4);
+                source.CopyTensor4To(tensor4);
             }
             else
             {
-                var srcChannels = Col.ChannelsOfFormat(pixVolume.Format);
+                var srcChannels = Col.ChannelsOfFormat(source.Format);
 
                 for (int dstIndex = 0; dstIndex < dstChannels.Length; dstIndex++)
                 {
@@ -438,14 +483,14 @@ namespace Aardvark.Base
                     if (srcIndex > -1)
                     {
                         // Channel exists in source image, just copy
-                        if (pixVolume is PixVolume<T> pi)
+                        if (source is PixVolume<T> pi)
                         {
                             volume.Set(pi.GetChannelInFormatOrder(srcIndex));
                         }
                         else
                         {
-                            var order = pixVolume.Format.ChannelOrder();
-                            pixVolume.CopyChannelTo(order[srcIndex], volume); // CopyChannelTo uses canonical order
+                            var order = source.Format.ChannelOrder();
+                            source.CopyChannelTo(order[srcIndex], volume); // CopyChannelTo uses canonical order
                         }
                     }
                     else if (channel is Col.Channel.Alpha or Col.Channel.PremultipliedAlpha)
@@ -458,22 +503,22 @@ namespace Aardvark.Base
                              srcChannels.Contains(Col.Channel.Green) &&
                              srcChannels.Contains(Col.Channel.Blue))
                     {
-                        var t1 = pixVolume.PixFormat.Type;
+                        var t1 = source.PixFormat.Type;
                         var t2 = typeof(T);
 
                         if (s_rgbToGrayMap.TryGetValue((t1, t2), out var toGray))
                         {
-                            toGray(pixVolume, volume);
+                            toGray(source, volume);
                         }
                         else
                         {
                             throw new NotImplementedException(
-                                $"Conversion from {t1} image with format {pixVolume.Format} to {t2} grayscale not implemented."
+                                $"Conversion from {t1} image with format {source.Format} to {t2} grayscale not implemented."
                             );
                         }
                     }
                     else if (channel == Col.Channel.Blue &&
-                             pixVolume.Format == Col.Format.RG &&
+                             source.Format == Col.Format.RG &&
                              dstChannels.Contains(Col.Channel.Red) &&
                              dstChannels.Contains(Col.Channel.Green))
                     {
@@ -482,7 +527,7 @@ namespace Aardvark.Base
                     else
                     {
                         throw new NotSupportedException(
-                            $"Conversion from format {pixVolume.Format} to format {format} is not supported."
+                            $"Conversion from format {source.Format} to format {format} is not supported."
                         );
                     }
                 }
@@ -505,7 +550,7 @@ namespace Aardvark.Base
         public override Array Array => Tensor4.Data;
 
         /// <inheritdoc />
-        public override PixFormat PixFormat => new PixFormat(typeof(T), Format);
+        public override PixFormat PixFormat => new(typeof(T), Format);
 
         /// <inheritdoc />
         public override Tensor4Info Tensor4Info => Tensor4.Info;
@@ -514,8 +559,7 @@ namespace Aardvark.Base
         public override int BytesPerChannel => typeof(T).GetCLRSize();
 
         /// <summary>
-        /// Returns the channels of the image in canonical order: red, green,
-        /// blue, (alpha).
+        /// Gets the channel volumes in canonical order (red, green, blue, alpha).
         /// </summary>
         public IEnumerable<Volume<T>> Channels
         {
@@ -528,44 +572,37 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the channels as an array in canonical order: red, green, blue, (alpha).
+        /// Gets the channel volumes as array in canonical order (red, green, blue, alpha).
         /// </summary>
         public Volume<T>[] ChannelArray => Channels.ToArray();
 
         /// <summary>
-        /// Returns the volume representation of the tensor4 if there is only
-        /// one channel. Fails if there are multiple channels.
+        /// Returns the volume representation of the 4D tensor if there is only one channel.
         /// </summary>
+        /// <exception cref="InvalidOperationException">if there are multiple channels.</exception>
         public Volume<T> Volume => Tensor4.AsVolumeWindow();
 
         #endregion
 
         #region Conversions
 
+        /// <inheritdoc cref="ToFormat"/>
+        public override PixVolume ToPixVolume(Col.Format format) => ToFormat(format);
+
         /// <summary>
-        /// Converts this volume to the specified channel format. If the current format already matches
+        /// Converts this volume to the specified color format. If the current format already matches
         /// and the channel counts are equal, the current instance is returned; otherwise a new instance
         /// with converted channels is created.
         /// </summary>
         /// <param name="format">Target color format.</param>
         /// <returns>A volume in the requested format.</returns>
-        public override PixVolume ToPixVolume(Col.Format format)
+        public PixVolume<T> ToFormat(Col.Format format)
         {
-            if (Format == format && ChannelCount == format.ChannelCount())
-                return this;
+            if (Format == format && ChannelCount == format.ChannelCount()) return this;
             return new PixVolume<T>(format, this);
         }
 
-        /// <summary>
-        /// Returns this instance if it already has the requested format; otherwise creates a new volume
-        /// with channels mapped to the requested format.
-        /// </summary>
-        public PixVolume<T> ToFormat(Col.Format format) => Format == format ? this : new PixVolume<T>(format, this);
-
-        /// <summary>
-        /// Ensures the underlying tensor uses the standard image layout. If it already does, this instance
-        /// is returned; otherwise a new instance with copied data in image layout is returned.
-        /// </summary>
+        /// <inheritdoc cref="ToCanonicalDenseLayout" />
         public PixVolume<T> ToImageLayout() => !Tensor4.HasImageLayout() ? new PixVolume<T>(Format, this) : this;
 
         /// <inheritdoc />
@@ -600,9 +637,7 @@ namespace Aardvark.Base
             return Tensor4.HasImageLayout() ? new PixVolume<T>(Format, Tensor4.CopyToImage()) : new PixVolume<T>(this);
         }
 
-        /// <summary>
-        /// Creates a deep copy of the current volume, preserving the current layout.
-        /// </summary>
+        /// <inheritdoc cref="CopyToPixVolume" />
         public PixVolume<T> Copy() => new(Format, Tensor4.CopyToImageWindow());
 
         /// <inheritdoc />
@@ -611,28 +646,13 @@ namespace Aardvark.Base
         /// <inheritdoc />
         public override PixVolume CopyToPixVolumeWithCanonicalDenseLayout() => CopyToImageLayout();
 
-        /// <summary>
-        /// Creates a new image by applying the given per-voxel color conversion function to the
-        /// single-channel view of this volume. The resulting values are reinterpreted as colors
-        /// in the current <see cref="Col.Format"/>.
-        /// </summary>
-        /// <typeparam name="Tv">View type used for the conversion (e.g. C3b, C3f).</typeparam>
-        /// <param name="fun">Function that maps a color value to a converted color value.</param>
-        /// <returns>A new <see cref="PixImage{T}"/> containing the converted data.</returns>
+        [Obsolete("Should return PixVolume.")]
         public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun)
         {
             return Copy(fun, Format);
         }
 
-        /// <summary>
-        /// Creates a new image by applying the given per-voxel color conversion function, and returns
-        /// the result as a new image with the specified color format. The resulting values are reinterpreted as colors
-        /// in the new format.
-        /// </summary>
-        /// <typeparam name="Tv">View type used for the conversion (e.g. C3b, C3f).</typeparam>
-        /// <param name="fun">Function that maps a color value to a converted color value.</param>
-        /// <param name="format">Target color format for the resulting image.</param>
-        /// <returns>A new <see cref="PixImage{T}"/> in the requested format containing the converted data.</returns>
+        [Obsolete("Should return PixVolume.")]
         public PixImage<T> Copy<Tv>(Func<Tv, Tv> fun, Col.Format format)
         {
             var mat = GetVolume<Tv>().MapWindow(fun);
@@ -645,7 +665,7 @@ namespace Aardvark.Base
         #region Obtaining Volumes
 
         /// <summary>
-        /// Returns the specified channel using the canonical channel order (red, green, blue, alpha).
+        /// Returns the specified channel using the canonical order (red, green, blue, alpha).
         /// </summary>
         /// <param name="channelIndex">Index within the canonical order of channels.</param>
         /// <returns>A volume window over the selected channel.</returns>
@@ -672,6 +692,7 @@ namespace Aardvark.Base
         /// <typeparam name="Tv">Element view type of the returned volume.</typeparam>
         /// <param name="channelIndex">Index within the canonical order of channels.</param>
         /// <returns>A typed volume window over the selected channel.</returns>
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible.</exception>
         public Volume<T, Tv> GetChannel<Tv>(long channelIndex)
         {
             return GetChannelInFormatOrder<Tv>(Format.ChannelOrder()[channelIndex]);
@@ -693,6 +714,7 @@ namespace Aardvark.Base
         /// <typeparam name="Tv">Element view type of the returned volume.</typeparam>
         /// <param name="formatChannelIndex">Index of the channel in the current format's order.</param>
         /// <returns>A typed volume window over the selected channel.</returns>
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible.</exception>
         public Volume<T, Tv> GetChannelInFormatOrder<Tv>(long formatChannelIndex)
         {
             var volume = Tensor4.SubXYZVolume<Tv>(formatChannelIndex);
@@ -701,17 +723,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a typed view over the XYZ sub-volume (first channel) using the provided element view type.
-        /// Accessors are configured based on the current format's intent.
+        /// Reinterprets the underlying 4D image tensor as a volume of the specified type.
         /// </summary>
-        /// <typeparam name="Tv">Element view type of the returned volume.</typeparam>
-        /// <returns>A typed volume window over the first channel.</returns>
-        public Volume<T, Tv> GetVolume<Tv>()
-        {
-            var volume = Tensor4.SubXYZVolumeWindow<Tv>(0L);
-            volume.Accessors = TensorAccessors.Get<T, Tv>(Format.GetIntent(), Tensor4.DeltaArray);
-            return volume;
-        }
+        /// <typeparam name="Tv">Element view type of the returned volume (e.g. a color type such as <see cref="C3f"/> or <see cref="C4ui"/>).</typeparam>
+        /// <returns>A typed volume window over the whole 4D image tensor.</returns>
+        /// <exception cref="NotSupportedException">if the view type is invalid for the format and element type.</exception>
+        public Volume<T, Tv> GetVolume<Tv>() => Tensor4.GetVolume<T, Tv>(Format.GetIntent());
 
         #endregion
 

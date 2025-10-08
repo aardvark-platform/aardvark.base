@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Aardvark.Base
 {
@@ -38,9 +37,8 @@ namespace Aardvark.Base
             {
                 if (creator(delta) is TensorAccessors<Td, Tv> typed) return typed;
             }
-            throw new KeyNotFoundException(
-                $"No accessors to view {dataType} as {viewType} with intent {intent}."
-            );
+
+            throw new NotSupportedException($"Cannot view {dataType} as {viewType} with intent {intent}.");
         }
     }
 

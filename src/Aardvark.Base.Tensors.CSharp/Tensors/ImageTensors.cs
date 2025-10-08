@@ -132,7 +132,7 @@ namespace Aardvark.Base
         #region Creation
 
         /// <summary>
-        /// Create a valid image matrix, with stride appropriate for the
+        /// Creates a valid image matrix, with stride appropriate for the
         /// given size. Note that this is just the same as a normal matrix.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -140,8 +140,8 @@ namespace Aardvark.Base
             => new (size);
 
         /// <summary>
-        /// Create a valid image volume, with stride appropriate for the
-        /// given size. For image volumes DZ == 1.
+        /// Creates a valid image volume, with stride appropriate for the
+        /// given size. For image volumes DZ = 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Volume<T> CreateImageVolume<T>(this V3l size)
@@ -152,7 +152,7 @@ namespace Aardvark.Base
             => new (data, 0L, size, new V3l(size.Z, size.Z * size.X, 1L));
 
         /// <summary>
-        /// Create a valid image tensor4, with stride appropriate for the
+        /// Creates a valid image 4D tensor, with stride appropriate for the
         /// given size.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -168,7 +168,7 @@ namespace Aardvark.Base
         #region SubImages
 
         /// <summary>
-        /// Return a sub image volume beginning at the supplied pixel
+        /// Returns a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The sub image
         /// retains the coordinates of the parent image.
         /// </summary>
@@ -177,7 +177,7 @@ namespace Aardvark.Base
             => vol.SubVolumeWindow(new V3l(begin.XY, vol.FZ), new V3l(size.XY, vol.SZ));
 
         /// <summary>
-        /// Return a sub image volume beginning at the supplied pixel
+        /// Returns a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The sub image
         /// retains the coordinates of the parent image.
         /// </summary>
@@ -186,7 +186,7 @@ namespace Aardvark.Base
             => vol.SubImageWindow(new V2l(beginX, beginY), new V2l(sizeX, sizeY));
 
         /// <summary>
-        /// Return a sub image tensor beginning at the supplied pixel
+        /// Returns a sub image tensor beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The sub image
         /// retains the coordinates of the parent image.
         /// </summary>
@@ -195,7 +195,7 @@ namespace Aardvark.Base
             => tensor4.SubTensor4Window(new V4l(begin.XYZ, tensor4.FW), new V4l(size.XYZ, tensor4.SW));
 
         /// <summary>
-        /// Return a sub image tensor beginning at the supplied pixel
+        /// Returns a sub image tensor beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The sub image
         /// retains the coordinates of the parent image.
         /// </summary>
@@ -208,7 +208,7 @@ namespace Aardvark.Base
             => tensor4.SubXYWVolumeWindow(z);
 
         /// <summary>
-        /// Return a sub image volume beginning at the supplied pixel
+        /// Returns a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The coordinates
         /// of the sub image volume start at 0, 0, 0.
         /// </summary>
@@ -217,7 +217,7 @@ namespace Aardvark.Base
             => vol.SubVolume(new V3l(begin.XY, vol.FZ), new V3l(size.XY, vol.SZ));
 
         /// <summary>
-        /// Return a sub image volume beginning at the supplied pixel
+        /// Returns a sub image volume beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The coordinates
         /// of the sub image volume start at 0, 0, 0.
         /// </summary>
@@ -226,7 +226,7 @@ namespace Aardvark.Base
             => vol.SubImage(new V2l(beginX, beginY), new V2l(sizeX, sizeY));
 
         /// <summary>
-        /// Return a sub image tensor beginning at the supplied pixel
+        /// Returns a sub image tensor beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The coordinates
         /// of the sub image tensor start at 0, 0, 0, 0.
         /// </summary>
@@ -235,7 +235,7 @@ namespace Aardvark.Base
             => tensor4.SubTensor4(new V4l(begin.XYZ, tensor4.FW), new V4l(size.XYZ, tensor4.SW));
 
         /// <summary>
-        /// Return a sub image tensor beginning at the supplied pixel
+        /// Returns a sub image tensor beginning at the supplied pixel
         /// coordinate with the supplied size in pixels. The coordinates
         /// of the sub image tensor start at 0, 0, 0, 0.
         /// </summary>
@@ -282,7 +282,7 @@ namespace Aardvark.Base
         #region Copy/Map Image
 
         /// <summary>
-        /// Copy this volume to image memory layout.
+        /// Copies this volume to image memory layout.
         /// Retains the coordinates of the original image.
         /// </summary>
         public static Volume<T> CopyToImageWindow<T>(this Volume<T> volume)
@@ -294,7 +294,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy this volume to image memory layout.
+        /// Copies this volume to image memory layout.
         /// Coordinates of the result start at [0, 0, 0].
         /// </summary>
         public static Volume<T> CopyToImage<T>(this Volume<T> volume)
@@ -305,7 +305,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy this volume to image memory layout, while piping all elements
+        /// Copies this volume to image memory layout, while piping all elements
         /// through the supplied function.
         /// Retains the coordinates of the original image.
         /// </summary>
@@ -318,7 +318,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy this volume to image memory layout, while piping all elements
+        /// Copies this volume to image memory layout, while piping all elements
         /// through the supplied function.
         /// Coordinates of the result start at [0, 0, 0].
         /// </summary>
@@ -330,7 +330,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy this tensor4 to image memory layout.
+        /// Copies this 4D tensor to image memory layout.
         /// Retains the coordinates of the original image.
         /// </summary>
         public static Tensor4<T> CopyToImageWindow<T>(this Tensor4<T> tensor4)
@@ -342,7 +342,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy this tensor4 to image memory layout.
+        /// Copies this 4D tensor to image memory layout.
         /// Coordinates of the result start at [0, 0, 0, 0].
         /// </summary>
         public static Tensor4<T> CopyToImage<T>(this Tensor4<T> tensor4)
@@ -353,7 +353,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy this tensor4 to image memory layout, while piping all elements
+        /// Copies this 4D tensor to image memory layout, while piping all elements
         /// through the supplied function.
         /// Retains the coordinates of the original image.
         /// </summary>
@@ -366,7 +366,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Copy this tensor4 to image memory layout, while piping all elements
+        /// Copies this 4D tensor to image memory layout, while piping all elements
         /// through the supplied function.
         /// Coordinates of the result start at [0, 0, 0, 0].
         /// </summary>
@@ -382,43 +382,39 @@ namespace Aardvark.Base
         #region ToImage
 
         /// <summary>
-        /// Convert this matrix to image memory layout (if it is not already).
+        /// Converts this matrix to image memory layout (if it is not already).
         /// Coordinates of the result start at [0, 0].
         /// </summary>
         public static Matrix<T> ToImage<T>(this Matrix<T> matrix)
         {
-            if (matrix.HasImageLayout()) return matrix;
-            return matrix.Copy();
+            return matrix.HasImageLayout() ? matrix : matrix.Copy();
         }
 
         /// <summary>
-        /// Convert this matrix to image memory layout (if it is not already).
+        /// Converts this matrix to image memory layout (if it is not already).
         /// Retains coordinates of original image.
         /// </summary>
         public static Matrix<T> ToImageWindow<T>(this Matrix<T> matrix)
         {
-            if (matrix.HasImageWindowLayout()) return matrix;
-            return matrix.CopyWindow();
+            return matrix.HasImageWindowLayout() ? matrix : matrix.CopyWindow();
         }
 
         /// <summary>
-        /// Convert this volume to image memory layout (if it is not already).
+        /// Converts this volume to image memory layout (if it is not already).
         /// Coordinates of the result start at [0, 0, 0].
         /// </summary>
         public static Volume<T> ToImage<T>(this Volume<T> volume)
         {
-            if (volume.HasImageLayout()) return volume;
-            return volume.CopyToImage();
+            return volume.HasImageLayout() ? volume : volume.CopyToImage();
         }
 
         /// <summary>
-        /// Convert this volume to image memory layout (if it is not already).
+        /// Converts this volume to image memory layout (if it is not already).
         /// Retains coordinates of th original volume.
         /// </summary>
         public static Volume<T> ToImageWindow<T>(this Volume<T> volume)
         {
-            if (volume.HasImageWindowLayout()) return volume;
-            return volume.CopyToImageWindow();
+            return volume.HasImageWindowLayout() ? volume : volume.CopyToImageWindow();
         }
 
         #endregion
@@ -426,8 +422,9 @@ namespace Aardvark.Base
         #region Reinterpretation
 
         /// <summary>
-        /// Reinterpret an image volume as a matrix of colors with supplied color intent.
+        /// Reinterprets an image volume as a matrix of colors with supplied color intent.
         /// </summary>
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible for the given intent.</exception>
         public static Matrix<Td, Tv> GetMatrix<Td, Tv>(this Volume<Td> volume, Symbol intent)
         {
             var matrix = volume.SubXYMatrixWindow<Tv>(0L);
@@ -436,7 +433,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reinterpret an image tensor as a volume of colors with supplied color intent.
+        /// Reinterprets a 4D image tensor as a volume of colors with supplied color intent.
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible for the given intent.</exception>
         /// </summary>
         public static Volume<Td, Tv> GetVolume<Td, Tv>(this Tensor4<Td> tensor4, Symbol intent)
         {
@@ -446,7 +444,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reinterpret a matrix as a volume with Size.Z == 1. The new volume starts at [0, 0, 0].
+        /// Reinterprets a matrix as a volume with Size.Z = 1. The new volume starts at [0, 0, 0].
         /// </summary>
         public static Volume<T> AsVolume<T>(this Matrix<T> matrix)
         {
@@ -454,16 +452,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reinterpret a matrix as a volume with Size.Z == 1. Retain coordinates of the matrix.
+        /// Reinterprets a matrix as a volume with Size.Z = 1. Retain coordinates of the matrix.
         /// </summary>
         public static Volume<T> AsVolumeWindow<T>(this Matrix<T> matrix)
         {
-            return new Volume<T>(matrix.Data, matrix.Origin, matrix.Size.XYI, matrix.Delta.XYI)
-                                { F = matrix.F.XYO };
+            return new Volume<T>(matrix.Data, matrix.Origin, matrix.Size.XYI, matrix.Delta.XYI) { F = matrix.F.XYO };
         }
 
         /// <summary>
-        /// Reinterpret a volume as a volume of different type.
+        /// Reinterprets a volume as a volume of different type.
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible.</exception>
         /// </summary>
         public static Volume<Td, Tv> AsVolume<Td, Tv>(this Volume<Td> volume)
         {
@@ -473,28 +471,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reinterpret a volume with Size.Z == 1 as matrix. The new matrix starts at [0, 0].
+        /// Reinterprets a volume with Size.Z = 1 as matrix. The new matrix starts at [0, 0].
         /// </summary>
+        /// <exception cref="InvalidOperationException">if Size.Z is not 1.</exception>
         public static Matrix<T> AsMatrix<T>(this Volume<T> volume)
         {
-            if (volume.SZ != 1L)
-                throw new ArgumentException("cannot matrix-convert a volume with Size.Z != 1");
+            if (volume.SZ != 1L) throw new InvalidOperationException($"Cannot view volume with Size.Z = {volume.SZ} as matrix.");
             return new Matrix<T>(volume.Data, volume.FirstIndex, volume.S.XY, volume.D.XY);
         }
 
         /// <summary>
-        /// Reinterpret a volume with Size.Z == 1 as matrix. Retain the coordinates of the volume.
+        /// Reinterprets a volume with Size.Z = 1 as matrix. Retains the coordinates of the volume.
         /// </summary>
+        /// <exception cref="InvalidOperationException">if Size.Z is not 1.</exception>
         public static Matrix<T> AsMatrixWindow<T>(this Volume<T> volume)
         {
-            if (volume.SZ != 1L)
-                throw new ArgumentException("cannot matrix-convert a volume with Size.Z != 1");
-            return new Matrix<T>(volume.Data, volume.Info.FirstIndex, volume.S.XY, volume.D.XY)
-                        { F = volume.F.XY };
+            if (volume.SZ != 1L) throw new InvalidOperationException($"Cannot view volume with Size.Z = {volume.SZ} as matrix.");
+            return new Matrix<T>(volume.Data, volume.Info.FirstIndex, volume.S.XY, volume.D.XY) { F = volume.F.XY };
         }
 
         /// <summary>
-        /// Reinterpret a volume as a tensor4 with Size.W == 1. The new tensor4 starts at [0, 0, 0, 0].
+        /// Reinterprets a volume as a 4D tensor with Size.W = 1. The new 4D tensor starts at [0, 0, 0, 0].
         /// </summary>
         public static Tensor4<T> AsTensor4<T>(this Volume<T> volume)
         {
@@ -502,17 +499,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reinterpret a volume as a tensor4 with Size.W == 1. Retain coordinates of the volume.
+        /// Reinterprets a volume as a 4D tensor with Size.W = 1. Retain coordinates of the volume.
         /// </summary>
         public static Tensor4<T> AsTensor4Window<T>(this Volume<T> volume)
         {
-            return new Tensor4<T>(volume.Data, volume.Origin, volume.Size.XYZI, volume.Delta.XYZI)
-                                 { F = volume.F.XYZO };
+            return new Tensor4<T>(volume.Data, volume.Origin, volume.Size.XYZI, volume.Delta.XYZI) { F = volume.F.XYZO };
         }
 
         /// <summary>
-        /// Reinterpret a tensor4 as a tensor4 of different type.
+        /// Reinterprets a 4D tensor as a 4D tensor of different type.
         /// </summary>
+        /// <exception cref="NotSupportedException">if the element type and view type are incompatible.</exception>
         public static Tensor4<Td, Tv> AsTensor4<Td, Tv>(this Tensor4<Td> tensor4)
         {
             var result = new Tensor4<Td, Tv>(tensor4.Data, tensor4.Info);
@@ -521,24 +518,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Reinterpret a tensor4 with Size.W == 1 as volume. The new volume starts at [0, 0, 0].
+        /// Reinterprets a 4D tensor with Size.W = 1 as volume. The new volume starts at [0, 0, 0].
         /// </summary>
+        /// <exception cref="InvalidOperationException">if Size.W is not 1.</exception>
         public static Volume<T> AsVolume<T>(this Tensor4<T> tensor4)
         {
-            if (tensor4.SW != 1L)
-                throw new ArgumentException("cannot volume-convert a tensor4 with Size.W != 1");
+            if (tensor4.SW != 1L) throw new InvalidOperationException($"Cannot view 4D tensor with Size.W = {tensor4.SW} as volume.");
             return new Volume<T>(tensor4.Data, tensor4.FirstIndex, tensor4.S.XYZ, tensor4.D.XYZ);
         }
 
         /// <summary>
-        /// Reinterpret a tensor4 with Size.W == 1 as volume. Retain the coordinates of the tensor4.
+        /// Reinterprets a 4D tensor with Size.W = 1 as volume. Retain the coordinates of the 4D tensor.
         /// </summary>
+        /// <exception cref="InvalidOperationException">if Size.W is not 1.</exception>
         public static Volume<T> AsVolumeWindow<T>(this Tensor4<T> tensor4)
         {
-            if (tensor4.SW != 1L)
-                throw new ArgumentException("cannot volume-convert a tensor4 with Size.W != 1");
-            return new Volume<T>(tensor4.Data, tensor4.FirstIndex, tensor4.S.XYZ, tensor4.D.XYZ)
-                                { F = tensor4.F.XYZ };
+            if (tensor4.SW != 1L) throw new InvalidOperationException($"Cannot view 4D tensor with Size.W = {tensor4.SW} as volume.");
+            return new Volume<T>(tensor4.Data, tensor4.FirstIndex, tensor4.S.XYZ, tensor4.D.XYZ) { F = tensor4.F.XYZ };
         }
 
         #endregion
