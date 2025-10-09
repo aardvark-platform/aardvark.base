@@ -1,3 +1,5 @@
+- [Color] Added missing over- and underflow checks
+
 ### 5.3.18
 - Added ReadOnlySpan overloads for Cell, Cell2d, and range types
 - [Tensors] Added and improved XML documentation

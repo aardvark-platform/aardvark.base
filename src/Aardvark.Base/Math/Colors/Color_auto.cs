@@ -140,26 +140,26 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3f color)
         {
-            R = Col.FloatToByte(color.R);
-            G = Col.FloatToByte(color.G);
-            B = Col.FloatToByte(color.B);
+            R = Col.FloatToByteClamped(color.R);
+            G = Col.FloatToByteClamped(color.G);
+            B = Col.FloatToByteClamped(color.B);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C3d color)
         {
-            R = Col.DoubleToByte(color.R);
-            G = Col.DoubleToByte(color.G);
-            B = Col.DoubleToByte(color.B);
+            R = Col.DoubleToByteClamped(color.R);
+            G = Col.DoubleToByteClamped(color.G);
+            B = Col.DoubleToByteClamped(color.B);
         }
 
         /// <summary>
@@ -199,26 +199,26 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4f color)
         {
-            R = Col.FloatToByte(color.R);
-            G = Col.FloatToByte(color.G);
-            B = Col.FloatToByte(color.B);
+            R = Col.FloatToByteClamped(color.R);
+            G = Col.FloatToByteClamped(color.G);
+            B = Col.FloatToByteClamped(color.B);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(C4d color)
         {
-            R = Col.DoubleToByte(color.R);
-            G = Col.DoubleToByte(color.G);
-            B = Col.DoubleToByte(color.B);
+            R = Col.DoubleToByteClamped(color.R);
+            G = Col.DoubleToByteClamped(color.G);
+            B = Col.DoubleToByteClamped(color.B);
         }
 
         /// <summary>
@@ -424,50 +424,50 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(float[] values)
         {
-            R = Col.FloatToByte(values[0]);
-            G = Col.FloatToByte(values[1]);
-            B = Col.FloatToByte(values[2]);
+            R = Col.FloatToByteClamped(values[0]);
+            G = Col.FloatToByteClamped(values[1]);
+            B = Col.FloatToByteClamped(values[2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(float[] values, int start)
         {
-            R = Col.FloatToByte(values[start + 0]);
-            G = Col.FloatToByte(values[start + 1]);
-            B = Col.FloatToByte(values[start + 2]);
+            R = Col.FloatToByteClamped(values[start + 0]);
+            G = Col.FloatToByteClamped(values[start + 1]);
+            B = Col.FloatToByteClamped(values[start + 2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double[] values)
         {
-            R = Col.DoubleToByte(values[0]);
-            G = Col.DoubleToByte(values[1]);
-            B = Col.DoubleToByte(values[2]);
+            R = Col.DoubleToByteClamped(values[0]);
+            G = Col.DoubleToByteClamped(values[1]);
+            B = Col.DoubleToByteClamped(values[2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3b(double[] values, int start)
         {
-            R = Col.DoubleToByte(values[start + 0]);
-            G = Col.DoubleToByte(values[start + 1]);
-            B = Col.DoubleToByte(values[start + 2]);
+            R = Col.DoubleToByteClamped(values[start + 0]);
+            G = Col.DoubleToByteClamped(values[start + 1]);
+            B = Col.DoubleToByteClamped(values[start + 2]);
         }
 
         #endregion
@@ -520,7 +520,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3b(C3f color)
@@ -535,14 +535,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC3f(C3f c) => new C3b(c);
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3b(C3d color)
@@ -557,7 +557,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC3d(C3d c) => new C3b(c);
@@ -630,7 +630,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3b(C4f color)
@@ -646,14 +646,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC4f(C4f c) => new C3b(c);
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3b(C4d color)
@@ -669,7 +669,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3b"/> color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3b FromC4d(C4d c) => new C3b(c);
@@ -2451,26 +2451,26 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3f color)
         {
-            R = Col.FloatToUShort(color.R);
-            G = Col.FloatToUShort(color.G);
-            B = Col.FloatToUShort(color.B);
+            R = Col.FloatToUShortClamped(color.R);
+            G = Col.FloatToUShortClamped(color.G);
+            B = Col.FloatToUShortClamped(color.B);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C3d color)
         {
-            R = Col.DoubleToUShort(color.R);
-            G = Col.DoubleToUShort(color.G);
-            B = Col.DoubleToUShort(color.B);
+            R = Col.DoubleToUShortClamped(color.R);
+            G = Col.DoubleToUShortClamped(color.G);
+            B = Col.DoubleToUShortClamped(color.B);
         }
 
         /// <summary>
@@ -2510,26 +2510,26 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4f color)
         {
-            R = Col.FloatToUShort(color.R);
-            G = Col.FloatToUShort(color.G);
-            B = Col.FloatToUShort(color.B);
+            R = Col.FloatToUShortClamped(color.R);
+            G = Col.FloatToUShortClamped(color.G);
+            B = Col.FloatToUShortClamped(color.B);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(C4d color)
         {
-            R = Col.DoubleToUShort(color.R);
-            G = Col.DoubleToUShort(color.G);
-            B = Col.DoubleToUShort(color.B);
+            R = Col.DoubleToUShortClamped(color.R);
+            G = Col.DoubleToUShortClamped(color.G);
+            B = Col.DoubleToUShortClamped(color.B);
         }
 
         /// <summary>
@@ -2735,50 +2735,50 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(float[] values)
         {
-            R = Col.FloatToUShort(values[0]);
-            G = Col.FloatToUShort(values[1]);
-            B = Col.FloatToUShort(values[2]);
+            R = Col.FloatToUShortClamped(values[0]);
+            G = Col.FloatToUShortClamped(values[1]);
+            B = Col.FloatToUShortClamped(values[2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(float[] values, int start)
         {
-            R = Col.FloatToUShort(values[start + 0]);
-            G = Col.FloatToUShort(values[start + 1]);
-            B = Col.FloatToUShort(values[start + 2]);
+            R = Col.FloatToUShortClamped(values[start + 0]);
+            G = Col.FloatToUShortClamped(values[start + 1]);
+            B = Col.FloatToUShortClamped(values[start + 2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double[] values)
         {
-            R = Col.DoubleToUShort(values[0]);
-            G = Col.DoubleToUShort(values[1]);
-            B = Col.DoubleToUShort(values[2]);
+            R = Col.DoubleToUShortClamped(values[0]);
+            G = Col.DoubleToUShortClamped(values[1]);
+            B = Col.DoubleToUShortClamped(values[2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3us(double[] values, int start)
         {
-            R = Col.DoubleToUShort(values[start + 0]);
-            G = Col.DoubleToUShort(values[start + 1]);
-            B = Col.DoubleToUShort(values[start + 2]);
+            R = Col.DoubleToUShortClamped(values[start + 0]);
+            G = Col.DoubleToUShortClamped(values[start + 1]);
+            B = Col.DoubleToUShortClamped(values[start + 2]);
         }
 
         #endregion
@@ -2831,7 +2831,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3us(C3f color)
@@ -2846,14 +2846,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC3f(C3f c) => new C3us(c);
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3us(C3d color)
@@ -2868,7 +2868,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC3d(C3d c) => new C3us(c);
@@ -2941,7 +2941,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3us(C4f color)
@@ -2957,14 +2957,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC4f(C4f c) => new C3us(c);
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3us(C4d color)
@@ -2980,7 +2980,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3us"/> color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3us FromC4d(C4d c) => new C3us(c);
@@ -4759,26 +4759,26 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3f color)
         {
-            R = Col.FloatToUInt(color.R);
-            G = Col.FloatToUInt(color.G);
-            B = Col.FloatToUInt(color.B);
+            R = Col.FloatToUIntClamped(color.R);
+            G = Col.FloatToUIntClamped(color.G);
+            B = Col.FloatToUIntClamped(color.B);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C3d color)
         {
-            R = Col.DoubleToUInt(color.R);
-            G = Col.DoubleToUInt(color.G);
-            B = Col.DoubleToUInt(color.B);
+            R = Col.DoubleToUIntClamped(color.R);
+            G = Col.DoubleToUIntClamped(color.G);
+            B = Col.DoubleToUIntClamped(color.B);
         }
 
         /// <summary>
@@ -4818,26 +4818,26 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4f color)
         {
-            R = Col.FloatToUInt(color.R);
-            G = Col.FloatToUInt(color.G);
-            B = Col.FloatToUInt(color.B);
+            R = Col.FloatToUIntClamped(color.R);
+            G = Col.FloatToUIntClamped(color.G);
+            B = Col.FloatToUIntClamped(color.B);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(C4d color)
         {
-            R = Col.DoubleToUInt(color.R);
-            G = Col.DoubleToUInt(color.G);
-            B = Col.DoubleToUInt(color.B);
+            R = Col.DoubleToUIntClamped(color.R);
+            G = Col.DoubleToUIntClamped(color.G);
+            B = Col.DoubleToUIntClamped(color.B);
         }
 
         /// <summary>
@@ -5017,50 +5017,50 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(float[] values)
         {
-            R = Col.FloatToUInt(values[0]);
-            G = Col.FloatToUInt(values[1]);
-            B = Col.FloatToUInt(values[2]);
+            R = Col.FloatToUIntClamped(values[0]);
+            G = Col.FloatToUIntClamped(values[1]);
+            B = Col.FloatToUIntClamped(values[2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(float[] values, int start)
         {
-            R = Col.FloatToUInt(values[start + 0]);
-            G = Col.FloatToUInt(values[start + 1]);
-            B = Col.FloatToUInt(values[start + 2]);
+            R = Col.FloatToUIntClamped(values[start + 0]);
+            G = Col.FloatToUIntClamped(values[start + 1]);
+            B = Col.FloatToUIntClamped(values[start + 2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double[] values)
         {
-            R = Col.DoubleToUInt(values[0]);
-            G = Col.DoubleToUInt(values[1]);
-            B = Col.DoubleToUInt(values[2]);
+            R = Col.DoubleToUIntClamped(values[0]);
+            G = Col.DoubleToUIntClamped(values[1]);
+            B = Col.DoubleToUIntClamped(values[2]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C3ui(double[] values, int start)
         {
-            R = Col.DoubleToUInt(values[start + 0]);
-            G = Col.DoubleToUInt(values[start + 1]);
-            B = Col.DoubleToUInt(values[start + 2]);
+            R = Col.DoubleToUIntClamped(values[start + 0]);
+            G = Col.DoubleToUIntClamped(values[start + 1]);
+            B = Col.DoubleToUIntClamped(values[start + 2]);
         }
 
         #endregion
@@ -5113,7 +5113,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3ui(C3f color)
@@ -5128,14 +5128,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC3f(C3f c) => new C3ui(c);
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3ui(C3d color)
@@ -5150,7 +5150,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC3d(C3d c) => new C3ui(c);
@@ -5223,7 +5223,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3ui(C4f color)
@@ -5239,14 +5239,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC4f(C4f c) => new C3ui(c);
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C3ui(C4d color)
@@ -5262,7 +5262,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C3ui"/> color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C3ui FromC4d(C4d c) => new C3ui(c);
@@ -7343,7 +7343,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3b ToC3b() => (C3b)this;
@@ -7365,7 +7365,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3us ToC3us() => (C3us)this;
@@ -7387,7 +7387,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3ui ToC3ui() => (C3ui)this;
@@ -7428,7 +7428,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7451,7 +7451,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7474,7 +7474,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -7615,11 +7615,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="byte"/> array from the given <see cref="C3f"/> color.
-        /// The values are mapped from the <see cref="C3f"/> color range.
+        /// The values are mapped and clamped from the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C3f color)
-            => new byte[] { Col.FloatToByte(color.R), Col.FloatToByte(color.G), Col.FloatToByte(color.B) };
+            => new byte[] { Col.FloatToByteClamped(color.R), Col.FloatToByteClamped(color.G), Col.FloatToByteClamped(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -7631,11 +7631,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="ushort"/> array from the given <see cref="C3f"/> color.
-        /// The values are mapped from the <see cref="C3f"/> color range.
+        /// The values are mapped and clamped from the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C3f color)
-            => new ushort[] { Col.FloatToUShort(color.R), Col.FloatToUShort(color.G), Col.FloatToUShort(color.B) };
+            => new ushort[] { Col.FloatToUShortClamped(color.R), Col.FloatToUShortClamped(color.G), Col.FloatToUShortClamped(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -7647,11 +7647,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="uint"/> array from the given <see cref="C3f"/> color.
-        /// The values are mapped from the <see cref="C3f"/> color range.
+        /// The values are mapped and clamped from the <see cref="C3f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C3f color)
-            => new uint[] { Col.FloatToUInt(color.R), Col.FloatToUInt(color.G), Col.FloatToUInt(color.B) };
+            => new uint[] { Col.FloatToUIntClamped(color.R), Col.FloatToUIntClamped(color.G), Col.FloatToUIntClamped(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -9451,7 +9451,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3b ToC3b() => (C3b)this;
@@ -9473,7 +9473,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3us ToC3us() => (C3us)this;
@@ -9495,7 +9495,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3ui ToC3ui() => (C3ui)this;
@@ -9536,7 +9536,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9559,7 +9559,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9582,7 +9582,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -9723,11 +9723,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="byte"/> array from the given <see cref="C3d"/> color.
-        /// The values are mapped from the <see cref="C3d"/> color range.
+        /// The values are mapped and clamped from the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C3d color)
-            => new byte[] { Col.DoubleToByte(color.R), Col.DoubleToByte(color.G), Col.DoubleToByte(color.B) };
+            => new byte[] { Col.DoubleToByteClamped(color.R), Col.DoubleToByteClamped(color.G), Col.DoubleToByteClamped(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -9739,11 +9739,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="ushort"/> array from the given <see cref="C3d"/> color.
-        /// The values are mapped from the <see cref="C3d"/> color range.
+        /// The values are mapped and clamped from the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C3d color)
-            => new ushort[] { Col.DoubleToUShort(color.R), Col.DoubleToUShort(color.G), Col.DoubleToUShort(color.B) };
+            => new ushort[] { Col.DoubleToUShortClamped(color.R), Col.DoubleToUShortClamped(color.G), Col.DoubleToUShortClamped(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -9755,11 +9755,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="uint"/> array from the given <see cref="C3d"/> color.
-        /// The values are mapped from the <see cref="C3d"/> color range.
+        /// The values are mapped and clamped from the <see cref="C3d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C3d color)
-            => new uint[] { Col.DoubleToUInt(color.R), Col.DoubleToUInt(color.G), Col.DoubleToUInt(color.B) };
+            => new uint[] { Col.DoubleToUIntClamped(color.R), Col.DoubleToUIntClamped(color.G), Col.DoubleToUIntClamped(color.B) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -11360,55 +11360,55 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3f color)
         {
-            R = Col.FloatToByte(color.R);
-            G = Col.FloatToByte(color.G);
-            B = Col.FloatToByte(color.B);
+            R = Col.FloatToByteClamped(color.R);
+            G = Col.FloatToByteClamped(color.G);
+            B = Col.FloatToByteClamped(color.B);
             A = 255;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color and an alpha value.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3f color, byte alpha)
         {
-            R = Col.FloatToByte(color.R);
-            G = Col.FloatToByte(color.G);
-            B = Col.FloatToByte(color.B);
+            R = Col.FloatToByteClamped(color.R);
+            G = Col.FloatToByteClamped(color.G);
+            B = Col.FloatToByteClamped(color.B);
             A = alpha;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3d color)
         {
-            R = Col.DoubleToByte(color.R);
-            G = Col.DoubleToByte(color.G);
-            B = Col.DoubleToByte(color.B);
+            R = Col.DoubleToByteClamped(color.R);
+            G = Col.DoubleToByteClamped(color.G);
+            B = Col.DoubleToByteClamped(color.B);
             A = 255;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color and an alpha value.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C3d color, byte alpha)
         {
-            R = Col.DoubleToByte(color.R);
-            G = Col.DoubleToByte(color.G);
-            B = Col.DoubleToByte(color.B);
+            R = Col.DoubleToByteClamped(color.R);
+            G = Col.DoubleToByteClamped(color.G);
+            B = Col.DoubleToByteClamped(color.B);
             A = alpha;
         }
 
@@ -11452,28 +11452,28 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4f color)
         {
-            R = Col.FloatToByte(color.R);
-            G = Col.FloatToByte(color.G);
-            B = Col.FloatToByte(color.B);
-            A = Col.FloatToByte(color.A);
+            R = Col.FloatToByteClamped(color.R);
+            G = Col.FloatToByteClamped(color.G);
+            B = Col.FloatToByteClamped(color.B);
+            A = Col.FloatToByteClamped(color.A);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(C4d color)
         {
-            R = Col.DoubleToByte(color.R);
-            G = Col.DoubleToByte(color.G);
-            B = Col.DoubleToByte(color.B);
-            A = Col.DoubleToByte(color.A);
+            R = Col.DoubleToByteClamped(color.R);
+            G = Col.DoubleToByteClamped(color.G);
+            B = Col.DoubleToByteClamped(color.B);
+            A = Col.DoubleToByteClamped(color.A);
         }
 
         /// <summary>
@@ -11766,54 +11766,54 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(float[] values)
         {
-            R = Col.FloatToByte(values[0]);
-            G = Col.FloatToByte(values[1]);
-            B = Col.FloatToByte(values[2]);
-            A = Col.FloatToByte(values[3]);
+            R = Col.FloatToByteClamped(values[0]);
+            G = Col.FloatToByteClamped(values[1]);
+            B = Col.FloatToByteClamped(values[2]);
+            A = Col.FloatToByteClamped(values[3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(float[] values, int start)
         {
-            R = Col.FloatToByte(values[start + 0]);
-            G = Col.FloatToByte(values[start + 1]);
-            B = Col.FloatToByte(values[start + 2]);
-            A = Col.FloatToByte(values[start + 3]);
+            R = Col.FloatToByteClamped(values[start + 0]);
+            G = Col.FloatToByteClamped(values[start + 1]);
+            B = Col.FloatToByteClamped(values[start + 2]);
+            A = Col.FloatToByteClamped(values[start + 3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double[] values)
         {
-            R = Col.DoubleToByte(values[0]);
-            G = Col.DoubleToByte(values[1]);
-            B = Col.DoubleToByte(values[2]);
-            A = Col.DoubleToByte(values[3]);
+            R = Col.DoubleToByteClamped(values[0]);
+            G = Col.DoubleToByteClamped(values[1]);
+            B = Col.DoubleToByteClamped(values[2]);
+            A = Col.DoubleToByteClamped(values[3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4b(double[] values, int start)
         {
-            R = Col.DoubleToByte(values[start + 0]);
-            G = Col.DoubleToByte(values[start + 1]);
-            B = Col.DoubleToByte(values[start + 2]);
-            A = Col.DoubleToByte(values[start + 3]);
+            R = Col.DoubleToByteClamped(values[start + 0]);
+            G = Col.DoubleToByteClamped(values[start + 1]);
+            B = Col.DoubleToByteClamped(values[start + 2]);
+            A = Col.DoubleToByteClamped(values[start + 3]);
         }
 
         #endregion
@@ -11897,7 +11897,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11913,7 +11913,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11921,7 +11921,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11937,7 +11937,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// The alpha channel is set to 255.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11989,7 +11989,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C4b(C4f color)
@@ -12004,14 +12004,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromC4f(C4f c) => new C4b(c);
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C4b(C4d color)
@@ -12026,7 +12026,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4b"/> color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b FromC4d(C4d c) => new C4b(c);
@@ -13955,55 +13955,55 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3f color)
         {
-            R = Col.FloatToUShort(color.R);
-            G = Col.FloatToUShort(color.G);
-            B = Col.FloatToUShort(color.B);
+            R = Col.FloatToUShortClamped(color.R);
+            G = Col.FloatToUShortClamped(color.G);
+            B = Col.FloatToUShortClamped(color.B);
             A = 65535;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color and an alpha value.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3f color, ushort alpha)
         {
-            R = Col.FloatToUShort(color.R);
-            G = Col.FloatToUShort(color.G);
-            B = Col.FloatToUShort(color.B);
+            R = Col.FloatToUShortClamped(color.R);
+            G = Col.FloatToUShortClamped(color.G);
+            B = Col.FloatToUShortClamped(color.B);
             A = alpha;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3d color)
         {
-            R = Col.DoubleToUShort(color.R);
-            G = Col.DoubleToUShort(color.G);
-            B = Col.DoubleToUShort(color.B);
+            R = Col.DoubleToUShortClamped(color.R);
+            G = Col.DoubleToUShortClamped(color.G);
+            B = Col.DoubleToUShortClamped(color.B);
             A = 65535;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color and an alpha value.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C3d color, ushort alpha)
         {
-            R = Col.DoubleToUShort(color.R);
-            G = Col.DoubleToUShort(color.G);
-            B = Col.DoubleToUShort(color.B);
+            R = Col.DoubleToUShortClamped(color.R);
+            G = Col.DoubleToUShortClamped(color.G);
+            B = Col.DoubleToUShortClamped(color.B);
             A = alpha;
         }
 
@@ -14047,28 +14047,28 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4f color)
         {
-            R = Col.FloatToUShort(color.R);
-            G = Col.FloatToUShort(color.G);
-            B = Col.FloatToUShort(color.B);
-            A = Col.FloatToUShort(color.A);
+            R = Col.FloatToUShortClamped(color.R);
+            G = Col.FloatToUShortClamped(color.G);
+            B = Col.FloatToUShortClamped(color.B);
+            A = Col.FloatToUShortClamped(color.A);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(C4d color)
         {
-            R = Col.DoubleToUShort(color.R);
-            G = Col.DoubleToUShort(color.G);
-            B = Col.DoubleToUShort(color.B);
-            A = Col.DoubleToUShort(color.A);
+            R = Col.DoubleToUShortClamped(color.R);
+            G = Col.DoubleToUShortClamped(color.G);
+            B = Col.DoubleToUShortClamped(color.B);
+            A = Col.DoubleToUShortClamped(color.A);
         }
 
         /// <summary>
@@ -14361,54 +14361,54 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(float[] values)
         {
-            R = Col.FloatToUShort(values[0]);
-            G = Col.FloatToUShort(values[1]);
-            B = Col.FloatToUShort(values[2]);
-            A = Col.FloatToUShort(values[3]);
+            R = Col.FloatToUShortClamped(values[0]);
+            G = Col.FloatToUShortClamped(values[1]);
+            B = Col.FloatToUShortClamped(values[2]);
+            A = Col.FloatToUShortClamped(values[3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(float[] values, int start)
         {
-            R = Col.FloatToUShort(values[start + 0]);
-            G = Col.FloatToUShort(values[start + 1]);
-            B = Col.FloatToUShort(values[start + 2]);
-            A = Col.FloatToUShort(values[start + 3]);
+            R = Col.FloatToUShortClamped(values[start + 0]);
+            G = Col.FloatToUShortClamped(values[start + 1]);
+            B = Col.FloatToUShortClamped(values[start + 2]);
+            A = Col.FloatToUShortClamped(values[start + 3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double[] values)
         {
-            R = Col.DoubleToUShort(values[0]);
-            G = Col.DoubleToUShort(values[1]);
-            B = Col.DoubleToUShort(values[2]);
-            A = Col.DoubleToUShort(values[3]);
+            R = Col.DoubleToUShortClamped(values[0]);
+            G = Col.DoubleToUShortClamped(values[1]);
+            B = Col.DoubleToUShortClamped(values[2]);
+            A = Col.DoubleToUShortClamped(values[3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4us(double[] values, int start)
         {
-            R = Col.DoubleToUShort(values[start + 0]);
-            G = Col.DoubleToUShort(values[start + 1]);
-            B = Col.DoubleToUShort(values[start + 2]);
-            A = Col.DoubleToUShort(values[start + 3]);
+            R = Col.DoubleToUShortClamped(values[start + 0]);
+            G = Col.DoubleToUShortClamped(values[start + 1]);
+            B = Col.DoubleToUShortClamped(values[start + 2]);
+            A = Col.DoubleToUShortClamped(values[start + 3]);
         }
 
         #endregion
@@ -14492,7 +14492,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14508,7 +14508,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14516,7 +14516,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14532,7 +14532,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// The alpha channel is set to 2^16 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -14584,7 +14584,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C4us(C4f color)
@@ -14599,14 +14599,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromC4f(C4f c) => new C4us(c);
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C4us(C4d color)
@@ -14621,7 +14621,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4us"/> color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us FromC4d(C4d c) => new C4us(c);
@@ -16548,55 +16548,55 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3f color)
         {
-            R = Col.FloatToUInt(color.R);
-            G = Col.FloatToUInt(color.G);
-            B = Col.FloatToUInt(color.B);
+            R = Col.FloatToUIntClamped(color.R);
+            G = Col.FloatToUIntClamped(color.G);
+            B = Col.FloatToUIntClamped(color.B);
             A = UInt32.MaxValue;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3f"/> color and an alpha value.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3f color, uint alpha)
         {
-            R = Col.FloatToUInt(color.R);
-            G = Col.FloatToUInt(color.G);
-            B = Col.FloatToUInt(color.B);
+            R = Col.FloatToUIntClamped(color.R);
+            G = Col.FloatToUIntClamped(color.G);
+            B = Col.FloatToUIntClamped(color.B);
             A = alpha;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3d color)
         {
-            R = Col.DoubleToUInt(color.R);
-            G = Col.DoubleToUInt(color.G);
-            B = Col.DoubleToUInt(color.B);
+            R = Col.DoubleToUIntClamped(color.R);
+            G = Col.DoubleToUIntClamped(color.G);
+            B = Col.DoubleToUIntClamped(color.B);
             A = UInt32.MaxValue;
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C3d"/> color and an alpha value.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C3d color, uint alpha)
         {
-            R = Col.DoubleToUInt(color.R);
-            G = Col.DoubleToUInt(color.G);
-            B = Col.DoubleToUInt(color.B);
+            R = Col.DoubleToUIntClamped(color.R);
+            G = Col.DoubleToUIntClamped(color.G);
+            B = Col.DoubleToUIntClamped(color.B);
             A = alpha;
         }
 
@@ -16640,28 +16640,28 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4f color)
         {
-            R = Col.FloatToUInt(color.R);
-            G = Col.FloatToUInt(color.G);
-            B = Col.FloatToUInt(color.B);
-            A = Col.FloatToUInt(color.A);
+            R = Col.FloatToUIntClamped(color.R);
+            G = Col.FloatToUIntClamped(color.G);
+            B = Col.FloatToUIntClamped(color.B);
+            A = Col.FloatToUIntClamped(color.A);
         }
 
         /// <summary>
         /// Creates a color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(C4d color)
         {
-            R = Col.DoubleToUInt(color.R);
-            G = Col.DoubleToUInt(color.G);
-            B = Col.DoubleToUInt(color.B);
-            A = Col.DoubleToUInt(color.A);
+            R = Col.DoubleToUIntClamped(color.R);
+            G = Col.DoubleToUIntClamped(color.G);
+            B = Col.DoubleToUIntClamped(color.B);
+            A = Col.DoubleToUIntClamped(color.A);
         }
 
         /// <summary>
@@ -16911,54 +16911,54 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(float[] values)
         {
-            R = Col.FloatToUInt(values[0]);
-            G = Col.FloatToUInt(values[1]);
-            B = Col.FloatToUInt(values[2]);
-            A = Col.FloatToUInt(values[3]);
+            R = Col.FloatToUIntClamped(values[0]);
+            G = Col.FloatToUIntClamped(values[1]);
+            B = Col.FloatToUIntClamped(values[2]);
+            A = Col.FloatToUIntClamped(values[3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(float[] values, int start)
         {
-            R = Col.FloatToUInt(values[start + 0]);
-            G = Col.FloatToUInt(values[start + 1]);
-            B = Col.FloatToUInt(values[start + 2]);
-            A = Col.FloatToUInt(values[start + 3]);
+            R = Col.FloatToUIntClamped(values[start + 0]);
+            G = Col.FloatToUIntClamped(values[start + 1]);
+            B = Col.FloatToUIntClamped(values[start + 2]);
+            A = Col.FloatToUIntClamped(values[start + 3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double[] values)
         {
-            R = Col.DoubleToUInt(values[0]);
-            G = Col.DoubleToUInt(values[1]);
-            B = Col.DoubleToUInt(values[2]);
-            A = Col.DoubleToUInt(values[3]);
+            R = Col.DoubleToUIntClamped(values[0]);
+            G = Col.DoubleToUIntClamped(values[1]);
+            B = Col.DoubleToUIntClamped(values[2]);
+            A = Col.DoubleToUIntClamped(values[3]);
         }
 
         /// <summary>
         /// Creates a new color from the given <see cref="double"/> array, starting at the specified index.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public C4ui(double[] values, int start)
         {
-            R = Col.DoubleToUInt(values[start + 0]);
-            G = Col.DoubleToUInt(values[start + 1]);
-            B = Col.DoubleToUInt(values[start + 2]);
-            A = Col.DoubleToUInt(values[start + 3]);
+            R = Col.DoubleToUIntClamped(values[start + 0]);
+            G = Col.DoubleToUIntClamped(values[start + 1]);
+            B = Col.DoubleToUIntClamped(values[start + 2]);
+            A = Col.DoubleToUIntClamped(values[start + 3]);
         }
 
         #endregion
@@ -17042,7 +17042,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3f"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17058,7 +17058,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C3f"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17066,7 +17066,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C3d"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17082,7 +17082,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C3d"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// The alpha channel is set to 2^32 - 1.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17134,7 +17134,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C4ui(C4f color)
@@ -17149,14 +17149,14 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C4f"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromC4f(C4f c) => new C4ui(c);
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator C4ui(C4d color)
@@ -17171,7 +17171,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="C4ui"/> color from the given <see cref="C4d"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui FromC4d(C4d c) => new C4ui(c);
@@ -19435,7 +19435,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3b ToC3b() => (C3b)this;
@@ -19459,7 +19459,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3us ToC3us() => (C3us)this;
@@ -19483,7 +19483,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3ui ToC3ui() => (C3ui)this;
@@ -19548,7 +19548,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C4b ToC4b() => (C4b)this;
@@ -19570,7 +19570,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C4us ToC4us() => (C4us)this;
@@ -19592,7 +19592,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4f"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C4ui ToC4ui() => (C4ui)this;
@@ -19713,11 +19713,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="byte"/> array from the given <see cref="C4f"/> color.
-        /// The values are mapped from the <see cref="C4f"/> color range.
+        /// The values are mapped and clamped from the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C4f color)
-            => new byte[] { Col.FloatToByte(color.R), Col.FloatToByte(color.G), Col.FloatToByte(color.B), Col.FloatToByte(color.A) };
+            => new byte[] { Col.FloatToByteClamped(color.R), Col.FloatToByteClamped(color.G), Col.FloatToByteClamped(color.B), Col.FloatToByteClamped(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -19729,11 +19729,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="ushort"/> array from the given <see cref="C4f"/> color.
-        /// The values are mapped from the <see cref="C4f"/> color range.
+        /// The values are mapped and clamped from the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C4f color)
-            => new ushort[] { Col.FloatToUShort(color.R), Col.FloatToUShort(color.G), Col.FloatToUShort(color.B), Col.FloatToUShort(color.A) };
+            => new ushort[] { Col.FloatToUShortClamped(color.R), Col.FloatToUShortClamped(color.G), Col.FloatToUShortClamped(color.B), Col.FloatToUShortClamped(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -19745,11 +19745,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="uint"/> array from the given <see cref="C4f"/> color.
-        /// The values are mapped from the <see cref="C4f"/> color range.
+        /// The values are mapped and clamped from the <see cref="C4f"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C4f color)
-            => new uint[] { Col.FloatToUInt(color.R), Col.FloatToUInt(color.G), Col.FloatToUInt(color.B), Col.FloatToUInt(color.A) };
+            => new uint[] { Col.FloatToUIntClamped(color.R), Col.FloatToUIntClamped(color.G), Col.FloatToUIntClamped(color.B), Col.FloatToUIntClamped(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.
@@ -21722,7 +21722,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3b"/> color.
-        /// The values are mapped to the <see cref="C3b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3b ToC3b() => (C3b)this;
@@ -21746,7 +21746,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3us"/> color.
-        /// The values are mapped to the <see cref="C3us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3us ToC3us() => (C3us)this;
@@ -21770,7 +21770,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C3ui"/> color.
-        /// The values are mapped to the <see cref="C3ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C3ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C3ui ToC3ui() => (C3ui)this;
@@ -21835,7 +21835,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C4b"/> color.
-        /// The values are mapped to the <see cref="C4b"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4b"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C4b ToC4b() => (C4b)this;
@@ -21857,7 +21857,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C4us"/> color.
-        /// The values are mapped to the <see cref="C4us"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4us"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C4us ToC4us() => (C4us)this;
@@ -21879,7 +21879,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Converts the given <see cref="C4d"/> color to a <see cref="C4ui"/> color.
-        /// The values are mapped to the <see cref="C4ui"/> color range.
+        /// The values are mapped and clamped to the <see cref="C4ui"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly C4ui ToC4ui() => (C4ui)this;
@@ -22000,11 +22000,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="byte"/> array from the given <see cref="C4d"/> color.
-        /// The values are mapped from the <see cref="C4d"/> color range.
+        /// The values are mapped and clamped from the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator byte[](C4d color)
-            => new byte[] { Col.DoubleToByte(color.R), Col.DoubleToByte(color.G), Col.DoubleToByte(color.B), Col.DoubleToByte(color.A) };
+            => new byte[] { Col.DoubleToByteClamped(color.R), Col.DoubleToByteClamped(color.G), Col.DoubleToByteClamped(color.B), Col.DoubleToByteClamped(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="ushort"/> array.
@@ -22016,11 +22016,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="ushort"/> array from the given <see cref="C4d"/> color.
-        /// The values are mapped from the <see cref="C4d"/> color range.
+        /// The values are mapped and clamped from the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator ushort[](C4d color)
-            => new ushort[] { Col.DoubleToUShort(color.R), Col.DoubleToUShort(color.G), Col.DoubleToUShort(color.B), Col.DoubleToUShort(color.A) };
+            => new ushort[] { Col.DoubleToUShortClamped(color.R), Col.DoubleToUShortClamped(color.G), Col.DoubleToUShortClamped(color.B), Col.DoubleToUShortClamped(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="uint"/> array.
@@ -22032,11 +22032,11 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new <see cref="uint"/> array from the given <see cref="C4d"/> color.
-        /// The values are mapped from the <see cref="C4d"/> color range.
+        /// The values are mapped and clamped from the <see cref="C4d"/> color range.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static explicit operator uint[](C4d color)
-            => new uint[] { Col.DoubleToUInt(color.R), Col.DoubleToUInt(color.G), Col.DoubleToUInt(color.B), Col.DoubleToUInt(color.A) };
+            => new uint[] { Col.DoubleToUIntClamped(color.R), Col.DoubleToUIntClamped(color.G), Col.DoubleToUIntClamped(color.B), Col.DoubleToUIntClamped(color.A) };
 
         /// <summary>
         /// Creates a new color from the given <see cref="float"/> array.

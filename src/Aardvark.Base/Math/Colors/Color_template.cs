@@ -172,6 +172,8 @@ namespace Aardvark.Base
     //#
     //# Func<Meta.SimpleType, Meta.SimpleType, bool> ismapped =
     //#     (t1, t2) => (t1 != t2) && !(t1.IsReal && t2.IsReal);
+    //# Func<Meta.SimpleType, Meta.SimpleType, bool> isclamped =
+    //#     (t1, t2) => t1.IsReal && !t2.IsReal;
     //#
     //# Func<Meta.SimpleType, Meta.SimpleType, bool> coltovecsupported =
     //#     (cft, vft) => (!cft.IsReal || vft.IsReal) && (cft != Meta.UIntType || vft != Meta.IntType);
@@ -438,13 +440,18 @@ namespace Aardvark.Base
 
         //# } }
         //# foreach (var t1 in Meta.ColorTypes) {
+        //#     var ft1 = t1.FieldType;
         //#     var convert = t.FieldType != t1.FieldType
-        //#         ? "Col." + t1.FieldType.Caps + "To" + t.FieldType.Caps
+        //#         ? "Col." + t1.FieldType.Caps + "To" + t.FieldType.Caps + (isclamped(ft1, ft) ? "Clamped" : "")
         //#         : "";
         /// <summary>
         /// Creates a color from the given <see cref="__t1.Name__"/> color.
-        //# if (ismapped(ft, t1.FieldType)) {
+        //# if (ismapped(ft1, ft)) {
+        //# if (isclamped(ft1, ft)) {
+        /// The values are mapped and clamped to the <see cref="__type__"/> color range.
+        //# } else {
         /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
         //# }
         //# if (t.HasAlpha && !t1.HasAlpha) {
         /// The alpha channel is set to __maxval__.
@@ -468,8 +475,12 @@ namespace Aardvark.Base
         //#if (t.HasAlpha && !t1.HasAlpha) { // build constructor from Color3 with explicit alpha
         /// <summary>
         /// Creates a color from the given <see cref="__t1.Name__"/> color and an alpha value.
-        //# if (ismapped(ft, t1.FieldType)) {
+        //# if (ismapped(ft1, ft)) {
+        //# if (isclamped(ft1, ft)) {
+        /// The values are mapped and clamped to the <see cref="__type__"/> color range.
+        //# } else {
         /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -543,12 +554,16 @@ namespace Aardvark.Base
         //# foreach (var ft1 in Meta.ColorFieldTypes) {
         //#     var ftype1 = ft1.Name;
         //#     var convert = ft != ft1
-        //#         ? "Col." + ft1.Caps + "To" + ft.Caps
+        //#         ? "Col." + ft1.Caps + "To" + ft.Caps + (isclamped(ft1, ft) ? "Clamped" : "")
         //#         : "";
         /// <summary>
         /// Creates a new color from the given <see cref="__ftype1__"/> array.
-        //# if (ismapped(ft, ft1)) {
+        //# if (ismapped(ft1, ft)) {
+        //# if (isclamped(ft1, ft)) {
+        /// The values are mapped and clamped to the <see cref="__type__"/> color range.
+        //# } else {
         /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -561,8 +576,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a new color from the given <see cref="__ftype1__"/> array, starting at the specified index.
-        //# if (ismapped(ft, ft1)) {
+        //# if (ismapped(ft1, ft)) {
+        //# if (isclamped(ft1, ft)) {
+        /// The values are mapped and clamped to the <see cref="__type__"/> color range.
+        //# } else {
         /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -664,8 +683,12 @@ namespace Aardvark.Base
         //#     var type1 = t1.Name;
         /// <summary>
         /// Converts the given <see cref="__type1__"/> color to a <see cref="__type__"/> color.
-        //# if (ismapped(ft, t1.FieldType)) {
+        //# if (ismapped(t1.FieldType, ft)) {
+        //# if (isclamped(t1.FieldType, ft)) {
+        /// The values are mapped and clamped to the <see cref="__type__"/> color range.
+        //# } else {
         /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
         //# }
         //# if (t.HasAlpha && !t1.HasAlpha) {
         /// The alpha channel is set to __maxvalmap[t.FieldType]__.
@@ -678,7 +701,11 @@ namespace Aardvark.Base
         /// <summary>
         /// Converts the given <see cref="__type__"/> color to a <see cref="__type1__"/> color.
         //# if (ismapped(ft, t1.FieldType)) {
+        //# if (isclamped(ft, t1.FieldType)) {
+        /// The values are mapped and clamped to the <see cref="__type1__"/> color range.
+        //# } else {
         /// The values are mapped to the <see cref="__type1__"/> color range.
+        //# }
         //# }
         //# if (t1.HasAlpha && !t.HasAlpha) {
         /// The alpha channel is set to __maxvalmap[t1.FieldType]__.
@@ -689,8 +716,12 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates a <see cref="__type__"/> color from the given <see cref="__type1__"/> color.
-        //# if (ismapped(ft, t1.FieldType)) {
+        //# if (ismapped(t1.FieldType, ft)) {
+        //# if (isclamped(t1.FieldType, ft)) {
+        /// The values are mapped and clamped to the <see cref="__type__"/> color range.
+        //# } else {
         /// The values are mapped to the <see cref="__type__"/> color range.
+        //# }
         //# }
         //# if (t.HasAlpha && !t1.HasAlpha) {
         /// The alpha channel is set to __maxval__.
@@ -747,7 +778,7 @@ namespace Aardvark.Base
         //# foreach (var ft1 in Meta.ColorFieldTypes) {
         //#     var ftype1 = ft1.Name;
         //#     var convert = ft != ft1
-        //#         ? "Col." + ft.Caps + "To" + ft1.Caps
+        //#         ? "Col." + ft.Caps + "To" + ft1.Caps + (isclamped(ft, ft1) ? "Clamped" : "")
         //#         : "";
         /// <summary>
         /// Creates a new color from the given <see cref="__ftype1__"/> array.
@@ -762,7 +793,11 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a new <see cref="__ftype1__"/> array from the given <see cref="__type__"/> color.
         //# if (ismapped(ft, ft1)) {
+        //# if (isclamped(ft, ft1)) {
+        /// The values are mapped and clamped from the <see cref="__type__"/> color range.
+        //# } else {
         /// The values are mapped from the <see cref="__type__"/> color range.
+        //# }
         //# }
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
