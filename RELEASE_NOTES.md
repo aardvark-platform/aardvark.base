@@ -1,5 +1,6 @@
 - [Color] Added missing over- and underflow checks
 - [PixCube] Added null- and length checks for input arrays
+- [PixCube] Added IsEmpty
 
 ### 5.3.18
 - Added ReadOnlySpan overloads for Cell, Cell2d, and range types

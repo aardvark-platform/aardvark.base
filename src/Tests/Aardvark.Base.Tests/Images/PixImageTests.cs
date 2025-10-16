@@ -765,6 +765,20 @@ namespace Aardvark.Tests.Images
             Assert.IsNull(Array.Empty<PixImage<byte>>().StitchSquare());
         }
 
+        [Test]
+        public void PixCubeProperties()
+        {
+            var cube = new PixCube();
+            Assert.IsTrue(cube.IsEmpty);
+
+            cube[CubeSide.NegativeX] = new PixImageMipMap();
+            Assert.IsTrue(cube.IsEmpty);
+
+            cube[CubeSide.PositiveZ] = new PixImageMipMap(new PixImage<float>(Col.Format.RG, 42, 31));
+            Assert.IsFalse(cube.IsEmpty);
+            Assert.AreEqual(cube.PixFormat, PixFormat.FloatRG);
+        }
+
         #endregion
     }
 }

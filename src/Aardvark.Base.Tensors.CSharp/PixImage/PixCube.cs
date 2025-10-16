@@ -56,6 +56,11 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
+        /// Initializes a new <see cref="PixCube"/> with six <c>null</c> faces.
+        /// </summary>
+        public PixCube() => MipMapArray = new PixImageMipMap[6];
+
+        /// <summary>
         /// Initializes a new <see cref="PixCube"/> from an array of mipmap chains.
         /// The order of the array must follow the <see cref="CubeSide"/> enumeration.
         /// </summary>
@@ -85,6 +90,18 @@ namespace Aardvark.Base
         #region Properties
 
         /// <summary>
+        /// Returns whether the cube map is empty (i.e. all six faces are <c>null</c> or empty).
+        /// </summary>
+        public bool IsEmpty
+        {
+            get
+            {
+                for (int side = 0; side < 6; side++) { if (!(MipMapArray[side]?.IsEmpty ?? true)) return false; }
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the mipmap chain for the specified cube <paramref name="side"/>.
         /// </summary>
         public PixImageMipMap this[CubeSide side]
@@ -94,14 +111,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the pixel format of the cube map (taken from the first non-empty face).
+        /// Gets the pixel format of the cube map (taken from the first non-null and non-empty face).
         /// </summary>
-        /// <exception cref="InvalidOperationException">if all faces are empty.</exception>
+        /// <exception cref="InvalidOperationException">if all faces are <c>null</c> or empty.</exception>
         public PixFormat PixFormat
         {
             get
             {
-                for (int side = 0; side < 6; side++) { if (!MipMapArray[side].IsEmpty) return MipMapArray[side].PixFormat; }
+                for (int side = 0; side < 6; side++) { if (!(MipMapArray[side]?.IsEmpty ?? true)) return MipMapArray[side].PixFormat; }
                 throw new InvalidOperationException("Cannot determine format of empty PixCube.");
             }
         }
