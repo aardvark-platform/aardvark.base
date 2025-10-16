@@ -1,3 +1,4 @@
+### 5.3.19
 - [Color] Added missing over- and underflow checks
 - [PixCube] Added null- and length checks for input arrays
 - [PixCube] Added IsEmpty
