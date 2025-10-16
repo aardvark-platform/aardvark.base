@@ -48,6 +48,9 @@ namespace Aardvark.Base
         /// <summary>
         /// The six mipmap chains that make up the cube map, ordered by <see cref="CubeSide"/>.
         /// </summary>
+        /// <remarks>
+        /// May have more than six elements, excess ones are ignored.
+        /// </remarks>
         public PixImageMipMap[] MipMapArray;
 
         #region Constructors
@@ -57,16 +60,25 @@ namespace Aardvark.Base
         /// The order of the array must follow the <see cref="CubeSide"/> enumeration.
         /// </summary>
         /// <param name="sides">The six mipmap chains representing the cube faces.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="sides"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">if <paramref name="sides"/> has fewer than six elements.</exception>
         public PixCube(PixImageMipMap[] sides)
-            => MipMapArray = sides;
+        {
+            if (sides == null) throw new ArgumentNullException(nameof(sides));
+            if (sides.Length < 6) throw new ArgumentException($"Image array must have at least 6 elements, but only has {sides.Length}.", nameof(sides));
+            MipMapArray = sides;
+        }
+
 
         /// <summary>
         /// Initializes a new <see cref="PixCube"/> from an array of base-level images.
         /// The order of the array must follow the <see cref="CubeSide"/> enumeration.
         /// </summary>
         /// <param name="sides">The six images representing the cube faces.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="sides"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentException">if <paramref name="sides"/> has fewer than six elements.</exception>
         public PixCube(PixImage[] sides)
-            => MipMapArray = sides.Map(image => new PixImageMipMap(image));
+            => MipMapArray = sides?.Map(image => new PixImageMipMap(image));
 
         #endregion
 
@@ -82,9 +94,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets the pixel format of the cube map (taken from the first face).
+        /// Gets the pixel format of the cube map (taken from the first non-empty face).
         /// </summary>
-        public PixFormat PixFormat => MipMapArray[0].PixFormat;
+        /// <exception cref="InvalidOperationException">if all faces are empty.</exception>
+        public PixFormat PixFormat
+        {
+            get
+            {
+                for (int side = 0; side < 6; side++) { if (!MipMapArray[side].IsEmpty) return MipMapArray[side].PixFormat; }
+                throw new InvalidOperationException("Cannot determine format of empty PixCube.");
+            }
+        }
 
         #endregion
     }

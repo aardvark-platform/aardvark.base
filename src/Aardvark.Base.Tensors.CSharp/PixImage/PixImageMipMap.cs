@@ -44,6 +44,11 @@ namespace Aardvark.Base
         public int LevelCount => ImageArray?.Length ?? 0;
 
         /// <summary>
+        /// Returns whether the mipmap array is <c>null</c> or empty.
+        /// </summary>
+        public bool IsEmpty => LevelCount == 0;
+
+        /// <summary>
         /// Returns the base image of the mipmap array or null if it is empty.
         /// </summary>
         public PixImage BaseImage => LevelCount > 0 ? ImageArray[0] : null;
