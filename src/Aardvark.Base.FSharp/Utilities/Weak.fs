@@ -180,8 +180,10 @@ module Weak =
         member x.RegisterFinalizer(f : unit -> unit) =
             registerFinalizer(x, (fun _ -> f()), None)
 
-    type System.Collections.Generic.IEnumerable<'a> with
-        member x.RegisterAnyFinalizer(f : obj -> unit, ?data) =
+    [<AbstractClass; Sealed; Extension>]
+    type IEnumerableExtensions private() =
+        [<Extension>]
+        static member RegisterAnyFinalizer(x : IEnumerable<'a>, f : obj -> unit, ?data) =
             let fRef = ref <| Some(f)
             let finalize(_) =
                 match !fRef with
@@ -195,7 +197,8 @@ module Weak =
 
             x |> Seq.iter (fun o -> registerFinalizer(o, finalize, None))
 
-        member x.RegisterAllFinalizer(f : obj -> unit, ?data) =
+        [<Extension>]
+        static member RegisterAllFinalizer(x : IEnumerable<'a>, f : obj -> unit, ?data) =
             let countRef = ref (x.Count())
             let finalize(_) =
                 if !countRef = 1 then
@@ -203,16 +206,18 @@ module Weak =
                         | Some(v) -> f(v)
                         | _ -> f(null)
                     registerInStatistics(data)
-                else 
+                else
                     countRef := !countRef - 1
 
             x |> Seq.iter (fun o -> registerFinalizer(o, finalize, None))
 
-        member x.RegisterAnyFinalizer(f : unit -> unit) =
-            x.RegisterAnyFinalizer(fun (o:obj) -> f())
+        [<Extension>]
+        static member RegisterAnyFinalizer(x : IEnumerable<'a>, f : unit -> unit) =
+            IEnumerableExtensions.RegisterAnyFinalizer(x, (fun (o:obj) -> f()))
 
-        member x.RegisterAllFinalizer(f : unit -> unit, ?data) =
-            x.RegisterAllFinalizer(fun (o:obj) -> f())
+        [<Extension>]
+        static member RegisterAllFinalizer(x : IEnumerable<'a>, f : unit -> unit, ?data) =
+            IEnumerableExtensions.RegisterAllFinalizer(x, (fun (o:obj) -> f()))
 
 
     type WeakList<'a when 'a : not struct and 'a : equality>(l : list<Weak<'a>>) =

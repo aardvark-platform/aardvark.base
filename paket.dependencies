@@ -1,4 +1,4 @@
-framework: netstandard2.0, net8.0
+framework: netstandard2.0, net8.0, net10.0
 storage: none
 source https://api.nuget.org/v3/index.json
 
@@ -26,7 +26,7 @@ nuget FuzzySharp                   ~> 2.0.2
 nuget SingleFileExtractor.Core     ~> 2.2.1
 
 group CodeGenerator
-    framework net8.0
+    framework net8.0, net10.0
     storage: none
     source https://api.nuget.org/v3/index.json
 
@@ -34,7 +34,7 @@ group CodeGenerator
     nuget Microsoft.CodeAnalysis.CSharp              ~> 4.1.0
 
 group Demo
-    framework net8.0
+    framework net8.0, net10.0
     storage: none
     source https://api.nuget.org/v3/index.json
 
@@ -42,7 +42,7 @@ group Demo
     nuget CSharp.Data.Adaptive     ~> 1.2.0
 
 group Test
-    framework: net8.0
+    framework: net8.0, net10.0
     storage: none
     source https://api.nuget.org/v3/index.json
 

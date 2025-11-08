@@ -156,9 +156,9 @@ namespace Aardvark.Base
         /// </summary>
         public void Update(ReadOnlySpan<byte> buffer)
         {
-            if (buffer == null)
+            if (buffer.IsEmpty)
             {
-                throw new ArgumentNullException("buffer");
+                return;
             }
 
             uint s1 = m_checksum & 0xFFFF;

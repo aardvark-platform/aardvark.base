@@ -1,6 +1,6 @@
 @echo off
 dotnet tool restore
-dotnet paket restore
+.paket\paket.exe restore
 
 IF "%1"=="restore" exit /B
 

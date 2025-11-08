@@ -10577,7 +10577,7 @@ namespace Aardvark.Base
         {
             Min = V2i.MaxValue;
             Max = V2i.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
@@ -12145,7 +12145,7 @@ namespace Aardvark.Base
         {
             Min = V2l.MaxValue;
             Max = V2l.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
@@ -13713,7 +13713,7 @@ namespace Aardvark.Base
         {
             Min = V2f.MaxValue;
             Max = V2f.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
@@ -15334,7 +15334,7 @@ namespace Aardvark.Base
         {
             Min = V2d.MaxValue;
             Max = V2d.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
@@ -16957,7 +16957,7 @@ namespace Aardvark.Base
         {
             Min = V3i.MaxValue;
             Max = V3i.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
@@ -18882,7 +18882,7 @@ namespace Aardvark.Base
         {
             Min = V3l.MaxValue;
             Max = V3l.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
@@ -20807,7 +20807,7 @@ namespace Aardvark.Base
         {
             Min = V3f.MaxValue;
             Max = V3f.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }
@@ -22786,7 +22786,7 @@ namespace Aardvark.Base
         {
             Min = V3d.MaxValue;
             Max = V3d.MinValue;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }

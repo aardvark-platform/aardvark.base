@@ -276,7 +276,7 @@ namespace Aardvark.Base
         {
             Min = __maxvalue__;
             Max = __minvalue__;
-            if (points == null) return;
+            if (points.IsEmpty) return;
             var count = points.Length;
             for (var i = 0; i < count; i++) ExtendBy(points[i]);
         }

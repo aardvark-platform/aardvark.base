@@ -21,13 +21,12 @@ module RayHit =
     let map (f : 'a -> 'b) (hit : RayHit<'a>) =
         RayHit(hit.T, f hit.Value)
 
-[<Extension>]
 type RayPart =
     struct
         val mutable public Ray  : FastRay3d
         val mutable public TMin : float
         val mutable public TMax : float
-        
+
         [<Extension>]
         static member Intersects(x : RayPart, tri : Triangle3d) =
             let ray = x.Ray.Ray

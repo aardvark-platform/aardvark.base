@@ -2,7 +2,7 @@
 
 open Aardvark.Base
 
-[<Struct; RequireQualifiedAccess>]
+[<RequireQualifiedAccess>]
 type WindingRule =
     | NonZero
     | Positive

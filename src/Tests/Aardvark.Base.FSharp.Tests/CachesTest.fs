@@ -29,7 +29,7 @@ module Caches =
 
         override x.ToString() = name
 
-     type ResultObject<'a, 'b>(a : 'a, b : 'b) =
+    type ResultObject<'a, 'b>(a : 'a, b : 'b) =
 
         static let mutable resCount = 0
 
