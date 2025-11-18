@@ -1,8 +1,8 @@
 # Aardvark.Base
 
-![Windows](https://github.com/aardvark-platform/aardvark.base/workflows/Windows/badge.svg)
-![MacOS](https://github.com/aardvark-platform/aardvark.base/workflows/MacOS/badge.svg)
-![Linux](https://github.com/aardvark-platform/aardvark.base/workflows/Linux/badge.svg)
+[![Build](https://github.com/aardvark-platform/aardvark.base/actions/workflows/build.yml/badge.svg)](https://github.com/aardvark-platform/aardvark.base/actions/workflows/build.yml)
+[![Publish](https://github.com/aardvark-platform/aardvark.base/actions/workflows/publish.yml/badge.svg)](https://github.com/aardvark-platform/aardvark.base/actions/workflows/publish.yml)
+[![License](https://img.shields.io/github/license/aardvark-platform/aardvark.base.svg?label=License)](https://github.com/aardvark-platform/aardvark.rendering/blob/master/LICENSE)
 [![NuGet](https://img.shields.io/nuget/v/Aardvark.Base.svg)](https://www.nuget.org/packages/Aardvark.Base/)
 
 High-performance .NET foundation for visual computing, real-time graphics and geometry processing. Cross-platform (Windows/Linux/macOS), targets .NET Standard 2.0 and .NET 8.0.
@@ -60,6 +60,7 @@ dotnet add package Aardvark.Base.FSharp  # F# extensions
 ## Resources
 
 - [Gallery](https://github.com/aardvark-platform/aardvark.docs/wiki/Gallery)
+- [Packages & Repositories](https://github.com/aardvark-platform/aardvark.docs/wiki/Packages-and-Repositories)
 - [Documentation](https://github.com/aardvark-platform/aardvark.base/wiki)
 - [API Reference](https://aardvarkians.com/)
 - [Platform Overview](https://github.com/aardvark-platform/aardvark.docs/wiki)
