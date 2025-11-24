@@ -1,7 +1,9 @@
 ﻿namespace Aardvark.Base.Fonts
 
 open System
+open System.IO.Compression
 open System.Runtime.CompilerServices
+open System.Runtime.InteropServices
 open Aardvark.Base
 
 [<Flags>]
@@ -10,6 +12,21 @@ type FontStyle =
     | Bold = 1
     | Italic = 2
     | BoldItalic = 3
+
+module internal FontStyle =
+
+    let toWeightAndItalic (style: FontStyle) =
+        let weight =
+            match style with
+            | FontStyle.Bold | FontStyle.BoldItalic -> 700
+            | _ -> 400
+
+        let italic =
+            match style with
+            | FontStyle.Italic | FontStyle.BoldItalic -> true
+            | _ -> false
+
+        struct (weight, italic)
 
 type Shape(path : Path, windingRule : WindingRule) =
 
@@ -287,6 +304,7 @@ type private FontImpl internal(f : Typeface, familyName : string, weight : int, 
     let glyphCache = Dict<CodePoint, Glyph>()
 
     let lineHeight = float (f.Ascender - f.Descender + f.LineGap) * scale
+
     let spacing =
         let idx = f.GetGlyphIndex(int ' ') |> int
 
@@ -300,7 +318,6 @@ type private FontImpl internal(f : Typeface, familyName : string, weight : int, 
         else
             float (f.GetAdvanceWidth(idx)) * scale
 
-
     // https://docs.microsoft.com/en-us/windows/desktop/gdi/string-widths-and-heights
     let ascent = float f.Ascender * scale
     let descent = float -f.Descender * scale
@@ -311,9 +328,7 @@ type private FontImpl internal(f : Typeface, familyName : string, weight : int, 
     static let symbola =
         lazy (
             let assembly = typeof<FontImpl>.Assembly
-            let resName = assembly.GetManifestResourceNames() |> Array.find (fun n -> n.EndsWith "Symbola.ttf")
-            let openStream () = assembly.GetManifestResourceStream(resName)
-            FontImpl("Symbola.ttf", openStream, 400, false)
+            FontImpl(assembly, "Symbola.zip", "Symbola.ttf", 400, false)
         )
 
     let get (c : CodePoint) (self : FontImpl) =
@@ -361,8 +376,6 @@ type private FontImpl internal(f : Typeface, familyName : string, weight : int, 
 
     member x.Spacing = spacing
 
-
-
     member x.GetGlyph(c : CodePoint) =
         get c x
 
@@ -372,52 +385,73 @@ type private FontImpl internal(f : Typeface, familyName : string, weight : int, 
         let d = f.GetKernDistance(l, r)
         float d * scale
 
-    new(file : string, ?weight : int, ?italic : bool) =
-        let weight = defaultArg weight 400
-        let italic = defaultArg italic false
-        let entry =
-            FontResolver.FontTableEntries.ofFile file
-            |> FontResolver.FontTableEntries.chooseBestEntry weight italic
+    new (file : string, weight : int, italic : bool) =
+        let data = File.readAllBytes file
+        let family = try System.IO.Path.GetFileNameWithoutExtension file with _ -> null
+        FontImpl(data, family, weight, italic)
 
-        let face = entry |> FontResolver.FontTableEntries.read System.IO.File.OpenRead
-        FontImpl(face, entry.FamilyName, entry.Weight, entry.Italic)
+    new (data : uint8[], family : string, weight : int, italic : bool) =
+        let openStream() =
+            new System.IO.MemoryStream(data) :> System.IO.Stream
 
-    new(name : string, openStream : unit -> System.IO.Stream, ?weight : int, ?italic : bool) =
-        let weight = defaultArg weight 400
-        let italic = defaultArg italic false
         let entry =
             FontResolver.FontTableEntries.ofStream () openStream
             |> FontResolver.FontTableEntries.chooseBestEntry weight italic
 
+        let family =
+            if String.IsNullOrEmpty entry.FamilyName then family
+            else entry.FamilyName
 
         let face = entry |> FontResolver.FontTableEntries.read openStream
-        FontImpl(face, name, entry.Weight, entry.Italic)
+        FontImpl(face, family, entry.Weight, entry.Italic)
+
+    new (assembly : System.Reflection.Assembly, file : string, entryName : string, weight : int, italic : bool) =
+        let names = assembly.GetManifestResourceNames()
+
+        let resourceName =
+            names
+            |> Array.tryFindV (fun n -> n.EndsWith file)
+            |> ValueOption.defaultWith (fun _ ->
+                raise <| IO.FileNotFoundException($"Could not find embedded resource with name '{file}'.", file)
+            )
+
+        let fontData =
+            if String.IsNullOrEmpty entryName then
+                use data = assembly.GetManifestResourceStream resourceName
+                Stream.readAllBytes data
+            else
+                use zip =
+                    let s = assembly.GetManifestResourceStream resourceName
+                    new ZipArchive(s, ZipArchiveMode.Read)
+
+                let entry = zip.GetEntry entryName
+                if isNull entry then
+                    raise <| IO.FileNotFoundException($"Could not find entry with name '{entryName}'.", entryName)
+
+                use data = entry.Open()
+                Stream.readAllBytes data
+
+        let family =
+            let path = if String.IsNullOrEmpty entryName then file else entryName
+            try System.IO.Path.GetFileNameWithoutExtension path with _ -> null
+
+        FontImpl(fontData, family, weight, italic)
 
 
-type Font private(impl : FontImpl, family : string) =
+type Font private(impl : FontImpl) =
 
     static let symbola =
         lazy (
             let impl = FontImpl.Symbola
-            new Font(impl, impl.Family)
+            Font impl
         )
 
     static let systemTable = System.Collections.Concurrent.ConcurrentDictionary<string * int * bool, FontImpl>()
     static let fileTable = System.Collections.Concurrent.ConcurrentDictionary<string, FontImpl>()
 
-
-    static let copyStream (stream : System.IO.Stream) =
-        let arr =
-            use data = new System.IO.MemoryStream()
-            stream.CopyTo(data)
-            data.ToArray()
-
-        fun () -> new System.IO.MemoryStream(arr) :> System.IO.Stream
-
-
     static member Symbola = symbola.Value
 
-    member x.Family = family
+    member x.Family = impl.Family
     member x.LineHeight = impl.LineHeight
     member x.Descent = impl.Descent
     member x.Ascent = impl.Ascent
@@ -437,36 +471,72 @@ type Font private(impl : FontImpl, family : string) =
                 let impl = FontImpl(file, weight, italic)
                 impl
             )
-        Font(impl, impl.Family)
+        Font(impl)
 
     static member Load(file : string) =
         Font.Load(file, 400, false)
 
     static member Load(file : string, style : FontStyle) =
-        let weight =
-            match style with
-            | FontStyle.Bold | FontStyle.BoldItalic -> 700
-            | _ -> 400
-        let italic =
-            match style with
-            | FontStyle.Italic | FontStyle.BoldItalic -> true
-            | _ -> false
+        let struct (weight, italic) = FontStyle.toWeightAndItalic style
         Font.Load(file, weight, italic)
 
+    /// <summary>
+    /// Loads a font embedded in an assembly as a ZIP archive.
+    /// The name of the ZIP archive does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="assembly">Assembly to load the embedded font from.</param>
+    /// <param name="zipArchive">Name of the embedded ZIP archive.</param>
+    /// <param name="entryName">Name of the ZIP entry containing the font file.</param>
+    /// <param name="weight">Weight of the font to load.</param>
+    /// <param name="italic">Indicates whether italic variant is desired.</param>
+    static member LoadFromAssembly(assembly: System.Reflection.Assembly, zipArchive: string, entryName: string,
+                                   [<Optional; DefaultParameterValue(400)>] weight: int,
+                                   [<Optional; DefaultParameterValue(false)>] italic: bool) =
+        let impl = FontImpl(assembly, zipArchive, entryName, weight, italic)
+        Font(impl)
+
+    /// <summary>
+    /// Loads a font embedded in an assembly.
+    /// The name of the font file does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="assembly">Assembly to load the embedded font from.</param>
+    /// <param name="file">Name of the embedded font file.</param>
+    /// <param name="weight">Weight of the font to load.</param>
+    /// <param name="italic">Indicates whether italic variant is desired.</param>
+    static member LoadFromAssembly(assembly: System.Reflection.Assembly, file: string,
+                                   [<Optional; DefaultParameterValue(400)>] weight: int,
+                                   [<Optional; DefaultParameterValue(false)>] italic: bool) =
+        Font.LoadFromAssembly(assembly, file, null, weight, italic)
+
+    /// <summary>
+    /// Loads a font embedded in an assembly as a ZIP archive.
+    /// The name of the ZIP archive does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="assembly">Assembly to load the embedded font from.</param>
+    /// <param name="zipArchive">Name of the embedded ZIP archive.</param>
+    /// <param name="entryName">Name of the ZIP entry containing the font file.</param>
+    /// <param name="style">Variant of the font to load.</param>
+    static member LoadFromAssembly(assembly: System.Reflection.Assembly, zipArchive: string, entryName: string, style: FontStyle) =
+        let struct (weight, italic) = FontStyle.toWeightAndItalic style
+        Font.LoadFromAssembly(assembly, zipArchive, entryName, weight, italic)
+
+    /// <summary>
+    /// Loads a font embedded in an assembly.
+    /// The name of the font file does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="assembly">Assembly to load the embedded font from.</param>
+    /// <param name="file">Name of the embedded font file.</param>
+    /// <param name="style">Variant of the font to load.</param>
+    static member LoadFromAssembly(assembly: System.Reflection.Assembly, file: string, style: FontStyle) =
+        Font.LoadFromAssembly(assembly, file, null, style)
+
     new(stream : System.IO.Stream, weight : int, italic : bool) =
-        let openStream = copyStream stream
-        let impl = FontImpl("Stream", openStream, weight, italic)
-        Font(impl, impl.Family)
+        let data = Stream.readAllBytes stream
+        let impl = FontImpl(data, null, weight, italic)
+        Font(impl)
 
     new(stream : System.IO.Stream, style : FontStyle) =
-        let weight =
-            match style with
-            | FontStyle.Bold | FontStyle.BoldItalic -> 700
-            | _ -> 400
-        let italic =
-            match style with
-            | FontStyle.Italic | FontStyle.BoldItalic -> true
-            | _ -> false
+        let struct (weight, italic) = FontStyle.toWeightAndItalic style
         Font(stream, weight, italic)
 
     new(stream : System.IO.Stream) =
@@ -479,19 +549,11 @@ type Font private(impl : FontImpl, family : string) =
                 let impl = FontImpl(face, familyName, weight, italic)
                 impl
             )
-        Font(impl, family)
+        Font(impl)
 
     new(family : string, style : FontStyle) =
-        let weight =
-            match style with
-            | FontStyle.Bold | FontStyle.BoldItalic -> 700
-            | _ -> 400
-        let italic =
-            match style with
-            | FontStyle.Italic | FontStyle.BoldItalic -> true
-            | _ -> false
+        let struct (weight, italic) = FontStyle.toWeightAndItalic style
         Font(family, weight, italic)
-
 
     new(family : string) = Font(family, 400, false)
 

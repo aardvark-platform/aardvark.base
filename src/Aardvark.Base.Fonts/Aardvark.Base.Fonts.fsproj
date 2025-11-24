@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Aardvark.Base.Fonts</AssemblyName>
     <OutputType>Library</OutputType>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
@@ -15,6 +15,7 @@
     <OutputPath>..\..\bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Include="fonts\Symbola.zip" />
     <Compile Include="BvhInternal.fs" />
     <Compile Include="PathSegment.fs" />
     <Compile Include="PathTessellator.fs" />

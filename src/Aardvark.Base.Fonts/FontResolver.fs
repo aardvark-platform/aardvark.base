@@ -75,36 +75,33 @@ module internal FontResolver =
             bestEntry
 
         let ofStream (tag : 'a) (openStream : unit -> #Stream) =
-            try
-                let ofInfo (info : PreviewFontInfo) =
-                    {
-                        Tag = tag
-                        FamilyName = info.TypographicFamilyName
-                        Offset = info.ActualStreamOffset
-                        Weight = int info.Weight
-                        Italic = info.OS2TranslatedStyle.HasFlag Extensions.TranslatedOS2FontStyle.ITALIC || info.OS2TranslatedStyle.HasFlag Extensions.TranslatedOS2FontStyle.OBLIQUE
-                        SubFamilyName = info.SubFamilyName
-                    }
+            let ofInfo (info : PreviewFontInfo) =
+                {
+                    Tag = tag
+                    FamilyName = info.TypographicFamilyName
+                    Offset = info.ActualStreamOffset
+                    Weight = int info.Weight
+                    Italic = info.OS2TranslatedStyle.HasFlag Extensions.TranslatedOS2FontStyle.ITALIC || info.OS2TranslatedStyle.HasFlag Extensions.TranslatedOS2FontStyle.OBLIQUE
+                    SubFamilyName = info.SubFamilyName
+                }
 
-                let r = OpenFontReader()
-                use s = openStream() :> System.IO.Stream
-                let info = r.ReadPreview s
-                if info.IsFontCollection then
-                    List.init info.MemberCount (info.GetMember >> ofInfo)
-                else
-                    [ofInfo info]
-            with _ ->
-                []
+            let r = OpenFontReader()
+
+            let info =
+                use s = openStream() |> Stream.toSeekable false
+                r.ReadPreview s
+
+            if info.IsFontCollection then
+                List.init info.MemberCount (info.GetMember >> ofInfo)
+            else
+                [ofInfo info]
 
         let ofFile (file : string) =
-            if System.IO.File.Exists file then
-                ofStream file (fun () -> System.IO.File.OpenRead file)
-            else
-                []
+            ofStream file (fun () -> File.OpenRead file)
 
-        let read (openStream : 'a -> #System.IO.Stream) (entry : FontTableEntry<'a>) =
+        let read (openStream : 'a -> #Stream) (entry : FontTableEntry<'a>) =
             let reader = OpenFontReader()
-            use s = openStream entry.Tag :> System.IO.Stream
+            use s = openStream entry.Tag :> Stream
             reader.Read(s, entry.Offset, ReadFlags.Full)
 
 
@@ -223,7 +220,7 @@ module internal FontResolver =
 
                         let path = Path.Combine(fonts, file)
                         if File.Exists path then
-                            let entries = FontTableEntries.ofFile path
+                            let entries = try FontTableEntries.ofFile path with _ -> []
                             match familyName with
                             | Some f when not (isNull f) ->
                                 for r in entries do result.Add { r with FamilyName = f }
@@ -361,40 +358,37 @@ module internal FontResolver =
                     let allEntries = System.Collections.Generic.List()
                     for KeyValue(family, files) in files do
                         for f in files do
-
-                            let entries = FontTableEntries.ofFile f |> List.map (fun i -> { i with FamilyName = family })
+                            let entries =
+                                try FontTableEntries.ofFile f with _ -> []
+                                |> List.map (fun i -> { i with FamilyName = family })
                             allEntries.AddRange entries
 
 
                     FontTable allEntries
                 )
 
-
-
-
-    let tryLoadTypeFace (family : string) (weight : int) (italic : bool) : Option<Typography.OpenFont.Typeface * string * int * bool> =
+    let tryLoadTypeFace (family : string) (weight : int) (italic : bool) : Error<Typeface * string * int * bool> =
         try
             let entry =
                 match Environment.OSVersion with
                 | Windows ->
-                    Win32.table.Value.Find(family, weight, italic) |> Some
+                    Win32.table.Value.Find(family, weight, italic) |> Success
                 | Mac ->
-                    MacOs.CFText.table.Value.Find(family, weight, italic) |> Some
+                    MacOs.CFText.table.Value.Find(family, weight, italic) |> Success
                 | _ ->
-                    failwith "not implemented"
+                    Error "Font resolver only supported on Windows and macOS."
+
             match entry with
-            | Some entry ->
+            | Success entry ->
                 let face = entry |> FontTableEntries.read File.OpenRead
-                Some (face, entry.FamilyName, entry.Weight, entry.Italic)
-            | None ->
-                None
-        with _ ->
-            None
+                Success (face, entry.FamilyName, entry.Weight, entry.Italic)
+            | Error error ->
+                Error error
+        with e ->
+            Error e.Message
 
     let loadTypeface (family : string) (weight : int) (italic : bool) =
         match tryLoadTypeFace family weight italic with
-        | Some file -> file
-        | None -> failwithf "[Text] could not get font %s %A %s" family weight (if italic then "italic" else "")
-
-
-
+        | Success file -> file
+        | Error error ->
+            failwithf $"Could not resolve font '{family}' (weight = {weight}, italic = {italic}): {error}"

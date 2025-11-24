@@ -18,6 +18,7 @@
   <ItemGroup>
     <Compile Include="Common.fs" />
     <Compile Include="PathSegment.fs" />
+    <Compile Include="Loading.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

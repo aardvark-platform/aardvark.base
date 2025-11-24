@@ -1,3 +1,8 @@
+- [FSharp] Added utilities for copying streams
+- [Font] Added Font.LoadFromAssembly for loading embedded fonts
+- [Font] Improved error reporting by font resolver
+- [Font] Added missing Symbola font
+
 ### 5.3.19
 - [Color] Added missing over- and underflow checks
 - [PixCube] Added null- and length checks for input arrays
