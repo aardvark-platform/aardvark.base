@@ -99,6 +99,17 @@ module internal FontResolver =
         let ofFile (file : string) =
             ofStream file (fun () -> File.OpenRead file)
 
+        let private extensions = Set.ofList [".ttf"; ".otf"; ".ttc"; ".otc"; ".woff"; ".woff2" ]
+
+        let ofFileSafe (file: string) =
+            try
+                if File.Exists file && extensions |> Set.contains (Path.GetExtension file) then
+                    ofFile file
+                else
+                    []
+            with _ ->
+                []
+
         let read (openStream : 'a -> #Stream) (entry : FontTableEntry<'a>) =
             let reader = OpenFontReader()
             use s = openStream entry.Tag :> Stream
@@ -220,7 +231,7 @@ module internal FontResolver =
 
                         let path = Path.Combine(fonts, file)
                         if File.Exists path then
-                            let entries = try FontTableEntries.ofFile path with _ -> []
+                            let entries = FontTableEntries.ofFileSafe path
                             match familyName with
                             | Some f when not (isNull f) ->
                                 for r in entries do result.Add { r with FamilyName = f }
@@ -359,13 +370,70 @@ module internal FontResolver =
                     for KeyValue(family, files) in files do
                         for f in files do
                             let entries =
-                                try FontTableEntries.ofFile f with _ -> []
+                                FontTableEntries.ofFileSafe f
                                 |> List.map (fun i -> { i with FamilyName = family })
                             allEntries.AddRange entries
 
 
                     FontTable allEntries
                 )
+
+    module private Linux =
+        open System.Diagnostics
+
+        let private getFontFiles() =
+            let format = @"%{family[0]};%{file}\n"
+
+            try
+                use p = new Process()
+                p.StartInfo.FileName <- "fc-list"
+                p.StartInfo.Arguments <- $"-f \"{format}\""
+                p.StartInfo.RedirectStandardOutput <- true
+                p.StartInfo.RedirectStandardError <- true
+                p.StartInfo.UseShellExecute <- false
+                p.StartInfo.CreateNoWindow <- true
+
+                let result = System.Collections.Generic.Dictionary<string, string>()
+
+                p.OutputDataReceived.Add (fun args ->
+                    if not <| String.IsNullOrWhiteSpace args.Data then
+                        lock result (fun _ ->
+                            let tokens = args.Data |> String.split ";"
+                            if tokens.Length = 2 then
+                                let family = tokens.[0]
+                                let path = tokens.[1]
+                                result.[path] <- family
+                        )
+                )
+                p.ErrorDataReceived.Add ignore
+
+                p.Start() |> ignore
+                p.BeginOutputReadLine()
+                p.BeginErrorReadLine()
+                p.WaitForExit()
+
+                if p.ExitCode = 0 then
+                    result
+                else
+                    Log.warn $"Failed to invoke fc-list to build font table (exit code: {p.ExitCode})"
+                    Dictionary.empty
+            with exn ->
+                Log.warn $"Failed to invoke fc-list to build font table: {exn.Message}"
+                Dictionary.empty
+
+        let table =
+            lazy (
+                let allEntries = ResizeArray()
+
+                for KeyValue(path, family) in getFontFiles() do
+                    let entries =
+                        FontTableEntries.ofFileSafe path
+                        |> List.map (fun e -> { e with FamilyName = family })
+
+                    allEntries.AddRange entries
+
+                FontTable allEntries
+            )
 
     let tryLoadTypeFace (family : string) (weight : int) (italic : bool) : Error<Typeface * string * int * bool> =
         try
@@ -375,8 +443,8 @@ module internal FontResolver =
                     Win32.table.Value.Find(family, weight, italic) |> Success
                 | Mac ->
                     MacOs.CFText.table.Value.Find(family, weight, italic) |> Success
-                | _ ->
-                    Error "Font resolver only supported on Windows and macOS."
+                | Linux ->
+                    Linux.table.Value.Find(family, weight, italic) |> Success
 
             match entry with
             | Success entry ->

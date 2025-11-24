@@ -1,7 +1,8 @@
 - [FSharp] Added utilities for copying streams
-- [Font] Added Font.LoadFromAssembly for loading embedded fonts
-- [Font] Improved error reporting by font resolver
-- [Font] Added missing Symbola font
+- [Fonts] Added Font.LoadFromAssembly for loading embedded fonts
+- [Fonts] Improved error reporting by font resolver
+- [Fonts] Added missing Symbola font
+- [Fonts] Implemented font resolver for Linux
 
 ### 5.3.19
 - [Color] Added missing over- and underflow checks

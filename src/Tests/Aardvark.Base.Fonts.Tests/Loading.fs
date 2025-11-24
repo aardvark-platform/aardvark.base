@@ -14,10 +14,6 @@ let tests =
         }
 
         test "Resolve" {
-            let os = Aardvark.GetOSPlatform()
-            if os <> OSPlatform.Windows && os <> OSPlatform.OSX then
-                skiptest "Font resolver only works for Windows and macOS"
-
             let font = Font("Arial") // Finds font with family name most similar to Arial
             Expect.isNotNull font.Family "Family name is null"
             Expect.notEqual font.Family "" "Family name is empty"
