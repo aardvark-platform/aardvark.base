@@ -54,10 +54,26 @@ module Path =
 module Stream =
 
     /// <summary>
-    /// Reads the contents of a stream into a byte array.
+    /// Copies a stream.
     /// </summary>
-    /// <param name="stream">The stream to read.</param>
-    /// <returns>A byte array containing the contents of the stream.</returns>
+    /// <param name="stream">Stream to copy.</param>
+    /// <returns>A new stream with the content of the input stream.</returns>
+    let copy (stream: Stream) : Stream =
+        let result =
+            if stream.CanSeek then
+                new MemoryStream(int stream.Length)
+            else
+                new MemoryStream()
+
+        stream.CopyTo result
+        result.Position <- 0L
+        result
+
+    /// <summary>
+    /// Reads the content of a stream into a byte array.
+    /// </summary>
+    /// <param name="stream">Stream to read.</param>
+    /// <returns>A byte array containing the content of the input stream.</returns>
     let readAllBytes (stream: Stream) =
         if stream.CanSeek then
             let buffer = Array.zeroCreate<byte> <| int stream.Length
@@ -68,6 +84,21 @@ module Stream =
             use ms = new MemoryStream()
             stream.CopyTo ms
             ms.ToArray()
+
+    /// <summary>
+    /// Copies the content of a non-seekable stream to a seekable stream. The original stream is disposed, unless <paramref name="leaveOpen"/> is <c>true</c>.
+    /// If the input stream is already seekable, it is returned as is.
+    /// </summary>
+    /// <param name="leaveOpen">If <c>false</c> the input stream is disposed after copying, otherwise it remains open.</param>
+    /// <param name="stream">Stream to copy.</param>
+    /// <returns>A seekable stream with the content of the input stream.</returns>
+    let toSeekable (leaveOpen: bool) (stream: Stream) : Stream =
+        if stream.CanSeek then stream
+        else
+            try
+                copy stream
+            finally
+                if not leaveOpen then stream.Dispose()
 
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]
 module File =
