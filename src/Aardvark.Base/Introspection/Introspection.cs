@@ -2006,11 +2006,19 @@ namespace Aardvark.Base
 
             Report.BeginTimed("initializing aardvark");
 
+            const string framework =
+#if NET8_0
+                ".NET 8.0";
+#elif NETSTANDARD2_0
+                ".NET Standard 2.0";
+#endif
+
             Report.Begin("System Information:");
             Report.Line("System:      {0}", RuntimeInformation.OSDescription);
             Report.Line("Processor:   {0} core {1}", Environment.ProcessorCount, ArchitectureString(RuntimeInformation.OSArchitecture));
             Report.Line("Process:     {0}", ArchitectureString(RuntimeInformation.ProcessArchitecture));
-            Report.Line("Framework:   {0}", RuntimeInformation.FrameworkDescription);
+            Report.Line("Runtime:     {0}", RuntimeInformation.FrameworkDescription);
+            Report.Line("Framework:   {0}", framework);
 
             if (RuntimeInformation.ProcessArchitecture != Architecture.X64)
             {
