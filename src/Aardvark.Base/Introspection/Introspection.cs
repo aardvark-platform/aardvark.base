@@ -69,7 +69,16 @@ namespace Aardvark.Base
         {
             try
             {
-                return (path != null) ? Path.GetDirectoryName(path) : null;
+                return !string.IsNullOrEmpty(path) ? Path.GetDirectoryName(path) : null;
+            }
+            catch { return null; }
+        }
+
+        public static string GetFileNameSafe(string path)
+        {
+            try
+            {
+                return !string.IsNullOrEmpty(path) ? Path.GetFileName(path) : null;
             }
             catch { return null; }
         }
@@ -588,7 +597,7 @@ namespace Aardvark.Base
                     try
                     {
                         var name = AssemblyName.GetAssemblyName(file);
-                        Report.Line(4, $"{Path.GetFileName(file)}");
+                        Report.Line(4, $"{PathUtils.GetFileNameSafe(file)}");
                         EnumerateAssemblies(name.Name);
                     }
                     catch
@@ -825,7 +834,7 @@ namespace Aardvark.Base
 
     // TODO: static class
     [Serializable]
-    public class Aardvark
+    public partial class Aardvark
     {
         /// <summary>
         /// Cache containing information about whether an assembly is an Aardvark plugin.
@@ -1285,86 +1294,131 @@ namespace Aardvark.Base
 
         #region LdConfig
 
-
         private static class LdConfig
         {
-            static readonly Regex rx = new Regex(@"[ \t]*(?<name>[^ \t]+)[ \t]+\((?<libc>[^,]+)\,(?<arch>[^,\)]+)[^\)]*\)[ \t]*\=\>[ \t]*(?<path>.*)");
-            static readonly Dictionary<string, string> result = new Dictionary<string, string>();
-            static bool loaded = false;
+            private static readonly Lazy<Dictionary<string, string>> s_lookup = new(Load);
 
-            static void Load()
+            static List<string> Run(string path)
             {
-                string myArch;
-                switch (RuntimeInformation.ProcessArchitecture)
-                {
-                    case Architecture.X86:
-                        myArch = "x86";
-                        break;
-                    case Architecture.X64:
-                        myArch = "x86-64";
-                        break;
-                    case Architecture.Arm:
-                        myArch = "arm";
-                        break;
-                    case Architecture.Arm64:
-                        myArch = "arm-64";
-                        break;
-                    default:
-                        myArch = "unknown";
-                        break;
-                }
-                var info = new ProcessStartInfo("/bin/sh", "-c \"ldconfig -p\"")
-                {
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false
-                };
+                Report.Begin(3, $"{path} -p");
 
-                using (var proc = Process.Start(info))
+                try
                 {
-                    proc.OutputDataReceived += (s, e) =>
+                    using var p = new Process();
+                    p.StartInfo.FileName = path;
+                    p.StartInfo.Arguments = "-p";
+                    p.StartInfo.RedirectStandardOutput = true;
+                    p.StartInfo.RedirectStandardError = true;
+                    p.StartInfo.UseShellExecute = false;
+                    p.StartInfo.CreateNoWindow = true;
+
+                    var result = new List<string>();
+
+                    p.ErrorDataReceived += (_, _) => { };
+                    p.OutputDataReceived += (_, args) =>
                     {
-                        if (!String.IsNullOrWhiteSpace(e.Data))
+                        lock (result)
                         {
-                            var m = rx.Match(e.Data);
-                            if (m.Success)
+                            if (args.Data != null) result.Add(args.Data);
+                        }
+                    };
+
+                    p.Start();
+                    p.BeginOutputReadLine();
+                    p.BeginErrorReadLine();
+                    p.WaitForExit();
+
+                    if (p.ExitCode == 0)
+                    {
+                        Report.End(3, " - success");
+                        return result;
+                    }
+
+                    var output = string.Join(Environment.NewLine, result);
+                    Report.Line(3, output);
+
+                }
+                catch (Exception e)
+                {
+                    Report.Line(3, $"{e.GetType().Name}: {e.Message}");
+                }
+
+                Report.End(3, " - failed");
+                return null;
+            }
+
+            static Dictionary<string, string> Load()
+            {
+                var result = new Dictionary<string, string>();
+                Report.BeginTimed(3, "Building shared library location cache");
+
+                try
+                {
+                    string[] commands = ["/usr/sbin/ldconfig", "/sbin/ldconfig", "ldconfig"];
+
+                    List<string> output = null;
+                    foreach (var command in commands)
+                    {
+                        output = Run(command);
+                        if (output != null) break;
+                    }
+
+                    var directories = new HashSet<string>();
+
+                    if (output != null)
+                    {
+                        foreach (var data in output)
+                        {
+                            var m = RegexPatterns.LdConfig.Entry?.Match(data);
+                            if (m is { Success: true })
                             {
                                 var name = m.Groups["name"].Value;
-                                var arch = m.Groups["arch"].Value;
                                 var path = m.Groups["path"].Value;
-                                if (arch == myArch)
+
+                                var directory = PathUtils.GetDirectoryNameSafe(path);
+                                if (directory != null) directories.Add(directory);
+
+                                result[name] = path;
+                            }
+                        }
+                    }
+
+                    // Find files in library directories that are not in cache
+                    foreach (var directory in directories)
+                    {
+                        try
+                        {
+                            var files = Directory.GetFiles(directory);
+                            foreach (var path in files)
+                            {
+                                var name = PathUtils.GetFileNameSafe(path);
+
+                                if (name != null && IsNativeLibrary(name) && !result.ContainsKey(name))
                                 {
                                     result[name] = path;
                                 }
                             }
                         }
-                    };
-
-                    proc.BeginOutputReadLine();
-                    proc.WaitForExit();
-                }
-            }
-
-            public static Dictionary<string, string> Paths
-            {
-                get
-                {
-                    lock(result)
-                    {
-                        if(!loaded)
+                        catch (Exception e)
                         {
-                            Load();
-                            loaded = true;
+                            Report.Line(3, $"Failed to enumerate files in '{directory}': {e.Message}");
                         }
-                        return result;
                     }
                 }
+                catch (Exception e)
+                {
+                    Report.Warn($"{e.GetType().Name}: {e.Message}");
+                    throw;
+                }
+
+                Report.Line(3, $"Found {result.Count} libraries");
+                Report.EndTimed(3);
+
+                return result;
             }
 
             public static bool TryGetPath(string name, out string path)
-            {
-                return Paths.TryGetValue(name, out path);
-            }
-
+                => s_lookup.Value.TryGetValue(name, out path);
         }
 
         #endregion
@@ -1381,28 +1435,16 @@ namespace Aardvark.Base
 
         private static bool TryParseOS(string os, out OS value)
         {
-            os = os.ToLower();
-            if (os == "win" || os == "windows" || os == "win32" || os == "win64")
-            {
-                value = OS.Win32;
-                return true;
-            }
-            else if (os == "linux" || os == "nix" || os == "unix")
-            {
-                value = OS.Linux;
-                return true;
-            }
-            else if (os == "mac" || os == "macos" || os == "macosx")
-            {
-                value = OS.MacOS;
-                return true;
-            }
-            else
-            {
-                value = OS.Unknown;
-                return false;
-            }
+            value =
+                os?.ToLower() switch
+                {
+                    "win" or "win32" or "win64" or "windows" => OS.Win32,
+                    "linux" or "nix" or "unix"               => OS.Linux,
+                    "mac" or "macos" or "macosx"             => OS.MacOS,
+                    _ => OS.Unknown
+                };
 
+            return value != OS.Unknown;
         }
 
         private static OS GetOS()
@@ -1452,7 +1494,7 @@ namespace Aardvark.Base
                         var osStr   = os.Value;
                         var dstStr  = dst.Value;
 
-                        if(!String.IsNullOrWhiteSpace(srcStr) && !String.IsNullOrWhiteSpace(osStr) && !String.IsNullOrWhiteSpace(dstStr) && TryParseOS(osStr, out var osVal))
+                        if(!string.IsNullOrWhiteSpace(srcStr) && !string.IsNullOrWhiteSpace(dstStr) && TryParseOS(osStr, out var osVal))
                         {
                             if(myOs == osVal)
                             {
@@ -1472,45 +1514,57 @@ namespace Aardvark.Base
 
         #region Symlink
 
+    #if NET8_0_OR_GREATER
+        private static void CreateSymlink(string src, string dst)
+            => File.CreateSymbolicLink(src, dst);
+    #else
         [DllImport("libc")]
-        private static extern int symlink(string src, string linkName);
+        private static extern int symlink(string oldpath, string newpath);
+
+        private static void CreateSymlink(string src, string dst)
+        {
+            var ret = symlink(dst, src);
+            if (ret != 0) throw new Exception($"symlink() failed (exit code = {ret})");
+        }
+    #endif
 
         private static void CreateSymlink(string baseDir, string src, string dst)
         {
             var os = GetOS();
-            if (os == OS.Win32 || os == OS.Unknown) return;
+            if (os is OS.Win32 or OS.Unknown) return;
 
-            string targetName;
-            if (LdConfig.TryGetPath(dst, out string targetPath))
+            Report.Begin(3, $"Creating symlink '{src}' -> '{dst}'");
+
+            try
             {
-                targetName = targetPath;
-            }
-            else
-            {
-                targetName = dst;
-                targetPath = Path.Combine(baseDir, targetName);
-            }
+                var srcPath = Path.Combine(baseDir, src);
+                Report.Line(3, $"Directory: {baseDir}");
 
-            if (File.Exists(targetPath))
-            {
-                var linkPath = Path.Combine(baseDir, src);
+                var dstPath = os is OS.Linux && LdConfig.TryGetPath(dst, out string resolvedPath) ? resolvedPath : Path.Combine(baseDir, dst);
+                Report.Line(3, $"Target path: {dstPath}");
 
-                Report.Line(3, $"Creating symlink {src} -> {targetName}");
-
-                if (File.Exists(linkPath))
+                if (!File.Exists(dstPath))
                 {
-                    Report.Line(3, $"Deleting old symlink {src}");
-                    File.Delete(linkPath);
+                    throw new FileNotFoundException("Target does not exist.", dstPath);
                 }
 
-                if (symlink(targetName, linkPath) != 0)
+                if (File.Exists(srcPath))
                 {
-                    Report.Warn($"Could not create symlink {src}");
+                    File.Delete(srcPath);
                 }
+                else
+                {
+                    var srcDir = PathUtils.GetDirectoryNameSafe(srcPath);
+                    if (!Directory.Exists(srcDir)) Directory.CreateDirectory(srcDir);
+                }
+
+                CreateSymlink(srcPath, dstPath);
+                Report.End(3, " - success");
             }
-            else
+            catch (Exception e)
             {
-                Report.Warn($"Could not create symlink to {targetName} (does not exist)");
+                Report.Warn($"Failed to create symlink '{src}' -> '{dst}': {e.Message}");
+                Report.End(3, " - failure");
             }
         }
 
@@ -1534,20 +1588,11 @@ namespace Aardvark.Base
                 _                  => arch.ToString()
             };
 
-        private static readonly Regex nativeLibraryRx =
-            GetOS() switch
-            {
-                OS.Win32 => new Regex(@"\.(dll|exe)$", RegexOptions.Compiled),
-                OS.Linux => new Regex(@"\.so(\.[0-9\-]+)?$", RegexOptions.Compiled),
-                OS.MacOS => new Regex(@"\.dylib$", RegexOptions.Compiled),
-                _ => null
-            };
-
         /// <summary>
         /// Returns whether the file path appears to be a native library for the current platform.
         /// </summary>
         private static bool IsNativeLibrary(string path)
-            => nativeLibraryRx?.IsMatch(path) ?? false;
+            => RegexPatterns.NativeLibrary.Extension.IsMatch(path);
 
         /// <summary>
         /// Extracts native libraries embedded in the specified assembly and returns their relative file names.
@@ -1624,7 +1669,7 @@ namespace Aardvark.Base
                     else if (TryGetLocalName(entryName, out var localName))
                     {
                         var dstPath = Path.Combine(outputDir, localName);
-                        var dstDir = Path.GetDirectoryName(dstPath);
+                        var dstDir = PathUtils.GetDirectoryNameSafe(dstPath);
 
                         if (!File.Exists(dstDir)) Directory.CreateDirectory(dstDir);
 
@@ -1820,7 +1865,7 @@ namespace Aardvark.Base
 
             try
             {
-                var location = Path.GetDirectoryName(assembly?.GetLocationSafe()) ?? IntrospectionProperties.CurrentEntryPath;
+                var location = PathUtils.GetDirectoryNameSafe(assembly?.GetLocationSafe()) ?? IntrospectionProperties.CurrentEntryPath;
                 if (location != null)
                     paths.Add(location);
             }
