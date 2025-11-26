@@ -823,11 +823,19 @@ namespace Aardvark.Base
 
     internal static class Dl
     {
+        public const int RTLD_LAZY         = 0x00001;
+        public const int RTLD_NOW          = 0x00002;
+        public const int RTLD_BINDING_MASK = 0x00003;
+        public const int RTLD_NOLOAD       = 0x00004;
+        public const int RTLD_DEEPBIND     = 0x00008;
+        public const int RTLD_GLOBAL       = 0x00100;
+        public const int RTLD_LOCAL        = 0x00000;
+        public const int RTLD_NODELETE     = 0x01000;
 
-        [DllImport("libdl", SetLastError = true, CharSet = CharSet.Ansi)]
+        [DllImport("libc", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr dlopen(string path, int flag);
 
-        [DllImport("libdl", SetLastError = true, CharSet = CharSet.Ansi)]
+        [DllImport("libc", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr dlsym(IntPtr handle, string name);
 
     }
@@ -1832,7 +1840,7 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
             return NativeLibrary.TryLoad(path, out handle);
 #else
-            handle = (GetOS() == OS.Win32) ? Kernel32.LoadLibrary(path) : Dl.dlopen(path, 1);
+            handle = (GetOS() == OS.Win32) ? Kernel32.LoadLibrary(path) : Dl.dlopen(path, Dl.RTLD_LAZY);
             return handle != IntPtr.Zero;
 #endif
         }
@@ -2005,7 +2013,7 @@ namespace Aardvark.Base
                                 if (isWindows)
                                     ptr = Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
                                 else
-                                    ptr = Dl.dlopen(filePath, 0x01102);
+                                    ptr = Dl.dlopen(filePath, Dl.RTLD_NODELETE | Dl.RTLD_GLOBAL | Dl.RTLD_NOW);
 
                                 if (ptr == IntPtr.Zero)
                                 {
