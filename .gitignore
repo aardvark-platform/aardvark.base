@@ -34,4 +34,5 @@ Aardvark.log
 .ionide
 /.vs
 .idea
+.boss/
 src/Aardvark.sln.DotSettings.user
