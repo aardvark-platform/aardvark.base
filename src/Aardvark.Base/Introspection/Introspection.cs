@@ -977,8 +977,6 @@ namespace Aardvark.Base
             }
         }
 
-        private static readonly Regex versionRx = new Regex(@"^[ \t]*(?<name>[\.A-Za-z_0-9]+)[ \t]*,[ \t]*(v|V)ersion[ \t]*=[ \t]*(?<version>[\.A-Za-z_0-9]+)$");
-
         private static unsafe bool ProbeForPlugin(Stream stream)
         {
             using var v = new PEReader(stream, PEStreamOptions.LeaveOpen);
@@ -1007,13 +1005,11 @@ namespace Aardvark.Base
                             if (reader.ReadUInt16() == 1)
                             {
                                 var version = reader.ReadSerializedString();
-                                var match = versionRx.Match(version);
-                                if (match.Success)
+                                var match = version != null ? RegexPatterns.Assembly.TargetFramework.Match(version) : null;
+                                if (match is { Success: true })
                                 {
                                     var fwName = match.Groups["name"].Value;
-                                    var isLoadable =
-                                        (fwName == ".NETCoreApp") ||
-                                        (fwName == ".NETStandard");
+                                    var isLoadable = fwName is ".NETCoreApp" or ".NETStandard";
                                     if (!isLoadable) return false;
                                 }
                             }

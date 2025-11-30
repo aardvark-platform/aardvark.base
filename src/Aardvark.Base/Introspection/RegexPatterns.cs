@@ -65,5 +65,18 @@ public partial class Aardvark
                     _ => null
                 };
         }
+
+        public static partial class Assembly
+        {
+            private const string TARGET_FRAMEWORK = @"^[ \t]*(?<name>[\.A-Za-z_0-9]+)[ \t]*,[ \t]*(v|V)ersion[ \t]*=[ \t]*(?<version>[\.A-Za-z_0-9]+)$";
+
+#if NET8_0_OR_GREATER
+            [GeneratedRegex(TARGET_FRAMEWORK)]
+            private static partial Regex _TargetFramework();
+            public static Regex TargetFramework => _TargetFramework();
+#else
+            public static Regex TargetFramework { get; } = new(TARGET_FRAMEWORK, RegexOptions.Compiled);
+#endif
+        }
     }
 }
