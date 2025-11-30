@@ -12,7 +12,6 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using BundleReader = SingleFileExtractor.Core.ExecutableReader;
@@ -43,7 +42,7 @@ namespace Aardvark.Base
         {
             try
             {
-                foreach (var path in Directory.GetFiles(directory))
+                foreach (var path in DirectoryUtils.GetFilesSafe(directory))
                 {
                     var name = Path.GetFileName(path);
                     if (string.Equals(name, filename, StringComparison.OrdinalIgnoreCase))
@@ -63,6 +62,22 @@ namespace Aardvark.Base
         }
     }
 
+    internal static class DirectoryUtils
+    {
+        public static string[] GetFilesSafe(string directory)
+        {
+            try
+            {
+                return !Directory.Exists(directory) ? [] : Directory.GetFiles(directory);
+            }
+            catch (Exception e)
+            {
+                Report.Warn($"Failed to enumerate files in '{directory}': {e.Message}");
+                return [];
+            }
+        }
+    }
+
     internal static class PathUtils
     {
         public static string GetDirectoryNameSafe(string path)
@@ -78,7 +93,16 @@ namespace Aardvark.Base
         {
             try
             {
-                return !string.IsNullOrEmpty(path) ? Path.GetFileName(path) : null;
+                return Path.GetFileName(path);
+            }
+            catch { return null; }
+        }
+
+        public static string GetExtensionSafe(string path)
+        {
+            try
+            {
+                return Path.GetExtension(path);
             }
             catch { return null; }
         }
@@ -589,9 +613,9 @@ namespace Aardvark.Base
 
             try
             {
-                foreach (var file in Directory.GetFiles(path))
+                foreach (var file in DirectoryUtils.GetFilesSafe(path))
                 {
-                    var ext = Path.GetExtension(file).ToLowerInvariant();
+                    var ext = PathUtils.GetExtensionSafe(file)?.ToLowerInvariant();
                     if (ext != ".dll" &&  ext != ".exe") continue;
 
                     try
@@ -1144,7 +1168,7 @@ namespace Aardvark.Base
 
             public void AddDirectory(string path)
             {
-                foreach (var p in Directory.GetFiles(path))
+                foreach (var p in DirectoryUtils.GetFilesSafe(path))
                 {
                     Add(new FileAssemblySource(p));
                 }
@@ -1200,15 +1224,7 @@ namespace Aardvark.Base
                 else
                 {
                     var rootPath = IntrospectionProperties.CurrentEntryPath;
-
-                    try
-                    {
-                        sources.AddDirectory(rootPath);
-                    }
-                    catch (Exception e)
-                    {
-                        Report.Warn($"Failed to enumerate assemblies in '{rootPath}': {e.Message}");
-                    }
+                    sources.AddDirectory(rootPath);
                 }
             }
             catch (Exception e)
@@ -1221,7 +1237,7 @@ namespace Aardvark.Base
 
         private static bool IsPlugin(AssemblySource source, PluginCache oldCache, PluginCache newCache)
         {
-            var ext = Path.GetExtension(source.Path).ToLowerInvariant();
+            var ext = PathUtils.GetExtensionSafe(source.Path)?.ToLowerInvariant();
             if (ext != ".dll" &&  ext != ".exe") return false;
 
             var name = Path.GetFileNameWithoutExtension(source.Path);
@@ -1390,22 +1406,14 @@ namespace Aardvark.Base
                     // Find files in library directories that are not in cache
                     foreach (var directory in directories)
                     {
-                        try
+                        foreach (var path in DirectoryUtils.GetFilesSafe(directory))
                         {
-                            var files = Directory.GetFiles(directory);
-                            foreach (var path in files)
-                            {
-                                var name = PathUtils.GetFileNameSafe(path);
+                            var name = PathUtils.GetFileNameSafe(path);
 
-                                if (name != null && IsNativeLibrary(name) && !result.ContainsKey(name))
-                                {
-                                    result[name] = path;
-                                }
+                            if (name != null && IsNativeLibrary(name) && !result.ContainsKey(name))
+                            {
+                                result[name] = path;
                             }
-                        }
-                        catch (Exception e)
-                        {
-                            Report.Line(3, $"Failed to enumerate files in '{directory}': {e.Message}");
                         }
                     }
                 }
