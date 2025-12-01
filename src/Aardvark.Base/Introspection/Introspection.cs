@@ -11,7 +11,6 @@ using System.Reflection.PortableExecutable;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security.Cryptography;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using BundleReader = SingleFileExtractor.Core.ExecutableReader;
@@ -37,29 +36,6 @@ namespace Aardvark.Base
                 return DateTime.MaxValue;
             }
         }
-
-        public static bool TryFindInDirectory(string directory, string filename, out string absolutePath)
-        {
-            try
-            {
-                foreach (var path in DirectoryUtils.GetFilesSafe(directory))
-                {
-                    var name = Path.GetFileName(path);
-                    if (string.Equals(name, filename, StringComparison.OrdinalIgnoreCase))
-                    {
-                        absolutePath = path;
-                        return true;
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Report.Warn($"Error while trying to find {filename} in directory '{directory}': {e.Message}");
-            }
-
-            absolutePath = null;
-            return false;
-        }
     }
 
     internal static class DirectoryUtils
@@ -68,7 +44,7 @@ namespace Aardvark.Base
         {
             try
             {
-                return !Directory.Exists(directory) ? [] : Directory.GetFiles(directory);
+                return Directory.Exists(directory) ? Directory.GetFiles(directory) : [];
             }
             catch (Exception e)
             {
@@ -80,6 +56,9 @@ namespace Aardvark.Base
 
     internal static class PathUtils
     {
+        public static bool HasDirectoryInformation(string path)
+            => path != null && (path.Contains(Path.DirectorySeparatorChar) || path.Contains(Path.AltDirectorySeparatorChar));
+
         public static string GetDirectoryNameSafe(string path)
         {
             try
@@ -814,8 +793,8 @@ namespace Aardvark.Base
         public const uint LOAD_LIBRARY_SEARCH_USER_DIRS = 0x00000400;
         public const uint LOAD_LIBRARY_SEARCH_SYSTEM32 = 0x00000800;
         public const uint LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000;
-
         public const uint LOAD_WITH_ALTERED_SEARCH_PATH = 0x00000008;
+        public const int SEM_FAILCRITICALERRORS = 0x0001;
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr LoadLibrary(string path);
@@ -826,9 +805,6 @@ namespace Aardvark.Base
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern IntPtr AddDllDirectory(string path);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern uint GetLastError();
-
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool SetCurrentDirectory(string pathName);
 
@@ -836,13 +812,34 @@ namespace Aardvark.Base
         public static extern bool SetDllDirectory(string pathName);
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern uint GetDllDirectory(int nBufferLength, StringBuilder lpPathName);
+        public static extern uint GetDllDirectory(uint nBufferLength, [Out] char[] lpPathName);
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern IntPtr GetProcAddress(IntPtr handle, string name);
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
         public static extern uint SetErrorMode(uint mode);
+
+        public static int TryGetDllDirectory(out string path)
+        {
+            char[] buffer;
+            uint requiredSize = 128;
+
+            do
+            {
+                buffer = new char[(int)requiredSize + 1];
+                requiredSize = GetDllDirectory((uint)buffer.Length - 1, buffer);
+            } while (requiredSize > 0 && requiredSize > buffer.Length);
+
+            if (requiredSize == 0)
+            {
+                path = null;
+                return Marshal.GetLastWin32Error();
+            }
+
+            path = new string(buffer, 0, (int)requiredSize);
+            return 0;
+        }
     }
 
     internal static class Dl
@@ -856,7 +853,7 @@ namespace Aardvark.Base
         public const int RTLD_LOCAL        = 0x00000;
         public const int RTLD_NODELETE     = 0x01000;
 
-        [DllImport("libc", SetLastError = true, CharSet = CharSet.Ansi)]
+        [DllImport("libc", SetLastError = false, CharSet = CharSet.Ansi)]
         public static extern IntPtr dlopen(string path, int flag);
 
         [DllImport("libc", SetLastError = true, CharSet = CharSet.Ansi)]
@@ -1284,7 +1281,7 @@ namespace Aardvark.Base
             var newCache = new PluginCache();
 
             using var sources = FindAssemblySources();
-            List<Assembly> assemblies = new ();
+            List<Assembly> assemblies = [];
 
             try
             {
@@ -1392,7 +1389,7 @@ namespace Aardvark.Base
                             var m = RegexPatterns.LdConfig.Entry?.Match(data);
                             if (m is { Success: true })
                             {
-                                var name = m.Groups["name"].Value;
+                                var name = m.Groups["name"].Value.ToLowerInvariant();
                                 var path = m.Groups["path"].Value;
 
                                 var directory = PathUtils.GetDirectoryNameSafe(path);
@@ -1408,7 +1405,7 @@ namespace Aardvark.Base
                     {
                         foreach (var path in DirectoryUtils.GetFilesSafe(directory))
                         {
-                            var name = PathUtils.GetFileNameSafe(path);
+                            var name = PathUtils.GetFileNameSafe(path)?.ToLowerInvariant();
 
                             if (name != null && IsNativeLibrary(name) && !result.ContainsKey(name))
                             {
@@ -1420,7 +1417,6 @@ namespace Aardvark.Base
                 catch (Exception e)
                 {
                     Report.Warn($"{e.GetType().Name}: {e.Message}");
-                    throw;
                 }
 
                 Report.Line(3, $"Found {result.Count} libraries");
@@ -1429,8 +1425,14 @@ namespace Aardvark.Base
                 return result;
             }
 
+            public static ICollection<string> AllPaths => s_lookup.Value.Values;
+
             public static bool TryGetPath(string name, out string path)
-                => s_lookup.Value.TryGetValue(name, out path);
+            {
+                if (name != null) return s_lookup.Value.TryGetValue(name.ToLowerInvariant(), out path);
+                path = null;
+                return false;
+            }
         }
 
         #endregion
@@ -1557,7 +1559,8 @@ namespace Aardvark.Base
 
                 if (!File.Exists(dstPath))
                 {
-                    throw new FileNotFoundException("Target does not exist.", dstPath);
+                    Report.End(3, " - target not found");
+                    return;
                 }
 
                 if (File.Exists(srcPath))
@@ -1575,7 +1578,7 @@ namespace Aardvark.Base
             }
             catch (Exception e)
             {
-                Report.Warn($"Failed to create symlink '{src}' -> '{dst}': {e.Message}");
+                Report.Line(3, $"{e.GetType().Name}: {e.Message}");
                 Report.End(3, " - failure");
             }
         }
@@ -1626,6 +1629,8 @@ namespace Aardvark.Base
 
             try
             {
+                Report.Line(3, $"Output directory: {outputDir}");
+
                 var info = assembly.GetManifestResourceInfo("native.zip");
                 if (info == null)
                 {
@@ -1687,8 +1692,12 @@ namespace Aardvark.Base
 
                         if (!File.Exists(dstPath) || FileUtils.GetLastWriteTimeSafe(dstPath) < e.LastWriteTime.UtcDateTime)
                         {
-                            Report.Line(3, $"Unpacking {localName}");
+                            Report.Line(3, $"Unpacking: {localName}");
                             e.ExtractToFile(dstPath, true);
+                        }
+                        else
+                        {
+                            Report.Line(3, $"Found: {localName}");
                         }
 
                         if (IsNativeLibrary(localName)) libNames.Add(localName);
@@ -1770,287 +1779,457 @@ namespace Aardvark.Base
         /// NOTE: When using global shared NativeLibraryPath, SeparateLibraryDirectories should not be set to false, as there might be version conflicts
         public static bool SeparateLibraryDirectories = true;
 
+        /// <summary>
+        /// Indicates whether the DLL directory is altered temporarily before loading a native library from a file.
+        /// The DLL directory is set to the directory of the library so that transitive dependencies in
+        /// the same folder can be found. This is usually not required as the dynamic linker should search the directory of
+        /// a library for its dependencies. However, some libraries (e.g., IPP) may use another loading mechanism that require
+        /// setting the DLL directory explicitly.
+        /// </summary>
+        /// <remarks>Only works on Windows, disabled by default.</remarks>
+        public static bool UseSetDllDirectory { get; set; } = false;
+
         private static readonly Lazy<string> s_nativeLibraryCacheDirectory =
             new(() => Path.Combine(CachingProperties.CacheDirectory, "Native"));
 
         public static readonly string NativeLibraryCacheDirectory = s_nativeLibraryCacheDirectory.Value;
 
-        private static readonly Dictionary<Assembly, string> s_nativePaths = new Dictionary<Assembly, string>();
-        private static string[] s_allPaths = null;
+        private static readonly Dictionary<Assembly, string> s_nativeDependenciesDirectory = new();
+        private static readonly Dictionary<Assembly, string[]> s_nativeLibraryPaths = new();
 
-        public static string[] GetNativeLibraryPaths()
+        /// <summary>
+        /// Returns the paths of the directories containing native dependencies of all assemblies.
+        /// </summary>
+        public static string[] GetNativeDependenciesDirectories()
         {
-            lock(s_nativePaths)
+            lock(s_nativeDependenciesDirectory)
             {
-                s_allPaths ??= s_nativePaths.Values.Where(Directory.Exists).ToArray();
-                return s_allPaths;
+                return s_nativeDependenciesDirectory.Values.Where(Directory.Exists).ToArray();
             }
         }
 
-        public static bool TryGetNativeLibraryPath(Assembly assembly, out string path)
+        /// <summary>
+        /// Returns the path of the directory containing native dependencies of the given assembly.
+        /// </summary>
+        /// <param name="assembly">Assembly with native dependencies.</param>
+        /// <param name="path">Returns the path of the directory, if the assembly has native dependencies.</param>
+        /// <returns>True if the assembly has native dependencies, false otherwise.</returns>
+        public static bool TryGetNativeDependenciesDirectory(Assembly assembly, out string path)
         {
-            if (assembly.IsDynamic) { path = null; return false; }
-
-            lock (s_nativePaths)
+            var name = assembly?.GetName().Name;
+            if (assembly == null || assembly.IsDynamic || string.IsNullOrEmpty(name))
             {
-                if (s_nativePaths.TryGetValue(assembly, out path))
+                path = null;
+                return false;
+            }
+
+            lock (s_nativeDependenciesDirectory)
+            {
+                if (s_nativeDependenciesDirectory.TryGetValue(assembly, out path))
                 {
-                    if (path == null) return false;
-                    else return true;
+                    return path != null;
+                }
+
+                var info = assembly.GetManifestResourceInfo("native.zip");
+                if (info == null)
+                {
+                    s_nativeDependenciesDirectory[assembly] = null;
+                    return false;
+                }
+
+                using var stream = assembly.GetManifestResourceStream("native.zip");
+                string dstFolder = NativeLibraryCacheDirectory;
+
+                if (SeparateLibraryDirectories)
+                {
+#if NET8_0_OR_GREATER
+                    var hash = SHA1.HashData(stream);
+                    var guid = new Guid(hash.AsSpan(0, 16));
+#else
+                    using var sha1 = SHA1.Create();
+                    var hash = sha1.ComputeHash(stream);
+                    Array.Resize(ref hash, 16);
+                    var guid = new Guid(hash);
+#endif
+
+                    var platform = PlatformString(GetOSPlatform());
+                    var arch = ArchitectureString(RuntimeInformation.ProcessArchitecture);
+                    dstFolder = Path.Combine(dstFolder, name, guid.ToString(), platform, arch);
+                }
+
+                s_nativeDependenciesDirectory[assembly] = dstFolder;
+                path = dstFolder;
+                return true;
+            }
+        }
+
+        [Obsolete("Use GetNativeDependenciesDirectories instead.")]
+        public static string[] GetNativeLibraryPaths()
+            => GetNativeDependenciesDirectories();
+
+        [Obsolete("Use TryGetNativeDependenciesDirectory instead.")]
+        public static bool TryGetNativeLibraryPath(Assembly assembly, out string path)
+            => TryGetNativeDependenciesDirectory(assembly, out path);
+
+        private struct DllDirectoryDisposable(string previousPath) : IDisposable
+        {
+            private bool isActive = true;
+
+            public void Dispose()
+            {
+                if (isActive)
+                {
+                    if (!Kernel32.SetDllDirectory(previousPath))
+                    {
+                        var error = Marshal.GetLastWin32Error();
+                        Report.Line(4, $"Failed to reset DLL directory to '{previousPath}' (error: {error})");
+                    }
+                    isActive = false;
+                }
+            }
+        }
+
+        /// <seealso cref="Aardvark.UseSetDllDirectory"/>
+        private static DllDirectoryDisposable SetDllDirectory(string libraryPath)
+        {
+            if (!UseSetDllDirectory || GetOS() != OS.Win32)
+            {
+                return new DllDirectoryDisposable();
+            }
+
+            var directoryPath = PathUtils.HasDirectoryInformation(libraryPath) ? PathUtils.GetDirectoryNameSafe(libraryPath) : null;
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                return new DllDirectoryDisposable();
+            }
+
+            Report.Begin(4, $"Setting DLL directory to '{directoryPath}'");
+
+            try
+            {
+                var result = Kernel32.TryGetDllDirectory(out var previousPath);
+                if (result != 0)
+                {
+                    Report.Line(4, $"Failed to retrieve current DLL directory (error: {result})");
+                }
+                else if (previousPath != null)
+                {
+                    Report.Line(4, $"Previous path: {previousPath}");
+                }
+
+                if (Kernel32.SetDllDirectory(directoryPath))
+                {
+                    return new DllDirectoryDisposable(previousPath);
+                }
+
+                var error = Marshal.GetLastWin32Error();
+                Report.Line(4, $"Failed to set DLL directory to '{directoryPath}' (error: {error})");
+            }
+            catch (Exception e)
+            {
+                Report.Line(4, $"{e.GetType().Name}: {e.Message}");
+            }
+            finally
+            {
+                Report.End(4);
+            }
+
+            return new DllDirectoryDisposable();
+        }
+
+        private static bool TryLoadNativeLibrary(string libraryName, bool global, out IntPtr handle)
+        {
+#if NETCOREAPP3_1_OR_GREATER
+            return NativeLibrary.TryLoad(libraryName, out handle);
+#else
+            try
+            {
+                if (GetOS() == OS.Win32)
+                {
+                    var flags = Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR;
+                    handle = Kernel32.LoadLibraryEx(libraryName, IntPtr.Zero, flags);
+                    if (handle != IntPtr.Zero) return true;
+                    var error = Marshal.GetLastWin32Error();
+                    Report.Line(3, $"Kernel32.LoadLibrary failed (error: {error})");
                 }
                 else
                 {
-                    var info = assembly.GetManifestResourceInfo("native.zip");
-                    if (info == null)
-                    {
-                        s_nativePaths[assembly] = null;
-                        return false;
-                    }
-                    else
-                    {
-                        using var s = assembly.GetManifestResourceStream("native.zip");
-                        string dstFolder = NativeLibraryCacheDirectory;
-
-                        if (SeparateLibraryDirectories)
-                        {
-#if NET8_0_OR_GREATER
-                            var hash = SHA1.HashData(s);
-                            var guid = new Guid(hash.AsSpan(0, 16));
-#else
-                            using var sha1 = SHA1.Create();
-                            var hash = sha1.ComputeHash(s);
-                            Array.Resize(ref hash, 16);
-                            var guid = new Guid(hash);
-#endif
-
-                            var platform = PlatformString(GetOSPlatform());
-                            var arch = ArchitectureString(RuntimeInformation.ProcessArchitecture);
-                            dstFolder = Path.Combine(dstFolder, assembly.GetName().Name, guid.ToString(), platform, arch);
-                        }
-
-                        s_nativePaths[assembly] = dstFolder;
-                        s_allPaths = null;
-                        path = dstFolder;
-                        return true;
-                    }
+                    var flags = global ? Dl.RTLD_NODELETE | Dl.RTLD_GLOBAL | Dl.RTLD_NOW : Dl.RTLD_LAZY;
+                    handle = Dl.dlopen(libraryName, flags);
                 }
             }
-        }
+            catch (Exception e)
+            {
+                Report.Line(3, $"{e.GetType().Name}: {e.Message}");
+                handle = IntPtr.Zero;
+            }
 
-        private static readonly Dictionary<(Assembly, string), string> s_cache = new Dictionary<(Assembly, string), string>();
-
-        private static bool TryLoadNativeLibrary(string path, out IntPtr handle)
-        {
-#if NETCOREAPP3_1_OR_GREATER
-            return NativeLibrary.TryLoad(path, out handle);
-#else
-            handle = (GetOS() == OS.Win32) ? Kernel32.LoadLibrary(path) : Dl.dlopen(path, Dl.RTLD_LAZY);
             return handle != IntPtr.Zero;
 #endif
         }
 
-        private static bool TryLoadNativeLibrary(Assembly assembly, string name, out IntPtr handle)
+        private static IEnumerable<string> GetNativeLibraryPaths(Assembly assembly)
         {
-#if NETCOREAPP3_1_OR_GREATER
-            return (assembly != null)
-                ? NativeLibrary.TryLoad(name, assembly, null, out handle)
-                : NativeLibrary.TryLoad(name, out handle);
-#else
-            return TryLoadNativeLibrary(name, out handle);
-#endif
+            var result = new List<string>(capacity: 1);
+
+            // Search in current / assembly directory
+            var currentDirectory = PathUtils.GetDirectoryNameSafe(assembly?.GetLocationSafe()) ?? IntrospectionProperties.CurrentEntryPath;
+            result.AddRange(DirectoryUtils.GetFilesSafe(currentDirectory));
+
+            lock (s_nativeLibraryPaths)
+            {
+                // Probe extracted native libraries
+                if (assembly != null && s_nativeLibraryPaths.TryGetValue(assembly, out var filePathsForAssembly))
+                {
+                    result.AddRange(filePathsForAssembly);
+                }
+
+                // Probe extracted native libraries for other assemblies
+                foreach (var filePaths in s_nativeLibraryPaths.Values)
+                    result.AddRange(filePaths);
+            }
+
+            return result.Distinct();
         }
 
-        public static IntPtr LoadLibrary(Assembly assembly, string nativeName)
-        {
-            var os = GetOS();
-            lock (s_cache)
+        private static string NativeLibraryExtension { get; } =
+            GetOS() switch
             {
-                if(s_cache.TryGetValue((assembly, nativeName), out var path))
-                {
-                    return TryLoadNativeLibrary(path, out var handle) ? handle : IntPtr.Zero;
-                }
-            }
+                OS.Win32 => ".dll",
+                OS.MacOS => ".dylib",
+                _ => ".so"
+            };
+
+        private static readonly Dictionary<(Assembly, string), string> s_nativeLibraryCache = new();
+
+        private static IntPtr LoadLibrary(Assembly assembly, string libraryNameOrPath, bool resolving, bool global)
+        {
+            if (string.IsNullOrEmpty(libraryNameOrPath)) return IntPtr.Zero;
+            assembly ??= IntrospectionProperties.CurrentEntryAssembly ?? Assembly.GetExecutingAssembly();
 
             IntPtr ptr = IntPtr.Zero;
-            string probe = null;
-            var paths = new List<string>(capacity: 1);
+
+            bool TryLoad(string probe)
+            {
+                using var _ = SetDllDirectory(probe);
+
+                if (TryLoadNativeLibrary(probe, global, out ptr))
+                {
+                    Report.Line(4, $"Loaded: {probe}");
+                    try { lock (s_nativeLibraryCache) { s_nativeLibraryCache[(assembly, libraryNameOrPath)] = probe; } } catch {}
+                    return true;
+                }
+
+                Report.Line(4, $"Failed to load: {probe}");
+                return false;
+            }
+
+            Report.Begin(3, $"Loading native library '{libraryNameOrPath}'");
+            Report.Line(4, $"Assembly: {assembly}");
 
             try
             {
-                var location = PathUtils.GetDirectoryNameSafe(assembly?.GetLocationSafe()) ?? IntrospectionProperties.CurrentEntryPath;
-                if (location != null)
-                    paths.Add(location);
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                string[] formats = [];
-
-                if (os == OS.Linux) formats = ["{0}.so", "lib{0}.so", "lib{0}.so.1"];
-                else if (os == OS.Win32) formats = ["{0}.dll"];
-                else if (os == OS.MacOS) formats = ["{0}.dylib", "lib{0}.dylib"];
-
-                if (assembly != null)
+                // If the input is a path (i.e., it has a directory part) just load as is.
+                if (PathUtils.HasDirectoryInformation(libraryNameOrPath))
                 {
-                    if (TryGetNativeLibraryPath(assembly, out var dstFolder))
+                    if (!resolving) TryLoad(libraryNameOrPath);
+                    return ptr;
+                }
+
+                // Lookup input in cache
+                Report.Begin(4, "Looking up in cache");
+
+                try
+                {
+                    lock (s_nativeLibraryCache)
                     {
-                        paths.Add(dstFolder);
-                    }
-                    else
-                    {
-                        paths.AddRange(GetNativeLibraryPaths());
+                        var inCache = s_nativeLibraryCache.TryGetValue((assembly, libraryNameOrPath), out var path);
+                        if(inCache && File.Exists(path) && TryLoad(path)) return ptr;
                     }
                 }
-                else
+                finally
                 {
-                    paths.AddRange(GetNativeLibraryPaths());
+                    Report.End(4);
                 }
 
-                var realName = Path.GetFileNameWithoutExtension(nativeName);
-                Report.Begin(4, "probing paths for {0}", realName);
-                foreach(var path in paths)
+                // Determine file names of library to search for
+                // If the file name has an unknown or no extension, we add the default library extenion for the current platform
+                var libraryFileNames = new List<string>(capacity: 4)
                 {
-                    Report.Line(4, "{0}", path);
+                    libraryNameOrPath,
+                    $"lib{libraryNameOrPath}"
+                };
+
+                if (!string.Equals(PathUtils.GetExtensionSafe(libraryNameOrPath), NativeLibraryExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    libraryFileNames.Add($"{libraryNameOrPath}{NativeLibraryExtension}");
+                    libraryFileNames.Add($"lib{libraryNameOrPath}{NativeLibraryExtension}");
                 }
-                Report.End(4);
 
-                // NOTE: IPP will try to load other IPP native libs internally (not triggering the ResolvingUnmanagedDll callback) and show a message box if it fails -> make sure native dependencies between them can be resolved
-                //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directory of the library that should be loaded
-                //        - for some other reason AddDllDirectory does not help loading libraries, even it should provide similar behavior than SetDllDirectory
-                // NOTE++: We don't use IPP anymore, this was broken anyway because the assembly name was not "IPP" anymore for some reason.
-                //var setDllDir = os == OS.Win32 && assembly != null && assembly.GetName().Name == "IPP";
+                // Search in known locations (i.e., entry directory and extracted native directories).
+                Report.Begin(4, "Searching library directories");
 
-                foreach (var fmt in formats)
+                try
                 {
-                    var libName = string.Format(fmt, realName);
-
-                    // probe all paths.
-                    foreach (var p in paths)
+                    foreach (var filePath in GetNativeLibraryPaths(assembly))
                     {
-                        if (!Directory.Exists(p))
-                            continue;
+                        var fileName = PathUtils.GetFileNameSafe(filePath);
 
-                        if (FileUtils.TryFindInDirectory(p, libName, out var libPath))
+                        foreach (var libraryFileName in libraryFileNames)
                         {
-                            probe = libPath;
-                            if (TryLoadNativeLibrary(libPath, out ptr)) return ptr;
+                            if (string.Equals(fileName, libraryFileName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                if (File.Exists(filePath) && TryLoad(filePath)) return ptr;
+                            }
                         }
                     }
-
-                    // try the plain loading mechanism.
-                    probe = libName;
-                    if (TryLoadNativeLibrary(assembly, libName, out ptr)) return ptr;
+                }
+                finally
+                {
+                    Report.End(4);
                 }
 
-                // try the standard loading mechanism as a last resort.
-                probe = nativeName;
-                return TryLoadNativeLibrary(assembly, nativeName, out ptr) ? ptr : IntPtr.Zero;
+                // Did not find the library in any of the search directories.
+                // Try to load using the dynamic linker, i.e., only using the library name (and variants) instead of a path.
+                Report.Begin(4, "Using dynamic linker");
+
+                try
+                {
+                    foreach (var libraryFileName in libraryFileNames)
+                    {
+                        if (resolving && libraryFileName == libraryNameOrPath) continue;
+                        if (TryLoad(libraryFileName)) return ptr;
+                    }
+                }
+                finally
+                {
+                    Report.End(4);
+                }
+
+                // On Linux, as a final resort, we go over all the known libraries as returned by `ldconfig` and look for
+                // the library ignoring version numbers.
+                if (GetOS() == OS.Linux)
+                {
+                    var libraryName = RegexPatterns.NativeLibrary.Extension.Replace(libraryNameOrPath, "");
+                    if (!string.IsNullOrEmpty(libraryName))
+                    {
+                        Report.Begin(4, "Using ldconfig ignoring version numbers");
+
+                        try
+                        {
+                            foreach (var filePath in LdConfig.AllPaths)
+                            {
+                                var fileName = PathUtils.GetFileNameSafe(filePath);
+
+                                if (!string.IsNullOrEmpty(fileName))
+                                {
+                                    fileName = RegexPatterns.NativeLibrary.Extension.Replace(fileName, "");
+
+                                    if (string.Equals(fileName, libraryName, StringComparison.OrdinalIgnoreCase) ||
+                                        string.Equals(fileName, $"lib{libraryName}", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        if (File.Exists(filePath) && TryLoad(filePath)) return ptr;
+                                    }
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            Report.End(4);
+                        }
+                    }
+                }
+
+                return IntPtr.Zero;
             }
             catch (Exception e)
             {
-                Report.Warn($"Could not load native library {nativeName}: {e.Message}");
+                Report.Warn($"{e.GetType().Name} occurred while loading native library '{libraryNameOrPath}': {e.Message}");
                 return IntPtr.Zero;
             }
             finally
             {
-                if (ptr == IntPtr.Zero)
-                {
-                    Report.Warn($"Could not load native library {nativeName} ({probe})");
-                }
-                else
-                {
-                    lock (s_cache) { s_cache[(assembly, nativeName)] = probe; }
-                    Report.Line(4, "[Introspection] loaded native library {0} from {1}", nativeName, probe);
-                }
+                Report.End(3, ptr != IntPtr.Zero ? $" - success" : " - failed");
             }
         }
+
+        /// <summary>
+        /// Loads the specified native library; the input can be a name or a file path.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="libraryNameOrPath"/> is a path (i.e., it contains a directory separator) the
+        /// platform's dynamic linker is invoked directly with that value. Otherwise, the function
+        /// tries to locate the library by:
+        /// <list type="number">
+        /// <item>Searching the directory where the assembly is located.</item>
+        /// <item>Searching the directory of the native dependencies of the assembly.</item>
+        /// <item>Searching the directories of the native dependencies of all the other assemblies.</item>
+        /// <item>Invoking the dynamic linker.</item>
+        /// <item>Resolving the path by using `ldconfig` ignoring version information (Linux only).</item>
+        /// </list>
+        /// Library name comparison is case-insensitive and variants ('lib' prefix, platform-specific extension) are considered.
+        /// </remarks>
+        /// <param name="libraryNameOrPath">Name or file path of the library to load.</param>
+        /// <param name="assembly">Assembly loading the native library. If <c>null</c> the calling assembly is used.</param>
+        /// <returns>Handle of the loaded library on success, <see cref="IntPtr.Zero"/> otherwise.</returns>
+        public static IntPtr LoadLibrary(string libraryNameOrPath, Assembly assembly = null)
+            => LoadLibrary(assembly ?? Assembly.GetCallingAssembly(), libraryNameOrPath, resolving: false, global: false);
+
+        [Obsolete("Use overload with optional 'assembly' parameter instead.")]
+        public static IntPtr LoadLibrary(Assembly assembly, string libraryNameOrPath)
+            => LoadLibrary(assembly ?? Assembly.GetCallingAssembly(), libraryNameOrPath, resolving: false, global: false);
 
         public static IntPtr GetProcAddress(IntPtr handle, string name)
         {
             if (handle == IntPtr.Zero) return IntPtr.Zero;
 
 #if NETCOREAPP3_1_OR_GREATER
-            IntPtr ptr;
-            if (NativeLibrary.TryGetExport(handle, name, out ptr)) return ptr;
-            else return IntPtr.Zero;
+            return NativeLibrary.TryGetExport(handle, name, out var ptr) ? ptr : IntPtr.Zero;
 #else
-            var os = GetOS();
-            if (os == OS.Win32) return Kernel32.GetProcAddress(handle, name);
-            else return Dl.dlsym(handle, name);
+            return GetOS() == OS.Win32 ? Kernel32.GetProcAddress(handle, name) : Dl.dlsym(handle, name);
 #endif
         }
 
-        public static void LoadNativeDependencies(Assembly a)
+        public static void LoadNativeDependencies(Assembly assembly)
         {
-            if (TryGetNativeLibraryPath(a, out string dstFolder))
+            if (TryGetNativeDependenciesDirectory(assembly, out string dstFolder))
             {
                 try
                 {
-                    Report.BeginTimed(3, $"Loading native dependencies for {a.FullName}");
-                    try
+                    Report.BeginTimed(3, $"Loading native dependencies for {assembly.FullName}");
+
+                    var libraryNames = UnpackAndListNativeDependencies(assembly, dstFolder);
+                    var libraryPaths = new List<string>(capacity: libraryNames.Length);
+
+                    lock (s_nativeLibraryPaths)
                     {
-                        var libNames = UnpackAndListNativeDependencies(a, dstFolder);
-
-#if NETCOREAPP3_1_OR_GREATER
-                        NativeLibrary.SetDllImportResolver(a, (name, ass, searchPath) =>
+                        foreach (var libraryName in libraryNames)
                         {
-                            return LoadLibrary(ass, name);
-                        });
-#else
-                        var isWindows = GetOS() == OS.Win32;
-
-                        // NOTE: libraries such as IPP are spread over multiple dlls that will now get loaded in an nondeterministic order -> make sure native dependencies between them can be resolved
-                        //        - for some reason SetDllDirectory is required even LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR is used that will include the directory of the library that should be loaded
-                        //        - for some other reason AddDllDirectory does not help loading libraries, even it should provide similar behavior than SetDllDirectory
-                        if (isWindows)
-                            Kernel32.SetDllDirectory(dstFolder);
-
-                        foreach (var file in libNames)
-                        {
-                            try
-                            {
-                                var ptr = IntPtr.Zero;
-                                var filePath = Path.Combine(dstFolder, file);
-                                if (isWindows)
-                                    ptr = Kernel32.LoadLibraryEx(filePath, IntPtr.Zero, Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR);
-                                else
-                                    ptr = Dl.dlopen(filePath, Dl.RTLD_NODELETE | Dl.RTLD_GLOBAL | Dl.RTLD_NOW);
-
-                                if (ptr == IntPtr.Zero)
-                                {
-                                    if (isWindows)
-                                    {
-                                        var err = Kernel32.GetLastError();
-                                        Report.Warn($"Could not load native library {filePath} (Error = {err})");
-                                    }
-                                    else
-                                    {
-                                        Report.Warn($"Could not load native library {filePath}");
-                                    }
-                                }
-                                else
-                                {
-                                    Report.Line(3, $"Loaded {file}");
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Report.Warn($"Could not load native library {file}: {ex.Message}");
-                            }
+                            var path = Path.Combine(dstFolder, libraryName);
+                            if (File.Exists(path)) libraryPaths.Add(path);
                         }
-#endif
+
+                        s_nativeLibraryPaths[assembly] = libraryPaths.ToArray();
                     }
-                    finally
+
+#if !NETCOREAPP3_1_OR_GREATER
+                    // For .NET Standard 2.0, we don't have access to the ResolvingUnmanagedDll event (see Aardvark.Init())
+                    // Instead we load all the native libraries preemptively after unpacking.
+                    // Caveat: This does not work with symlinks (on Linux at least), but there is no reason to use the .NET Standard 2.0 build
+                    // for non-Windows platforms anyway.
+                    foreach (var libraryPath in libraryPaths)
                     {
-                        Report.End(3);
+                        LoadLibrary(assembly, libraryPath, resolving: false, global: true);
                     }
+#endif
                 }
                 catch (Exception e)
                 {
-                    Report.Warn($"Could not load native dependencies for {a.FullName}: {e.Message}");
+                    Report.Warn($"Could not load native dependencies for {assembly.FullName}: {e.Message}");
+                }
+                finally
+                {
+                    Report.End(3);
                 }
             }
         }
@@ -2061,7 +2240,7 @@ namespace Aardvark.Base
         {
             if (isInitialized) return;
 
-            Report.BeginTimed("initializing aardvark");
+            Report.BeginTimed("Initializing aardvark");
 
             const string framework =
 #if NET8_0
@@ -2103,11 +2282,9 @@ namespace Aardvark.Base
                         Report.End(4, $" - success: {path}");
                         return asm;
                     }
-                    else
-                    {
-                        Report.End(4, $" - not found");
-                        return null;
-                    }
+
+                    Report.End(4, $" - not found");
+                    return null;
                 }
                 catch (Exception e)
                 {
@@ -2116,17 +2293,24 @@ namespace Aardvark.Base
                 }
             };
 
-            AssemblyLoadContext.Default.ResolvingUnmanagedDll += (ass, name) =>
+            // Called whenever a native library cannot be resolved by the managed runtime.
+            // Note that this is only called for native libraries that are loaded from managed code.
+            // Dependencies of native libraries are resolved using the dynamic linker of the platform.
+            // On Linux, this can be problematic if an assembly has native dependencies consisting of
+            // multiple libraries (e.g., liba and libb will be unpacked to the same directory, where liba requires libb).
+            // In this case the libraries must be built with rpath set to $ORIGIN so that libb can be found next to liba.
+            AssemblyLoadContext.Default.ResolvingUnmanagedDll += (assembly, name) =>
             {
-                Report.Line(4, "trying to resolve native library {0}", name);
-                try { return LoadLibrary(null, name); }
-                catch (Exception) { return IntPtr.Zero; }
+                Report.Begin(4, $"Resolving native library '{name}'");
+                var ptr = LoadLibrary(assembly, name, global: false, resolving: true);
+                Report.End(4);
+                return ptr;
             };
-#else
-            var platform = GetOS();
-            if (platform == OS.Win32)
-                Kernel32.SetErrorMode(1); // set error mode to SEM_FAILCRITICALERRORS 0x0001: do not display cirital error message boxes
 #endif
+            // Set error mode to SEM_FAILCRITICALERRORS:
+            // The system does not display the critical-error-handler message box.
+            // Instead, the system sends the error to the calling process.
+            if (GetOS() == OS.Win32) Kernel32.SetErrorMode(Kernel32.SEM_FAILCRITICALERRORS);
 
             static void loadNativeDependencies(Assembly assembly)
             {
@@ -2200,7 +2384,7 @@ namespace Aardvark.Base
                         if (parameters.Length == 0)
                             mi.Invoke(null, null);
                         else if (parameters.Length == 1 && parameters[0].ParameterType == typeof(IEnumerable<Assembly>))
-                            mi.Invoke(null, new object[] { Introspection.AllAssemblies });
+                            mi.Invoke(null, [Introspection.AllAssemblies]);
                         else
                             Report.Warn("Strange aardvark init method found: {0}, should be Init : IEnumberable<Assembly> -> unit or unit -> unit", mi);
                     }

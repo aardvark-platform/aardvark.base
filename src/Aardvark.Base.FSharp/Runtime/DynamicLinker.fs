@@ -69,18 +69,18 @@ module DynamicLinker =
     
     let private linker =
         { new IDynamicLinker with
-            member x.LoadLibrary(name : string) = Aardvark.Base.Aardvark.LoadLibrary(null, name)
+            member x.LoadLibrary(name : string) = Aardvark.LoadLibrary(name, Assembly.GetCallingAssembly())
             member x.FreeLibrary(address : nativeint) = ()
-            member x.GetProcAddress (handle : nativeint) (name : string) = Aardvark.Base.Aardvark.GetProcAddress(handle, name)
+            member x.GetProcAddress (handle : nativeint) (name : string) = Aardvark.GetProcAddress(handle, name)
         }
 
     let tryLoadLibrary (name : string) =
-        let ptr = Aardvark.Base.Aardvark.LoadLibrary(null, name)
+        let ptr = Aardvark.LoadLibrary(name, Assembly.GetCallingAssembly())
         if ptr <> 0n then new Library(ptr, linker) |> Some
         else None
 
     let loadLibrary (name : string) =
-        let ptr = Aardvark.Base.Aardvark.LoadLibrary(null, name)
+        let ptr = Aardvark.LoadLibrary(name, Assembly.GetCallingAssembly())
         new Library(ptr, linker)
 
     let tryLoadFunction (name : string) (lib : Library) =
