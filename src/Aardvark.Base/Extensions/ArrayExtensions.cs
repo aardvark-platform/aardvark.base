@@ -2356,11 +2356,8 @@ namespace Aardvark.Base
             var l = data.GetType().GetElementType().GetCLRSize() * data.Length;
             try
             {
-                using (var stream =
-                       new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read))
-                {
-                    return action(stream);
-                }
+                using var stream = new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read);
+                return action(stream);
             }
             finally
             {
@@ -2374,11 +2371,8 @@ namespace Aardvark.Base
             var l = data.GetType().GetElementType().GetCLRSize() * data.Length;
             try
             {
-                using (var stream =
-                       new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read))
-                {
-                    action(stream);
-                }
+                using var stream = new UnmanagedMemoryStream(((byte*)gc.AddrOfPinnedObject())!, l, l, FileAccess.Read);
+                action(stream);
             }
             finally
             {
@@ -2421,13 +2415,15 @@ namespace Aardvark.Base
 #endif
         }
 
-#if NET6_0_OR_GREATER
         /// <summary>
         /// Computes the MD5 hash of the data array.
         /// </summary>
         /// <returns>128bit/16byte data hash</returns>
         public static byte[] ComputeMD5Hash<T>(this T[] data) where T : struct
+#if NET6_0_OR_GREATER
             => MD5.HashData(data.AsByteSpan());
+#else
+            => ((Array)data).ComputeMD5Hash();
 #endif
 
         /// <summary>
@@ -2456,11 +2452,9 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA1.HashData(data);
 #else
-            using (var sha = SHA1.Create())
-            {
-                var hash = sha.ComputeHash(data);
-                return hash;
-            }
+            using var sha = SHA1.Create();
+            var hash = sha.ComputeHash(data);
+            return hash;
 #endif
         }
 
@@ -2473,22 +2467,20 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA1.HashData(data.AsByteSpan());
 #else
-            using(var sha = SHA1.Create())
-            {
-                return data.UseAsStream((stream) => sha.ComputeHash(stream));
-            }
+            using var sha = SHA1.Create();
+            return data.UseAsStream((stream) => sha.ComputeHash(stream));
 #endif
         }
 
-#if NET6_0_OR_GREATER
         /// <summary>
         /// Computes the SHA1 hash of the data array.
         /// </summary>
         /// <returns>160bit/20byte data hash</returns>
-        public static byte[] ComputeSHA1Hash<T>(this T[] data)  where T : struct
-        {
-            return SHA1.HashData(data.AsByteSpan());
-        }
+        public static byte[] ComputeSHA1Hash<T>(this T[] data) where T : struct
+#if NET6_0_OR_GREATER
+            => SHA1.HashData(data.AsByteSpan());
+#else
+            => ((Array)data).ComputeSHA1Hash();
 #endif
 
         /// <summary>
@@ -2517,11 +2509,9 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA256.HashData(data);
 #else
-            using (var sha = SHA256.Create())
-            {
-                var hash = sha.ComputeHash(data);
-                return hash;
-            }
+            using var sha = SHA256.Create();
+            var hash = sha.ComputeHash(data);
+            return hash;
 #endif
         }
 
@@ -2534,22 +2524,20 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA256.HashData(data.AsByteSpan());
 #else
-            using(var sha = SHA256.Create())
-            {
-                return data.UseAsStream((stream) => sha.ComputeHash(stream));
-            }
+            using var sha = SHA256.Create();
+            return data.UseAsStream((stream) => sha.ComputeHash(stream));
 #endif
         }
 
-#if NET6_0_OR_GREATER
         /// <summary>
         /// Computes the SHA256 hash of the data array.
         /// </summary>
         /// <returns>256bit/32byte data hash</returns>
         public static byte[] ComputeSHA256Hash<T>(this T[] data) where T : struct
-        {
-            return SHA256.HashData(data.AsByteSpan());
-        }
+#if NET6_0_OR_GREATER
+            => SHA256.HashData(data.AsByteSpan());
+#else
+            => ((Array)data).ComputeSHA256Hash();
 #endif
 
         /// <summary>
@@ -2578,11 +2566,9 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA512.HashData(data);
 #else
-            using (var sha = SHA512.Create())
-            {
-                var hash = sha.ComputeHash(data);
-                return hash;
-            }
+            using var sha = SHA512.Create();
+            var hash = sha.ComputeHash(data);
+            return hash;
 #endif
         }
 
@@ -2595,22 +2581,20 @@ namespace Aardvark.Base
 #if NET6_0_OR_GREATER
             return SHA512.HashData(data.AsByteSpan());
 #else
-            using(var sha = SHA512.Create())
-            {
-                return data.UseAsStream((stream) => sha.ComputeHash(stream));
-            }
+            using var sha = SHA512.Create();
+            return data.UseAsStream((stream) => sha.ComputeHash(stream));
 #endif
         }
 
-#if NET6_0_OR_GREATER
         /// <summary>
         /// Computes the SHA512 hash of the data array.
         /// </summary>
         /// <returns>512bit/64byte data hash</returns>
         public static byte[] ComputeSHA512Hash<T>(this T[] data) where T : struct
-        {
-            return SHA512.HashData(data.AsByteSpan());
-        }
+#if NET6_0_OR_GREATER
+            => SHA512.HashData(data.AsByteSpan());
+#else
+            => ((Array)data).ComputeSHA512Hash();
 #endif
 
         /// <summary>
@@ -2657,18 +2641,20 @@ namespace Aardvark.Base
             return a.Checksum;
         }
 
-#if NET6_0_OR_GREATER
         /// <summary>
         /// Computes a checksum of the data array using the Adler-32 algorithm (<see cref="Adler32"/>).
         /// </summary>
         public static uint ComputeAdler32Checksum<T>(this T[] data) where T : struct
         {
+#if NET6_0_OR_GREATER
             var a = new Adler32();
             if (data != null)
                 a.Update(data.AsByteSpan());
             return a.Checksum;
-        }
+#else
+            return ((Array)data).ComputeAdler32Checksum();
 #endif
+        }
 
         /// <summary>
         /// Computes a checksum of the given string using the Adler-32 algorithm (<see cref="Adler32"/>).

@@ -3,6 +3,7 @@
 - [Fonts] Improved error reporting by font resolver
 - [Fonts] Added missing Symbola font
 - [Fonts] Implemented font resolver for Linux
+- [Base] Added hashing extensions for typed arrays in NET Standard 2.0 to improve binary compatibility with .NET 8 build.
 
 ### 5.3.19
 - [Color] Added missing over- and underflow checks
