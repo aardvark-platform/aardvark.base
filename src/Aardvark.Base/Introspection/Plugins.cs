@@ -449,12 +449,30 @@ public partial class Aardvark
 
             try
             {
-                var plugins = Find();
-                var allAssemblies = Introspection.AllAssemblies.Concat(plugins).GroupBy(a => a.FullName).Select(x => x.First()).ToArray();
+                List<Assembly> plugins;
 
-                foreach (var assembly in allAssemblies)
+                Report.BeginTimed("Finding and loading assemblies");
+                try
                 {
-                    var initMethods = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(assembly).Select(t => t.Item1).Distinct().ToArray();
+                    plugins = Find();
+                }
+                finally
+                {
+                    Report.EndTimed();
+                }
+
+                foreach (var assembly in plugins ?? [])
+                {
+                    HashSet<MethodInfo> initMethods = [];
+                    try
+                    {
+                        var query = Introspection.GetAllMethodsWithAttribute<OnAardvarkInitAttribute>(assembly);
+                        foreach (var q in query) initMethods.Add(q.Item1);
+                    }
+                    catch (Exception e)
+                    {
+                        Report.Warn($"Failed to query initialization methods for assembly '{assembly}': {e.Message}");
+                    }
 
                     foreach (var mi in initMethods)
                     {

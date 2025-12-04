@@ -166,6 +166,8 @@ public static class Introspection
 
     static Introspection()
     {
+        Report.BeginTimed("Enumerating assemblies for introspection");
+
         // enumerating all assemblies reachable from entry assembly
         s_assemblies = new Dictionary<string, Assembly>();
 
@@ -187,6 +189,8 @@ public static class Introspection
             var name = entryAssembly.GetName().Name;
             EnumerateAssemblies(name, entryAssembly);
         }
+
+        Report.EndTimed();
     }
 
     /// <summary>
