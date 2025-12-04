@@ -69,9 +69,9 @@ public static class CachingProperties
 
         /// <summary>
         /// Gets or sets the naming scheme used for introspection cache files.
-        /// Default scheme is based on assembly file timestamp.
+        /// Default scheme is based on assembly version.
         /// </summary>
-        public static NamingScheme IntrospectionCacheFileNaming { get; set; } = NamingScheme.Timestamp;
+        public static NamingScheme IntrospectionCacheFileNaming { get; set; } = NamingScheme.Version;
 
         internal static string GetIdentifier(this Assembly asm, NamingScheme scheme)
         {
