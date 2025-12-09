@@ -1,3 +1,5 @@
+### 5.3.20
+- [Base] Improved native library loading and symlink creation
 - [FSharp] Added utilities for copying streams
 - [Fonts] Added Font.LoadFromAssembly for loading embedded fonts
 - [Fonts] Improved error reporting by font resolver
