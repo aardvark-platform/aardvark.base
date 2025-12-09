@@ -406,13 +406,14 @@ type private FontImpl internal(f : Typeface, familyName : string, weight : int, 
         FontImpl(face, family, entry.Weight, entry.Italic)
 
     new (assembly : System.Reflection.Assembly, file : string, entryName : string, weight : int, italic : bool) =
+        if isNull assembly then raise <| ArgumentNullException(nameof assembly)
         let names = assembly.GetManifestResourceNames()
 
         let resourceName =
             names
             |> Array.tryFindV (fun n -> n.EndsWith file)
             |> ValueOption.defaultWith (fun _ ->
-                raise <| IO.FileNotFoundException($"Could not find embedded resource with name '{file}'.", file)
+                raise <| IO.FileNotFoundException($"Could not find embedded resource with name '{file}' in assembly '{assembly}'.", file)
             )
 
         let fontData =
@@ -426,7 +427,7 @@ type private FontImpl internal(f : Typeface, familyName : string, weight : int, 
 
                 let entry = zip.GetEntry entryName
                 if isNull entry then
-                    raise <| IO.FileNotFoundException($"Could not find entry with name '{entryName}'.", entryName)
+                    raise <| IO.FileNotFoundException($"Could not find entry with name '{entryName}' in ZIP archive '{file}' in assembly '{assembly}'.", entryName)
 
                 use data = entry.Open()
                 Stream.readAllBytes data
@@ -496,6 +497,20 @@ type Font private(impl : FontImpl) =
         Font(impl)
 
     /// <summary>
+    /// Loads a font embedded in the calling assembly as a ZIP archive.
+    /// The name of the ZIP archive does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="zipArchive">Name of the embedded ZIP archive.</param>
+    /// <param name="entryName">Name of the ZIP entry containing the font file.</param>
+    /// <param name="weight">Weight of the font to load.</param>
+    /// <param name="italic">Indicates whether italic variant is desired.</param>
+    static member LoadFromAssembly(zipArchive: string, entryName: string,
+                                   [<Optional; DefaultParameterValue(400)>] weight: int,
+                                   [<Optional; DefaultParameterValue(false)>] italic: bool) =
+        let assembly = System.Reflection.Assembly.GetCallingAssembly()
+        Font.LoadFromAssembly(assembly, zipArchive, entryName, weight, italic)
+
+    /// <summary>
     /// Loads a font embedded in an assembly.
     /// The name of the font file does not have to be exact; the first embedded resource that ends with the given name is used.
     /// </summary>
@@ -506,6 +521,19 @@ type Font private(impl : FontImpl) =
     static member LoadFromAssembly(assembly: System.Reflection.Assembly, file: string,
                                    [<Optional; DefaultParameterValue(400)>] weight: int,
                                    [<Optional; DefaultParameterValue(false)>] italic: bool) =
+        Font.LoadFromAssembly(assembly, file, null, weight, italic)
+
+    /// <summary>
+    /// Loads a font embedded in the calling assembly.
+    /// The name of the font file does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="file">Name of the embedded font file.</param>
+    /// <param name="weight">Weight of the font to load.</param>
+    /// <param name="italic">Indicates whether italic variant is desired.</param>
+    static member LoadFromAssembly(file: string,
+                                   [<Optional; DefaultParameterValue(400)>] weight: int,
+                                   [<Optional; DefaultParameterValue(false)>] italic: bool) =
+        let assembly = System.Reflection.Assembly.GetCallingAssembly()
         Font.LoadFromAssembly(assembly, file, null, weight, italic)
 
     /// <summary>
@@ -521,6 +549,17 @@ type Font private(impl : FontImpl) =
         Font.LoadFromAssembly(assembly, zipArchive, entryName, weight, italic)
 
     /// <summary>
+    /// Loads a font embedded in the calling assembly as a ZIP archive.
+    /// The name of the ZIP archive does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="zipArchive">Name of the embedded ZIP archive.</param>
+    /// <param name="entryName">Name of the ZIP entry containing the font file.</param>
+    /// <param name="style">Variant of the font to load.</param>
+    static member LoadFromAssembly(zipArchive: string, entryName: string, style: FontStyle) =
+        let assembly = System.Reflection.Assembly.GetCallingAssembly()
+        Font.LoadFromAssembly(assembly, zipArchive, entryName, style)
+
+    /// <summary>
     /// Loads a font embedded in an assembly.
     /// The name of the font file does not have to be exact; the first embedded resource that ends with the given name is used.
     /// </summary>
@@ -528,6 +567,16 @@ type Font private(impl : FontImpl) =
     /// <param name="file">Name of the embedded font file.</param>
     /// <param name="style">Variant of the font to load.</param>
     static member LoadFromAssembly(assembly: System.Reflection.Assembly, file: string, style: FontStyle) =
+        Font.LoadFromAssembly(assembly, file, null, style)
+
+    /// <summary>
+    /// Loads a font embedded in the calling assembly.
+    /// The name of the font file does not have to be exact; the first embedded resource that ends with the given name is used.
+    /// </summary>
+    /// <param name="file">Name of the embedded font file.</param>
+    /// <param name="style">Variant of the font to load.</param>
+    static member LoadFromAssembly(file: string, style: FontStyle) =
+        let assembly = System.Reflection.Assembly.GetCallingAssembly()
         Font.LoadFromAssembly(assembly, file, null, style)
 
     new(stream : System.IO.Stream, weight : int, italic : bool) =
