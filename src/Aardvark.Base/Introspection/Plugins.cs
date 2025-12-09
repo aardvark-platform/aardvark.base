@@ -207,7 +207,17 @@ public partial class Aardvark
                 public bool IsPlugin = isPlugin;
             }
 
-            private static readonly DataContractSerializer serializer = new DataContractSerializer(typeof(PluginCache));
+            private static readonly DataContractSerializer serializer = new(typeof(PluginCache));
+
+            // Note: Used in unit test via reflection
+            private static PluginCache Deserialize(Stream stream)
+                => (PluginCache)serializer.ReadObject(stream);
+
+            private void Serialize(Stream stream)
+            {
+                using var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true });
+                serializer.WriteObject(writer, this);
+            }
 
             public static PluginCache ReadFromFile()
             {
@@ -216,7 +226,7 @@ public partial class Aardvark
                     try
                     {
                         using var stream = new FileStream(CacheFile, FileMode.Open);
-                        var result = (PluginCache)serializer.ReadObject(stream);
+                        var result = Deserialize(stream);
                         Report.Line(3, $"Loaded plugins cache file: {CacheFile}");
                         return result;
                     }
@@ -244,8 +254,7 @@ public partial class Aardvark
                         if (File.Exists(CacheFile)) File.Delete(CacheFile);
 
                         using var stream = new FileStream(CacheFile, FileMode.CreateNew);
-                        using var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true });
-                        serializer.WriteObject(writer, this);
+                        Serialize(stream);
                     }
                     catch(Exception e)
                     {

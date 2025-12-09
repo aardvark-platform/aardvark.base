@@ -244,14 +244,15 @@ module Caches =
     let ``[Caches] Introspection plugin cache``() =
 
         // Don't want to make this type public just for a unit test, so we just use reflection?
-        let cacheType = typeof<Aardvark>.GetNestedType("PluginCache", BindingFlags.Public ||| BindingFlags.NonPublic)
+        let plugins = typeof<Aardvark>.GetNestedType("Plugins", BindingFlags.NonPublic ||| BindingFlags.Public)
+        let cacheType = plugins.GetNestedType("PluginCache", BindingFlags.NonPublic ||| BindingFlags.Public)
 
         let dataType = cacheType.GetNestedType("Data");
         let dataCtor = dataType.GetConstructor([| typeof<DateTime>; typeof<bool> |])
 
         let cacheCtor = cacheType.GetConstructor([||])
-        let serialize = cacheType.GetMethod("Serialize", [| typeof<Stream> |])
-        let deserialize = cacheType.GetMethod("Deserialize", [| typeof<Stream> |])
+        let serialize = cacheType.GetMethod("Serialize", BindingFlags.NonPublic ||| BindingFlags.Instance, [| typeof<Stream> |])
+        let deserialize = cacheType.GetMethod("Deserialize",  BindingFlags.NonPublic ||| BindingFlags.Static, [| typeof<Stream> |])
         let add = cacheType.GetMethod("Add", [| typeof<string>; dataType |])
 
         let addEntry (path : string) (lastModified : DateTime) (isPlugin : bool) (cache : IDictionary) =
