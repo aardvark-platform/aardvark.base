@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Xml.Linq;
@@ -673,6 +674,7 @@ public partial class Aardvark
     /// <param name="libraryNameOrPath">Name or file path of the library to load.</param>
     /// <param name="assembly">Assembly loading the native library. If <c>null</c> the calling assembly is used.</param>
     /// <returns>Handle of the loaded library on success, <see cref="IntPtr.Zero"/> otherwise.</returns>
+    [MethodImpl(MethodImplOptions.NoInlining)]
     public static IntPtr LoadLibrary(string libraryNameOrPath, Assembly assembly = null)
         => LoadLibrary(assembly ?? Assembly.GetCallingAssembly(), libraryNameOrPath, resolving: false, global: false);
 
@@ -706,6 +708,7 @@ public partial class Aardvark
     public static bool TryGetNativeLibraryPath(Assembly assembly, out string path)
         => TryGetNativeDependenciesDirectory(assembly, out path);
 
+    [MethodImpl(MethodImplOptions.NoInlining)]
     [Obsolete("Use overload with optional 'assembly' parameter instead.")]
     public static IntPtr LoadLibrary(Assembly assembly, string libraryNameOrPath)
         => LoadLibrary(assembly ?? Assembly.GetCallingAssembly(), libraryNameOrPath, resolving: false, global: false);

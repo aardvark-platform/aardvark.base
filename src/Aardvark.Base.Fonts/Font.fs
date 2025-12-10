@@ -504,6 +504,7 @@ type Font private(impl : FontImpl) =
     /// <param name="entryName">Name of the ZIP entry containing the font file.</param>
     /// <param name="weight">Weight of the font to load.</param>
     /// <param name="italic">Indicates whether italic variant is desired.</param>
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
     static member LoadFromAssembly(zipArchive: string, entryName: string,
                                    [<Optional; DefaultParameterValue(400)>] weight: int,
                                    [<Optional; DefaultParameterValue(false)>] italic: bool) =
@@ -530,6 +531,7 @@ type Font private(impl : FontImpl) =
     /// <param name="file">Name of the embedded font file.</param>
     /// <param name="weight">Weight of the font to load.</param>
     /// <param name="italic">Indicates whether italic variant is desired.</param>
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
     static member LoadFromAssembly(file: string,
                                    [<Optional; DefaultParameterValue(400)>] weight: int,
                                    [<Optional; DefaultParameterValue(false)>] italic: bool) =
@@ -555,6 +557,7 @@ type Font private(impl : FontImpl) =
     /// <param name="zipArchive">Name of the embedded ZIP archive.</param>
     /// <param name="entryName">Name of the ZIP entry containing the font file.</param>
     /// <param name="style">Variant of the font to load.</param>
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
     static member LoadFromAssembly(zipArchive: string, entryName: string, style: FontStyle) =
         let assembly = System.Reflection.Assembly.GetCallingAssembly()
         Font.LoadFromAssembly(assembly, zipArchive, entryName, style)
@@ -575,6 +578,7 @@ type Font private(impl : FontImpl) =
     /// </summary>
     /// <param name="file">Name of the embedded font file.</param>
     /// <param name="style">Variant of the font to load.</param>
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
     static member LoadFromAssembly(file: string, style: FontStyle) =
         let assembly = System.Reflection.Assembly.GetCallingAssembly()
         Font.LoadFromAssembly(assembly, file, null, style)

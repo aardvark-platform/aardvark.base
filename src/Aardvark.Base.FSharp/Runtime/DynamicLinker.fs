@@ -5,12 +5,9 @@ open Aardvark.Base
 namespace Aardvark.Base
 #endif
 
-open System.Linq.Expressions
-open System.Runtime.InteropServices
-open Microsoft.FSharp.Reflection
-open System.Reflection
-open System.Reflection.Emit
 open System
+open System.Reflection
+open System.Runtime.CompilerServices
 
 /// <summary>
 /// Declares the basic interface for a dynamic linker provided by the OS.
@@ -69,16 +66,19 @@ module DynamicLinker =
     
     let private linker =
         { new IDynamicLinker with
+            [<MethodImpl(MethodImplOptions.NoInlining)>]
             member x.LoadLibrary(name : string) = Aardvark.LoadLibrary(name, Assembly.GetCallingAssembly())
             member x.FreeLibrary(address : nativeint) = ()
             member x.GetProcAddress (handle : nativeint) (name : string) = Aardvark.GetProcAddress(handle, name)
         }
 
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
     let tryLoadLibrary (name : string) =
         let ptr = Aardvark.LoadLibrary(name, Assembly.GetCallingAssembly())
         if ptr <> 0n then new Library(ptr, linker) |> Some
         else None
 
+    [<MethodImpl(MethodImplOptions.NoInlining)>]
     let loadLibrary (name : string) =
         let ptr = Aardvark.LoadLibrary(name, Assembly.GetCallingAssembly())
         new Library(ptr, linker)
