@@ -21,7 +21,6 @@ module RayHit =
     let map (f : 'a -> 'b) (hit : RayHit<'a>) =
         RayHit(hit.T, f hit.Value)
 
-[<Extension>]
 type RayPart =
     struct
         val mutable public Ray  : FastRay3d
