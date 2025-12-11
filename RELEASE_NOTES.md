@@ -1,3 +1,5 @@
+- [Base] Simplified computation of Constant<T>.MachineEpsilon
+
 ### 5.3.20
 - [Base] Improved native library loading and symlink creation
 - [FSharp] Added utilities for copying streams

@@ -43,46 +43,42 @@ namespace Aardvark.Base
         /// </summary>
         public static readonly T NegativeTinyValue;
 
-        private static readonly float floatStore;
-
         static Constant()
         {
-            // Console.WriteLine("initializing {0}", typeof(T).Name);
-
             if (typeof(T) == typeof(byte))
             {
                 ParseableMinValue = (T)(object)byte.MinValue;
                 ParseableMinValue = (T)(object)byte.MinValue;
                 ParseableMaxValue = (T)(object)byte.MaxValue;
-                MachineEpsilon = (T)(object)(byte)1;
+                MachineEpsilon    = (T)(object)(byte)1;
                 PositiveTinyValue = (T)(object)(byte)4;
             }
             else if (typeof(T) == typeof(ushort))
             {
                 ParseableMinValue = (T)(object)ushort.MinValue;
                 ParseableMaxValue = (T)(object)ushort.MaxValue;
-                MachineEpsilon = (T)(object)(ushort)1;
+                MachineEpsilon    = (T)(object)(ushort)1;
                 PositiveTinyValue = (T)(object)(ushort)4;
             }
             else if (typeof(T) == typeof(uint))
             {
                 ParseableMinValue = (T)(object)uint.MinValue;
                 ParseableMaxValue = (T)(object)uint.MaxValue;
-                MachineEpsilon = (T)(object)(uint)1;
+                MachineEpsilon    = (T)(object)(uint)1;
                 PositiveTinyValue = (T)(object)(uint)4;
             }
             else if (typeof(T) == typeof(ulong))
             {
                 ParseableMinValue = (T)(object)ulong.MinValue;
                 ParseableMaxValue = (T)(object)ulong.MaxValue;
-                MachineEpsilon = (T)(object)(ulong)1;
+                MachineEpsilon    = (T)(object)(ulong)1;
                 PositiveTinyValue = (T)(object)(ulong)4;
             }
             else if (typeof(T) == typeof(sbyte))
             {
                 ParseableMinValue = (T)(object)sbyte.MinValue;
                 ParseableMaxValue = (T)(object)sbyte.MaxValue;
-                MachineEpsilon = (T)(object)(sbyte)1;
+                MachineEpsilon    = (T)(object)(sbyte)1;
                 PositiveTinyValue = (T)(object)(sbyte)4;
                 NegativeTinyValue = (T)(object)(sbyte)-4;
             }
@@ -90,7 +86,7 @@ namespace Aardvark.Base
             {
                 ParseableMinValue = (T)(object)short.MinValue;
                 ParseableMaxValue = (T)(object)short.MaxValue;
-                MachineEpsilon = (T)(object)(short)1;
+                MachineEpsilon    = (T)(object)(short)1;
                 PositiveTinyValue = (T)(object)(short)4;
                 NegativeTinyValue = (T)(object)(short)-4;
             }
@@ -98,7 +94,7 @@ namespace Aardvark.Base
             {
                 ParseableMinValue = (T)(object)int.MinValue;
                 ParseableMaxValue = (T)(object)int.MaxValue;
-                MachineEpsilon = (T)(object)1;
+                MachineEpsilon    = (T)(object)1;
                 PositiveTinyValue = (T)(object)4;
                 NegativeTinyValue = (T)(object)-4;
             }
@@ -106,46 +102,34 @@ namespace Aardvark.Base
             {
                 ParseableMinValue = (T)(object)long.MinValue;
                 ParseableMaxValue = (T)(object)long.MaxValue;
-                MachineEpsilon = (T)(object)1L;
+                MachineEpsilon    = (T)(object)1L;
                 PositiveTinyValue = (T)(object)4L;
                 NegativeTinyValue = (T)(object)-4L;
             }
             else if (typeof(T) == typeof(float))
             {
+                float floatEps = Fun.FloatFromBits(Fun.FloatToBits(1.0f) + 1) - 1.0f;
                 ParseableMinValue = (T)(object)(float.MinValue * 0.999999f);
                 ParseableMaxValue = (T)(object)(float.MaxValue * 0.999999f);
-                floatStore = 2.0f;
-                float floatEps = 1.0f;
-                while (floatStore > 1.0f)
-                {
-                    floatEps /= 2;
-                    floatStore = floatEps + 1.0f;
-                }
-                MachineEpsilon = (T)(object)(2 * floatEps);
-                PositiveTinyValue = (T)(object)(8 * floatEps);
-                NegativeTinyValue = (T)(object)(-8 * floatEps);
+                MachineEpsilon    = (T)(object)floatEps;
+                PositiveTinyValue = (T)(object)(4 * floatEps);
+                NegativeTinyValue = (T)(object)(-4 * floatEps);
             }
             else if (typeof(T) == typeof(double))
             {
+                double doubleEps = Fun.FloatFromBits(Fun.FloatToBits(1.0) + 1L) - 1.0;
                 ParseableMinValue = (T)(object)(double.MinValue * 0.999999995);
                 ParseableMaxValue = (T)(object)(double.MaxValue * 0.999999995);
-                double doubleStore = 2.0;
-                double doubleEps = 1.0;
-                while (doubleStore > 1.0)
-                {
-                    doubleEps /= 2;
-                    doubleStore = doubleEps + 1.0;
-                }
-                MachineEpsilon = (T)(object)(2 * doubleEps);
-                PositiveTinyValue = (T)(object)(8 * doubleEps);
-                NegativeTinyValue = (T)(object)(-8 * doubleEps);
+                MachineEpsilon    = (T)(object)doubleEps;
+                PositiveTinyValue = (T)(object)(4 * doubleEps);
+                NegativeTinyValue = (T)(object)(-4 * doubleEps);
             }
         }
     }
 
+    [Obsolete]
     static class Constants
     {
-        [OnAardvarkInit]
         public static void Init()
         {
             var ignore1 = Constant<double>.MachineEpsilon;

@@ -1,7 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Aardvark.Base.Benchmarks
 {
@@ -10,14 +7,20 @@ namespace Aardvark.Base.Benchmarks
     //|  ApproximateEqDefault | 214.2 μs | 0.75 μs | 0.66 μs |     279 B |
     //|   ApproximateEqInline | 145.1 μs | 1.58 μs | 1.32 μs |     190 B |
 
-    [PlainExporter, DisassemblyDiagnoser]
+    // After simplifying computation of machine epsilon:
+
+    //| Method               | Mean     | Error    | StdDev   |
+    //|--------------------- |---------:|---------:|---------:|
+    //| ApproximateEqDefault | 84.80 us | 1.080 us | 1.010 us |
+    //| ApproximateEqInline  | 83.66 us | 1.240 us | 1.160 us |
+
+    [InProcess]
     public class ConstantsBenchmark
     {
         public Ray3d[] rays;
 
         public ConstantsBenchmark()
         {
-            Aardvark.Init();
             var rnd = new RandomSystem(1);
             rays = new Ray3d[100000].SetByIndex(i => new Ray3d(rnd.UniformV3d() * 2 - 1, rnd.UniformV3dDirection()));
         }
