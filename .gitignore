@@ -36,3 +36,4 @@ Aardvark.log
 .idea
 .boss/
 src/Aardvark.sln.DotSettings.user
+.claude/settings.local.json

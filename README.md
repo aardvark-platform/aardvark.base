@@ -65,6 +65,7 @@ dotnet add package Aardvark.Base.FSharp  # F# extensions
 - [API Reference](https://aardvarkians.com/)
 - [Platform Overview](https://github.com/aardvark-platform/aardvark.docs/wiki)
 - [Discord Community](https://discord.gg/UyecnhM)
+- [AI Reference](./ai/) - Technical docs for AI coding assistants
 
 ## License
 
