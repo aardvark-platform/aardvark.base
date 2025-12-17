@@ -1,33 +1,46 @@
 name: Build
 
-on: 
+on:
   push:
     paths-ignore:
     - 'README.md'
-    - 'docs/'
+    - 'docs/**'
   pull_request:
     paths-ignore:
     - 'README.md'
-    - 'docs/'
-    
+    - 'docs/**'
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-        matrix:
-            os: [ubuntu-latest, windows-latest, macos-latest]
-            include:
-              - os: ubuntu-latest
-                run-build: sh ./build.sh
-              - os: windows-latest
-                run-build: .\build.cmd
-              - os: macos-latest
-                run-build: bash ./build.sh
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            run-build: bash ./build.sh
+          - os: windows-latest
+            run-build: .\build.cmd
+          - os: macos-latest
+            run-build: bash ./build.sh
     steps:
     - uses: actions/checkout@v4
-    - name: Install Dotnet
+
+    - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         global-json-file: global.json
+
+    - name: Cache Paket
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+          paket-files
+        key: ${{ runner.os }}-paket-${{ hashFiles('paket.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-paket-
+
     - name: Build
       run: ${{ matrix.run-build }}
