@@ -320,3 +320,19 @@ var red = rgb.SubVolume(0, 0, 0, width, height, 1);    // R channel
 var green = rgb.SubVolume(0, 0, 1, width, height, 1);  // G channel
 var blue = rgb.SubVolume(0, 0, 2, width, height, 1);   // B channel
 ```
+
+---
+
+## Gotchas
+
+1. **Stride vs Size Confusion**: `Delta[i]` is the *stride* (step per increment), not the actual size. To get span in bytes, multiply `Delta * Size`. Don't confuse dense layout assumptions with arbitrary strides
+2. **SubRegion Mutability**: Views from `SubMatrix()`, `SubVolume()` share the underlying `Data` array. Modifications affect the parent! Use `.Copy()` for independence
+3. **Transposition Side Effect**: `matrix.Transposed` swaps deltas but *doesn't* copy data. Subsequent operations reflect the transposed view, but iteration order matters for performance
+
+---
+
+## See Also
+
+- [PIXIMAGE.md](PIXIMAGE.md) - `PixImage<T>` is backed by `Volume<byte/float>`; image pixel layout uses channel-major stride convention
+- [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) - Tensors store geometric data (point clouds, meshes); coordinate systems use `V2l`/`V3l` for sizes
+- [SERIALIZATION.md](SERIALIZATION.md) - Tensors serialize via `ICoder` (e.g., `CodeIArrayMatrix`, `CodeIArrayVolume`)

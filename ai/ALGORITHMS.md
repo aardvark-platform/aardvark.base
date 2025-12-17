@@ -371,3 +371,19 @@ var table = new AliasTableD(weights, 1.0 / weights.Sum());
 var rnd = new RandomSystem();
 int sample = table.Sample(rnd.UniformDouble());
 ```
+
+---
+
+## Gotchas
+
+1. **BVH Leaf Limits**: Leaf limit flags (LeafLimit01, LeafLimit04, etc.) are *mutually exclusive*. Choose one; default is 1 primitive per leaf. More primitives per leaf → shallower tree but slower ray tracing
+2. **LU Factorization In-Place**: `LuFactorize()` modifies the matrix *in-place*. Keep the permutation array; you'll need it for `LuSolve()` or `LuInverse()`
+3. **Polynomial Root Accuracy**: Root-finding functions assume *normalized* polynomials (leading coefficient = 1). For x² + ax + b = 0, don't pass the coefficients of x² - they're assumed
+
+---
+
+## See Also
+
+- [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) - Ray, Box3d, Sphere, Triangle used in intersection tests and BVH queries
+- [SERIALIZATION.md](SERIALIZATION.md) - Serialization for graph data structures (vertices, edges) and matrices used in linear algebra
+- [COLLECTIONS.md](COLLECTIONS.md) - Collections like `Symbol` used in algorithm node labeling; `LruCache` for memoization

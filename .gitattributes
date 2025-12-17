@@ -1,0 +1,52 @@
+* text=auto
+
+# Source code - always LF (cross-platform)
+*.cs text eol=lf
+*.fs text eol=lf
+*.fsx text eol=lf
+*.fsi text eol=lf
+
+# Build system - always LF
+*.csproj text eol=lf
+*.fsproj text eol=lf
+*.sln text eol=lf
+*.props text eol=lf
+*.targets text eol=lf
+
+# Configuration - always LF
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.config text eol=lf
+
+# Documentation - always LF
+*.md text eol=lf
+*.txt text eol=lf
+
+# Scripts
+*.sh text eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+
+# Fonts
+*.ttf binary
+*.otf binary
+*.woff binary
+*.woff2 binary
+
+# Compiled and packaged
+*.dll binary
+*.exe binary
+*.so binary
+*.pdb binary
+*.nupkg binary
+*.zip binary
+*.tar binary
+*.gz binary

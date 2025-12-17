@@ -266,3 +266,19 @@ Parallel.ForEach(items, item =>
     }
 });
 ```
+
+---
+
+## Gotchas
+
+1. **Negative Symbols Are Keys**: `Symbol.Create("x")` and `-Symbol.Create("x")` are *different* dictionary keys. Negative symbols have no string representation (GUID-based). Use carefully or you'll lose data
+2. **LruCache Eviction Overhead**: `LruCache` calls your `deleteAct` callback on eviction. If callbacks are expensive (dispose, I/O), this blocks the thread. Cache evictions are synchronous
+3. **SymbolDict Growth**: SymbolDict uses prime table sizes for good collision distribution, but growth is table-size doubling. For millions of symbols, expect fragmentation overhead
+
+---
+
+## See Also
+
+- [SERIALIZATION.md](SERIALIZATION.md) - `Symbol`, `SymbolDict`, `SymbolSet` have `CodeSymbol`, `Code(SymbolDict)` serialization methods
+- [ALGORITHMS.md](ALGORITHMS.md) - `Symbol` used for node labeling in graphs; `LruCache` for memoization in shortest-path queries
+- [UTILITIES.md](UTILITIES.md) - `Telemetry` uses `Symbol` for counter/timer registration and lookup

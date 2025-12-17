@@ -392,3 +392,19 @@ var tonemapped = ToneMap(hdr);
 // Save as LDR
 tonemapped.ToPixImage<byte>().Save("output.png");
 ```
+
+---
+
+## Gotchas
+
+1. **Channel Count vs Format**: Channel count (1, 3, 4) and color format (RGB, RGBA, Gray) can diverge. Always check `image.PixFormat` to understand both type and layout
+2. **SubImage Mutability**: `SubImage()` returns a view into the same backing data. Modifications affect the original image. Use `SubImageCopy()` for independence
+3. **Format/Type Conversion Cost**: `ToFormat()` and `ToPixImage<T>()` perform deep copies and color space conversions. Cache results if calling repeatedly on same data
+
+---
+
+## See Also
+
+- [TENSORS.md](TENSORS.md) - `PixImage<T>` backed by `Volume<T>`; stride-based memory layout and zero-copy views explained
+- [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) - Images use `V2i` for dimensions, `C3b`/`C4b` for colors, `Box2i` for regions
+- [SERIALIZATION.md](SERIALIZATION.md) - Binary serialization of images via `ICoder` interface

@@ -1,0 +1,35 @@
+root = true
+
+# All files
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+
+# C# and F# files
+[*.{cs,fs,fsx,fsi}]
+indent_style = space
+indent_size = 4
+
+# Project and build files
+[*.{csproj,fsproj,props,targets,sln}]
+indent_style = space
+indent_size = 2
+
+# Configuration files
+[*.{json,yml,yaml,xml}]
+indent_style = space
+indent_size = 2
+
+# Markdown - preserve trailing whitespace for formatting
+[*.md]
+trim_trailing_whitespace = false
+
+# Shell scripts - always LF
+[*.sh]
+end_of_line = lf
+
+# Windows batch - CRLF
+[*.cmd]
+end_of_line = crlf

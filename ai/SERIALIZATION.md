@@ -317,3 +317,20 @@ void CodeSymbolSet(ref SymbolSet v);
 ```csharp
 void CodeEnum(Type t, ref object value);
 ```
+
+---
+
+## Gotchas
+
+1. **Unidirectional Reference Pattern**: The `ref` parameter pattern is elegant but *confusing* for debugging. Read-mode passes `null` into `ref`, write-mode reads from the ref. Always verify `IsReading`/`IsWriting` in conditional logic
+2. **Version Mismatch Silent Failures**: If code reads a newer format than `StreamVersion`, old fields stay at default values without warning. Use version guards explicitly; don't assume forward compatibility
+3. **Polymorphic Type Registration**: Polymorphic serialization requires exact `TypeInfo` registration. Missing a subclass? It silently serializes as the base type, causing silent data loss on read
+
+---
+
+## See Also
+
+- [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) - All primitives (V3d, M44d, Trafo3d) have `CodeXxx` methods
+- [TENSORS.md](TENSORS.md) - N-dimensional tensors serialize via `Code(Type t, ref IArrayVolume volume)`
+- [PIXIMAGE.md](PIXIMAGE.md) - `PixImage` serialization for binary save/load workflows
+- [COLLECTIONS.md](COLLECTIONS.md) - `Symbol`, `SymbolDict`, `LruCache` serialization patterns

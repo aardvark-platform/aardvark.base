@@ -382,3 +382,19 @@ for (int i = 0; i < sampleCount; i++)
     // use (u, v) for low-discrepancy sampling
 }
 ```
+
+---
+
+## Gotchas
+
+1. **Report.Verbosity Global State**: Setting `Report.Verbosity` affects *all* Report output globally. In multi-threaded code, one thread changing verbosity affects all threads. Use `Report.BeginTimed(verbosity, ...)` instead
+2. **Telemetry Registration Permanence**: `Telemetry.Register()` persists until `Telemetry.Reset()`. Re-registering the same counter twice creates duplicate entries with different names. Keep a static reference
+3. **Halton Sequence Determinism**: `HaltonSequence` is deterministic (same seed = same sequence) but NOT rewindable. Create a new instance if you need to restart; don't share across threads
+
+---
+
+## See Also
+
+- [COLLECTIONS.md](COLLECTIONS.md) - `Symbol` used for telemetry counter/timer registration keys
+- [ALGORITHMS.md](ALGORITHMS.md) - Random sampling via `RandomSystem` used in weighted selection and Monte Carlo algorithms
+- [SERIALIZATION.md](SERIALIZATION.md) - Telemetry data can be persisted via `ICoder` for benchmarking comparisons

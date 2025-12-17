@@ -419,3 +419,20 @@ var plane = new Plane3d(V3d.ZAxis, 0);  // XY plane at origin
 var dist = plane.Height(point);          // signed distance
 var proj = plane.NearestPoint(point);    // project onto plane
 ```
+
+---
+
+## Gotchas
+
+1. **Matrix-Vector Multiplication Order**: `M44d * V3d` is valid but ambiguous. Use `m.TransformPos(v)` or `m.TransformDir(v)` for clarity on translation behavior
+2. **Precision Loss**: Converting `V3d` → `V3f` loses precision silently. Convert toward *higher* precision (f→d) when possible, avoid d→f
+3. **Rotation Composition**: `T * R * S` applies scale first (right-most), then rotate, then translate (left-most). Order matters!
+4. **Normalized Assumption**: Many functions assume unit vectors. Call `.Normalized` on directions before Ray construction or Plane creation
+
+---
+
+## See Also
+
+- [TENSORS.md](TENSORS.md) - N-dimensional arrays and stride indexing; concepts apply to geometric data storage
+- [PIXIMAGE.md](PIXIMAGE.md) - Images use `V2i` for sizes and `C3b`/`C4b` for colors; color conversions defined here
+- [SERIALIZATION.md](SERIALIZATION.md) - All primitive types support `ICoder` (e.g., `CodeV3d`, `CodeM44d`, `CodeTrafo3d`)
