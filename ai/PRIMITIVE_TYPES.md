@@ -431,6 +431,64 @@ var proj = plane.NearestPoint(point);    // project onto plane
 
 ---
 
+## Camera Views
+
+Interface and implementations for camera positioning.
+
+### ICameraView Interface
+
+```csharp
+public interface ICameraView
+{
+    Trafo3d ViewTrafo { get; set; }  // World → Camera space
+    V3d Location { get; set; }       // Camera position (world space)
+    V3d Forward { get; set; }        // View direction (-Z in camera space)
+    V3d Up { get; set; }             // Up vector (+Y in camera space)
+    V3d Right { get; set; }          // Right vector (+X in camera space)
+    IEvent<Trafo3d> ViewTrafos { get; }  // Change notifications
+    void Set(V3d location, V3d right, V3d up, V3d forward);
+}
+```
+
+### Implementations
+
+| Type | Description |
+|------|-------------|
+| `CameraViewRaw` | Direct axis control, no constraints |
+| `CameraViewWithSky` | Maintains sky direction, auto-adjusts axes |
+
+### Camera Space Convention
+
+In camera space:
+- Camera at origin
+- Looking down **-Z axis**
+- **+Y** is up
+- **+X** is right
+
+### View Transformation
+
+```csharp
+// Create view transformation manually
+Trafo3d.ViewTrafo(location, right, up, -forward)
+
+// LookAt helper (forward-up-based)
+Trafo3d.ViewTrafoRH(location, forward, up)
+```
+
+### Usage
+
+```csharp
+var camera = new CameraViewWithSky();
+camera.Location = new V3d(0, 0, 10);
+camera.Forward = -V3d.ZAxis;
+camera.Sky = V3d.YAxis;
+
+// Get view matrix for rendering
+var viewMatrix = camera.ViewTrafo.Forward;
+```
+
+---
+
 ## See Also
 
 - [TENSORS.md](TENSORS.md) - N-dimensional arrays and stride indexing; concepts apply to geometric data storage

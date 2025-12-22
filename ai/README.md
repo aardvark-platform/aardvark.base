@@ -13,6 +13,14 @@ Index for AI coding assistants. Read only the doc you need.
 | Binary/stream serialization | SERIALIZATION.md | 7 KB |
 | Logging, telemetry, random, geodesy | UTILITIES.md | 7 KB |
 | Symbols, caches, specialized dicts | COLLECTIONS.md | 6 KB |
+| F# modules, lenses, interop | FSHARP_INTEROP.md | 6 KB |
+| Reactive/incremental computation | INCREMENTAL.md | 10 KB |
+
+## Meta
+
+| Task | Document | Size |
+|------|----------|------|
+| Make another repo AI-friendly | RECIPE_AI_FRIENDLINESS.md | 8 KB |
 
 ## By Type
 
@@ -23,3 +31,14 @@ Index for AI coding assistants. Read only the doc you need.
 - KdTree, BbTree, ShortestPath → ALGORITHMS.md
 - BinaryWritingCoder, ICoder → SERIALIZATION.md
 - Report, Telemetry, RandomSystem → UTILITIES.md
+- Vec, Mat, Trafo, Lens → FSHARP_INTEROP.md
+- aval, cval, aset, amap, alist, afun, astate, Proc → INCREMENTAL.md
+
+## For Downstream Projects
+
+If you're consuming Aardvark.Base in your project:
+
+1. Use Paket for consistency with aardvark ecosystem
+2. Match .NET SDK version to aardvark requirements (see `global.json`)
+3. F# projects: also reference `Aardvark.Base.FSharp`
+4. See AGENTS.md for related packages (Rendering, UI, etc.)

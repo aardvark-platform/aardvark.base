@@ -66,6 +66,8 @@ This project uses **Paket**, not NuGet PackageReference.
 | F# build fails before C# | Wrong project dependency order | F# projects must reference C# projects, not vice versa |
 | Cross-platform line ending issues | Inconsistent CRLF/LF | Use `.editorconfig` and `.gitattributes` settings |
 | `paket.lock` merge conflicts | Manual edits to lock file | Resolve in source, regenerate: `dotnet paket install` |
+| `Aardvark.Base.Rendering` not found | Wrong namespace | Use `Aardvark.Rendering` (separate package) |
+| Type mismatch `V3d` vs `V3f` | Precision confusion | Check API requirements; prefer `d` (double) types |
 
 ## Project Structure
 
@@ -97,6 +99,29 @@ See `ai/README.md` for indexed type/algorithm docs. Quick links by task:
 | Binary/stream serialization | [SERIALIZATION.md](ai/SERIALIZATION.md) |
 | Logging, telemetry, random, geodesy | [UTILITIES.md](ai/UTILITIES.md) |
 | Symbols, caches, specialized dicts | [COLLECTIONS.md](ai/COLLECTIONS.md) |
+| F# modules, lenses, interop | [FSHARP_INTEROP.md](ai/FSHARP_INTEROP.md) |
+| Reactive programming, adaptive values | [INCREMENTAL.md](ai/INCREMENTAL.md) |
+
+## Related Packages (Not in This Repo)
+
+Aardvark.Base is the foundation layer. Downstream packages build on it:
+
+| Package | Purpose | Repo |
+|---------|---------|------|
+| Aardvark.Rendering | GPU rendering, shaders, scene graphs | aardvark.rendering |
+| Aardvark.UI | Elm-architecture web UI framework | aardvark.media |
+| Aardvark.Data.* | File format loaders (OBJ, GLTF, IFC) | aardvark.data |
+| Aardvark.Geometry.* | Advanced geometry (PolyMesh, PointTree) | aardvark.algodat |
+| Adaptify | F# lens/adaptive code generation | adaptify |
+
+**Note**: `Aardvark.Rendering` is NOT `Aardvark.Base.Rendering`. The `Rendering` namespace is in a separate package.
+
+## Version Compatibility
+
+| Aardvark.Base | .NET SDK | Target Frameworks | Notes |
+|--------------|----------|-------------------|-------|
+| 5.3.x | 8.0+ | netstandard2.0, net8.0 | Current |
+| 5.2.x | 6.0+ | netstandard2.0, net6.0 | Legacy |
 
 ## Tips for AI Agents
 
