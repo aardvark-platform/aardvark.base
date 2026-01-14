@@ -1,4 +1,5 @@
 - [Base] Simplified computation of Constant<T>.MachineEpsilon
+- [FSharp] Fixed MapExt.choose2 and MapExt.map2
 
 ### 5.3.20
 - [Base] Improved native library loading and symlink creation
