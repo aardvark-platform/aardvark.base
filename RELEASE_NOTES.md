@@ -1,3 +1,4 @@
+### 5.3.21
 - [Base] Simplified computation of Constant<T>.MachineEpsilon
 - [FSharp] Fixed MapExt.choose2 and MapExt.map2
 
