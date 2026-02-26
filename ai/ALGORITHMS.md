@@ -1,389 +1,104 @@
 # Aardvark.Base Algorithms Reference
 
-AI-targeted reference for algorithms in Aardvark.Base: graph algorithms, spatial structures, numerical methods, sampling.
+Source-verified map of key algorithm types and entry points.
 
----
+## ShortestPath<T>
 
-## Graph Algorithms
+`ShortestPath<T>` implements `IShortestPath<T>` and runs asynchronous shortest-path computation.
 
-### Shortest Path (Dijkstra with Fibonacci Heap)
+Key methods:
 
-```csharp
-public class ShortestPath<T> : IShortestPath<T>
-```
+- `CalculateShortestPaths(T seed)`
+- `CalculateShortestPathsByIndex(int seedIndex)`
+- `GetMinimalPath(T target)`
+- `GetMinimalPathByIndex(int targetIndex)`
+- `Cancel()`
 
-Dijkstra's algorithm using Fibonacci Heap for O(1) amortized decrease-key.
-
-#### Construction
-```csharp
-// From nodes and edge list
-var sp = new ShortestPath<V3d>(
-    nodes,                          // List<T> nodes
-    edges,                          // List<(int, int)> edges (index pairs)
-    (a, b) => (float)(a - b).Length // cost function
-);
-
-// From adjacency list
-var sp = new ShortestPath<V3d>(
-    nodes.ToArray(),
-    neighbors,                      // List<int>[] adjacency lists
-    getCostFunc
-);
-```
-
-#### Usage
-```csharp
-// Calculate shortest paths from seed (async)
-sp.CalculateShortestPaths(seedNode);
-sp.CalculateShortestPathsByIndex(seedIndex);
-
-// Get path to target
-List<T> path = sp.GetMinimalPath(targetNode);
-List<T> path = sp.GetMinimalPathByIndex(targetIndex);
-
-// Cancel running computation
-sp.Cancel();
-```
-
-### Minimum Spanning Tree (Prim's Algorithm)
+Constructors:
 
 ```csharp
-// Generic MST using Prim's algorithm
-// Available via graph utilities
+new ShortestPath<T>(List<T> nodes, List<(int,int)> edges, Func<T,T,float> getCost);
+new ShortestPath<T>(T[] nodes, List<int>[] neighbors, Func<T,T,float> getCost);
 ```
 
-### Traveling Salesman (TSP)
+## BbTree
 
-Located in `SalesmanOfDeath.cs`:
+Bounding-box hierarchy in `Geometry/BbTree.cs`.
+
+Constructor:
 
 ```csharp
-// Graph classes
-public abstract class AbstractGraph<TVertex, TCost>
-public class DenseGraph<TVertex, TCost> : AbstractGraph<TVertex, TCost>
-
-// TSP optimization
-// Uses 2-opt and 3-opt local search improvements
-// MST-based heuristics with Euler tour traversal
+new BbTree(Box3d[] boundingBoxes, BbTree.BuildFlags flags = BbTree.BuildFlags.Default, int[] countArray = null);
 ```
 
----
+Useful members:
 
-## Spatial Data Structures
+- `NodeCount`
+- `Box3d`
+- `IndexArray`
+- `LeafArray`
+- `LeftBoxArray`
+- `RightBoxArray`
+- `GetLeft(i)`, `GetRight(i)`
 
-### BbTree (Bounding Box Tree / BVH)
+`BbTreeHit` contains `NodeIndex` and `RayT`.
 
-SAH-based bounding volume hierarchy for ray tracing and spatial queries.
+## Linear Algebra Numerics
+
+Available in `Math/LuFactorization.cs` and `Math/QrFactorization.cs`:
+
+- `LuFactorize`
+- `LuSolve`
+- `LuInverse`
+- `QrFactorize`
+
+`LuFactorize` is in-place.
+
+## Probability Sampling
+
+### Alias tables
+
+Types:
+
+- `AliasTableF`
+- `AliasTableD`
+
+Construction/update:
 
 ```csharp
-public class BbTree
+var t = new AliasTableD(pdf, 1.0 / pdf.Sum());
+t.Update(newPdf, 1.0 / newPdf.Sum());
+int index = t.Sample(rnd.UniformDouble());
 ```
 
-#### Construction
-```csharp
-var tree = new BbTree(
-    boundingBoxes,                    // Box3d[] for each primitive
-    BbTree.BuildFlags.Default,        // build options
-    countArray                        // optional weights
-);
-```
+`FromPdf` / `FromNormalizedPdf` exist as instance methods on the class.
 
-#### Build Flags
-```csharp
-[Flags]
-public enum BuildFlags
-{
-    None,
-    CreateBoxArrays = 0x01,      // store left/right box arrays
-    CreateCombinedArray = 0x02,  // combined box + flags
-    LeafLimit01 = 0x010,         // 1 primitive per leaf
-    LeafLimit04 = 0x040,         // 4 primitives per leaf
-    LeafLimit08 = 0x080,         // 8 primitives per leaf
-    LeafLimit16 = 0x100,         // 16 primitives per leaf
-    Default = CreateBoxArrays | LeafLimit01
-}
-```
+### DistributionFunction
 
-#### Properties
-```csharp
-tree.NodeCount        // int - number of internal nodes
-tree.Box3d            // Box3d - root bounding box
-tree.Boxes            // Box3d[] - original bounding boxes
-tree.LeftBoxArray     // Box3d[] - left child boxes
-tree.RightBoxArray    // Box3d[] - right child boxes
-tree.IndexArray       // int[] - child indices
-tree.LeafArray        // int[] - leaf primitive indices
-
-tree.GetLeft(nodeIndex)   // left child index
-tree.GetRight(nodeIndex)  // right child index
-```
-
-#### Hit Structure
-```csharp
-public struct BbTreeHit
-{
-    public int NodeIndex;
-    public double RayT;
-}
-```
-
----
-
-## Numerical Algorithms
-
-### LU Factorization
-
-In-place LU decomposition with partial pivoting.
+`DistributionFunction` provides CDF-based sampling:
 
 ```csharp
-// Extension method on arrays
-int[] perm = matrix.LuFactorize();  // float[,] or double[,]
-
-// With pre-allocated permutation array
-bool success = matrix.LuFactorize(permutation);
-
-// On Matrix<T> tensors
-int[] perm = matrixTensor.LuFactorize();  // Matrix<float> or Matrix<double>
+var d = new DistributionFunction(pdf);
+int i = d.Sample(rnd);
+int j = DistributionFunction.SampleCDF(d.CDF, rnd.UniformDouble());
 ```
 
-#### Solving Linear Systems
-```csharp
-// After factorization
-vector.LuSolve(luMatrix, permutation);  // modifies vector in-place
+## Polynomial
 
-// Compute inverse
-var inverse = luMatrix.LuInverse(permutation);
-```
+`Polynomial` is in `Math/Numerics/Polynomial.cs` (not `Math/Base`).
 
-### QR Factorization
+Examples:
 
-Householder reflection-based QR decomposition.
+- `coeff.Evaluate(x)`
+- `coeff.Derivative()`
+- `Polynomial.RealRootsOfNormed(...)`
 
-```csharp
-// Available for Matrix<float> and Matrix<double>
-var (q, r) = matrix.QrFactorize();
-```
+## Source Anchors
 
-### Polynomial Operations
-
-```csharp
-public static class Polynomial
-```
-
-#### Root Finding
-```csharp
-// Solve polynomial equations
-Polynomial.RealRootsOfNormed(a);           // x + a = 0
-Polynomial.RealRootsOfNormed(a, b);        // x^2 + ax + b = 0
-Polynomial.RealRootsOfNormed(a, b, c);     // x^3 + ax^2 + bx + c = 0
-Polynomial.RealRootsOfNormed(a, b, c, d);  // x^4 + ... (up to 4th order)
-```
-
-#### Polynomial Evaluation
-```csharp
-// Horner's method
-double y = Polynomial.Evaluate(coefficients, x);
-```
-
----
-
-## Probability & Sampling
-
-### Alias Table (Walker's Algorithm)
-
-O(1) sampling from discrete probability distributions.
-
-```csharp
-public class AliasTableF  // float
-public class AliasTableD  // double
-```
-
-#### Construction
-```csharp
-// From unnormalized PDF
-var table = new AliasTableD(pdf, 1.0 / pdf.Sum());
-
-// Factory methods
-var table = AliasTableD.FromPdf(pdf);            // auto-normalize
-var table = AliasTableD.FromNormalizedPdf(pdf);  // already normalized
-```
-
-#### Sampling
-```csharp
-// Sample with random value in [0, 1)
-int index = table.Sample(random.UniformDouble());
-```
-
-#### Update
-```csharp
-// Update with new PDF (same length)
-table.Update(newPdf, normalizationFactor);
-```
-
-### Distribution Function (CDF Sampling)
-
-Binary search sampling O(log n).
-
-```csharp
-public class DistributionFunction
-```
-
-### Random Sampling Utilities
-
-```csharp
-// Uniform sphere sampling
-V3d direction = random.UniformV3dDirection();
-
-// Cosine-weighted hemisphere (Lambertian)
-V3d direction = random.CosineWeightedHemisphere(normal);
-
-// Halton sequence (quasi-random, low-discrepancy)
-double[] halton = HaltonSequence.Create(base, count);
-```
-
----
-
-## Sorting Algorithms
-
-Extension methods on arrays with multiple strategies.
-
-### Available Methods
-```csharp
-array.SortAscending();           // in-place ascending
-array.SortDescending();          // in-place descending
-array.SortByKey(keySelector);    // sort by key function
-
-// Permutation-based (returns index array)
-int[] perm = array.CreatePermutationAscending();
-int[] perm = array.CreatePermutationDescending();
-```
-
-### Algorithm Selection
-- **QuickSort**: General case
-- **InsertionSort**: Small arrays (<31 elements)
-- **TimSort-like hybrid**: Merge + gallop for partially sorted data
-
-### Median Selection
-```csharp
-// Find k-th smallest element
-T kth = array.KthSmallest(k);
-T median = array.Median();
-```
-
----
-
-## Convex Hull
-
-### Hull2 / Hull3
-
-Convex polyhedra represented as half-space intersections.
-
-```csharp
-public struct Hull2f { public Plane2f[] PlaneArray; }
-public struct Hull2d { public Plane2d[] PlaneArray; }
-public struct Hull3f { public Plane3f[] PlaneArray; }
-public struct Hull3d { public Plane3d[] PlaneArray; }
-```
-
-#### Construction
-```csharp
-// From bounding box
-var hull = new Hull3d(box3d);
-
-// From plane array
-var hull = new Hull3d(planes);
-```
-
-#### Containment
-```csharp
-bool inside = hull.Contains(point);
-```
-
----
-
-## Intersection Tests
-
-Extensive geometric intersection functions in `IntersectionTests_template.cs`.
-
-### Ray Intersections
-```csharp
-ray.Hits(triangle);
-ray.Hits(box);
-ray.Hits(sphere);
-ray.Hits(plane);
-ray.HitsTriangle(p0, p1, p2, tmin, tmax, ref hit);
-```
-
-### Point Containment
-```csharp
-box.Contains(point);
-triangle.Contains(point);
-polygon.Contains(point);
-hull.Contains(point);
-```
-
-### Primitive-Primitive
-```csharp
-box.Intersects(box);
-sphere.Intersects(sphere);
-plane.Intersects(ray);
-```
-
----
-
-## Machine Learning
-
-### AdaBoost
-
-Adaptive boosting for binary classification.
-
-```csharp
-public class AdaBoost<TClassifier>
-```
-
-Ensemble method combining weak classifiers with weighted voting. Uses exponential error-based weight adjustment.
-
----
-
-## Usage Patterns
-
-### Build BVH and Ray Trace
-```csharp
-var boxes = triangles.Map(t => t.BoundingBox3d);
-var tree = new BbTree(boxes);
-
-var ray = new Ray3d(origin, direction);
-// Traverse tree, test intersections
-```
-
-### Solve Linear System
-```csharp
-var A = new double[3, 3] { ... };
-var b = new double[] { ... };
-var perm = A.LuFactorize();
-b.LuSolve(A, perm);
-// b now contains solution
-```
-
-### Weighted Random Sampling
-```csharp
-var weights = new double[] { 1, 2, 5, 2 };  // relative weights
-var table = new AliasTableD(weights, 1.0 / weights.Sum());
-var rnd = new RandomSystem();
-int sample = table.Sample(rnd.UniformDouble());
-```
-
----
-
-## Gotchas
-
-1. **BVH Leaf Limits**: Leaf limit flags (LeafLimit01, LeafLimit04, etc.) are *mutually exclusive*. Choose one; default is 1 primitive per leaf. More primitives per leaf → shallower tree but slower ray tracing
-2. **LU Factorization In-Place**: `LuFactorize()` modifies the matrix *in-place*. Keep the permutation array; you'll need it for `LuSolve()` or `LuInverse()`
-3. **Polynomial Root Accuracy**: Root-finding functions assume *normalized* polynomials (leading coefficient = 1). For x² + ax + b = 0, don't pass the coefficients of x² - they're assumed
-
----
-
-## See Also
-
-- [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) - Ray, Box3d, Sphere, Triangle used in intersection tests and BVH queries
-- [SERIALIZATION.md](SERIALIZATION.md) - Serialization for graph data structures (vertices, edges) and matrices used in linear algebra
-- [COLLECTIONS.md](COLLECTIONS.md) - Collections like `Symbol` used in algorithm node labeling; `LruCache` for memoization
+- `src/Aardvark.Base/AlgoDat/ShortestPath.cs`
+- `src/Aardvark.Base/Geometry/BbTree.cs`
+- `src/Aardvark.Base/Math/LuFactorization.cs`
+- `src/Aardvark.Base/Math/QrFactorization.cs`
+- `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
+- `src/Aardvark.Base/Math/Base/DistributionFunction.cs`
+- `src/Aardvark.Base/Math/Numerics/Polynomial.cs`

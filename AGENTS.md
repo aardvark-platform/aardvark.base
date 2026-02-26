@@ -1,137 +1,127 @@
 # AI Agent Guide
 
-This repository has AI-targeted reference documentation in `ai/README.md` for types, algorithms, and utilities.
+Repository-specific rules and verified operational facts for coding agents.
+
+Primary AI reference index: `ai/README.md`
 
 ## Supported Commands
 
-Only use these commands for restore/build/test:
+Use these commands for restore/build/test/codegen:
 
 | Task | Command | Notes |
 |------|---------|-------|
-| Restore only | `./build.sh restore` (Linux/Mac) or `.\build.cmd restore` (Windows) | Restore tools + packages |
-| Build all | `./build.sh` or `.\build.cmd` | Builds entire solution |
-| Build one | `dotnet build src/PROJECT.sln -c Debug` | Single project build |
-| Test all | `./test.sh` or `.\test.cmd` | Runs all tests |
-| Test one | `dotnet test src/Tests/PROJECT/PROJECT.csproj -c Debug` | Single test project |
-| Test filter | `dotnet test src/Aardvark.sln --filter "TestClass=VectorTests"` | NUnit filter |
-| Codegen | `./generate.sh` or `.\generate.cmd` | After template changes |
+| Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages |
+| Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` |
+| Build one project | `dotnet build src/Aardvark.Base/Aardvark.Base.csproj -c Debug` | Use explicit project path |
+| Test all | `./test.sh` or `.\test.cmd` | Runs `dotnet test src/Aardvark.sln` |
+| Test one project | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug` | Prefer this over whole-solution test |
+| Test with filter | `dotnet test src/Aardvark.sln --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter |
+| Codegen | `./generate.sh` or `.\generate.cmd` | Required after template changes |
+| Check docs drift | `./check-docs.sh` or `.\check-docs.cmd` | Validates docs against source anchors and anti-drift rules |
 
 ## Dependency Management (Paket)
 
-This project uses **Paket**, not NuGet PackageReference.
+This repo uses Paket, not `dotnet add package`.
 
 | Task | Command |
 |------|---------|
 | Add package | `dotnet paket add <pkg> --project <proj>` |
 | Update group | `dotnet paket update --group Main` |
-| Update lock | `dotnet paket install` |
-| Restore only | `dotnet paket restore` |
+| Re-resolve lock | `dotnet paket install` |
+| Restore packages | `dotnet paket restore` |
 
-**Rules:**
-- Never edit `paket.lock` manually; always use `dotnet paket` commands
-- Never use `dotnet add package`; use `dotnet paket add` instead
-- `paket.dependencies` declares constraints; `paket.lock` is auto-generated
+Rules:
+- Never edit `paket.lock` manually
+- Never use `dotnet add package` in this repo
+- Change constraints in `paket.dependencies`, then regenerate lock with Paket
 
 ## File Ownership by Change Type
 
-| Change Type | Files to Modify | Files to NOT Touch |
-|-------------|-----------------|-------------------|
-| Add C# feature | `src/Aardvark.Base/**/*.cs` | `*_auto.cs` (generated), `*_template.cs` |
-| Add F# feature | `src/Aardvark.Base.FSharp/**/*.fs` | C# projects, generated files |
-| Add test | `src/Tests/**/*Tests.cs` or `src/Tests/**/*Tests.fs` | Source code, other test suites |
-| Fix bug | Relevant source + add/update test | Unrelated modules |
-| Update deps | `paket.dependencies` | `paket.lock` (auto-updated) |
+| Change Type | Files to Modify | Files to Avoid |
+|-------------|-----------------|----------------|
+| Add C# feature | `src/Aardvark.Base/**/*.cs`, `src/Aardvark.Base.IO/**/*.cs`, `src/Aardvark.Base.Essentials/**/*.cs` | `*_auto.cs`, `*_template.cs` unless you are updating generation templates intentionally |
+| Add F# feature | `src/Aardvark.Base.FSharp/**/*.fs`, `src/Aardvark.Base.Incremental/**/*.fs`, `src/Aardvark.Base.Tensors/**/*.fs`, `src/Aardvark.Geometry/**/*.fs`, `src/Aardvark.Base.Runtime/**/*.fs`, `src/Aardvark.Base.Fonts/**/*.fs` | Generated `*_auto.fs` unless template-driven change |
+| Add tests | `src/Tests/**/*Tests.cs`, `src/Tests/**/*Tests.fs` | Unrelated production modules |
+| Fix bug | Smallest relevant source area + regression test | Broad refactors without tests |
+| Update dependencies | `paket.dependencies` (+ Paket-generated lock update) | Manual lock edits |
 
-## Cross-Language Rules
+## Cross-Language Reality (Important)
 
-- **F# → C#**: F# projects MAY reference C# projects (e.g., FSharp project → Base project)
-- **C# → F#**: C# projects MUST NOT reference F# projects (dependency direction)
-- **Public API**: Lives in C# base layer (`Aardvark.Base`, `Aardvark.Base.Essentials`)
-- **Functional Extensions**: F# provides extension methods/utilities on C# types
+Do not assume strict one-way C#/F# dependency rules here. This solution intentionally mixes languages:
 
-## Framework & SDK Rules
+- F# projects reference C# projects
+- Some C# projects also reference F# projects (for example `Aardvark.Base.IO` references `Aardvark.Base.Tensors.fsproj`)
 
-- **.NET Version**: 8.0 (see `global.json`)
-- **Target Frameworks**: `netstandard2.0` (compatibility) + `net8.0` (modern)
-- **LangVersion**: 12 (C#), supports recent features
-- **Unsafe Code**: Allowed in math/imaging modules (declared per-project)
+Guideline for agents:
+- Preserve existing dependency direction used by neighboring projects
+- If introducing a new reference, check existing project patterns first
+- Avoid creating dependency cycles
 
-## Common Failure Modes & Fixes
+## Framework, SDK, and Project Matrix
+
+- SDK pin: `.NET SDK 8.0.0` with `rollForward: latestFeature` (see `global.json`)
+- Not all projects target the same framework
+
+Current project reality:
+- Mixed `net8.0;netstandard2.0`: `Aardvark.Base`, `Aardvark.Base.FSharp`, `Aardvark.Base.IO`
+- `netstandard2.0` only: `Aardvark.Base.Essentials`, `Aardvark.Base.Telemetry`, `Aardvark.Base.Tensors`, `Aardvark.Base.Tensors.CSharp`, `Aardvark.Base.Runtime`, `Aardvark.Base.Fonts`, `Aardvark.Geometry`
+- `net8.0` test/demo projects: most projects in `src/Tests` and `src/Demo`
+- Legacy exception: `src/Tests/Aardvark.Base.Incremental.Tests/Aardvark.Base.Incremental.Tests.fsproj` targets `netcoreapp3.0`
+- C# language version is not uniform (`12.0` in `Aardvark.Base`, `10.0` in some other C# projects)
+
+## Common Failure Modes
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `dotnet paket restore` fails | Outdated lock file | `dotnet paket update` to regenerate |
-| SDK not found error | Wrong .NET version | Install .NET 8.0.x; check `global.json` |
-| `*_auto.cs` or `*_auto.fs` compile errors | Tensor/template generation out of sync | Run `./generate.sh` or `.\generate.cmd` |
-| F# build fails before C# | Wrong project dependency order | F# projects must reference C# projects, not vice versa |
-| Cross-platform line ending issues | Inconsistent CRLF/LF | Use `.editorconfig` and `.gitattributes` settings |
-| `paket.lock` merge conflicts | Manual edits to lock file | Resolve in source, regenerate: `dotnet paket install` |
-| `Aardvark.Base.Rendering` not found | Wrong namespace | Use `Aardvark.Rendering` (separate package) |
-| Type mismatch `V3d` vs `V3f` | Precision confusion | Check API requirements; prefer `d` (double) types |
+| `dotnet paket restore` fails | Paket/tool state mismatch | `dotnet tool restore` then `dotnet paket restore`; if needed `dotnet paket install` |
+| Compile errors in generated files | Template/output out of sync | Run `./generate.sh` or `.\generate.cmd` |
+| Build fails due framework mismatch | Running old SDK/runtime | Install .NET 8 SDK; verify `dotnet --info` and `global.json` |
+| Test filter returns zero tests | Wrong filter syntax | Use `FullyQualifiedName~...` pattern |
+| Docs check fails | Broken links, stale examples, missing anchors, mojibake | Run `./check-docs.sh` or `.\check-docs.cmd` and fix the reported file/pattern |
+| Rendering namespace not found | Wrong package assumption | `Aardvark.Rendering` comes from downstream package, not this repo |
 
 ## Project Structure
 
-```
+```text
 src/
-├── Aardvark.Base/           # Core C# mathematics, geometry, types
-├── Aardvark.Base.Essentials # Additional C# utilities
-├── Aardvark.Base.FSharp/    # F# functional extensions
-├── Aardvark.Base.Incremental # Reactive programming (F#)
-├── Aardvark.Base.IO/        # File I/O, image loading (C#)
-├── Aardvark.Base.Telemetry/ # Performance monitoring (C#)
-├── Aardvark.Base.Tensors/   # N-dimensional arrays (F#)
-├── Aardvark.Geometry/       # Advanced geometry algorithms (F#)
-├── Tests/                   # Test projects (C# + F#)
-├── Demo/                    # Examples and demos
-└── CodeGenerator/           # Build-time code generation
+|- Aardvark.Base/                (core C# math/geometry/types)
+|- Aardvark.Base.Essentials/     (additional C# utilities)
+|- Aardvark.Base.IO/             (I/O and image codecs; C#)
+|- Aardvark.Base.Telemetry/      (telemetry probes; C#)
+|- Aardvark.Base.Tensors.CSharp/ (C# tensor/piximage layer)
+|- Aardvark.Base.FSharp/         (F# functional extensions)
+|- Aardvark.Base.Incremental/    (adaptive system; F#)
+|- Aardvark.Base.Tensors/        (tensor features; F#)
+|- Aardvark.Base.Runtime/        (runtime helpers; F#)
+|- Aardvark.Base.Fonts/          (font/text support; F#)
+|- Aardvark.Geometry/            (geometry algorithms; F#)
+|- Tests/                        (C# + F# test projects)
+|- Demo/                         (sample apps)
+|- CodeGenerator/                (template/code generation tooling)
 ```
 
-## Reference Documentation
+## AI Reference Docs
 
-See `ai/README.md` for indexed type/algorithm docs. Quick links by task:
+See `ai/README.md` for task-based lookup across:
+- primitive math/geometry types
+- linear algebra semantics (layout/interoperability)
+- geometry semantics (transform conventions)
+- piximage/tensor APIs
+- algorithms and collections
+- serialization
+- utilities
+- F# interop
+- incremental/adaptive system
 
-| Task | Doc |
-|------|-----|
-| Vectors, matrices, colors, transforms | [PRIMITIVE_TYPES.md](ai/PRIMITIVE_TYPES.md) |
-| Images: load, save, scale, formats | [PIXIMAGE.md](ai/PIXIMAGE.md) |
-| N-D arrays, tensors, stride views | [TENSORS.md](ai/TENSORS.md) |
-| Graphs, spatial, numerical algorithms | [ALGORITHMS.md](ai/ALGORITHMS.md) |
-| Binary/stream serialization | [SERIALIZATION.md](ai/SERIALIZATION.md) |
-| Logging, telemetry, random, geodesy | [UTILITIES.md](ai/UTILITIES.md) |
-| Symbols, caches, specialized dicts | [COLLECTIONS.md](ai/COLLECTIONS.md) |
-| F# modules, lenses, interop | [FSHARP_INTEROP.md](ai/FSHARP_INTEROP.md) |
-| Reactive programming, adaptive values | [INCREMENTAL.md](ai/INCREMENTAL.md) |
+## Agent Workflow Tips
 
-## Related Packages (Not in This Repo)
-
-Aardvark.Base is the foundation layer. Downstream packages build on it:
-
-| Package | Purpose | Repo |
-|---------|---------|------|
-| Aardvark.Rendering | GPU rendering, shaders, scene graphs | aardvark.rendering |
-| Aardvark.UI | Elm-architecture web UI framework | aardvark.media |
-| Aardvark.Data.* | File format loaders (OBJ, GLTF, IFC) | aardvark.data |
-| Aardvark.Geometry.* | Advanced geometry (PolyMesh, PointTree) | aardvark.algodat |
-| Adaptify | F# lens/adaptive code generation | adaptify |
-
-**Note**: `Aardvark.Rendering` is NOT `Aardvark.Base.Rendering`. The `Rendering` namespace is in a separate package.
-
-## Version Compatibility
-
-| Aardvark.Base | .NET SDK | Target Frameworks | Notes |
-|--------------|----------|-------------------|-------|
-| 5.3.x | 8.0+ | netstandard2.0, net8.0 | Current |
-| 5.2.x | 6.0+ | netstandard2.0, net6.0 | Legacy |
-
-## Tips for AI Agents
-
-1. **Read only what you need**: Each doc is self-contained; don't read all 7 at once
-2. **Check cross-references**: Docs link to related content (see "See Also" sections)
-3. **Know the gotchas**: Each doc has a "Gotchas" section with common mistakes
-4. **Verify framework before coding**: Check global.json and project files for constraints
-5. **Run tests after changes**: CI validates on Linux/Windows/macOS; test locally first
-6. **Follow the build**: Use provided scripts; they handle tool restore and Paket
+1. Read only the doc needed for your task, not all docs
+2. Verify API names with `rg` before using examples from docs
+3. Prefer local source as the final truth if docs and code disagree
+4. Run focused tests for touched modules before broad test runs
+5. When changing templates, regenerate before building
+6. When changing docs, run `./check-docs.sh` or `.\check-docs.cmd`
 
 ---
 
-**Last updated**: December 2025
+Last updated: 2026-02-26
