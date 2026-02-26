@@ -17,6 +17,10 @@ bin
 /src/.vs
 tmp
 /docs
+!/docs/
+!/docs/CONTRIBUTING.md
+!/docs/INTEROP.md
+!/docs/TROUBLESHOOTING.md
 /src/Aardvark.Base/Images/TensorExtensions_generator.cs
 /src/Demo/Sketch/.vs/Sketch/v14/*.suo
 /TestResult.xml

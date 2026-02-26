@@ -1,400 +1,128 @@
 # Aardvark.Base Utilities Reference
 
-AI-targeted reference for logging, telemetry, random sampling, and other utilities.
+Source-verified orientation for reporting, telemetry, random, traversal, and geodesy APIs.
 
----
+## Report
 
-## Report System
+`Report` is global process state.
 
-Multi-level logging with thread-aware reporting.
+Common methods:
 
 ```csharp
-public static class Report
-```
+Report.Line("msg");
+Report.Warn("msg");
+Report.Debug("msg");
+Report.Trace("msg");
+Report.Error("msg");
+Report.Fatal("msg");
 
-### Verbosity Levels
-- Level 0: Critical messages
-- Level 1: Important messages
-- Level 2: Normal (default console)
-- Level 3+: Detailed/debug
-
-### Basic Logging
-```csharp
-Report.Line("Message");                    // level 0
-Report.Line(2, "Detailed message");        // level 2
-
-Report.Warn("Warning message");
-Report.Error("Error message");
-Report.Fatal("Fatal error");
-
-Report.Debug("Debug info");
-Report.Trace("Trace info");
-```
-
-### Timed Sections
-```csharp
-Report.BeginTimed("Processing");
-// ... work ...
-Report.End();  // prints elapsed time
-
-// With verbosity level
-Report.BeginTimed(2, "Loading data");
+Report.BeginTimed("load");
 // ...
-Report.End(2);
+Report.End();
+
+Report.Progress(0.5);
+Report.ProgressDelta(0.1);
 ```
 
-### Nested Sections
-```csharp
-Report.Begin("Outer");
-Report.Line("Info");
-Report.Begin("Inner");
-Report.Line("More info");
-Report.End();  // ends Inner
-Report.End();  // ends Outer
-```
-
-### Progress Reporting
-```csharp
-Report.Progress(current, total);
-Report.Progress(0.5);  // 50%
-```
-
-### Configuration
-```csharp
-Report.Verbosity = 2;           // set console verbosity
-Report.MultiThreaded = true;    // enable per-thread reporting
-Report.ThrowOnError = false;    // break on errors in debugger
-```
-
----
-
-## Telemetry System
-
-Performance monitoring with counters, timers, and probes.
+Key settings:
 
 ```csharp
-public static partial class Telemetry
+Report.Verbosity = 2;
+Report.MultiThreaded = true;
+Report.ThrowOnError = false;
 ```
 
-### Counter
+## Telemetry
 
-Thread-safe counter.
+Core probe types:
+
+- `Telemetry.Counter`
+- `Telemetry.StopWatchTime`
+- `Telemetry.WallClockTime`
+- `Telemetry.CpuTime`
+
+Registration:
 
 ```csharp
-var counter = new Telemetry.Counter();
-
-counter.Increment();
-counter.Increment(5);
-counter.Decrement();
-
-long value = counter.Value;
+var c = new Telemetry.Counter();
+Telemetry.Register("Frames", c);
+Telemetry.Register("Frames/s", c.RatePerSecond());
 ```
 
-### StopWatchTime
-
-Accumulated timing including blocked time.
+Reset API:
 
 ```csharp
-var timer = new Telemetry.StopWatchTime();
-
-using (timer.Timer)
-{
-    // timed code
-}
-
-TimeSpan elapsed = timer.Value;
+Telemetry.ResetTelemetrySystem();
 ```
 
-### WallClockTime
+## Random
 
-Wall-clock time - overlapping measurements from multiple threads don't accumulate.
+`RandomSystem` implements `IRandomUniform`.
 
 ```csharp
-var wallClock = new Telemetry.WallClockTime();
-
-using (wallClock.Timer)
-{
-    // 4 threads timing 1 second each = 1 second total
-}
-
-TimeSpan elapsed = wallClock.Value;
+var rnd = new RandomSystem(1);
+int raw = rnd.UniformInt();
+int bounded = rnd.UniformInt(100);   // extension method on IRandomUniform
+double u = rnd.UniformDouble();
 ```
 
-### CpuTime
-
-Actual CPU time consumed by thread.
+Geometric sampling:
 
 ```csharp
-var cpuTime = new Telemetry.CpuTime();
-
-using (cpuTime.Timer)
-{
-    // CPU-bound work
-}
-
-TimeSpan cpu = cpuTime.Value;
+var dir = RandomSample.Spherical(rnd, 0);
+var hemi = RandomSample.Lambertian(V3d.ZAxis, rnd, 0);
+var disk = RandomSample.Disk(rnd, 0);
 ```
 
-### Registration
-```csharp
-Telemetry.Register("MyCounter", counter);
-Telemetry.Register("MyCounter/s", counter.RatePerSecond());
-```
-
-### Reset
-```csharp
-Telemetry.Reset();  // resets all registered probes
-```
-
----
-
-## Random Sampling
-
-### RandomSystem
-
-Standard random number generation.
+Low-discrepancy:
 
 ```csharp
-var rnd = new RandomSystem();
-var rnd = new RandomSystem(seed);
-
-double d = rnd.UniformDouble();       // [0, 1)
-float f = rnd.UniformFloat();         // [0, 1)
-int i = rnd.UniformInt(max);          // [0, max)
-int i = rnd.UniformInt(min, max);     // [min, max)
+var halton = new HaltonRandomSeries(2, rnd);
+double q = Quasi.QuasiHaltonWithIndex(2, 0.123);
 ```
-
-### Geometric Sampling
-```csharp
-// Uniform direction on unit sphere
-V3d dir = rnd.UniformV3dDirection();
-
-// Cosine-weighted hemisphere (Lambertian)
-V3d dir = rnd.CosineWeightedHemisphere(normal);
-
-// Uniform point on unit sphere
-V3d point = rnd.UniformV3dOnSphere();
-
-// Point in unit disk
-V2d point = rnd.UniformV2dInDisk();
-```
-
-### Halton Sequence
-
-Quasi-random low-discrepancy sequence.
-
-```csharp
-// Generate Halton sequence
-double[] seq = HaltonSequence.Create(base: 2, count: 100);
-
-// Multi-dimensional
-var halton = new HaltonSequence(dimensions: 3);
-V3d sample = halton.Next();
-```
-
----
 
 ## INode Traversal
 
-Tree/graph traversal utilities for types implementing `INode`.
+`INode` extensions:
 
-### Interface
-```csharp
-public interface INode
-{
-    IEnumerable<INode> SubNodes { get; }
-}
-```
+- `DepthFirst()`
+- `BreadthFirst()`
+- `NodesAtDepth(depth)`
+- `DescendentsAndSelf()` and `Descendents()` (spelling in code is `Descendents`)
 
-### Traversal Methods
-```csharp
-// Depth-first traversal
-foreach (var node in root.DepthFirst())
-{
-    // process
-}
+## Geodesy
 
-// Breadth-first traversal
-foreach (var node in root.BreadthFirst())
-{
-    // process
-}
-
-// All descendants (inclusive)
-foreach (var node in root.Descendants())
-{
-    // includes root
-}
-
-// With depth limit
-foreach (var node in root.DescendantsAtMaxDepth(maxDepth))
-{
-    // process
-}
-```
-
----
-
-## Geodetic Conversions
-
-Geographic coordinate transformations.
-
-### GeoEllipsoid
-
-Reference ellipsoid parameters.
+Main conversions:
 
 ```csharp
-public static class GeoEllipsoid
-{
-    public static readonly GeoEllipsoid WGS84;
-    // Semi-major axis, semi-minor axis, eccentricity
-}
+var xyz = Geo.XyzFromLonLatHeight(new V3d(lonDeg, latDeg, hMeters), GeoEllipsoid.Wgs84);
+var llh = Geo.LonLatHeightFromXyz(xyz, GeoEllipsoid.Wgs84);
 ```
 
-### Conversions
-```csharp
-// Longitude/Latitude/Height to ECEF XYZ
-V3d xyz = GeoConversion.LatLonHeightToXyz(
-    latitude,   // radians
-    longitude,  // radians
-    height,     // meters
-    GeoEllipsoid.WGS84
-);
+`GeoEllipsoid` presets include `Wgs84`, `Grs80`, `Bessel1841`.
 
-// ECEF XYZ to Longitude/Latitude/Height
-var (lat, lon, h) = GeoConversion.XyzToLatLonHeight(xyz, GeoEllipsoid.WGS84);
-```
+## Constants
 
----
+`Constant<T>` exposes machine-epsilon/tiny/parseable min/max style values.
 
-## Fun (Math Utilities)
+Mathematical constants are on non-generic classes:
 
-Common math functions.
+- `Constant.Pi`, `Constant.E`
+- `ConstantF.Pi`, `ConstantF.E`
 
-```csharp
-public static class Fun
-```
+## Source Anchors
 
-### Basic
-```csharp
-Fun.Min(a, b);
-Fun.Max(a, b);
-Fun.Clamp(value, min, max);
-Fun.Abs(x);
-Fun.Sign(x);
-```
-
-### Interpolation
-```csharp
-Fun.Lerp(a, b, t);           // linear interpolation
-Fun.SmoothStep(edge0, edge1, x);
-```
-
-### Comparison
-```csharp
-Fun.ApproximateEquals(a, b, epsilon);
-Fun.IsTiny(x);               // near zero
-```
-
-### Rounding
-```csharp
-Fun.Floor(x);
-Fun.Ceiling(x);
-Fun.Round(x);
-Fun.Truncate(x);
-```
-
-### Trigonometry
-```csharp
-Fun.Sin(x);
-Fun.Cos(x);
-Fun.Tan(x);
-Fun.Asin(x);
-Fun.Acos(x);
-Fun.Atan(x);
-Fun.Atan2(y, x);
-```
-
-### Powers
-```csharp
-Fun.Sqrt(x);
-Fun.Pow(x, y);
-Fun.Exp(x);
-Fun.Log(x);
-Fun.Log10(x);
-```
-
----
-
-## Constant<T>
-
-Type-specific constants.
-
-```csharp
-Constant<float>.Pi
-Constant<double>.Pi
-Constant<float>.E
-Constant<double>.E
-Constant<float>.PositiveTinyValue
-Constant<double>.PositiveTinyValue
-Constant<float>.MaxValue
-Constant<double>.MaxValue
-```
-
----
-
-## Usage Patterns
-
-### Timed Operation with Logging
-```csharp
-Report.BeginTimed(1, "Loading scene");
-var scene = LoadScene(path);
-Report.End(1);  // prints: Loading scene: 1.234s
-```
-
-### Performance Monitoring
-```csharp
-static readonly Telemetry.Counter FrameCount = new Telemetry.Counter();
-static readonly Telemetry.StopWatchTime RenderTime = new Telemetry.StopWatchTime();
-
-static MyClass()
-{
-    Telemetry.Register("Frames", FrameCount);
-    Telemetry.Register("Render Time", RenderTime);
-}
-
-void Render()
-{
-    FrameCount.Increment();
-    using (RenderTime.Timer)
-    {
-        // render
-    }
-}
-```
-
-### Quasi-Random Sampling
-```csharp
-var halton = new HaltonSequence(2);
-for (int i = 0; i < sampleCount; i++)
-{
-    var (u, v) = halton.Next2D();
-    // use (u, v) for low-discrepancy sampling
-}
-```
-
----
-
-## Gotchas
-
-1. **Report.Verbosity Global State**: Setting `Report.Verbosity` affects *all* Report output globally. In multi-threaded code, one thread changing verbosity affects all threads. Use `Report.BeginTimed(verbosity, ...)` instead
-2. **Telemetry Registration Permanence**: `Telemetry.Register()` persists until `Telemetry.Reset()`. Re-registering the same counter twice creates duplicate entries with different names. Keep a static reference
-3. **Halton Sequence Determinism**: `HaltonSequence` is deterministic (same seed = same sequence) but NOT rewindable. Create a new instance if you need to restart; don't share across threads
-
----
-
-## See Also
-
-- [COLLECTIONS.md](COLLECTIONS.md) - `Symbol` used for telemetry counter/timer registration keys
-- [ALGORITHMS.md](ALGORITHMS.md) - Random sampling via `RandomSystem` used in weighted selection and Monte Carlo algorithms
-- [SERIALIZATION.md](SERIALIZATION.md) - Telemetry data can be persisted via `ICoder` for benchmarking comparisons
+- `src/Aardvark.Base/Reporting/Report.cs`
+- `src/Aardvark.Base.Telemetry/Probes.cs`
+- `src/Aardvark.Base.Telemetry/Registry.cs`
+- `src/Aardvark.Base.Telemetry/IProbe.cs`
+- `src/Aardvark.Base.Telemetry/TelemetryExtensions.cs`
+- `src/Aardvark.Base/Random/RandomSystem.cs`
+- `src/Aardvark.Base/Random/IRandomUniform.cs`
+- `src/Aardvark.Base/Random/RandomSample.cs`
+- `src/Aardvark.Base/Random/HaltonRandomSeries.cs`
+- `src/Aardvark.Base/Random/Quasi.cs`
+- `src/Aardvark.Base/AlgoDat/INode.cs`
+- `src/Aardvark.Base/Geodesy/GeoConversion.cs`
+- `src/Aardvark.Base/Geodesy/GeoConsts.cs`
+- `src/Aardvark.Base/Math/Base/Constant.cs`

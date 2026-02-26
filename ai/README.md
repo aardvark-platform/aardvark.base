@@ -1,44 +1,46 @@
 # Aardvark.Base AI Reference
 
-Index for AI coding assistants. Read only the doc you need.
+Task-first docs for coding agents.
 
-## By Task
+Goal: open one focused document, not the whole `ai/` folder.
 
-| Task | Document | Size |
-|------|----------|------|
-| Vectors, matrices, colors, transforms | PRIMITIVE_TYPES.md | 11 KB |
-| Images: load, save, scale, formats | PIXIMAGE.md | 9 KB |
-| N-D arrays, tensors, stride views | TENSORS.md | 8 KB |
-| Graphs, spatial, numerical algorithms | ALGORITHMS.md | 8 KB |
-| Binary/stream serialization | SERIALIZATION.md | 7 KB |
-| Logging, telemetry, random, geodesy | UTILITIES.md | 7 KB |
-| Symbols, caches, specialized dicts | COLLECTIONS.md | 6 KB |
-| F# modules, lenses, interop | FSHARP_INTEROP.md | 6 KB |
-| Reactive/incremental computation | INCREMENTAL.md | 10 KB |
+## Fast Path
 
-## Meta
+1. Find symbols in [SYMBOL_INDEX.md](SYMBOL_INDEX.md).
+2. Open one task doc from the table below.
+3. Verify critical names in source with `rg`.
 
-| Task | Document | Size |
-|------|----------|------|
-| Make another repo AI-friendly | RECIPE_AI_FRIENDLINESS.md | 8 KB |
+## Task Docs
 
-## By Type
+| Need | Read |
+|------|------|
+| Primitive math and geometry types | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
+| Matrix/vector layout and interop semantics | [SEMANTICS_LINEAR_ALGEBRA.md](SEMANTICS_LINEAR_ALGEBRA.md) |
+| Geometry and transform semantics | [SEMANTICS_GEOMETRY_CORE.md](SEMANTICS_GEOMETRY_CORE.md) |
+| Images, volumes, loaders, processors | [PIXIMAGE.md](PIXIMAGE.md) |
+| Tensor containers, views, strides | [TENSORS.md](TENSORS.md) |
+| Graph/spatial/numeric algorithms | [ALGORITHMS.md](ALGORITHMS.md) |
+| Symbols, dicts, caches, concurrent set | [COLLECTIONS.md](COLLECTIONS.md) |
+| Logging, telemetry, random, geodesy | [UTILITIES.md](UTILITIES.md) |
+| Serialization/coder APIs | [SERIALIZATION.md](SERIALIZATION.md) |
+| F# wrappers and idioms | [FSHARP_INTEROP.md](FSHARP_INTEROP.md) |
+| Incremental/adaptive system | [INCREMENTAL.md](INCREMENTAL.md) |
 
-- V2d, V3d, V4d, M22d..M44d, C3f, C4b, Rot3d, Trafo3d → PRIMITIVE_TYPES.md
-- PixImage, PixVolume, PixFormat → PIXIMAGE.md
-- Vector<T>, Matrix<T>, Volume<T>, Tensor4<T> → TENSORS.md
-- Symbol, SymbolDict, IntDict, LruCache → COLLECTIONS.md
-- KdTree, BbTree, ShortestPath → ALGORITHMS.md
-- BinaryWritingCoder, ICoder → SERIALIZATION.md
-- Report, Telemetry, RandomSystem → UTILITIES.md
-- Vec, Mat, Trafo, Lens → FSHARP_INTEROP.md
-- aval, cval, aset, amap, alist, afun, astate, Proc → INCREMENTAL.md
+## Meta Docs
 
-## For Downstream Projects
+| Need | Read |
+|------|------|
+| Symbol-to-doc lookup | [SYMBOL_INDEX.md](SYMBOL_INDEX.md) |
+| Drift and accuracy audit log | [DOC_ACCURACY_AUDIT.md](DOC_ACCURACY_AUDIT.md) |
+| AI-friendliness recipe for other repos | [RECIPE_AI_FRIENDLINESS.md](RECIPE_AI_FRIENDLINESS.md) |
 
-If you're consuming Aardvark.Base in your project:
+## Accuracy Contract
 
-1. Use Paket for consistency with aardvark ecosystem
-2. Match .NET SDK version to aardvark requirements (see `global.json`)
-3. F# projects: also reference `Aardvark.Base.FSharp`
-4. See AGENTS.md for related packages (Rendering, UI, etc.)
+- Docs are orientation, source is truth.
+- If a method/type matters, verify with `rg` before coding.
+- If docs and code differ, fix docs in the same change.
+- Prefer examples that reflect current scripts and project targets.
+
+---
+
+Last verified against repository state: 2026-02-26
