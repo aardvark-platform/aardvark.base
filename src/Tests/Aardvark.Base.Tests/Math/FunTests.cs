@@ -94,146 +94,149 @@ namespace Aardvark.Tests
             return MathF.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
         }
 
-        private static float SincFloatFallbackImpl(float x)
-        {
-            return (float)Math.Sin(ConstantF.Pi * x) / (ConstantF.Pi * x);
-        }
-
         private static double SincDoubleImpl(double x)
         {
             return Math.Sin(Constant.Pi * x) / (Constant.Pi * x);
         }
 
+        private static string FormatBits(float x)
+        {
+            return $"0x{BitConverter.SingleToInt32Bits(x):X8}";
+        }
+
+        private static string FormatBits(double x)
+        {
+            return $"0x{BitConverter.DoubleToInt64Bits(x):X16}";
+        }
+
+        private static float FindFirstFloatSincNotOne(float startInclusive, int maxUlps)
+        {
+            var x = startInclusive;
+
+            for (var i = 0; i <= maxUlps; i++)
+            {
+                if (SincFloatImpl(x) != 1.0f)
+                    return x;
+
+                x = NextAfter(x, 1);
+            }
+
+            Assert.Fail(
+                "Could not find float x with raw sinc(x) != 1 within {0} ULPs from x = {1:R} ({2})",
+                maxUlps,
+                startInclusive,
+                FormatBits(startInclusive)
+            );
+
+            return default;
+        }
+
+        private static double FindFirstDoubleSincNotOne(double startInclusive, int maxUlps)
+        {
+            var x = startInclusive;
+
+            for (var i = 0; i <= maxUlps; i++)
+            {
+                if (SincDoubleImpl(x) != 1.0)
+                    return x;
+
+                x = NextAfter(x, 1);
+            }
+
+            Assert.Fail(
+                "Could not find double x with raw sinc(x) != 1 within {0} ULPs from x = {1:R} ({2})",
+                maxUlps,
+                startInclusive,
+                FormatBits(startInclusive)
+            );
+
+            return default;
+        }
+
         [Test]
         public void SincTest()
         {
-            bool findEps = false;
-            int iterations = 25000000;
+            const int searchUlps = 4096;
+            const int verifyUlps = 256;
 
-            // Check if sinc(x) != 1 for x with |x| > eps
+            // Keep the current implementation cutoffs in sync with Fun.Sinc.
             {
-                float eps = 0.00017791693f;
-                float[] inputs = new float[] { eps, -eps };
+                const float cutoff = 0.00017791694f;
+                float[] thresholds = { cutoff, -cutoff };
 
-                for (int n = 0; n < iterations; n++)
+                foreach (var threshold in thresholds)
                 {
-                    for (int i = 0; i < inputs.Length; i++)
+                    var insideCutoff = NextAfter(threshold, -1);
+                    Assert.AreEqual(
+                        1.0f,
+                        Fun.Sinc(insideCutoff),
+                        "Expected Fun.Sinc(x) = 1 one ULP inside the float cutoff, but got x = {0:R} ({1})",
+                        insideCutoff,
+                        FormatBits(insideCutoff)
+                    );
+
+                    var firstNonOne = FindFirstFloatSincNotOne(threshold, searchUlps);
+                    Assert.AreNotEqual(
+                        1.0f,
+                        Fun.Sinc(firstNonOne),
+                        "Expected Fun.Sinc(x) != 1 at or above the float cutoff, but got x = {0:R} ({1})",
+                        firstNonOne,
+                        FormatBits(firstNonOne)
+                    );
+
+                    var x = firstNonOne;
+                    for (var i = 0; i < verifyUlps; i++)
                     {
-                        inputs[i] = NextAfter(inputs[i], 1);
-                        float output = Fun.Sinc(inputs[i]);
-                        Assert.IsTrue(output != 1, "Found input x with Fun.Sinc(x) = 1 and |x| > eps: x = {0}", inputs[i]);
+                        Assert.AreNotEqual(
+                            1.0f,
+                            Fun.Sinc(x),
+                            "Expected Fun.Sinc(x) != 1 in the verified float window above the cutoff, but got x = {0:R} ({1})",
+                            x,
+                            FormatBits(x)
+                        );
+
+                        x = NextAfter(x, 1);
                     }
                 }
             }
 
             {
-                double eps = 6.840859302478614E-09;
-                double[] inputs = new double[] { eps, -eps };
+                const double cutoff = 6.840859302478615E-09;
+                double[] thresholds = { cutoff, -cutoff };
 
-                for (int n = 0; n < iterations; n++)
+                foreach (var threshold in thresholds)
                 {
-                    for (int i = 0; i < inputs.Length; i++)
+                    var insideCutoff = NextAfter(threshold, -1);
+                    Assert.AreEqual(
+                        1.0,
+                        Fun.Sinc(insideCutoff),
+                        "Expected Fun.Sinc(x) = 1 one ULP inside the double cutoff, but got x = {0:R} ({1})",
+                        insideCutoff,
+                        FormatBits(insideCutoff)
+                    );
+
+                    var firstNonOne = FindFirstDoubleSincNotOne(threshold, searchUlps);
+                    Assert.AreNotEqual(
+                        1.0,
+                        Fun.Sinc(firstNonOne),
+                        "Expected Fun.Sinc(x) != 1 at or above the double cutoff, but got x = {0:R} ({1})",
+                        firstNonOne,
+                        FormatBits(firstNonOne)
+                    );
+
+                    var x = firstNonOne;
+                    for (var i = 0; i < verifyUlps; i++)
                     {
-                        inputs[i] = NextAfter(inputs[i], 1);
-                        double output = Fun.Sinc(inputs[i]);
-                        Assert.IsTrue(output != 1, "Found input x with Fun.Sinc(x) = 1 and |x| > eps: x = {0}", inputs[i]);
+                        Assert.AreNotEqual(
+                            1.0,
+                            Fun.Sinc(x),
+                            "Expected Fun.Sinc(x) != 1 in the verified double window above the cutoff, but got x = {0:R} ({1})",
+                            x,
+                            FormatBits(x)
+                        );
+
+                        x = NextAfter(x, 1);
                     }
-                }
-            }
-
-            // Finding values for eps
-            if (findEps)
-            {
-                Console.WriteLine("Finding eps for SincFloatImpl");
-
-                {
-                    // Find biggest number with sinc(x) = 1
-                    float input = 1.0f;
-                    float output = 0.0f;
-
-                    while (output != 1.0f)
-                    {
-                        input = NextAfter(input, -1);
-                        output = SincFloatImpl(input);
-                    }
-
-                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
-                }
-
-                {
-                    // Find smallest number with sinc(x) = 1
-                    float input = -1.0f;
-                    float output = 0.0f;
-
-                    while (output != 1.0f)
-                    {
-                        input = NextAfter(input, -1);
-                        output = SincFloatImpl(input);
-                    }
-
-                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("Finding eps for SincFloatFallbackImpl");
-
-                {
-                    // Find biggest number with sinc(x) = 1
-                    float input = 1.0f;
-                    float output = 0.0f;
-
-                    while (output != 1.0f)
-                    {
-                        input = NextAfter(input, -1);
-                        output = SincFloatFallbackImpl(input);
-                    }
-
-                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
-                }
-
-                {
-                    // Find smallest number with sinc(x) = 1
-                    float input = -1.0f;
-                    float output = 0.0f;
-
-                    while (output != 1.0f)
-                    {
-                        input = NextAfter(input, -1);
-                        output = SincFloatFallbackImpl(input);
-                    }
-
-                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
-                }
-
-                Console.WriteLine();
-                Console.WriteLine("Finding eps for SincDoubleImpl");
-
-                {
-                    // Find biggest number with sinc(x) = 1
-                    double input = 6.84086E-09;
-                    double output = 0.0;
-
-                    while (output != 1.0)
-                    {
-                        input = NextAfter(input, -1);
-                        output = SincDoubleImpl(input);
-                    }
-
-                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
-                }
-
-                {
-                    // Find smallest number with sinc(x) = 1
-                    double input = -6.84086E-09;
-                    double output = 0.0;
-
-                    while (output != 1.0)
-                    {
-                        input = NextAfter(input, -1);
-                        output = SincDoubleImpl(input);
-                    }
-
-                    Console.WriteLine("sinc({0}) = {1} -> eps = {2}", input, output, NextAfter(input, 1));
                 }
             }
         }
