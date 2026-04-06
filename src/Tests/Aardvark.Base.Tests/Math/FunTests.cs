@@ -59,8 +59,8 @@ namespace Aardvark.Tests
             var min_ref = Fun.Min(Fun.Min(Fun.Min(Fun.Min(a, b), c), d), e);
             Assert.AreEqual(min, min_ref, "Min not equal to reference");
 
-            var max = Fun.Min(a, b, c, d, e);
-            var max_ref = Fun.Min(Fun.Min(Fun.Min(Fun.Min(a, b), c), d), e);
+            var max = Fun.Max(a, b, c, d, e);
+            var max_ref = Fun.Max(Fun.Max(Fun.Max(Fun.Max(a, b), c), d), e);
             Assert.AreEqual(max, max_ref, "Max not equal to reference");
         }
 
@@ -78,8 +78,8 @@ namespace Aardvark.Tests
             var min_ref = Fun.Min(Fun.Min(Fun.Min(Fun.Min(a, b), c), d), e);
             Assert.AreEqual(min, min_ref, "Min not equal to reference");
 
-            var max = Fun.Min(a, b, c, d, e);
-            var max_ref = Fun.Min(Fun.Min(Fun.Min(Fun.Min(a, b), c), d), e);
+            var max = Fun.Max(a, b, c, d, e);
+            var max_ref = Fun.Max(Fun.Max(Fun.Max(Fun.Max(a, b), c), d), e);
             Assert.AreEqual(max, max_ref, "Max not equal to reference");
         }
 
