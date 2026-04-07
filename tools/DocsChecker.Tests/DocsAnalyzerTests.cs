@@ -27,6 +27,18 @@ public sealed class DocsAnalyzerTests
     }
 
     [Fact]
+    public void RootReadmeBrokenLink_IsReported()
+    {
+        using var repo = TempRepo.CreateValid();
+        repo.Append("README.md", "\n[broken](missing.md)\n");
+        var analyzer = new DocsAnalyzer();
+
+        var failures = analyzer.Analyze(repo.Root);
+
+        Assert.Contains("Broken local link in README.md: missing.md", failures);
+    }
+
+    [Fact]
     public void ForbiddenPattern_IsReported()
     {
         using var repo = TempRepo.CreateValid();
@@ -143,6 +155,7 @@ public sealed class DocsAnalyzerTests
             foreach (var rel in rules.RequiredFiles)
                 Write(rel, "# placeholder");
 
+            Write("README.md", "[agents](AGENTS.md)\n[ai](./ai/)\n[docs](docs/CONTRIBUTING.md)\n");
             Write("AGENTS.md", "check-docs.sh\ncheck-docs.cmd\n");
             Write("ai/README.md", "SYMBOL_INDEX.md\nSEMANTICS_LINEAR_ALGEBRA.md\nSEMANTICS_GEOMETRY_CORE.md\n");
             Write("ai/SEMANTICS_LINEAR_ALGEBRA.md", "row-major\nFromCols\n");

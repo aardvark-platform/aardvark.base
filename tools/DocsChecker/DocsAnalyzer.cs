@@ -108,6 +108,10 @@ internal sealed class DocsAnalyzer
 
     private static IEnumerable<string> EnumerateMarkdownFiles(string root)
     {
+        var readme = FullPath(root, "README.md");
+        if (File.Exists(readme))
+            yield return readme;
+
         var ai = FullPath(root, "ai");
         if (Directory.Exists(ai))
         {
@@ -164,7 +168,7 @@ internal sealed class DocsAnalyzer
                 continue;
             }
 
-            if (!File.Exists(target))
+            if (!File.Exists(target) && !Directory.Exists(target))
                 failures.Add($"Broken local link in {relPath}: {rawLink}");
         }
     }
