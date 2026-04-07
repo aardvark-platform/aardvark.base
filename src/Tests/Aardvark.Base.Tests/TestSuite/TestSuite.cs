@@ -42,7 +42,7 @@ namespace Aardvark.Tests
         public TestSuite(Options options)
         {
             Opt = options;
-            if ((options & Opt) == 0) Report.Targets.Remove(Report.LogTarget);
+            if ((options & Options.UseLogTarget) == 0) Report.Targets.Remove(Report.LogTarget);
             Test = new Info(TestInfo.Empty, (options & Options.UseNUnit) != 0);
         }
 

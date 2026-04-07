@@ -17,15 +17,39 @@ namespace Aardvark.Tests
         [Test]
         public void DoubleEnd()
         {
-            Report.Begin("begin");
-            Report.End();
-            Report.End(); // bad end -> should report warning, but not throw exception
+            var previousRootTarget = Report.RootTarget;
+            var output = new StringBuilder();
+            var target = new TextLogTarget((threadIndex, type, level, message) => output.Append(message))
+            {
+                Verbosity = int.MaxValue,
+                LogCompleteLinesOnly = true,
+            };
+            target.PrefixFun = _ => "";
 
-            Report.Begin("begin");
-            Report.End();
-            Report.End("end without begin"); // bad end -> text should be reported
+            try
+            {
+                Report.RootTarget = target;
 
-            Report.Line("passed");
+                Report.Begin("begin");
+                Report.End();
+                Report.End(); // bad end -> should report warning, but not throw exception
+
+                Report.Begin("begin");
+                Report.End();
+                Report.End("end without begin"); // bad end -> text should be reported
+
+                Report.Line("passed");
+            }
+            finally
+            {
+                target.Dispose();
+                Report.RootTarget = previousRootTarget;
+            }
+
+            var text = output.ToString();
+            StringAssert.Contains("superfluous Report.End() encountered", text);
+            StringAssert.Contains("end without begin", text);
+            StringAssert.Contains("passed", text);
         }
 
         [Test]
