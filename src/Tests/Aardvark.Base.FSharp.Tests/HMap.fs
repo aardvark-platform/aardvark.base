@@ -26,7 +26,7 @@ type StupidHash = { value : int } with
             | _ -> false
 
 
-[<Property(Verbose = true)>]
+[<Property>]
 let ``[HashMap] count`` (l : Map<int, int>) (a : int)  =
     not (Map.containsKey a l) ==> lazy (
         let map = l |> Map.toList |> HashMap.ofList
@@ -49,7 +49,7 @@ let ``[HashMap] count`` (l : Map<int, int>) (a : int)  =
         ]
     )
 
-[<Property(Verbose = true)>]
+[<Property>]
 let ``[HashMap] tryFind`` (l : Map<int, int>) (a : int)  =
     not (Map.containsKey a l) ==> lazy (
         let map = l |> Map.toList |> HashMap.ofList
@@ -76,22 +76,22 @@ let ``[HashMap] tryFind`` (l : Map<int, int>) (a : int)  =
 
     )
 
-[<Property(Verbose = true)>]
+[<Property>]
 let ``[HashMap] containsKey`` (l : Map<int, int>) (a : int)  =
     let map = l |> Map.toList |> HashMap.ofList
     HashMap.containsKey a map = Option.isSome (HashMap.tryFind a map)
 
-[<Property(Verbose = true)>]
+[<Property>]
 let ``[HashMap] find`` (l : Map<int, int>) (a : int)  =
     let map = l |> Map.toList |> HashMap.ofList
     let map = map |> HashMap.add a a
     HashMap.find a map = a
 
-[<Property(Verbose = true)>]
+[<Property>]
 let ``[HashMap] ofList`` (l : list<int * int>) =
     List.sortBy fst (HashMap.toList (HashMap.ofList l)) = Map.toList (Map.ofList l)
 
-[<Property(Verbose = true)>]
+[<Property>]
 let ``[HashMap] map2/choose2`` (lm : Map<int, int>) (rm : Map<int, int>) =
     let l = lm |> Map.toList |> HashMap.ofList
     let r = rm |> Map.toList |> HashMap.ofList

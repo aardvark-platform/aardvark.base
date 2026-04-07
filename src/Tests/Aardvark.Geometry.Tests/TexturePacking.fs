@@ -23,7 +23,7 @@ module TexturePackingTests =
             (Gen.choose (1, 64), Gen.choose (1,64)) ||> Gen.map2 (fun x y -> V2i(x,y) |> Size) |> Arb.fromGen
 
 
-    [<Property(Arbitrary = [| typeof<SizeGenerator> |], Verbose = true)>]
+    [<Property(Arbitrary = [| typeof<SizeGenerator> |])>]
     let ``square producing correct results``(NonEmptyArray (sizes)) =
         let sizes = sizes |> Array.mapi (fun i (Size s) -> i, s)
         let packing = TexturePacking.square sizes
@@ -74,8 +74,10 @@ module TexturePackingTests =
             let tests = ( List.init size (fun _ -> Size(V2i(37,37))) ) :: tests
 
             for t in tests do
-                ``square producing correct results`` (NonEmptyArray (List.toArray t))
-                printfn "%A" t
+                try
+                    ``square producing correct results`` (NonEmptyArray (List.toArray t))
+                with e ->
+                    failwithf "TexturePackingTests.run failed for size=%d case=%A\n%s" size t e.Message
         0
 
     //[<Test>]
