@@ -321,7 +321,7 @@ namespace Aardvark.Tests
         // BUT it is implemented directly in Dict and at first makes the lookup with the given key and if not found invokes the createFunc 
         // it then does not check if the Dict has been modified during that and records the new entry to where it was previously tried be found -> location potentially invalid
         // NOTE: This is pattern is useful in recursive conversion (with cache) of graph like data structures
-        [Test, Ignore("needs to be fixed")] 
+        [Test]
         public void TestDictGetCreate()
         {
             var dict = new Dict<string, string>();
@@ -338,11 +338,13 @@ namespace Aardvark.Tests
 
                     Test.IsTrue(dict.ContainsKey(recKey), $"dict.ContainsKey({recKey})");
                     Test.IsTrue(dict[testRec] == recKey, $"dict[{testRec}] == {testRec}");
+                    Test.IsTrue(testRec == recKey, $"testRec == {recKey}");
 
                     return x;
                 });
 
                 Test.IsTrue(dict.ContainsKey(key), $"dict.ContainsKey({key})");
+                Test.IsTrue(test == key, $"test == {key}");
                 var foo = dict[test];
                 Test.IsTrue(foo == key, $"dict[{test}] == {key}");
             }
