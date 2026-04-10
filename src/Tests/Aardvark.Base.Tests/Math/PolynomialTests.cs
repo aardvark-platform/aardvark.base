@@ -22,6 +22,23 @@ namespace Aardvark.Tests
             RootsTest4(0.125);
         }
 
+        [Test]
+        public void RealRoots_LinearAscendingCoefficients()
+        {
+            var roots = new[] { -6.0, 2.0 }.RealRoots();
+
+            Assert.That(roots, Has.Length.EqualTo(1));
+            Assert.That(roots[0], Is.EqualTo(3.0).Within(1e-12));
+        }
+
+        [Test]
+        public void RealRoots_ConstantPolynomialHasNoRoots()
+        {
+            var roots = new[] { -6.0, 0.0 }.RealRoots();
+
+            Assert.That(roots, Is.Empty);
+        }
+
         public void Run()
         {
             RootsTest3(0.01);

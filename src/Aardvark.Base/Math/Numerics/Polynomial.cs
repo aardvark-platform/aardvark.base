@@ -83,7 +83,7 @@ namespace Aardvark.Base
                 case 0:
                 case 1:
                         return Array.Empty<double>();
-                case 2: return RealRootOf(coeff[1], coeff[2]).NonNanToArray();
+                case 2: return RealRootOf(coeff[1], coeff[0]).NonNanToArray();
                 case 3: return RealRootsOf(coeff[2], coeff[1], coeff[0])
                                        .NonNanToArray();
                 case 4: return RealRootsOf(coeff[3], coeff[2], coeff[1], coeff[0])
