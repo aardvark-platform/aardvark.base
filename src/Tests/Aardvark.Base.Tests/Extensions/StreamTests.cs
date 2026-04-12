@@ -73,14 +73,17 @@ namespace Aardvark.Tests.Extensions
 
             if (netStandard20)
             {
-                var assemblyPath = Path.Combine("..", "netstandard2.0", "Aardvark.Base.dll");
-                if (!File.Exists(assemblyPath))
-                {
-                    Assert.Inconclusive("Could not find netstandard2.0 Aardvark.Base assembly.");
-                }
+                var outputDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                var assemblyPath = Path.GetFullPath(Path.Combine(outputDirectory!, "..", "netstandard2.0", "Aardvark.Base.dll"));
+
+                Assert.That(
+                    File.Exists(assemblyPath),
+                    Is.True,
+                    $"Expected sibling netstandard2.0 Aardvark.Base assembly at '{assemblyPath}'."
+                );
 
                 // We want to test the netstandard2.0 implementation, is there an easier way?
-                var asm = Assembly.LoadFile(Path.GetFullPath(assemblyPath));
+                var asm = Assembly.LoadFile(assemblyPath);
                 var ext = asm.GetType($"Aardvark.Base.{nameof(StreamExtensions)}");
                 Type[] parameters = [typeof(Stream), typeof(byte[]), typeof(int), typeof(int)];
                 var mi = ext.GetMethod(nameof(StreamExtensions.ReadBytes), parameters);
