@@ -1,4 +1,5 @@
 ### 5.3.21
+- [Telemetry] Fixed WallClockTime timer disposal so repeated Dispose calls do not corrupt timer state
 - [Base] Simplified computation of Constant<T>.MachineEpsilon
 - [FSharp] Fixed MapExt.choose2 and MapExt.map2
 

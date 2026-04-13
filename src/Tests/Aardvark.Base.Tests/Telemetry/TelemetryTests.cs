@@ -159,8 +159,29 @@ namespace Aardvark.Tests
                     }
                 })
             ).ToArray());
-            
+
             Assert.IsTrue(t.Value.TotalSeconds >= 1.0 && t.Value.TotalSeconds < 1.1);
+        }
+
+        [Test]
+        public void WallclockTime_DoubleDisposeDoesNotThrowAndProbeRemainsUsable()
+        {
+            var t = new Telemetry.WallClockTime();
+            var timer = t.Timer;
+
+            Thread.Sleep(50);
+
+            Assert.DoesNotThrow(() => timer.Dispose());
+            Assert.DoesNotThrow(() => timer.Dispose());
+
+            var elapsedAfterDoubleDispose = t.Value;
+
+            using (t.Timer)
+            {
+                Thread.Sleep(50);
+            }
+
+            Assert.That(t.Value, Is.GreaterThan(elapsedAfterDoubleDispose));
         }
 
         [Test]

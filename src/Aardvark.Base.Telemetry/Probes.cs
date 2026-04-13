@@ -96,11 +96,14 @@ namespace Aardvark.Base
                 internal WallClockTimer(WallClockTime source) { Source = source; }
                 public void Dispose()
                 {
-                    if (Interlocked.Decrement(ref Source.m_actives) == 0)
+                    var source = Source;
+                    if (source == null) return;
+
+                    Source = null;
+
+                    if (Interlocked.Decrement(ref source.m_actives) == 0)
                     {
-                        if (Source == null) return;
-                        Source.m_stopwatch.Stop();
-                        Source = null;
+                        source.m_stopwatch.Stop();
                     }
                 }
             }
