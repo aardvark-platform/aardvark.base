@@ -80,6 +80,43 @@ internal static class PathUtils
             return null;
         }
     }
+
+#if !NET8_0_OR_GREATER
+    // See: https://github.com/dotnet/runtime/blob/main/src/libraries/Common/src/System/IO/PathInternal.Windows.cs
+    private static bool IsValidDriveChar(char value)
+        => (uint)((value | 0x20) - 'a') <= (uint)('z' - 'a');
+
+    private static bool IsDirectorySeparator(char c)
+        => c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar;
+
+    private static bool IsPartiallyQualified(string path)
+    {
+        if (path.Length < 2)
+        {
+            // It isn't fixed, it must be relative.  There is no way to specify a fixed
+            // path with one character (or less).
+            return true;
+        }
+
+        if (IsDirectorySeparator(path[0]))
+        {
+            // There is no valid way to specify a relative path with two initial slashes or
+            // \? as ? isn't valid for drive relative paths and \??\ is equivalent to \\?\
+            return !(path[1] == '?' || IsDirectorySeparator(path[1]));
+        }
+
+        // The only way to specify a fixed path that doesn't begin with two slashes
+        // is the drive, colon, slash format- i.e. C:\
+        return !((path.Length >= 3)
+                 && (path[1] == Path.VolumeSeparatorChar)
+                 && IsDirectorySeparator(path[2])
+                 // To match old behavior we'll check the drive character for validity as the path is technically
+                 // not qualified if you don't have a valid drive. "=:\" is the "=" file's default data stream.
+                 && IsValidDriveChar(path[0]));
+    }
+
+    public static bool IsPathFullyQualified(string path) => !IsPartiallyQualified(path);
+#endif
 }
 
 internal static class AssemblyExtenions

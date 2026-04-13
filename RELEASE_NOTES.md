@@ -1,5 +1,7 @@
-### 5.3.21
 - [Telemetry] Fixed WallClockTime timer disposal so repeated Dispose calls do not corrupt timer state
+- [Introspection] Fixed native library loading on Windows using netstandard2.0 (https://github.com/aardvark-platform/aardvark.base/issues/86)
+
+### 5.3.21
 - [Base] Simplified computation of Constant<T>.MachineEpsilon
 - [FSharp] Fixed MapExt.choose2 and MapExt.map2
 

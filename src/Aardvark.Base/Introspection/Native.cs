@@ -456,7 +456,8 @@ public partial class Aardvark
         {
             if (GetOS() == OS.Win32)
             {
-                var flags = Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR;
+                var flags = Kernel32.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS;
+                if (PathUtils.IsPathFullyQualified(libraryName)) flags |= Kernel32.LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR;
                 handle = Kernel32.LoadLibraryEx(libraryName, IntPtr.Zero, flags);
                 if (handle != IntPtr.Zero) return true;
                 var error = Marshal.GetLastWin32Error();
