@@ -356,6 +356,33 @@ namespace Aardvark.Tests
             return res;
         }
 
+        [Test]
+        public void ContainsKeyValueForCollisionChainEntry()
+        {
+            var dict = new Dict<int, int>();
+
+            // Dict starts with capacity 7, so 1 and 8 collide into the same bucket.
+            dict.Add(1, 10);
+            dict.Add(8, 20);
+
+            Assert.IsTrue(dict.Contains(1, 10));
+            Assert.IsTrue(dict.Contains(8, 20));
+            Assert.IsFalse(dict.Contains(8, 10));
+        }
+
+        [Test]
+        public void ContainsKeyValueForStackedDuplicateKeyEntry()
+        {
+            var dict = new Dict<int, int>(stackDuplicateKeys: true);
+
+            dict.Add(1, 10);
+            dict.Add(1, 20);
+
+            Assert.IsTrue(dict.Contains(1, 20));
+            Assert.IsTrue(dict.Contains(1, 10));
+            Assert.IsFalse(dict.Contains(1, 30));
+        }
+
         [Theory]
         public void ContainsValue(bool stackDuplicateKeys)
         {
