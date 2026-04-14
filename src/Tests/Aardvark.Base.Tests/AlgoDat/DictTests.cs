@@ -10,6 +10,31 @@ namespace Aardvark.Tests
     [TestFixture]
     public class DictTests : TestSuite
     {
+        private sealed class CollisionKey : IEquatable<CollisionKey>
+        {
+            public int Id { get; }
+
+            public CollisionKey(int id)
+            {
+                Id = id;
+            }
+
+            public bool Equals(CollisionKey other)
+            {
+                return other != null && Id == other.Id;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is CollisionKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return 0;
+            }
+        }
+
         public DictTests() : base() { }
         public DictTests(TestSuite.Options options) : base(options) { }
 
@@ -359,28 +384,30 @@ namespace Aardvark.Tests
         [Test]
         public void ContainsKeyValueForCollisionChainEntry()
         {
-            var dict = new Dict<int, int>();
+            var dict = new Dict<CollisionKey, string>();
+            var firstKey = new CollisionKey(1);
+            var secondKey = new CollisionKey(2);
 
-            // Dict starts with capacity 7, so 1 and 8 collide into the same bucket.
-            dict.Add(1, 10);
-            dict.Add(8, 20);
+            dict.Add(firstKey, "first");
+            dict.Add(secondKey, "second");
 
-            Assert.IsTrue(dict.Contains(1, 10));
-            Assert.IsTrue(dict.Contains(8, 20));
-            Assert.IsFalse(dict.Contains(8, 10));
+            Assert.IsTrue(dict.Contains(firstKey, "first"));
+            Assert.IsTrue(dict.Contains(secondKey, "second"));
+            Assert.IsFalse(dict.Contains(secondKey, "first"));
         }
 
         [Test]
         public void ContainsKeyValueForStackedDuplicateKeyEntry()
         {
-            var dict = new Dict<int, int>(stackDuplicateKeys: true);
+            var dict = new Dict<CollisionKey, string>(stackDuplicateKeys: true);
+            var key = new CollisionKey(1);
 
-            dict.Add(1, 10);
-            dict.Add(1, 20);
+            dict.Add(key, "first");
+            dict.Add(key, "second");
 
-            Assert.IsTrue(dict.Contains(1, 20));
-            Assert.IsTrue(dict.Contains(1, 10));
-            Assert.IsFalse(dict.Contains(1, 30));
+            Assert.IsTrue(dict.Contains(key, "second"));
+            Assert.IsTrue(dict.Contains(key, "first"));
+            Assert.IsFalse(dict.Contains(key, "third"));
         }
 
         [Theory]
