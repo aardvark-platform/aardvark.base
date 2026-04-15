@@ -1,6 +1,7 @@
 ﻿using Aardvark.Base;
 using NUnit.Framework;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -204,17 +205,79 @@ namespace Aardvark.Tests
             Assert.IsTrue(t.Value.TotalSeconds >= t0.Value.TotalSeconds * 2);
         }
 
-        [Test, Ignore("not working non-privileged")]
+        private static void RunCpuAndSyscallHeavyWorkload()
+        {
+            for (var i = 0; i < 100000000; i++) ;
+            for (var i = 0; i < 500; i++) Directory.GetFiles(".");
+        }
+
+        private static bool RuntimeSupportsPrivilegedProcessorTime()
+        {
+            var process = Process.GetCurrentProcess();
+            var before = process.PrivilegedProcessorTime;
+
+            RunCpuAndSyscallHeavyWorkload();
+            process.Refresh();
+
+            return process.PrivilegedProcessorTime > before;
+        }
+
+        private static void MeasureOnDedicatedThread(Action action)
+        {
+            Exception exception = null;
+            var thread = new Thread(() =>
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception e)
+                {
+                    exception = e;
+                }
+            });
+
+            thread.Start();
+            thread.Join();
+
+            if (exception != null) throw exception;
+        }
+
+        [Test]
         public void CpuTimePrivileged_Works()
         {
+            var supportsPrivilegedProcessorTime = RuntimeSupportsPrivilegedProcessorTime();
             var t = new Telemetry.CpuTime();
             var tUser = t.UserTime;
             var tPriv = t.PrivilegedTime;
-            using (t.Timer) for (var i = 0; i < 100; i++) Directory.GetFiles(".");
+
+            MeasureOnDedicatedThread(() =>
+            {
+                using (t.Timer) RunCpuAndSyscallHeavyWorkload();
+            });
+
+            if (t.Value <= TimeSpan.Zero || tUser.Value <= TimeSpan.Zero)
+                Assert.Ignore("Telemetry.CpuTime did not report positive total/user CPU time on this runtime.");
 
             Assert.IsTrue(t.Value.TotalSeconds > 0.0);
             Assert.IsTrue(tUser.Value.TotalSeconds > 0.0);
-            Assert.IsTrue(tPriv.Value.TotalSeconds > 0.0);
+
+            if (supportsPrivilegedProcessorTime)
+            {
+                Assert.IsTrue(tPriv.Value > TimeSpan.Zero);
+            }
+            else
+            {
+                Assert.IsTrue(tPriv.Value >= TimeSpan.Zero);
+                Assert.DoesNotThrow(() =>
+                {
+                    MeasureOnDedicatedThread(() =>
+                    {
+                        using (t.Timer) RunCpuAndSyscallHeavyWorkload();
+                    });
+                });
+                Assert.IsTrue(tPriv.Value >= TimeSpan.Zero);
+            }
         }
 
         #endregion
