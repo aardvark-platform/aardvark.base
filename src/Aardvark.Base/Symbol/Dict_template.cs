@@ -976,7 +976,7 @@ namespace Aardvark.Base
             {
                 if (m_extraArray[ei].Item__Hash__ == hash/*# if (hasKey) { */
                     && key.Equals(m_extraArray[ei].Item__Key__)/*# } */
-                    && value.Equals(m_firstArray[fi].Item.Value))
+                    && value.Equals(m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }

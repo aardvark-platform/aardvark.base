@@ -10,6 +10,31 @@ namespace Aardvark.Tests
     [TestFixture]
     public class DictTests : TestSuite
     {
+        private sealed class CollisionKey : IEquatable<CollisionKey>
+        {
+            public int Id { get; }
+
+            public CollisionKey(int id)
+            {
+                Id = id;
+            }
+
+            public bool Equals(CollisionKey other)
+            {
+                return other != null && Id == other.Id;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is CollisionKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                return 0;
+            }
+        }
+
         public DictTests() : base() { }
         public DictTests(TestSuite.Options options) : base(options) { }
 
@@ -354,6 +379,35 @@ namespace Aardvark.Tests
             var res = new List<T>();
             foreach (T item in data) { res.Add(item); }
             return res;
+        }
+
+        [Test]
+        public void ContainsKeyValueForCollisionChainEntry()
+        {
+            var dict = new Dict<CollisionKey, string>();
+            var firstKey = new CollisionKey(1);
+            var secondKey = new CollisionKey(2);
+
+            dict.Add(firstKey, "first");
+            dict.Add(secondKey, "second");
+
+            Assert.IsTrue(dict.Contains(firstKey, "first"));
+            Assert.IsTrue(dict.Contains(secondKey, "second"));
+            Assert.IsFalse(dict.Contains(secondKey, "first"));
+        }
+
+        [Test]
+        public void ContainsKeyValueForStackedDuplicateKeyEntry()
+        {
+            var dict = new Dict<CollisionKey, string>(stackDuplicateKeys: true);
+            var key = new CollisionKey(1);
+
+            dict.Add(key, "first");
+            dict.Add(key, "second");
+
+            Assert.IsTrue(dict.Contains(key, "second"));
+            Assert.IsTrue(dict.Contains(key, "first"));
+            Assert.IsFalse(dict.Contains(key, "third"));
         }
 
         [Theory]
