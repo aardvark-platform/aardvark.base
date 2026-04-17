@@ -122,14 +122,20 @@ namespace Aardvark.Base
             private ProcessThread GetCurrentProcessThread()
             {
                 Thread.BeginThreadAffinity();
-                var tid = AppDomain.GetCurrentThreadId();
-                if (m_threadLocalWin32ThreadId.Value != tid)
+                try
                 {
-                    m_threadLocalWin32ThreadId.Value = tid;
-                    m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    var tid = AppDomain.GetCurrentThreadId();
+                    if (m_threadLocalWin32ThreadId.Value != tid || m_threadLocalProcessThread.Value == null)
+                    {
+                        m_threadLocalWin32ThreadId.Value = tid;
+                        m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    }
+                    return m_threadLocalProcessThread.Value;
                 }
-                Thread.EndThreadAffinity();
-                return m_threadLocalProcessThread.Value;
+                finally
+                {
+                    Thread.EndThreadAffinity();
+                }
             }
             
             private readonly ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
@@ -184,16 +190,24 @@ namespace Aardvark.Base
                 
                 public void Dispose()
                 {
-                    if (Source == null) return;
+                    var source = Source;
+                    if (source == null) return;
 
-                    var pt = Source.GetCurrentProcessThread();
-
-                    Interlocked.Add(ref Source.m_sum, pt.TotalProcessorTime.Ticks - T0);
-                    if (Source.m_measureUserTime) Interlocked.Add(ref Source.m_sumUser, pt.UserProcessorTime.Ticks - T0User);
-                    if (Source.m_measurePrivilegedTime) Interlocked.Add(ref Source.m_sumPrivileged, pt.PrivilegedProcessorTime.Ticks - T0Privileged);
-
-                    Source.m_active.Value = false;
-                    Source = null;
+                    try
+                    {
+                        var pt = source.GetCurrentProcessThread();
+                        if (pt != null)
+                        {
+                            Interlocked.Add(ref source.m_sum, pt.TotalProcessorTime.Ticks - T0);
+                            if (source.m_measureUserTime) Interlocked.Add(ref source.m_sumUser, pt.UserProcessorTime.Ticks - T0User);
+                            if (source.m_measurePrivilegedTime) Interlocked.Add(ref source.m_sumPrivileged, pt.PrivilegedProcessorTime.Ticks - T0Privileged);
+                        }
+                    }
+                    finally
+                    {
+                        source.m_active.Value = false;
+                        Source = null;
+                    }
                 }
             }
 
@@ -243,14 +257,20 @@ namespace Aardvark.Base
             private ProcessThread GetCurrentProcessThread()
             {
                 Thread.BeginThreadAffinity();
-                var tid = AppDomain.GetCurrentThreadId();
-                if (m_threadLocalWin32ThreadId.Value != tid)
+                try
                 {
-                    m_threadLocalWin32ThreadId.Value = tid;
-                    m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    var tid = AppDomain.GetCurrentThreadId();
+                    if (m_threadLocalWin32ThreadId.Value != tid || m_threadLocalProcessThread.Value == null)
+                    {
+                        m_threadLocalWin32ThreadId.Value = tid;
+                        m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    }
+                    return m_threadLocalProcessThread.Value;
                 }
-                Thread.EndThreadAffinity();
-                return m_threadLocalProcessThread.Value;
+                finally
+                {
+                    Thread.EndThreadAffinity();
+                }
             }
 
             private readonly ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
@@ -296,18 +316,26 @@ namespace Aardvark.Base
 
                 public void Dispose()
                 {
-                    if (Source == null) return;
-                    var p2 = Source.GetCurrentProcessThread();
-                    if (p2 != null)
+                    var source = Source;
+                    if (source == null) return;
+
+                    try
                     {
-                        var t1 = p2.UserProcessorTime;
-                        lock (Source.m_threadIds)
+                        var p2 = source.GetCurrentProcessThread();
+                        lock (source.m_threadIds)
                         {
-                            Source.m_sum += t1 - T0;
-                            Source.m_threadIds.Remove(ThreadId);
+                            if (p2 != null)
+                            {
+                                var t1 = p2.UserProcessorTime;
+                                source.m_sum += t1 - T0;
+                            }
+                            source.m_threadIds.Remove(ThreadId);
                         }
                     }
-                    Source = null;
+                    finally
+                    {
+                        Source = null;
+                    }
                 }
             }
 
@@ -331,14 +359,20 @@ namespace Aardvark.Base
             private ProcessThread GetCurrentProcessThread()
             {
                 Thread.BeginThreadAffinity();
-                var tid = AppDomain.GetCurrentThreadId();
-                if (m_threadLocalWin32ThreadId.Value != tid)
+                try
                 {
-                    m_threadLocalWin32ThreadId.Value = tid;
-                    m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    var tid = AppDomain.GetCurrentThreadId();
+                    if (m_threadLocalWin32ThreadId.Value != tid || m_threadLocalProcessThread.Value == null)
+                    {
+                        m_threadLocalWin32ThreadId.Value = tid;
+                        m_threadLocalProcessThread.Value = HardwareThread.GetProcessThread(tid);
+                    }
+                    return m_threadLocalProcessThread.Value;
                 }
-                Thread.EndThreadAffinity();
-                return m_threadLocalProcessThread.Value;
+                finally
+                {
+                    Thread.EndThreadAffinity();
+                }
             }
             private readonly ThreadLocal<int> m_threadLocalWin32ThreadId = new ThreadLocal<int>(() => -1);
             private readonly ThreadLocal<ProcessThread> m_threadLocalProcessThread = new ThreadLocal<ProcessThread>();
@@ -387,19 +421,26 @@ namespace Aardvark.Base
 
                 public void Dispose()
                 {
-                    if (Source == null) return;
-                    //if (GetCurrentWin32ThreadId() != tid) Debugger.Break();
-                    var p2 = Source.GetCurrentProcessThread();
-                    if (p2 != null)
+                    var source = Source;
+                    if (source == null) return;
+
+                    try
                     {
-                        var t1 = p2.PrivilegedProcessorTime;
-                        lock (Source.m_threadIds)
+                        var p2 = source.GetCurrentProcessThread();
+                        lock (source.m_threadIds)
                         {
-                            Source.m_sum += t1 - T0;
-                            Source.m_threadIds.Remove(ThreadId);
+                            if (p2 != null)
+                            {
+                                var t1 = p2.PrivilegedProcessorTime;
+                                source.m_sum += t1 - T0;
+                            }
+                            source.m_threadIds.Remove(ThreadId);
                         }
                     }
-                    Source = null;
+                    finally
+                    {
+                        Source = null;
+                    }
                 }
             }
 

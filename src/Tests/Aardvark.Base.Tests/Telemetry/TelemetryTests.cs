@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -243,6 +244,50 @@ namespace Aardvark.Tests
             if (exception != null) throw exception;
         }
 
+        private static ThreadLocal<ProcessThread> GetCachedProcessThreadStore(object probe)
+        {
+            var field = probe.GetType().GetField("m_threadLocalProcessThread", BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null);
+            return (ThreadLocal<ProcessThread>)field.GetValue(probe);
+        }
+
+        private static void PoisonCurrentThreadProcessThreadCache(object probe)
+        {
+            GetCachedProcessThreadStore(probe).Value = null;
+        }
+
+        private static void AssertCpuProbeDisposeRecoversAfterCachePoison<TProbe>(
+            TProbe probe,
+            Func<TProbe, IDisposable> getTimer,
+            Func<TProbe, double> getValue)
+        {
+            MeasureOnDedicatedThread(() =>
+            {
+                var timer = getTimer(probe);
+                var cache = GetCachedProcessThreadStore(probe);
+                if (cache.Value == null)
+                {
+                    Assert.Ignore("ProcessThread lookup is unavailable on this runtime/thread.");
+                }
+
+                PoisonCurrentThreadProcessThreadCache(probe);
+                Assert.That(cache.Value, Is.Null, "test setup failed to poison the ProcessThread cache");
+
+                Assert.DoesNotThrow(() => timer.Dispose());
+
+                Assert.DoesNotThrow(() =>
+                {
+                    using (getTimer(probe))
+                    {
+                        for (var i = 0; i < 1000000; i++) ;
+                    }
+                });
+
+                Assert.That(cache.Value, Is.Not.Null, "subsequent timer acquisition should repopulate the ProcessThread cache");
+                Assert.That(getValue(probe), Is.GreaterThanOrEqualTo(0.0));
+            });
+        }
+
         [Test]
         public void CpuTimePrivileged_Works()
         {
@@ -278,6 +323,39 @@ namespace Aardvark.Tests
                 });
                 Assert.IsTrue(tPriv.Value >= TimeSpan.Zero);
             }
+        }
+
+        [Test]
+        public void CpuTime_DisposeRecoversFromPoisonedProcessThreadCache()
+        {
+            var t = new Telemetry.CpuTime();
+            AssertCpuProbeDisposeRecoversAfterCachePoison(
+                t,
+                probe => probe.Timer,
+                probe => probe.ValueDouble
+            );
+        }
+
+        [Test]
+        public void CpuTimeUser_DisposeRecoversFromPoisonedProcessThreadCache()
+        {
+            var t = new Telemetry.CpuTimeUser();
+            AssertCpuProbeDisposeRecoversAfterCachePoison(
+                t,
+                probe => probe.Timer,
+                probe => probe.ValueDouble
+            );
+        }
+
+        [Test]
+        public void CpuTimePrivileged_DisposeRecoversFromPoisonedProcessThreadCache()
+        {
+            var t = new Telemetry.CpuTimePrivileged();
+            AssertCpuProbeDisposeRecoversAfterCachePoison(
+                t,
+                probe => probe.Timer,
+                probe => probe.ValueDouble
+            );
         }
 
         #endregion
