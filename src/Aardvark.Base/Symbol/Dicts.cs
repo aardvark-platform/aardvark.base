@@ -125,14 +125,14 @@ namespace Aardvark.Base
             }
             set
             {
-                if (value.Equals(m_value)) m_keys.Add(key);
+                if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
                 throw new ArgumentException();
             }
         }
 
         public void Add(TKey key, TValue value)
         {
-            if (value.Equals(m_value)) m_keys.Add(key);
+            if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
             throw new ArgumentException();
         }
 
@@ -220,14 +220,14 @@ namespace Aardvark.Base
             }
             set
             {
-                if (!value.Equals(m_value))
+                if (!EqualityComparer<TValue>.Default.Equals(value, m_value))
                     throw new ArgumentException();
             }
         }
 
         public void Add(TKey key, TValue value)
         {
-            if (!value.Equals(m_value))
+            if (!EqualityComparer<TValue>.Default.Equals(value, m_value))
                 throw new ArgumentException();
         }
 
@@ -664,14 +664,14 @@ namespace Aardvark.Base
             }
             set
             {
-                if (value.Equals(m_value)) m_keys.Add(key);
+                if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
                 throw new ArgumentException();
             }
         }
 
         public void Add(Symbol key, TValue value)
         {
-            if (value.Equals(m_value)) m_keys.Add(key);
+            if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
             throw new ArgumentException();
         }
 
@@ -760,14 +760,14 @@ namespace Aardvark.Base
             }
             set
             {
-                if (!value.Equals(m_value))
+                if (!EqualityComparer<TValue>.Default.Equals(value, m_value))
                     throw new ArgumentException();
             }
         }
 
         public void Add(Symbol key, TValue value)
         {
-            if (!value.Equals(m_value))
+            if (!EqualityComparer<TValue>.Default.Equals(value, m_value))
                 throw new ArgumentException();
         }
 

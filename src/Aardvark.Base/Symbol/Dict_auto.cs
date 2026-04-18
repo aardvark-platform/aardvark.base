@@ -749,13 +749,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -773,13 +773,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -804,10 +804,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -3608,12 +3608,12 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Key == hash
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Key == hash
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -3638,10 +3638,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -5939,12 +5939,12 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Key.Id == hash
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Key.Id == hash
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -5969,10 +5969,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -8503,13 +8503,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -8527,13 +8527,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -8558,10 +8558,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -11242,12 +11242,12 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Key == hash
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Key == hash
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -11272,10 +11272,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -17446,13 +17446,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -17472,13 +17472,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -17505,10 +17505,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -20145,12 +20145,12 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Key == hash
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Key == hash
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -20177,10 +20177,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -22283,12 +22283,12 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Key.Id == hash
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Key.Id == hash
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -22315,10 +22315,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -24668,13 +24668,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -24694,13 +24694,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -24727,10 +24727,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -27347,12 +27347,12 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Key == hash
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Key == hash
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -27379,10 +27379,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -29562,13 +29562,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -29586,13 +29586,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -29617,10 +29617,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -32586,13 +32586,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -32610,13 +32610,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -32641,10 +32641,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -37312,13 +37312,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -37338,13 +37338,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -37371,10 +37371,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }
@@ -40190,13 +40190,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -40216,13 +40216,13 @@ namespace Aardvark.Base
             if (ei == 0) return false;
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key)
-                && value.Equals(m_firstArray[fi].Item.Value))
+                && EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value))
                 return true;
             while (ei > 0)
             {
                 if (m_extraArray[ei].Item.Hash == hash
                     && key.Equals(m_extraArray[ei].Item.Key)
-                    && value.Equals(m_extraArray[ei].Item.Value))
+                    && EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value))
                     return true;
                 ei = m_extraArray[ei].Next;
             }
@@ -40249,10 +40249,10 @@ namespace Aardvark.Base
             {
                 var ei = m_firstArray[fi].Next;
                 if (ei == 0) continue;
-                if (value.Equals(m_firstArray[fi].Item.Value)) return true;
+                if (EqualityComparer<TValue>.Default.Equals(value, m_firstArray[fi].Item.Value)) return true;
                 while (ei > 0)
                 {
-                    if (value.Equals(m_extraArray[ei].Item.Value)) return true;
+                    if (EqualityComparer<TValue>.Default.Equals(value, m_extraArray[ei].Item.Value)) return true;
                     ei = m_extraArray[ei].Next;
                 }
             }

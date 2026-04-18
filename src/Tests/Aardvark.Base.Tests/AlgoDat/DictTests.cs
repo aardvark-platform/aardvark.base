@@ -410,6 +410,45 @@ namespace Aardvark.Tests
             Assert.IsFalse(dict.Contains(key, "third"));
         }
 
+        [Test]
+        public void ContainsAndContainsValueSupportNullForOrdinaryStringEntries()
+        {
+            var dict = new Dict<string, string>();
+
+            dict.Add("ordinary", null);
+
+            Assert.IsTrue(dict.Contains("ordinary", null));
+            Assert.IsTrue(dict.ContainsValue(null));
+            Assert.IsFalse(dict.Contains("ordinary", "value"));
+        }
+
+        [Test]
+        public void ContainsAndContainsValueSupportNullForCollisionChainStringEntries()
+        {
+            const int forcedHash = 1;
+            var dict = new Dict<string, string>();
+
+            dict.Add("first", forcedHash, "value");
+            dict.Add("second", forcedHash, null);
+
+            Assert.IsTrue(dict.Contains("second", forcedHash, null));
+            Assert.IsTrue(dict.ContainsValue(null));
+            Assert.IsFalse(dict.Contains("second", forcedHash, "value"));
+        }
+
+        [Test]
+        public void ContainsAndContainsValueSupportNullForStackedDuplicateStringEntries()
+        {
+            var dict = new Dict<string, string>(stackDuplicateKeys: true);
+
+            dict.Add("duplicate", "value");
+            dict.Add("duplicate", null);
+
+            Assert.IsTrue(dict.Contains("duplicate", null));
+            Assert.IsTrue(dict.ContainsValue(null));
+            Assert.IsFalse(dict.Contains("duplicate", "missing"));
+        }
+
         [Theory]
         public void ContainsValue(bool stackDuplicateKeys)
         {
