@@ -449,6 +449,35 @@ namespace Aardvark.Tests
             Assert.IsFalse(dict.Contains("duplicate", "missing"));
         }
 
+        [Test]
+        public void SingleEntryDictSetterUpdatesExistingKeyWithoutThrowing()
+        {
+            var dict = new SingleEntryDict<string, int>("key", 1);
+
+            Assert.DoesNotThrow(() => dict["key"] = 2);
+            Assert.AreEqual(2, dict["key"]);
+            Assert.Throws<ArgumentException>(() => dict["other"] = 3);
+        }
+
+        [Test]
+        public void SingleValueDictSetterAndAddAcceptSharedValueWithoutThrowing()
+        {
+            var dict = new SingleValueDict<string, int>(new DictSet<string>(), 7);
+
+            Assert.DoesNotThrow(() => dict["first"] = 7);
+            Assert.IsTrue(dict.ContainsKey("first"));
+            Assert.AreEqual(7, dict["first"]);
+
+            Assert.DoesNotThrow(() => dict.Add("second", 7));
+            Assert.IsTrue(dict.ContainsKey("second"));
+            Assert.AreEqual(7, dict["second"]);
+
+            Assert.Throws<ArgumentException>(() => dict["third"] = 8);
+            Assert.Throws<ArgumentException>(() => dict.Add("fourth", 8));
+            Assert.IsFalse(dict.ContainsKey("third"));
+            Assert.IsFalse(dict.ContainsKey("fourth"));
+        }
+
         [Theory]
         public void ContainsValue(bool stackDuplicateKeys)
         {

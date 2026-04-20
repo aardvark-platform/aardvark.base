@@ -48,7 +48,11 @@ namespace Aardvark.Base
             }
             set
             {
-                if (key.Equals(m_key)) m_value = value;
+                if (key.Equals(m_key))
+                {
+                    m_value = value;
+                    return;
+                }
                 throw new ArgumentException();
             }
         }
@@ -125,14 +129,22 @@ namespace Aardvark.Base
             }
             set
             {
-                if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
+                if (EqualityComparer<TValue>.Default.Equals(value, m_value))
+                {
+                    m_keys.Add(key);
+                    return;
+                }
                 throw new ArgumentException();
             }
         }
 
         public void Add(TKey key, TValue value)
         {
-            if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
+            if (EqualityComparer<TValue>.Default.Equals(value, m_value))
+            {
+                m_keys.Add(key);
+                return;
+            }
             throw new ArgumentException();
         }
 
