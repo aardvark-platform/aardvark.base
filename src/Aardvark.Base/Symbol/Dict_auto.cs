@@ -850,20 +850,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -875,62 +863,64 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
-        void AddCreated(TKey key, int hash, TValue value)
+        TValue AddCreated(TKey key, int hash, TValue value)
         {
-            ++m_count;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -991,20 +981,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -1016,32 +994,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
         /// <summary>
@@ -3682,19 +3636,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Key == hash)
                 return m_firstArray[fi].Item.Value;
@@ -3704,59 +3647,60 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
-        void AddCreated(int key, int hash, TValue value)
+        TValue AddCreated(int key, int hash, TValue value)
         {
-            ++m_count;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Key == hash)
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Key == hash)
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -6013,19 +5957,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Key.Id == hash)
                 return m_firstArray[fi].Item.Value;
@@ -6035,59 +5968,60 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
-        void AddCreated(Symbol key, int hash, TValue value)
+        TValue AddCreated(Symbol key, int hash, TValue value)
         {
-            ++m_count;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Key.Id == hash)
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Key.Id == hash)
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -8604,20 +8538,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -8629,62 +8551,64 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
-        void AddCreated(TKey key, long hash, TValue value)
+        TValue AddCreated(TKey key, long hash, TValue value)
         {
-            ++m_count;
-            var fi = ((ulong)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((ulong)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -8745,20 +8669,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -8770,32 +8682,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
         /// <summary>
@@ -11316,19 +11204,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Key == hash)
                 return m_firstArray[fi].Item.Value;
@@ -11338,59 +11215,60 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
-        void AddCreated(long key, long hash, TValue value)
+        TValue AddCreated(long key, long hash, TValue value)
         {
-            ++m_count;
-            var fi = ((ulong)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((ulong)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Key == hash)
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Key == hash)
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -17555,21 +17433,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -17581,65 +17446,67 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
-        void AddCreated(TKey key, int hash, TValue value)
+        TValue AddCreated(TKey key, int hash, TValue value)
         {
-            ++m_count;
-            ++m_version;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    ++m_version;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_version;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -17705,21 +17572,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -17731,33 +17585,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
@@ -20225,20 +20054,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Key == hash)
                 return m_firstArray[fi].Item.Value;
@@ -20248,62 +20065,63 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
-        void AddCreated(int key, int hash, TValue value)
+        TValue AddCreated(int key, int hash, TValue value)
         {
-            ++m_count;
-            ++m_version;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    ++m_version;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Key == hash)
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Key == hash)
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_version;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -22363,20 +22181,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Key.Id == hash)
                 return m_firstArray[fi].Item.Value;
@@ -22386,62 +22192,63 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
-        void AddCreated(Symbol key, int hash, TValue value)
+        TValue AddCreated(Symbol key, int hash, TValue value)
         {
-            ++m_count;
-            ++m_version;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    ++m_version;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Key.Id == hash)
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Key.Id == hash)
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_version;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -24777,21 +24584,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -24803,65 +24597,67 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
-        void AddCreated(TKey key, long hash, TValue value)
+        TValue AddCreated(TKey key, long hash, TValue value)
         {
-            ++m_count;
-            ++m_version;
-            var fi = ((ulong)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((ulong)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    ++m_version;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_version;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -24927,21 +24723,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -24953,33 +24736,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
@@ -27427,20 +27185,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Key == hash)
                 return m_firstArray[fi].Item.Value;
@@ -27450,62 +27196,63 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
-        void AddCreated(long key, long hash, TValue value)
+        TValue AddCreated(long key, long hash, TValue value)
         {
-            ++m_count;
-            ++m_version;
-            var fi = ((ulong)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((ulong)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    ++m_version;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Key == hash)
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Key == hash)
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_version;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -29663,20 +29410,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -29688,62 +29423,64 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
-        void AddCreated(TKey key, int hash, TValue value)
+        TValue AddCreated(TKey key, int hash, TValue value)
         {
-            ++m_count;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -29804,20 +29541,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -29829,32 +29554,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
         /// <summary>
@@ -32687,20 +32388,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -32712,62 +32401,64 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
-        void AddCreated(TKey key, long hash, TValue value)
+        TValue AddCreated(TKey key, long hash, TValue value)
         {
-            ++m_count;
-            var fi = ((ulong)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((ulong)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -32828,20 +32519,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -32853,32 +32532,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
         }
 
         /// <summary>
@@ -37421,21 +37076,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -37447,65 +37089,67 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
-        void AddCreated(TKey key, int hash, TValue value)
+        TValue AddCreated(TKey key, int hash, TValue value)
         {
-            ++m_count;
-            ++m_version;
-            var fi = ((uint)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((uint)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    ++m_version;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_version;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -37571,21 +37215,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -37597,33 +37228,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
@@ -40299,21 +39905,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -40325,65 +39918,67 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
-        void AddCreated(TKey key, long hash, TValue value)
+        TValue AddCreated(TKey key, long hash, TValue value)
         {
-            ++m_count;
-            ++m_version;
-            var fi = ((ulong)hash) % m_capacity;
-            var ei = m_firstArray[fi].Next;
-            if (ei == 0)
+            while (true)
             {
-                m_firstArray[fi].Next = -1;
+                var fi = ((ulong)hash) % m_capacity;
+                var ei = m_firstArray[fi].Next;
+                if (ei == 0)
+                {
+                    if (m_count >= m_increaseThreshold)
+                    {
+                        IncreaseCapacity();
+                        continue;
+                    }
+                    ++m_count;
+                    ++m_version;
+                    m_firstArray[fi].Next = -1;
+                    m_firstArray[fi].Item.Hash = hash;
+                    m_firstArray[fi].Item.Key = key;
+                    m_firstArray[fi].Item.Value = value;
+                    return value;
+                }
+                if (m_firstArray[fi].Item.Hash == hash
+                    && key.Equals(m_firstArray[fi].Item.Key))
+                    return m_firstArray[fi].Item.Value;
+                while (ei > 0)
+                {
+                    if (m_extraArray[ei].Item.Hash == hash
+                        && key.Equals(m_extraArray[ei].Item.Key))
+                        return m_extraArray[ei].Item.Value;
+                    ei = m_extraArray[ei].Next;
+                }
+                if (m_count >= m_increaseThreshold)
+                {
+                    IncreaseCapacity();
+                    continue;
+                }
+                ei = m_firstArray[fi].Next;
+                ++m_count;
+                ++m_version;
+                ++m_extraCount;
+                if (m_freeIndex < 0)
+                {
+                    var length = m_extraArray.Length;
+                    m_extraArray = m_extraArray.Resized(length * 2);
+                    m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
+                }
+                var ni = m_freeIndex;
+                m_freeIndex = m_extraArray[ni].Next;
+                m_extraArray[ni].Item = m_firstArray[fi].Item;
+                m_extraArray[ni].Next = m_firstArray[fi].Next;
+                m_firstArray[fi].Next = ni;
                 m_firstArray[fi].Item.Hash = hash;
                 m_firstArray[fi].Item.Key = key;
                 m_firstArray[fi].Item.Value = value;
-                return;
+                return value;
             }
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
-            m_firstArray[fi].Item.Value = value;
         }
 
         /// <summary>
@@ -40449,21 +40044,8 @@ namespace Aardvark.Base
             var ei = m_firstArray[fi].Next;
             if (ei == 0)
             {
-                if (m_count >= m_increaseThreshold)
-                {
-                    IncreaseCapacity();
-                    var v0 = creator(key);
-                    AddCreated(key, hash, v0);
-                    return v0;
-                }
-                ++m_count;
-                ++m_version;
-                m_firstArray[fi].Next = -1;
-                m_firstArray[fi].Item.Hash = hash;
-                m_firstArray[fi].Item.Key = key;
                 var value = creator(key);
-                m_firstArray[fi].Item.Value = value;
-                return value;
+                return AddCreated(key, hash, value);
             }
             if (m_firstArray[fi].Item.Hash == hash
                 && key.Equals(m_firstArray[fi].Item.Key))
@@ -40475,33 +40057,8 @@ namespace Aardvark.Base
                     return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
-            if (m_count >= m_increaseThreshold)
-            {
-                IncreaseCapacity();
-                var v1 = creator(key);
-                AddCreated(key, hash, v1);
-                return v1;
-            }
-            ei = m_firstArray[fi].Next;
-            ++m_count;
-            ++m_version;
-            ++m_extraCount;
-            if (m_freeIndex < 0)
-            {
-                var length = m_extraArray.Length;
-                m_extraArray = m_extraArray.Resized(length * 2);
-                m_freeIndex = AddSlotsToFreeList(m_extraArray, length);
-            }
-            var ni = m_freeIndex;
-            m_freeIndex = m_extraArray[ni].Next;
-            m_extraArray[ni].Item = m_firstArray[fi].Item;
-            m_extraArray[ni].Next = ei;
-            m_firstArray[fi].Next = ni;
-            m_firstArray[fi].Item.Hash = hash;
-            m_firstArray[fi].Item.Key = key;
             var val = creator(key);
-            m_firstArray[fi].Item.Value = val;
-            return val;
+            return AddCreated(key, hash, val);
             } finally { Monitor.Exit(this); }
         }
 
