@@ -203,9 +203,6 @@ module PixTests =
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
     let ``[PixImage] Float16 Format and Type Conversion`` (input : ConversionTestCase) =
-        printfn "size = %A, type = %A, source format = %A, target format = %A"
-            input.Size input.Type input.SourceFormat input.TargetFormat
-
         let src = PixImage.random PixType.Float16 input.SourceFormat input.Size.XY
         let tmp = src |> PixImage.toTypeAndFormat input.Type input.TargetFormat
         let dst = tmp |> PixImage.toTypeAndFormat PixType.Float16 input.SourceFormat
@@ -225,14 +222,14 @@ module PixTests =
                     let expected = float32 src.[x, y]
 
                     if not <| Fun.ApproximateEquals(value, expected, eps) then
-                        value |> should be (equalWithin eps expected)
+                        Assert.Fail(
+                            sprintf "Float16 PixImage conversion mismatch at (%d, %d), channel %d for size=%A type=%A source=%A target=%A: expected %A, got %A (eps=%A)"
+                                x y c input.Size input.Type input.SourceFormat input.TargetFormat expected value eps
+                        )
 
 
     [<Property(Arbitrary = [| typeof<Generator> |])>]
     let ``[PixVolume] Float16 Format and Type Conversion`` (input : ConversionTestCase) =
-        printfn "size = %A, type = %A, source format = %A, target format = %A"
-            input.Size input.Type input.SourceFormat input.TargetFormat
-
         let src = PixVolume.random PixType.Float16 input.SourceFormat input.Size
         let tmp = src |> PixVolume.toTypeAndFormat input.Type input.TargetFormat
         let dst = tmp |> PixVolume.toTypeAndFormat PixType.Float16 input.SourceFormat
@@ -253,7 +250,10 @@ module PixTests =
                         let expected = float src.[x, y, z]
 
                         if not <| Fun.ApproximateEquals(value, expected, eps) then
-                            value |> should be (equalWithin eps expected)
+                            Assert.Fail(
+                                sprintf "Float16 PixVolume conversion mismatch at (%d, %d, %d), channel %d for size=%A type=%A source=%A target=%A: expected %A, got %A (eps=%A)"
+                                    x y z c input.Size input.Type input.SourceFormat input.TargetFormat expected value eps
+                            )
 
 
     let computePSNR =

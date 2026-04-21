@@ -86,16 +86,20 @@ namespace Aardvark.Tests.Geometry
 
             var newHull = vpTrafo.GetVisualHull();
 
-            for (int i = 0; i < 6; i++)
-                Report.Line("OLD: {0} NEW: {1}", newHull.PlaneArray[i], refHull.PlaneArray[i]);
-
             // camera position should have height 1.0 from near-plane
             var hRef = refHull.PlaneArray[4].Height(view.GetViewPosition());
             var hNew = newHull.PlaneArray[4].Height(view.GetViewPosition());
             Assert.True(hRef.ApproximateEquals(1.0, 1e-7) && hRef.ApproximateEquals(hNew, 1e-7));
             
             for (int i = 0; i < 6; i++)
-                Assert.True(newHull.PlaneArray[i].Coefficients.ApproximateEquals(refHull.PlaneArray[i].Coefficients, 1e-7));
+            {
+                var oldPlane = newHull.PlaneArray[i];
+                var newPlane = refHull.PlaneArray[i];
+                Assert.True(
+                    oldPlane.Coefficients.ApproximateEquals(newPlane.Coefficients, 1e-7),
+                    $"Plane {i} mismatch. computed={oldPlane} expected={newPlane}"
+                );
+            }
         }
     }
 }

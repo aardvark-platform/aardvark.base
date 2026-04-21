@@ -687,8 +687,6 @@ module ExpectoSvdTests =
                 let err = abs (m.[i] - v)
                 maxError <- max maxError err
             )
-            if maxError > epsilon then
-                printfn "ERROR: %A" maxError
             maxError <= epsilon
 
         [<Extension>]
@@ -699,8 +697,6 @@ module ExpectoSvdTests =
                 let err = abs (m.[i] - v)
                 maxError <- max maxError err
             )
-            if maxError > floatEpsilon then
-                printfn "ERROR: %A" maxError
             maxError <= floatEpsilon
 
         [<Extension>]
@@ -720,8 +716,6 @@ module ExpectoSvdTests =
                     let err = abs m.[i]
                     maxError <- max maxError err
             )
-            if maxError > epsilon then
-                printfn "ERROR: %A" maxError
             maxError <= epsilon
 
         [<Extension>]
@@ -732,23 +726,17 @@ module ExpectoSvdTests =
                     let err = abs m.[i]
                     maxError <- max maxError err
             )
-            if maxError > floatEpsilon then
-                printfn "ERROR: %A" maxError
             maxError <= floatEpsilon
     
 
         [<Extension>]
         static member ApproximateEquals(a : Matrix<float>, b : Matrix<float>) =
             let err = a.InnerProduct(b,(fun a b -> abs (a-b)),0.0,max)
-            if err > epsilon then
-                printfn "ERROR: %A" err
             err <= epsilon 
 
         [<Extension>]
         static member ApproximateEquals(a : Matrix<float32>, b : Matrix<float32>) =
             let err = a.InnerProduct(b,(fun a b -> abs (a-b)),0.0f,max)
-            if err > floatEpsilon then
-                printfn "ERROR: %A" err
             err <= floatEpsilon    
 
         [<Extension>]
@@ -762,8 +750,6 @@ module ExpectoSvdTests =
                 let err = if (x = y || x = y+1L) then 0.0 else abs m.[i]
                 maxError <- max maxError err
             )
-            if maxError > epsilon then
-                printfn "ERROR: %A" maxError
             maxError <= epsilon 
 
 
@@ -774,8 +760,6 @@ module ExpectoSvdTests =
                 let err = if (x = y || x = y+1L) then 0.0f else abs m.[i]
                 maxError <- max maxError err
             )
-            if maxError > floatEpsilon then
-                printfn "ERROR: %A" maxError
             maxError <= floatEpsilon
 
 
@@ -786,8 +770,6 @@ module ExpectoSvdTests =
                 let err = if x = y then 0.0 else abs m.[i]
                 maxError <- max maxError err
             )
-            if maxError > epsilon then
-                printfn "ERROR: %A" maxError
             maxError <= epsilon 
 
 
@@ -798,8 +780,6 @@ module ExpectoSvdTests =
                 let err = if x = y then 0.0f else abs m.[i]
                 maxError <- max maxError err
             )
-            if maxError > floatEpsilon then
-                printfn "ERROR: %A" maxError
             maxError <= floatEpsilon
 
 
@@ -816,8 +796,7 @@ module ExpectoSvdTests =
             match wrong with
             | [] -> 
                 true
-            | wrong ->  
-                printfn "ERROR: %A" wrong
+            | wrong ->
                 false
 
 
@@ -834,8 +813,7 @@ module ExpectoSvdTests =
             match wrong with
             | [] -> 
                 true
-            | wrong ->  
-                printfn "ERROR: %A" wrong
+            | wrong ->
                 false
 
     let qr =
@@ -1848,13 +1826,7 @@ module SVDTests =
 
         let rnd = new RandomSystem(1)
         let iter = 100000
-        let mutable last = 0.0
         for i in 0..iter do
-            let p = float i / float iter
-            if p > last + 0.05 then 
-                printfn "%.2f%%" (100.0 * p)
-                last <- p
-
             let mat = M33d.FromCols(rnd.UniformV3d(), rnd.UniformV3d(), rnd.UniformV3d())
 
             let svd = DecomposeWithNative mat
@@ -1870,13 +1842,7 @@ module SVDTests =
 
         let rnd = new RandomSystem(1)
         let iter = 100000
-        let mutable last = 0.0
         for i in 0..iter do
-            let p = float i / float iter
-            if p > last + 0.05 then 
-                printfn "%.2f%%" (100.0 * p)
-                last <- p
-
             let mat = M33f.FromCols(rnd.UniformV3f(), rnd.UniformV3f(), rnd.UniformV3f())
 
             let svd = DecomposeWithNativeFloat32 mat

@@ -45,16 +45,17 @@ module Caches =
         override x.ToString() =
             a.ToString() + b.ToString()
 
+    let private collectAndFinalize() =
+        for _ in 1 .. 5 do
+            GC.Collect(3)
+            GC.WaitForPendingFinalizers()
+
     [<Test>]
     let ``[Caches] BinaryCache forward``() =
 
         let a = "hugo"
 
-        let mutable compCount = 0
-        let cache = BinaryCache<_, _, _>((fun a b ->
-                                            let res = a.ToString() + b.ToString()
-                                            compCount <- compCount + 1
-                                            res))
+        let cache = BinaryCache<_, _, _>((fun a b -> a.ToString() + b.ToString()))
 
         let sw = Stopwatch.StartNew()
         let mutable i = 0
@@ -63,41 +64,30 @@ module Caches =
 
         while sw.Elapsed.TotalSeconds < 10.0 do
 
-            let resCount =
-                if random.NextDouble() < 0.1 || i = 0 then
-                    temp <- RuntimeObject(sprintf "run-%i" i)
-                    compCount + 1
-                else
-                    compCount
+            if random.NextDouble() < 0.1 || i = 0 then
+                temp <- RuntimeObject(sprintf "run-%i" i)
 
             let result = cache.Invoke(a, temp)
 
-            if resCount <> compCount then
-                failwith "caching failed"
+            if result <> a + temp.ToString() then
+                failwithf "unexpected cached result: expected %s%s, got %s" a temp.Name result
 
             i <- i + 1
 
             System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
-        System.GC.Collect(3)
-        System.GC.WaitForFullGCComplete() |> ignore
-
-        Log.line "RuntimeObject Count=%d" RuntimeObject.ObjCount
+        collectAndFinalize()
 
         if RuntimeObject.ObjCount > 100 then
-            failwith "leak"
+            failwithf "leak: RuntimeObject Count=%d" RuntimeObject.ObjCount
 
     [<Test>]
     let ``[Caches] BinaryCache backward``() =
 
         let a = "hugo"
 
-        let mutable compCount = 0
-        let cache = BinaryCache<_, _, _>((fun a b ->
-                                            let res = a.ToString() + b.ToString()
-                                            compCount <- compCount + 1
-                                            res))
+        let cache = BinaryCache<_, _, _>((fun a b -> a.ToString() + b.ToString()))
 
         let sw = Stopwatch.StartNew()
         let mutable i = 0
@@ -106,30 +96,23 @@ module Caches =
 
         while sw.Elapsed.TotalSeconds < 10.0 do
 
-            let resCount =
-                if random.NextDouble() < 0.1 || i = 0 then
-                    temp <- RuntimeObject(sprintf "run-%i" i)
-                    compCount + 1
-                else
-                    compCount
+            if random.NextDouble() < 0.1 || i = 0 then
+                temp <- RuntimeObject(sprintf "run-%i" i)
 
             let result = cache.Invoke(temp, a)
 
-            if resCount <> compCount then
-                failwith "caching failed"
+            if result <> temp.ToString() + a then
+                failwithf "unexpected cached result: expected %s%s, got %s" temp.Name a result
 
             i <- i + 1
 
             System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
-        System.GC.Collect(3)
-        System.GC.WaitForFullGCComplete() |> ignore
-
-        Log.line "RuntimeObject Count=%d" RuntimeObject.ObjCount
+        collectAndFinalize()
 
         if RuntimeObject.ObjCount > 100 then
-            failwith "leak"
+            failwithf "leak: RuntimeObject Count=%d" RuntimeObject.ObjCount
 
 
     [<Test>]
@@ -147,30 +130,27 @@ module Caches =
 
         while sw.Elapsed.TotalSeconds < 10.0 do
 
-            let resCount =
-                if rnd.NextDouble() < 0.1 || i = 0 then
-                    temp <- RuntimeObject(sprintf "run-%i" i)
-                    ResultObject<string, RuntimeObject>.ResCount + 1
-                else
-                    ResultObject<string, RuntimeObject>.ResCount
+            if rnd.NextDouble() < 0.1 || i = 0 then
+                temp <- RuntimeObject(sprintf "run-%i" i)
 
             let result = cache.Invoke(a, temp)
 
-            if resCount <> ResultObject<string, RuntimeObject>.ResCount then
-                failwith "cache not working"
+            if result.A <> a || not (obj.ReferenceEquals(result.B, temp)) then
+                failwith "cache returned unexpected data"
 
             i <- i + 1
 
             System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
-        System.GC.Collect(3)
-        System.GC.WaitForFullGCComplete() |> ignore
-
-        Log.line "RuntimeObject Count=%d" RuntimeObject.ObjCount
+        collectAndFinalize()
 
         if RuntimeObject.ObjCount > 100 then
-            failwith "leak"
+            failwithf "leak: RuntimeObject Count=%d" RuntimeObject.ObjCount
+
+        let x = cache.Invoke(a, temp)
+        let y = cache.Invoke(a, temp)
+        if not (System.Object.ReferenceEquals(x,y)) then failwith "not caching"
 
     [<Test>]
     let ``[Caches] BinaryCache backward with ResultObject``() =
@@ -186,30 +166,23 @@ module Caches =
 
         while sw.Elapsed.TotalSeconds < 10.0 do
 
-            let resCount =
-                if rnd.NextDouble() < 0.1 || i = 0 then
-                    temp <- RuntimeObject(sprintf "run-%i" i)
-                    ResultObject<RuntimeObject, string>.ResCount + 1
-                else
-                    ResultObject<RuntimeObject, string>.ResCount
+            if rnd.NextDouble() < 0.1 || i = 0 then
+                temp <- RuntimeObject(sprintf "run-%i" i)
 
             let result = cache.Invoke(temp, a)
 
-            if resCount <> ResultObject<RuntimeObject, string>.ResCount then
-                failwith "cache not working"
+            if not (obj.ReferenceEquals(result.A, temp)) || result.B <> a then
+                failwith "cache returned unexpected data"
 
             i <- i + 1
 
             System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
-        System.GC.Collect(3)
-        System.GC.WaitForFullGCComplete() |> ignore
-
-        Log.line "RuntimeObject Count=%d" RuntimeObject.ObjCount
+        collectAndFinalize()
 
         if RuntimeObject.ObjCount > 100 then
-            failwith "leak"
+            failwithf "leak: RuntimeObject Count=%d" RuntimeObject.ObjCount
 
 
         let x = cache.Invoke(temp, a)
@@ -232,13 +205,10 @@ module Caches =
             System.GC.Collect(3)
             System.GC.WaitForFullGCComplete() |> ignore
 
-        System.GC.Collect(3)
-        System.GC.WaitForFullGCComplete() |> ignore
-
-        Log.line "RuntimeObject Count=%d" RuntimeObject.ObjCount
+        collectAndFinalize()
 
         if RuntimeObject.ObjCount > 100 then
-            failwith "leak"
+            failwithf "leak: RuntimeObject Count=%d" RuntimeObject.ObjCount
 
     [<Test>]
     let ``[Caches] Introspection plugin cache``() =
