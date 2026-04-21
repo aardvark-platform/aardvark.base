@@ -49,6 +49,8 @@ namespace Aardvark.Base.Benchmarks
     //| ForEachSymbolDictValues |   100 | 632.1000 ns | 7.6100 ns | 7.1200 ns |
 
     [PlainExporter]
+    [MemoryDiagnoser]
+    [ShortRunJob]
     public class Enumerators
     {
         int[] m_array;
@@ -153,6 +155,16 @@ namespace Aardvark.Base.Benchmarks
         }
 
         [Benchmark]
+        public int ForEachDictFastValues()
+        {
+            int sum = 0;
+            var values = m_dict.GetValuesEnumerator();
+            while (values.MoveNext())
+                sum += values.Current;
+            return sum;
+        }
+
+        [Benchmark]
         public int ForEachDictKeys()
         {
             int sum = 0;
@@ -179,6 +191,16 @@ namespace Aardvark.Base.Benchmarks
             return sum;
         }
 
+        [Benchmark]
+        public int ForEachSymbolDictFastValues()
+        {
+            int sum = 0;
+            var values = m_symDict.GetValuesEnumerator();
+            while (values.MoveNext())
+                sum += values.Current;
+            return sum;
+        }
+
         [Test]
         public void Test()
         {
@@ -196,9 +218,11 @@ namespace Aardvark.Base.Benchmarks
                 Assert.IsTrue(refSum == ForEachDictionary());
                 Assert.IsTrue(refSum == ForEachIntSet());
                 Assert.IsTrue(refSum == ForEachDictValues());
+                Assert.IsTrue(refSum == ForEachDictFastValues());
                 Assert.IsTrue(refSum == ForEachDictKeys());
                 Assert.IsTrue(refSum == ForEachDict());
                 Assert.IsTrue(refSum == ForEachSymbolDictValues());
+                Assert.IsTrue(refSum == ForEachSymbolDictFastValues());
             }
         }
     }

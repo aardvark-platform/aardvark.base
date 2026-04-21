@@ -9,7 +9,12 @@ namespace Aardvark.Base.Benchmarks
         public static void Main(string[] args)
         {
             var cfg = ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator);
-            //BenchmarkSwitcher.FromAssembly(typeof(IntegerPowerFloat).Assembly).Run(args, cfg);
+            var switcher = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly);
+            if (args.Length > 0)
+            {
+                switcher.Run(args, cfg);
+                return;
+            }
 
             //BenchmarkRunner.Run<HashBench>(cfg);
             //BenchmarkRunner.Run<StreamWriterReader>(cfg);
