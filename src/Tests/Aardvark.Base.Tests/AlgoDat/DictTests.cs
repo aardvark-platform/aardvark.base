@@ -47,8 +47,8 @@ namespace Aardvark.Tests
         public void TestDict()
         {
             CreateStringTable(50000, 5000);
-            SymbolDictTest(5);
-            ConcurrentSymbolDictTest(5, 100);
+            SymbolDictTestQuiet(5);
+            ConcurrentSymbolDictTestQuiet(5, 100);
         }
 
         public void Run() // performance tests
@@ -186,7 +186,7 @@ namespace Aardvark.Tests
             int count = table.Length;
             var map = prealloc ? new SymbolDict<int>(count) : new SymbolDict<int>();
             // map.Report = DictReport.Resize;
-            Report.Begin("SymolDict<int>" + (subset ? " subset" : "") +
+            Report.Begin("SymbolDict<int>" + (subset ? " subset" : "") +
                        " tests" + (prealloc ? " (prealloc)" : ""));
             Report.BeginTimed("create {0}", count);
             for (int i = 0; i < count; i++) map[table[i]] = i;
@@ -277,6 +277,43 @@ namespace Aardvark.Tests
             Test.End();
         }
 
+        private void ConcurrentSymbolDictTestQuiet(int rounds, int tasks)
+        {
+            int count = m_stringTable.Length;
+            int block = count / tasks;
+
+            var rnd = new RandomSystem();
+            var perm = new int[count].SetByIndex(i => i);
+
+            var map = new SymbolDict<int>().AsConcurrent();
+
+            for (int r = 0; r < rounds; r++)
+            {
+                Parallel.For(0, tasks, t =>
+                {
+                    for (int i = t * block, e = i + block; i < e; i++)
+                        map[m_symbolTable[perm[i]]] = i;
+                });
+
+                Assert.That(map.Count, Is.EqualTo(count), $"parallel add count mismatch in round {r}");
+
+                for (int i = 0; i < count; i++)
+                {
+                    var key = m_symbolTable[perm[i]];
+                    Assert.That(map[key], Is.EqualTo(i), $"parallel add/check mismatch in round {r} for key {key}");
+                }
+
+                rnd.Randomize(perm);
+                Parallel.For(0, tasks, t =>
+                {
+                    for (int i = t * block, e = i + block; i < e; i++)
+                        map.Remove(m_symbolTable[perm[i]]);
+                });
+
+                Assert.That(map.Count, Is.Zero, $"parallel remove count mismatch in round {r}");
+            }
+        }
+
         public void SymbolDictTest(int rounds)
         {
             int count = m_stringTable.Length;
@@ -340,6 +377,68 @@ namespace Aardvark.Tests
                 Test.End();
             }
             Test.End();
+        }
+
+        private void SymbolDictTestQuiet(int rounds)
+        {
+            int count = m_stringTable.Length;
+            int block = count / 10;
+
+            var rnd = new RandomSystem();
+            var perm = new int[count].SetByIndex(i => i);
+
+            var map = new SymbolDict<int>();
+
+            for (int r = 0; r < rounds; r++)
+            {
+                int added = 0;
+                while (added < count)
+                {
+                    for (int i = added; i < added + 2 * block; i++)
+                        map[m_symbolTable[perm[i]]] = i;
+
+                    added += 2 * block;
+                    Assert.That(map.Count, Is.EqualTo(added), $"count mismatch after add phase in round {r}");
+
+                    if (added == count) break;
+
+                    for (int i = added - block; i < added; i++)
+                    {
+                        var key = m_symbolTable[perm[i]];
+                        Assert.That(map.TryRemove(key, out var index), Is.True, $"remove failed in round {r} for key {key}");
+                        Assert.That(index, Is.EqualTo(i), $"removed value mismatch in round {r} for key {key}");
+                    }
+
+                    added -= block;
+                    Assert.That(map.Count, Is.EqualTo(added), $"count mismatch after partial remove in round {r}");
+                }
+
+                for (int i = 0; i < count; i++)
+                {
+                    var key = m_symbolTable[perm[i]];
+                    Assert.That(map[key], Is.EqualTo(i), $"lookup mismatch in round {r} for key {key}");
+                }
+
+                Assert.That(map.Count, Is.EqualTo(count), $"full map count mismatch in round {r}");
+
+                added += 2 * block;
+                rnd.Randomize(perm);
+
+                if ((r & 1) == 0)
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        var key = m_symbolTable[perm[i]];
+                        Assert.That(map.TryRemove(key, out _), Is.True, $"final remove failed in round {r} for key {key}");
+                    }
+                }
+                else
+                {
+                    map.Clear();
+                }
+
+                Assert.That(map.Count, Is.Zero, $"map not empty after cleanup in round {r}");
+            }
         }
 
         // should work / works if there are no collisions and resizes / works with Dictionary / would also work if GetOrCreate would be implemented as extension using ContainsKey + Add
