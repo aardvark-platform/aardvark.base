@@ -7,6 +7,40 @@ open System.Collections.Generic
 [<AutoOpen>]
 module private RegressionHelpers =
 
+    /// Covariance entries + sorted eigenvalues (|l0| ≤ |l1| ≤ |l2|) + centroid offset.
+    /// Shared by all 3D regression getters that depend on the PCA of the point set.
+    [<Struct>]
+    type EigenData3d = {
+        Valid : bool
+        Xx : float; Yy : float; Zz : float
+        Xy : float; Xz : float; Yz : float
+        L0 : float; L1 : float; L2 : float
+        Avg : V3d
+    }
+
+    let emptyEigen3d =
+        { Valid = false
+          Xx = 0.0; Yy = 0.0; Zz = 0.0
+          Xy = 0.0; Xz = 0.0; Yz = 0.0
+          L0 = 0.0; L1 = 0.0; L2 = 0.0
+          Avg = V3d.Zero }
+
+    /// Eigenvector of `M` for eigenvalue `lam`: the null space of (M - lam·I), recovered by
+    /// crossing the two longest columns of that matrix (they span the orthogonal complement).
+    let eigenvector3d (d : EigenData3d) (lam : float) =
+        let c0 = V3d(d.Xx - lam, d.Xy, d.Xz)
+        let c1 = V3d(d.Xy, d.Yy - lam, d.Yz)
+        let c2 = V3d(d.Xz, d.Yz, d.Zz - lam)
+        let len0 = Vec.lengthSquared c0
+        let len1 = Vec.lengthSquared c1
+        let len2 = Vec.lengthSquared c2
+        if len0 > len1 then
+            if len2 > len1 then Vec.cross c0 c2 |> Vec.normalize
+            else Vec.cross c0 c1 |> Vec.normalize
+        else
+            if len2 > len0 then Vec.cross c1 c2 |> Vec.normalize
+            else Vec.cross c0 c1 |> Vec.normalize
+
     let inline sortTupleAbs (struct(a,b)) =
         if abs a < abs b then struct(a, b)
         else struct(b, a)
@@ -380,6 +414,24 @@ module LinearRegression2d =
 
 
 
+/// Combined result of a 3D linear regression, summarizing the principal-component
+/// analysis of the point cloud. `Linearity`, `Planarity`, `Sphericity` ∈ [0,1] sum
+/// to 1 and say which of {line, plane, isotropic blob} the data best resembles.
+[<Struct>]
+type LinearRegression3dResult = {
+    /// Least-squares plane through the centroid; best when `Planarity` is near 1.
+    Plane      : Plane3d
+    /// Least-squares line through the centroid (as a Ray3d used as an unbounded
+    /// line); best when `Linearity` is near 1.
+    Line       : Ray3d
+    /// Close to 1 when points lie along a line (λ₂ ≫ λ₁ ≈ λ₀).
+    Linearity  : float
+    /// Close to 1 when points lie in a plane (λ₂ ≈ λ₁ ≫ λ₀).
+    Planarity  : float
+    /// Close to 1 when points are isotropically distributed (λ₂ ≈ λ₁ ≈ λ₀).
+    Sphericity : float
+}
+
 [<Struct>]
 type LinearRegression3d =
     val mutable public Reference : V3d
@@ -574,10 +626,11 @@ type LinearRegression3d =
                 xz, yz, zz
             )
 
-    /// Gets the least-squares plane and a confidence value in [0,1] where 1 stands for a perfect plane.
-    member x.GetPlaneAndConfidence() =
-        if x.Count < 3 then
-            struct(Plane3d.Invalid, 0.0)
+    /// Single source of truth for the PCA-based computations. Computes the
+    /// covariance matrix and its eigenvalues once; all public getters derive
+    /// their answers from this.
+    member private x.ComputeEigen() : EigenData3d =
+        if x.Count < 2 then emptyEigen3d
         else
             let n = float x.Count
             let avg = x.Sum / n
@@ -588,114 +641,155 @@ type LinearRegression3d =
             let xy = (x.Off.Z - avg.X * x.Sum.Y) / (n - 1.0)
             let xz = (x.Off.Y - avg.X * x.Sum.Z) / (n - 1.0)
             let yz = (x.Off.X - avg.Y * x.Sum.Z) / (n - 1.0)
-            
-            let _a = 1.0
-            let b = -xx - yy - zz
-            let c = -sqr xy - sqr xz - sqr yz + xx*yy + xx*zz + yy*zz
-            let d = -xx*yy*zz - 2.0*xy*xz*yz + sqr xz*yy + sqr xy*zz + sqr yz*xx
 
-
-            let struct (l0, l1, _l2) = sortTripleAbs (Polynomial.RealRootsOfNormed(b,c,d))
-            if Fun.IsTiny l1 then
-                struct(Plane3d.Invalid, 0.0)
-            else
-                let goodness = 1.0 - abs l0 / abs l1
-                
-                if goodness > 1E-5 then
-                    let c0 = V3d(xx - l0, xy, xz)
-                    let c1 = V3d(xy, yy - l0, yz)
-                    let c2 = V3d(xz, yz, zz - l0)
-                    let normal = 
-                        let len0 = Vec.lengthSquared c0
-                        let len1 = Vec.lengthSquared c1
-                        let len2 = Vec.lengthSquared c2
-
-                        if len0 > len1 then
-                            if len2 > len1 then Vec.cross c0 c2 |> Vec.normalize
-                            else Vec.cross c0 c1 |> Vec.normalize
-                        else
-                            if len2 > len0 then Vec.cross c1 c2 |> Vec.normalize
-                            else Vec.cross c0 c1 |> Vec.normalize
-
-                    struct(Plane3d(normal, x.Reference + avg), goodness)
-                else
-                    struct(Plane3d.Invalid, goodness)
-
-    /// Gets a Trafo3d for the entire plane (using its principal components) and the respective standard deviations for each axis.
-    member x.GetTrafoAndSizes() =
-        if x.Count < 3 then
-            struct(Trafo3d.Identity, V3d.Zero)
-        else
-            let n = float x.Count
-            let avg = x.Sum / n
-            let xx = (x.SumSq.X - avg.X * x.Sum.X) / (n - 1.0)
-            let yy = (x.SumSq.Y - avg.Y * x.Sum.Y) / (n - 1.0)
-            let zz = (x.SumSq.Z - avg.Z * x.Sum.Z) / (n - 1.0)
-
-            let xy = (x.Off.Z - avg.X * x.Sum.Y) / (n - 1.0)
-            let xz = (x.Off.Y - avg.X * x.Sum.Z) / (n - 1.0)
-            let yz = (x.Off.X - avg.Y * x.Sum.Z) / (n - 1.0)
-            
-            let _a = 1.0
             let b = -xx - yy - zz
             let c = -sqr xy - sqr xz - sqr yz + xx*yy + xx*zz + yy*zz
             let d = -xx*yy*zz - 2.0*xy*xz*yz + sqr xz*yy + sqr xy*zz + sqr yz*xx
 
             let struct (l0, l1, l2) = sortTripleAbs (Polynomial.RealRootsOfNormed(b,c,d))
-            if Fun.IsTiny l1 then
-                struct (Trafo3d.Identity, x.Reference + avg)
+            { Valid = true
+              Xx = xx; Yy = yy; Zz = zz
+              Xy = xy; Xz = xz; Yz = yz
+              L0 = l0; L1 = l1; L2 = l2
+              Avg = avg }
+
+    /// Gets the least-squares plane and a confidence value in [0,1] where 1 stands for a perfect plane.
+    /// Confidence = 1 - |λ₀|/|λ₁|: how much smaller the tightest variance is than the second tightest.
+    member x.GetPlaneAndConfidence() =
+        let d = x.ComputeEigen()
+        if not d.Valid || x.Count < 3 || Fun.IsTiny d.L1 then
+            struct(Plane3d.Invalid, 0.0)
+        else
+            let goodness = 1.0 - abs d.L0 / abs d.L1
+            if goodness > 1E-5 then
+                struct(Plane3d(eigenvector3d d d.L0, x.Reference + d.Avg), goodness)
             else
-                let c0 = V3d(xx - l0, xy, xz)
-                let c1 = V3d(xy, yy - l0, yz)
-                let c2 = V3d(xz, yz, zz - l0)
-                let struct(vx, vy, vz) = 
-                    let len0 = Vec.lengthSquared c0
-                    let len1 = Vec.lengthSquared c1
-                    let len2 = Vec.lengthSquared c2
+                struct(Plane3d.Invalid, goodness)
 
-                    if len0 > len1 then
-                        if len1 > len2 then struct(c0, c1, Vec.cross c0 c1)
-                        elif len0 > len2 then struct(c0, c2, Vec.cross c0 c2)
-                        else struct(c2, c0, Vec.cross c2 c0)
-                    else (* len1 >= len0*)
-                        if len0 > len2 then struct(c1, c0, Vec.cross c1 c0)
-                        elif len1 > len2 then struct(c1, c2, Vec.cross c1 c2)
-                        else struct(c2, c1, Vec.cross c2 c1)
+    /// Gets the least-squares line (as a Ray3d through the centroid) and a
+    /// confidence value in [0,1] where 1 stands for a perfectly linear point distribution.
+    /// Confidence = 1 - |λ₁|/|λ₂|: equivalent to the Westin linearity measure.
+    member x.GetLineAndConfidence() =
+        let d = x.ComputeEigen()
+        if not d.Valid || Fun.IsTiny d.L2 then
+            struct(Ray3d.Invalid, 0.0)
+        else
+            let goodness = 1.0 - abs d.L1 / abs d.L2
+            if goodness > 1E-5 then
+                struct(Ray3d(x.Reference + d.Avg, eigenvector3d d d.L2), goodness)
+            else
+                struct(Ray3d.Invalid, goodness)
 
-                // orthonormalize the system (minimal numerical errors)
-                let vz = Vec.normalize vz
-                let vx = Vec.normalize (vx - vz * Vec.dot vx vz)
-                let vy = Vec.normalize (vy - vz * Vec.dot vy vz - vx * Vec.dot vy vx)
+    /// Westin-style shape measures computed from the covariance eigenvalues
+    /// λ₀ ≤ λ₁ ≤ λ₂ (principal variances). Returns (linearity, planarity, sphericity),
+    /// each in [0, 1], summing to 1:
+    ///   linearity  = (λ₂ - λ₁) / λ₂  — close to 1 when points lie along a line
+    ///   planarity  = (λ₁ - λ₀) / λ₂  — close to 1 when points lie in a plane
+    ///   sphericity =  λ₀      / λ₂  — close to 1 when points are isotropically distributed
+    /// Returns (0,0,0) when fewer than 3 points or the data is degenerate.
+    member x.GetShape() =
+        let r = x.GetResult()
+        struct(r.Linearity, r.Planarity, r.Sphericity)
 
-                // get the stddevs for the main axes
-                let s0 = if l0 < 0.0 then 0.0 else sqrt l0
-                let s1 = if l1 < 0.0 then 0.0 else sqrt l1
-                let s2 = if l2 < 0.0 then 0.0 else sqrt l2
-                let dev = V3d(s2, s1, s0)
+    /// Combined result of the regression: least-squares plane, least-squares line
+    /// (as a Ray3d), and the three Westin shape measures. All derived from a single
+    /// eigendecomposition of the covariance matrix. Prefer this over calling
+    /// GetPlane/GetLine/GetShape separately when you need more than one.
+    member x.GetResult() =
+        let d = x.ComputeEigen()
+        if not d.Valid || x.Count < 3 then
+            { Plane = Plane3d.Invalid; Line = Ray3d.Invalid
+              Linearity = 0.0; Planarity = 0.0; Sphericity = 0.0 }
+        else
+            let a0 = abs d.L0
+            let a1 = abs d.L1
+            let a2 = abs d.L2
+            let origin = x.Reference + d.Avg
 
-                let trafo =
-                    let o = x.Reference + avg
-                    Trafo3d(
-                        M44d(
-                            vx.X, vy.X, vz.X, o.X,
-                            vx.Y, vy.Y, vz.Y, o.Y,
-                            vx.Z, vy.Z, vz.Z, o.Z,
-                            0.0,  0.0,  0.0,  1.0
-                        ),
-                        M44d(
-                            vx.X, vx.Y, vx.Z, -Vec.dot vx o,
-                            vy.X, vy.Y, vy.Z, -Vec.dot vy o,
-                            vz.X, vz.Y, vz.Z, -Vec.dot vz o,
-                            0.0,  0.0,  0.0,   1.0
-                        )
+            let plane =
+                if Fun.IsTiny a1 then Plane3d.Invalid
+                else Plane3d(eigenvector3d d d.L0, origin)
+
+            let line =
+                if Fun.IsTiny a2 then Ray3d.Invalid
+                else Ray3d(origin, eigenvector3d d d.L2)
+
+            let cl, cp, cs =
+                if Fun.IsTiny a2 then 0.0, 0.0, 0.0
+                else (a2 - a1) / a2, (a1 - a0) / a2, a0 / a2
+
+            { Plane = plane; Line = line
+              Linearity = cl; Planarity = cp; Sphericity = cs }
+
+    /// Gets a Trafo3d for the entire plane (using its principal components) and the respective standard deviations for each axis.
+    member x.GetTrafoAndSizes() =
+        let d = x.ComputeEigen()
+        if not d.Valid || x.Count < 3 || Fun.IsTiny d.L1 then
+            struct(Trafo3d.Identity, x.Reference + d.Avg)
+        else
+            // We want an orthonormal frame aligned with the principal axes. Rather than
+            // cross-producting the two longest (M - L0·I) columns to get the eigenvector
+            // for L0 (which GetPlane does), here we keep the original "pick any two
+            // non-parallel columns, use them as vx & vy, and the third as vz" approach
+            // because that ordering drives the orthonormalization below.
+            let c0 = V3d(d.Xx - d.L0, d.Xy, d.Xz)
+            let c1 = V3d(d.Xy, d.Yy - d.L0, d.Yz)
+            let c2 = V3d(d.Xz, d.Yz, d.Zz - d.L0)
+            let struct(vx, vy, vz) =
+                let len0 = Vec.lengthSquared c0
+                let len1 = Vec.lengthSquared c1
+                let len2 = Vec.lengthSquared c2
+
+                if len0 > len1 then
+                    if len1 > len2 then struct(c0, c1, Vec.cross c0 c1)
+                    elif len0 > len2 then struct(c0, c2, Vec.cross c0 c2)
+                    else struct(c2, c0, Vec.cross c2 c0)
+                else (* len1 >= len0*)
+                    if len0 > len2 then struct(c1, c0, Vec.cross c1 c0)
+                    elif len1 > len2 then struct(c1, c2, Vec.cross c1 c2)
+                    else struct(c2, c1, Vec.cross c2 c1)
+
+            // orthonormalize the system (minimal numerical errors)
+            let vz = Vec.normalize vz
+            let vx = Vec.normalize (vx - vz * Vec.dot vx vz)
+            let vy = Vec.normalize (vy - vz * Vec.dot vy vz - vx * Vec.dot vy vx)
+
+            // get the stddevs for the main axes
+            let s0 = if d.L0 < 0.0 then 0.0 else sqrt d.L0
+            let s1 = if d.L1 < 0.0 then 0.0 else sqrt d.L1
+            let s2 = if d.L2 < 0.0 then 0.0 else sqrt d.L2
+            let dev = V3d(s2, s1, s0)
+
+            let trafo =
+                let o = x.Reference + d.Avg
+                Trafo3d(
+                    M44d(
+                        vx.X, vy.X, vz.X, o.X,
+                        vx.Y, vy.Y, vz.Y, o.Y,
+                        vx.Z, vy.Z, vz.Z, o.Z,
+                        0.0,  0.0,  0.0,  1.0
+                    ),
+                    M44d(
+                        vx.X, vx.Y, vx.Z, -Vec.dot vx o,
+                        vy.X, vy.Y, vy.Z, -Vec.dot vy o,
+                        vz.X, vz.Y, vz.Z, -Vec.dot vz o,
+                        0.0,  0.0,  0.0,   1.0
                     )
-                struct(trafo, dev)
+                )
+            struct(trafo, dev)
     
     /// Gets the least-squares plane.
     member x.GetPlane() =
         let struct(p, _) = x.GetPlaneAndConfidence()
         p
-        
+
+    /// Gets the least-squares line through the centroid as a Ray3d. Aardvark has no
+    /// dedicated unbounded-line type, so a Ray3d (origin + direction) is used — treat
+    /// its parameter t as an arbitrary real, not as t ≥ 0.
+    member x.GetLine() =
+        let struct(r, _) = x.GetLineAndConfidence()
+        r
+
     /// Gets a Trafo3d for the entire plane using its principal components.
     member x.GetTrafo() =
         let struct(t, _) = x.GetTrafoAndSizes()
@@ -753,6 +847,15 @@ module LinearRegression3d =
 
     /// Gets the least-squares plane.
     let inline getPlane (s : LinearRegression3d) = s.GetPlane()
+
+    /// Gets the least-squares line through the centroid as a Ray3d.
+    let inline getLine (s : LinearRegression3d) = s.GetLine()
+
+    /// Westin-style shape measures: (linearity, planarity, sphericity) in [0,1], summing to 1.
+    let inline getShape (s : LinearRegression3d) = s.GetShape()
+
+    /// Combined result of the regression: plane, line, and shape measures in one record.
+    let inline getResult (s : LinearRegression3d) = s.GetResult()
 
     /// Gets a Trafo3d for the entire plane using its principal components.
     let inline getTrafo (s : LinearRegression3d) = s.GetTrafo()

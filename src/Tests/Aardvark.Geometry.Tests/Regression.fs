@@ -243,5 +243,145 @@ module Regression3dTests =
 
         // remove working
         pts |> Array.fold (+) (SphereRegression3d somePoint) |> SphereRegression3d.remove somePoint |> checkSphere pts
+
+    let private algebraicResidual (pts : V2d[]) (e : Ellipse2d) =
+        // Express fitted ellipse as (p - center)^T M (p - center) - 1 and return max |r|.
+        let a0 = e.Axis0
+        let a1 = e.Axis1
+        let l0 = Vec.length a0
+        let l1 = Vec.length a1
+        if l0 <= 0.0 || l1 <= 0.0 then infinity
+        else
+            let u0 = a0 / l0
+            let u1 = a1 / l1
+            let r02 = sqr l0
+            let r12 = sqr l1
+            pts
+            |> Array.map (fun p ->
+                let d = p - e.Center
+                let x = Vec.dot d u0
+                let y = Vec.dot d u1
+                abs (sqr x / r02 + sqr y / r12 - 1.0))
+            |> Array.max
+
+    let checkEllipse (pts : V2d[]) (r : EllipseRegression2d) =
+        let e = r.GetEllipse()
+        let err = algebraicResidual pts e
+        err |> should be (lessThanOrEqualTo 1E-6)
+
+    [<Property(Arbitrary = [| typeof<EuclideanGenerator> |])>]
+    let ``EllipseRegression2d working`` (trafo : Euclidean2d) (GaussFloat rx') (GaussFloat ry') (bad : V2d) (points : AtLeast<20 N, ZeroOneFloat>) =
+        // semi-axes: positive, spread over a reasonable range
+        let rx = 0.25 + abs rx' * 5.0
+        let ry = 0.25 + abs ry' * 5.0
+        let pts =
+            points.Value
+            |> Array.map (fun (ZeroOneFloat t) ->
+                let phi = t * Constant.PiTimesTwo
+                trafo.TransformPos(V2d(rx * cos phi, ry * sin phi)))
+
+        // outside-box point for the remove-round-trip test
+        let bb = Box2d pts
+        let size = bb.Size
+        let safe = if size.X > 1e-9 && size.Y > 1e-9 then size else V2d.II
+        let r = bad / safe
+        let somePoint =
+            if r.NormMax > 1e-9 then bb.Center + safe * r / r.NormMax
+            else bb.Center + safe
+
+        // add working
+        pts |> Array.fold (+) EllipseRegression2d.empty |> checkEllipse pts
+
+        // ofArray / ofSeq working
+        pts |> EllipseRegression2d.ofArray |> checkEllipse pts
+        pts |> EllipseRegression2d.ofSeq |> checkEllipse pts
+
+        // constructor working
+        pts |> EllipseRegression2d |> checkEllipse pts
+
+        // regression addition working
+        let n2 = pts.Length / 2
+        EllipseRegression2d.ofArray pts.[..n2-1] + EllipseRegression2d.ofArray pts.[n2..] |> checkEllipse pts
+
+        // remove working (add an outside point, then remove it; fit must still match)
+        pts |> Array.fold (+) (EllipseRegression2d somePoint) |> EllipseRegression2d.remove somePoint |> checkEllipse pts
+
+    let checkCircle (pts : V2d[]) (r : CircleRegression2d) =
+        let c = r.GetCircle()
+        let error = pts |> Array.map (fun p -> abs (Vec.distance p c.Center - c.Radius)) |> Array.max
+        error |> should be (lessThanOrEqualTo 1E-6)
+
+    [<Property(Arbitrary = [| typeof<EuclideanGenerator> |])>]
+    let ``CircleRegression2d working`` (center : V2d) (GaussFloat radius) (bad : V2d) (points : AtLeast<50 N, ZeroOneFloat>) =
+        let r = 0.25 + abs radius
+        let pts =
+            points.Value
+            |> Array.map (fun (ZeroOneFloat t) ->
+                let phi = t * Constant.PiTimesTwo
+                center + V2d(cos phi, sin phi) * r)
+
+        let bb = Box2d pts
+        let size = if bb.Size.X > 1e-9 && bb.Size.Y > 1e-9 then bb.Size else V2d.II
+        let rr = bad / size
+        let somePoint =
+            if rr.NormMax > 1e-9 then bb.Center + size * rr / rr.NormMax
+            else bb.Center + size
+
+        // add working
+        pts |> Array.fold (+) CircleRegression2d.empty |> checkCircle pts
+
+        // ofArray / ofSeq working
+        pts |> CircleRegression2d.ofArray |> checkCircle pts
+        pts |> CircleRegression2d.ofSeq |> checkCircle pts
+
+        // constructor working
+        pts |> CircleRegression2d |> checkCircle pts
+
+        // regression addition working
+        let n2 = pts.Length / 2
+        CircleRegression2d.ofArray pts.[..n2-1] + CircleRegression2d.ofArray pts.[n2..] |> checkCircle pts
+
+        // remove working
+        pts |> Array.fold (+) (CircleRegression2d somePoint) |> CircleRegression2d.remove somePoint |> checkCircle pts
+
+    let checkEllipsoid (pts : V3d[]) (r : EllipsoidRegression3d) =
+        let e = r.GetEllipsoid()
+        // Transform each point into the ellipsoid's local frame, scale by 1/radii, length should be 1.
+        // The algebraic ellipsoid fit minimizes algebraic residual (not geometric distance), so a loose
+        // tolerance is appropriate — on ill-conditioned inputs the geometric error can grow.
+        let error =
+            pts |> Array.map (fun p ->
+                let q = e.Euclidean.InvTransformPos p / e.Radii
+                abs (Vec.length q - 1.0))
+            |> Array.max
+        error |> should be (lessThanOrEqualTo 1E-3)
+
+    [<Property(Arbitrary = [| typeof<EuclideanGenerator> |])>]
+    let ``EllipsoidRegression3d working`` (trafo : Euclidean3d) (GaussFloat rx') (GaussFloat ry') (GaussFloat rz') (points : AtLeast<100 N, V2d>) =
+        // semi-axes: positive, modest range. Very skewed radii push the algebraic fit's conditioning.
+        let rx = 1.0 + abs rx'
+        let ry = 1.0 + abs ry'
+        let rz = 1.0 + abs rz'
+        // CartesianFromSpherical maps spherical coords (theta, phi) to unit directions uniformly.
+        let pts =
+            points.Value
+            |> Array.map (fun sph ->
+                let dir = sph.CartesianFromSpherical()
+                trafo.TransformPos(V3d(rx * dir.X, ry * dir.Y, rz * dir.Z)))
+
+        // add working  (no (+) operator on EllipsoidRegression3d, use Add directly)
+        (EllipsoidRegression3d.empty, pts) ||> Array.fold (fun r p -> r.Add p) |> checkEllipsoid pts
+
+        // ofArray / ofSeq working
+        pts |> EllipsoidRegression3d.ofArray |> checkEllipsoid pts
+        pts |> EllipsoidRegression3d.ofSeq |> checkEllipsoid pts
+
+        // constructor working
+        pts |> EllipsoidRegression3d |> checkEllipsoid pts
+
+        // remove working
+        let somePoint = trafo.TransformPos (V3d(rx * 10.0, ry * 10.0, rz * 10.0))
+        let withExtra = (EllipsoidRegression3d somePoint, pts) ||> Array.fold (fun r p -> r.Add p)
+        withExtra.Remove somePoint |> checkEllipsoid pts
         
 
