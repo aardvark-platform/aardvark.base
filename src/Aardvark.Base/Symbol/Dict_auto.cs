@@ -1113,6 +1113,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            Dict<TKey, TValue>.Enumerator m_inner;
+
+            public ValueEnumerator(Dict<TKey, TValue> dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
+        }
+
+        /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed (stackDuplicateKeys=true).
         /// The order of the values is reversed to their additions (like a stack).
@@ -3784,6 +3814,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            IntDict<TValue>.Enumerator m_inner;
+
+            public ValueEnumerator(IntDict<TValue> dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
+        }
+
+        /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed (stackDuplicateKeys=true).
         /// The order of the values is reversed to their additions (like a stack).
@@ -6102,6 +6162,36 @@ namespace Aardvark.Base
                     yield return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
+        }
+
+        /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            SymbolDict<TValue>.Enumerator m_inner;
+
+            public ValueEnumerator(SymbolDict<TValue> dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
         }
 
         /// <summary>
@@ -8801,6 +8891,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            BigDict<TKey, TValue>.Enumerator m_inner;
+
+            public ValueEnumerator(BigDict<TKey, TValue> dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
+        }
+
+        /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed (stackDuplicateKeys=true).
         /// The order of the values is reversed to their additions (like a stack).
@@ -11349,6 +11469,36 @@ namespace Aardvark.Base
                     yield return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
+        }
+
+        /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            LongDict<TValue>.Enumerator m_inner;
+
+            public ValueEnumerator(LongDict<TValue> dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
         }
 
         /// <summary>
@@ -29673,6 +29823,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            DictIEq<TKey, TValue>.Enumerator m_inner;
+
+            public ValueEnumerator(DictIEq<TKey, TValue> dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
+        }
+
+        /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed (stackDuplicateKeys=true).
         /// The order of the values is reversed to their additions (like a stack).
@@ -32648,6 +32828,36 @@ namespace Aardvark.Base
                     yield return m_extraArray[ei].Item.Value;
                 ei = m_extraArray[ei].Next;
             }
+        }
+
+        /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            BigDictIEq<TKey, TValue>.Enumerator m_inner;
+
+            public ValueEnumerator(BigDictIEq<TKey, TValue> dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
         }
 
         /// <summary>

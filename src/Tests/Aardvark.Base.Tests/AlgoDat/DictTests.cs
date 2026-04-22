@@ -606,6 +606,53 @@ namespace Aardvark.Tests
         }
 
         [Theory]
+        public void FastValuesEnumeratorMatchesValues(bool stackDuplicateKeys)
+        {
+            Dict<int, int> dict = new(stackDuplicateKeys)
+            {
+                {1, 2},
+                {2, 3},
+                {3, 4},
+                {42, 5},
+                {-13, 7},
+            };
+
+            if (stackDuplicateKeys)
+            {
+                dict.Add(42, 80);
+                dict.Add(42, -80);
+            }
+
+            CollectionAssert.AreEqual(dict.Values.ToArray(), EnumerateFastValues(dict));
+        }
+
+        [Test]
+        public void FastValuesEnumeratorEmpty()
+        {
+            var dict = new Dict<int, int>();
+            var values = dict.GetValuesEnumerator();
+            Assert.IsFalse(values.MoveNext());
+
+            var symbolDict = new SymbolDict<int>();
+            var symbolValues = symbolDict.GetValuesEnumerator();
+            Assert.IsFalse(symbolValues.MoveNext());
+        }
+
+        [Test]
+        public void SymbolDictFastValuesEnumeratorMatchesValues()
+        {
+            var dict = new SymbolDict<int>
+            {
+                { "one", 1 },
+                { "two", 2 },
+                { "three", 3 },
+                { "four", 4 },
+            };
+
+            CollectionAssert.AreEqual(dict.Values.ToArray(), EnumerateFastValues(dict));
+        }
+
+        [Theory]
         public void IDictionaryKeys(bool stackDuplicateKeys)
         {
             Dict<int, int> dict = new(stackDuplicateKeys)
@@ -667,6 +714,28 @@ namespace Aardvark.Tests
 
             Assert.AreEqual(expectedValues.Length, values.Count);
             Assert.AreEqual(expectedValues, actualValues);
+        }
+
+        private static int[] EnumerateFastValues(Dict<int, int> dict)
+        {
+            var result = new List<int>();
+            var values = dict.GetValuesEnumerator();
+
+            while (values.MoveNext())
+                result.Add(values.Current);
+
+            return result.ToArray();
+        }
+
+        private static int[] EnumerateFastValues(SymbolDict<int> dict)
+        {
+            var result = new List<int>();
+            var values = dict.GetValuesEnumerator();
+
+            while (values.MoveNext())
+                result.Add(values.Current);
+
+            return result.ToArray();
         }
     }
 }

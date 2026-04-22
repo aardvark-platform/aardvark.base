@@ -1289,6 +1289,36 @@ namespace Aardvark.Base
 
         //# if (!concurrent) {
         /// <summary>
+        /// Gets an enumerator for values.
+        /// Should be preferred over Values enumeration in
+        /// performance critical code.
+        /// </summary>
+        public ValueEnumerator GetValuesEnumerator()
+        {
+            return new ValueEnumerator(this);
+        }
+
+        public struct ValueEnumerator : IEnumerator<TValue>
+        {
+            __type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */.Enumerator m_inner;
+
+            public ValueEnumerator(__type__/*# if (isGeneric) { */</*# if (hasKey) { */TKey/*# } if (hasValue) { if (hasKey) { */, /*# } */TValue/*# } */>/*# } */ dict)
+            {
+                m_inner = dict.GetEnumerator();
+            }
+
+            public TValue Current => m_inner.Current.Value;
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose() => m_inner.Dispose();
+
+            public bool MoveNext() => m_inner.MoveNext();
+
+            public void Reset() => m_inner.Reset();
+        }
+
+        /// <summary>
         /// Gets an enumerator for values with key. It is only useful
         /// if multiple item with the same key are allowed (stackDuplicateKeys=true).
         /// The order of the values is reversed to their additions (like a stack).
