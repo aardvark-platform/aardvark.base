@@ -12,7 +12,7 @@ on:
 
 jobs:
   codegen-check:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
 
@@ -32,18 +32,22 @@ jobs:
           ${{ runner.os }}-paket-
 
     - name: Restore
-      run: bash ./build.sh restore
+      shell: cmd
+      run: .\build.cmd restore
 
     - name: Run forced code generation
-      run: bash ./generate.sh --force
+      shell: cmd
+      run: .\generate.cmd --force
 
     - name: Fail on generated diffs
+      shell: pwsh
       run: |
-        if ! git diff --quiet -- src; then
-          echo "Generated files are out of date:"
+        git diff --quiet -- src
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "Generated files are out of date:"
           git diff --name-only -- src
           exit 1
-        fi
+        }
 
   build:
     needs: codegen-check
