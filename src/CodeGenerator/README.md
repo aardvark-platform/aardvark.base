@@ -16,24 +16,32 @@ This approach keeps the codebase DRY (Don't Repeat Yourself) by maintaining a si
 ### Using the shell script (Unix/Linux/macOS)
 ```bash
 ./generate.sh
+./generate.sh --force
 ```
 
 ### Using the command script (Windows)
 ```cmd
 generate.cmd
+generate.cmd --force
 ```
 
 ### Using dotnet directly
 ```bash
 dotnet run --project src/CodeGenerator/CodeGenerator.csproj
+dotnet run --project src/CodeGenerator/CodeGenerator.csproj -- --force
 ```
+
+Both wrapper scripts forward additional CLI arguments to `CodeGenerator.dll`.
 
 ## When to Run
 
 Run the code generator **immediately after modifying any `*_template.cs` file**. The generator:
 - Detects which template files have been modified since their output was last generated
 - Only regenerates files that need updating (skips unchanged templates)
+- Can regenerate everything with `-f` / `--force`, regardless of timestamps
 - Must be run before building/testing to ensure generated code is up-to-date
+
+Use `--force` when you want a deterministic full regeneration pass, for example in CI when verifying that committed `*_auto.*` files match their templates.
 
 The scripts print:
 - `#` prefix: Template is being processed (newer than output)

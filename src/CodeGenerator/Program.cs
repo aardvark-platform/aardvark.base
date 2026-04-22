@@ -50,20 +50,47 @@ namespace CodeGenerator
             return File.GetLastWriteTimeUtc(fileName1) < File.GetLastWriteTimeUtc(fileName2);
         }
 
+        private static void ShowUsage()
+        {
+            Console.Error.WriteLine(
+                "Usage: CodeGenerator [-f|--force] [<directory>|<config.conf>|<template> <output>]");
+        }
+
         [STAThread]
         public static void Main(string[] args)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             var tasks = new List<Task>();
+            var positionalArgs = new List<string>();
             string dir = null;
+            bool force = false;
             bool writeGenerator = true;
 
-            if (args.Length > 0)
+            foreach (var arg in args)
             {
-                if (args[0].EndsWith(".conf"))
+                switch (arg)
                 {
-                    foreach (var line in File.ReadAllLines(args[0]))
+                    case "-f":
+                    case "--force":
+                        force = true;
+                        break;
+
+                    default:
+                        positionalArgs.Add(arg);
+                        break;
+                }
+            }
+
+            if (positionalArgs.Count == 0)
+            {
+                dir = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location),"..", "..", "..");
+            }
+            else if (positionalArgs.Count == 1)
+            {
+                if (positionalArgs[0].EndsWith(".conf"))
+                {
+                    foreach (var line in File.ReadAllLines(positionalArgs[0]))
                     {
                         var parts = line.Split(new [] { ' ', '\t' },
                                     StringSplitOptions.RemoveEmptyEntries);
@@ -74,13 +101,29 @@ namespace CodeGenerator
                         });
                     }
                 }
-                else if (Directory.Exists(args[0]))
-                    dir = args[0];
+                else if (Directory.Exists(positionalArgs[0]))
+                {
+                    dir = positionalArgs[0];
+                }
                 else
-                    tasks.Add(new Task { TemplateFileName = args[0], OutputFileName = args[1] });
+                {
+                    ShowUsage();
+                    Environment.Exit(1);
+                }
+            }
+            else if (positionalArgs.Count == 2)
+            {
+                tasks.Add(new Task
+                {
+                    TemplateFileName = positionalArgs[0],
+                    OutputFileName = positionalArgs[1]
+                });
             }
             else
-                dir = Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location),"..", "..", "..");
+            {
+                ShowUsage();
+                Environment.Exit(1);
+            }
 
             if (dir != null)
             {
@@ -106,7 +149,8 @@ namespace CodeGenerator
             {
                 string report = task.Report ?? task.OutputFileName;
 
-                if (task.TemplateFileName != null &&
+                if (!force &&
+                    task.TemplateFileName != null &&
                     IsOlderThan(task.TemplateFileName, task.OutputFileName))
                 {
                     Console.WriteLine("- {0}", report);
