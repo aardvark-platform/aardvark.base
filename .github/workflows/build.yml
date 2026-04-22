@@ -11,7 +11,42 @@ on:
     - 'docs/**'
 
 jobs:
+  codegen-check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
+
+    - name: Cache Paket
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.nuget/packages
+          paket-files
+        key: ${{ runner.os }}-paket-${{ hashFiles('paket.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-paket-
+
+    - name: Restore
+      run: bash ./build.sh restore
+
+    - name: Run forced code generation
+      run: bash ./generate.sh --force
+
+    - name: Fail on generated diffs
+      run: |
+        if ! git diff --quiet -- src; then
+          echo "Generated files are out of date:"
+          git diff --name-only -- src
+          exit 1
+        fi
+
   build:
+    needs: codegen-check
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
