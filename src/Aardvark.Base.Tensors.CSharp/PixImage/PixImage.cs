@@ -273,6 +273,8 @@ namespace Aardvark.Base
                                 Func<Result, bool> isValid,
                                 string errorMessage)
         {
+            Dictionary<IPixLoader, Exception> exceptions = null;
+
             if (loader != null)
             {
                 if (loaderType == LoaderType.Encoder && !loader.CanEncode)
@@ -288,6 +290,7 @@ namespace Aardvark.Base
                 }
                 catch (Exception e)
                 {
+                    exceptions = new Dictionary<IPixLoader, Exception>(1) { [loader] = e };
                     errorMessage += $" with {loader.Name} - {e.Message}";
                 }
             }
@@ -301,8 +304,6 @@ namespace Aardvark.Base
                         _ => GetLoaders()
                     };
 
-                var loaderErrors = new List<string>();
-
                 for (int i = 0; i < loaders.Count; i++)
                 {
                     if (i != 0) resetInput(input);
@@ -311,12 +312,11 @@ namespace Aardvark.Base
                     {
                         var result = invoke(loaders[i], input);
                         if (isValid(result)) return result;
-                        loaderErrors.Add($"{i + 1}. {loaders[i].Name}: Failed");
                     }
                     catch (Exception e)
                     {
-                        var message = Regex.Replace(e.Message, @"(\r\n?|\n)\z", ""); // Remove last line break in multi-line message
-                        loaderErrors.Add($"{i + 1}. {loaders[i].Name}: {message}");
+                        exceptions ??= new Dictionary<IPixLoader, Exception>();
+                        exceptions[loaders[i]] = e;
                     }
                 }
 
@@ -334,12 +334,34 @@ namespace Aardvark.Base
                 }
                 else
                 {
-                    var errors = string.Join(Environment.NewLine, loaderErrors);
-                    errorMessage += $" - All available {loaderDesc}s failed:{Environment.NewLine}{errors}";
+                    errorMessage += $" - All available {loaderDesc}s failed:{Environment.NewLine}";
+
+                    for (var i = 0; i < loaders.Count; i++)
+                    {
+                        string error;
+
+                        if (exceptions != null && exceptions.TryGetValue(loaders[i], out var exn))
+                        {
+                            error = Regex.Replace(exn.Message, @"(\r\n?|\n)\z", ""); // Remove last line break in multi-line message
+                        }
+                        else
+                        {
+                            error = "Failed";
+                        }
+
+                        errorMessage += $"{i + 1}. {loaders[i].Name}: {error}" + Environment.NewLine;
+                    }
                 }
             }
 
-            throw new ImageLoadException(errorMessage);
+            var innerException = exceptions?.Values.Count switch
+            {
+                0 or null => null,
+                1 => exceptions.Values.First(),
+                _ => new AggregateException(exceptions.Values)
+            };
+
+            throw new ImageLoadException(errorMessage, innerException);
         }
 
         internal static Result InvokeLoadersWithStream<Result>(
@@ -462,6 +484,8 @@ namespace Aardvark.Base
                         PixProcessorCaps minCapabilities,
                         string operationDescription)
         {
+            Dictionary<IPixProcessor, Exception> exceptions = null;
+
             foreach (var p in GetProcessors(minCapabilities))
             {
                 try
@@ -471,7 +495,8 @@ namespace Aardvark.Base
                 }
                 catch (Exception e)
                 {
-                    Report.Warn($"Failed to {operationDescription} with {p.Name} image processor: {e.Message}");
+                    exceptions ??= new Dictionary<IPixProcessor, Exception>();
+                    exceptions[p] = e;
                 }
             }
 
@@ -480,19 +505,37 @@ namespace Aardvark.Base
 
             if (processors.Count == 0)
             {
-                errorMessage += ", no image processors available!";
+                errorMessage += " - No image processors available.";
             }
             else
             {
-                errorMessage += ", available image processors:" + Environment.NewLine;
+                errorMessage += " - All available image processors failed:" + Environment.NewLine;
 
-                foreach (var p in processors)
+                for (var i = 0; i < processors.Count; i++)
                 {
-                    errorMessage += $"    - {p.Name}: {p.Capabilities}" + Environment.NewLine;
+                    string error;
+
+                    if (exceptions != null && exceptions.TryGetValue(processors[i], out var exn))
+                    {
+                        error = Regex.Replace(exn.Message, @"(\r\n?|\n)\z", ""); // Remove last line break in multi-line message
+                    }
+                    else
+                    {
+                        error = processors[i].Capabilities.HasFlag(minCapabilities) ? "Failed" : $"{minCapabilities} not supported";
+                    }
+
+                    errorMessage += $"{i + 1}. {processors[i].Name}: {error}" + Environment.NewLine;
                 }
             }
 
-            throw new NotSupportedException(errorMessage);
+            var innerException = exceptions?.Values.Count switch
+            {
+                0 or null => null,
+                1 => exceptions.Values.First(),
+                _ => new AggregateException(exceptions.Values)
+            };
+
+            throw new NotSupportedException(errorMessage, innerException);
         }
 
         #endregion
