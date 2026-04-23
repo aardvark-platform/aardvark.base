@@ -383,5 +383,165 @@ module Regression3dTests =
         let somePoint = trafo.TransformPos (V3d(rx * 10.0, ry * 10.0, rz * 10.0))
         let withExtra = (EllipsoidRegression3d somePoint, pts) ||> Array.fold (fun r p -> r.Add p)
         withExtra.Remove somePoint |> checkEllipsoid pts
+
+    // -----------------------------------------------------------------------------
+    //  EllipseRegression2d stress scan
+    //
+    //  Sweeps point counts, noise levels, eccentricity, arc coverage and scale;
+    //  prints the medians/p95 of centre/axis/angle error per configuration as
+    //  an informational report. A handful of very basic cases are asserted.
+    // -----------------------------------------------------------------------------
+
+    let private sampleEllipse (c : V2d) (a : float) (b : float) (theta : float) (n : int) (noise : float) (rand : Random) =
+        let cs, sn = cos theta, sin theta
+        let phi = rand.NextDouble() * 2.0 * Math.PI
+        Array.init n (fun i ->
+            let t  = phi + 2.0 * Math.PI * float i / float n
+            let x  = a * cos t
+            let y  = b * sin t
+            let px = x * cs - y * sn
+            let py = x * sn + y * cs
+            let dx = (rand.NextDouble() - 0.5) * 2.0 * noise
+            let dy = (rand.NextDouble() - 0.5) * 2.0 * noise
+            V2d(c.X + px + dx, c.Y + py + dy))
+
+    let private canonical (e : Ellipse2d) =
+        let l0 = Vec.length e.Axis0
+        let l1 = Vec.length e.Axis1
+        let major, minor, dir =
+            if l0 >= l1 then l0, l1, (if l0 > 0.0 then e.Axis0 / l0 else V2d.IO)
+            else             l1, l0, (if l1 > 0.0 then e.Axis1 / l1 else V2d.IO)
+        let ang = atan2 dir.Y dir.X
+        let ang = if ang < 0.0 then ang + Math.PI else ang
+        e.Center, major, minor, ang % Math.PI
+
+    let private truth (c : V2d, a : float, b : float, th : float) =
+        let major, minor, ang =
+            if a >= b then a, b, th else b, a, th + Math.PI / 2.0
+        let ang = if ang < 0.0 then ang + Math.PI else ang
+        c, major, minor, ang % Math.PI
+
+    let private angleDiff a b =
+        let d = abs (a - b) % Math.PI
+        min d (Math.PI - d)
+
+    let private pct (q : float) (xs : float seq) =
+        let arr = xs |> Seq.toArray
+        if arr.Length = 0 then nan
+        else
+            Array.sortInPlace arr
+            arr.[int (float (arr.Length - 1) * q)]
+
+    // NUnit swallows stdout; route informational prints through TestContext.Progress
+    // so they show up under `dotnet test --logger console;verbosity=detailed`.
+    let private tprintfn fmt =
+        Printf.kprintf (fun s -> NUnit.Framework.TestContext.Progress.WriteLine s) fmt
+
+    [<Test>]
+    let ``EllipseRegression2d stress scan`` () =
+        let rand = Random(1)
+
+        let randomEllipse () =
+            let cx = rand.NextDouble() * 40.0 - 20.0
+            let cy = rand.NextDouble() * 40.0 - 20.0
+            let a  = 0.5 + rand.NextDouble() * 4.5
+            let b  = 0.5 + rand.NextDouble() * 4.5
+            let th = rand.NextDouble() * Math.PI
+            V2d(cx, cy), a, b, th
+
+        let sweep label (run : int -> (float * float * float * float)) trials =
+            let dCs = ResizeArray()
+            let dAs = ResizeArray()
+            let dBs = ResizeArray()
+            let dTs = ResizeArray()
+            for i in 1 .. trials do
+                let dC, dA, dB, dT = run i
+                dCs.Add dC; dAs.Add dA; dBs.Add dB; dTs.Add dT
+            tprintfn "  %-36s | Δc med=%.2e p95=%.2e | Δa p95=%.2e | Δb p95=%.2e | Δθ p95=%.2e"
+                label (pct 0.5 dCs) (pct 0.95 dCs) (pct 0.95 dAs) (pct 0.95 dBs) (pct 0.95 dTs)
+            pct 0.95 dCs, pct 0.95 dAs, pct 0.95 dTs
+
+        let runOne nPoints noise _ =
+            let c, a, b, th = randomEllipse ()
+            let pts = sampleEllipse c a b th nPoints noise rand
+            let e = EllipseRegression2d(pts).GetEllipse()
+            let fc, fa, fb, fth = canonical e
+            let tc, ta, tb, tth = truth (c, a, b, th)
+            Vec.distance tc fc, abs (ta - fa), abs (tb - fb), angleDiff tth fth
+
+        tprintfn ""
+        tprintfn "── point-count sweep (noise=0.05) ──"
+        for n in [ 5; 10; 50; 500 ] do
+            sweep (sprintf "n=%d" n) (runOne n 0.05) 200 |> ignore
+
+        tprintfn "── noise sweep (n=100) ──"
+        for noise in [ 0.0; 0.001; 0.01; 0.1; 1.0 ] do
+            sweep (sprintf "noise=%g" noise) (runOne 100 noise) 200 |> ignore
+
+        tprintfn "── arc-coverage sweep (n=100, noise=0.01) ──"
+        let sampleArc (c : V2d) (a : float) (b : float) (theta : float) (n : int) (arcFrac : float) (noise : float) =
+            let cs, sn = cos theta, sin theta
+            let phi = rand.NextDouble() * 2.0 * Math.PI
+            let arc = arcFrac * 2.0 * Math.PI
+            Array.init n (fun i ->
+                let t = phi + arc * float i / float (n - 1)
+                let x = a * cos t
+                let y = b * sin t
+                let px = x * cs - y * sn
+                let py = x * sn + y * cs
+                let dx = (rand.NextDouble() - 0.5) * 2.0 * noise
+                let dy = (rand.NextDouble() - 0.5) * 2.0 * noise
+                V2d(c.X + px + dx, c.Y + py + dy))
+
+        for frac in [ 1.0; 0.5; 0.3; 0.1 ] do
+            sweep (sprintf "arc=%.0f%%" (frac * 100.0)) (fun _ ->
+                let c, a, b, th = randomEllipse ()
+                let pts = sampleArc c a b th 100 frac 0.01
+                let e = EllipseRegression2d(pts).GetEllipse()
+                let fc, fa, fb, fth = canonical e
+                let tc, ta, tb, tth = truth (c, a, b, th)
+                Vec.distance tc fc, abs (ta - fa), abs (tb - fb), angleDiff tth fth) 200
+            |> ignore
+
+        // --- Basic-case validation: noise-free axis-aligned and rotated ellipses ---
+        let n = 80
+
+        // (1) axis-aligned unit circle at origin
+        let pts1 = Array.init n (fun i ->
+            let t = 2.0 * Math.PI * float i / float n
+            V2d(cos t, sin t))
+        let e1 = EllipseRegression2d(pts1).GetEllipse()
+        Vec.distance e1.Center V2d.Zero |> should be (lessThanOrEqualTo 1E-10)
+        abs (Vec.length e1.Axis0 - 1.0) |> should be (lessThanOrEqualTo 1E-10)
+        abs (Vec.length e1.Axis1 - 1.0) |> should be (lessThanOrEqualTo 1E-10)
+
+        // (2) axis-aligned ellipse a=3, b=1 at (5, -2)
+        let c = V2d(5.0, -2.0)
+        let pts2 = Array.init n (fun i ->
+            let t = 2.0 * Math.PI * float i / float n
+            V2d(c.X + 3.0 * cos t, c.Y + 1.0 * sin t))
+        let e2 = EllipseRegression2d(pts2).GetEllipse()
+        Vec.distance e2.Center c |> should be (lessThanOrEqualTo 1E-10)
+        let l0 = Vec.length e2.Axis0
+        let l1 = Vec.length e2.Axis1
+        let major = max l0 l1
+        let minor = min l0 l1
+        abs (major - 3.0) |> should be (lessThanOrEqualTo 1E-10)
+        abs (minor - 1.0) |> should be (lessThanOrEqualTo 1E-10)
+
+        // (3) rotated ellipse a=3, b=1, θ=30° at origin
+        let th = Math.PI / 6.0
+        let cs, sn = cos th, sin th
+        let pts3 = Array.init n (fun i ->
+            let t = 2.0 * Math.PI * float i / float n
+            let x = 3.0 * cos t
+            let y = 1.0 * sin t
+            V2d(x * cs - y * sn, x * sn + y * cs))
+        let e3 = EllipseRegression2d(pts3).GetEllipse()
+        Vec.distance e3.Center V2d.Zero |> should be (lessThanOrEqualTo 1E-10)
+        let majorV = if Vec.length e3.Axis0 >= Vec.length e3.Axis1 then e3.Axis0 else e3.Axis1
+        abs (Vec.length majorV - 3.0) |> should be (lessThanOrEqualTo 1E-10)
+        // major axis direction should align with (cos th, sin th) up to sign
+        abs (abs (Vec.dot (Vec.normalize majorV) (V2d(cs, sn))) - 1.0) |> should be (lessThanOrEqualTo 1E-10)
         
 
