@@ -157,20 +157,20 @@ module Prelude =
             partitionAcc f source (System.Collections.Generic.List()) (System.Collections.Generic.List())
 
         let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (list: 'T list) =
-            let i = ref -1
+            let mutable i = -1
 
             let chooser value =
-                i.Value <- i.Value + 1
-                chooser i.Value value
+                i <- i + 1
+                chooser i value
 
             List.choose chooser list
 
         let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U list) (list: 'T list) =
-            let i = ref -1
+            let mutable i = -1
 
             let mapping value =
-                i.Value <- i.Value + 1
-                mapping i.Value value
+                i <- i + 1
+                mapping i value
 
             List.collect mapping list
 
@@ -402,20 +402,91 @@ module Prelude =
     module Array =
 
         let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (array: 'T[]) =
-            let i = ref -1
+            let mutable i = -1
 
             let chooser value =
-                i.Value <- i.Value + 1
-                chooser i.Value value
+                i <- i + 1
+                chooser i value
 
             Array.choose chooser array
 
+        let inline chooseV ([<InlineIfLambda>] chooser: 'T -> 'U voption) (array: 'T array) =
+            let mutable i = 0
+            let mutable first = Unchecked.defaultof<'U>
+            let mutable found = false
+
+            while i < array.Length && not found do
+                let element = array.[i]
+
+                match chooser element with
+                | ValueNone -> i <- i + 1
+                | ValueSome b ->
+                    first <- b
+                    found <- true
+
+            if i <> array.Length then
+
+                let chunk1: 'U array =
+                    Array.zeroCreate ((array.Length >>> 2) + 1)
+
+                chunk1.[0] <- first
+                let mutable count = 1
+                i <- i + 1
+
+                while count < chunk1.Length && i < array.Length do
+                    let element = array.[i]
+
+                    match chooser element with
+                    | ValueNone -> ()
+                    | ValueSome b ->
+                        chunk1.[count] <- b
+                        count <- count + 1
+
+                    i <- i + 1
+
+                if i < array.Length then
+                    let chunk2: 'U array =
+                        Array.zeroCreate (array.Length - i)
+
+                    count <- 0
+
+                    while i < array.Length do
+                        let element = array.[i]
+
+                        match chooser element with
+                        | ValueNone -> ()
+                        | ValueSome b ->
+                            chunk2.[count] <- b
+                            count <- count + 1
+
+                        i <- i + 1
+
+                    let res: 'U array =
+                        Array.zeroCreate (chunk1.Length + count)
+
+                    Array.Copy(chunk1, res, chunk1.Length)
+                    Array.Copy(chunk2, 0, res, chunk1.Length, count)
+                    res
+                else
+                    Array.sub chunk1 0 count
+            else
+                Array.empty
+
+        let inline chooseiV ([<InlineIfLambda>] chooser: int -> 'T -> 'U voption) (array: 'T[]) =
+            let mutable i = -1
+
+            let chooser value =
+                i <- i + 1
+                chooser i value
+
+            chooseV chooser array
+
         let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U[]) (array: 'T[]) =
-            let i = ref -1
+            let mutable i = -1
 
             let mapping value =
-                i.Value <- i.Value + 1
-                mapping i.Value value
+                i <- i + 1
+                mapping i value
 
             Array.collect mapping array
 

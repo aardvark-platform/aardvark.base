@@ -11,7 +11,7 @@ module Program =
     let main argv =
 
         let cfg =
-            let job = Job.ShortRun.WithToolchain(InProcess.Emit.InProcessEmitToolchain.Instance)
+            let job = Job.Default.WithToolchain(InProcess.Emit.InProcessEmitToolchain.Instance)
             ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator).AddJob(job)
 
         BenchmarkSwitcher.FromAssembly(typeof<ZipFloatArrays>.Assembly).Run(argv, cfg) |> ignore

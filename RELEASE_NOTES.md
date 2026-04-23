@@ -2,6 +2,7 @@
 - [Introspection] Fixed native library loading on Windows using netstandard2.0 (https://github.com/aardvark-platform/aardvark.base/issues/86)
 - [Base] Fixed Dict.Contains(key, value) for collided entries in hash buckets
 - [PixImage] Improved reporting of inner exceptions thrown by loaders and processors
+- [FSharp] Added Array.chooseV and Array.chooseiV
 
 ### 5.3.21
 - [Base] Simplified computation of Constant<T>.MachineEpsilon

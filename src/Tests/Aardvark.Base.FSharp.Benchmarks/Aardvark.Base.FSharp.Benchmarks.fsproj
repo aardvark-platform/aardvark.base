@@ -31,6 +31,7 @@
     <Compile Include="TypePatternsBench.fs" />
     <Compile Include="ReferenceCountingSetBench.fs" />
     <Compile Include="NullCheckBench.fs" />
+    <Compile Include="ArrayChooseBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>
