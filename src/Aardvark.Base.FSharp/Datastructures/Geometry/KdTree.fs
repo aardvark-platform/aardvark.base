@@ -11,7 +11,6 @@ type KdBuildInfo =
         static member High = KdBuildInfo(50, 5)
 
         new(cnt, splits) = { MaxCount = cnt; Splits = splits }
-
     end
 
 [<RequireQualifiedAccess>]
@@ -48,7 +47,6 @@ module KdNode =
             elif side &&& PlaneSide.Below = PlaneSide.Below then
                 inc &left
 
-                     
         (left, both, right)
 
     let private cost (parent : Box3d) (lBox : Box3d) (rBox : Box3d) (left : int) (both : int) (right : int) =
@@ -96,11 +94,9 @@ module KdNode =
 
                     o <- o + s
 
-
             if best.BothCount = indices.Length then
                 KdNode.Leaf indices
             else
-                     
                 let mutable lBox = bounds
                 let mutable rBox = bounds
                 lBox.Max.[best.Plane.Normal.MajorDim] <- best.Plane.Distance
@@ -122,80 +118,131 @@ module KdNode =
                         r.[ri] <- i
                         inc &ri
 
-                                
-
                 let left = build spatial info data lBox l
                 let right = build spatial info data rBox r
 
                 KdNode.Node(best.Plane, left, right)
 
-    let rec intersect (tryIntersect : RayPart -> 'a -> Option<RayHit<'r>>) (data : 'a[]) (part : RayPart) (node : KdNode) =
+    let rec intersect (tryIntersect : RayPart -> 'a -> RayHit<'r> option) (data : 'a[]) (part : RayPart) (node : KdNode) =
         if part.TMax < part.TMin then
             None
         else
             match node with
-                | KdNode.Empty -> 
-                    None
+            | KdNode.Empty ->
+                None
 
-                | KdNode.Leaf indices ->
-                    let hits = indices |> Seq.choose (Array.get data >> tryIntersect part) |> Seq.toList
-                    match hits with
-                        | [] -> None
-                        | hits -> hits |> List.minBy (fun h -> h.T) |> Some
+            | KdNode.Leaf indices ->
+                let hits = indices |> Array.choose (Array.get data >> tryIntersect part) |> Array.toList
+                match hits with
+                | [] -> None
+                | hits -> hits |> List.minBy _.T |> Some
 
-                | KdNode.Node(plane, l, r) ->
-                    let inline intersect p n = intersect tryIntersect data p n
-                    let mutable t = 0.0
-                    let mutable p = V3d.Zero
+            | KdNode.Node(plane, l, r) ->
+                let inline intersect p n = intersect tryIntersect data p n
+                let mutable t = 0.0
+                let mutable p = V3d.Zero
 
-                    let dir = Vec.dot part.Ray.Ray.Direction plane.Normal
-                    part.Ray.Ray.Intersects(plane, &t, &p) |> ignore
+                let dir = Vec.dot part.Ray.Ray.Direction plane.Normal
+                part.Ray.Ray.Intersects(plane, &t, &p) |> ignore
 
-                    if dir > 0.0 then
-                        if t >= part.TMin && t <= part.TMax then
-                            match intersect (RayPart(part.Ray, part.TMin, t)) l with
-                                | Some hit -> 
-                                    Some hit
-                                | None ->
-                                    intersect (RayPart(part.Ray, t, part.TMax)) r
+                if dir > 0.0 then
+                    if t >= part.TMin && t <= part.TMax then
+                        match intersect (RayPart(part.Ray, part.TMin, t)) l with
+                        | Some hit -> Some hit
+                        | None -> intersect (RayPart(part.Ray, t, part.TMax)) r
 
-                        elif t < part.TMin then
-                            intersect part r
+                    elif t < part.TMin then
+                        intersect part r
 
-                        else (* t > part.TMax *)
-                            intersect part l
-                            
-                    elif dir < 0.0 then
-                        if t >= part.TMin && t <= part.TMax then
-                            match intersect (RayPart(part.Ray, part.TMin, t)) r with
-                                | Some hit -> 
-                                    Some hit
-                                | None ->
-                                    intersect (RayPart(part.Ray, t, part.TMax)) l
+                    else (* t > part.TMax *)
+                        intersect part l
 
-                        elif t < part.TMin then
-                            intersect part l
+                elif dir < 0.0 then
+                    if t >= part.TMin && t <= part.TMax then
+                        match intersect (RayPart(part.Ray, part.TMin, t)) r with
+                        | Some hit -> Some hit
+                        | None -> intersect (RayPart(part.Ray, t, part.TMax)) l
 
-                        else (* t > part.TMax *)
-                            intersect part r
+                    elif t < part.TMin then
+                        intersect part l
 
-                    else
-                        let h = plane.Height part.Ray.Ray.Origin
-                        if h > 0.0 then intersect part r
-                        else intersect part l
+                    else (* t > part.TMax *)
+                        intersect part r
 
+                else
+                    let h = plane.Height part.Ray.Ray.Origin
+                    if h > 0.0 then intersect part r
+                    else intersect part l
+
+    let rec intersectV (tryIntersect : RayPart -> 'a -> RayHit<'r> voption) (data : 'a[]) (part : RayPart) (node : KdNode) =
+        if part.TMax < part.TMin then
+            ValueNone
+        else
+            match node with
+            | KdNode.Empty ->
+                ValueNone
+
+            | KdNode.Leaf indices ->
+                let hits = indices |> Array.chooseV (Array.get data >> tryIntersect part) |> Array.toList
+                match hits with
+                | [] -> ValueNone
+                | hits -> hits |> List.minBy _.T |> ValueSome
+
+            | KdNode.Node(plane, l, r) ->
+                let inline intersect p n = intersectV tryIntersect data p n
+                let mutable t = 0.0
+                let mutable p = V3d.Zero
+
+                let dir = Vec.dot part.Ray.Ray.Direction plane.Normal
+                part.Ray.Ray.Intersects(plane, &t, &p) |> ignore
+
+                if dir > 0.0 then
+                    if t >= part.TMin && t <= part.TMax then
+                        match intersect (RayPart(part.Ray, part.TMin, t)) l with
+                        | ValueSome hit -> ValueSome hit
+                        | _ -> intersect (RayPart(part.Ray, t, part.TMax)) r
+
+                    elif t < part.TMin then
+                        intersect part r
+
+                    else (* t > part.TMax *)
+                        intersect part l
+
+                elif dir < 0.0 then
+                    if t >= part.TMin && t <= part.TMax then
+                        match intersect (RayPart(part.Ray, part.TMin, t)) r with
+                        | ValueSome hit -> ValueSome hit
+                        | _ -> intersect (RayPart(part.Ray, t, part.TMax)) l
+
+                    elif t < part.TMin then
+                        intersect part l
+
+                    else (* t > part.TMax *)
+                        intersect part r
+
+                else
+                    let h = plane.Height part.Ray.Ray.Origin
+                    if h > 0.0 then intersect part r
+                    else intersect part l
 
 type KdTree<'a>(data : 'a[], root : KdNode, bounds : Box3d) =
     member x.Bounds = bounds
     member x.Data = data
     member x.Root = root
 
-    member x.Intersect(tryIntersect : RayPart -> 'a -> Option<RayHit<'r>>, ray : RayPart) : Option<RayHit<'r>> =
+    member x.Intersect(tryIntersect : RayPart -> 'a -> RayHit<'r> option, ray : RayPart) : RayHit<'r> option =
         let mutable ray = ray
         if ray.Ray.Intersects(bounds, &ray.TMin, &ray.TMax) then
             KdNode.intersect tryIntersect data ray root
         else
             None
+
+    member x.IntersectV(tryIntersect : RayPart -> 'a -> RayHit<'r> voption, ray : RayPart) : RayHit<'r> voption =
+        let mutable ray = ray
+        if ray.Ray.Intersects(bounds, &ray.TMin, &ray.TMax) then
+            KdNode.intersectV tryIntersect data ray root
+        else
+            ValueNone
 
     interface IRayIntersectable<'a> with
         member x.Intersect(tryIntersect, ray) = x.Intersect(tryIntersect, ray)
@@ -213,7 +260,7 @@ module KdTree =
 
     let inline bounds (tree : KdTree<'a>) =
         tree.Bounds
-        
+
     let inline root (tree : KdTree<'a>) =
         tree.Root
 
@@ -222,6 +269,9 @@ module KdTree =
 
     let inline build (spatial : Spatial<'a>) (info : KdBuildInfo) (data : 'a[]) =
         KdTree(spatial, info, data)
-            
-    let inline intersect (tryIntersect : RayPart -> 'a -> Option<RayHit<'r>>) (ray : RayPart) (tree : KdTree<'a>) =
+
+    let inline intersect (tryIntersect : RayPart -> 'a -> RayHit<'r> option) (ray : RayPart) (tree : KdTree<'a>) =
         tree.Intersect(tryIntersect, ray)
+
+    let inline intersectV (tryIntersect : RayPart -> 'a -> RayHit<'r> voption) (ray : RayPart) (tree : KdTree<'a>) =
+        tree.IntersectV(tryIntersect, ray)
