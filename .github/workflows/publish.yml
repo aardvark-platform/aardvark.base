@@ -22,6 +22,18 @@ jobs:
         run: dotnet tool restore
       - name: Restore
         run: dotnet paket restore
+      - name: Run forced code generation
+        shell: cmd
+        run: .\generate.cmd --force
+      - name: Fail on generated diffs
+        shell: pwsh
+        run: |
+          git diff --quiet -- src
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Generated files are out of date:"
+            git diff --name-only -- src
+            exit 1
+          }
       - name: Build
         shell: cmd
         run: dotnet build -c Release src\Aardvark.sln
