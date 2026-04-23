@@ -29,9 +29,25 @@ generate.cmd --force
 ```bash
 dotnet run --project src/CodeGenerator/CodeGenerator.csproj
 dotnet run --project src/CodeGenerator/CodeGenerator.csproj -- --force
+dotnet run --project src/CodeGenerator/CodeGenerator.csproj -- path/to/tasks.conf
 ```
 
 Both wrapper scripts forward additional CLI arguments to `CodeGenerator.dll`.
+
+### Using a `.conf` file
+
+When invoked with a single `.conf` argument, CodeGenerator reads one generation task per line:
+
+```text
+path/to/template_template.cs path/to/output_auto.cs
+path/to/other_template.fs path/to/other_auto.fs
+```
+
+Rules:
+- Each non-empty row must contain exactly two whitespace-separated paths: `<template> <output>`
+- Blank lines are ignored
+- Comment-only lines starting with `#` are ignored
+- Malformed rows fail with a clear error message and a nonzero exit code
 
 ## When to Run
 
@@ -225,4 +241,4 @@ public struct V3d
 - The generator is intentionally lightweight and uses reflection-based runtime generation to keep build times reasonable
 - Template syntax is C#-compatible; any valid C# expressions can be used in placeholders
 - Output files use "AUTO GENERATED CODE - DO NOT CHANGE!" header to signal automated generation
-- The generator is re-run on every build to ensure consistency with templates
+- The generator is run explicitly via `generate.sh`, `generate.cmd`, or direct `dotnet run` invocation when templates need regeneration
