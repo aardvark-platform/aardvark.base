@@ -106,11 +106,46 @@ module List =
 
 module Array =
 
+    let private toValueOption chooser value =
+        match chooser value with
+        | Some value -> ValueSome value
+        | None -> ValueNone
+
+    let private toIndexedValueOption chooser index value =
+        match chooser index value with
+        | Some value -> ValueSome value
+        | None -> ValueNone
+
+    [<Property>]
+    let ``[Array] chooseV`` (chooser: int -> int option) (data: int[]) =
+        let result =
+            data
+            |> Array.chooseV (toValueOption chooser)
+
+        let expected =
+            data
+            |> Array.choose chooser
+
+        result = expected
+
     [<Property>]
     let ``[Array] choosei`` (chooser: int -> int -> int option) (data: int[]) =
         let result =
             data
             |> Array.choosei chooser
+
+        let expected =
+            data
+            |> Seq.Ref.choosei chooser
+            |> Seq.toArray
+
+        result = expected
+
+    [<Property>]
+    let ``[Array] chooseiV`` (chooser: int -> int -> int option) (data: int[]) =
+        let result =
+            data
+            |> Array.chooseiV (toIndexedValueOption chooser)
 
         let expected =
             data
