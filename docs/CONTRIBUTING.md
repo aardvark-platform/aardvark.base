@@ -72,7 +72,7 @@ If you changed templates (`*_template.cs` / `*_template.fs`), regenerate:
 
 Do not edit generated `*_auto.cs` / `*_auto.fs` manually.
 The scripts forward generator CLI arguments, so `--force` can be used for a full regeneration pass.
-CI uses forced regeneration to detect stale generated files.
+CI uses forced regeneration in build and publish workflows to detect stale generated files before packages are produced.
 
 ## Dependency Management
 
