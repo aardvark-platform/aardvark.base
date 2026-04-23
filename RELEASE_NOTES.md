@@ -3,6 +3,7 @@
 - [Base] Fixed Dict.Contains(key, value) for collided entries in hash buckets
 - [PixImage] Improved reporting of inner exceptions thrown by loaders and processors
 - [FSharp] Added Array.chooseV and Array.chooseiV
+- [FSharp] Added Array.zipV and Array.unzipV
 
 ### 5.3.21
 - [Base] Simplified computation of Constant<T>.MachineEpsilon

@@ -554,6 +554,31 @@ module Prelude =
             if array.Length = 0 then ValueNone
             else ValueSome array.[array.Length - 1]
 
+        let unzipV (array: _ array) =
+            let len = array.Length
+            let res1 = Array.zeroCreate len
+            let res2 = Array.zeroCreate len
+
+            for i = 0 to array.Length - 1 do
+                let struct (x, y) = array.[i]
+                res1.[i] <- x
+                res2.[i] <- y
+
+            struct (res1, res2)
+
+        let zipV (array1: _ array) (array2: _ array) =
+            let len1 = array1.Length
+
+            if len1 <> array2.Length then
+                raise <| ArgumentException($"Arrays have different lengths (array1.Length = {array1.Length}, array2.Length = {array2.Length}).")
+
+            let res = Array.zeroCreate len1
+
+            for i = 0 to res.Length - 1 do
+                res.[i] <- struct (array1.[i], array2.[i])
+
+            res
+
         /// Computes the sum of the given array using the Kahan summation algorithm.
         let inline stableSumBy (projection: 'T -> float) (array: 'T[]) =
             let mutable sum = KahanSum.Zero
