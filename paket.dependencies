@@ -52,8 +52,8 @@ group Test
     nuget FsCheck.NUnit            ~> 2.16.6
     nuget NUnit3TestAdapter        ~> 4.5.0
     nuget Microsoft.NET.Test.Sdk   ~> 17.9.0
+    nuget coverlet.collector       ~> 6.0.2
     nuget Expecto                  ~> 10.2.1
     nuget Expecto.FsCheck          ~> 10.2.1
     nuget YoloDev.Expecto.TestSdk  ~> 0.14.3
-
     nuget BenchmarkDotNet          ~> 0.13.12

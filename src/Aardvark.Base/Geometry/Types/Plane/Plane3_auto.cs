@@ -300,6 +300,63 @@ namespace Aardvark.Base
             return new Plane3f(n1, Distance + trafo.Trans.Dot(n1));
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f Transformed(Similarity3f trafo)
+            => Transformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f Transformed(Affine3f trafo)
+            => Transformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f Transformed(Shift3f trafo)
+            => Transformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f Transformed(Rot3f trafo)
+            => Transformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f Transformed(Scale3f trafo)
+            => Transformed(new Trafo3f(trafo));
+
+        /// <summary>
+        /// Transforms the plane with the inverse of the given trafo using the inverse
+        /// transposed matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f InvTransformed(Trafo3f trafo)
+        {
+            return new Plane3f(
+                new V3f(
+                    trafo.Forward.M00 * Normal.X + trafo.Forward.M10 * Normal.Y + trafo.Forward.M20 * Normal.Z - trafo.Forward.M30 * Distance,
+                    trafo.Forward.M01 * Normal.X + trafo.Forward.M11 * Normal.Y + trafo.Forward.M21 * Normal.Z - trafo.Forward.M31 * Distance,
+                    trafo.Forward.M02 * Normal.X + trafo.Forward.M12 * Normal.Y + trafo.Forward.M22 * Normal.Z - trafo.Forward.M32 * Distance
+                ),
+                trafo.Forward.M33 * Distance - trafo.Forward.M03 * Normal.X - trafo.Forward.M13 * Normal.Y - trafo.Forward.M23 * Normal.Z
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f InvTransformed(Euclidean3f trafo)
+            => InvTransformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f InvTransformed(Similarity3f trafo)
+            => InvTransformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f InvTransformed(Shift3f trafo)
+            => InvTransformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f InvTransformed(Rot3f trafo)
+            => InvTransformed(new Trafo3f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3f InvTransformed(Scale3f trafo)
+            => InvTransformed(new Trafo3f(trafo));
+
         #endregion
 
         #region Operators
@@ -1210,6 +1267,63 @@ namespace Aardvark.Base
             var n1 = trafo.TransformDir(Normal);
             return new Plane3d(n1, Distance + trafo.Trans.Dot(n1));
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d Transformed(Similarity3d trafo)
+            => Transformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d Transformed(Affine3d trafo)
+            => Transformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d Transformed(Shift3d trafo)
+            => Transformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d Transformed(Rot3d trafo)
+            => Transformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d Transformed(Scale3d trafo)
+            => Transformed(new Trafo3d(trafo));
+
+        /// <summary>
+        /// Transforms the plane with the inverse of the given trafo using the inverse
+        /// transposed matrix.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d InvTransformed(Trafo3d trafo)
+        {
+            return new Plane3d(
+                new V3d(
+                    trafo.Forward.M00 * Normal.X + trafo.Forward.M10 * Normal.Y + trafo.Forward.M20 * Normal.Z - trafo.Forward.M30 * Distance,
+                    trafo.Forward.M01 * Normal.X + trafo.Forward.M11 * Normal.Y + trafo.Forward.M21 * Normal.Z - trafo.Forward.M31 * Distance,
+                    trafo.Forward.M02 * Normal.X + trafo.Forward.M12 * Normal.Y + trafo.Forward.M22 * Normal.Z - trafo.Forward.M32 * Distance
+                ),
+                trafo.Forward.M33 * Distance - trafo.Forward.M03 * Normal.X - trafo.Forward.M13 * Normal.Y - trafo.Forward.M23 * Normal.Z
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d InvTransformed(Euclidean3d trafo)
+            => InvTransformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d InvTransformed(Similarity3d trafo)
+            => InvTransformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d InvTransformed(Shift3d trafo)
+            => InvTransformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d InvTransformed(Rot3d trafo)
+            => InvTransformed(new Trafo3d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Plane3d InvTransformed(Scale3d trafo)
+            => InvTransformed(new Trafo3d(trafo));
 
         #endregion
 

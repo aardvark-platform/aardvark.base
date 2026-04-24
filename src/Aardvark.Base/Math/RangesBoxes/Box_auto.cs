@@ -11664,6 +11664,78 @@ namespace Aardvark.Base
             return Transformed(trafo.Forward);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Euclidean2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Similarity2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Affine2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Shift2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Rot2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Scale2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Trafo2d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Euclidean2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Similarity2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Shift2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Rot2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Scale2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
         #endregion
 
         #region Corners
@@ -13230,6 +13302,78 @@ namespace Aardvark.Base
         public readonly Box2d Transformed(Trafo2d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Euclidean2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Similarity2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Affine2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Shift2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Rot2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Scale2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Trafo2d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Euclidean2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Similarity2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Shift2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Rot2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Scale2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
         }
 
         #endregion
@@ -14864,6 +15008,78 @@ namespace Aardvark.Base
             return Transformed(trafo.Forward);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Euclidean2f trafo)
+        {
+            return Transformed((M33f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Similarity2f trafo)
+        {
+            return Transformed((M33f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Affine2f trafo)
+        {
+            return Transformed((M33f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Shift2f trafo)
+        {
+            return Transformed((M33f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Rot2f trafo)
+        {
+            return Transformed((M33f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Scale2f trafo)
+        {
+            return Transformed((M33f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Trafo2f trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Euclidean2f trafo)
+        {
+            return Transformed((M33f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Similarity2f trafo)
+        {
+            return Transformed((M33f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Shift2f trafo)
+        {
+            return Transformed((M33f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Rot2f trafo)
+        {
+            return Transformed((M33f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Scale2f trafo)
+        {
+            return Transformed((M33f)trafo.Inverse);
+        }
+
         #endregion
 
         #region Corners
@@ -16485,6 +16701,78 @@ namespace Aardvark.Base
             return Transformed(trafo.Forward);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Euclidean2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Similarity2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Affine2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Shift2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Rot2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Scale2d trafo)
+        {
+            return Transformed((M33d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Trafo2d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Euclidean2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Similarity2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Shift2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Rot2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Scale2d trafo)
+        {
+            return Transformed((M33d)trafo.Inverse);
+        }
+
         #endregion
 
         #region Corners
@@ -18008,6 +18296,78 @@ namespace Aardvark.Base
         public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Euclidean3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Similarity3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Affine3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Shift3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Rot3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Scale3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Trafo3d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Euclidean3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Similarity3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Shift3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Rot3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Scale3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
         }
 
         #endregion
@@ -19933,6 +20293,78 @@ namespace Aardvark.Base
         public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Euclidean3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Similarity3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Affine3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Shift3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Rot3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Scale3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Trafo3d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Euclidean3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Similarity3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Shift3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Rot3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Scale3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
         }
 
         #endregion
@@ -21926,6 +22358,78 @@ namespace Aardvark.Base
             return Transformed(trafo.Forward);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Euclidean3f trafo)
+        {
+            return Transformed((M44f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Similarity3f trafo)
+        {
+            return Transformed((M44f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Affine3f trafo)
+        {
+            return Transformed((M44f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Shift3f trafo)
+        {
+            return Transformed((M44f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Rot3f trafo)
+        {
+            return Transformed((M44f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Scale3f trafo)
+        {
+            return Transformed((M44f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Trafo3f trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Euclidean3f trafo)
+        {
+            return Transformed((M44f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Similarity3f trafo)
+        {
+            return Transformed((M44f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Shift3f trafo)
+        {
+            return Transformed((M44f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Rot3f trafo)
+        {
+            return Transformed((M44f)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Scale3f trafo)
+        {
+            return Transformed((M44f)trafo.Inverse);
+        }
+
         #endregion
 
         #region Corners
@@ -23903,6 +24407,78 @@ namespace Aardvark.Base
         public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Euclidean3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Similarity3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Affine3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Shift3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Rot3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Scale3d trafo)
+        {
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Trafo3d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Euclidean3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Similarity3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Shift3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Rot3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Scale3d trafo)
+        {
+            return Transformed((M44d)trafo.Inverse);
         }
 
         #endregion

@@ -120,6 +120,30 @@ namespace Aardvark.Base
             => new(mat.TransformPos(Origin), mat.TransformDir(Direction));
 
         /// <summary>
+        /// Returns the ray transformed with the given <see cref="Trafo3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3f Transformed(Trafo3f transform)
+        {
+            var m = transform.Forward;
+            var o = Origin;
+            var d = Direction;
+
+            return new Ray3f(
+                new V3f(
+                    m.M00 * o.X + m.M01 * o.Y + m.M02 * o.Z + m.M03,
+                    m.M10 * o.X + m.M11 * o.Y + m.M12 * o.Z + m.M13,
+                    m.M20 * o.X + m.M21 * o.Y + m.M22 * o.Z + m.M23
+                ),
+                new V3f(
+                    m.M00 * d.X + m.M01 * d.Y + m.M02 * d.Z,
+                    m.M10 * d.X + m.M11 * d.Y + m.M12 * d.Z,
+                    m.M20 * d.X + m.M21 * d.Y + m.M22 * d.Z
+                )
+            );
+        }
+
+        /// <summary>
         /// Returns the ray transformed with the given <see cref="Rot3f"/> transformation.
         /// </summary>
         public readonly Ray3f Transformed(Rot3f transform)
@@ -154,6 +178,65 @@ namespace Aardvark.Base
         /// </summary>
         public readonly Ray3f Transformed(Affine3f transform)
             => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Trafo3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3f InvTransformed(Trafo3f transform)
+        {
+            var m = transform.Backward;
+            var o = Origin;
+            var d = Direction;
+
+            return new Ray3f(
+                new V3f(
+                    m.M00 * o.X + m.M01 * o.Y + m.M02 * o.Z + m.M03,
+                    m.M10 * o.X + m.M11 * o.Y + m.M12 * o.Z + m.M13,
+                    m.M20 * o.X + m.M21 * o.Y + m.M22 * o.Z + m.M23
+                ),
+                new V3f(
+                    m.M00 * d.X + m.M01 * d.Y + m.M02 * d.Z,
+                    m.M10 * d.X + m.M11 * d.Y + m.M12 * d.Z,
+                    m.M20 * d.X + m.M21 * d.Y + m.M22 * d.Z
+                )
+            );
+        }
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Euclidean3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3f InvTransformed(Euclidean3f transform)
+            => new(transform.InvTransformPos(Origin), transform.InvTransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Similarity3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3f InvTransformed(Similarity3f transform)
+            => new(transform.InvTransformPos(Origin), transform.InvTransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Shift3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3f InvTransformed(Shift3f transform)
+            => new(transform.Inverse.Transform(Origin), Direction);
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Rot3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3f InvTransformed(Rot3f transform)
+            => new(transform.InvTransform(Origin), transform.InvTransform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Scale3f"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3f InvTransformed(Scale3f transform)
+            => new(transform.InvTransform(Origin), transform.InvTransform(Direction));
 
         /// <summary>
         /// Returns the angle between this and the given <see cref="Ray3f"/> in radians.
@@ -1884,6 +1967,30 @@ namespace Aardvark.Base
             => new(mat.TransformPos(Origin), mat.TransformDir(Direction));
 
         /// <summary>
+        /// Returns the ray transformed with the given <see cref="Trafo3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3d Transformed(Trafo3d transform)
+        {
+            var m = transform.Forward;
+            var o = Origin;
+            var d = Direction;
+
+            return new Ray3d(
+                new V3d(
+                    m.M00 * o.X + m.M01 * o.Y + m.M02 * o.Z + m.M03,
+                    m.M10 * o.X + m.M11 * o.Y + m.M12 * o.Z + m.M13,
+                    m.M20 * o.X + m.M21 * o.Y + m.M22 * o.Z + m.M23
+                ),
+                new V3d(
+                    m.M00 * d.X + m.M01 * d.Y + m.M02 * d.Z,
+                    m.M10 * d.X + m.M11 * d.Y + m.M12 * d.Z,
+                    m.M20 * d.X + m.M21 * d.Y + m.M22 * d.Z
+                )
+            );
+        }
+
+        /// <summary>
         /// Returns the ray transformed with the given <see cref="Rot3d"/> transformation.
         /// </summary>
         public readonly Ray3d Transformed(Rot3d transform)
@@ -1918,6 +2025,65 @@ namespace Aardvark.Base
         /// </summary>
         public readonly Ray3d Transformed(Affine3d transform)
             => new(transform.TransformPos(Origin), transform.TransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Trafo3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3d InvTransformed(Trafo3d transform)
+        {
+            var m = transform.Backward;
+            var o = Origin;
+            var d = Direction;
+
+            return new Ray3d(
+                new V3d(
+                    m.M00 * o.X + m.M01 * o.Y + m.M02 * o.Z + m.M03,
+                    m.M10 * o.X + m.M11 * o.Y + m.M12 * o.Z + m.M13,
+                    m.M20 * o.X + m.M21 * o.Y + m.M22 * o.Z + m.M23
+                ),
+                new V3d(
+                    m.M00 * d.X + m.M01 * d.Y + m.M02 * d.Z,
+                    m.M10 * d.X + m.M11 * d.Y + m.M12 * d.Z,
+                    m.M20 * d.X + m.M21 * d.Y + m.M22 * d.Z
+                )
+            );
+        }
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Euclidean3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3d InvTransformed(Euclidean3d transform)
+            => new(transform.InvTransformPos(Origin), transform.InvTransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Similarity3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3d InvTransformed(Similarity3d transform)
+            => new(transform.InvTransformPos(Origin), transform.InvTransformDir(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Shift3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3d InvTransformed(Shift3d transform)
+            => new(transform.Inverse.Transform(Origin), Direction);
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Rot3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3d InvTransformed(Rot3d transform)
+            => new(transform.InvTransform(Origin), transform.InvTransform(Direction));
+
+        /// <summary>
+        /// Returns the ray transformed with the inverse of the given <see cref="Scale3d"/> transformation.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Ray3d InvTransformed(Scale3d transform)
+            => new(transform.InvTransform(Origin), transform.InvTransform(Direction));
 
         /// <summary>
         /// Returns the angle between this and the given <see cref="Ray3d"/> in radians.
