@@ -1750,6 +1750,78 @@ namespace Aardvark.Base
         {
             return Transformed(trafo.Forward);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Euclidean__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Similarity__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Affine__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Shift__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Rot__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Scale__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Trafo__dim____tc__ trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Euclidean__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Similarity__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Shift__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Rot__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo.Inverse);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Scale__dim____tc__ trafo)
+        {
+            return Transformed((M__dplus1____dplus1____tc__)trafo.Inverse);
+        }
         //# }
 
         #endregion

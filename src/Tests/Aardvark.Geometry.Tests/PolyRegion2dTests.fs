@@ -7,6 +7,21 @@ open Aardvark.Base
 open Aardvark.Geometry
 
 module PolyRegion2dTests =
+
+    let private assertRegionEqual (name : string) (actual : PolyRegion) (expected : Polygon2d list) =
+        actual.Polygons.Length |> should equal expected.Length
+
+        (actual.Polygons, expected)
+        ||> List.iter2 (fun a e ->
+            let actualPoints = a.Points |> Seq.toArray
+            let expectedPoints = e.Points |> Seq.toArray
+            actualPoints.Length |> should equal expectedPoints.Length
+
+            (actualPoints, expectedPoints)
+            ||> Array.iter2 (fun ap ep ->
+                ap.ApproximateEquals(ep, 1e-10) |> should equal true
+            )
+        )
     
     [<Test>]
     let ``Subtract small from large PolyRegion``() =
@@ -84,3 +99,32 @@ module PolyRegion2dTests =
         let p2 = PolyRegion.ofArray([|V2d(1.0,1.0);V2d(-1.0,1.0);V2d(-1.0,-1.0);V2d(1.0,-1.0)|])
         
         p1 |> PolyRegion.containsRegion p2 |> should equal true
+
+    [<Test>]
+    let ``PolyRegion inverse transforms mirror polygon inverse transforms`` () =
+        let region =
+            PolyRegion.ofList [
+                V2d(-2.0, -1.0)
+                V2d(3.0, -1.0)
+                V2d(3.0, 2.0)
+                V2d(-2.0, 2.0)
+            ]
+
+        let euclidean = Euclidean2d(Rot2d.FromDegrees(17.0), V2d(2.5, -1.75))
+        let similarity = Similarity2d(1.35, Rot2d.FromDegrees(-21.0), V2d(-3.0, 4.25))
+        let shift = Shift2d(3.5, -1.25)
+        let rotation = Rot2d.FromDegrees(37.0)
+        let scale = Scale2d(1.5, 0.8)
+
+        let cases : (string * PolyRegion * Polygon2d list * PolyRegion) list =
+            [
+                "Euclidean2d", region.InvTransformed euclidean, region.Polygons |> List.map (fun p -> p.InvTransformed euclidean), PolyRegion.invTransformedEuclidean euclidean region
+                "Similarity2d", region.InvTransformed similarity, region.Polygons |> List.map (fun p -> p.InvTransformed similarity), PolyRegion.invTransformedSimilarity similarity region
+                "Shift2d", region.InvTransformed shift, region.Polygons |> List.map (fun p -> p.InvTransformed shift), PolyRegion.invTransformedShift shift region
+                "Rot2d", region.InvTransformed rotation, region.Polygons |> List.map (fun p -> p.InvTransformed rotation), PolyRegion.invTransformedRot rotation region
+                "Scale2d", region.InvTransformed scale, region.Polygons |> List.map (fun p -> p.InvTransformed scale), PolyRegion.invTransformedScale scale region
+            ]
+
+        for (name, actual, expected, helperResult) in cases do
+            assertRegionEqual $"{name} instance overload" actual expected
+            assertRegionEqual $"{name} module helper" helperResult expected

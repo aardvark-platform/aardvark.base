@@ -72,6 +72,12 @@ namespace Aardvark.Base
     //#   var v3t = "V3" + tc;
     //#   var box3t = "Box3" + tc;
     //#   var plane3t = "Plane3" + tc;
+    //#   var affine3t = "Affine3" + tc;
+    //#   var euclidean3t = "Euclidean3" + tc;
+    //#   var rot3t = "Rot3" + tc;
+    //#   var scale3t = "Scale3" + tc;
+    //#   var shift3t = "Shift3" + tc;
+    //#   var similarity3t = "Similarity3" + tc;
     //#   var trafo3t = "Trafo3" + tc;
     //#   var iboundingbox = "IBoundingBox3" + tc;
     //#   var half = isDouble ? "0.5" : "0.5f";
@@ -252,6 +258,63 @@ namespace Aardvark.Base
             return hull;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__euclidean3t__ trafo)
+            => Transformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__similarity3t__ trafo)
+            => Transformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__affine3t__ trafo)
+            => Transformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__shift3t__ trafo)
+            => Transformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__rot3t__ trafo)
+            => Transformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__scale3t__ trafo)
+            => Transformed(new __trafo3t__(trafo));
+
+        public readonly __type__ InvTransformed(__trafo3t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(count);
+            var invTr = trafo.Forward.Transposed;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i]
+                    = new __plane3t__(
+                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
+                            trafo.Backward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__euclidean3t__ trafo)
+            => InvTransformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__similarity3t__ trafo)
+            => InvTransformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__shift3t__ trafo)
+            => InvTransformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__rot3t__ trafo)
+            => InvTransformed(new __trafo3t__(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__scale3t__ trafo)
+            => InvTransformed(new __trafo3t__(trafo));
+
         public readonly void TransformInto(__trafo3t__ trafo, ref __type__ hull)
         {
             int count = PlaneCount;
@@ -402,16 +465,57 @@ namespace Aardvark.Base
 
         #region Transformations
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Fast__type__ Transformed(__trafo3t__ trafo)
-        {
-            var newFastHull = new Fast__type__()
-            {
-                Hull = this.Hull.Transformed(trafo)
-            };
-            newFastHull.MinCornerIndexArray =
-                ComputeMinCornerIndexArray(newFastHull.Hull.PlaneArray);
-            return newFastHull;
-        }
+            => new Fast__type__(Hull.Transformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ Transformed(__euclidean3t__ trafo)
+            => new Fast__type__(Hull.Transformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ Transformed(__similarity3t__ trafo)
+            => new Fast__type__(Hull.Transformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ Transformed(__affine3t__ trafo)
+            => new Fast__type__(Hull.Transformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ Transformed(__shift3t__ trafo)
+            => new Fast__type__(Hull.Transformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ Transformed(__rot3t__ trafo)
+            => new Fast__type__(Hull.Transformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ Transformed(__scale3t__ trafo)
+            => new Fast__type__(Hull.Transformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ InvTransformed(__trafo3t__ trafo)
+            => new Fast__type__(Hull.InvTransformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ InvTransformed(__euclidean3t__ trafo)
+            => new Fast__type__(Hull.InvTransformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ InvTransformed(__similarity3t__ trafo)
+            => new Fast__type__(Hull.InvTransformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ InvTransformed(__shift3t__ trafo)
+            => new Fast__type__(Hull.InvTransformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ InvTransformed(__rot3t__ trafo)
+            => new Fast__type__(Hull.InvTransformed(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Fast__type__ InvTransformed(__scale3t__ trafo)
+            => new Fast__type__(Hull.InvTransformed(trafo));
 
         public readonly void TransformInto(__trafo3t__ trafo, ref Fast__type__ fastHull)
         {

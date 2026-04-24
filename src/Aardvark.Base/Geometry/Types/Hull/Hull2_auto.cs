@@ -170,6 +170,63 @@ namespace Aardvark.Base
             return hull;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Euclidean2f trafo)
+            => Transformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Similarity2f trafo)
+            => Transformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Affine2f trafo)
+            => Transformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Shift2f trafo)
+            => Transformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Rot2f trafo)
+            => Transformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Scale2f trafo)
+            => Transformed(new Trafo2f(trafo));
+
+        public readonly Hull2f InvTransformed(Trafo2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var invTr = trafo.Forward.Transposed;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i]
+                    = new Plane2f(
+                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
+                            trafo.Backward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Euclidean2f trafo)
+            => InvTransformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Similarity2f trafo)
+            => InvTransformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Shift2f trafo)
+            => InvTransformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Rot2f trafo)
+            => InvTransformed(new Trafo2f(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Scale2f trafo)
+            => InvTransformed(new Trafo2f(trafo));
+
         public readonly void TransformInto(Trafo2f trafo, ref Hull2f hull)
         {
             int count = PlaneCount;
@@ -424,6 +481,63 @@ namespace Aardvark.Base
                             trafo.Forward.TransformPos(PlaneArray[i].Point));
             return hull;
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Euclidean2d trafo)
+            => Transformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Similarity2d trafo)
+            => Transformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Affine2d trafo)
+            => Transformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Shift2d trafo)
+            => Transformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Rot2d trafo)
+            => Transformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Scale2d trafo)
+            => Transformed(new Trafo2d(trafo));
+
+        public readonly Hull2d InvTransformed(Trafo2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var invTr = trafo.Forward.Transposed;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i]
+                    = new Plane2d(
+                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
+                            trafo.Backward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Euclidean2d trafo)
+            => InvTransformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Similarity2d trafo)
+            => InvTransformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Shift2d trafo)
+            => InvTransformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Rot2d trafo)
+            => InvTransformed(new Trafo2d(trafo));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Scale2d trafo)
+            => InvTransformed(new Trafo2d(trafo));
 
         public readonly void TransformInto(Trafo2d trafo, ref Hull2d hull)
         {

@@ -41,6 +41,17 @@ When crossing APIs that use transposed conventions, use:
 
 Do not assume identical handedness or memory/algebra conventions across systems.
 
+## Geometry Transform Overloads
+
+For the geometry value types touched by issue 57, the canonical transform semantics are:
+
+- boxes stay matrix-based for axis-aligned bounds computation; convenience overloads on `Trafo*`, `Euclidean*`, `Similarity*`, `Affine*`, `Shift*`, `Rot*`, and `Scale*` delegate into the matrix path
+- hulls and planes stay `Trafo*`-based because correctness depends on inverse-transpose normal handling
+- rays use position-vs-direction aware transform helpers directly (`TransformPos`/`TransformDir`, `InvTransformPos`/`InvTransformDir`)
+- inverse convenience APIs are intentionally available on the touched types for `Trafo*`, `Euclidean*`, `Similarity*`, `Shift*`, `Rot*`, and `Scale*`; raw matrices remain forward-only convenience APIs
+
+There is no `Rigid2d`/`Rigid3d` public transform type in this repo. Use `Euclidean2d`/`Euclidean3d` instead when mapping older issue text to the current API.
+
 ## Geodesy Units (Geo)
 
 `Geo.XyzFromLonLatHeight` and `Geo.LonLatHeightFromXyz` use:
