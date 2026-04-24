@@ -85,6 +85,216 @@ namespace Aardvark.Tests.Geometry
         }
 
         [Test]
+        public void Box2InvalidLinearInverseOverloadsRemainInvalid()
+        {
+            var invalidInt = Box2i.Invalid;
+            var infiniteInt = Box2i.Infinite;
+            var crossedIntX = new Box2i(new V2i(2, -1), new V2i(1, 3));
+            var crossedIntY = new Box2i(new V2i(-1, 3), new V2i(2, 1));
+            var validInt = new Box2i(new V2i(-2, -1), new V2i(3, 4));
+            var crossedX = new Box2d(new V2d(2.0, -1.0), new V2d(1.0, 3.0));
+            var crossedY = new Box2d(new V2d(-1.0, 3.0), new V2d(2.0, 1.0));
+            var affine = new Affine2d(new M22d(1.2, 0.35, -0.2, 0.9), new V2d(5.0, -2.0));
+
+            Assert.That(invalidInt.InvTransformed(Rot2d.FromDegrees(17.0)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(invalidInt.InvTransformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.InvTransformed(Rot2d.FromDegrees(17.0)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.InvTransformed(new Euclidean2d(Rot2d.FromDegrees(17.0), new V2d(2.5, -1.75))), Is.EqualTo(Box2d.Invalid));
+            Assert.That(invalidInt.Transformed(new Euclidean2d(Rot2d.FromDegrees(17.0), new V2d(2.5, -1.75))), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.Transformed(new Euclidean2d(Rot2d.FromDegrees(17.0), new V2d(2.5, -1.75))), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.Transformed(new Euclidean2d(Rot2d.FromDegrees(17.0), new V2d(2.5, -1.75))), Is.EqualTo(Box2d.Invalid));
+            Assert.That(invalidInt.Transformed(new Similarity2d(-0.65, Rot2d.FromDegrees(-21.0), new V2d(-3.0, 4.25))), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.Transformed(new Similarity2d(-0.65, Rot2d.FromDegrees(-21.0), new V2d(-3.0, 4.25))), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.Transformed(new Similarity2d(-0.65, Rot2d.FromDegrees(-21.0), new V2d(-3.0, 4.25))), Is.EqualTo(Box2d.Invalid));
+            Assert.That(invalidInt.Transformed(affine), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.Transformed(affine), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.Transformed(affine), Is.EqualTo(Box2d.Invalid));
+            Assert.That(invalidInt.Transformed(new Shift2d(3.5, -1.25)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.Transformed(new Shift2d(3.5, -1.25)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.Transformed(new Shift2d(3.5, -1.25)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(invalidInt.Transformed(Rot2d.FromDegrees(17.0)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.Transformed(Rot2d.FromDegrees(17.0)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.Transformed(Rot2d.FromDegrees(17.0)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(invalidInt.Transformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.Transformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.Transformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+            AssertBoxesEquivalent(
+                validInt.Transformed(new Euclidean2d(Rot2d.FromDegrees(137.0), new V2d(2.5, -1.75))),
+                validInt.Transformed((M33d)new Euclidean2d(Rot2d.FromDegrees(137.0), new V2d(2.5, -1.75))),
+                "Box2i.Transformed(Euclidean2d negative cosine)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(new Euclidean2d(Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75))),
+                validInt.Transformed((M33d)new Euclidean2d(Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75))),
+                "Box2i.Transformed(Euclidean2d positive sine)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(new Similarity2d(1.25, Rot2d.FromDegrees(137.0), new V2d(2.5, -1.75))),
+                validInt.Transformed((M33d)new Similarity2d(1.25, Rot2d.FromDegrees(137.0), new V2d(2.5, -1.75))),
+                "Box2i.Transformed(Similarity2d positive scale)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(new Similarity2d(1.25, Rot2d.FromDegrees(17.0), new V2d(2.5, -1.75))),
+                validInt.Transformed((M33d)new Similarity2d(1.25, Rot2d.FromDegrees(17.0), new V2d(2.5, -1.75))),
+                "Box2i.Transformed(Similarity2d positive cosine)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(new Similarity2d(1.25, Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75))),
+                validInt.Transformed((M33d)new Similarity2d(1.25, Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75))),
+                "Box2i.Transformed(Similarity2d positive sine)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(new Similarity2d(-1.25, Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75))),
+                validInt.Transformed((M33d)new Similarity2d(-1.25, Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75))),
+                "Box2i.Transformed(Similarity2d negative scale)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(Rot2d.FromDegrees(137.0)),
+                validInt.Transformed((M33d)Rot2d.FromDegrees(137.0)),
+                "Box2i.Transformed(Rot2d negative cosine)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(Rot2d.FromDegrees(-17.0)),
+                validInt.Transformed((M33d)Rot2d.FromDegrees(-17.0)),
+                "Box2i.Transformed(Rot2d positive sine)");
+            AssertBoxesEquivalent(
+                validInt.Transformed(new Scale2d(1.5, -0.8)),
+                validInt.Transformed((M33d)new Scale2d(1.5, -0.8)),
+                "Box2i.Transformed(Scale2d negative Y)");
+            AssertBoxesEquivalent(
+                infiniteInt.Transformed(affine),
+                infiniteInt.Transformed((M33d)affine),
+                "Box2i.Transformed(Affine2d infinite fallback)");
+            AssertBoxesEquivalent(
+                validInt.InvTransformed(Rot2d.FromDegrees(-17.0)),
+                validInt.Transformed(((M33d)Rot2d.FromDegrees(-17.0)).Inverse),
+                "Box2i.InvTransformed(Rot2d negative angle)");
+            AssertBoxesEquivalent(
+                validInt.InvTransformed(new Scale2d(1.5, -0.8)),
+                validInt.Transformed(((M33d)new Scale2d(1.5, -0.8)).Inverse),
+                "Box2i.InvTransformed(Scale2d negative Y)");
+            Assert.That(invalidInt.InvTransformed(new Shift2d(3.5, -1.25)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.InvTransformed(new Shift2d(3.5, -1.25)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.InvTransformed(new Shift2d(3.5, -1.25)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntX.InvTransformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedIntY.InvTransformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(Box2d.Invalid.InvTransformed(Rot2d.FromDegrees(17.0)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(Box2d.Invalid.InvTransformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedX.InvTransformed(Rot2d.FromDegrees(17.0)), Is.EqualTo(Box2d.Invalid));
+            Assert.That(crossedY.InvTransformed(new Scale2d(-1.5, 0.8)), Is.EqualTo(Box2d.Invalid));
+        }
+
+        [Test]
+        public void Box2DirectControlFlowCoverageCoversAllNumericKinds()
+        {
+            foreach (var boxType in BoxSamples.Select(static b => b.GetType()).Where(static t => t.Name.StartsWith("Box2", StringComparison.Ordinal)))
+            {
+                var valid = CreateValidBox2(boxType);
+                var invalid = GetStaticPropertyValue(boxType, "Invalid");
+                var infinite = GetStaticPropertyValue(boxType, "Infinite");
+                var crossedX = CreateCrossedBox2(boxType, crossX: true);
+                var crossedY = CreateCrossedBox2(boxType, crossX: false);
+                var invalidCandidates = new[] { invalid, crossedX, crossedY };
+
+                foreach (var transformType in GetBoxForwardTransformTypes(boxType))
+                {
+                    var transform = TransformSamples[transformType];
+                    var returnType = boxType.GetMethod(nameof(Box3d.Transformed), new[] { transformType })!.ReturnType;
+                    var expectedInvalid = GetStaticPropertyValue(returnType, "Invalid");
+
+                    foreach (var candidate in invalidCandidates)
+                    {
+                        var actual = InvokeInstance(candidate, nameof(Box3d.Transformed), transform);
+                        AssertBoxesEquivalent(actual, expectedInvalid, $"{boxType.Name}.Transformed({transformType.Name}) invalid");
+                    }
+                }
+
+                foreach (var transformType in GetBoxInverseTransformTypes(boxType))
+                {
+                    var transform = TransformSamples[transformType];
+                    var returnType = boxType.GetMethod("InvTransformed", new[] { transformType })!.ReturnType;
+                    var expectedInvalid = GetStaticPropertyValue(returnType, "Invalid");
+
+                    foreach (var candidate in invalidCandidates)
+                    {
+                        var actual = InvokeInstance(candidate, "InvTransformed", transform);
+                        AssertBoxesEquivalent(actual, expectedInvalid, $"{boxType.Name}.InvTransformed({transformType.Name}) invalid");
+                    }
+                }
+
+                var affine = GetAffine2CoverageTransform(boxType);
+                var affineMethod = boxType.GetMethod(nameof(Box3d.Transformed), new[] { affine.GetType() })!;
+                var infiniteActual = InvokeInstance(infinite, nameof(Box3d.Transformed), affine);
+                Assert.That(infiniteActual.GetType(), Is.EqualTo(affineMethod.ReturnType), $"{boxType.Name}.Transformed(Affine2*) infinite");
+
+                foreach (var transform in GetAdditionalBox2ForwardCoverageTransforms(boxType))
+                {
+                    AssertBoxesEquivalent(
+                        InvokeInstance(valid, nameof(Box3d.Transformed), transform),
+                        InvokeInstance(valid, nameof(Box3d.Transformed), ToForwardMatrix(transform)),
+                        $"{boxType.Name}.Transformed({transform.GetType().Name}) sign coverage");
+                }
+
+                foreach (var transform in GetAdditionalBox2InverseCoverageTransforms(boxType))
+                {
+                    AssertBoxesEquivalent(
+                        InvokeInstance(valid, "InvTransformed", transform),
+                        InvokeInstance(valid, nameof(Box3d.Transformed), ToInverseMatrix(transform)),
+                        $"{boxType.Name}.InvTransformed({transform.GetType().Name}) sign coverage");
+                }
+            }
+        }
+
+        [Test]
+        public void Box3DirectControlFlowCoverageCoversAllNumericKinds()
+        {
+            foreach (var boxType in BoxSamples.Select(static b => b.GetType()).Where(static t => t.Name.StartsWith("Box3", StringComparison.Ordinal)))
+            {
+                var valid = CreateValidBox3(boxType);
+                var invalid = GetStaticPropertyValue(boxType, "Invalid");
+                var crossedX = CreateCrossedBox3(boxType, 0);
+                var crossedY = CreateCrossedBox3(boxType, 1);
+                var crossedZ = CreateCrossedBox3(boxType, 2);
+                var invalidCandidates = new[] { invalid, crossedX, crossedY, crossedZ };
+
+                foreach (var transformType in GetBoxForwardTransformTypes(boxType))
+                {
+                    var transform = TransformSamples[transformType];
+                    var returnType = boxType.GetMethod(nameof(Box3d.Transformed), new[] { transformType })!.ReturnType;
+                    var expectedInvalid = GetStaticPropertyValue(returnType, "Invalid");
+
+                    foreach (var candidate in invalidCandidates)
+                    {
+                        var actual = InvokeInstance(candidate, nameof(Box3d.Transformed), transform);
+                        AssertBoxesEquivalent(actual, expectedInvalid, $"{boxType.Name}.Transformed({transformType.Name}) invalid");
+                    }
+                }
+
+                foreach (var transformType in GetBoxInverseTransformTypes(boxType))
+                {
+                    var transform = TransformSamples[transformType];
+                    var returnType = boxType.GetMethod("InvTransformed", new[] { transformType })!.ReturnType;
+                    var expectedInvalid = GetStaticPropertyValue(returnType, "Invalid");
+
+                    foreach (var candidate in invalidCandidates)
+                    {
+                        var actual = InvokeInstance(candidate, "InvTransformed", transform);
+                        AssertBoxesEquivalent(actual, expectedInvalid, $"{boxType.Name}.InvTransformed({transformType.Name}) invalid");
+                    }
+                }
+
+                foreach (var transform in GetAdditionalBox3ForwardCoverageTransforms(boxType))
+                {
+                    AssertBoxesEquivalent(
+                        InvokeInstance(valid, nameof(Box3d.Transformed), transform),
+                        InvokeInstance(valid, nameof(Box3d.Transformed), ToForwardMatrix(transform)),
+                        $"{boxType.Name}.Transformed({transform.GetType().Name}) sign coverage");
+                }
+
+                foreach (var transform in GetAdditionalBox3InverseCoverageTransforms(boxType))
+                {
+                    AssertBoxesEquivalent(
+                        InvokeInstance(valid, "InvTransformed", transform),
+                        InvokeInstance(valid, nameof(Box3d.Transformed), ToInverseMatrix(transform)),
+                        $"{boxType.Name}.InvTransformed({transform.GetType().Name}) sign coverage");
+                }
+            }
+        }
+
+        [Test]
         public void HullForwardOverloadsMatchTrafoPath()
         {
             foreach (var hull in Hull2Samples.Concat(Hull3Samples))
@@ -235,14 +445,14 @@ namespace Aardvark.Tests.Geometry
             var rot2f = Rot2f.FromDegrees(37.0f);
             var euclidean2d = new Euclidean2d(rot2d, new V2d(2.5, -1.75));
             var euclidean2f = new Euclidean2f(rot2f, new V2f(2.5f, -1.75f));
-            var similarity2d = new Similarity2d(1.35, Rot2d.FromDegrees(-21.0), new V2d(-3.0, 4.25));
-            var similarity2f = new Similarity2f(1.35f, Rot2f.FromDegrees(-21.0f), new V2f(-3.0f, 4.25f));
+            var similarity2d = new Similarity2d(-0.65, Rot2d.FromDegrees(-21.0), new V2d(-3.0, 4.25));
+            var similarity2f = new Similarity2f(-0.65f, Rot2f.FromDegrees(-21.0f), new V2f(-3.0f, 4.25f));
             var affine2d = new Affine2d(new M22d(1.2, 0.35, -0.2, 0.9), new V2d(5.0, -2.0));
             var affine2f = new Affine2f(new M22f(1.2f, 0.35f, -0.2f, 0.9f), new V2f(5.0f, -2.0f));
             var shift2d = new Shift2d(3.5, -1.25);
             var shift2f = new Shift2f(3.5f, -1.25f);
-            var scale2d = new Scale2d(1.5, 0.8);
-            var scale2f = new Scale2f(1.5f, 0.8f);
+            var scale2d = new Scale2d(-1.5, 0.8);
+            var scale2f = new Scale2f(-1.5f, 0.8f);
             var trafo2d = new Trafo2d(new Affine2d(new M22d(1.15, 0.2, -0.15, 0.95), new V2d(-1.5, 2.0)));
             var trafo2f = new Trafo2f(new Affine2f(new M22f(1.15f, 0.2f, -0.15f, 0.95f), new V2f(-1.5f, 2.0f)));
 
@@ -250,14 +460,14 @@ namespace Aardvark.Tests.Geometry
             var rot3f = Rot3f.Rotation(new V3f(0.3f, -0.5f, 0.8f).Normalized, 0.41f);
             var euclidean3d = new Euclidean3d(rot3d, new V3d(2.5, -1.75, 4.0));
             var euclidean3f = new Euclidean3f(rot3f, new V3f(2.5f, -1.75f, 4.0f));
-            var similarity3d = new Similarity3d(1.35, rot3d, new V3d(-3.0, 4.25, 1.5));
-            var similarity3f = new Similarity3f(1.35f, rot3f, new V3f(-3.0f, 4.25f, 1.5f));
+            var similarity3d = new Similarity3d(-0.65, rot3d, new V3d(-3.0, 4.25, 1.5));
+            var similarity3f = new Similarity3f(-0.65f, rot3f, new V3f(-3.0f, 4.25f, 1.5f));
             var affine3d = new Affine3d(new M33d(1.2, 0.35, -0.1, -0.2, 0.9, 0.15, 0.05, -0.25, 1.1), new V3d(5.0, -2.0, 1.75));
             var affine3f = new Affine3f(new M33f(1.2f, 0.35f, -0.1f, -0.2f, 0.9f, 0.15f, 0.05f, -0.25f, 1.1f), new V3f(5.0f, -2.0f, 1.75f));
             var shift3d = new Shift3d(3.5, -1.25, 2.0);
             var shift3f = new Shift3f(3.5f, -1.25f, 2.0f);
-            var scale3d = new Scale3d(1.5, 0.8, 1.25);
-            var scale3f = new Scale3f(1.5f, 0.8f, 1.25f);
+            var scale3d = new Scale3d(-1.5, 0.8, -1.25);
+            var scale3f = new Scale3f(-1.5f, 0.8f, -1.25f);
             var trafo3d = Trafo3d.FromComponents(new V3d(1.15, 0.9, 1.35), new V3d(0.2, -0.35, 0.5), new V3d(-1.5, 2.0, 0.75));
             var trafo3f = Trafo3f.FromComponents(new V3f(1.15f, 0.9f, 1.35f), new V3f(0.2f, -0.35f, 0.5f), new V3f(-1.5f, 2.0f, 0.75f));
 
@@ -293,6 +503,222 @@ namespace Aardvark.Tests.Geometry
                 [typeof(Scale3f)] = scale3f,
             };
         }
+
+        private static object CreateValidBox2(Type boxType)
+            => boxType.Name switch
+            {
+                nameof(Box2i) => new Box2i(new V2i(-2, -1), new V2i(3, 4)),
+                nameof(Box2l) => new Box2l(new V2l(-2, -1), new V2l(3, 4)),
+                nameof(Box2f) => new Box2f(new V2f(-2f, -1f), new V2f(3f, 4f)),
+                nameof(Box2d) => new Box2d(new V2d(-2.0, -1.0), new V2d(3.0, 4.0)),
+                _ => throw new NotSupportedException(boxType.FullName)
+            };
+
+        private static object CreateCrossedBox2(Type boxType, bool crossX)
+            => boxType.Name switch
+            {
+                nameof(Box2i) when crossX => new Box2i(new V2i(2, -1), new V2i(1, 3)),
+                nameof(Box2i) => new Box2i(new V2i(-1, 3), new V2i(2, 1)),
+                nameof(Box2l) when crossX => new Box2l(new V2l(2, -1), new V2l(1, 3)),
+                nameof(Box2l) => new Box2l(new V2l(-1, 3), new V2l(2, 1)),
+                nameof(Box2f) when crossX => new Box2f(new V2f(2f, -1f), new V2f(1f, 3f)),
+                nameof(Box2f) => new Box2f(new V2f(-1f, 3f), new V2f(2f, 1f)),
+                nameof(Box2d) when crossX => new Box2d(new V2d(2.0, -1.0), new V2d(1.0, 3.0)),
+                nameof(Box2d) => new Box2d(new V2d(-1.0, 3.0), new V2d(2.0, 1.0)),
+                _ => throw new NotSupportedException(boxType.FullName)
+            };
+
+        private static object CreateCrossedBox3(Type boxType, int axis)
+            => boxType.Name switch
+            {
+                nameof(Box3i) => axis switch
+                {
+                    0 => new Box3i(new V3i(2, -1, -2), new V3i(1, 3, 4)),
+                    1 => new Box3i(new V3i(-1, 3, -2), new V3i(2, 1, 4)),
+                    2 => new Box3i(new V3i(-1, -2, 4), new V3i(2, 3, 1)),
+                    _ => throw new ArgumentOutOfRangeException(nameof(axis))
+                },
+                nameof(Box3l) => axis switch
+                {
+                    0 => new Box3l(new V3l(2, -1, -2), new V3l(1, 3, 4)),
+                    1 => new Box3l(new V3l(-1, 3, -2), new V3l(2, 1, 4)),
+                    2 => new Box3l(new V3l(-1, -2, 4), new V3l(2, 3, 1)),
+                    _ => throw new ArgumentOutOfRangeException(nameof(axis))
+                },
+                nameof(Box3f) => axis switch
+                {
+                    0 => new Box3f(new V3f(2f, -1f, -2f), new V3f(1f, 3f, 4f)),
+                    1 => new Box3f(new V3f(-1f, 3f, -2f), new V3f(2f, 1f, 4f)),
+                    2 => new Box3f(new V3f(-1f, -2f, 4f), new V3f(2f, 3f, 1f)),
+                    _ => throw new ArgumentOutOfRangeException(nameof(axis))
+                },
+                nameof(Box3d) => axis switch
+                {
+                    0 => new Box3d(new V3d(2.0, -1.0, -2.0), new V3d(1.0, 3.0, 4.0)),
+                    1 => new Box3d(new V3d(-1.0, 3.0, -2.0), new V3d(2.0, 1.0, 4.0)),
+                    2 => new Box3d(new V3d(-1.0, -2.0, 4.0), new V3d(2.0, 3.0, 1.0)),
+                    _ => throw new ArgumentOutOfRangeException(nameof(axis))
+                },
+                _ => throw new NotSupportedException(boxType.FullName)
+            };
+
+        private static object CreateValidBox3(Type boxType)
+            => boxType.Name switch
+            {
+                nameof(Box3i) => new Box3i(new V3i(-2, -1, -3), new V3i(3, 4, 5)),
+                nameof(Box3l) => new Box3l(new V3l(-2, -1, -3), new V3l(3, 4, 5)),
+                nameof(Box3f) => new Box3f(new V3f(-2f, -1f, -3f), new V3f(3f, 4f, 5f)),
+                nameof(Box3d) => new Box3d(new V3d(-2.0, -1.0, -3.0), new V3d(3.0, 4.0, 5.0)),
+                _ => throw new NotSupportedException(boxType.FullName)
+            };
+
+        private static object GetAffine2CoverageTransform(Type boxType)
+            => boxType.Name.EndsWith("f", StringComparison.Ordinal)
+                ? new Affine2f(new M22f(1.2f, 0.35f, -0.2f, 0.9f), new V2f(5.0f, -2.0f))
+                : new Affine2d(new M22d(1.2, 0.35, -0.2, 0.9), new V2d(5.0, -2.0));
+
+        private static object[] GetAdditionalBox2ForwardCoverageTransforms(Type boxType)
+        {
+            if (boxType.Name.EndsWith("f", StringComparison.Ordinal))
+            {
+                return
+                [
+                    new Euclidean2f(Rot2f.FromDegrees(137.0f), new V2f(2.5f, -1.75f)),
+                    new Euclidean2f(Rot2f.FromDegrees(-17.0f), new V2f(2.5f, -1.75f)),
+                    new Similarity2f(1.25f, Rot2f.FromDegrees(137.0f), new V2f(2.5f, -1.75f)),
+                    new Similarity2f(1.25f, Rot2f.FromDegrees(17.0f), new V2f(2.5f, -1.75f)),
+                    new Similarity2f(1.25f, Rot2f.FromDegrees(-17.0f), new V2f(2.5f, -1.75f)),
+                    new Similarity2f(-1.25f, Rot2f.FromDegrees(-17.0f), new V2f(2.5f, -1.75f)),
+                    Rot2f.FromDegrees(137.0f),
+                    Rot2f.FromDegrees(-17.0f),
+                    new Scale2f(1.5f, -0.8f),
+                ];
+            }
+
+            return
+            [
+                new Euclidean2d(Rot2d.FromDegrees(137.0), new V2d(2.5, -1.75)),
+                new Euclidean2d(Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75)),
+                new Similarity2d(1.25, Rot2d.FromDegrees(137.0), new V2d(2.5, -1.75)),
+                new Similarity2d(1.25, Rot2d.FromDegrees(17.0), new V2d(2.5, -1.75)),
+                new Similarity2d(1.25, Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75)),
+                new Similarity2d(-1.25, Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75)),
+                Rot2d.FromDegrees(137.0),
+                Rot2d.FromDegrees(-17.0),
+                new Scale2d(1.5, -0.8),
+            ];
+        }
+
+        private static object[] GetAdditionalBox2InverseCoverageTransforms(Type boxType)
+        {
+            if (boxType.Name.EndsWith("f", StringComparison.Ordinal))
+            {
+                return
+                [
+                    new Euclidean2f(Rot2f.FromDegrees(-17.0f), new V2f(2.5f, -1.75f)),
+                    new Similarity2f(1.25f, Rot2f.FromDegrees(-17.0f), new V2f(2.5f, -1.75f)),
+                    Rot2f.FromDegrees(-17.0f),
+                    new Scale2f(1.5f, -0.8f),
+                ];
+            }
+
+            return
+            [
+                new Euclidean2d(Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75)),
+                new Similarity2d(1.25, Rot2d.FromDegrees(-17.0), new V2d(2.5, -1.75)),
+                Rot2d.FromDegrees(-17.0),
+                new Scale2d(1.5, -0.8),
+            ];
+        }
+
+        private static object[] GetAdditionalBox3ForwardCoverageTransforms(Type boxType)
+        {
+            if (boxType.Name.EndsWith("f", StringComparison.Ordinal))
+            {
+                return
+                [
+                    new Euclidean3f(Rot3f.Rotation(V3f.ZAxis, 137.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Euclidean3f(Rot3f.Rotation(V3f.ZAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Euclidean3f(Rot3f.Rotation(V3f.YAxis, 17.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Euclidean3f(Rot3f.Rotation(V3f.YAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Euclidean3f(Rot3f.Rotation(V3f.XAxis, 137.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Euclidean3f(Rot3f.Rotation(V3f.XAxis, 17.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Euclidean3f(Rot3f.Rotation(V3f.XAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.ZAxis, 137.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.ZAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.YAxis, 17.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.YAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.XAxis, 137.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.XAxis, 17.0f.RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.XAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(-1.25f, Rot3f.Rotation(V3f.ZAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    Rot3f.Rotation(V3f.ZAxis, 137.0f.RadiansFromDegrees()),
+                    Rot3f.Rotation(V3f.ZAxis, (-17.0f).RadiansFromDegrees()),
+                    Rot3f.Rotation(V3f.YAxis, 17.0f.RadiansFromDegrees()),
+                    Rot3f.Rotation(V3f.YAxis, (-17.0f).RadiansFromDegrees()),
+                    Rot3f.Rotation(V3f.XAxis, 137.0f.RadiansFromDegrees()),
+                    Rot3f.Rotation(V3f.XAxis, 17.0f.RadiansFromDegrees()),
+                    Rot3f.Rotation(V3f.XAxis, (-17.0f).RadiansFromDegrees()),
+                    new Scale3f(1.5f, -0.8f, 1.25f),
+                    new Scale3f(1.5f, 0.8f, -1.25f),
+                ];
+            }
+
+            return
+            [
+                new Euclidean3d(Rot3d.Rotation(V3d.ZAxis, 137.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Euclidean3d(Rot3d.Rotation(V3d.ZAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Euclidean3d(Rot3d.Rotation(V3d.YAxis, 17.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Euclidean3d(Rot3d.Rotation(V3d.YAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Euclidean3d(Rot3d.Rotation(V3d.XAxis, 137.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Euclidean3d(Rot3d.Rotation(V3d.XAxis, 17.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Euclidean3d(Rot3d.Rotation(V3d.XAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.ZAxis, 137.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.ZAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.YAxis, 17.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.YAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.XAxis, 137.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.XAxis, 17.0.RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.XAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(-1.25, Rot3d.Rotation(V3d.ZAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                Rot3d.Rotation(V3d.ZAxis, 137.0.RadiansFromDegrees()),
+                Rot3d.Rotation(V3d.ZAxis, (-17.0).RadiansFromDegrees()),
+                Rot3d.Rotation(V3d.YAxis, 17.0.RadiansFromDegrees()),
+                Rot3d.Rotation(V3d.YAxis, (-17.0).RadiansFromDegrees()),
+                Rot3d.Rotation(V3d.XAxis, 137.0.RadiansFromDegrees()),
+                Rot3d.Rotation(V3d.XAxis, 17.0.RadiansFromDegrees()),
+                Rot3d.Rotation(V3d.XAxis, (-17.0).RadiansFromDegrees()),
+                new Scale3d(1.5, -0.8, 1.25),
+                new Scale3d(1.5, 0.8, -1.25),
+            ];
+        }
+
+        private static object[] GetAdditionalBox3InverseCoverageTransforms(Type boxType)
+        {
+            if (boxType.Name.EndsWith("f", StringComparison.Ordinal))
+            {
+                return
+                [
+                    new Euclidean3f(Rot3f.Rotation(V3f.ZAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    new Similarity3f(1.25f, Rot3f.Rotation(V3f.ZAxis, (-17.0f).RadiansFromDegrees()), new V3f(2.5f, -1.75f, 4.0f)),
+                    Rot3f.Rotation(V3f.ZAxis, (-17.0f).RadiansFromDegrees()),
+                    new Scale3f(1.5f, -0.8f, 1.25f),
+                    new Scale3f(1.5f, 0.8f, -1.25f),
+                ];
+            }
+
+            return
+            [
+                new Euclidean3d(Rot3d.Rotation(V3d.ZAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                new Similarity3d(1.25, Rot3d.Rotation(V3d.ZAxis, (-17.0).RadiansFromDegrees()), new V3d(2.5, -1.75, 4.0)),
+                Rot3d.Rotation(V3d.ZAxis, (-17.0).RadiansFromDegrees()),
+                new Scale3d(1.5, -0.8, 1.25),
+                new Scale3d(1.5, 0.8, -1.25),
+            ];
+        }
+
+        private static object GetStaticPropertyValue(Type type, string propertyName)
+            => type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Static)!.GetValue(null)!;
 
         private static IEnumerable<Type> GetBoxForwardTransformTypes(Type boxType)
         {

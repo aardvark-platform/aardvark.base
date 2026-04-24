@@ -32,6 +32,7 @@ namespace Aardvark.Base
     //#   var shift3t = "Shift3" + tc;
     //#   var similarity3t = "Similarity3" + tc;
     //#   var m44t = "M44" + tc;
+    //#   var m33t = "M33" + tc;
     //#   var euclidean3t = "Euclidean3" + tc;
     //#   var trafo3t = "Trafo3" + tc;
     //#   var box3t = "Box3" + tc;
@@ -330,23 +331,43 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__similarity3t__ trafo)
-            => Transformed(new __trafo3t__(trafo));
+        {
+            var inverseScale = 1 / trafo.Scale;
+            var linear = (__m33t__)trafo.Rot;
+            var n1 = new __v3t__(
+                (linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z) * inverseScale,
+                (linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z) * inverseScale,
+                (linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z) * inverseScale);
+            return new __plane3t__(n1, Distance + trafo.Trans.X * n1.X + trafo.Trans.Y * n1.Y + trafo.Trans.Z * n1.Z);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__affine3t__ trafo)
-            => Transformed(new __trafo3t__(trafo));
+        {
+            var inverse = trafo.Inverse;
+            var n1 = inverse.TransposedTransform(Normal);
+            return new __plane3t__(n1, Distance + trafo.Trans.X * n1.X + trafo.Trans.Y * n1.Y + trafo.Trans.Z * n1.Z);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__shift3t__ trafo)
-            => Transformed(new __trafo3t__(trafo));
+            => new __plane3t__(Normal, Distance + trafo.X * Normal.X + trafo.Y * Normal.Y + trafo.Z * Normal.Z);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__rot3t__ trafo)
-            => Transformed(new __trafo3t__(trafo));
+        {
+            var linear = (__m33t__)trafo;
+            return new __plane3t__(
+                new __v3t__(
+                    linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
+                    linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
+                    linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z),
+                Distance);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__scale3t__ trafo)
-            => Transformed(new __trafo3t__(trafo));
+            => new __plane3t__(new __v3t__(Normal.X / trafo.X, Normal.Y / trafo.Y, Normal.Z / trafo.Z), Distance);
 
         /// <summary>
         /// Transforms the plane with the inverse of the given trafo using the inverse
@@ -367,23 +388,48 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__euclidean3t__ trafo)
-            => InvTransformed(new __trafo3t__(trafo));
+        {
+            var linear = (__m33t__)trafo.Inverse;
+            return new __plane3t__(
+                new __v3t__(
+                    linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
+                    linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
+                    linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z),
+                Distance - trafo.Trans.X * Normal.X - trafo.Trans.Y * Normal.Y - trafo.Trans.Z * Normal.Z);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__similarity3t__ trafo)
-            => InvTransformed(new __trafo3t__(trafo));
+        {
+            var linear = (__m33t__)trafo.Rot.Inverse;
+            var scale = trafo.Scale;
+            return new __plane3t__(
+                new __v3t__(
+                    (linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z) * scale,
+                    (linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z) * scale,
+                    (linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z) * scale),
+                Distance - trafo.Trans.X * Normal.X - trafo.Trans.Y * Normal.Y - trafo.Trans.Z * Normal.Z);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__shift3t__ trafo)
-            => InvTransformed(new __trafo3t__(trafo));
+            => new __plane3t__(Normal, Distance - trafo.X * Normal.X - trafo.Y * Normal.Y - trafo.Z * Normal.Z);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__rot3t__ trafo)
-            => InvTransformed(new __trafo3t__(trafo));
+        {
+            var linear = (__m33t__)trafo.Inverse;
+            return new __plane3t__(
+                new __v3t__(
+                    linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
+                    linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
+                    linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z),
+                Distance);
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__scale3t__ trafo)
-            => InvTransformed(new __trafo3t__(trafo));
+            => new __plane3t__(new __v3t__(Normal.X * trafo.X, Normal.Y * trafo.Y, Normal.Z * trafo.Z), Distance);
 
         #endregion
 
