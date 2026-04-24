@@ -8,6 +8,9 @@ namespace Aardvark.Base.Benchmarks
     {
         public static void Main(string[] args)
         {
+            if (TransformOverloadTargetedPerf.TryHandle(args))
+                return;
+
             var cfg = ManualConfig.Create(DefaultConfig.Instance).WithOptions(ConfigOptions.DisableOptimizationsValidator);
             var switcher = BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly);
             if (args.Length > 0)

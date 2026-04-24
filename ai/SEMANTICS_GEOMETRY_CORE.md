@@ -45,10 +45,13 @@ Do not assume identical handedness or memory/algebra conventions across systems.
 
 For the geometry value types touched by issue 57, the canonical transform semantics are:
 
-- boxes stay matrix-based for axis-aligned bounds computation; convenience overloads on `Trafo*`, `Euclidean*`, `Similarity*`, `Affine*`, `Shift*`, `Rot*`, and `Scale*` delegate into the matrix path
-- hulls and planes stay `Trafo*`-based because correctness depends on inverse-transpose normal handling
+- boxes still compute axis-aligned bounds from linear coefficients plus translation; the specialized overloads now use direct specialized paths except `Box3*.Transformed(Affine3*)`, which intentionally stays on the homogeneous-matrix path because repeated `Release` measurements did not beat that baseline
+- hulls keep the same inverse-transpose normal semantics as the `Trafo*` path, but the specialized overloads now apply the equivalent direct normal/point math without first constructing a `Trafo*`
+- planes keep the same coefficient semantics as the `Trafo*` path, but the specialized overloads now use direct formulas for similarity/affine/shift/rotation/scale instead of first constructing a `Trafo*`
 - rays use position-vs-direction aware transform helpers directly (`TransformPos`/`TransformDir`, `InvTransformPos`/`InvTransformDir`)
 - inverse convenience APIs are intentionally available on the touched types for `Trafo*`, `Euclidean*`, `Similarity*`, `Shift*`, `Rot*`, and `Scale*`; raw matrices remain forward-only convenience APIs
+
+When a direct specialization cannot be kept both correct and performance-competitive, the source keeps the indirect implementation with an explicit comment documenting the retained fallback.
 
 There is no `Rigid2d`/`Rigid3d` public transform type in this repo. Use `Euclidean2d`/`Euclidean3d` instead when mapping older issue text to the current API.
 

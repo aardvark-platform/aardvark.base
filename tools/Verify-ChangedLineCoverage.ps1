@@ -17,6 +17,17 @@ function Normalize-CoveragePath([string]$path) {
     return $normalized
 }
 
+function Normalize-RepoCoverageLookupPath([string]$path) {
+    $normalized = Normalize-RepoPath $path
+    if ($normalized.StartsWith('src/Aardvark.Base/')) {
+        return $normalized.Substring('src/Aardvark.Base/'.Length)
+    }
+    if ($normalized.StartsWith('src/Aardvark.Geometry/')) {
+        return $normalized.Substring('src/Aardvark.Geometry/'.Length)
+    }
+    return Normalize-CoveragePath $normalized
+}
+
 function Test-FullConditionCoverage([string]$conditionCoverage) {
     if ([string]::IsNullOrWhiteSpace($conditionCoverage)) { return $true }
     return $conditionCoverage.Trim().StartsWith('100%')
@@ -94,7 +105,7 @@ $coveredExecutableLines = 0
 $instrumentedChangedLines = 0
 
 foreach ($repoFile in ($changedLines.Keys | Sort-Object)) {
-    $coverageFile = Normalize-CoveragePath $repoFile
+    $coverageFile = Normalize-RepoCoverageLookupPath $repoFile
 
     if (-not $coverageData.ContainsKey($coverageFile)) {
         $errors += "No coverage data found for changed file '$repoFile'."

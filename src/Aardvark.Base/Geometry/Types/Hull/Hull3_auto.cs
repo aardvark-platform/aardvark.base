@@ -238,28 +238,83 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Plane3f TransformPlaneNormalized(Plane3f plane, V3f rawNormal, V3f translation)
+        {
+            var inverseLength = 1 / rawNormal.Length;
+            var normal = rawNormal * inverseLength;
+            return new Plane3f(normal, plane.Distance * inverseLength + translation.Dot(normal));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f Transformed(Euclidean3f trafo)
-            => Transformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            var linear = (M33f)trafo.Rot;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f Transformed(Similarity3f trafo)
-            => Transformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            var linear = (M33f)trafo.Rot;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal) / trafo.Scale, trafo.Trans);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f Transformed(Affine3f trafo)
-            => Transformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            var inverse = trafo.Inverse.Linear;
+            var normalMatrix = new M33f(
+                inverse.M00, inverse.M10, inverse.M20,
+                inverse.M01, inverse.M11, inverse.M21,
+                inverse.M02, inverse.M12, inverse.M22);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], normalMatrix.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f Transformed(Shift3f trafo)
-            => Transformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane3f(plane.Normal, plane.Distance + trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f Transformed(Rot3f trafo)
-            => Transformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            var linear = (M33f)trafo;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3f.Zero);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f Transformed(Scale3f trafo)
-            => Transformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.InvTransform(PlaneArray[i].Normal), V3f.Zero);
+            return hull;
+        }
 
         public readonly Hull3f InvTransformed(Trafo3f trafo)
         {
@@ -276,23 +331,61 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f InvTransformed(Euclidean3f trafo)
-            => InvTransformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            var linear = (M33f)trafo.Inverse;
+            var translation = -linear.Transform(trafo.Trans);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), translation);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f InvTransformed(Similarity3f trafo)
-            => InvTransformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            var inverseRot = (M33f)trafo.Rot.Inverse;
+            var translation = -inverseRot.Transform(trafo.Trans) / trafo.Scale;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], inverseRot.Transform(PlaneArray[i].Normal) * trafo.Scale, translation);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f InvTransformed(Shift3f trafo)
-            => InvTransformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane3f(plane.Normal, plane.Distance - trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f InvTransformed(Rot3f trafo)
-            => InvTransformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            var linear = (M33f)trafo.Inverse;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3f.Zero);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3f InvTransformed(Scale3f trafo)
-            => InvTransformed(new Trafo3f(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3f(count);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), V3f.Zero);
+            return hull;
+        }
 
         public readonly void TransformInto(Trafo3f trafo, ref Hull3f hull)
         {
@@ -724,28 +817,83 @@ namespace Aardvark.Base
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Plane3d TransformPlaneNormalized(Plane3d plane, V3d rawNormal, V3d translation)
+        {
+            var inverseLength = 1 / rawNormal.Length;
+            var normal = rawNormal * inverseLength;
+            return new Plane3d(normal, plane.Distance * inverseLength + translation.Dot(normal));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d Transformed(Euclidean3d trafo)
-            => Transformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            var linear = (M33d)trafo.Rot;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d Transformed(Similarity3d trafo)
-            => Transformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            var linear = (M33d)trafo.Rot;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal) / trafo.Scale, trafo.Trans);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d Transformed(Affine3d trafo)
-            => Transformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            var inverse = trafo.Inverse.Linear;
+            var normalMatrix = new M33d(
+                inverse.M00, inverse.M10, inverse.M20,
+                inverse.M01, inverse.M11, inverse.M21,
+                inverse.M02, inverse.M12, inverse.M22);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], normalMatrix.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d Transformed(Shift3d trafo)
-            => Transformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane3d(plane.Normal, plane.Distance + trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d Transformed(Rot3d trafo)
-            => Transformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            var linear = (M33d)trafo;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3d.Zero);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d Transformed(Scale3d trafo)
-            => Transformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.InvTransform(PlaneArray[i].Normal), V3d.Zero);
+            return hull;
+        }
 
         public readonly Hull3d InvTransformed(Trafo3d trafo)
         {
@@ -762,23 +910,61 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d InvTransformed(Euclidean3d trafo)
-            => InvTransformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            var linear = (M33d)trafo.Inverse;
+            var translation = -linear.Transform(trafo.Trans);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), translation);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d InvTransformed(Similarity3d trafo)
-            => InvTransformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            var inverseRot = (M33d)trafo.Rot.Inverse;
+            var translation = -inverseRot.Transform(trafo.Trans) / trafo.Scale;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], inverseRot.Transform(PlaneArray[i].Normal) * trafo.Scale, translation);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d InvTransformed(Shift3d trafo)
-            => InvTransformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane3d(plane.Normal, plane.Distance - trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d InvTransformed(Rot3d trafo)
-            => InvTransformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            var linear = (M33d)trafo.Inverse;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3d.Zero);
+            return hull;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Hull3d InvTransformed(Scale3d trafo)
-            => InvTransformed(new Trafo3d(trafo));
+        {
+            int count = PlaneCount;
+            var hull = new Hull3d(count);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), V3d.Zero);
+            return hull;
+        }
 
         public readonly void TransformInto(Trafo3d trafo, ref Hull3d hull)
         {
