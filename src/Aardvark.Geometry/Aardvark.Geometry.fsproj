@@ -20,6 +20,7 @@
     <Compile Include="LinearRegression.fs" />
     <Compile Include="EllipsoidRegression.fs" />
     <Compile Include="EllipseRegression.fs" />
+    <Compile Include="Ellipse3dRegression.fs" />
     <Compile Include="Bvh.fs" />
     <Compile Include="TexturePacking.fs" />
     <None Include="paket.references" />

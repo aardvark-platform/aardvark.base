@@ -545,3 +545,154 @@ module Regression3dTests =
         abs (abs (Vec.dot (Vec.normalize majorV) (V2d(cs, sn))) - 1.0) |> should be (lessThanOrEqualTo 1E-10)
         
 
+
+
+    // -----------------------------------------------------------------------------
+    //  CircleRegression3d / EllipseRegression3d (3D curves)
+    // -----------------------------------------------------------------------------
+
+    let private maxResidualOnCircle (pts : V3d[]) (c : Circle3d) =
+        let n = Vec.normalize c.Normal
+        pts |> Array.map (fun p ->
+            let v = p - c.Center
+            let dPlane = abs (Vec.dot v n)
+            let inPlane = v - n * Vec.dot v n
+            let dRing = abs (Vec.length inPlane - c.Radius)
+            max dPlane dRing) |> Array.max
+
+    let private maxResidualOnEllipse3d (pts : V3d[]) (e : Ellipse3d) =
+        let n = Vec.normalize e.Normal
+        let a0 = e.Axis0
+        let a1 = e.Axis1
+        let l0 = Vec.length a0
+        let l1 = Vec.length a1
+        if l0 <= 0.0 || l1 <= 0.0 then infinity
+        else
+            let u = a0 / l0
+            let v = a1 / l1
+            let r02 = sqr l0
+            let r12 = sqr l1
+            pts |> Array.map (fun p ->
+                let d = p - e.Center
+                let dPlane = abs (Vec.dot d n)
+                let x = Vec.dot d u
+                let y = Vec.dot d v
+                let alg = abs (sqr x / r02 + sqr y / r12 - 1.0)
+                max dPlane alg) |> Array.max
+
+    [<Test>]
+    let ``CircleRegression3d working`` () =
+        let rand = Random(11)
+        let trials = 50
+        let mutable maxErr = 0.0
+        for _ in 1 .. trials do
+            let n = V3d(rand.NextDouble() - 0.5, rand.NextDouble() - 0.5, rand.NextDouble() - 0.5) |> Vec.normalize
+            let c = V3d(rand.NextDouble() * 20.0 - 10.0,
+                        rand.NextDouble() * 20.0 - 10.0,
+                        rand.NextDouble() * 20.0 - 10.0)
+            let r = 0.5 + rand.NextDouble() * 4.0
+            let probe = if abs n.Z < 0.9 then V3d.OOI else V3d.IOO
+            let u = Vec.normalize (Vec.cross n probe)
+            let v = Vec.cross n u
+            let nPts = 30
+            let pts = Array.init nPts (fun i ->
+                let t = 2.0 * Math.PI * float i / float nPts
+                c + u * (r * cos t) + v * (r * sin t))
+
+            let reg = CircleRegression3d(pts)
+            let cir = reg.GetCircle()
+            cir.Radius |> should be (greaterThan 0.0)
+            let err = maxResidualOnCircle pts cir
+            if err > maxErr then maxErr <- err
+            err |> should be (lessThanOrEqualTo 1E-8)
+
+        tprintfn "  CircleRegression3d (clean data, %d trials): max residual = %.2e" trials maxErr
+
+    [<Test>]
+    let ``CircleRegression3d round-trip add/remove`` () =
+        let rand = Random(13)
+        let n = Vec.normalize (V3d(0.3, -0.5, 1.0))
+        let probe = V3d.IOO
+        let u = Vec.normalize (Vec.cross n probe)
+        let v = Vec.cross n u
+        let c = V3d(2.0, -1.0, 0.5)
+        let r = 1.7
+        let pts = Array.init 40 (fun i ->
+            let t = 2.0 * Math.PI * float i / 40.0
+            c + u * (r * cos t) + v * (r * sin t))
+
+        let baseR = CircleRegression3d(pts)
+        let cir1 = baseR.GetCircle()
+
+        let extras = Array.init 15 (fun _ ->
+            V3d(rand.NextDouble() * 10.0 - 5.0,
+                rand.NextDouble() * 10.0 - 5.0,
+                rand.NextDouble() * 10.0 - 5.0))
+        let mutable rg = baseR
+        for p in extras do rg <- rg.Add p
+        for p in extras do rg <- rg.Remove p
+        let cir2 = rg.GetCircle()
+
+        Vec.distance cir1.Center cir2.Center |> should be (lessThanOrEqualTo 1E-7)
+        abs (cir1.Radius - cir2.Radius) |> should be (lessThanOrEqualTo 1E-7)
+
+    [<Test>]
+    let ``EllipseRegression3d working`` () =
+        let rand = Random(17)
+        let trials = 50
+        let mutable maxErr = 0.0
+        for _ in 1 .. trials do
+            let n = V3d(rand.NextDouble() - 0.5, rand.NextDouble() - 0.5, rand.NextDouble() - 0.5) |> Vec.normalize
+            let c = V3d(rand.NextDouble() * 10.0 - 5.0,
+                        rand.NextDouble() * 10.0 - 5.0,
+                        rand.NextDouble() * 10.0 - 5.0)
+            let probe = if abs n.Z < 0.9 then V3d.OOI else V3d.IOO
+            let u0 = Vec.normalize (Vec.cross n probe)
+            let v0 = Vec.cross n u0
+            let angle = rand.NextDouble() * Math.PI
+            let cs, sn = cos angle, sin angle
+            let u = u0 * cs + v0 * sn
+            let v = -u0 * sn + v0 * cs
+            let ra = 1.0 + rand.NextDouble() * 2.0
+            let rb = 1.0 + rand.NextDouble() * 2.0
+            let nPts = 60
+            let pts = Array.init nPts (fun i ->
+                let t = 2.0 * Math.PI * float i / float nPts
+                c + u * (ra * cos t) + v * (rb * sin t))
+
+            let reg = EllipseRegression3d(pts)
+            let e = reg.GetEllipse()
+            e.IsValid |> should equal true
+            let err = maxResidualOnEllipse3d pts e
+            if err > maxErr then maxErr <- err
+            err |> should be (lessThanOrEqualTo 1E-7)
+
+        tprintfn "  EllipseRegression3d (clean data, %d trials): max residual = %.2e" trials maxErr
+
+    [<Test>]
+    let ``EllipseRegression3d round-trip add/remove`` () =
+        let rand = Random(19)
+        let n = Vec.normalize (V3d(-0.7, 0.4, 1.2))
+        let probe = V3d.IOO
+        let u = Vec.normalize (Vec.cross n probe)
+        let v = Vec.cross n u
+        let c = V3d(0.5, 1.5, -2.0)
+        let pts = Array.init 80 (fun i ->
+            let t = 2.0 * Math.PI * float i / 80.0
+            c + u * (3.0 * cos t) + v * (1.2 * sin t))
+
+        let baseR = EllipseRegression3d(pts)
+        let e1 = baseR.GetEllipse()
+
+        let extras = Array.init 20 (fun _ ->
+            V3d(rand.NextDouble() * 10.0 - 5.0,
+                rand.NextDouble() * 10.0 - 5.0,
+                rand.NextDouble() * 10.0 - 5.0))
+        let mutable rg = baseR
+        for p in extras do rg <- rg.Add p
+        for p in extras do rg <- rg.Remove p
+        let e2 = rg.GetEllipse()
+
+        Vec.distance e1.Center e2.Center |> should be (lessThanOrEqualTo 1E-6)
+        abs (Vec.length e1.Axis0 - Vec.length e2.Axis0) |> should be (lessThanOrEqualTo 1E-6)
+        abs (Vec.length e1.Axis1 - Vec.length e2.Axis1) |> should be (lessThanOrEqualTo 1E-6)
