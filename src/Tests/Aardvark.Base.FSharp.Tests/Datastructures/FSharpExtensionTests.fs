@@ -116,6 +116,9 @@ module Array =
         | Some value -> ValueSome value
         | None -> ValueNone
 
+    let private toStructTupleArray (data : ('a * 'b)[]) =
+        data |> Array.map (fun (a, b) -> struct (a, b))
+
     [<Property>]
     let ``[Array] chooseV`` (chooser: int -> int option) (data: int[]) =
         let result =
@@ -153,6 +156,49 @@ module Array =
             |> Seq.toArray
 
         result = expected
+
+    [<Property>]
+    let ``[Array] zipV`` (data : (int * int)[]) =
+        let left, right = Array.unzip data
+
+        let result =
+            Array.zipV left right
+
+        let expected =
+            Array.zip left right
+            |> toStructTupleArray
+
+        result = expected
+
+    [<Property>]
+    let ``[Array] unzipV`` (data : (int * int)[]) =
+        let structData = toStructTupleArray data
+
+        let struct (result1, result2) =
+            Array.unzipV structData
+
+        let expected1, expected2 =
+            Array.unzip data
+
+        result1 = expected1 && result2 = expected2
+
+    [<Property>]
+    let ``[Array] unzipV and zipV round-trip struct tuples`` (data : (int * int)[]) =
+        let structData = toStructTupleArray data
+        let struct (left, right) = Array.unzipV structData
+
+        let result =
+            Array.zipV left right
+
+        result = structData
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] zipV throws for different-length inputs`` () =
+        let left = [| 1; 2 |]
+        let right = [| 3 |]
+
+        NUnit.Framework.Assert.Throws<System.ArgumentException>(fun () -> Array.zipV left right |> ignore)
+        |> ignore
 
     [<Property>]
     let ``[Array] collecti`` (mapping: int -> int -> int[]) (data: int[]) =
