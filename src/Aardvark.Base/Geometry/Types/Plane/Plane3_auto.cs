@@ -315,8 +315,23 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3f Transformed(Affine3f trafo)
         {
-            var inverse = trafo.Inverse;
-            var n1 = inverse.TransposedTransform(Normal);
+            var m = trafo.Linear;
+            // Compute inverse-transpose times the normal via cofactors to avoid materializing an affine or matrix inverse.
+            var c00 = m.M11 * m.M22 - m.M12 * m.M21;
+            var c01 = m.M12 * m.M20 - m.M10 * m.M22;
+            var c02 = m.M10 * m.M21 - m.M11 * m.M20;
+            var c10 = m.M02 * m.M21 - m.M01 * m.M22;
+            var c11 = m.M00 * m.M22 - m.M02 * m.M20;
+            var c12 = m.M01 * m.M20 - m.M00 * m.M21;
+            var c20 = m.M01 * m.M12 - m.M02 * m.M11;
+            var c21 = m.M02 * m.M10 - m.M00 * m.M12;
+            var c22 = m.M00 * m.M11 - m.M01 * m.M10;
+            var invDet = 1 / (m.M00 * c00 + m.M01 * c01 + m.M02 * c02);
+            var n = Normal;
+            var n1 = new V3f(
+                (c00 * n.X + c01 * n.Y + c02 * n.Z) * invDet,
+                (c10 * n.X + c11 * n.Y + c12 * n.Z) * invDet,
+                (c20 * n.X + c21 * n.Y + c22 * n.Z) * invDet);
             return new Plane3f(n1, Distance + trafo.Trans.X * n1.X + trafo.Trans.Y * n1.Y + trafo.Trans.Z * n1.Z);
         }
 
@@ -360,25 +375,25 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3f InvTransformed(Euclidean3f trafo)
         {
-            var linear = (M33f)trafo.Inverse;
+            var linear = (M33f)trafo.Rot;
             return new Plane3f(
                 new V3f(
-                    linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
-                    linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
-                    linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z),
+                    linear.M00 * Normal.X + linear.M10 * Normal.Y + linear.M20 * Normal.Z,
+                    linear.M01 * Normal.X + linear.M11 * Normal.Y + linear.M21 * Normal.Z,
+                    linear.M02 * Normal.X + linear.M12 * Normal.Y + linear.M22 * Normal.Z),
                 Distance - trafo.Trans.X * Normal.X - trafo.Trans.Y * Normal.Y - trafo.Trans.Z * Normal.Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3f InvTransformed(Similarity3f trafo)
         {
-            var linear = (M33f)trafo.Rot.Inverse;
+            var linear = (M33f)trafo.Rot;
             var scale = trafo.Scale;
             return new Plane3f(
                 new V3f(
-                    (linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z) * scale,
-                    (linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z) * scale,
-                    (linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z) * scale),
+                    (linear.M00 * Normal.X + linear.M10 * Normal.Y + linear.M20 * Normal.Z) * scale,
+                    (linear.M01 * Normal.X + linear.M11 * Normal.Y + linear.M21 * Normal.Z) * scale,
+                    (linear.M02 * Normal.X + linear.M12 * Normal.Y + linear.M22 * Normal.Z) * scale),
                 Distance - trafo.Trans.X * Normal.X - trafo.Trans.Y * Normal.Y - trafo.Trans.Z * Normal.Z);
         }
 
@@ -389,12 +404,12 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3f InvTransformed(Rot3f trafo)
         {
-            var linear = (M33f)trafo.Inverse;
+            var linear = (M33f)trafo;
             return new Plane3f(
                 new V3f(
-                    linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
-                    linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
-                    linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z),
+                    linear.M00 * Normal.X + linear.M10 * Normal.Y + linear.M20 * Normal.Z,
+                    linear.M01 * Normal.X + linear.M11 * Normal.Y + linear.M21 * Normal.Z,
+                    linear.M02 * Normal.X + linear.M12 * Normal.Y + linear.M22 * Normal.Z),
                 Distance);
         }
 
@@ -1328,8 +1343,23 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3d Transformed(Affine3d trafo)
         {
-            var inverse = trafo.Inverse;
-            var n1 = inverse.TransposedTransform(Normal);
+            var m = trafo.Linear;
+            // Compute inverse-transpose times the normal via cofactors to avoid materializing an affine or matrix inverse.
+            var c00 = m.M11 * m.M22 - m.M12 * m.M21;
+            var c01 = m.M12 * m.M20 - m.M10 * m.M22;
+            var c02 = m.M10 * m.M21 - m.M11 * m.M20;
+            var c10 = m.M02 * m.M21 - m.M01 * m.M22;
+            var c11 = m.M00 * m.M22 - m.M02 * m.M20;
+            var c12 = m.M01 * m.M20 - m.M00 * m.M21;
+            var c20 = m.M01 * m.M12 - m.M02 * m.M11;
+            var c21 = m.M02 * m.M10 - m.M00 * m.M12;
+            var c22 = m.M00 * m.M11 - m.M01 * m.M10;
+            var invDet = 1 / (m.M00 * c00 + m.M01 * c01 + m.M02 * c02);
+            var n = Normal;
+            var n1 = new V3d(
+                (c00 * n.X + c01 * n.Y + c02 * n.Z) * invDet,
+                (c10 * n.X + c11 * n.Y + c12 * n.Z) * invDet,
+                (c20 * n.X + c21 * n.Y + c22 * n.Z) * invDet);
             return new Plane3d(n1, Distance + trafo.Trans.X * n1.X + trafo.Trans.Y * n1.Y + trafo.Trans.Z * n1.Z);
         }
 
@@ -1373,25 +1403,25 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3d InvTransformed(Euclidean3d trafo)
         {
-            var linear = (M33d)trafo.Inverse;
+            var linear = (M33d)trafo.Rot;
             return new Plane3d(
                 new V3d(
-                    linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
-                    linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
-                    linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z),
+                    linear.M00 * Normal.X + linear.M10 * Normal.Y + linear.M20 * Normal.Z,
+                    linear.M01 * Normal.X + linear.M11 * Normal.Y + linear.M21 * Normal.Z,
+                    linear.M02 * Normal.X + linear.M12 * Normal.Y + linear.M22 * Normal.Z),
                 Distance - trafo.Trans.X * Normal.X - trafo.Trans.Y * Normal.Y - trafo.Trans.Z * Normal.Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3d InvTransformed(Similarity3d trafo)
         {
-            var linear = (M33d)trafo.Rot.Inverse;
+            var linear = (M33d)trafo.Rot;
             var scale = trafo.Scale;
             return new Plane3d(
                 new V3d(
-                    (linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z) * scale,
-                    (linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z) * scale,
-                    (linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z) * scale),
+                    (linear.M00 * Normal.X + linear.M10 * Normal.Y + linear.M20 * Normal.Z) * scale,
+                    (linear.M01 * Normal.X + linear.M11 * Normal.Y + linear.M21 * Normal.Z) * scale,
+                    (linear.M02 * Normal.X + linear.M12 * Normal.Y + linear.M22 * Normal.Z) * scale),
                 Distance - trafo.Trans.X * Normal.X - trafo.Trans.Y * Normal.Y - trafo.Trans.Z * Normal.Z);
         }
 
@@ -1402,12 +1432,12 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3d InvTransformed(Rot3d trafo)
         {
-            var linear = (M33d)trafo.Inverse;
+            var linear = (M33d)trafo;
             return new Plane3d(
                 new V3d(
-                    linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
-                    linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
-                    linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z),
+                    linear.M00 * Normal.X + linear.M10 * Normal.Y + linear.M20 * Normal.Z,
+                    linear.M01 * Normal.X + linear.M11 * Normal.Y + linear.M21 * Normal.Z,
+                    linear.M02 * Normal.X + linear.M12 * Normal.Y + linear.M22 * Normal.Z),
                 Distance);
         }
 
