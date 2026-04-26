@@ -82,6 +82,7 @@ namespace Aardvark.Base.Benchmarks.Geometry
             Create("FastHull3dInverseRot", () => new FastHull3d(TransformOverloadBenchData.FastHull3d.Hull.InvTransformed(new Trafo3d(TransformOverloadBenchData.Rot3d))), () => TransformOverloadBenchData.FastHull3d.InvTransformed(TransformOverloadBenchData.Rot3d)),
             Create("FastHull3dInverseScale", () => new FastHull3d(TransformOverloadBenchData.FastHull3d.Hull.InvTransformed(new Trafo3d(TransformOverloadBenchData.Scale3d))), () => TransformOverloadBenchData.FastHull3d.InvTransformed(TransformOverloadBenchData.Scale3d)),
 
+            Create("Plane3dForwardEuclidean", () => TransformOverloadBenchData.Plane3d.Transformed(new Trafo3d(TransformOverloadBenchData.Euclidean3d)), () => TransformOverloadBenchData.Plane3d.Transformed(TransformOverloadBenchData.Euclidean3d)),
             Create("Plane3dForwardSimilarity", () => TransformOverloadBenchData.Plane3d.Transformed(new Trafo3d(TransformOverloadBenchData.Similarity3d)), () => TransformOverloadBenchData.Plane3d.Transformed(TransformOverloadBenchData.Similarity3d)),
             Create("Plane3dForwardAffine", () => TransformOverloadBenchData.Plane3d.Transformed(new Trafo3d(TransformOverloadBenchData.Affine3d)), () => TransformOverloadBenchData.Plane3d.Transformed(TransformOverloadBenchData.Affine3d)),
             Create("Plane3dForwardShift", () => TransformOverloadBenchData.Plane3d.Transformed(new Trafo3d(TransformOverloadBenchData.Shift3d)), () => TransformOverloadBenchData.Plane3d.Transformed(TransformOverloadBenchData.Shift3d)),
@@ -93,6 +94,19 @@ namespace Aardvark.Base.Benchmarks.Geometry
             Create("Plane3dInverseShift", () => TransformOverloadBenchData.Plane3d.InvTransformed(new Trafo3d(TransformOverloadBenchData.Shift3d)), () => TransformOverloadBenchData.Plane3d.InvTransformed(TransformOverloadBenchData.Shift3d)),
             Create("Plane3dInverseRot", () => TransformOverloadBenchData.Plane3d.InvTransformed(new Trafo3d(TransformOverloadBenchData.Rot3d)), () => TransformOverloadBenchData.Plane3d.InvTransformed(TransformOverloadBenchData.Rot3d)),
             Create("Plane3dInverseScale", () => TransformOverloadBenchData.Plane3d.InvTransformed(new Trafo3d(TransformOverloadBenchData.Scale3d)), () => TransformOverloadBenchData.Plane3d.InvTransformed(TransformOverloadBenchData.Scale3d)),
+
+            Create("Plane3fForwardEuclidean", () => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Euclidean3f)), () => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Euclidean3f)),
+            Create("Plane3fForwardSimilarity", () => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Similarity3f)), () => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Similarity3f)),
+            Create("Plane3fForwardAffine", () => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Affine3f)), () => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Affine3f)),
+            Create("Plane3fForwardShift", () => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Shift3f)), () => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Shift3f)),
+            Create("Plane3fForwardRot", () => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Rot3f)), () => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Rot3f)),
+            Create("Plane3fForwardScale", () => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Scale3f)), () => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Scale3f)),
+
+            Create("Plane3fInverseEuclidean", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Euclidean3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Euclidean3f)),
+            Create("Plane3fInverseSimilarity", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Similarity3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Similarity3f)),
+            Create("Plane3fInverseShift", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Shift3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Shift3f)),
+            Create("Plane3fInverseRot", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Rot3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Rot3f)),
+            Create("Plane3fInverseScale", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Scale3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Scale3f)),
         };
 
         public static bool TryHandle(string[] args)

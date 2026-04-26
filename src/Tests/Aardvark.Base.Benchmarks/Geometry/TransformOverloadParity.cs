@@ -12,6 +12,7 @@ namespace Aardvark.Base.Benchmarks.Geometry
         public static readonly Hull2d Hull2d = new(Box2d);
         public static readonly Hull3d Hull3d = new(Box3d);
         public static readonly FastHull3d FastHull3d = new(Hull3d);
+        public static readonly Plane3f Plane3f = new(new V3f(1.0f, -2.0f, 3.0f).Normalized, new V3f(-1.5f, 0.75f, 2.25f));
         public static readonly Plane3d Plane3d = new(new V3d(1.0, -2.0, 3.0).Normalized, new V3d(-1.5, 0.75, 2.25));
 
         public static readonly Rot2d Rot2d = Rot2d.FromDegrees(37.0);
@@ -27,6 +28,13 @@ namespace Aardvark.Base.Benchmarks.Geometry
         public static readonly Affine3d Affine3d = new(new M33d(1.2, 0.35, -0.1, -0.2, 0.9, 0.15, 0.05, -0.25, 1.1), new V3d(5.0, -2.0, 1.75));
         public static readonly Shift3d Shift3d = new(3.5, -1.25, 2.0);
         public static readonly Scale3d Scale3d = new(-1.5, 0.8, -1.25);
+
+        public static readonly Rot3f Rot3f = Rot3f.Rotation(new V3f(-0.9f, 0.2f, 0.35f).Normalized, -1.1f);
+        public static readonly Euclidean3f Euclidean3f = new(Rot3f.Rotation(new V3f(0.3f, -0.5f, 0.8f).Normalized, 0.41f), new V3f(2.5f, -1.75f, 4.0f));
+        public static readonly Similarity3f Similarity3f = new(-0.65f, Rot3f, new V3f(1.5f, -2.75f, 0.5f));
+        public static readonly Affine3f Affine3f = new(new M33f(1.2f, 0.35f, -0.1f, -0.2f, 0.9f, 0.15f, 0.05f, -0.25f, 1.1f), new V3f(5.0f, -2.0f, 1.75f));
+        public static readonly Shift3f Shift3f = new(3.5f, -1.25f, 2.0f);
+        public static readonly Scale3f Scale3f = new(-1.5f, 0.8f, -1.25f);
     }
 
     public abstract class Box2dForwardBenchmark
@@ -171,6 +179,30 @@ namespace Aardvark.Base.Benchmarks.Geometry
 
         protected abstract Plane3d ConversionBaselineImpl();
         protected abstract Plane3d SpecializedImpl();
+    }
+
+    public abstract class Plane3fForwardBenchmark
+    {
+        [Benchmark(Baseline = true)]
+        public Plane3f ConversionBaseline() => ConversionBaselineImpl();
+
+        [Benchmark]
+        public Plane3f Specialized() => SpecializedImpl();
+
+        protected abstract Plane3f ConversionBaselineImpl();
+        protected abstract Plane3f SpecializedImpl();
+    }
+
+    public abstract class Plane3fInverseBenchmark
+    {
+        [Benchmark(Baseline = true)]
+        public Plane3f ConversionBaseline() => ConversionBaselineImpl();
+
+        [Benchmark]
+        public Plane3f Specialized() => SpecializedImpl();
+
+        protected abstract Plane3f ConversionBaselineImpl();
+        protected abstract Plane3f SpecializedImpl();
     }
 
     [PlainExporter, MemoryDiagnoser, MediumRunJob]
@@ -559,6 +591,13 @@ namespace Aardvark.Base.Benchmarks.Geometry
     }
 
     [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3dForwardEuclidean : Plane3dForwardBenchmark
+    {
+        protected override Plane3d ConversionBaselineImpl() => TransformOverloadBenchData.Plane3d.Transformed(new Trafo3d(TransformOverloadBenchData.Euclidean3d));
+        protected override Plane3d SpecializedImpl() => TransformOverloadBenchData.Plane3d.Transformed(TransformOverloadBenchData.Euclidean3d);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
     public class Plane3dForwardSimilarity : Plane3dForwardBenchmark
     {
         protected override Plane3d ConversionBaselineImpl() => TransformOverloadBenchData.Plane3d.Transformed(new Trafo3d(TransformOverloadBenchData.Similarity3d));
@@ -626,5 +665,82 @@ namespace Aardvark.Base.Benchmarks.Geometry
     {
         protected override Plane3d ConversionBaselineImpl() => TransformOverloadBenchData.Plane3d.InvTransformed(new Trafo3d(TransformOverloadBenchData.Scale3d));
         protected override Plane3d SpecializedImpl() => TransformOverloadBenchData.Plane3d.InvTransformed(TransformOverloadBenchData.Scale3d);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fForwardEuclidean : Plane3fForwardBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Euclidean3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Euclidean3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fForwardSimilarity : Plane3fForwardBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Similarity3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Similarity3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fForwardAffine : Plane3fForwardBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Affine3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Affine3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fForwardShift : Plane3fForwardBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Shift3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Shift3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fForwardRot : Plane3fForwardBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Rot3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Rot3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fForwardScale : Plane3fForwardBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.Transformed(new Trafo3f(TransformOverloadBenchData.Scale3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.Transformed(TransformOverloadBenchData.Scale3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fInverseEuclidean : Plane3fInverseBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Euclidean3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Euclidean3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fInverseSimilarity : Plane3fInverseBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Similarity3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Similarity3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fInverseShift : Plane3fInverseBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Shift3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Shift3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fInverseRot : Plane3fInverseBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Rot3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Rot3f);
+    }
+
+    [PlainExporter, MemoryDiagnoser, MediumRunJob]
+    public class Plane3fInverseScale : Plane3fInverseBenchmark
+    {
+        protected override Plane3f ConversionBaselineImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Scale3f));
+        protected override Plane3f SpecializedImpl() => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Scale3f);
     }
 }

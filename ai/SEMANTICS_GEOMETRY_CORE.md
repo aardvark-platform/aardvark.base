@@ -55,6 +55,18 @@ When a direct specialization cannot be kept both correct and performance-competi
 
 There is no `Rigid2d`/`Rigid3d` public transform type in this repo. Use `Euclidean2d`/`Euclidean3d` instead when mapping older issue text to the current API.
 
+## Geometry Transform Performance Workflow
+
+Use `Release` for transform overload performance work. Start with the smallest relevant targeted run, then broaden only when the local question requires it.
+
+```powershell
+dotnet build src\Tests\Aardvark.Base.Benchmarks\Aardvark.Base.Benchmarks.csproj -c Release -p:BuildInParallel=false --no-restore
+dotnet run --no-build -c Release --project src\Tests\Aardvark.Base.Benchmarks\Aardvark.Base.Benchmarks.csproj -- --list-transform-perf-cases
+dotnet run --no-build -c Release --project src\Tests\Aardvark.Base.Benchmarks\Aardvark.Base.Benchmarks.csproj -- --targeted-transform-perf --case Plane3dForwardEuclidean
+```
+
+The `--case` value is a substring filter. Prefer a single function name while iterating, a family name such as `Plane` for final local evidence, and BenchmarkDotNet filters only for confirmation of specific suspicious cases.
+
 ## Geodesy Units (Geo)
 
 `Geo.XyzFromLonLatHeight` and `Geo.LonLatHeightFromXyz` use:

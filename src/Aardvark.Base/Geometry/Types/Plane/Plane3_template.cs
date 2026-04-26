@@ -325,8 +325,12 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__euclidean3t__ trafo)
         {
-            var n1 = trafo.TransformDir(Normal);
-            return new __plane3t__(n1, Distance + trafo.Trans.Dot(n1));
+            var linear = (__m33t__)trafo.Rot;
+            var n1 = new __v3t__(
+                linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
+                linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
+                linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z);
+            return new __plane3t__(n1, Distance + trafo.Trans.X * n1.X + trafo.Trans.Y * n1.Y + trafo.Trans.Z * n1.Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

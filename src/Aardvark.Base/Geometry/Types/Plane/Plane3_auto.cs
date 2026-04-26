@@ -296,8 +296,12 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3f Transformed(Euclidean3f trafo)
         {
-            var n1 = trafo.TransformDir(Normal);
-            return new Plane3f(n1, Distance + trafo.Trans.Dot(n1));
+            var linear = (M33f)trafo.Rot;
+            var n1 = new V3f(
+                linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
+                linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
+                linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z);
+            return new Plane3f(n1, Distance + trafo.Trans.X * n1.X + trafo.Trans.Y * n1.Y + trafo.Trans.Z * n1.Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1324,8 +1328,12 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Plane3d Transformed(Euclidean3d trafo)
         {
-            var n1 = trafo.TransformDir(Normal);
-            return new Plane3d(n1, Distance + trafo.Trans.Dot(n1));
+            var linear = (M33d)trafo.Rot;
+            var n1 = new V3d(
+                linear.M00 * Normal.X + linear.M01 * Normal.Y + linear.M02 * Normal.Z,
+                linear.M10 * Normal.X + linear.M11 * Normal.Y + linear.M12 * Normal.Z,
+                linear.M20 * Normal.X + linear.M21 * Normal.Y + linear.M22 * Normal.Z);
+            return new Plane3d(n1, Distance + trafo.Trans.X * n1.X + trafo.Trans.Y * n1.Y + trafo.Trans.Z * n1.Z);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
