@@ -792,8 +792,8 @@ namespace Aardvark.Tests.Geometry
         {
             var isFloat = planeType.Name.EndsWith("f", StringComparison.Ordinal);
             return isFloat
-                ? new[] { typeof(Similarity3f), typeof(Affine3f), typeof(Shift3f), typeof(Rot3f), typeof(Scale3f) }
-                : new[] { typeof(Similarity3d), typeof(Affine3d), typeof(Shift3d), typeof(Rot3d), typeof(Scale3d) };
+                ? new[] { typeof(Euclidean3f), typeof(Similarity3f), typeof(Affine3f), typeof(Shift3f), typeof(Rot3f), typeof(Scale3f) }
+                : new[] { typeof(Euclidean3d), typeof(Similarity3d), typeof(Affine3d), typeof(Shift3d), typeof(Rot3d), typeof(Scale3d) };
         }
 
         private static IEnumerable<Type> GetPlaneInverseTransformTypes(Type planeType)
