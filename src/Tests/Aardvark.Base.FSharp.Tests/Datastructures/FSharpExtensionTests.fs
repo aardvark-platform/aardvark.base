@@ -193,12 +193,49 @@ module Array =
         result = structData
 
     [<NUnit.Framework.Test>]
+    let ``[Array] zipV and unzipV support empty arrays`` () =
+        let zipped =
+            Array.zipV ([||] : string[]) ([||] : string[])
+
+        let struct (left : string[], right : string[]) =
+            Array.unzipV ([||] : struct (string * string)[])
+
+        NUnit.Framework.Assert.That(zipped, NUnit.Framework.Is.EqualTo([||] : struct (string * string)[]))
+        NUnit.Framework.Assert.That(left, NUnit.Framework.Is.EqualTo([||] : string[]))
+        NUnit.Framework.Assert.That(right, NUnit.Framework.Is.EqualTo([||] : string[]))
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] zipV and unzipV preserve reference payloads and nulls`` () =
+        let left = [| "alpha"; null; "gamma" |]
+        let right = [| "one"; "two"; null |]
+
+        let zipped =
+            Array.zipV left right
+
+        let expected =
+            [|
+                struct ("alpha", "one")
+                struct (null, "two")
+                struct ("gamma", null)
+            |]
+
+        let struct (unzippedLeft, unzippedRight) =
+            Array.unzipV zipped
+
+        NUnit.Framework.Assert.That(zipped, NUnit.Framework.Is.EqualTo(expected))
+        NUnit.Framework.Assert.That(unzippedLeft, NUnit.Framework.Is.EqualTo(left))
+        NUnit.Framework.Assert.That(unzippedRight, NUnit.Framework.Is.EqualTo(right))
+
+    [<NUnit.Framework.Test>]
     let ``[Array] zipV throws for different-length inputs`` () =
         let left = [| 1; 2 |]
         let right = [| 3 |]
 
-        NUnit.Framework.Assert.Throws<System.ArgumentException>(fun () -> Array.zipV left right |> ignore)
-        |> ignore
+        let ex =
+            NUnit.Framework.Assert.Throws<System.ArgumentException>(fun () -> Array.zipV left right |> ignore)
+
+        NUnit.Framework.StringAssert.Contains("array1.Length = 2", ex.Message)
+        NUnit.Framework.StringAssert.Contains("array2.Length = 1", ex.Message)
 
     [<Property>]
     let ``[Array] collecti`` (mapping: int -> int -> int[]) (data: int[]) =
