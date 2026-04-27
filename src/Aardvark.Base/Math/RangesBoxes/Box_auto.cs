@@ -11633,6 +11633,31 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedLinear(M22d linear, V2d translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var res = new Box2d(translation, translation);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
         public readonly Box2d Transformed(M33d trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
@@ -11662,6 +11687,178 @@ namespace Aardvark.Base
         public readonly Box2d Transformed(Trafo2d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Euclidean2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Similarity2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Affine2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            if (IsInfinite) return TransformedLinear(trafo.Linear, trafo.Trans);
+
+            var center = new V2d((Min.X + Max.X) * ((double)0.5), (Min.Y + Max.Y) * ((double)0.5));
+            var extent = new V2d((Max.X - Min.X) * ((double)0.5), (Max.Y - Min.Y) * ((double)0.5));
+            var linear = trafo.Linear;
+            var transformedCenter = new V2d(
+                trafo.Trans.X
+                + linear.M00 * center.X
+                + linear.M01 * center.Y
+,                trafo.Trans.Y
+                + linear.M10 * center.X
+                + linear.M11 * center.Y
+            );
+            var transformedExtent = new V2d(
+                Fun.Abs(linear.M00) * extent.X
+ +                 Fun.Abs(linear.M01) * extent.Y
+,                Fun.Abs(linear.M10) * extent.X
+ +                 Fun.Abs(linear.M11) * extent.Y
+            );
+            return new Box2d(transformedCenter - transformedExtent, transformedCenter + transformedExtent);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Shift2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            return new Box2d(
+                new V2d(Min.X + trafo.V.X, Min.Y + trafo.V.Y),
+                new V2d(Max.X + trafo.V.X, Max.Y + trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Rot2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(V2d.Zero, V2d.Zero);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Scale2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var min = new V2d(Min.X * trafo.V.X, Min.Y * trafo.V.Y);
+            var max = new V2d(Max.X * trafo.V.X, Max.Y * trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2d(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Trafo2d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Euclidean2d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Similarity2d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Shift2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            return new Box2d(
+                new V2d(Min.X - trafo.V.X, Min.Y - trafo.V.Y),
+                new V2d(Max.X - trafo.V.X, Max.Y - trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Rot2d trafo)
+        {
+            return TransformedLinear((M22d)trafo.Inverse, V2d.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Scale2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var min = new V2d(Min.X / trafo.V.X, Min.Y / trafo.V.Y);
+            var max = new V2d(Max.X / trafo.V.X, Max.Y / trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2d(min, max);
         }
 
         #endregion
@@ -13201,6 +13398,31 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedLinear(M22d linear, V2d translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var res = new Box2d(translation, translation);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
         public readonly Box2d Transformed(M33d trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
@@ -13230,6 +13452,178 @@ namespace Aardvark.Base
         public readonly Box2d Transformed(Trafo2d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Euclidean2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Similarity2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Affine2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            if (IsInfinite) return TransformedLinear(trafo.Linear, trafo.Trans);
+
+            var center = new V2d((Min.X + Max.X) * ((double)0.5), (Min.Y + Max.Y) * ((double)0.5));
+            var extent = new V2d((Max.X - Min.X) * ((double)0.5), (Max.Y - Min.Y) * ((double)0.5));
+            var linear = trafo.Linear;
+            var transformedCenter = new V2d(
+                trafo.Trans.X
+                + linear.M00 * center.X
+                + linear.M01 * center.Y
+,                trafo.Trans.Y
+                + linear.M10 * center.X
+                + linear.M11 * center.Y
+            );
+            var transformedExtent = new V2d(
+                Fun.Abs(linear.M00) * extent.X
+ +                 Fun.Abs(linear.M01) * extent.Y
+,                Fun.Abs(linear.M10) * extent.X
+ +                 Fun.Abs(linear.M11) * extent.Y
+            );
+            return new Box2d(transformedCenter - transformedExtent, transformedCenter + transformedExtent);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Shift2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            return new Box2d(
+                new V2d(Min.X + trafo.V.X, Min.Y + trafo.V.Y),
+                new V2d(Max.X + trafo.V.X, Max.Y + trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Rot2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(V2d.Zero, V2d.Zero);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Scale2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var min = new V2d(Min.X * trafo.V.X, Min.Y * trafo.V.Y);
+            var max = new V2d(Max.X * trafo.V.X, Max.Y * trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2d(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Trafo2d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Euclidean2d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Similarity2d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Shift2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            return new Box2d(
+                new V2d(Min.X - trafo.V.X, Min.Y - trafo.V.Y),
+                new V2d(Max.X - trafo.V.X, Max.Y - trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Rot2d trafo)
+        {
+            return TransformedLinear((M22d)trafo.Inverse, V2d.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Scale2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var min = new V2d(Min.X / trafo.V.X, Min.Y / trafo.V.Y);
+            var max = new V2d(Max.X / trafo.V.X, Max.Y / trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2d(min, max);
         }
 
         #endregion
@@ -14833,6 +15227,31 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2f TransformedLinear(M22f linear, V2f translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            var res = new Box2f(translation, translation);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
         public readonly Box2f Transformed(M33f trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
@@ -14862,6 +15281,178 @@ namespace Aardvark.Base
         public readonly Box2f Transformed(Trafo2f trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Euclidean2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            var linear = (M22f)trafo;
+            var res = new Box2f(trafo.Trans, trafo.Trans);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Similarity2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            var linear = (M22f)trafo;
+            var res = new Box2f(trafo.Trans, trafo.Trans);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Affine2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            if (IsInfinite) return TransformedLinear(trafo.Linear, trafo.Trans);
+
+            var center = new V2f((Min.X + Max.X) * ((float)0.5), (Min.Y + Max.Y) * ((float)0.5));
+            var extent = new V2f((Max.X - Min.X) * ((float)0.5), (Max.Y - Min.Y) * ((float)0.5));
+            var linear = trafo.Linear;
+            var transformedCenter = new V2f(
+                trafo.Trans.X
+                + linear.M00 * center.X
+                + linear.M01 * center.Y
+,                trafo.Trans.Y
+                + linear.M10 * center.X
+                + linear.M11 * center.Y
+            );
+            var transformedExtent = new V2f(
+                Fun.Abs(linear.M00) * extent.X
+ +                 Fun.Abs(linear.M01) * extent.Y
+,                Fun.Abs(linear.M10) * extent.X
+ +                 Fun.Abs(linear.M11) * extent.Y
+            );
+            return new Box2f(transformedCenter - transformedExtent, transformedCenter + transformedExtent);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Shift2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            return new Box2f(
+                new V2f(Min.X + trafo.V.X, Min.Y + trafo.V.Y),
+                new V2f(Max.X + trafo.V.X, Max.Y + trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Rot2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            var linear = (M22f)trafo;
+            var res = new Box2f(V2f.Zero, V2f.Zero);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f Transformed(Scale2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            var min = new V2f(Min.X * trafo.V.X, Min.Y * trafo.V.Y);
+            var max = new V2f(Max.X * trafo.V.X, Max.Y * trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2f(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Trafo2f trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Euclidean2f trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22f)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Similarity2f trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22f)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Shift2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            return new Box2f(
+                new V2f(Min.X - trafo.V.X, Min.Y - trafo.V.Y),
+                new V2f(Max.X - trafo.V.X, Max.Y - trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Rot2f trafo)
+        {
+            return TransformedLinear((M22f)trafo.Inverse, V2f.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2f InvTransformed(Scale2f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            var min = new V2f(Min.X / trafo.V.X, Min.Y / trafo.V.Y);
+            var max = new V2f(Max.X / trafo.V.X, Max.Y / trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2f(min, max);
         }
 
         #endregion
@@ -16454,6 +17045,31 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedLinear(M22d linear, V2d translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var res = new Box2d(translation, translation);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
         public readonly Box2d Transformed(M33d trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
@@ -16483,6 +17099,178 @@ namespace Aardvark.Base
         public readonly Box2d Transformed(Trafo2d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Euclidean2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Similarity2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Affine2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            if (IsInfinite) return TransformedLinear(trafo.Linear, trafo.Trans);
+
+            var center = new V2d((Min.X + Max.X) * ((double)0.5), (Min.Y + Max.Y) * ((double)0.5));
+            var extent = new V2d((Max.X - Min.X) * ((double)0.5), (Max.Y - Min.Y) * ((double)0.5));
+            var linear = trafo.Linear;
+            var transformedCenter = new V2d(
+                trafo.Trans.X
+                + linear.M00 * center.X
+                + linear.M01 * center.Y
+,                trafo.Trans.Y
+                + linear.M10 * center.X
+                + linear.M11 * center.Y
+            );
+            var transformedExtent = new V2d(
+                Fun.Abs(linear.M00) * extent.X
+ +                 Fun.Abs(linear.M01) * extent.Y
+,                Fun.Abs(linear.M10) * extent.X
+ +                 Fun.Abs(linear.M11) * extent.Y
+            );
+            return new Box2d(transformedCenter - transformedExtent, transformedCenter + transformedExtent);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Shift2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            return new Box2d(
+                new V2d(Min.X + trafo.V.X, Min.Y + trafo.V.Y),
+                new V2d(Max.X + trafo.V.X, Max.Y + trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Rot2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var linear = (M22d)trafo;
+            var res = new Box2d(V2d.Zero, V2d.Zero);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d Transformed(Scale2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var min = new V2d(Min.X * trafo.V.X, Min.Y * trafo.V.Y);
+            var max = new V2d(Max.X * trafo.V.X, Max.Y * trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2d(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Trafo2d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Euclidean2d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Similarity2d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M22d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Shift2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            return new Box2d(
+                new V2d(Min.X - trafo.V.X, Min.Y - trafo.V.Y),
+                new V2d(Max.X - trafo.V.X, Max.Y - trafo.V.Y)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Rot2d trafo)
+        {
+            return TransformedLinear((M22d)trafo.Inverse, V2d.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box2d InvTransformed(Scale2d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var min = new V2d(Min.X / trafo.V.X, Min.Y / trafo.V.Y);
+            var max = new V2d(Max.X / trafo.V.X, Max.Y / trafo.V.Y);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            return new Box2d(min, max);
         }
 
         #endregion
@@ -17959,6 +18747,51 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedLinear(M33d linear, V3d translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var res = new Box3d(translation, translation);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
         public readonly Box3d Transformed(M44d trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
@@ -18008,6 +18841,224 @@ namespace Aardvark.Base
         public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Euclidean3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Similarity3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Affine3d trafo)
+        {
+            // The direct 3D affine AABB implementation stays mathematically correct, but repeated
+            // Release measurements show it slower than the homogeneous-matrix baseline on current
+            // JIT/codegen. Keep the specialized 2D path and intentionally fall back here until a
+            // direct 3D variant can beat or at least match the matrix path.
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Shift3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            return new Box3d(
+                new V3d(Min.X + trafo.V.X, Min.Y + trafo.V.Y, Min.Z + trafo.V.Z),
+                new V3d(Max.X + trafo.V.X, Max.Y + trafo.V.Y, Max.Z + trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Rot3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(V3d.Zero, V3d.Zero);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Scale3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var min = new V3d(Min.X * trafo.V.X, Min.Y * trafo.V.Y, Min.Z * trafo.V.Z);
+            var max = new V3d(Max.X * trafo.V.X, Max.Y * trafo.V.Y, Max.Z * trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3d(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Trafo3d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Euclidean3d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Similarity3d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Shift3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            return new Box3d(
+                new V3d(Min.X - trafo.V.X, Min.Y - trafo.V.Y, Min.Z - trafo.V.Z),
+                new V3d(Max.X - trafo.V.X, Max.Y - trafo.V.Y, Max.Z - trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Rot3d trafo)
+        {
+            return TransformedLinear((M33d)trafo.Inverse, V3d.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Scale3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var min = new V3d(Min.X / trafo.V.X, Min.Y / trafo.V.Y, Min.Z / trafo.V.Z);
+            var max = new V3d(Max.X / trafo.V.X, Max.Y / trafo.V.Y, Max.Z / trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3d(min, max);
         }
 
         #endregion
@@ -19884,6 +20935,51 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedLinear(M33d linear, V3d translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var res = new Box3d(translation, translation);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
         public readonly Box3d Transformed(M44d trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
@@ -19933,6 +21029,224 @@ namespace Aardvark.Base
         public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Euclidean3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Similarity3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Affine3d trafo)
+        {
+            // The direct 3D affine AABB implementation stays mathematically correct, but repeated
+            // Release measurements show it slower than the homogeneous-matrix baseline on current
+            // JIT/codegen. Keep the specialized 2D path and intentionally fall back here until a
+            // direct 3D variant can beat or at least match the matrix path.
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Shift3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            return new Box3d(
+                new V3d(Min.X + trafo.V.X, Min.Y + trafo.V.Y, Min.Z + trafo.V.Z),
+                new V3d(Max.X + trafo.V.X, Max.Y + trafo.V.Y, Max.Z + trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Rot3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(V3d.Zero, V3d.Zero);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Scale3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var min = new V3d(Min.X * trafo.V.X, Min.Y * trafo.V.Y, Min.Z * trafo.V.Z);
+            var max = new V3d(Max.X * trafo.V.X, Max.Y * trafo.V.Y, Max.Z * trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3d(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Trafo3d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Euclidean3d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Similarity3d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Shift3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            return new Box3d(
+                new V3d(Min.X - trafo.V.X, Min.Y - trafo.V.Y, Min.Z - trafo.V.Z),
+                new V3d(Max.X - trafo.V.X, Max.Y - trafo.V.Y, Max.Z - trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Rot3d trafo)
+        {
+            return TransformedLinear((M33d)trafo.Inverse, V3d.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Scale3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var min = new V3d(Min.X / trafo.V.X, Min.Y / trafo.V.Y, Min.Z / trafo.V.Z);
+            var max = new V3d(Max.X / trafo.V.X, Max.Y / trafo.V.Y, Max.Z / trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3d(min, max);
         }
 
         #endregion
@@ -21875,6 +23189,51 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3f TransformedLinear(M33f linear, V3f translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            var res = new Box3f(translation, translation);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
         public readonly Box3f Transformed(M44f trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
@@ -21924,6 +23283,224 @@ namespace Aardvark.Base
         public readonly Box3f Transformed(Trafo3f trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Euclidean3f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            var linear = (M33f)trafo;
+            var res = new Box3f(trafo.Trans, trafo.Trans);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Similarity3f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            var linear = (M33f)trafo;
+            var res = new Box3f(trafo.Trans, trafo.Trans);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Affine3f trafo)
+        {
+            // The direct 3D affine AABB implementation stays mathematically correct, but repeated
+            // Release measurements show it slower than the homogeneous-matrix baseline on current
+            // JIT/codegen. Keep the specialized 2D path and intentionally fall back here until a
+            // direct 3D variant can beat or at least match the matrix path.
+            return Transformed((M44f)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Shift3f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            return new Box3f(
+                new V3f(Min.X + trafo.V.X, Min.Y + trafo.V.Y, Min.Z + trafo.V.Z),
+                new V3f(Max.X + trafo.V.X, Max.Y + trafo.V.Y, Max.Z + trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Rot3f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            var linear = (M33f)trafo;
+            var res = new Box3f(V3f.Zero, V3f.Zero);
+            float av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f Transformed(Scale3f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            var min = new V3f(Min.X * trafo.V.X, Min.Y * trafo.V.Y, Min.Z * trafo.V.Z);
+            var max = new V3f(Max.X * trafo.V.X, Max.Y * trafo.V.Y, Max.Z * trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3f(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Trafo3f trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Euclidean3f trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33f)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Similarity3f trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33f)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Shift3f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            return new Box3f(
+                new V3f(Min.X - trafo.V.X, Min.Y - trafo.V.Y, Min.Z - trafo.V.Z),
+                new V3f(Max.X - trafo.V.X, Max.Y - trafo.V.Y, Max.Z - trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Rot3f trafo)
+        {
+            return TransformedLinear((M33f)trafo.Inverse, V3f.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3f InvTransformed(Scale3f trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            var min = new V3f(Min.X / trafo.V.X, Min.Y / trafo.V.Y, Min.Z / trafo.V.Z);
+            var max = new V3f(Max.X / trafo.V.X, Max.Y / trafo.V.Y, Max.Z / trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3f(min, max);
         }
 
         #endregion
@@ -23854,6 +25431,51 @@ namespace Aardvark.Base
         /// NOTE: Performs IsValid check at 10% CPU time overhead.
         ///       -> Empty bounds (crossed min and max) will remain empty.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedLinear(M33d linear, V3d translation)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var res = new Box3d(translation, translation);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
         public readonly Box3d Transformed(M44d trafo)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
@@ -23903,6 +25525,224 @@ namespace Aardvark.Base
         public readonly Box3d Transformed(Trafo3d trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Euclidean3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Similarity3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(trafo.Trans, trafo.Trans);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Affine3d trafo)
+        {
+            // The direct 3D affine AABB implementation stays mathematically correct, but repeated
+            // Release measurements show it slower than the homogeneous-matrix baseline on current
+            // JIT/codegen. Keep the specialized 2D path and intentionally fall back here until a
+            // direct 3D variant can beat or at least match the matrix path.
+            return Transformed((M44d)trafo);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Shift3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            return new Box3d(
+                new V3d(Min.X + trafo.V.X, Min.Y + trafo.V.Y, Min.Z + trafo.V.Z),
+                new V3d(Max.X + trafo.V.X, Max.Y + trafo.V.Y, Max.Z + trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Rot3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var linear = (M33d)trafo;
+            var res = new Box3d(V3d.Zero, V3d.Zero);
+            double av, bv;
+            av = linear.M00 * Min.X;
+            bv = linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M01 * Min.Y;
+            bv = linear.M01 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M02 * Min.Z;
+            bv = linear.M02 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linear.M10 * Min.X;
+            bv = linear.M10 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M11 * Min.Y;
+            bv = linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M12 * Min.Z;
+            bv = linear.M12 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linear.M20 * Min.X;
+            bv = linear.M20 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M21 * Min.Y;
+            bv = linear.M21 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linear.M22 * Min.Z;
+            bv = linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d Transformed(Scale3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var min = new V3d(Min.X * trafo.V.X, Min.Y * trafo.V.Y, Min.Z * trafo.V.Z);
+            var max = new V3d(Max.X * trafo.V.X, Max.Y * trafo.V.Y, Max.Z * trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3d(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Trafo3d trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Euclidean3d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Similarity3d trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M33d)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Shift3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            return new Box3d(
+                new V3d(Min.X - trafo.V.X, Min.Y - trafo.V.Y, Min.Z - trafo.V.Z),
+                new V3d(Max.X - trafo.V.X, Max.Y - trafo.V.Y, Max.Z - trafo.V.Z)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Rot3d trafo)
+        {
+            return TransformedLinear((M33d)trafo.Inverse, V3d.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box3d InvTransformed(Scale3d trafo)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var min = new V3d(Min.X / trafo.V.X, Min.Y / trafo.V.Y, Min.Z / trafo.V.Z);
+            var max = new V3d(Max.X / trafo.V.X, Max.Y / trafo.V.Y, Max.Z / trafo.V.Z);
+            if (min.X > max.X) Fun.Swap(ref min.X, ref max.X);
+            if (min.Y > max.Y) Fun.Swap(ref min.Y, ref max.Y);
+            if (min.Z > max.Z) Fun.Swap(ref min.Z, ref max.Z);
+            return new Box3d(min, max);
         }
 
         #endregion

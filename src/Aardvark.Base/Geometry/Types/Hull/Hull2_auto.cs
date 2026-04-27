@@ -170,6 +170,167 @@ namespace Aardvark.Base
             return hull;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Plane2f TransformPlaneNormalized(Plane2f plane, V2f rawNormal, V2f translation)
+        {
+            var inverseLength = 1 / rawNormal.Length;
+            var normal = rawNormal * inverseLength;
+            return new Plane2f(normal, plane.Distance * inverseLength + translation.Dot(normal));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Euclidean2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var linear = (M22f)trafo.Rot;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Similarity2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var linear = (M22f)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                var normal = plane.Normal;
+                hull.PlaneArray[i] = TransformPlaneNormalized(
+                    plane,
+                    new V2f(
+                        (linear.M00 * normal.X + linear.M01 * normal.Y) * inverseScale,
+                        (linear.M10 * normal.X + linear.M11 * normal.Y) * inverseScale),
+                    trafo.Trans);
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Affine2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var inverse = trafo.Inverse.Linear;
+            var normalMatrix = new M22f(inverse.M00, inverse.M10, inverse.M01, inverse.M11);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], normalMatrix.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Shift2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane2f(plane.Normal, plane.Distance + trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Rot2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var linear = (M22f)trafo;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V2f.Zero);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f Transformed(Scale2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                var normal = plane.Normal;
+                hull.PlaneArray[i] = TransformPlaneNormalized(plane, new V2f(normal.X / trafo.X, normal.Y / trafo.Y), V2f.Zero);
+            }
+            return hull;
+        }
+
+        public readonly Hull2f InvTransformed(Trafo2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var invTr = trafo.Forward.Transposed;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i]
+                    = new Plane2f(
+                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
+                            trafo.Backward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Euclidean2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var linear = (M22f)trafo.Inverse;
+            var translation = -linear.Transform(trafo.Trans);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), translation);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Similarity2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var inverseRot = (M22f)trafo.Rot.Inverse;
+            var translation = -inverseRot.Transform(trafo.Trans) / trafo.Scale;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], inverseRot.Transform(PlaneArray[i].Normal) * trafo.Scale, translation);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Shift2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane2f(plane.Normal, plane.Distance - trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Rot2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            var linear = (M22f)trafo.Inverse;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V2f.Zero);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2f InvTransformed(Scale2f trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2f(new Plane2f[count]);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), V2f.Zero);
+            return hull;
+        }
+
         public readonly void TransformInto(Trafo2f trafo, ref Hull2f hull)
         {
             int count = PlaneCount;
@@ -422,6 +583,167 @@ namespace Aardvark.Base
                     = new Plane2d(
                             invTr.TransformDir(PlaneArray[i].Normal).Normalized,
                             trafo.Forward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Plane2d TransformPlaneNormalized(Plane2d plane, V2d rawNormal, V2d translation)
+        {
+            var inverseLength = 1 / rawNormal.Length;
+            var normal = rawNormal * inverseLength;
+            return new Plane2d(normal, plane.Distance * inverseLength + translation.Dot(normal));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Euclidean2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var linear = (M22d)trafo.Rot;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Similarity2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var linear = (M22d)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                var normal = plane.Normal;
+                hull.PlaneArray[i] = TransformPlaneNormalized(
+                    plane,
+                    new V2d(
+                        (linear.M00 * normal.X + linear.M01 * normal.Y) * inverseScale,
+                        (linear.M10 * normal.X + linear.M11 * normal.Y) * inverseScale),
+                    trafo.Trans);
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Affine2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var inverse = trafo.Inverse.Linear;
+            var normalMatrix = new M22d(inverse.M00, inverse.M10, inverse.M01, inverse.M11);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], normalMatrix.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Shift2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane2d(plane.Normal, plane.Distance + trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Rot2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var linear = (M22d)trafo;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V2d.Zero);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d Transformed(Scale2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                var normal = plane.Normal;
+                hull.PlaneArray[i] = TransformPlaneNormalized(plane, new V2d(normal.X / trafo.X, normal.Y / trafo.Y), V2d.Zero);
+            }
+            return hull;
+        }
+
+        public readonly Hull2d InvTransformed(Trafo2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var invTr = trafo.Forward.Transposed;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i]
+                    = new Plane2d(
+                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
+                            trafo.Backward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Euclidean2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var linear = (M22d)trafo.Inverse;
+            var translation = -linear.Transform(trafo.Trans);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), translation);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Similarity2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var inverseRot = (M22d)trafo.Rot.Inverse;
+            var translation = -inverseRot.Transform(trafo.Trans) / trafo.Scale;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], inverseRot.Transform(PlaneArray[i].Normal) * trafo.Scale, translation);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Shift2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new Plane2d(plane.Normal, plane.Distance - trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Rot2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            var linear = (M22d)trafo.Inverse;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V2d.Zero);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Hull2d InvTransformed(Scale2d trafo)
+        {
+            int count = PlaneCount;
+            var hull = new Hull2d(new Plane2d[count]);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), V2d.Zero);
             return hull;
         }
 

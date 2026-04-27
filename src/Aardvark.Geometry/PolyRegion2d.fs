@@ -517,6 +517,21 @@ type PolyRegion private(polygons : list<Polygon2d>) =
     member x.Transformed(s : Scale2d) =
         PolyRegion (polygons |> List.map (fun p -> p.Transformed s))
 
+    member x.InvTransformed(e : Euclidean2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed e))
+
+    member x.InvTransformed(s : Similarity2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed s))
+
+    member x.InvTransformed(s : Shift2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed s))
+
+    member x.InvTransformed(r : Rot2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed r))
+
+    member x.InvTransformed(s : Scale2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed s))
+
     /// Returns a copy of the PolyRegion with the vertex order of all polygons reversed.
     member x.Reversed =
         PolyRegion (polygons |> List.map (fun p -> p.Reversed))
@@ -594,8 +609,13 @@ module PolyRegion =
     let inline ofList (p : list<V2d>) = p |> Polygon2d |> ofPolygon
     let inline ofArray (p : array<V2d>) = p |> Polygon2d |> ofPolygon
     let inline ofBox (b : Box2d) = b.ToPolygon2dCCW() |> ofPolygon
-    
+
     let inline transformed (m : M33d) (r : PolyRegion) = r.Transformed m
+    let invTransformedEuclidean (t : Euclidean2d) (r : PolyRegion) = r.InvTransformed t
+    let invTransformedSimilarity (t : Similarity2d) (r : PolyRegion) = r.InvTransformed t
+    let invTransformedShift (t : Shift2d) (r : PolyRegion) = r.InvTransformed t
+    let invTransformedRot (t : Rot2d) (r : PolyRegion) = r.InvTransformed t
+    let invTransformedScale (t : Scale2d) (r : PolyRegion) = r.InvTransformed t
     let inline bounds (r : PolyRegion) = r.BoundingBox
 
     let inline toPolygons (r : PolyRegion) = r.Polygons
@@ -714,4 +734,3 @@ module PolyRegion =
                 [| p000; p100; p110; p010|] |> projectConvex
                 [| p001; p101; p111; p011|] |> projectConvex
             ]
-            

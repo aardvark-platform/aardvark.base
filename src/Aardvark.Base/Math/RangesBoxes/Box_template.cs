@@ -1728,6 +1728,23 @@ namespace Aardvark.Base
         //# {
         //# var tc = (ft == Meta.FloatType) ? "f" : "d";
         //# var tftype = (ft == Meta.FloatType) ? "float" : "double";
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box__dim____tc__ TransformedLinear(M__dim____dim____tc__ linear, V__dim____tc__ translation)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            var res = new Box__dim____tc__(translation, translation);
+            __tftype__ av, bv;
+            //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+            //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+            av = linear.M__i____j__ * Min.__fj__;
+            bv = linear.M__i____j__ * Max.__fj__;
+            if (av < bv) { res.Min.__fi__ += av; res.Max.__fi__ += bv; }
+            else { res.Min.__fi__ += bv; res.Max.__fi__ += av; }
+            //# }
+            //# }
+            return res;
+        }
+
         public readonly Box__dim____tc__ Transformed(M__dplus1____dplus1____tc__ trafo)
         {
             if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
@@ -1749,6 +1766,168 @@ namespace Aardvark.Base
         public readonly Box__dim____tc__ Transformed(Trafo__dim____tc__ trafo)
         {
             return Transformed(trafo.Forward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Euclidean__dim____tc__ trafo)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            var linear = (M__dim____dim____tc__)trafo;
+            var res = new Box__dim____tc__(trafo.Trans, trafo.Trans);
+            __tftype__ av, bv;
+            //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+            //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+            av = linear.M__i____j__ * Min.__fj__;
+            bv = linear.M__i____j__ * Max.__fj__;
+            if (av < bv) { res.Min.__fi__ += av; res.Max.__fi__ += bv; }
+            else { res.Min.__fi__ += bv; res.Max.__fi__ += av; }
+            //# }
+            //# }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Similarity__dim____tc__ trafo)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            var linear = (M__dim____dim____tc__)trafo;
+            var res = new Box__dim____tc__(trafo.Trans, trafo.Trans);
+            __tftype__ av, bv;
+            //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+            //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+            av = linear.M__i____j__ * Min.__fj__;
+            bv = linear.M__i____j__ * Max.__fj__;
+            if (av < bv) { res.Min.__fi__ += av; res.Max.__fi__ += bv; }
+            else { res.Min.__fi__ += bv; res.Max.__fi__ += av; }
+            //# }
+            //# }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Affine__dim____tc__ trafo)
+        {
+            //# if (dim == 3) {
+            // The direct 3D affine AABB implementation stays mathematically correct, but repeated
+            // Release measurements show it slower than the homogeneous-matrix baseline on current
+            // JIT/codegen. Keep the specialized 2D path and intentionally fall back here until a
+            // direct 3D variant can beat or at least match the matrix path.
+            return Transformed((M__dplus1____dplus1____tc__)trafo);
+            //# } else {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            if (IsInfinite) return TransformedLinear(trafo.Linear, trafo.Trans);
+
+            var center = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/(Min.__f__ + Max.__f__) * ((__tftype__)0.5)/*#}, comma);*/);
+            var extent = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/(Max.__f__ - Min.__f__) * ((__tftype__)0.5)/*#}, comma);*/);
+            var linear = trafo.Linear;
+            var transformedCenter = new V__dim____tc__(
+                //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+                trafo.Trans.__fi__
+                //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+                + linear.M__i____j__ * center.__fj__
+                //# }
+                //# if (i < dim - 1) { Out(","); }
+                //# }
+            );
+            var transformedExtent = new V__dim____tc__(
+                //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+                //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+                Fun.Abs(linear.M__i____j__) * extent.__fj__
+                //# if (j < dim - 1) { Out(" + "); }
+                //# }
+                //# if (i < dim - 1) { Out(","); }
+                //# }
+            );
+            return new Box__dim____tc__(transformedCenter - transformedExtent, transformedCenter + transformedExtent);
+            //# }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Shift__dim____tc__ trafo)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            return new Box__dim____tc__(
+                new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Min.__f__ + trafo.V.__f__/*#}, comma);*/),
+                new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Max.__f__ + trafo.V.__f__/*#}, comma);*/)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Rot__dim____tc__ trafo)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            var linear = (M__dim____dim____tc__)trafo;
+            var res = new Box__dim____tc__(V__dim____tc__.Zero, V__dim____tc__.Zero);
+            __tftype__ av, bv;
+            //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+            //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+            av = linear.M__i____j__ * Min.__fj__;
+            bv = linear.M__i____j__ * Max.__fj__;
+            if (av < bv) { res.Min.__fi__ += av; res.Max.__fi__ += bv; }
+            else { res.Min.__fi__ += bv; res.Max.__fi__ += av; }
+            //# }
+            //# }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ Transformed(Scale__dim____tc__ trafo)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            var min = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Min.__f__ * trafo.V.__f__/*#}, comma);*/);
+            var max = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Max.__f__ * trafo.V.__f__/*#}, comma);*/);
+            //# fields.ForEach(f => {
+            if (min.__f__ > max.__f__) Fun.Swap(ref min.__f__, ref max.__f__);
+            //# });
+            return new Box__dim____tc__(min, max);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Trafo__dim____tc__ trafo)
+        {
+            return Transformed(trafo.Backward);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Euclidean__dim____tc__ trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M__dim____dim____tc__)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Similarity__dim____tc__ trafo)
+        {
+            var inverse = trafo.Inverse;
+            return TransformedLinear((M__dim____dim____tc__)inverse, inverse.Trans);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Shift__dim____tc__ trafo)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            return new Box__dim____tc__(
+                new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Min.__f__ - trafo.V.__f__/*#}, comma);*/),
+                new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Max.__f__ - trafo.V.__f__/*#}, comma);*/)
+            );
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Rot__dim____tc__ trafo)
+        {
+            return TransformedLinear((M__dim____dim____tc__)trafo.Inverse, V__dim____tc__.Zero);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly Box__dim____tc__ InvTransformed(Scale__dim____tc__ trafo)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            var min = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Min.__f__ / trafo.V.__f__/*#}, comma);*/);
+            var max = new V__dim____tc__(/*# fields.ForEach((f, i) => {*/Max.__f__ / trafo.V.__f__/*#}, comma);*/);
+            //# fields.ForEach(f => {
+            if (min.__f__ > max.__f__) Fun.Swap(ref min.__f__, ref max.__f__);
+            //# });
+            return new Box__dim____tc__(min, max);
         }
         //# }
 
