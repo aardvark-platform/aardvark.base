@@ -555,6 +555,9 @@ module Prelude =
             else ValueSome array.[array.Length - 1]
 
         let unzipV (array: _ array) =
+            if isNull array then
+                nullArg "array"
+
             let len = array.Length
             let res1 = Array.zeroCreate len
             let res2 = Array.zeroCreate len
@@ -567,6 +570,12 @@ module Prelude =
             struct (res1, res2)
 
         let zipV (array1: _ array) (array2: _ array) =
+            if isNull array1 then
+                nullArg "array1"
+
+            if isNull array2 then
+                nullArg "array2"
+
             let len1 = array1.Length
 
             if len1 <> array2.Length then

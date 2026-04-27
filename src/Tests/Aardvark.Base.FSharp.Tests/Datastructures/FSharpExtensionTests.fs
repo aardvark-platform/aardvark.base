@@ -237,6 +237,35 @@ module Array =
         NUnit.Framework.StringAssert.Contains("array1.Length = 2", ex.Message)
         NUnit.Framework.StringAssert.Contains("array2.Length = 1", ex.Message)
 
+    [<NUnit.Framework.Test>]
+    let ``[Array] zipV throws ArgumentNullException for null left input`` () =
+        let left : string[] = null
+        let right = [| "value" |]
+
+        let ex =
+            NUnit.Framework.Assert.Throws<System.ArgumentNullException>(fun () -> Array.zipV left right |> ignore)
+
+        NUnit.Framework.Assert.That(ex.ParamName, NUnit.Framework.Is.EqualTo("array1"))
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] zipV throws ArgumentNullException for null right input`` () =
+        let left = [| "value" |]
+        let right : string[] = null
+
+        let ex =
+            NUnit.Framework.Assert.Throws<System.ArgumentNullException>(fun () -> Array.zipV left right |> ignore)
+
+        NUnit.Framework.Assert.That(ex.ParamName, NUnit.Framework.Is.EqualTo("array2"))
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] unzipV throws ArgumentNullException for null input`` () =
+        let data : struct (string * string)[] = null
+
+        let ex =
+            NUnit.Framework.Assert.Throws<System.ArgumentNullException>(fun () -> Array.unzipV data |> ignore)
+
+        NUnit.Framework.Assert.That(ex.ParamName, NUnit.Framework.Is.EqualTo("array"))
+
     [<Property>]
     let ``[Array] collecti`` (mapping: int -> int -> int[]) (data: int[]) =
         let result =
