@@ -1,10 +1,14 @@
+### 5.3.22
 - [Telemetry] Fixed `WallClockTimer` timer disposal so repeated `Dispose` calls do not corrupt timer state
 - [Introspection] Fixed native library loading on Windows using netstandard2.0 (https://github.com/aardvark-platform/aardvark.base/issues/86)
 - [Base] Fixed `Dict.Contains(key, value)` for collided entries in hash buckets
+- [Base] Fixed reentrant `Dict.GetOrCreate`
+- [Base] Fixed linear polynomial real roots
+- [Base] Fixed special dict setter behavior
+- [Base] Added fast values enumerator API for dict types
 - [PixImage] Improved reporting of inner exceptions thrown by loaders and processors
 - [FSharp] Added `Array.chooseV` and `Array.chooseiV`
 - [FSharp] Added `Array.zipV` and `Array.unzipV`
-- [FSharp] Fixed `Array.zipV` and `Array.unzipV` to throw `ArgumentNullException` for null inputs
 - [FSharp] Added intersection methods using `ValueOption` for `BvhTree` and `KdTree`
 
 ### 5.3.21
