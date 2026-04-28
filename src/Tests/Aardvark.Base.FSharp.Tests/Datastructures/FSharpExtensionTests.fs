@@ -119,6 +119,12 @@ module Array =
     let private toStructTupleArray (data : ('a * 'b)[]) =
         data |> Array.map (fun (a, b) -> struct (a, b))
 
+    let private assertNullArrayArg (action : unit -> 'T) =
+        let ex =
+            NUnit.Framework.Assert.Throws<System.ArgumentNullException>(fun () -> action() |> ignore)
+
+        NUnit.Framework.Assert.That(ex.ParamName, NUnit.Framework.Is.EqualTo("array"))
+
     [<Property>]
     let ``[Array] chooseV`` (chooser: int -> int option) (data: int[]) =
         let result =
@@ -265,6 +271,46 @@ module Array =
             NUnit.Framework.Assert.Throws<System.ArgumentNullException>(fun () -> Array.unzipV data |> ignore)
 
         NUnit.Framework.Assert.That(ex.ParamName, NUnit.Framework.Is.EqualTo("array"))
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] chooseV throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.chooseV (fun x -> ValueSome x) data)
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] chooseiV throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.chooseiV (fun _ x -> ValueSome x) data)
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] foldi throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.foldi (fun _ state value -> state + value) 0 data)
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] tryPickV throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.tryPickV (fun x -> ValueSome x) data)
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] pickV throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.pickV (fun x -> ValueSome x) data)
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] tryFindV throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.tryFindV (fun _ -> true) data)
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] tryHeadV throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.tryHeadV data)
+
+    [<NUnit.Framework.Test>]
+    let ``[Array] tryLastV throws ArgumentNullException for null input`` () =
+        let data : int[] = null
+        assertNullArrayArg (fun () -> Array.tryLastV data)
 
     [<Property>]
     let ``[Array] collecti`` (mapping: int -> int -> int[]) (data: int[]) =

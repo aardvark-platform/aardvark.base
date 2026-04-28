@@ -411,6 +411,9 @@ module Prelude =
             Array.choose chooser array
 
         let inline chooseV ([<InlineIfLambda>] chooser: 'T -> 'U voption) (array: 'T array) =
+            if isNull array then
+                nullArg "array"
+
             let mutable i = 0
             let mutable first = Unchecked.defaultof<'U>
             let mutable found = false
@@ -491,6 +494,9 @@ module Prelude =
             Array.collect mapping array
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (array : 'T[]) =
+            if isNull array then
+                nullArg "array"
+
             let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt(folder)
             let mutable state = state
 
@@ -514,6 +520,9 @@ module Prelude =
             search 0 (array.Length - 1)
 
         let inline tryPickV ([<InlineIfLambda>] chooser) (array : _[]) =
+            if isNull array then
+                nullArg "array"
+
             let rec loop i =
                 if i >= array.Length then
                     ValueNone
@@ -525,6 +534,9 @@ module Prelude =
             loop 0
 
         let inline pickV ([<InlineIfLambda>] chooser) (array : _[]) =
+            if isNull array then
+                nullArg "array"
+
             let rec loop i =
                 if i >= array.Length then
                     raise <| System.Collections.Generic.KeyNotFoundException()
@@ -536,6 +548,9 @@ module Prelude =
             loop 0
 
         let inline tryFindV ([<InlineIfLambda>] predicate) (array: _ array) =
+            if isNull array then
+                nullArg "array"
+
             let rec loop i =
                 if i >= array.Length then
                     ValueNone
@@ -547,10 +562,16 @@ module Prelude =
             loop 0
 
         let inline tryHeadV (array: 'T array) =
+            if isNull array then
+                nullArg "array"
+
             if array.Length = 0 then ValueNone
             else ValueSome array.[0]
 
         let inline tryLastV (array: 'T array) =
+            if isNull array then
+                nullArg "array"
+
             if array.Length = 0 then ValueNone
             else ValueSome array.[array.Length - 1]
 

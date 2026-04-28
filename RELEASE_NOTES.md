@@ -9,6 +9,7 @@
 - [PixImage] Improved reporting of inner exceptions thrown by loaders and processors
 - [FSharp] Added `Array.chooseV` and `Array.chooseiV`
 - [FSharp] Added `Array.zipV` and `Array.unzipV`
+- [FSharp] Fixed null-input handling for custom array ValueOption helpers
 - [FSharp] Added intersection methods using `ValueOption` for `BvhTree` and `KdTree`
 
 ### 5.3.21
