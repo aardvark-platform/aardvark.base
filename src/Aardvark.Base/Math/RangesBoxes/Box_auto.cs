@@ -11635,24 +11635,53 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box2d TransformedLinear(M22d linear, V2d translation)
+            => TransformedLinear(linear, translation, (double)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedLinear(M22d linear, V2d translation, double linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
             var res = new Box2d(translation, translation);
             double av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedTransposedLinear(M22d linear, V2d translation, double linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var res = new Box2d(translation, translation);
+            double av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
@@ -11823,15 +11852,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Euclidean2d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22d)inverse, inverse.Trans);
+            var linear = (M22d)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Similarity2d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22d)inverse, inverse.Trans);
+            var linear = (M22d)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -11847,7 +11879,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Rot2d trafo)
         {
-            return TransformedLinear((M22d)trafo.Inverse, V2d.Zero);
+            return TransformedTransposedLinear((M22d)trafo, V2d.Zero, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13400,24 +13432,53 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box2d TransformedLinear(M22d linear, V2d translation)
+            => TransformedLinear(linear, translation, (double)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedLinear(M22d linear, V2d translation, double linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
             var res = new Box2d(translation, translation);
             double av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedTransposedLinear(M22d linear, V2d translation, double linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var res = new Box2d(translation, translation);
+            double av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
@@ -13588,15 +13649,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Euclidean2d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22d)inverse, inverse.Trans);
+            var linear = (M22d)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Similarity2d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22d)inverse, inverse.Trans);
+            var linear = (M22d)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -13612,7 +13676,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Rot2d trafo)
         {
-            return TransformedLinear((M22d)trafo.Inverse, V2d.Zero);
+            return TransformedTransposedLinear((M22d)trafo, V2d.Zero, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15229,24 +15293,53 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box2f TransformedLinear(M22f linear, V2f translation)
+            => TransformedLinear(linear, translation, (float)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2f TransformedLinear(M22f linear, V2f translation, float linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
             var res = new Box2f(translation, translation);
             float av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2f TransformedTransposedLinear(M22f linear, V2f translation, float linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2f.Invalid;
+            var res = new Box2f(translation, translation);
+            float av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
@@ -15417,15 +15510,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2f InvTransformed(Euclidean2f trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22f)inverse, inverse.Trans);
+            var linear = (M22f)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (float)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2f InvTransformed(Similarity2f trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22f)inverse, inverse.Trans);
+            var linear = (M22f)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -15441,7 +15537,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2f InvTransformed(Rot2f trafo)
         {
-            return TransformedLinear((M22f)trafo.Inverse, V2f.Zero);
+            return TransformedTransposedLinear((M22f)trafo, V2f.Zero, (float)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17047,24 +17143,53 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box2d TransformedLinear(M22d linear, V2d translation)
+            => TransformedLinear(linear, translation, (double)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedLinear(M22d linear, V2d translation, double linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
             var res = new Box2d(translation, translation);
             double av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box2d TransformedTransposedLinear(M22d linear, V2d translation, double linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y) return Box2d.Invalid;
+            var res = new Box2d(translation, translation);
+            double av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
             return res;
@@ -17235,15 +17360,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Euclidean2d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22d)inverse, inverse.Trans);
+            var linear = (M22d)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Similarity2d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M22d)inverse, inverse.Trans);
+            var linear = (M22d)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -17259,7 +17387,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box2d InvTransformed(Rot2d trafo)
         {
-            return TransformedLinear((M22d)trafo.Inverse, V2d.Zero);
+            return TransformedTransposedLinear((M22d)trafo, V2d.Zero, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -18749,44 +18877,93 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box3d TransformedLinear(M33d linear, V3d translation)
+            => TransformedLinear(linear, translation, (double)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedLinear(M33d linear, V3d translation, double linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
             var res = new Box3d(translation, translation);
             double av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M02 * Min.Z;
-            bv = linear.M02 * Max.Z;
+            av = linearScale * linear.M02 * Min.Z;
+            bv = linearScale * linear.M02 * Max.Z;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M12 * Min.Z;
-            bv = linear.M12 * Max.Z;
+            av = linearScale * linear.M12 * Min.Z;
+            bv = linearScale * linear.M12 * Max.Z;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M20 * Min.X;
-            bv = linear.M20 * Max.X;
+            av = linearScale * linear.M20 * Min.X;
+            bv = linearScale * linear.M20 * Max.X;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M21 * Min.Y;
-            bv = linear.M21 * Max.Y;
+            av = linearScale * linear.M21 * Min.Y;
+            bv = linearScale * linear.M21 * Max.Y;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M22 * Min.Z;
-            bv = linear.M22 * Max.Z;
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedTransposedLinear(M33d linear, V3d translation, double linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var res = new Box3d(translation, translation);
+            double av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M20 * Min.Z;
+            bv = linearScale * linear.M20 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M21 * Min.Z;
+            bv = linearScale * linear.M21 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M02 * Min.X;
+            bv = linearScale * linear.M02 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M12 * Min.Y;
+            bv = linearScale * linear.M12 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
@@ -19022,15 +19199,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Euclidean3d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33d)inverse, inverse.Trans);
+            var linear = (M33d)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Similarity3d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33d)inverse, inverse.Trans);
+            var linear = (M33d)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -19046,7 +19226,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Rot3d trafo)
         {
-            return TransformedLinear((M33d)trafo.Inverse, V3d.Zero);
+            return TransformedTransposedLinear((M33d)trafo, V3d.Zero, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -20937,44 +21117,93 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box3d TransformedLinear(M33d linear, V3d translation)
+            => TransformedLinear(linear, translation, (double)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedLinear(M33d linear, V3d translation, double linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
             var res = new Box3d(translation, translation);
             double av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M02 * Min.Z;
-            bv = linear.M02 * Max.Z;
+            av = linearScale * linear.M02 * Min.Z;
+            bv = linearScale * linear.M02 * Max.Z;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M12 * Min.Z;
-            bv = linear.M12 * Max.Z;
+            av = linearScale * linear.M12 * Min.Z;
+            bv = linearScale * linear.M12 * Max.Z;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M20 * Min.X;
-            bv = linear.M20 * Max.X;
+            av = linearScale * linear.M20 * Min.X;
+            bv = linearScale * linear.M20 * Max.X;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M21 * Min.Y;
-            bv = linear.M21 * Max.Y;
+            av = linearScale * linear.M21 * Min.Y;
+            bv = linearScale * linear.M21 * Max.Y;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M22 * Min.Z;
-            bv = linear.M22 * Max.Z;
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedTransposedLinear(M33d linear, V3d translation, double linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var res = new Box3d(translation, translation);
+            double av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M20 * Min.Z;
+            bv = linearScale * linear.M20 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M21 * Min.Z;
+            bv = linearScale * linear.M21 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M02 * Min.X;
+            bv = linearScale * linear.M02 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M12 * Min.Y;
+            bv = linearScale * linear.M12 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
@@ -21210,15 +21439,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Euclidean3d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33d)inverse, inverse.Trans);
+            var linear = (M33d)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Similarity3d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33d)inverse, inverse.Trans);
+            var linear = (M33d)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -21234,7 +21466,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Rot3d trafo)
         {
-            return TransformedLinear((M33d)trafo.Inverse, V3d.Zero);
+            return TransformedTransposedLinear((M33d)trafo, V3d.Zero, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23191,44 +23423,93 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box3f TransformedLinear(M33f linear, V3f translation)
+            => TransformedLinear(linear, translation, (float)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3f TransformedLinear(M33f linear, V3f translation, float linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
             var res = new Box3f(translation, translation);
             float av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M02 * Min.Z;
-            bv = linear.M02 * Max.Z;
+            av = linearScale * linear.M02 * Min.Z;
+            bv = linearScale * linear.M02 * Max.Z;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M12 * Min.Z;
-            bv = linear.M12 * Max.Z;
+            av = linearScale * linear.M12 * Min.Z;
+            bv = linearScale * linear.M12 * Max.Z;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M20 * Min.X;
-            bv = linear.M20 * Max.X;
+            av = linearScale * linear.M20 * Min.X;
+            bv = linearScale * linear.M20 * Max.X;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M21 * Min.Y;
-            bv = linear.M21 * Max.Y;
+            av = linearScale * linear.M21 * Min.Y;
+            bv = linearScale * linear.M21 * Max.Y;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M22 * Min.Z;
-            bv = linear.M22 * Max.Z;
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3f TransformedTransposedLinear(M33f linear, V3f translation, float linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3f.Invalid;
+            var res = new Box3f(translation, translation);
+            float av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M20 * Min.Z;
+            bv = linearScale * linear.M20 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M21 * Min.Z;
+            bv = linearScale * linear.M21 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M02 * Min.X;
+            bv = linearScale * linear.M02 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M12 * Min.Y;
+            bv = linearScale * linear.M12 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
@@ -23464,15 +23745,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3f InvTransformed(Euclidean3f trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33f)inverse, inverse.Trans);
+            var linear = (M33f)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (float)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3f InvTransformed(Similarity3f trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33f)inverse, inverse.Trans);
+            var linear = (M33f)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -23488,7 +23772,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3f InvTransformed(Rot3f trafo)
         {
-            return TransformedLinear((M33f)trafo.Inverse, V3f.Zero);
+            return TransformedTransposedLinear((M33f)trafo, V3f.Zero, (float)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -25433,44 +25717,93 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box3d TransformedLinear(M33d linear, V3d translation)
+            => TransformedLinear(linear, translation, (double)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedLinear(M33d linear, V3d translation, double linearScale)
         {
             if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
             var res = new Box3d(translation, translation);
             double av, bv;
-            av = linear.M00 * Min.X;
-            bv = linear.M00 * Max.X;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M01 * Min.Y;
-            bv = linear.M01 * Max.Y;
+            av = linearScale * linear.M01 * Min.Y;
+            bv = linearScale * linear.M01 * Max.Y;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M02 * Min.Z;
-            bv = linear.M02 * Max.Z;
+            av = linearScale * linear.M02 * Min.Z;
+            bv = linearScale * linear.M02 * Max.Z;
             if (av < bv) { res.Min.X += av; res.Max.X += bv; }
             else { res.Min.X += bv; res.Max.X += av; }
-            av = linear.M10 * Min.X;
-            bv = linear.M10 * Max.X;
+            av = linearScale * linear.M10 * Min.X;
+            bv = linearScale * linear.M10 * Max.X;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M11 * Min.Y;
-            bv = linear.M11 * Max.Y;
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M12 * Min.Z;
-            bv = linear.M12 * Max.Z;
+            av = linearScale * linear.M12 * Min.Z;
+            bv = linearScale * linear.M12 * Max.Z;
             if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
             else { res.Min.Y += bv; res.Max.Y += av; }
-            av = linear.M20 * Min.X;
-            bv = linear.M20 * Max.X;
+            av = linearScale * linear.M20 * Min.X;
+            bv = linearScale * linear.M20 * Max.X;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M21 * Min.Y;
-            bv = linear.M21 * Max.Y;
+            av = linearScale * linear.M21 * Min.Y;
+            bv = linearScale * linear.M21 * Max.Y;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
-            av = linear.M22 * Min.Z;
-            bv = linear.M22 * Max.Z;
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box3d TransformedTransposedLinear(M33d linear, V3d translation, double linearScale)
+        {
+            if (Min.X > Max.X || Min.Y > Max.Y || Min.Z > Max.Z) return Box3d.Invalid;
+            var res = new Box3d(translation, translation);
+            double av, bv;
+            av = linearScale * linear.M00 * Min.X;
+            bv = linearScale * linear.M00 * Max.X;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M10 * Min.Y;
+            bv = linearScale * linear.M10 * Max.Y;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M20 * Min.Z;
+            bv = linearScale * linear.M20 * Max.Z;
+            if (av < bv) { res.Min.X += av; res.Max.X += bv; }
+            else { res.Min.X += bv; res.Max.X += av; }
+            av = linearScale * linear.M01 * Min.X;
+            bv = linearScale * linear.M01 * Max.X;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M11 * Min.Y;
+            bv = linearScale * linear.M11 * Max.Y;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M21 * Min.Z;
+            bv = linearScale * linear.M21 * Max.Z;
+            if (av < bv) { res.Min.Y += av; res.Max.Y += bv; }
+            else { res.Min.Y += bv; res.Max.Y += av; }
+            av = linearScale * linear.M02 * Min.X;
+            bv = linearScale * linear.M02 * Max.X;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M12 * Min.Y;
+            bv = linearScale * linear.M12 * Max.Y;
+            if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
+            else { res.Min.Z += bv; res.Max.Z += av; }
+            av = linearScale * linear.M22 * Min.Z;
+            bv = linearScale * linear.M22 * Max.Z;
             if (av < bv) { res.Min.Z += av; res.Max.Z += bv; }
             else { res.Min.Z += bv; res.Max.Z += av; }
             return res;
@@ -25706,15 +26039,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Euclidean3d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33d)inverse, inverse.Trans);
+            var linear = (M33d)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Similarity3d trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M33d)inverse, inverse.Trans);
+            var linear = (M33d)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -25730,7 +26066,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box3d InvTransformed(Rot3d trafo)
         {
-            return TransformedLinear((M33d)trafo.Inverse, V3d.Zero);
+            return TransformedTransposedLinear((M33d)trafo, V3d.Zero, (double)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

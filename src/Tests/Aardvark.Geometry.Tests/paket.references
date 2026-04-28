@@ -1,5 +1,4 @@
 group Test
-
 FsCheck
 FsCheck.NUnit
 FSharp.Core
@@ -7,4 +6,3 @@ FsUnit
 NUnit
 NUnit3TestAdapter
 Microsoft.NET.Test.Sdk
-coverlet.collector

@@ -250,9 +250,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3f(count);
-            var linear = (M33f)trafo.Rot;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), trafo.Trans);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.Transform(PlaneArray[i].Normal), trafo.Trans);
             return hull;
         }
 
@@ -261,9 +260,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3f(count);
-            var linear = (M33f)trafo.Rot;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal) / trafo.Scale, trafo.Trans);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.Transform(PlaneArray[i].Normal) / trafo.Scale, trafo.Trans);
             return hull;
         }
 
@@ -300,9 +298,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3f(count);
-            var linear = (M33f)trafo;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3f.Zero);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), V3f.Zero);
             return hull;
         }
 
@@ -334,10 +331,9 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3f(count);
-            var linear = (M33f)trafo.Inverse;
-            var translation = -linear.Transform(trafo.Trans);
+            var translation = -trafo.Rot.InvTransform(trafo.Trans);
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), translation);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.InvTransform(PlaneArray[i].Normal), translation);
             return hull;
         }
 
@@ -346,10 +342,9 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3f(count);
-            var inverseRot = (M33f)trafo.Rot.Inverse;
-            var translation = -inverseRot.Transform(trafo.Trans) / trafo.Scale;
+            var translation = -trafo.Rot.InvTransform(trafo.Trans) / trafo.Scale;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], inverseRot.Transform(PlaneArray[i].Normal) * trafo.Scale, translation);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.InvTransform(PlaneArray[i].Normal) * trafo.Scale, translation);
             return hull;
         }
 
@@ -371,9 +366,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3f(count);
-            var linear = (M33f)trafo.Inverse;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3f.Zero);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.InvTransform(PlaneArray[i].Normal), V3f.Zero);
             return hull;
         }
 
@@ -829,9 +823,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3d(count);
-            var linear = (M33d)trafo.Rot;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), trafo.Trans);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.Transform(PlaneArray[i].Normal), trafo.Trans);
             return hull;
         }
 
@@ -840,9 +833,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3d(count);
-            var linear = (M33d)trafo.Rot;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal) / trafo.Scale, trafo.Trans);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.Transform(PlaneArray[i].Normal) / trafo.Scale, trafo.Trans);
             return hull;
         }
 
@@ -879,9 +871,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3d(count);
-            var linear = (M33d)trafo;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3d.Zero);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), V3d.Zero);
             return hull;
         }
 
@@ -913,10 +904,9 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3d(count);
-            var linear = (M33d)trafo.Inverse;
-            var translation = -linear.Transform(trafo.Trans);
+            var translation = -trafo.Rot.InvTransform(trafo.Trans);
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), translation);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.InvTransform(PlaneArray[i].Normal), translation);
             return hull;
         }
 
@@ -925,10 +915,9 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3d(count);
-            var inverseRot = (M33d)trafo.Rot.Inverse;
-            var translation = -inverseRot.Transform(trafo.Trans) / trafo.Scale;
+            var translation = -trafo.Rot.InvTransform(trafo.Trans) / trafo.Scale;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], inverseRot.Transform(PlaneArray[i].Normal) * trafo.Scale, translation);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.InvTransform(PlaneArray[i].Normal) * trafo.Scale, translation);
             return hull;
         }
 
@@ -950,9 +939,8 @@ namespace Aardvark.Base
         {
             int count = PlaneCount;
             var hull = new Hull3d(count);
-            var linear = (M33d)trafo.Inverse;
             for (int i = 0; i < count; i++)
-                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], linear.Transform(PlaneArray[i].Normal), V3d.Zero);
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.InvTransform(PlaneArray[i].Normal), V3d.Zero);
             return hull;
         }
 

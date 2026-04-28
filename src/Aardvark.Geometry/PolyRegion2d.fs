@@ -611,11 +611,6 @@ module PolyRegion =
     let inline ofBox (b : Box2d) = b.ToPolygon2dCCW() |> ofPolygon
 
     let inline transformed (m : M33d) (r : PolyRegion) = r.Transformed m
-    let invTransformedEuclidean (t : Euclidean2d) (r : PolyRegion) = r.InvTransformed t
-    let invTransformedSimilarity (t : Similarity2d) (r : PolyRegion) = r.InvTransformed t
-    let invTransformedShift (t : Shift2d) (r : PolyRegion) = r.InvTransformed t
-    let invTransformedRot (t : Rot2d) (r : PolyRegion) = r.InvTransformed t
-    let invTransformedScale (t : Scale2d) (r : PolyRegion) = r.InvTransformed t
     let inline bounds (r : PolyRegion) = r.BoundingBox
 
     let inline toPolygons (r : PolyRegion) = r.Polygons

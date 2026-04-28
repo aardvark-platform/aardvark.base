@@ -14,6 +14,8 @@ namespace Aardvark.Base.Benchmarks.Geometry
         public static readonly FastHull3d FastHull3d = new(Hull3d);
         public static readonly Plane3f Plane3f = new(new V3f(1.0f, -2.0f, 3.0f).Normalized, new V3f(-1.5f, 0.75f, 2.25f));
         public static readonly Plane3d Plane3d = new(new V3d(1.0, -2.0, 3.0).Normalized, new V3d(-1.5, 0.75, 2.25));
+        public static readonly Ray3f Ray3f = new(new V3f(-1.5f, 2.25f, -0.5f), new V3f(0.75f, -2.0f, 3.5f));
+        public static readonly Ray3d Ray3d = new(new V3d(-1.5, 2.25, -0.5), new V3d(0.75, -2.0, 3.5));
 
         public static readonly Rot2d Rot2d = Rot2d.FromDegrees(37.0);
         public static readonly Euclidean2d Euclidean2d = new(Rot2d, new V2d(2.5, -1.75));
@@ -28,6 +30,7 @@ namespace Aardvark.Base.Benchmarks.Geometry
         public static readonly Affine3d Affine3d = new(new M33d(1.2, 0.35, -0.1, -0.2, 0.9, 0.15, 0.05, -0.25, 1.1), new V3d(5.0, -2.0, 1.75));
         public static readonly Shift3d Shift3d = new(3.5, -1.25, 2.0);
         public static readonly Scale3d Scale3d = new(-1.5, 0.8, -1.25);
+        public static readonly Trafo3d RayTrafo3d = new(Similarity3d);
 
         public static readonly Rot3f Rot3f = Rot3f.Rotation(new V3f(-0.9f, 0.2f, 0.35f).Normalized, -1.1f);
         public static readonly Euclidean3f Euclidean3f = new(Rot3f.Rotation(new V3f(0.3f, -0.5f, 0.8f).Normalized, 0.41f), new V3f(2.5f, -1.75f, 4.0f));
@@ -35,6 +38,7 @@ namespace Aardvark.Base.Benchmarks.Geometry
         public static readonly Affine3f Affine3f = new(new M33f(1.2f, 0.35f, -0.1f, -0.2f, 0.9f, 0.15f, 0.05f, -0.25f, 1.1f), new V3f(5.0f, -2.0f, 1.75f));
         public static readonly Shift3f Shift3f = new(3.5f, -1.25f, 2.0f);
         public static readonly Scale3f Scale3f = new(-1.5f, 0.8f, -1.25f);
+        public static readonly Trafo3f RayTrafo3f = new(Similarity3f);
     }
 
     public abstract class Box2dForwardBenchmark

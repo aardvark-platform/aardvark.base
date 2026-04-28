@@ -116,15 +116,14 @@ module PolyRegion2dTests =
         let rotation = Rot2d.FromDegrees(37.0)
         let scale = Scale2d(1.5, 0.8)
 
-        let cases : (string * PolyRegion * Polygon2d list * PolyRegion) list =
+        let cases : (string * PolyRegion * Polygon2d list) list =
             [
-                "Euclidean2d", region.InvTransformed euclidean, region.Polygons |> List.map (fun p -> p.InvTransformed euclidean), PolyRegion.invTransformedEuclidean euclidean region
-                "Similarity2d", region.InvTransformed similarity, region.Polygons |> List.map (fun p -> p.InvTransformed similarity), PolyRegion.invTransformedSimilarity similarity region
-                "Shift2d", region.InvTransformed shift, region.Polygons |> List.map (fun p -> p.InvTransformed shift), PolyRegion.invTransformedShift shift region
-                "Rot2d", region.InvTransformed rotation, region.Polygons |> List.map (fun p -> p.InvTransformed rotation), PolyRegion.invTransformedRot rotation region
-                "Scale2d", region.InvTransformed scale, region.Polygons |> List.map (fun p -> p.InvTransformed scale), PolyRegion.invTransformedScale scale region
+                "Euclidean2d", region.InvTransformed euclidean, region.Polygons |> List.map (fun p -> p.InvTransformed euclidean)
+                "Similarity2d", region.InvTransformed similarity, region.Polygons |> List.map (fun p -> p.InvTransformed similarity)
+                "Shift2d", region.InvTransformed shift, region.Polygons |> List.map (fun p -> p.InvTransformed shift)
+                "Rot2d", region.InvTransformed rotation, region.Polygons |> List.map (fun p -> p.InvTransformed rotation)
+                "Scale2d", region.InvTransformed scale, region.Polygons |> List.map (fun p -> p.InvTransformed scale)
             ]
 
-        for (name, actual, expected, helperResult) in cases do
+        for (name, actual, expected) in cases do
             assertRegionEqual $"{name} instance overload" actual expected
-            assertRegionEqual $"{name} module helper" helperResult expected

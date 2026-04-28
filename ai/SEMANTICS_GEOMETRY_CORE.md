@@ -45,11 +45,12 @@ Do not assume identical handedness or memory/algebra conventions across systems.
 
 For the geometry value types touched by issue 57, the canonical transform semantics are:
 
-- boxes still compute axis-aligned bounds from linear coefficients plus translation; the specialized overloads now use direct specialized paths except `Box3*.Transformed(Affine3*)`, which intentionally stays on the homogeneous-matrix path because repeated `Release` measurements did not beat that baseline
-- hulls keep the same inverse-transpose normal semantics as the `Trafo*` path, but the specialized overloads now apply the equivalent direct normal/point math without first constructing a `Trafo*`
-- planes keep the same coefficient semantics as the `Trafo*` path, but the specialized overloads now use direct formulas for similarity/affine/shift/rotation/scale instead of first constructing a `Trafo*`
-- rays use position-vs-direction aware transform helpers directly (`TransformPos`/`TransformDir`, `InvTransformPos`/`InvTransformDir`)
-- inverse convenience APIs are intentionally available on the touched types for `Trafo*`, `Euclidean*`, `Similarity*`, `Shift*`, `Rot*`, and `Scale*`; raw matrices remain forward-only convenience APIs
+- boxes still compute axis-aligned bounds from linear coefficients plus translation; inverse overloads avoid full inverse-transform materialization where practical, while `Box3*.Transformed(Affine3*)` intentionally stays on the homogeneous-matrix path because repeated `Release` measurements did not beat that baseline
+- hulls keep the same inverse-transpose normal semantics as the `Trafo*` path; overloads should prefer existing rotation/vector helpers over converting `Rot*` values to matrices just to transform vectors
+- planes keep the same coefficient semantics as the `Trafo*` path; overloads should use existing rotation/vector/matrix helpers where available instead of manually inlining equivalent arithmetic
+- rays use position-vs-direction aware transform helpers for typed transforms, and `Ray3*.Transformed(Trafo3*)` / `InvTransformed(Trafo3*)` forward through the existing `M44*` overload path
+- inverse convenience APIs are intentionally available on the touched geometry types for `Trafo*`, `Euclidean*`, `Similarity*`, `Shift*`, `Rot*`, and `Scale*`; raw matrices remain forward-only convenience APIs
+- `PolyRegion` has instance inverse transform overloads, but no module-level `invTransformed*` helper family
 
 When a direct specialization cannot be kept both correct and performance-competitive, the source keeps the indirect implementation with an explicit comment documenting the retained fallback.
 
