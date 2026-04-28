@@ -100,9 +100,10 @@ Do not use `dotnet add package`.
 
 If a change needs a release-notes entry:
 
-- add it under the `### Preliminary` section at the top of `RELEASE_NOTES.md`
-- keep unreleased notes above the latest numbered release section
+- keep `RELEASE_NOTES.md` starting with a version heading in the form `### <version>`
+- do not add non-version headings or prose above the top version section
 - do not place new unreleased entries inside an already released version block
+- add notes only to the correct top versioned section for the upcoming release
 
 ## Pull Request Checklist
 

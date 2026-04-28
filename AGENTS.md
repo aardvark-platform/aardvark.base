@@ -38,9 +38,10 @@ Rules:
 ## Release Notes
 
 When a change needs release notes:
-- add new unreleased notes under the `### Preliminary` section at the top of `RELEASE_NOTES.md`
-- keep unreleased notes above the latest numbered release section
-- do not append new notes inside an already released version block
+- keep `RELEASE_NOTES.md` starting with a version heading in the form `### <version>`
+- do not add non-version headings or prose above the top version section
+- do not append new notes inside an older released version block
+- add notes only to the correct top versioned section for the upcoming release
 
 ## File Ownership by Change Type
 

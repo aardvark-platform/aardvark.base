@@ -1,7 +1,3 @@
-### Preliminary
-- Add unreleased notes here, above the latest versioned section.
-- Do not append new unreleased entries to the previous released version block.
-
 ### 5.3.22
 - [Telemetry] Fixed `WallClockTimer` timer disposal so repeated `Dispose` calls do not corrupt timer state
 - [Introspection] Fixed native library loading on Windows using netstandard2.0 (https://github.com/aardvark-platform/aardvark.base/issues/86)

@@ -175,8 +175,10 @@ src/
 
 If the repository keeps unreleased notes separately from numbered releases:
 
-- tell agents to add new notes to the unreleased/preliminary section at the top
+- tell agents whether the file must keep a top `### <version>` section for tooling
+- explicitly forbid adding non-version headings above that top version section
 - explicitly forbid adding new notes inside the previous released version block
+- tell agents to add notes only to the correct top versioned section for the upcoming release
 3. Run tests after changes
 4. Use provided build scripts
 ```
