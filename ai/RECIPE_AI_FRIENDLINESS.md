@@ -107,6 +107,7 @@ This is the entry point for AI agents. Include:
 6. **Common failure modes with fixes**
 7. **Project structure overview**
 8. **Tips for AI agents**
+9. **Release notes placement rule** when the repo keeps unreleased notes above versioned sections
 
 ### Template
 
@@ -168,6 +169,14 @@ src/
 
 1. Read only what you need; each doc is self-contained
 2. Check the "Gotchas" section before writing code
+3. If the repo has `RELEASE_NOTES.md`, say where unreleased notes belong.
+
+### Release Notes Placement
+
+If the repository keeps unreleased notes separately from numbered releases:
+
+- tell agents to add new notes to the unreleased/preliminary section at the top
+- explicitly forbid adding new notes inside the previous released version block
 3. Run tests after changes
 4. Use provided build scripts
 ```

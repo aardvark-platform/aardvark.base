@@ -35,6 +35,13 @@ Rules:
 - Never use `dotnet add package` in this repo
 - Change constraints in `paket.dependencies`, then regenerate lock with Paket
 
+## Release Notes
+
+When a change needs release notes:
+- add new unreleased notes under the `### Preliminary` section at the top of `RELEASE_NOTES.md`
+- keep unreleased notes above the latest numbered release section
+- do not append new notes inside an already released version block
+
 ## File Ownership by Change Type
 
 | Change Type | Files to Modify | Files to Avoid |

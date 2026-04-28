@@ -96,6 +96,14 @@ This repository uses Paket.
 
 Do not use `dotnet add package`.
 
+## Release Notes
+
+If a change needs a release-notes entry:
+
+- add it under the `### Preliminary` section at the top of `RELEASE_NOTES.md`
+- keep unreleased notes above the latest numbered release section
+- do not place new unreleased entries inside an already released version block
+
 ## Pull Request Checklist
 
 1. Build succeeds (`./build.sh` or `.\build.cmd`)
