@@ -107,6 +107,11 @@ namespace Aardvark.Base.Benchmarks.Geometry
             Create("Plane3fInverseShift", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Shift3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Shift3f)),
             Create("Plane3fInverseRot", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Rot3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Rot3f)),
             Create("Plane3fInverseScale", () => TransformOverloadBenchData.Plane3f.InvTransformed(new Trafo3f(TransformOverloadBenchData.Scale3f)), () => TransformOverloadBenchData.Plane3f.InvTransformed(TransformOverloadBenchData.Scale3f)),
+
+            Create("Ray3dForwardTrafo", () => TransformOverloadBenchData.Ray3d.Transformed(TransformOverloadBenchData.RayTrafo3d.Forward), () => TransformOverloadBenchData.Ray3d.Transformed(TransformOverloadBenchData.RayTrafo3d)),
+            Create("Ray3dInverseTrafo", () => TransformOverloadBenchData.Ray3d.Transformed(TransformOverloadBenchData.RayTrafo3d.Backward), () => TransformOverloadBenchData.Ray3d.InvTransformed(TransformOverloadBenchData.RayTrafo3d)),
+            Create("Ray3fForwardTrafo", () => TransformOverloadBenchData.Ray3f.Transformed(TransformOverloadBenchData.RayTrafo3f.Forward), () => TransformOverloadBenchData.Ray3f.Transformed(TransformOverloadBenchData.RayTrafo3f)),
+            Create("Ray3fInverseTrafo", () => TransformOverloadBenchData.Ray3f.Transformed(TransformOverloadBenchData.RayTrafo3f.Backward), () => TransformOverloadBenchData.Ray3f.InvTransformed(TransformOverloadBenchData.RayTrafo3f)),
         };
 
         public static bool TryHandle(string[] args)

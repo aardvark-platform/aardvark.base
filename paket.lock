@@ -225,7 +225,6 @@ NUGET
       System.Management (>= 5.0)
     BenchmarkDotNet.Annotations (0.13.12)
     CommandLineParser (2.9.1)
-    coverlet.collector (6.0.4)
     Expecto (10.2.1)
       FSharp.Core (>= 7.0.200)
       Mono.Cecil (>= 0.11.4 < 1.0)

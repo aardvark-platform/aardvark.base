@@ -1730,14 +1730,35 @@ namespace Aardvark.Base
         //# var tftype = (ft == Meta.FloatType) ? "float" : "double";
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private readonly Box__dim____tc__ TransformedLinear(M__dim____dim____tc__ linear, V__dim____tc__ translation)
+            => TransformedLinear(linear, translation, (__tftype__)1);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box__dim____tc__ TransformedLinear(M__dim____dim____tc__ linear, V__dim____tc__ translation, __tftype__ linearScale)
         {
             if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
             var res = new Box__dim____tc__(translation, translation);
             __tftype__ av, bv;
             //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
             //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
-            av = linear.M__i____j__ * Min.__fj__;
-            bv = linear.M__i____j__ * Max.__fj__;
+            av = linearScale * linear.M__i____j__ * Min.__fj__;
+            bv = linearScale * linear.M__i____j__ * Max.__fj__;
+            if (av < bv) { res.Min.__fi__ += av; res.Max.__fi__ += bv; }
+            else { res.Min.__fi__ += bv; res.Max.__fi__ += av; }
+            //# }
+            //# }
+            return res;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly Box__dim____tc__ TransformedTransposedLinear(M__dim____dim____tc__ linear, V__dim____tc__ translation, __tftype__ linearScale)
+        {
+            if (/*# fields.ForEach((f, i) => {*/Min.__f__ > Max.__f__/*#}, oror);*/) return Box__dim____tc__.Invalid;
+            var res = new Box__dim____tc__(translation, translation);
+            __tftype__ av, bv;
+            //# for (int i = 0; i < dim; i++) { var fi = vt.Fields[i];
+            //# for (int j = 0; j < dim; j++) { var fj = vt.Fields[j];
+            av = linearScale * linear.M__j____i__ * Min.__fj__;
+            bv = linearScale * linear.M__j____i__ * Max.__fj__;
             if (av < bv) { res.Min.__fi__ += av; res.Max.__fi__ += bv; }
             else { res.Min.__fi__ += bv; res.Max.__fi__ += av; }
             //# }
@@ -1891,15 +1912,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box__dim____tc__ InvTransformed(Euclidean__dim____tc__ trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M__dim____dim____tc__)inverse, inverse.Trans);
+            var linear = (M__dim____dim____tc__)trafo.Rot;
+            var translation = -linear.Transposed.Transform(trafo.Trans);
+            return TransformedTransposedLinear(linear, translation, (__tftype__)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box__dim____tc__ InvTransformed(Similarity__dim____tc__ trafo)
         {
-            var inverse = trafo.Inverse;
-            return TransformedLinear((M__dim____dim____tc__)inverse, inverse.Trans);
+            var linear = (M__dim____dim____tc__)trafo.Rot;
+            var inverseScale = 1 / trafo.Scale;
+            var translation = -linear.Transposed.Transform(trafo.Trans) * inverseScale;
+            return TransformedTransposedLinear(linear, translation, inverseScale);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1915,7 +1939,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Box__dim____tc__ InvTransformed(Rot__dim____tc__ trafo)
         {
-            return TransformedLinear((M__dim____dim____tc__)trafo.Inverse, V__dim____tc__.Zero);
+            return TransformedTransposedLinear((M__dim____dim____tc__)trafo, V__dim____tc__.Zero, (__tftype__)1);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
