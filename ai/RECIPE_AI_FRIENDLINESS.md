@@ -121,7 +121,7 @@ This repository has AI-targeted reference documentation in `ai/README.md`.
 |------|---------|-------|
 | Restore | `./build.sh restore` or `.\build.cmd restore` | Restores tools + packages |
 | Build | `./build.sh` or `.\build.cmd` | Builds entire solution |
-| Test | `./test.sh` or `.\test.cmd` | Runs all tests |
+| Test | `./test.sh` or `.\test.cmd` | Runs the real test projects; excludes benchmark projects |
 | Build one | `dotnet build src/Foo/Foo.csproj` | Single project |
 
 ## Dependency Management

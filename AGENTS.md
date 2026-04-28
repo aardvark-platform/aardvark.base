@@ -13,9 +13,9 @@ Use these commands for restore/build/test/codegen:
 | Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages |
 | Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` |
 | Build one project | `dotnet build src/Aardvark.Base/Aardvark.Base.csproj -c Debug` | Use explicit project path |
-| Test all | `./test.sh` or `.\test.cmd` | Runs `dotnet test src/Aardvark.sln` |
+| Test all | `./test.sh` or `.\test.cmd` | Runs the five real test projects; excludes benchmark projects |
 | Test one project | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug` | Prefer this over whole-solution test |
-| Test with filter | `dotnet test src/Aardvark.sln --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter |
+| Test with filter | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter; use a concrete test project |
 | Codegen | `./generate.sh` or `.\generate.cmd` | Required after template changes |
 | Check docs drift | `./check-docs.sh` or `.\check-docs.cmd` | Validates docs against source anchors and anti-drift rules |
 

@@ -57,10 +57,10 @@ Ensure SDK matches `global.json` expectations.
 Use `dotnet test` directly with a fully-qualified-name filter:
 
 ```bash
-dotnet test src/Aardvark.sln --filter "FullyQualifiedName~Vector"
+dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"
 ```
 
-`test.sh` / `test.cmd` do not forward filter arguments.
+`test.sh` / `test.cmd` do not forward filter arguments, and they run only the real test projects rather than the full solution.
 
 ## Script execution on macOS/Linux
 

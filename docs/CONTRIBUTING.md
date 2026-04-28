@@ -49,12 +49,25 @@ Run all tests:
 ./test.sh
 ```
 
+The standard test scripts restore tools/packages and then run only the real test projects:
+
+- `src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj`
+- `src/Tests/Aardvark.Base.Runtime.Tests/Aardvark.Base.Runtime.Tests.fsproj`
+- `src/Tests/Aardvark.Base.Fonts.Tests/Aardvark.Base.Fonts.Tests.fsproj`
+- `src/Tests/Aardvark.Geometry.Tests/Aardvark.Geometry.Tests.fsproj`
+- `src/Tests/Aardvark.Base.FSharp.Tests/Aardvark.Base.FSharp.Tests.fsproj`
+
+The benchmark projects are intentionally excluded from the default `test.sh` / `test.cmd` path.
+
 Run focused tests directly with `dotnet test`:
 
 ```bash
 dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug
+dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"
 dotnet test src/Aardvark.sln --filter "FullyQualifiedName~Vector"
 ```
+
+Use the solution-level filtered form only for targeted discovery/debugging. The default all-tests path remains `./test.sh` / `.\test.cmd`, which now skips benchmark projects.
 
 ## Code Generation
 
