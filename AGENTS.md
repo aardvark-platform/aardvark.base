@@ -38,10 +38,11 @@ Rules:
 ## Release Notes
 
 When a change needs release notes:
-- keep `RELEASE_NOTES.md` starting with a version heading in the form `### <version>`
-- do not add non-version headings or prose above the top version section
+- `aardvark.build` reads the first `### <version>` section as the current package version
+- unreleased notes may appear above that first version section as plain text or bullet points
+- do not add a markdown heading such as `### Preliminary` above the first version section
 - do not append new notes inside an older released version block
-- add notes only to the correct top versioned section for the upcoming release
+- if you add pending/preliminary notes, place them above the first version section instead of inside the previous released block
 
 ## File Ownership by Change Type
 

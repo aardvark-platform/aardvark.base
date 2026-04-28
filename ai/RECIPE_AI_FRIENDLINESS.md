@@ -175,10 +175,11 @@ src/
 
 If the repository keeps unreleased notes separately from numbered releases:
 
-- tell agents whether the file must keep a top `### <version>` section for tooling
-- explicitly forbid adding non-version headings above that top version section
+- tell agents whether tooling reads the first `### <version>` section as the current version
+- if plain pending notes above the first version are allowed, say that explicitly
+- explicitly forbid adding a markdown heading such as `### Preliminary` above that first version section when tooling would treat it as structural
 - explicitly forbid adding new notes inside the previous released version block
-- tell agents to add notes only to the correct top versioned section for the upcoming release
+- if pending notes belong above the first version, say that directly instead of telling agents to write into the previous released block
 3. Run tests after changes
 4. Use provided build scripts
 ```
