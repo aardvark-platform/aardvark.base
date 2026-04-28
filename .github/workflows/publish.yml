@@ -8,8 +8,91 @@ on:
       - RELEASE_NOTES.md
       - .github/workflows/publish.yml
 jobs:
+  release-check:
+    name: Check release version
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    outputs:
+      should_publish: ${{ steps.compare.outputs.should_publish }}
+      release_notes_version: ${{ steps.compare.outputs.release_notes_version }}
+      latest_release_version: ${{ steps.compare.outputs.latest_release_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Restore Tools
+        run: dotnet tool restore
+      - name: Compare release versions
+        id: compare
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          function Normalize-Version([string] $Version) {
+            if ([string]::IsNullOrWhiteSpace($Version)) {
+              return ""
+            }
+
+            return $Version.Trim() -replace '^[vV]', ''
+          }
+
+          $parseOutput = & dotnet aardpack --parse-only
+          if ($LASTEXITCODE -ne 0) {
+            throw "dotnet aardpack --parse-only failed with exit code $LASTEXITCODE."
+          }
+
+          $releaseNotesVersion = ($parseOutput | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Last 1).Trim()
+          if ([string]::IsNullOrWhiteSpace($releaseNotesVersion)) {
+            throw "dotnet aardpack --parse-only did not return a release notes version."
+          }
+
+          $headers = @{
+            Authorization = "Bearer $env:GITHUB_TOKEN"
+            Accept = "application/vnd.github+json"
+            "X-GitHub-Api-Version" = "2022-11-28"
+            "User-Agent" = "github-actions"
+          }
+
+          $latestReleaseVersion = ""
+          $shouldPublish = "true"
+          try {
+            $latestRelease = Invoke-RestMethod `
+              -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" `
+              -Headers $headers
+            $latestReleaseVersion = [string] $latestRelease.tag_name
+
+            if ((Normalize-Version $releaseNotesVersion) -eq (Normalize-Version $latestReleaseVersion)) {
+              $shouldPublish = "false"
+            }
+          }
+          catch {
+            $statusCode = $_.Exception.Response.StatusCode.value__
+            if ($statusCode -eq 404) {
+              Write-Host "No latest GitHub release found. Continuing publish workflow."
+            }
+            else {
+              throw
+            }
+          }
+
+          "release_notes_version=$releaseNotesVersion" >> $env:GITHUB_OUTPUT
+          "latest_release_version=$latestReleaseVersion" >> $env:GITHUB_OUTPUT
+          "should_publish=$shouldPublish" >> $env:GITHUB_OUTPUT
+
+          "## Publish release check" >> $env:GITHUB_STEP_SUMMARY
+          "" >> $env:GITHUB_STEP_SUMMARY
+          "- Release notes version: ``$releaseNotesVersion``" >> $env:GITHUB_STEP_SUMMARY
+          "- Latest GitHub release: ``$latestReleaseVersion``" >> $env:GITHUB_STEP_SUMMARY
+          "- Should publish: ``$shouldPublish``" >> $env:GITHUB_STEP_SUMMARY
+
   pack:
     name: Package
+    needs: release-check
+    if: needs.release-check.outputs.should_publish == 'true'
     runs-on: windows-latest
     steps:  
       - name: Checkout

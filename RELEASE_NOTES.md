@@ -1,4 +1,5 @@
 ### 5.3.22
+- [CI] Added a publish workflow early exit when release notes already match the latest GitHub Release
 - [Telemetry] Fixed `WallClockTimer` timer disposal so repeated `Dispose` calls do not corrupt timer state
 - [Introspection] Fixed native library loading on Windows using netstandard2.0 (https://github.com/aardvark-platform/aardvark.base/issues/86)
 - [Base] Fixed `Dict.Contains(key, value)` for collided entries in hash buckets

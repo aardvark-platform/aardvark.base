@@ -87,6 +87,12 @@ Do not edit generated `*_auto.cs` / `*_auto.fs` manually.
 The scripts forward generator CLI arguments, so `--force` can be used for a full regeneration pass.
 CI uses forced regeneration in build and publish workflows to detect stale generated files before packages are produced.
 
+## Publish
+
+The publish workflow parses the top version from `RELEASE_NOTES.md` with `dotnet aardpack --parse-only`.
+If that version already matches the latest GitHub Release, the workflow exits after the release check and skips package build, upload, and push steps.
+Add a new top-level release-notes version when a new package release should be published.
+
 ## Dependency Management
 
 This repository uses Paket.
