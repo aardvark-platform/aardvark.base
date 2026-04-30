@@ -1,3 +1,5 @@
+- [FSharp] Fixed `Seq.foldi` to pass the correct element index
+
 ### 5.3.23
 - [CI] Added a publish workflow early exit when release notes already match the latest GitHub Release
 

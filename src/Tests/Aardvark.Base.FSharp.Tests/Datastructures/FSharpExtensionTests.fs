@@ -46,6 +46,14 @@ module Seq =
                 i <- i + 1
             r :> seq<_>
 
+        let foldi (folder: int -> int -> int -> int) (state: int) (data: int seq) =
+            let mutable state = state
+            let mutable i = 0
+            for d in data do
+                state <- folder i state d
+                i <- i + 1
+            state
+
     [<Property>]
     let ``[Seq] choosei`` (chooser: int -> int -> int option) (data: int list) =
         let result =
@@ -73,6 +81,32 @@ module Seq =
             |> Seq.toArray
 
         result = expected
+
+    [<Property>]
+    let ``[Seq] foldi`` (data: int list) =
+        let folder i state value = state + value + (i * 17)
+
+        let result =
+            data
+            |> Seq.foldi folder 0
+
+        let expected =
+            data
+            |> Ref.foldi folder 0
+
+        result = expected
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] foldi observes distinct indices`` () =
+        let data = [ 10; 20; 30 ]
+
+        let seen =
+            data
+            |> Seq.foldi (fun i acc value -> (i, value) :: acc) []
+            |> List.rev
+
+        let expected = [ (0, 10); (1, 20); (2, 30) ]
+        NUnit.Framework.Assert.That(seen, NUnit.Framework.Is.EqualTo(expected))
 
 module List =
 

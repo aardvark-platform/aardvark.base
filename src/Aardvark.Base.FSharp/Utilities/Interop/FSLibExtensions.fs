@@ -307,7 +307,7 @@ module Prelude =
             let mutable i = 0
 
             while e.MoveNext() do
-                state <- f.Invoke(0, state, e.Current)
+                state <- f.Invoke(i, state, e.Current)
                 i <- i + 1
 
             state
