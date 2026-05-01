@@ -276,6 +276,7 @@ module Prelude =
             }
 
         let inline choosei ([<InlineIfLambda>] chooser: int -> 'T -> 'U option) (source: 'T seq) : 'U seq =
+            if isNull (box source) then nullArg "source"
             let mutable i = 0
             let result = ResizeArray<'U>()
 
@@ -290,6 +291,7 @@ module Prelude =
             result :> 'U seq
 
         let inline collecti ([<InlineIfLambda>] mapping: int -> 'T -> 'U seq) (source: 'T seq) : 'U seq =
+            if isNull (box source) then nullArg "source"
             let mutable i = 0
             let result = ResizeArray<'U>()
 
@@ -301,6 +303,7 @@ module Prelude =
             result :> 'U seq
 
         let inline foldi (folder : int -> 'State -> 'T -> 'State) (state : 'State) (source : 'T seq) =
+            if isNull (box source) then nullArg "source"
             use e = source.GetEnumerator()
             let f = OptimizedClosures.FSharpFunc<_, _, _, _>.Adapt folder
             let mutable state = state
@@ -313,6 +316,7 @@ module Prelude =
             state
 
         let inline tryPickV ([<InlineIfLambda>] chooser) (source : seq<'T>) =
+            if isNull (box source) then nullArg "source"
             use e = source.GetEnumerator()
             let mutable res = ValueNone
 
@@ -327,6 +331,7 @@ module Prelude =
             | ValueSome x -> x
 
         let inline tryFindV ([<InlineIfLambda>] predicate) (source: seq<'T>) =
+            if isNull (box source) then nullArg "source"
             use e = source.GetEnumerator()
             let mutable res = ValueNone
 
@@ -339,6 +344,7 @@ module Prelude =
             res
 
         let inline tryHeadV (source: seq<_>) =
+            if isNull (box source) then nullArg "source"
             use e = source.GetEnumerator()
 
             if (e.MoveNext()) then
@@ -347,6 +353,7 @@ module Prelude =
                 ValueNone
 
         let tryLastV (source: seq<_>) =
+            if isNull (box source) then nullArg "source"
             match source with
             | :? ('T[]) as a ->
                 if a.Length = 0 then ValueNone

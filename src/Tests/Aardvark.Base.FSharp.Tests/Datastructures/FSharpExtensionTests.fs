@@ -26,6 +26,12 @@ module Map =
 
 module Seq =
 
+    let private assertNullSourceArg (action : unit -> 'T) =
+        let ex =
+            NUnit.Framework.Assert.Throws<System.ArgumentNullException>(fun () -> action() |> ignore)
+
+        NUnit.Framework.Assert.That(ex.ParamName, NUnit.Framework.Is.EqualTo("source"))
+
     module Ref =
 
         let choosei (chooser: int -> int -> int option) (data: int seq) =
@@ -107,6 +113,38 @@ module Seq =
 
         let expected = [ (0, 10); (1, 20); (2, 30) ]
         NUnit.Framework.Assert.That(seen, NUnit.Framework.Is.EqualTo(expected))
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] choosei rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.choosei (fun _ value -> Some value) (null : int seq) |> Seq.toArray)
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] collecti rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.collecti (fun _ value -> Seq.singleton value) (null : int seq) |> Seq.toArray)
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] foldi rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.foldi (fun _ state value -> state + value) 0 (null : int seq))
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] tryPickV rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.tryPickV (fun value -> ValueSome value) (null : int seq))
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] pickV rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.pickV (fun value -> ValueSome value) (null : int seq))
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] tryFindV rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.tryFindV (fun _ -> true) (null : int seq))
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] tryHeadV rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.tryHeadV (null : int seq))
+
+    [<NUnit.Framework.Test>]
+    let ``[Seq] tryLastV rejects null source`` () =
+        assertNullSourceArg (fun () -> Seq.tryLastV (null : int seq))
 
 module List =
 

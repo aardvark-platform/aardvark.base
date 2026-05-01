@@ -1,3 +1,5 @@
+- [FSharp] Fixed null-argument validation for custom `Seq` helpers
+
 - [FSharp] Fixed `Seq.foldi` to pass the correct element index
 
 ### 5.3.23
