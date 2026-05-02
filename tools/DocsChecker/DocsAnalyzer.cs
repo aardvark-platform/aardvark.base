@@ -147,15 +147,16 @@ internal sealed class DocsAnalyzer
             var rawLink = match.Groups[1].Value.Trim();
             if (string.IsNullOrEmpty(rawLink)) continue;
 
-            if (rawLink.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-                rawLink.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
-                rawLink.StartsWith("#", StringComparison.Ordinal))
+            var linkPath = NormalizeMarkdownDestination(rawLink);
+            if (string.IsNullOrWhiteSpace(linkPath)) continue;
+
+            if (linkPath.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+                linkPath.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+                linkPath.StartsWith("#", StringComparison.Ordinal))
             {
                 continue;
             }
 
-            var linkPath = rawLink.Split('#')[0];
-            if (string.IsNullOrWhiteSpace(linkPath)) continue;
             if (linkPath.Contains("://", StringComparison.Ordinal)) continue;
 
             var relativeBase = Path.GetDirectoryName(markdownFile) ?? root;
@@ -171,6 +172,46 @@ internal sealed class DocsAnalyzer
             if (!File.Exists(target) && !Directory.Exists(target))
                 failures.Add($"Broken local link in {relPath}: {rawLink}");
         }
+    }
+
+    private static string NormalizeMarkdownDestination(string rawLink)
+    {
+        var trimmed = rawLink.Trim();
+        if (trimmed.Length == 0) return string.Empty;
+
+        string destination;
+
+        if (trimmed[0] == '<')
+        {
+            var closing = trimmed.IndexOf('>');
+            destination = closing > 0 ? trimmed[1..closing] : trimmed;
+        }
+        else
+        {
+            destination = trimmed;
+
+            for (var i = 0; i < trimmed.Length - 1; i++)
+            {
+                if (!char.IsWhiteSpace(trimmed[i])) continue;
+
+                var next = trimmed[i + 1];
+                if (next == '"' || next == '\'')
+                {
+                    destination = trimmed[..i];
+                    break;
+                }
+            }
+        }
+
+        destination = destination.Trim();
+        if (destination.Length >= 2 && destination[0] == '<' && destination[^1] == '>')
+            destination = destination[1..^1].Trim();
+
+        var fragmentIndex = destination.IndexOf('#');
+        if (fragmentIndex >= 0)
+            destination = destination[..fragmentIndex];
+
+        return destination.Trim();
     }
 
     internal static string FullPath(string root, string rel)

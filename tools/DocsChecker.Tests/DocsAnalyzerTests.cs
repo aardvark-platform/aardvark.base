@@ -39,6 +39,30 @@ public sealed class DocsAnalyzerTests
     }
 
     [Fact]
+    public void MarkdownLinkWithTitle_ToExistingFile_IsAccepted()
+    {
+        using var repo = TempRepo.CreateValid();
+        repo.Append("README.md", "\n[guide](docs/INTEROP.md \"interop\")\n");
+        var analyzer = new DocsAnalyzer();
+
+        var failures = analyzer.Analyze(repo.Root);
+
+        Assert.DoesNotContain("Broken local link in README.md: docs/INTEROP.md \"interop\"", failures);
+    }
+
+    [Fact]
+    public void MarkdownLinkWithAngleBracketDestination_ToExistingFile_IsAccepted()
+    {
+        using var repo = TempRepo.CreateValid();
+        repo.Append("README.md", "\n[guide](<docs/INTEROP.md>)\n");
+        var analyzer = new DocsAnalyzer();
+
+        var failures = analyzer.Analyze(repo.Root);
+
+        Assert.DoesNotContain("Broken local link in README.md: <docs/INTEROP.md>", failures);
+    }
+
+    [Fact]
     public void ForbiddenPattern_IsReported()
     {
         using var repo = TempRepo.CreateValid();
