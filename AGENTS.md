@@ -13,7 +13,7 @@ Use these commands for restore/build/test/codegen:
 | Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages |
 | Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` |
 | Build one project | `dotnet build src/Aardvark.Base/Aardvark.Base.csproj -c Debug` | Use explicit project path |
-| Test all | `./test.sh` or `.\test.cmd` | Runs the five real test projects; excludes benchmark projects |
+| Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects; excludes benchmark projects and the deprecated incremental test project |
 | Test one project | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug` | Prefer this over whole-solution test |
 | Test with filter | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter; use a concrete test project |
 | Codegen | `./generate.sh` or `.\generate.cmd` | Required after template changes |
@@ -75,7 +75,7 @@ Current project reality:
 - Mixed `net8.0;netstandard2.0`: `Aardvark.Base`, `Aardvark.Base.FSharp`, `Aardvark.Base.IO`
 - `netstandard2.0` only: `Aardvark.Base.Essentials`, `Aardvark.Base.Telemetry`, `Aardvark.Base.Tensors`, `Aardvark.Base.Tensors.CSharp`, `Aardvark.Base.Runtime`, `Aardvark.Base.Fonts`, `Aardvark.Geometry`
 - `net8.0` test/demo projects: most projects in `src/Tests` and `src/Demo`
-- Legacy exception: `src/Tests/Aardvark.Base.Incremental.Tests/Aardvark.Base.Incremental.Tests.fsproj` targets `netcoreapp3.0`
+- Deprecated legacy test project: `src/Tests/Aardvark.Base.Incremental.Tests/Aardvark.Base.Incremental.Tests.fsproj` still targets `netcoreapp3.0`, is intentionally excluded from `src/Aardvark.sln` and the standard `test.sh` / `test.cmd` path, and is tracked for removal-or-migration in GitHub issue `#94`
 - C# language version is not uniform (`12.0` in `Aardvark.Base`, `10.0` in some other C# projects)
 
 ## Common Failure Modes

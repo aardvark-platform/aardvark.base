@@ -1,4 +1,6 @@
 @echo off
+REM Intentionally runs only the maintained test projects.
+REM The deprecated incremental test project is excluded on purpose; see issue #94.
 dotnet tool restore
 dotnet paket restore
 dotnet test src\Tests\Aardvark.Base.Tests\Aardvark.Base.Tests.csproj

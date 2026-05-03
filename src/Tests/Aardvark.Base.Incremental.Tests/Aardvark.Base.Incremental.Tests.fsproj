@@ -1,5 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Legacy incremental test suite.
+    This project is intentionally excluded from src/Aardvark.sln and the default
+    test.sh / test.cmd path. A retargeting attempt exposed broad incompatibilities
+    with older adaptive test helpers and APIs, so removal-or-migration is tracked
+    explicitly in GitHub issue #94 instead of being treated as part of the normal
+    green test suite.
+  -->
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
