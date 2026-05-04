@@ -10,7 +10,7 @@ Use these commands for restore/build/test/codegen:
 
 | Task | Command | Notes |
 |------|---------|-------|
-| Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages |
+| Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages, auto-repairing missing Paket targets with `dotnet paket install` |
 | Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` |
 | Build one project | `dotnet build src/Aardvark.Base/Aardvark.Base.csproj -c Debug` | Use explicit project path |
 | Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects; excludes benchmark projects and the deprecated incremental test project |
@@ -34,6 +34,7 @@ Rules:
 - Never edit `paket.lock` manually
 - Never use `dotnet add package` in this repo
 - Change constraints in `paket.dependencies`, then regenerate lock with Paket
+- Top-level `build.*` / `test.*` scripts auto-run `dotnet paket install` when `.paket/Paket.Restore.targets` is missing; otherwise they use `dotnet paket restore`
 
 ## Release Notes
 
@@ -82,7 +83,7 @@ Current project reality:
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `dotnet paket restore` fails | Paket/tool state mismatch | `dotnet tool restore` then `dotnet paket restore`; if needed `dotnet paket install` |
+| `dotnet paket restore` fails | Paket/tool state mismatch | `dotnet tool restore` then `dotnet paket restore`; if `.paket/Paket.Restore.targets` is missing or scripts are not being used, run `dotnet paket install` |
 | Compile errors in generated files | Template/output out of sync | Run `./generate.sh` or `.\generate.cmd` |
 | Build fails due framework mismatch | Running old SDK/runtime | Install .NET 8 SDK; verify `dotnet --info` and `global.json` |
 | Test filter returns zero tests | Wrong filter syntax | Use `FullyQualifiedName~...` pattern |

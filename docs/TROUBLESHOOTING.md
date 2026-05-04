@@ -16,7 +16,9 @@ dotnet tool restore
 dotnet paket restore
 ```
 
-If still broken:
+The top-level `build.sh`, `build.cmd`, `test.sh`, and `test.cmd` scripts already handle the common missing-targets bootstrap case automatically: if `.paket/Paket.Restore.targets` is missing, they run `dotnet paket install`; otherwise they use `dotnet paket restore`.
+
+If you are restoring manually or the targets file is already missing:
 
 ```bash
 dotnet paket install
