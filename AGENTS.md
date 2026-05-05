@@ -10,10 +10,10 @@ Use these commands for restore/build/test/codegen:
 
 | Task | Command | Notes |
 |------|---------|-------|
-| Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages, auto-repairing missing Paket targets with `dotnet paket install` |
-| Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` |
+| Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages, auto-repairing missing Paket targets with `dotnet paket install`, and returns a nonzero exit code on the first failure |
+| Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` and stops on the first failing step |
 | Build one project | `dotnet build src/Aardvark.Base/Aardvark.Base.csproj -c Debug` | Use explicit project path |
-| Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects; excludes benchmark projects and the deprecated incremental test project |
+| Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects, stopping on the first failing step; excludes benchmark projects and the deprecated incremental test project |
 | Test one project | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug` | Prefer this over whole-solution test |
 | Test with filter | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter; use a concrete test project |
 | Codegen | `./generate.sh` or `.\generate.cmd` | Required after template changes |
@@ -35,6 +35,7 @@ Rules:
 - Never use `dotnet add package` in this repo
 - Change constraints in `paket.dependencies`, then regenerate lock with Paket
 - Top-level `build.*` / `test.*` scripts auto-run `dotnet paket install` when `.paket/Paket.Restore.targets` is missing; otherwise they use `dotnet paket restore`
+- Top-level `build.*` / `test.*` scripts now stop immediately on the first failing restore/build/test command and return that nonzero exit code
 
 ## Release Notes
 

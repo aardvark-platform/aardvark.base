@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -eu
+
+mode="${1-}"
+
 dotnet tool restore
 # `dotnet paket restore` alone does not recreate Paket.Restore.targets if it is missing.
 if [ ! -f ".paket/Paket.Restore.targets" ]; then
@@ -8,7 +12,7 @@ else
     dotnet paket restore
 fi
 
-if [ "$1" = "restore" ]; then
+if [ "$mode" = "restore" ]; then
     exit 0
 fi
 

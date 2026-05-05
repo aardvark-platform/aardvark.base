@@ -57,6 +57,8 @@ The standard test scripts restore tools/packages and then run only the maintaine
 - `src/Tests/Aardvark.Geometry.Tests/Aardvark.Geometry.Tests.fsproj`
 - `src/Tests/Aardvark.Base.FSharp.Tests/Aardvark.Base.FSharp.Tests.fsproj`
 
+The top-level `build.*` and `test.*` scripts now stop on the first failing restore/build/test command and return a nonzero exit code immediately, so they are safe to use in CI and shell pipelines.
+
 The benchmark projects are intentionally excluded from the default `test.sh` / `test.cmd` path.
 The legacy incremental test project (`src/Tests/Aardvark.Base.Incremental.Tests/Aardvark.Base.Incremental.Tests.fsproj`) is also intentionally excluded for now. It still depends on an older adaptive test/helper surface and is tracked for explicit removal-or-migration in GitHub issue `#94`, rather than being silently treated as part of the normal green test suite.
 
