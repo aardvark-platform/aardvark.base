@@ -53,14 +53,25 @@ namespace Aardvark.Tests.Geometry
             Assert.IsTrue(!t.Contains(new Quad2d(new V2d(-1, -1), new V2d(5, -1), new V2d(5, 5), new V2d(0, 5))));
         }
 
-        [Test, Ignore("not implemented")]
+        [Test]
         public void Contains_Triangle2d_Circle2d()
         {
             var t = new Triangle2d(new V2d(0, 0), new V2d(2, 0), new V2d(1, 2));
-            Assert.IsTrue(t.Contains(new Circle2d(new V2d(1, 1), 0.5)));
+            Assert.IsTrue(t.Contains(new Circle2d(new V2d(1, 1), 0.4)));
+            Assert.IsTrue(t.Contains(new Circle2d(new V2d(1, 1), 1.0 / Sqrt(5.0))));
             Assert.IsTrue(t.Contains(new Circle2d(new V2d(1, 2), 0.0)));
             Assert.IsTrue(!t.Contains(new Circle2d(new V2d(1, 0.1), 0.100001)));
             Assert.IsTrue(!t.Contains(new Circle2d(new V2d(1, 2), 10)));
+        }
+
+        [Test]
+        public void Contains_Triangle2f_Circle2f()
+        {
+            var t = new Triangle2f(new V2f(0, 0), new V2f(4, 0), new V2f(0, 3));
+            Assert.IsTrue(t.Contains(new Circle2f(new V2f(1, 1), 0.5f)));
+            Assert.IsTrue(t.Contains(new Circle2f(new V2f(1, 1), 1.0f)));
+            Assert.IsTrue(!t.Contains(new Circle2f(new V2f(1, 1), 1.000001f)));
+            Assert.IsTrue(!t.Contains(new Circle2f(new V2f(3, 2), 0.0f)));
         }
 
         #endregion

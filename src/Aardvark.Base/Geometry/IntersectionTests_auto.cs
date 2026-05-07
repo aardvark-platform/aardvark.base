@@ -54,10 +54,16 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Triangle2f contains Circle2f - TODO
+        #region Triangle2f contains Circle2f
 
         public static bool Contains(this Triangle2f triangle, Circle2f circle)
-            => throw new NotImplementedException();
+        {
+            var center = circle.Center;
+            return triangle.Contains(center)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line01)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line12)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line20);
+        }
 
         #endregion
 
@@ -4266,10 +4272,16 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Triangle2d contains Circle2d - TODO
+        #region Triangle2d contains Circle2d
 
         public static bool Contains(this Triangle2d triangle, Circle2d circle)
-            => throw new NotImplementedException();
+        {
+            var center = circle.Center;
+            return triangle.Contains(center)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line01)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line12)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line20);
+        }
 
         #endregion
 

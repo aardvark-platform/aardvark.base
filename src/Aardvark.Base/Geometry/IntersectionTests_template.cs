@@ -87,10 +87,16 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region __triangle2t__ contains __circle2t__ - TODO
+        #region __triangle2t__ contains __circle2t__
 
         public static bool Contains(this __triangle2t__ triangle, __circle2t__ circle)
-            => throw new NotImplementedException();
+        {
+            var center = circle.Center;
+            return triangle.Contains(center)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line01)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line12)
+                    && circle.Radius <= center.GetMinimalDistanceTo(triangle.Line20);
+        }
 
         #endregion
 
