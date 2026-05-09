@@ -142,43 +142,50 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Quad2f contains Line2f - TODO
+        #region Quad2f contains Line2f
 
         /// <summary>
         /// True if line segment is contained in this quad.
         /// </summary>
         public static bool Contains(this Quad2f quad, Line2f l)
-            => throw new NotImplementedException();
+            => quad.Contains(l.P0) && quad.Contains(l.P1);
 
         #endregion
 
-        #region Quad2f contains Triangle2f - TODO
+        #region Quad2f contains Triangle2f
 
         /// <summary>
         /// True if triangle is contained in this quad.
         /// </summary>
         public static bool Contains(this Quad2f quad, Triangle2f t)
-            => throw new NotImplementedException();
+            => quad.Contains(t.P0) && quad.Contains(t.P1) && quad.Contains(t.P2);
 
         #endregion
 
-        #region Quad2f contains Quad2f - TODO
+        #region Quad2f contains Quad2f
 
         /// <summary>
         /// True if other quad is contained in this quad.
         /// </summary>
         public static bool Contains(this Quad2f quad, Quad2f q)
-            => throw new NotImplementedException();
+            => quad.Contains(q.P0) && quad.Contains(q.P1) && quad.Contains(q.P2) && quad.Contains(q.P3);
 
         #endregion
 
-        #region Quad2f contains Circle2f - TODO
+        #region Quad2f contains Circle2f
 
         /// <summary>
         /// True if circle is contained in this quad.
         /// </summary>
-        public static bool Contains(this Quad2f quad, Circle2f other)
-            => throw new NotImplementedException();
+        public static bool Contains(this Quad2f quad, Circle2f circle)
+        {
+            var center = circle.Center;
+            return quad.Contains(center)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line01)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line12)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line23)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line30);
+        }
 
         #endregion
 
@@ -4360,43 +4367,50 @@ namespace Aardvark.Base
 
         #endregion
 
-        #region Quad2d contains Line2d - TODO
+        #region Quad2d contains Line2d
 
         /// <summary>
         /// True if line segment is contained in this quad.
         /// </summary>
         public static bool Contains(this Quad2d quad, Line2d l)
-            => throw new NotImplementedException();
+            => quad.Contains(l.P0) && quad.Contains(l.P1);
 
         #endregion
 
-        #region Quad2d contains Triangle2d - TODO
+        #region Quad2d contains Triangle2d
 
         /// <summary>
         /// True if triangle is contained in this quad.
         /// </summary>
         public static bool Contains(this Quad2d quad, Triangle2d t)
-            => throw new NotImplementedException();
+            => quad.Contains(t.P0) && quad.Contains(t.P1) && quad.Contains(t.P2);
 
         #endregion
 
-        #region Quad2d contains Quad2d - TODO
+        #region Quad2d contains Quad2d
 
         /// <summary>
         /// True if other quad is contained in this quad.
         /// </summary>
         public static bool Contains(this Quad2d quad, Quad2d q)
-            => throw new NotImplementedException();
+            => quad.Contains(q.P0) && quad.Contains(q.P1) && quad.Contains(q.P2) && quad.Contains(q.P3);
 
         #endregion
 
-        #region Quad2d contains Circle2d - TODO
+        #region Quad2d contains Circle2d
 
         /// <summary>
         /// True if circle is contained in this quad.
         /// </summary>
-        public static bool Contains(this Quad2d quad, Circle2d other)
-            => throw new NotImplementedException();
+        public static bool Contains(this Quad2d quad, Circle2d circle)
+        {
+            var center = circle.Center;
+            return quad.Contains(center)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line01)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line12)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line23)
+                    && circle.Radius <= center.GetMinimalDistanceTo(quad.Line30);
+        }
 
         #endregion
 

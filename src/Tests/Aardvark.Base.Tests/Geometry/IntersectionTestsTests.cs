@@ -76,6 +76,56 @@ namespace Aardvark.Tests.Geometry
 
         #endregion
 
+        #region Quad2d contains *
+
+        [Test]
+        public void Contains_Quad2d_Line2d()
+        {
+            var q = new Quad2d(new V2d(0, 0), new V2d(4, 0), new V2d(4, 3), new V2d(0, 3));
+            Assert.IsTrue(q.Contains(new Line2d(new V2d(1, 1), new V2d(3, 2))));
+            Assert.IsTrue(q.Contains(new Line2d(new V2d(0, 0), new V2d(4, 0))));
+            Assert.IsTrue(!q.Contains(new Line2d(new V2d(1, 1), new V2d(5, 1))));
+        }
+
+        [Test]
+        public void Contains_Quad2d_Triangle2d()
+        {
+            var q = new Quad2d(new V2d(0, 0), new V2d(4, 0), new V2d(4, 3), new V2d(0, 3));
+            Assert.IsTrue(q.Contains(new Triangle2d(new V2d(1, 1), new V2d(3, 1), new V2d(2, 2))));
+            Assert.IsTrue(q.Contains(new Triangle2d(new V2d(0, 0), new V2d(4, 0), new V2d(0, 3))));
+            Assert.IsTrue(!q.Contains(new Triangle2d(new V2d(1, 1), new V2d(3, 1), new V2d(2, 4))));
+        }
+
+        [Test]
+        public void Contains_Quad2d_Quad2d()
+        {
+            var q = new Quad2d(new V2d(0, 0), new V2d(4, 0), new V2d(4, 3), new V2d(0, 3));
+            Assert.IsTrue(q.Contains(new Quad2d(new V2d(1, 1), new V2d(3, 1), new V2d(3, 2), new V2d(1, 2))));
+            Assert.IsTrue(q.Contains(new Quad2d(new V2d(0, 0), new V2d(4, 0), new V2d(4, 3), new V2d(0, 3))));
+            Assert.IsTrue(!q.Contains(new Quad2d(new V2d(1, 1), new V2d(5, 1), new V2d(5, 2), new V2d(1, 2))));
+        }
+
+        [Test]
+        public void Contains_Quad2d_Circle2d()
+        {
+            var q = new Quad2d(new V2d(0, 0), new V2d(4, 0), new V2d(4, 3), new V2d(0, 3));
+            Assert.IsTrue(q.Contains(new Circle2d(new V2d(2, 1.5), 1.0)));
+            Assert.IsTrue(q.Contains(new Circle2d(new V2d(2, 1.5), 1.5)));
+            Assert.IsTrue(q.Contains(new Circle2d(new V2d(0, 0), 0.0)));
+            Assert.IsTrue(!q.Contains(new Circle2d(new V2d(2, 1.5), 1.500001)));
+            Assert.IsTrue(!q.Contains(new Circle2d(new V2d(5, 1.5), 0.0)));
+        }
+
+        [Test]
+        public void Contains_Quad2f_Circle2f()
+        {
+            var q = new Quad2f(new V2f(0, 0), new V2f(4, 0), new V2f(4, 3), new V2f(0, 3));
+            Assert.IsTrue(q.Contains(new Circle2f(new V2f(2, 1.5f), 1.5f)));
+            Assert.IsTrue(!q.Contains(new Circle2f(new V2f(2, 1.5f), 1.500001f)));
+        }
+
+        #endregion
+
         #region Circle2d contains *
 
         [Test]

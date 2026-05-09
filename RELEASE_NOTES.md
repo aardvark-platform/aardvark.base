@@ -1,3 +1,5 @@
+- [Geometry] Implemented `Quad2.Contains(...)` overloads for lines, triangles, quads, and circles
+
 - [FSharp] Fixed null-argument validation for custom `Seq` helpers
 
 - [FSharp] Fixed `Seq.foldi` to pass the correct element index
