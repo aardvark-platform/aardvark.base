@@ -32,12 +32,14 @@ namespace Aardvark.Base
 
         public void ReSeed(int seed) => Generator = new Random(seed);
 
-        // FIXME: System.Random.Next() returns an integer in the interval of [0, 2^31 - 1)
-        // but the IRandomSystem.UniformInt() comment specifies that the result
-        // is in the interval [0, 2^31-1]
-        public int UniformInt() => Generator.Next();
-
         private static readonly ThreadLocal<byte[]> s_buffer4 = new ThreadLocal<byte[]>(() => new byte[4]);
+        public int UniformInt()
+        {
+            var array = s_buffer4.Value;
+            Generator.NextBytes(array);
+            return (int)(BitConverter.ToUInt32(array, 0) & 0x7fffffffu);
+        }
+
         /// <summary>
         /// Returns a uniformly distributed uint in the interval [0, 2^63-1].
         /// Constructed using 16 bits of each of two random integers.
@@ -73,7 +75,7 @@ namespace Aardvark.Base
 
         public float UniformFloat() => (UniformInt() >> 7) * (float)(1.0 / 16777216.0);
 
-        public float UniformFloatClosed() => (float)((UniformInt() - 1) * (1.0 / 2147483645.0));
+        public float UniformFloatClosed() => (float)(UniformInt() / 2147483647.0);
 
         public float UniformFloatOpen()
         {
@@ -83,9 +85,13 @@ namespace Aardvark.Base
 
         public double UniformDouble() => Generator.NextDouble();
 
-        public double UniformDoubleClosed() => (UniformInt() - 1) * (1.0 / 2147483645.0);
+        public double UniformDoubleClosed() => UniformInt() / 2147483647.0;
 
-        public double UniformDoubleOpen() => UniformInt() * (1.0 / 2147483647.0);
+        public double UniformDoubleOpen()
+        {
+            int r; do { r = UniformInt(); } while (r == 0);
+            return r * (1.0 / 2147483648.0);
+        }
 
         #endregion
     }

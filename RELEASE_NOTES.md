@@ -1,3 +1,5 @@
+- [Random] Fixed `RandomSystem` boundary handling for inclusive integer and open/closed floating-point samples
+
 - [Geometry] Implemented `Quad2.Contains(...)` overloads for lines, triangles, quads, and circles
 
 - [FSharp] Fixed null-argument validation for custom `Seq` helpers
