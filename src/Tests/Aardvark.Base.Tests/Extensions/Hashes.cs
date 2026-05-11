@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
@@ -67,6 +68,45 @@ namespace Aardvark.Tests.Extensions
             var adlerNew = floats.ComputeAdler32Checksum();
             Report.Line("Checksum: {0:X}", adlerNew);
             Assert.True(adlerNew != adler);
+        }
+
+        [Test]
+        public static void Adler32UpdateByteArrayNullThrowsArgumentNullException()
+        {
+            var adler = new Adler32();
+
+            var ex = Assert.Throws<ArgumentNullException>(() => adler.Update((byte[])null));
+            Assert.AreEqual("buffer", ex.ParamName);
+        }
+
+        [Test]
+        public static void Adler32UpdateStreamNullThrowsArgumentNullException()
+        {
+            var adler = new Adler32();
+
+            var ex = Assert.Throws<ArgumentNullException>(() => adler.Update((Stream)null));
+            Assert.AreEqual("stream", ex.ParamName);
+        }
+
+        [TestCase(-1, 1)]
+        [TestCase(0, -1)]
+        [TestCase(2, 3)]
+        [TestCase(int.MaxValue, 1)]
+        public static void Adler32UpdateInvalidArrayRangeThrowsArgumentOutOfRangeException(int offset, int length)
+        {
+            var adler = new Adler32();
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => adler.Update(new byte[4], offset, length));
+        }
+
+        [Test]
+        public static void Adler32UpdateValidRangePreservesChecksum()
+        {
+            var adler = new Adler32();
+
+            adler.Update(new byte[] { 1, 2, 3, 4, 5 }, 1, 3);
+
+            Assert.AreEqual(0x0013000Au, adler.Checksum);
         }
 
         [Test]

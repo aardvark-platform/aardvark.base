@@ -1,3 +1,5 @@
+- [Base] Hardened `Adler32` input validation for null inputs and invalid array ranges
+
 - [Random] Fixed `RandomSystem` boundary handling for inclusive integer and open/closed floating-point samples
 
 - [Geometry] Implemented `Quad2.Contains(...)` overloads for lines, triangles, quads, and circles

@@ -95,6 +95,11 @@ namespace Aardvark.Base
         /// </summary>
         public void Update(Stream stream)
         {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
             int count;
             var buffer = new byte[1024];
             while ((count = stream.Read(buffer, 0, 1024)) > 0)
@@ -106,6 +111,11 @@ namespace Aardvark.Base
         /// </summary>
         public void Update(byte[] buffer)
         {
+            if (buffer == null)
+            {
+                throw new ArgumentNullException(nameof(buffer));
+            }
+
             Update(buffer, 0, buffer.Length);
         }
 
@@ -116,10 +126,20 @@ namespace Aardvark.Base
         {
             if (buffer == null)
             {
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException(nameof(buffer));
             }
 
-            if (offset < 0 || length < 0 || offset + length > buffer.Length)
+            if (offset < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            }
+
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (offset > buffer.Length - length)
             {
                 throw new ArgumentOutOfRangeException();
             }
