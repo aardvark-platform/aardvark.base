@@ -1,3 +1,5 @@
+- [Base] Fixed `ListFun.Map3` to truncate to the shortest input list when the third list is shortest
+
 - [Base] Hardened `Adler32` input validation for null inputs and invalid array ranges
 
 - [Random] Fixed `RandomSystem` boundary handling for inclusive integer and open/closed floating-point samples

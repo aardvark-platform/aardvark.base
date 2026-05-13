@@ -40,7 +40,7 @@ namespace Aardvark.Base
                 this List<T0> list0, List<T1> list1, List<T2> list2,
                 Func<T0, T1, T2, Tr> item0_item1_item2_fun)
         {
-            var count = Min(list0.Count, list1.Count);
+            var count = Min(Min(list0.Count, list1.Count), list2.Count);
             var result = new List<Tr>(count);
             for (var i = 0; i < count; i++)
                 result.Add(item0_item1_item2_fun(list0[i], list1[i], list2[i]));
@@ -72,7 +72,7 @@ namespace Aardvark.Base
                 this List<T0> list0, List<T1> list1, List<T2> list2,
                 Func<T0, T1, T2, int, Tr> item0_item1_item2_index_fun)
         {
-            var count = Min(list0.Count, list1.Count);
+            var count = Min(Min(list0.Count, list1.Count), list2.Count);
             var result = new List<Tr>(count);
             for (var i = 0; i < count; i++)
                 result.Add(item0_item1_item2_index_fun(list0[i], list1[i], list2[i], i));
