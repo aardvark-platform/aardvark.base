@@ -205,6 +205,8 @@ namespace Aardvark.Base
             {
                 for (int i = s_pluralEndings.Length-1; i > 0; i--)
                 {
+                    if (i > word.Length) continue;
+
                     string ending = word.Substring(word.Length - i);
                     string plural;
                     if (s_pluralEndings[i].TryGetValue(ending, out plural))
