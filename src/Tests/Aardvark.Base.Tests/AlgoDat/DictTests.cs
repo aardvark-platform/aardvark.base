@@ -559,6 +559,65 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void SingleEntryDictTryGetValueReportsPresentAndMissingKeys()
+        {
+            var dict = new SingleEntryDict<string, int>("key", 1);
+
+            Assert.IsTrue(dict.TryGetValue("key", out var value));
+            Assert.AreEqual(1, value);
+            Assert.IsFalse(dict.TryGetValue("other", out value));
+            Assert.AreEqual(default(int), value);
+        }
+
+        [Test]
+        public void SingleEntryDictRemoveOnlyRemovesMatchingKey()
+        {
+            var dict = new SingleEntryDict<string, int>("key", 1);
+
+            Assert.IsFalse(dict.Remove("other"));
+            Assert.IsTrue(dict.ContainsKey("key"));
+
+            Assert.IsTrue(dict.Remove("key"));
+            Assert.IsFalse(dict.ContainsKey("key"));
+            Assert.IsFalse(dict.TryGetValue("key", out var value));
+            Assert.AreEqual(default(int), value);
+            Assert.Throws<KeyNotFoundException>(() => { var _ = dict["key"]; });
+            CollectionAssert.IsEmpty(dict.Keys);
+            CollectionAssert.IsEmpty(dict.Values);
+            CollectionAssert.IsEmpty(dict.KeyValuePairs);
+        }
+
+        [Test]
+        public void SingleEntryDictAddRestoresRemovedEntryAndRejectsInvalidAdds()
+        {
+            var dict = new SingleEntryDict<string, int>("key", 1);
+
+            Assert.Throws<ArgumentException>(() => dict.Add("key", 2));
+            Assert.Throws<ArgumentException>(() => dict.Add("other", 2));
+
+            Assert.IsTrue(dict.Remove("key"));
+            Assert.DoesNotThrow(() => dict.Add("key", 3));
+            Assert.IsTrue(dict.ContainsKey("key"));
+            Assert.AreEqual(3, dict["key"]);
+            CollectionAssert.AreEqual(new[] { "key" }, dict.Keys);
+            CollectionAssert.AreEqual(new[] { 3 }, dict.Values);
+        }
+
+        [Test]
+        public void SingleEntryDictSupportsNullKey()
+        {
+            var dict = new SingleEntryDict<string, int>(null, 1);
+
+            Assert.IsTrue(dict.ContainsKey(null));
+            Assert.IsTrue(dict.TryGetValue(null, out var value));
+            Assert.AreEqual(1, value);
+            Assert.IsTrue(dict.Remove(null));
+            Assert.IsFalse(dict.ContainsKey(null));
+            Assert.DoesNotThrow(() => dict[null] = 2);
+            Assert.AreEqual(2, dict[null]);
+        }
+
+        [Test]
         public void SingleValueDictSetterAndAddAcceptSharedValueWithoutThrowing()
         {
             var dict = new SingleValueDict<string, int>(new DictSet<string>(), 7);

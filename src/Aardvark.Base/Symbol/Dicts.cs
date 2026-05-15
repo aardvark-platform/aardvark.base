@@ -11,6 +11,7 @@ namespace Aardvark.Base
     {
         readonly TKey m_key;
         TValue m_value;
+        bool m_hasEntry;
 
         #region Constructors
 
@@ -18,6 +19,7 @@ namespace Aardvark.Base
         {
             m_key = key;
             m_value = value;
+            m_hasEntry = true;
         }
 
         #endregion
@@ -26,31 +28,32 @@ namespace Aardvark.Base
 
         public IEnumerable<TKey> Keys
         {
-            get { yield return m_key; }
+            get { if (m_hasEntry) yield return m_key; }
         }
 
         public IEnumerable<TValue> Values
         {
-            get { yield return m_value; }
+            get { if (m_hasEntry) yield return m_value; }
         }
 
         public IEnumerable<KeyValuePair<TKey, TValue>> KeyValuePairs
         {
-            get { yield return new KeyValuePair<TKey, TValue>(m_key, m_value); }
+            get { if (m_hasEntry) yield return new KeyValuePair<TKey, TValue>(m_key, m_value); }
         }
 
         public TValue this[TKey key]
         {
             get
             {
-                if (key.Equals(m_key)) return m_value;
+                if (ContainsKey(key)) return m_value;
                 throw new KeyNotFoundException();
             }
             set
             {
-                if (key.Equals(m_key))
+                if (EqualityComparer<TKey>.Default.Equals(key, m_key))
                 {
                     m_value = value;
+                    m_hasEntry = true;
                     return;
                 }
                 throw new ArgumentException();
@@ -59,22 +62,39 @@ namespace Aardvark.Base
 
         public void Add(TKey key, TValue value)
         {
-            throw new NotImplementedException();
+            if (!EqualityComparer<TKey>.Default.Equals(key, m_key))
+                throw new ArgumentException();
+            if (m_hasEntry)
+                throw new ArgumentException();
+
+            m_value = value;
+            m_hasEntry = true;
         }
 
         public bool ContainsKey(TKey key)
         {
-            return key.Equals(m_key);
+            return m_hasEntry && EqualityComparer<TKey>.Default.Equals(key, m_key);
         }
 
         public bool Remove(TKey key)
         {
-            throw new NotImplementedException();
+            if (!ContainsKey(key)) return false;
+
+            m_hasEntry = false;
+            m_value = default(TValue);
+            return true;
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            throw new NotImplementedException();
+            if (ContainsKey(key))
+            {
+                value = m_value;
+                return true;
+            }
+
+            value = default(TValue);
+            return false;
         }
 
         #endregion

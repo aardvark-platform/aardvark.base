@@ -79,7 +79,7 @@ set.UnionWith(other);
 
 ## SingleEntryDict
 
-`SingleEntryDict<TKey, TValue>` exists in `Symbol/Dicts.cs` and is optimized for one key/value.
+`SingleEntryDict<TKey, TValue>` exists in `Symbol/Dicts.cs` and is optimized for one optional key/value entry. It supports normal `IDict<TKey, TValue>` lookup, removal, and re-adding the configured key after removal.
 
 ## Source Anchors
 
