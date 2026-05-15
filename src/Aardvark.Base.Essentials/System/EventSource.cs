@@ -6,11 +6,13 @@ namespace Aardvark.Base
     public class EventSourceSlim<T> : IEvent<T>
     {
         private readonly Subject<T> m_subject;
+        private Awaitable<T> m_awaitable;
         private T m_latest;
+
         public EventSourceSlim(T defaultValue)
         {
             m_subject = new Subject<T>();
-            m_subject.OnNext(defaultValue);
+            m_awaitable = new Awaitable<T>();
             m_latest = defaultValue;
         }
 
@@ -18,7 +20,10 @@ namespace Aardvark.Base
         {
             lock(this)
             {
+                var currentAwaitable = m_awaitable;
+                m_awaitable = new Awaitable<T>();
                 m_latest = v;
+                currentAwaitable.Emit(v);
                 m_subject.OnNext(v);
             }
         }
@@ -38,7 +43,10 @@ namespace Aardvark.Base
         {
             get
             {
-                throw new NotImplementedException();
+                lock(this)
+                {
+                    return m_awaitable;
+                }
             }
         }
 
@@ -54,7 +62,7 @@ namespace Aardvark.Base
         {
             get
             {
-                throw new NotImplementedException();
+                return Next;
             }
         }
 
@@ -62,7 +70,7 @@ namespace Aardvark.Base
         {
             get
             {
-                throw new NotImplementedException();
+                return new MapObservable<T, Unit>(Values, _ => Unit.Default);
             }
         }
     }
