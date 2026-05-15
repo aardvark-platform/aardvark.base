@@ -853,8 +853,9 @@ namespace Aardvark.Base
         {
             if (pointArray == null) throw new ArgumentNullException();
             if (startIndex < 0 || startIndex >= pointArray.Length) throw new ArgumentOutOfRangeException();
-            if (count < 0 || startIndex + count >= pointArray.Length) throw new ArgumentOutOfRangeException();
+            if (count < 0) throw new ArgumentOutOfRangeException();
             if (count == 0) count = pointArray.Length - startIndex;
+            if (count > pointArray.Length - startIndex) throw new ArgumentOutOfRangeException();
 
             var normal = plane.Normal;
             var result = new __v3t__[count];
@@ -874,8 +875,9 @@ namespace Aardvark.Base
         {
             if (pointArray == null) throw new ArgumentNullException();
             if (startIndex < 0 || startIndex >= pointArray.Length) throw new ArgumentOutOfRangeException();
-            if (count < 0 || startIndex + count >= pointArray.Length) throw new ArgumentOutOfRangeException();
+            if (count < 0) throw new ArgumentOutOfRangeException();
             if (count == 0) count = pointArray.Length - startIndex;
+            if (count > pointArray.Length - startIndex) throw new ArgumentOutOfRangeException();
 
             var result = new __v3t__[count];
             for (int i = startIndex, j = 0; j < count; i++, j++)

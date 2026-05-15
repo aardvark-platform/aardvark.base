@@ -1,3 +1,4 @@
+- [Geometry] Fixed `Plane3.Project` array-slice validation for ranges ending at the array length
 - [Base] Fixed `EnumerableEx.SelectToList` overloads for arrays and lists
 - [Base] Fixed `StringFun.Plural` for empty and one-character words
 - [Base] Fixed `ListFun.Map3` to truncate to the shortest input list when the third list is shortest
