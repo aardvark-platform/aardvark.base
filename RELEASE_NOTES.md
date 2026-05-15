@@ -7,6 +7,7 @@
 - [Geometry] Implemented `Quad2.Contains(...)` overloads for lines, triangles, quads, and circles
 - [FSharp] Fixed null-argument validation for custom `Seq` helpers
 - [FSharp] Fixed `Seq.foldi` to pass the correct element index
+- [Essentials] Fixed `Task.WithCancellation` for already-canceled tokens
 
 ### 5.3.23
 - [CI] Added a publish workflow early exit when release notes already match the latest GitHub Release

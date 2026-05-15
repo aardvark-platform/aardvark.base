@@ -20,7 +20,7 @@ namespace Aardvark.Base
             if (task.IsCompleted || !ct.CanBeCanceled)
                 return task;
             else if (ct.IsCancellationRequested)
-                return new Task<T>(() => default(T), ct);
+                return Task.FromCanceled<T>(ct);
             else
                 return task.WithCancellationInternal(ct);
         }
@@ -34,7 +34,7 @@ namespace Aardvark.Base
             if (task.IsCompleted || !ct.HasValue || !ct.Value.CanBeCanceled)
                 return task;
             else if (ct.Value.IsCancellationRequested)
-                return new Task<T>(() => default(T), ct.Value);
+                return Task.FromCanceled<T>(ct.Value);
             else
                 return task.WithCancellationInternal(ct.Value);
         }
@@ -50,11 +50,7 @@ namespace Aardvark.Base
             {
                 if (task != await Task.WhenAny(task, tcs.Task))
                 {
-                    //TODO: fixed by haaser (check SM)
                     throw new TaskCanceledException(task);
-
-                    //prior: (wrong since all Controllers check for TaskCanceledException)
-                    //throw new OperationCanceledException(ct);
                 }
             }
             return await task;
