@@ -636,6 +636,47 @@ namespace Aardvark.Tests
             Assert.IsFalse(dict.ContainsKey("fourth"));
         }
 
+        [Test]
+        public void SingleValueDictValueOnlyConstructorCreatesUsableEmptyDict()
+        {
+            var dict = new SingleValueDict<string, int>(7);
+
+            CollectionAssert.IsEmpty(dict.Keys);
+            CollectionAssert.IsEmpty(dict.KeyValuePairs);
+            Assert.IsFalse(dict.ContainsKey("missing"));
+            Assert.IsFalse(dict.TryGetValue("missing", out var missing));
+            Assert.AreEqual(default(int), missing);
+            Assert.Throws<KeyNotFoundException>(() => { var _ = dict["missing"]; });
+
+            Assert.DoesNotThrow(() => dict.Add("first", 7));
+            Assert.DoesNotThrow(() => dict["second"] = 7);
+
+            Assert.IsTrue(dict.ContainsKey("first"));
+            Assert.IsTrue(dict.ContainsKey("second"));
+            Assert.AreEqual(7, dict["first"]);
+            Assert.AreEqual(7, dict["second"]);
+            Assert.IsTrue(dict.TryGetValue("first", out var value));
+            Assert.AreEqual(7, value);
+
+            CollectionAssert.AreEquivalent(new[] { "first", "second" }, dict.Keys);
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+                    new KeyValuePair<string, int>("first", 7),
+                    new KeyValuePair<string, int>("second", 7),
+                },
+                dict.KeyValuePairs);
+
+            Assert.Throws<ArgumentException>(() => dict.Add("third", 8));
+            Assert.Throws<ArgumentException>(() => dict["third"] = 8);
+            Assert.IsFalse(dict.ContainsKey("third"));
+
+            Assert.IsTrue(dict.Remove("first"));
+            Assert.IsFalse(dict.Remove("first"));
+            Assert.IsFalse(dict.ContainsKey("first"));
+            Assert.IsTrue(dict.ContainsKey("second"));
+        }
+
         [Theory]
         public void ContainsValue(bool stackDuplicateKeys)
         {

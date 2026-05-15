@@ -112,6 +112,7 @@ namespace Aardvark.Base
 
         public SingleValueDict(TValue value)
         {
+            m_keys = new DictSet<TKey>();
             m_value = value;
         }
 
