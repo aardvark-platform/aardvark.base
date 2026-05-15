@@ -190,7 +190,7 @@ namespace Aardvark.Base
             var result = new List<R>(self.Length);
             for (int i = 0; i < self.Length; i++)
             {
-                result[i] = selector(self[i]);
+                result.Add(selector(self[i]));
             }
             return result;
         }
@@ -216,7 +216,7 @@ namespace Aardvark.Base
             var result = new List<R>(self.Count);
             for (int i = 0; i < self.Count; i++)
             {
-                result[i] = selector(self[i]);
+                result.Add(selector(self[i]));
             }
             return result;
         }

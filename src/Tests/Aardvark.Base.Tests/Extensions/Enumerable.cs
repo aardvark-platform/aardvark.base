@@ -36,5 +36,25 @@ namespace Aardvark.Tests.Extensions
 
             Assert.True(Enumerable.Empty<int>().MinIndex() < 0);
         }
+
+        [Test]
+        public static void SelectToListFromArray()
+        {
+            var source = new[] { 1, 2, 3 };
+
+            var result = source.SelectToList(x => $"v{x * 2}");
+
+            CollectionAssert.AreEqual(new[] { "v2", "v4", "v6" }, result);
+        }
+
+        [Test]
+        public static void SelectToListFromList()
+        {
+            var source = new List<string> { "a", "bb", "ccc" };
+
+            var result = source.SelectToList(x => x.Length);
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, result);
+        }
     }
 }
