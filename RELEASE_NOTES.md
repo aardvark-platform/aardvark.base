@@ -1,3 +1,4 @@
+- [Base] Fixed `SingleValueSymbolDict` value-only construction and shared-value setter/add behavior
 - [Essentials] Fixed `EventSourceSlim<T>` next-value awaitables and non-generic `IEvent` members
 - [Base] Completed `SingleEntryDict` lookup, removal, and re-add behavior
 - [Geometry] Fixed `Plane3.Project` array-slice validation for ranges ending at the array length

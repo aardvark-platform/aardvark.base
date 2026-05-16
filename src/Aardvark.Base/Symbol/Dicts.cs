@@ -666,6 +666,7 @@ namespace Aardvark.Base
 
         public SingleValueSymbolDict(TValue value)
         {
+            m_keys = new SymbolSet();
             m_value = value;
         }
 
@@ -697,14 +698,22 @@ namespace Aardvark.Base
             }
             set
             {
-                if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
+                if (EqualityComparer<TValue>.Default.Equals(value, m_value))
+                {
+                    m_keys.Add(key);
+                    return;
+                }
                 throw new ArgumentException();
             }
         }
 
         public void Add(Symbol key, TValue value)
         {
-            if (EqualityComparer<TValue>.Default.Equals(value, m_value)) m_keys.Add(key);
+            if (EqualityComparer<TValue>.Default.Equals(value, m_value))
+            {
+                m_keys.Add(key);
+                return;
+            }
             throw new ArgumentException();
         }
 

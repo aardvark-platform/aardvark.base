@@ -677,6 +677,55 @@ namespace Aardvark.Tests
             Assert.IsTrue(dict.ContainsKey("second"));
         }
 
+        [Test]
+        public void SingleValueSymbolDictValueOnlyConstructorCreatesUsableEmptyDict()
+        {
+            var dict = new SingleValueSymbolDict<int>(7);
+            var first = Symbol.Create("single-value-symbol-dict-first");
+            var second = Symbol.Create("single-value-symbol-dict-second");
+            var third = Symbol.Create("single-value-symbol-dict-third");
+            var fourth = Symbol.Create("single-value-symbol-dict-fourth");
+            var missingKey = Symbol.Create("single-value-symbol-dict-missing");
+
+            CollectionAssert.IsEmpty(dict.Keys);
+            CollectionAssert.IsEmpty(dict.KeyValuePairs);
+            Assert.IsFalse(dict.ContainsKey(missingKey));
+            Assert.IsFalse(dict.TryGetValue(missingKey, out var missing));
+            Assert.AreEqual(default(int), missing);
+            Assert.Throws<KeyNotFoundException>(() => { var _ = dict[missingKey]; });
+
+            Assert.DoesNotThrow(() => dict.Add(first, 7));
+            Assert.DoesNotThrow(() => dict[second] = 7);
+
+            Assert.IsTrue(dict.ContainsKey(first));
+            Assert.IsTrue(dict.ContainsKey(second));
+            Assert.AreEqual(7, dict[first]);
+            Assert.AreEqual(7, dict[second]);
+            Assert.IsTrue(dict.TryGetValue(first, out var value));
+            Assert.AreEqual(7, value);
+
+            CollectionAssert.AreEquivalent(new[] { first, second }, dict.Keys);
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+                    new KeyValuePair<Symbol, int>(first, 7),
+                    new KeyValuePair<Symbol, int>(second, 7),
+                },
+                dict.KeyValuePairs);
+
+            Assert.Throws<ArgumentException>(() => dict.Add(third, 8));
+            Assert.Throws<ArgumentException>(() => dict[fourth] = 8);
+            Assert.IsFalse(dict.ContainsKey(third));
+            Assert.IsFalse(dict.ContainsKey(fourth));
+
+            Assert.IsTrue(dict.Remove(first));
+            Assert.IsFalse(dict.Remove(first));
+            Assert.IsFalse(dict.ContainsKey(first));
+            Assert.IsTrue(dict.ContainsKey(second));
+            CollectionAssert.AreEqual(new[] { second }, dict.Keys);
+            CollectionAssert.AreEqual(new[] { new KeyValuePair<Symbol, int>(second, 7) }, dict.KeyValuePairs);
+        }
+
         [Theory]
         public void ContainsValue(bool stackDuplicateKeys)
         {
