@@ -1,3 +1,4 @@
+- [Base] Hardened `Stream.ReadBytes` argument validation before reading
 - [Random] Fixed `TakeRandomly` to reject NaN probabilities
 - [Base] Fixed `SingleValueSymbolDict` value-only construction and shared-value setter/add behavior
 - [Essentials] Fixed `EventSourceSlim<T>` next-value awaitables and non-generic `IEvent` members

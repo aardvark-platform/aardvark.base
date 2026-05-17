@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Aardvark.Base
 {
@@ -14,7 +15,12 @@ namespace Aardvark.Base
         /// <exception cref="EndOfStreamException"></exception>
         public static void ReadBytes(this Stream stream, byte[] buffer, int offset = 0, int count = -1)
         {
+            if (stream == null) throw new ArgumentNullException(nameof(stream));
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (offset < 0 || offset > buffer.Length) throw new ArgumentOutOfRangeException(nameof(offset));
             if (count < 0) count = buffer.Length - offset;
+            if (count > buffer.Length - offset) throw new ArgumentException("The offset and count do not describe a valid range inside the buffer.", nameof(count));
+
 #if NET8_0_OR_GREATER
             stream.ReadExactly(buffer, offset, count);
 #else
