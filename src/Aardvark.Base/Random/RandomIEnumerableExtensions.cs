@@ -11,8 +11,8 @@ namespace Aardvark.Base
         public static IEnumerable<T> TakeRandomly<T>(this IEnumerable<T> self, double p,
                                                      IRandomUniform random = null)
         {
-            if (self == null) throw new ArgumentNullException();
-            if (p < 0 || p > 1) throw new ArgumentOutOfRangeException();
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (double.IsNaN(p) || p < 0 || p > 1) throw new ArgumentOutOfRangeException(nameof(p));
 
             if (random == null) random = new RandomSystem();
             foreach (var s in self) if (random.UniformDouble() <= p) yield return s;
@@ -24,8 +24,8 @@ namespace Aardvark.Base
         public static IEnumerable<R> TakeRandomly<T, R>(this IEnumerable<T> self, Func<T, R> selector, double p,
                                                         IRandomUniform random = null)
         {
-            if (self == null) throw new ArgumentNullException();
-            if (p < 0 || p > 1) throw new ArgumentOutOfRangeException();
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (double.IsNaN(p) || p < 0 || p > 1) throw new ArgumentOutOfRangeException(nameof(p));
 
             if (random == null) random = new RandomSystem();
             foreach (var s in self) if (random.UniformDouble() <= p) yield return selector(s);
