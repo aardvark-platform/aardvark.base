@@ -38,7 +38,7 @@ namespace Aardvark.Base
         public PixJpegSaveParams(int quality = DefaultQuality) : base(PixFileFormat.Jpeg)
         {
             if (quality is < 0 or > 100)
-                throw new ArgumentException($"Quality must be within 0 - 100, is ${quality}.");
+                throw new ArgumentException($"Quality must be within 0 - 100, is {quality}.");
             Quality = quality;
         }
 
@@ -71,7 +71,7 @@ namespace Aardvark.Base
         public PixWebpSaveParams(int quality = DefaultQuality, bool lossless = false) : base(PixFileFormat.Webp)
         {
             if (quality is < 0 or > 100)
-                throw new ArgumentException($"Quality must be within 0 - 100, is ${quality}.");
+                throw new ArgumentException($"Quality must be within 0 - 100, is {quality}.");
             Quality = quality;
             Lossless = lossless;
         }
@@ -97,7 +97,7 @@ namespace Aardvark.Base
         public PixPngSaveParams(int compressionLevel = DefaultCompressionLevel) : base(PixFileFormat.Png)
         {
             if (compressionLevel is < 0 or > 9)
-                throw new ArgumentException($"Compression level must be within 0 - 9, is ${compressionLevel}.");
+                throw new ArgumentException($"Compression level must be within 0 - 9, is {compressionLevel}.");
             CompressionLevel = compressionLevel;
         }
 
