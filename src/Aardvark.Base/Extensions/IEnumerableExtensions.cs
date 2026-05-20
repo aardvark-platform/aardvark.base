@@ -859,16 +859,31 @@ namespace Aardvark.Base
         {
             if (elements == null)
                 return true;
-            //if (elements.IsEmptyOrNull()) return true; //this performs an unnecessary enumeration (at least of the first element)
-            return elements.Distinct().Count() == elements.Count();
+
+            var set = new HashSet<T>();
+            foreach (var element in elements)
+                if (!set.Add(element))
+                    return false;
+
+            return true;
         }
 
         public static bool AllEqual<T>(this IEnumerable<T> elements)
         {
             if (elements == null)
                 return true;
-            //if (elements.IsEmptyOrNull()) return true; //this performs an unnecessary enumeration (at least of the first element)
-            return elements.Distinct().Count() <= 1;
+
+            using var enumerator = elements.GetEnumerator();
+            if (!enumerator.MoveNext())
+                return true;
+
+            var first = enumerator.Current;
+            var comparer = EqualityComparer<T>.Default;
+            while (enumerator.MoveNext())
+                if (!comparer.Equals(first, enumerator.Current))
+                    return false;
+
+            return true;
         }
 
         #endregion
