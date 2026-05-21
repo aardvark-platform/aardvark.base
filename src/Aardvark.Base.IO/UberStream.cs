@@ -26,6 +26,34 @@ namespace Aardvark.Base.Coder
 
         #endregion
 
+        #region validation
+
+        private static void ValidateStartAndLength(long startPos, long numOfBytes)
+        {
+            if (startPos < 0)
+                throw new ArgumentOutOfRangeException(nameof(startPos), "startPos can not be less than 0.");
+
+            if (numOfBytes < 0)
+                throw new ArgumentOutOfRangeException(nameof(numOfBytes), "numOfBytes can not be less than 0.");
+        }
+
+        private static void ValidateUberStreamBufferArguments(byte[] buffer, int offset, int count)
+        {
+            if (buffer == null)
+                throw new ArgumentNullException(nameof(buffer));
+
+            if (offset < 0)
+                throw new ArgumentOutOfRangeException(nameof(offset));
+
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            if (offset > buffer.Length - count)
+                throw new ArgumentException("Offset and count do not describe a valid range in the buffer.", nameof(count));
+        }
+
+        #endregion
+
         #region private methods
 
         private int DoItSo(byte[] buffer, int offset, int count, Func<Stream, byte[], int, int, int> func)
@@ -74,10 +102,13 @@ namespace Aardvark.Base.Coder
         public UberStream(Stream stream, long startPos, long numOfBytes)
             : base()
         {
-            if (stream == null) throw new ArgumentNullException();
-            if (startPos < 0) throw new ArgumentOutOfRangeException("startPos can not be less than 0.");
-            if (stream.CanSeek && (startPos + numOfBytes) > stream.Length)
-                    throw new ArgumentOutOfRangeException();
+            if (stream == null)
+                throw new ArgumentNullException(nameof(stream));
+
+            ValidateStartAndLength(startPos, numOfBytes);
+
+            if (stream.CanSeek && startPos > stream.Length - numOfBytes)
+                throw new ArgumentOutOfRangeException(nameof(numOfBytes));
 
             m_streams = new SubStream[]
             {
@@ -105,10 +136,19 @@ namespace Aardvark.Base.Coder
         public UberStream(Stream[] streams, long startPos, long numOfBytes)
             : base()
         {
-            if (streams.Any(s => s == null)) throw new ArgumentNullException();
-            if (startPos < 0) throw new ArgumentOutOfRangeException("startPos can not be less than 0.");
-            if (streams.All(s => s.CanSeek) && (startPos + numOfBytes) > streams.Select(s => s.Length).Sum())
-                throw new ArgumentOutOfRangeException();
+            if (streams == null)
+                throw new ArgumentNullException(nameof(streams));
+
+            if (streams.Length == 0)
+                throw new ArgumentException("At least one stream is required.", nameof(streams));
+
+            ValidateStartAndLength(startPos, numOfBytes);
+
+            if (streams.Any(s => s == null))
+                throw new ArgumentNullException(nameof(streams), "Stream array can not contain null entries.");
+
+            if (streams.All(s => s.CanSeek) && startPos > streams.Select(s => s.Length).Sum() - numOfBytes)
+                throw new ArgumentOutOfRangeException(nameof(numOfBytes));
 
             m_position = 0;
             m_totalLength = numOfBytes;
@@ -215,14 +255,7 @@ namespace Aardvark.Base.Coder
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (offset + count > buffer.Length)
-                throw new ArgumentException();
-
-            if (buffer == null)
-                throw new ArgumentNullException();
-
-            if (offset < 0 || count < 0)
-                throw new ArgumentOutOfRangeException();
+            ValidateUberStreamBufferArguments(buffer, offset, count);
 
             if (!CanRead)
                 throw new NotSupportedException();
@@ -262,6 +295,11 @@ namespace Aardvark.Base.Coder
 
         public override void Write(byte[] buffer, int offset, int count)
         {
+            ValidateUberStreamBufferArguments(buffer, offset, count);
+
+            if (!CanWrite)
+                throw new NotSupportedException();
+
             DoItSo(buffer, offset, count,
                 (s, b, o, c) => { s.Write(b, o, c); return c; });
         }

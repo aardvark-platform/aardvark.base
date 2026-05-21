@@ -1,3 +1,4 @@
+- [IO] Hardened `UberStream` constructor and read/write argument validation
 - [Base] Made `EnumerableEx.AllDistinct` and `AllEqual` enumerate inputs only once
 - [PixImage] Fixed save-parameter validation messages to report numeric values without a leading dollar sign
 - [Base] Hardened `Stream.ReadBytes` argument validation before reading
