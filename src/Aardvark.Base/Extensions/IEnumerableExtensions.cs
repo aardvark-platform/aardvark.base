@@ -235,13 +235,14 @@ namespace Aardvark.Base
             if (self is null) throw new ArgumentNullException(nameof(self));
             if (other is null) throw new ArgumentNullException(nameof(other));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other.GetEnumerator();
-
-            while (e0.MoveNext() && e1.MoveNext())
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other.GetEnumerator())
             {
-                yield return e0.Current;
-                yield return e1.Current;
+                while (e0.MoveNext() && e1.MoveNext())
+                {
+                    yield return e0.Current;
+                    yield return e1.Current;
+                }
             }
         }
 
@@ -253,15 +254,16 @@ namespace Aardvark.Base
             if (other1 is null) throw new ArgumentNullException(nameof(other1));
             if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other1.GetEnumerator();
-            var e2 = other2.GetEnumerator();
-
-            while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other1.GetEnumerator())
+            using (var e2 = other2.GetEnumerator())
             {
-                yield return e0.Current;
-                yield return e1.Current;
-                yield return e2.Current;
+                while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
+                {
+                    yield return e0.Current;
+                    yield return e1.Current;
+                    yield return e2.Current;
+                }
             }
         }
 
@@ -271,19 +273,20 @@ namespace Aardvark.Base
             if (self is null) throw new ArgumentNullException(nameof(self));
             if (other is null) throw new ArgumentNullException(nameof(other));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other.GetEnumerator();
-
-            bool t0 = e0.MoveNext(), t1 = e1.MoveNext();
-
-            while (t0 && t1)
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other.GetEnumerator())
             {
-                yield return e0.Current; yield return e1.Current;
-                t0 = e0.MoveNext(); t1 = e1.MoveNext();
-            }
+                bool t0 = e0.MoveNext(), t1 = e1.MoveNext();
 
-            while (t0) { yield return e0.Current; t0 = e0.MoveNext(); }
-            while (t1) { yield return e1.Current; t1 = e1.MoveNext(); }
+                while (t0 && t1)
+                {
+                    yield return e0.Current; yield return e1.Current;
+                    t0 = e0.MoveNext(); t1 = e1.MoveNext();
+                }
+
+                while (t0) { yield return e0.Current; t0 = e0.MoveNext(); }
+                while (t1) { yield return e1.Current; t1 = e1.MoveNext(); }
+            }
         }
 
         public static IEnumerable<T> ZipAll<T>(
@@ -295,41 +298,42 @@ namespace Aardvark.Base
             if (other1 is null) throw new ArgumentNullException(nameof(other1));
             if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other1.GetEnumerator();
-            var e2 = other2.GetEnumerator();
-
-            bool t0 = e0.MoveNext(), t1 = e1.MoveNext(), t2 = e2.MoveNext();
-
-            while (t0 && t1 && t2)
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other1.GetEnumerator())
+            using (var e2 = other2.GetEnumerator())
             {
-                yield return e0.Current;
-                yield return e1.Current;
-                yield return e2.Current;
-                t0 = e0.MoveNext(); t1 = e1.MoveNext(); t2 = e2.MoveNext();
-            }
+                bool t0 = e0.MoveNext(), t1 = e1.MoveNext(), t2 = e2.MoveNext();
 
-            while (t0 && t1)
-            {
-                yield return e0.Current; yield return e1.Current;
-                t0 = e0.MoveNext(); t1 = e1.MoveNext();
-            }
+                while (t0 && t1 && t2)
+                {
+                    yield return e0.Current;
+                    yield return e1.Current;
+                    yield return e2.Current;
+                    t0 = e0.MoveNext(); t1 = e1.MoveNext(); t2 = e2.MoveNext();
+                }
 
-            while (t0 && t2)
-            {
-                yield return e0.Current; yield return e2.Current;
-                t0 = e0.MoveNext(); t2 = e2.MoveNext();
-            }
+                while (t0 && t1)
+                {
+                    yield return e0.Current; yield return e1.Current;
+                    t0 = e0.MoveNext(); t1 = e1.MoveNext();
+                }
 
-            while (t1 && t2)
-            {
-                yield return e1.Current; yield return e2.Current;
-                t1 = e1.MoveNext(); t2 = e2.MoveNext();
-            }
+                while (t0 && t2)
+                {
+                    yield return e0.Current; yield return e2.Current;
+                    t0 = e0.MoveNext(); t2 = e2.MoveNext();
+                }
 
-            while (t0) { yield return e0.Current; t0 = e0.MoveNext(); }
-            while (t1) { yield return e1.Current; t1 = e1.MoveNext(); }
-            while (t2) { yield return e2.Current; t2 = e2.MoveNext(); }
+                while (t1 && t2)
+                {
+                    yield return e1.Current; yield return e2.Current;
+                    t1 = e1.MoveNext(); t2 = e2.MoveNext();
+                }
+
+                while (t0) { yield return e0.Current; t0 = e0.MoveNext(); }
+                while (t1) { yield return e1.Current; t1 = e1.MoveNext(); }
+                while (t2) { yield return e2.Current; t2 = e2.MoveNext(); }
+            }
         }
 
         public static IEnumerable<(T, T)> ZipPairs<T>(
@@ -338,11 +342,12 @@ namespace Aardvark.Base
             if (self is null) throw new ArgumentNullException(nameof(self));
             if (other is null) throw new ArgumentNullException(nameof(other));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other.GetEnumerator();
-
-            while (e0.MoveNext() && e1.MoveNext())
-                yield return (e0.Current, e1.Current);
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other.GetEnumerator())
+            {
+                while (e0.MoveNext() && e1.MoveNext())
+                    yield return (e0.Current, e1.Current);
+            }
         }
 
         public static IEnumerable<(T, T, T)> ZipTriples<T>(
@@ -354,12 +359,13 @@ namespace Aardvark.Base
             if (other1 is null) throw new ArgumentNullException(nameof(other1));
             if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other1.GetEnumerator();
-            var e2 = other2.GetEnumerator();
-
-            while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
-                yield return (e0.Current, e1.Current, e2.Current);
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other1.GetEnumerator())
+            using (var e2 = other2.GetEnumerator())
+            {
+                while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
+                    yield return (e0.Current, e1.Current, e2.Current);
+            }
         }
 
         public static IEnumerable<(T0, T1)> ZipTuples<T0, T1>(
@@ -368,11 +374,12 @@ namespace Aardvark.Base
             if (self is null) throw new ArgumentNullException(nameof(self));
             if (other is null) throw new ArgumentNullException(nameof(other));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other.GetEnumerator();
-
-            while (e0.MoveNext() && e1.MoveNext())
-                yield return (e0.Current, e1.Current);
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other.GetEnumerator())
+            {
+                while (e0.MoveNext() && e1.MoveNext())
+                    yield return (e0.Current, e1.Current);
+            }
         }
 
         public static IEnumerable<Tup<T0, T1, T2>> ZipTuples<T0, T1, T2>(
@@ -384,13 +391,14 @@ namespace Aardvark.Base
             if (other1 is null) throw new ArgumentNullException(nameof(other1));
             if (other2 is null) throw new ArgumentNullException(nameof(other2));
 
-            var e0 = self.GetEnumerator();
-            var e1 = other1.GetEnumerator();
-            var e2 = other2.GetEnumerator();
-
-            while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
-                yield return new Tup<T0, T1, T2>(
-                                    e0.Current, e1.Current, e2.Current);
+            using (var e0 = self.GetEnumerator())
+            using (var e1 = other1.GetEnumerator())
+            using (var e2 = other2.GetEnumerator())
+            {
+                while (e0.MoveNext() && e1.MoveNext() && e2.MoveNext())
+                    yield return new Tup<T0, T1, T2>(
+                                        e0.Current, e1.Current, e2.Current);
+            }
         }
 
         #endregion
