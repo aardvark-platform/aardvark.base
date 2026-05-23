@@ -39,6 +39,34 @@ namespace Aardvark.Tests
             Assert.That(roots, Is.Empty);
         }
 
+        [Test]
+        public void RealRootsOf_ZeroDoubleRootReturnsRepeatedZero()
+        {
+            var roots = Polynomial.RealRootsOf(1.0, 0.0, 0.0);
+
+            Assert.That(roots.Item1, Is.EqualTo(0.0));
+            Assert.That(roots.Item2, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public void RealRootsOfNormed_ZeroDoubleRootReturnsRepeatedZero()
+        {
+            var roots = Polynomial.RealRootsOfNormed(0.0, 0.0);
+
+            Assert.That(roots.Item1, Is.EqualTo(0.0));
+            Assert.That(roots.Item2, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public void RealRoots_ZeroDoubleRootReturnsRepeatedZero()
+        {
+            var roots = new[] { 0.0, 0.0, 1.0 }.RealRoots();
+
+            Assert.That(roots, Has.Length.EqualTo(2));
+            Assert.That(roots[0], Is.EqualTo(0.0));
+            Assert.That(roots[1], Is.EqualTo(0.0));
+        }
+
         public void Run()
         {
             RootsTest3(0.01);

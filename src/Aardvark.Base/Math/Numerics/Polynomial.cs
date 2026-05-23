@@ -201,6 +201,11 @@ namespace Aardvark.Base
             var r = b * b - 4 * a * c;
             if (r < 0)
                 return (double.NaN, double.NaN);
+            if (r == 0.0)
+            {
+                var root = -b / (2 * a);
+                return (root, root);
+            }
             if (b < 0)                                 // prevent cancellation
             {
                 double d = -b + Fun.Sqrt(r);
@@ -225,6 +230,11 @@ namespace Aardvark.Base
 
             if (d < 0)
                 return (double.NaN, double.NaN);
+            if (d == 0.0)
+            {
+                var root = -p2;
+                return (root, root);
+            }
             if (p2 > 0.0)				               // prevent cancellation
             {
                 double r = -(p2 + Fun.Sqrt(d));

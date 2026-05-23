@@ -1,3 +1,4 @@
+- [Base] Fixed quadratic double roots at zero in polynomial real-root solvers
 - [Base] Disposed enumerators created by enumerable zip helpers
 - [IO] Hardened `UberStream` constructor and read/write argument validation
 - [Base] Made `EnumerableEx.AllDistinct` and `AllEqual` enumerate inputs only once
