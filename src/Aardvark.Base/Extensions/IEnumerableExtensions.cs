@@ -118,7 +118,7 @@ namespace Aardvark.Base
         public static T[] TakeToArrayDefault<T>(this IEnumerable<T> self, int count)
         {
             var array = new T[count];
-            var en = self.GetEnumerator();
+            using var en = self.GetEnumerator();
             for (int i = 0; i < count && en.MoveNext(); i++)
                 array[i] = en.Current;
             return array;
@@ -132,7 +132,7 @@ namespace Aardvark.Base
         public static T[] TakeToArray<T>(this IEnumerable<T> self, int count)
         {
             var array = new T[count];
-            var en = self.GetEnumerator();
+            using var en = self.GetEnumerator();
             for (int i = 0; i < count; i++)
             {
                 if (en.MoveNext())
@@ -151,7 +151,7 @@ namespace Aardvark.Base
         public static List<T> TakeToList<T>(this IEnumerable<T> self, int count)
         {
             var list = new List<T>(count);
-            var en = self.GetEnumerator();
+            using var en = self.GetEnumerator();
             for (int i = 0; i < count && en.MoveNext(); i++)
                 list.Add(en.Current);
             return list;
@@ -162,7 +162,7 @@ namespace Aardvark.Base
         /// </summary>
         public static int FirstIndexOf<T>(this IEnumerable<T> self, Func<T, bool> where)
         {
-            var en = self.GetEnumerator();
+            using var en = self.GetEnumerator();
             for (int i = 0; en.MoveNext(); i++)
                 if (where(en.Current))
                     return i;

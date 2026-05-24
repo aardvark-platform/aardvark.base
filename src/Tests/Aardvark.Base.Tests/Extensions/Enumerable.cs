@@ -197,6 +197,69 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void TakeToArrayDefaultDisposesEnumerator()
+        {
+            var source = Track(1, 2);
+
+            var result = source.TakeToArrayDefault(4);
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 0, 0 }, result);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void TakeToArrayDisposesEnumerator()
+        {
+            var source = Track(1, 2, 3);
+
+            var result = source.TakeToArray(2);
+
+            CollectionAssert.AreEqual(new[] { 1, 2 }, result);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void TakeToArrayDisposesEnumeratorWhenSourceIsShorterThanCount()
+        {
+            var source = Track(1, 2);
+
+            Assert.Throws<ArgumentException>(() => source.TakeToArray(3));
+
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void TakeToListDisposesEnumerator()
+        {
+            var source = Track(1, 2);
+
+            var result = source.TakeToList(4);
+
+            CollectionAssert.AreEqual(new[] { 1, 2 }, result);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void FirstIndexOfDisposesEnumeratorAfterEarlyMatch()
+        {
+            var source = Track(1, 2, 3);
+
+            Assert.AreEqual(1, source.FirstIndexOf(x => x == 2));
+
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void FirstIndexOfDisposesEnumeratorAfterNoMatch()
+        {
+            var source = Track(1, 2, 3);
+
+            Assert.AreEqual(-1, source.FirstIndexOf(x => x == 4));
+
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
         public static void ZipDisposesEnumeratorsAfterFullEnumeration()
         {
             var first = Track(1, 2);
