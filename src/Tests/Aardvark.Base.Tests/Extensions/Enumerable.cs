@@ -197,6 +197,60 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void SetEqualsReturnsTrueForTwoNullInputs()
+        {
+            IEnumerable<int> left = null;
+            IEnumerable<int> right = null;
+
+            Assert.IsTrue(left.SetEquals(right));
+        }
+
+        [Test]
+        public static void SetEqualsReturnsFalseForOneNullInput()
+        {
+            IEnumerable<int> nullSet = null;
+            var set = new[] { 1 };
+
+            Assert.IsFalse(nullSet.SetEquals(set));
+            Assert.IsFalse(set.SetEquals(nullSet));
+        }
+
+        [Test]
+        public static void SetEqualsReturnsTrueForEqualSetsWithDifferentOrder()
+        {
+            Assert.IsTrue(new[] { 1, 2, 3 }.SetEquals(new[] { 3, 1, 2 }));
+        }
+
+        [Test]
+        public static void SetEqualsReturnsFalseForUnequalSets()
+        {
+            Assert.IsFalse(new[] { 1, 2, 3 }.SetEquals(new[] { 1, 2, 4 }));
+            Assert.IsFalse(new[] { 1, 2 }.SetEquals(new[] { 1, 2, 3 }));
+        }
+
+        [Test]
+        public static void SetEqualsThrowsForDuplicatesInEitherInput()
+        {
+            var leftDuplicate = Assert.Throws<Exception>(() => new[] { 1, 1 }.SetEquals(new[] { 1 }));
+            var rightDuplicate = Assert.Throws<Exception>(() => new[] { 1 }.SetEquals(new[] { 1, 1 }));
+
+            Assert.AreEqual("not a proper set", leftDuplicate.Message);
+            Assert.AreEqual("not a proper set", rightDuplicate.Message);
+        }
+
+        [Test]
+        public static void SetEqualsEnumeratesEachInputOnlyOnce()
+        {
+            var left = new SingleUseEnumerable<int>(new[] { 1, 2, 3 });
+            var right = new SingleUseEnumerable<int>(new[] { 3, 1, 2 });
+
+            Assert.IsTrue(left.SetEquals(right));
+
+            Assert.AreEqual(1, left.EnumeratorCount);
+            Assert.AreEqual(1, right.EnumeratorCount);
+        }
+
+        [Test]
         public static void TakeToArrayDefaultDisposesEnumerator()
         {
             var source = Track(1, 2);

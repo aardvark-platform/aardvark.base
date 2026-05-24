@@ -11,15 +11,19 @@ namespace Aardvark.Base
 
         public static bool SetEquals<T>(this IEnumerable<T> self, IEnumerable<T> other)
         {
-            if (self == null && other != null) return false;
-            if (self != null && other == null) return false;
-            if (self.Count() != other.Count()) return false;
-            if (self.Count() != self.Distinct().Count()) throw new Exception("not a proper set");
-            if (other.Count() != other.Distinct().Count()) throw new Exception("not a proper set");
+            if (self == null) return other == null;
+            if (other == null) return false;
 
-            var tmp = new Dictionary<T, T>();
-            tmp.AddRange(self.Select(x => new KeyValuePair<T, T>(x, x)));
-            foreach (var x in other) if (!tmp.ContainsKey(x)) return false;
+            var selfSet = new HashSet<T>();
+            foreach (var x in self)
+                if (!selfSet.Add(x)) throw new Exception("not a proper set");
+
+            var otherSet = new HashSet<T>();
+            foreach (var x in other)
+                if (!otherSet.Add(x)) throw new Exception("not a proper set");
+
+            if (selfSet.Count != otherSet.Count) return false;
+            foreach (var x in selfSet) if (!otherSet.Contains(x)) return false;
 
             return true;
         }
