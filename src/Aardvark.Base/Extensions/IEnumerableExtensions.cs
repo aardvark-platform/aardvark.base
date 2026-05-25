@@ -466,10 +466,23 @@ namespace Aardvark.Base
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
-            var first = self.TakePeriodic(2);
-            var second = self.Skip(1).TakePeriodic(2);
+            return PairSequenceImpl(self);
+        }
 
-            return first.ZipPairs(second); //todo: very inefficient: double enumeration
+        private static IEnumerable<(T, T)> PairSequenceImpl<T>(IEnumerable<T> self)
+        {
+            using (var e = self.GetEnumerator())
+            {
+                while (e.MoveNext())
+                {
+                    var first = e.Current;
+
+                    if (!e.MoveNext())
+                        yield break;
+
+                    yield return (first, e.Current);
+                }
+            }
         }
 
         /// <summary>
@@ -618,11 +631,28 @@ namespace Aardvark.Base
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
-            var first = self.TakePeriodic(3);
-            var second = self.Skip(1).TakePeriodic(3);
-            var third = self.Skip(2).TakePeriodic(3);
+            return TripleSequenceImpl(self);
+        }
 
-            return first.ZipTriples(second, third); //todo: very inefficient: triple enumeration
+        private static IEnumerable<(T, T, T)> TripleSequenceImpl<T>(IEnumerable<T> self)
+        {
+            using (var e = self.GetEnumerator())
+            {
+                while (e.MoveNext())
+                {
+                    var first = e.Current;
+
+                    if (!e.MoveNext())
+                        yield break;
+
+                    var second = e.Current;
+
+                    if (!e.MoveNext())
+                        yield break;
+
+                    yield return (first, second, e.Current);
+                }
+            }
         }
 
         /// <summary>

@@ -251,6 +251,114 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void PairSequenceReturnsNonOverlappingPairs()
+        {
+            var result = new[] { 1, 2, 3, 4 }.PairSequence().ToArray();
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            Assert.AreEqual(3, result[1].Item1);
+            Assert.AreEqual(4, result[1].Item2);
+        }
+
+        [Test]
+        public static void PairSequenceDropsIncompleteTrailingItem()
+        {
+            var result = new[] { 1, 2, 3 }.PairSequence().ToArray();
+
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            CollectionAssert.IsEmpty(new[] { 1 }.PairSequence());
+        }
+
+        [Test]
+        public static void PairSequenceEnumeratesSourceOnlyOnce()
+        {
+            var source = new SingleUseEnumerable<int>(new[] { 1, 2, 3, 4 });
+
+            var result = source.PairSequence().ToArray();
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            Assert.AreEqual(3, result[1].Item1);
+            Assert.AreEqual(4, result[1].Item2);
+            Assert.AreEqual(1, source.EnumeratorCount);
+        }
+
+        [Test]
+        public static void PairSequenceDisposesEnumeratorAfterEarlyTermination()
+        {
+            var source = Track(1, 2, 3, 4);
+
+            var result = source.PairSequence().Take(1).ToArray();
+
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void TripleSequenceReturnsNonOverlappingTriples()
+        {
+            var result = new[] { 1, 2, 3, 4, 5, 6 }.TripleSequence().ToArray();
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            Assert.AreEqual(3, result[0].Item3);
+            Assert.AreEqual(4, result[1].Item1);
+            Assert.AreEqual(5, result[1].Item2);
+            Assert.AreEqual(6, result[1].Item3);
+        }
+
+        [Test]
+        public static void TripleSequenceDropsIncompleteTrailingItems()
+        {
+            var result = new[] { 1, 2, 3, 4, 5 }.TripleSequence().ToArray();
+
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            Assert.AreEqual(3, result[0].Item3);
+            CollectionAssert.IsEmpty(new[] { 1, 2 }.TripleSequence());
+        }
+
+        [Test]
+        public static void TripleSequenceEnumeratesSourceOnlyOnce()
+        {
+            var source = new SingleUseEnumerable<int>(new[] { 1, 2, 3, 4, 5, 6 });
+
+            var result = source.TripleSequence().ToArray();
+
+            Assert.AreEqual(2, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            Assert.AreEqual(3, result[0].Item3);
+            Assert.AreEqual(4, result[1].Item1);
+            Assert.AreEqual(5, result[1].Item2);
+            Assert.AreEqual(6, result[1].Item3);
+            Assert.AreEqual(1, source.EnumeratorCount);
+        }
+
+        [Test]
+        public static void TripleSequenceDisposesEnumeratorAfterEarlyTermination()
+        {
+            var source = Track(1, 2, 3, 4, 5, 6);
+
+            var result = source.TripleSequence().Take(1).ToArray();
+
+            Assert.AreEqual(1, result.Length);
+            Assert.AreEqual(1, result[0].Item1);
+            Assert.AreEqual(2, result[0].Item2);
+            Assert.AreEqual(3, result[0].Item3);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
         public static void TakeToArrayDefaultDisposesEnumerator()
         {
             var source = Track(1, 2);

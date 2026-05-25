@@ -1,3 +1,4 @@
+- [Base] Made `PairSequence` and `TripleSequence` enumerate inputs once and dispose enumerators
 - [Base] Fixed `C4f` color averaging to preserve green and blue channel order
 - [Base] Made `SetEquals` handle two null inputs and enumerate inputs only once
 - [Base] Disposed enumerators created by sequence take/index helpers
