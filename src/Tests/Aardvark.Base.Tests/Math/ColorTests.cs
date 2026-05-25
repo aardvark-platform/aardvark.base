@@ -137,6 +137,23 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void AverageC4fPreservesChannelOrder()
+        {
+            var colors = new[]
+            {
+                new C4f(0.10f, 0.20f, 0.70f, 0.30f),
+                new C4f(0.30f, 0.60f, 0.10f, 0.90f),
+            };
+
+            var average = Col.Average(colors);
+
+            Assert.AreEqual(0.20f, average.R, 1e-6f);
+            Assert.AreEqual(0.40f, average.G, 1e-6f);
+            Assert.AreEqual(0.40f, average.B, 1e-6f);
+            Assert.AreEqual(0.60f, average.A, 1e-6f);
+        }
+
+        [Test]
         public void IndexerC4d()
         {
             var rnd = new RandomSystem(1);

@@ -1,3 +1,4 @@
+- [Base] Fixed `C4f` color averaging to preserve green and blue channel order
 - [Base] Made `SetEquals` handle two null inputs and enumerate inputs only once
 - [Base] Disposed enumerators created by sequence take/index helpers
 - [Base] Fixed quadratic double roots at zero in polynomial real-root solvers

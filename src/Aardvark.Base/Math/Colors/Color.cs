@@ -1387,7 +1387,7 @@ namespace Aardvark.Base
             long count = 0;
             foreach (var c in items) { sum.R += c.R; sum.G += c.G; sum.B += c.B; sum.A += c.A; ++count; }
             var scale = 1.0 / count;
-            return new C4f(sum.R * scale, sum.B * scale, sum.G * scale, sum.A * scale);
+            return new C4f(sum.R * scale, sum.G * scale, sum.B * scale, sum.A * scale);
         }
 
         #endregion
