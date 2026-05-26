@@ -98,6 +98,13 @@ namespace Aardvark.Tests.Extensions
             }
         }
 
+        private static void AssertParamName<TException>(string paramName, TestDelegate code)
+            where TException : ArgumentException
+        {
+            var ex = Assert.Throws<TException>(code);
+            Assert.AreEqual(paramName, ex.ParamName);
+        }
+
         [Test]
         public static void MaxIndex()
         {
@@ -370,6 +377,26 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void TakeHelpersThrowForNullSources()
+        {
+            IEnumerable<int> source = null;
+
+            AssertParamName<ArgumentNullException>("self", () => source.TakeToArrayDefault(1));
+            AssertParamName<ArgumentNullException>("self", () => source.TakeToArray(1));
+            AssertParamName<ArgumentNullException>("self", () => source.TakeToList(1));
+        }
+
+        [Test]
+        public static void TakeHelpersThrowForNegativeCounts()
+        {
+            var source = new[] { 1 };
+
+            AssertParamName<ArgumentOutOfRangeException>("count", () => source.TakeToArrayDefault(-1));
+            AssertParamName<ArgumentOutOfRangeException>("count", () => source.TakeToArray(-1));
+            AssertParamName<ArgumentOutOfRangeException>("count", () => source.TakeToList(-1));
+        }
+
+        [Test]
         public static void TakeToArrayDisposesEnumerator()
         {
             var source = Track(1, 2, 3);
@@ -409,6 +436,16 @@ namespace Aardvark.Tests.Extensions
             Assert.AreEqual(1, source.FirstIndexOf(x => x == 2));
 
             AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void FirstIndexOfThrowsForNullInputs()
+        {
+            IEnumerable<int> source = null;
+            IEnumerable<int> values = new[] { 1 };
+
+            AssertParamName<ArgumentNullException>("self", () => source.FirstIndexOf(x => x == 1));
+            AssertParamName<ArgumentNullException>("where", () => values.FirstIndexOf((Func<int, bool>)null));
         }
 
         [Test]

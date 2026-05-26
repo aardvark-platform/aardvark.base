@@ -117,6 +117,9 @@ namespace Aardvark.Base
         /// </summary>
         public static T[] TakeToArrayDefault<T>(this IEnumerable<T> self, int count)
         {
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             var array = new T[count];
             using var en = self.GetEnumerator();
             for (int i = 0; i < count && en.MoveNext(); i++)
@@ -131,6 +134,9 @@ namespace Aardvark.Base
         /// </summary>
         public static T[] TakeToArray<T>(this IEnumerable<T> self, int count)
         {
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             var array = new T[count];
             using var en = self.GetEnumerator();
             for (int i = 0; i < count; i++)
@@ -150,6 +156,9 @@ namespace Aardvark.Base
         /// </summary>
         public static List<T> TakeToList<T>(this IEnumerable<T> self, int count)
         {
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             var list = new List<T>(count);
             using var en = self.GetEnumerator();
             for (int i = 0; i < count && en.MoveNext(); i++)
@@ -162,6 +171,9 @@ namespace Aardvark.Base
         /// </summary>
         public static int FirstIndexOf<T>(this IEnumerable<T> self, Func<T, bool> where)
         {
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (where is null) throw new ArgumentNullException(nameof(where));
+
             using var en = self.GetEnumerator();
             for (int i = 0; en.MoveNext(); i++)
                 if (where(en.Current))
