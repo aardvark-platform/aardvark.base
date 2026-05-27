@@ -134,6 +134,69 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void MaxElementDisposesEnumerator()
+        {
+            var source = Track(1, 4, 2);
+
+            var result = source.MaxElement(x => x * 2, (a, b) => a > b, 0, -1, out var maxValue);
+
+            Assert.AreEqual(4, result);
+            Assert.AreEqual(8, maxValue);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void MinElementDisposesEnumerator()
+        {
+            var source = Track(5, 2, 8);
+
+            var result = source.MinElement(x => x, (a, b) => a < b, int.MaxValue, -1, out var minValue);
+
+            Assert.AreEqual(2, result);
+            Assert.AreEqual(2, minValue);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void MinIndexDisposesEnumerator()
+        {
+            var source = Track(5, 2, 8);
+
+            var index = source.MinIndex((a, b) => a < b, out var minValue);
+
+            Assert.AreEqual(1, index);
+            Assert.AreEqual(2, minValue);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void MaxIndexDisposesEnumerator()
+        {
+            var source = Track(5, 2, 8);
+
+            var index = source.MaxIndex((a, b) => a > b, out var maxValue);
+
+            Assert.AreEqual(2, index);
+            Assert.AreEqual(8, maxValue);
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void MinMaxIndexDisposeEmptyEnumerators()
+        {
+            var minSource = Track();
+            var maxSource = Track();
+
+            Assert.AreEqual(-1, minSource.MinIndex((a, b) => a < b, out var minValue));
+            Assert.AreEqual(default(int), minValue);
+            AssertDisposedOnce(minSource);
+
+            Assert.AreEqual(-1, maxSource.MaxIndex((a, b) => a > b, out var maxValue));
+            Assert.AreEqual(default(int), maxValue);
+            AssertDisposedOnce(maxSource);
+        }
+
+        [Test]
         public static void SelectToListFromArray()
         {
             var source = new[] { 1, 2, 3 };

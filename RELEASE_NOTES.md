@@ -1,3 +1,4 @@
+- [Base] Disposed enumerators created by enumerable min/max helpers
 - [Base] Hardened enumerable take/index helpers with explicit argument validation
 - [Base] Made `PairSequence` and `TripleSequence` enumerate inputs once and dispose enumerators
 - [Base] Fixed `C4f` color averaging to preserve green and blue channel order

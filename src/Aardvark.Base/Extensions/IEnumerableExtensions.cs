@@ -1052,7 +1052,7 @@ namespace Aardvark.Base
             if (source == null) throw new ArgumentNullException();
             if (selector == null) throw new ArgumentNullException();
             if (greaterThan == null) throw new ArgumentNullException();
-            var e = source.GetEnumerator();
+            using var e = source.GetEnumerator();
             TSrc maxEl = defaultRv;
             rv_maxVal = minVal;
             while (e.MoveNext())
@@ -1090,7 +1090,7 @@ namespace Aardvark.Base
             if (source == null) throw new ArgumentNullException();
             if (selector == null) throw new ArgumentNullException();
             if (smallerThan == null) throw new ArgumentNullException();
-            var e = source.GetEnumerator();
+            using var e = source.GetEnumerator();
             TSrc minEl = defaultRv;
             rv_minVal = maxVal;
             while (e.MoveNext())
@@ -1125,7 +1125,7 @@ namespace Aardvark.Base
 
         public static int MinIndex<T>(this IEnumerable<T> self, Func<T, T, bool> lessThan, out T minValue)
         {
-            var e = self.GetEnumerator();
+            using var e = self.GetEnumerator();
             if (!e.MoveNext())
             {
                 minValue = default(T);
@@ -1151,7 +1151,7 @@ namespace Aardvark.Base
 
         public static int MaxIndex<T>(this IEnumerable<T> self, Func<T, T, bool> greaterThan, out T maxValue)
         {
-            var e = self.GetEnumerator();
+            using var e = self.GetEnumerator();
             if (!e.MoveNext())
             {
                 maxValue = default(T);
