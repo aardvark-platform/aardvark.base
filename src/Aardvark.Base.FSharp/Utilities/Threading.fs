@@ -37,6 +37,33 @@ module Threading =
                 v
             )
 
+        member _.TryTake (timeout: TimeSpan) =
+            lock l (fun () ->
+                let mutable result = None
+                let mutable hasResult = false
+                let startTime = DateTime.UtcNow
+
+                let getResult() =
+                    if hasValue then
+                        result <- Some content
+                        hasResult <- true
+                        content <- Unchecked.defaultof<_>
+                        hasValue <- false
+
+                    hasResult
+
+                while not <| getResult() do
+                    let elapsed = DateTime.UtcNow - startTime
+                    let remaining = timeout - elapsed
+
+                    if remaining <= TimeSpan.Zero then
+                        hasResult <- true
+                    else
+                        if not <| Monitor.Wait(l, remaining) then
+                            hasResult <- true
+                result
+            )
+
         [<Obsolete>]
         member x.TakeAsync () =
             async {
@@ -62,6 +89,7 @@ module Threading =
             v
         let put (m : MVar<'a>) v = m.Put v
         let take (m : MVar<'a>) = m.Take()
+        let tryTake (timeout : TimeSpan) (m : MVar<'a>) = m.TryTake timeout
         [<Obsolete>]
         let takeAsync (m : MVar<'a>) = m.TakeAsync ()
 
