@@ -85,6 +85,7 @@
     <Compile Include="Native\FileTable.fs" />
     <Compile Include="Native\Manager.fs" />
     <Compile Include="Native\Store.fs" />
+    <Compile Include="Native\SharedMemory.fs" />
     <Compile Include="Ag.fs" />
     <None Include="paket.references" />
   </ItemGroup>

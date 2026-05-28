@@ -39,6 +39,7 @@
     <Compile Include="NullCoalesceTests.fs" />
     <Compile Include="PinnedValueTests.fs" />
     <Compile Include="GeometryValueOptionTests.fs" />
+    <Compile Include="SharedMemoryTests.fs" />
     <Compile Include="Program.fs" />
     <None Include="paket.references" />
   </ItemGroup>

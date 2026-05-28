@@ -7,7 +7,8 @@ module Program
     open Expecto
     open FsCheck
     [<EntryPoint>]
-    let main argv = 
+    let main argv =
+        SharedMemoryTests.run argv // Required for shared memory IPC tests
 
         //Caches.``[Caches] BinaryCache partial backward with ResultObject``()
         //Caches.``[Caches] BinaryCache forward``()

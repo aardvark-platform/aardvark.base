@@ -25,6 +25,7 @@
 - [FSharp] Fixed `Seq.foldi` to pass the correct element index
 - [Essentials] Fixed `Task.WithCancellation` for already-canceled tokens
 - [FSharp] Added `MVar.TryTake()`
+- [FSharp] Added shared memory utilities
 
 ### 5.3.23
 - [CI] Added a publish workflow early exit when release notes already match the latest GitHub Release
