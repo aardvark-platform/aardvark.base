@@ -1,17 +1,19 @@
-name: Build
-
+name: Test
 on:
+  workflow_call:
   push:
-    paths-ignore:
-    - 'README.md'
-    - 'docs/**'
+    paths:
+      - 'src/**'
+      - 'paket.lock'
+      - '.github/workflows/test.yml'
   pull_request:
-    paths-ignore:
-    - 'README.md'
-    - 'docs/**'
-
+    paths:
+      - 'src/**'
+      - 'paket.lock'
+      - '.github/workflows/test.yml'
 jobs:
   codegen-check:
+    name: Validate generated code
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v4
@@ -49,20 +51,23 @@ jobs:
           exit 1
         }
 
-  build:
+  test:
+    name: Test
     needs: codegen-check
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-15-intel, macos-latest]
         include:
           - os: ubuntu-latest
-            run-build: bash ./build.sh
+            sln: src/Aardvark.sln
           - os: windows-latest
-            run-build: .\build.cmd
+            sln: src\Aardvark.sln
+          - os: macos-15-intel
+            sln: src/Aardvark.sln
           - os: macos-latest
-            run-build: bash ./build.sh
+            sln: src/Aardvark.sln
     steps:
     - uses: actions/checkout@v4
 
@@ -81,5 +86,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-paket-
 
+    - name: Restore Tools
+      run: dotnet tool restore
+
+    - name: Restore
+      run: dotnet paket restore
+
     - name: Build
-      run: ${{ matrix.run-build }}
+      run: dotnet build -c Release ${{ matrix.sln }}
+
+    - name: Test
+      run: dotnet test ${{ matrix.sln }} -c Release --no-build --nologo --logger:"console;verbosity=normal"

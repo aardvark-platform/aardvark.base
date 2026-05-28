@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - v53
     paths:
       - RELEASE_NOTES.md
       - .github/workflows/publish.yml
@@ -19,13 +18,16 @@ jobs:
       latest_release_version: ${{ steps.compare.outputs.latest_release_version }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Install Dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
+
       - name: Restore Tools
         run: dotnet tool restore
+
       - name: Compare release versions
         id: compare
         shell: pwsh
@@ -89,53 +91,52 @@ jobs:
           "- Latest GitHub release: ``$latestReleaseVersion``" >> $env:GITHUB_STEP_SUMMARY
           "- Should publish: ``$shouldPublish``" >> $env:GITHUB_STEP_SUMMARY
 
-  pack:
-    name: Package
+  test:
+    name: Test
     needs: release-check
     if: needs.release-check.outputs.should_publish == 'true'
+    uses: ./.github/workflows/test.yml
+
+  pack:
+    name: Package
+    needs: test
     runs-on: windows-latest
-    steps:  
+    steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Install Dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
+
       - name: Restore Tools
         run: dotnet tool restore
+
       - name: Restore
         run: dotnet paket restore
-      - name: Run forced code generation
-        shell: cmd
-        run: .\generate.cmd --force
-      - name: Fail on generated diffs
-        shell: pwsh
-        run: |
-          git diff --quiet -- src
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "Generated files are out of date:"
-            git diff --name-only -- src
-            exit 1
-          }
+
       - name: Build
         shell: cmd
         run: dotnet build -c Release src\Aardvark.sln
-      - name: Test
-        run: dotnet test src\Aardvark.sln -c Release --no-build --nologo --logger:"console;verbosity=normal"
+
       - name: Pack
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: dotnet aardpack src\Aardvark.sln --notag --skip-build
+
       - name: Upload Packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: packages
           path: bin\pack
+
       - name: GitHub Packages
         env:
           NUGET_KEY: ${{ secrets.GITHUB_TOKEN }}
         shell: cmd
         run: dotnet nuget push "bin\pack\*.nupkg" -k %NUGET_KEY% -s "https://nuget.pkg.github.com/aardvark-platform/index.json" --skip-duplicate
+
       - name: NuGet
         env:
           NUGET_KEY: ${{ secrets.NUGET_KEY }}
