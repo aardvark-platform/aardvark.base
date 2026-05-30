@@ -188,6 +188,32 @@ namespace Aardvark.Tests.Extensions
             Report.Line("ComputeJulianDayRaw: {0}ms", sw5.Elapsed.TotalMilliseconds);
         }
 
+        [TestCase(2019, 3, 5, 12, 1, 0, 123)]
+        [TestCase(2024, 2, 29, 23, 59, 59, 999)]
+        public static void JulianDayRoundTripsMillisecondPrecision(int year, int month, int day, int hour, int minute, int second, int millisecond)
+        {
+            var date = new DateTime(year, month, day, hour, minute, second, millisecond);
+
+            Assert.AreEqual(date, DateTimeExtensions.ComputeDateFromJulianDay(date.ComputeJulianDay()));
+        }
+
+        [Test]
+        public static void JulianDayRoundTripsDeterministicMillisecondSample()
+        {
+            var rnd = new Random(12345);
+            const int millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+            for (int i = 0; i < 10000; i++)
+            {
+                var year = rnd.Next(1900, 2101);
+                var dayOfYear = rnd.Next(DateTime.IsLeapYear(year) ? 366 : 365);
+                var millisecondOfDay = rnd.Next(millisecondsPerDay);
+                var date = new DateTime(year, 1, 1).AddDays(dayOfYear).AddMilliseconds(millisecondOfDay);
+
+                Assert.AreEqual(date, DateTimeExtensions.ComputeDateFromJulianDay(date.ComputeJulianDay()));
+            }
+        }
+
         static readonly Stopwatch sw0 = new Stopwatch();
         static readonly Stopwatch sw1 = new Stopwatch();
         static readonly Stopwatch sw2 = new Stopwatch();

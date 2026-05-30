@@ -74,16 +74,9 @@ namespace Aardvark.Base
             var D = t - 2447 * u / 80;
 
             var timeOfDay = (jd + 0.5).Frac();
-            var tmp = timeOfDay * 24;
-            var _h = (int)tmp;
-            tmp = (tmp - _h) * 60;
-            var _m = (int)tmp;
-            tmp = (tmp - _m) * 60;
-            var _s = (int)tmp;
-            tmp = (tmp - _s) * 1000;
-            var _ms = (int)tmp;
-            
-            return new DateTime(Y, M, D, _h, _m, _s, _ms);
+            var totalMilliseconds = (long)Math.Round(timeOfDay * 24 * 60 * 60 * 1000);
+
+            return new DateTime(Y, M, D).AddTicks(totalMilliseconds * TimeSpan.TicksPerMillisecond);
         }
 
         /// <summary>

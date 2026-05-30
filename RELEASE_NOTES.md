@@ -1,3 +1,4 @@
+- [Base] Fixed Julian day conversion to round-trip millisecond-precision `DateTime` values
 - [Base] Disposed enumerators created by enumerable min/max helpers
 - [Base] Hardened enumerable take/index helpers with explicit argument validation
 - [Base] Made `PairSequence` and `TripleSequence` enumerate inputs once and dispose enumerators
