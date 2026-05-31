@@ -125,46 +125,60 @@ namespace Aardvark.Base
 
         public readonly int LastIndexOf(char ch)
         {
-            var index = String.LastIndexOf(ch, Start, Count);
+            if (!TryGetLastIndexSearchRange(Count - 1, Count, out var start, out var count)) return -1;
+            var index = String.LastIndexOf(ch, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int LastIndexOf(string str)
         {
-            var index = String.LastIndexOf(str, Start, Count);
+            if (!TryGetLastIndexSearchRange(Count - 1, Count, out var start, out var count)) return -1;
+            var index = String.LastIndexOf(str, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int LastIndexOf(char ch, int start)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.LastIndexOf(ch, start, End - start);
+            if (!TryGetLastIndexSearchRange(start, Count, out start, out var count)) return -1;
+            var index = String.LastIndexOf(ch, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int LastIndexOf(string str, int start)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.LastIndexOf(str, start, End - start);
+            if (!TryGetLastIndexSearchRange(start, Count, out start, out var count)) return -1;
+            var index = String.LastIndexOf(str, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int LastIndexOf(char ch, int start, int count)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.LastIndexOf(ch, start, Math.Min(count, End - start));
+            if (!TryGetLastIndexSearchRange(start, count, out start, out count)) return -1;
+            var index = String.LastIndexOf(ch, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int LastIndexOf(string str, int start, int count)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.LastIndexOf(str, start, Math.Min(count, End - start));
+            if (!TryGetLastIndexSearchRange(start, count, out start, out count)) return -1;
+            var index = String.LastIndexOf(str, start, count);
             return index < 0 ? -1 : index - Start;
+        }
+
+        private readonly bool TryGetLastIndexSearchRange(int start, int count, out int absoluteStart, out int absoluteCount)
+        {
+            if (IsEmpty || count <= 0)
+            {
+                absoluteStart = 0;
+                absoluteCount = 0;
+                return false;
+            }
+
+            absoluteStart = start >= 0 ? Start + start : End + start;
+            absoluteStart = Math.Min(Math.Max(absoluteStart, Start), End - 1);
+            absoluteCount = Math.Min(count, absoluteStart - Start + 1);
+
+            return absoluteCount > 0;
         }
 
         /// <summary>
