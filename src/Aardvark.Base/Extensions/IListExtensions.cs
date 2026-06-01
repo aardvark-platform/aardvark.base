@@ -178,6 +178,10 @@ namespace Aardvark.Base
                                      int startIndex)
             where T : IComparable<T>
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (other == null) throw new ArgumentNullException(nameof(other));
+            if (startIndex < 0 || startIndex > self.Count) throw new ArgumentOutOfRangeException(nameof(startIndex));
+
             for (int i = startIndex; i < 1 + self.Count - other.Count; i++)
             {
                 bool match = true;
