@@ -1,6 +1,6 @@
 # Aardvark.Base
 
-[![Build](https://github.com/aardvark-platform/aardvark.base/actions/workflows/build.yml/badge.svg)](https://github.com/aardvark-platform/aardvark.base/actions/workflows/build.yml)
+[![Test](https://github.com/aardvark-platform/aardvark.base/actions/workflows/test.yml/badge.svg)](https://github.com/aardvark-platform/aardvark.base/actions/workflows/test.yml)
 [![Publish](https://github.com/aardvark-platform/aardvark.base/actions/workflows/publish.yml/badge.svg)](https://github.com/aardvark-platform/aardvark.base/actions/workflows/publish.yml)
 [![License](https://img.shields.io/github/license/aardvark-platform/aardvark.base.svg?label=License)](https://github.com/aardvark-platform/aardvark.base/blob/master/LICENSE)
 [![NuGet](https://img.shields.io/nuget/v/Aardvark.Base.svg)](https://www.nuget.org/packages/Aardvark.Base/)
