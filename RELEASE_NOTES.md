@@ -1,3 +1,4 @@
+### 5.3.24
 - [Base] Fixed `Text.LastIndexOf` to search backward within sliced text ranges
 - [Base] Fixed Julian day conversion to round-trip millisecond-precision `DateTime` values
 - [Base] Disposed enumerators created by enumerable min/max helpers
