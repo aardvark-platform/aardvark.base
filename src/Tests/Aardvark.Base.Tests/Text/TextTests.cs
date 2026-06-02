@@ -7,6 +7,86 @@ namespace Aardvark.Tests.TextUtilities
     public static class TextTests
     {
         [Test]
+        public static void IndexOfFindsValuesInFullText()
+        {
+            var text = new Text("abcabc");
+
+            Assert.AreEqual(0, text.IndexOf('a'));
+            Assert.AreEqual(1, text.IndexOf("bc"));
+        }
+
+        [Test]
+        public static void IndexOfFindsValuesInSlicedText()
+        {
+            var text = new Text("xxabcabcxx", 2, 6);
+
+            Assert.AreEqual(0, text.IndexOf('a'));
+            Assert.AreEqual(1, text.IndexOf("bc"));
+            Assert.AreEqual(-1, text.IndexOf('x'));
+            Assert.AreEqual(-1, text.IndexOf("xx"));
+        }
+
+        [Test]
+        public static void IndexOfStartOverloadsClampToTextSlice()
+        {
+            var text = new Text("xxabcabcxx", 2, 6);
+
+            Assert.AreEqual(3, text.IndexOf('a', 2));
+            Assert.AreEqual(-1, text.IndexOf('a', -1));
+            Assert.AreEqual(-1, text.IndexOf('a', 100));
+            Assert.AreEqual(0, text.IndexOf('a', -100));
+
+            Assert.AreEqual(3, text.IndexOf("ab", 2));
+            Assert.AreEqual(-1, text.IndexOf("ab", -1));
+            Assert.AreEqual(-1, text.IndexOf("ab", 100));
+            Assert.AreEqual(0, text.IndexOf("ab", -100));
+        }
+
+        [Test]
+        public static void IndexOfStartCountOverloadsClampToTextSlice()
+        {
+            var text = new Text("xxabcabcxx", 2, 6);
+
+            Assert.AreEqual(0, text.IndexOf('a', 0, 2));
+            Assert.AreEqual(-1, text.IndexOf('a', 2, 1));
+            Assert.AreEqual(3, text.IndexOf('a', 2, 2));
+            Assert.AreEqual(3, text.IndexOf('a', 2, 100));
+            Assert.AreEqual(-1, text.IndexOf('a', 0, 0));
+            Assert.AreEqual(-1, text.IndexOf('a', 0, -1));
+
+            Assert.AreEqual(0, text.IndexOf("ab", 0, 2));
+            Assert.AreEqual(-1, text.IndexOf("ab", 2, 2));
+            Assert.AreEqual(3, text.IndexOf("ab", 2, 3));
+            Assert.AreEqual(3, text.IndexOf("ab", 2, 100));
+            Assert.AreEqual(-1, text.IndexOf("ab", 0, 0));
+            Assert.AreEqual(-1, text.IndexOf("ab", 0, -1));
+        }
+
+        [Test]
+        public static void IndexOfReturnsMinusOneForMissingValues()
+        {
+            var text = new Text("abcabc");
+
+            Assert.AreEqual(-1, text.IndexOf('z'));
+            Assert.AreEqual(-1, text.IndexOf("zz"));
+            Assert.AreEqual(-1, text.IndexOf('a', 4));
+            Assert.AreEqual(-1, text.IndexOf("bc", 0, 1));
+        }
+
+        [Test]
+        public static void IndexOfHandlesEmptyText()
+        {
+            var text = Text.Empty;
+
+            Assert.AreEqual(-1, text.IndexOf('a'));
+            Assert.AreEqual(-1, text.IndexOf("a"));
+            Assert.AreEqual(-1, text.IndexOf('a', 0));
+            Assert.AreEqual(-1, text.IndexOf("a", 0));
+            Assert.AreEqual(-1, text.IndexOf('a', 0, 1));
+            Assert.AreEqual(-1, text.IndexOf("a", 0, 1));
+        }
+
+        [Test]
         public static void LastIndexOfFindsValuesInFullText()
         {
             var text = new Text("abcabc");

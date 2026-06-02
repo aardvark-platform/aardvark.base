@@ -81,46 +81,67 @@ namespace Aardvark.Base
 
         public readonly int IndexOf(char ch)
         {
-            var index = String.IndexOf(ch, Start, Count);
+            if (!TryGetIndexSearchRange(0, Count, out var start, out var count)) return -1;
+            var index = String.IndexOf(ch, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int IndexOf(string str)
         {
-            var index = String.IndexOf(str, Start, Count);
+            if (!TryGetIndexSearchRange(0, Count, out var start, out var count)) return -1;
+            var index = String.IndexOf(str, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int IndexOf(char ch, int start)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.IndexOf(ch, start, End - start);
+            if (!TryGetIndexSearchRange(start, Count, out start, out var count)) return -1;
+            var index = String.IndexOf(ch, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int IndexOf(string str, int start)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.IndexOf(str, start, End - start);
+            if (!TryGetIndexSearchRange(start, Count, out start, out var count)) return -1;
+            var index = String.IndexOf(str, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int IndexOf(char ch, int start, int count)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.IndexOf(ch, start, Math.Min(count, End - start));
+            if (!TryGetIndexSearchRange(start, count, out start, out count)) return -1;
+            var index = String.IndexOf(ch, start, count);
             return index < 0 ? -1 : index - Start;
         }
 
         public readonly int IndexOf(string str, int start, int count)
         {
-            if (start >= 0) { start += Start; if (start >= End) return -1; }
-            else start = Math.Max(Start, start + End);
-            var index = String.IndexOf(str, start, Math.Min(count, End - start));
+            if (!TryGetIndexSearchRange(start, count, out start, out count)) return -1;
+            var index = String.IndexOf(str, start, count);
             return index < 0 ? -1 : index - Start;
+        }
+
+        private readonly bool TryGetIndexSearchRange(int start, int count, out int absoluteStart, out int absoluteCount)
+        {
+            if (IsEmpty || count <= 0)
+            {
+                absoluteStart = 0;
+                absoluteCount = 0;
+                return false;
+            }
+
+            absoluteStart = start >= 0 ? Start + start : End + start;
+            if (absoluteStart >= End)
+            {
+                absoluteStart = 0;
+                absoluteCount = 0;
+                return false;
+            }
+
+            absoluteStart = Math.Max(absoluteStart, Start);
+            absoluteCount = Math.Min(count, End - absoluteStart);
+
+            return absoluteCount > 0;
         }
 
         public readonly int LastIndexOf(char ch)
