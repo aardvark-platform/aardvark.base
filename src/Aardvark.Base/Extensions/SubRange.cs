@@ -17,6 +17,10 @@ namespace Aardvark.Base
 
         public SubRange(IList<T> of, int index, int count)
         {
+            if (of == null) throw new ArgumentNullException(nameof(of));
+            if (index < 0 || index > of.Count) throw new ArgumentOutOfRangeException(nameof(index));
+            if (count < 0 || count > of.Count - index) throw new ArgumentOutOfRangeException(nameof(count));
+
             m_base = of;
             m_start = index;
             m_count = count;
@@ -31,7 +35,7 @@ namespace Aardvark.Base
         {
             for (int i = m_start; i < m_stop; i++)
             {
-                if (m_base[i].Equals(item)) return i - m_start;
+                if (EqualityComparer<T>.Default.Equals(m_base[i], item)) return i - m_start;
             }
             return -1;
         }
@@ -50,13 +54,13 @@ namespace Aardvark.Base
         {
             get
             {
-                if (index < 0 || index > m_count)
+                if (index < 0 || index >= m_count)
                     throw new IndexOutOfRangeException();
                 return m_base[m_start + index];
             }
             set
             {
-                if (index < 0 || index > m_count)
+                if (index < 0 || index >= m_count)
                     throw new IndexOutOfRangeException();
                 m_base[m_start + index] = value;
             }

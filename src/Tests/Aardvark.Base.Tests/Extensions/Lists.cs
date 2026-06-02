@@ -32,6 +32,66 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void SubRangeRejectsInvalidConstructorArguments()
+        {
+            IList<int> nullSource = null;
+            var nullSourceException = Assert.Throws<ArgumentNullException>(() => new SubRange<int>(nullSource, 0, 0));
+            Assert.AreEqual("of", nullSourceException.ParamName);
+
+            var source = new List<int> { 1, 2, 3 };
+
+            var negativeIndex = Assert.Throws<ArgumentOutOfRangeException>(() => new SubRange<int>(source, -1, 1));
+            Assert.AreEqual("index", negativeIndex.ParamName);
+
+            var tooLargeIndex = Assert.Throws<ArgumentOutOfRangeException>(() => new SubRange<int>(source, source.Count + 1, 0));
+            Assert.AreEqual("index", tooLargeIndex.ParamName);
+
+            var negativeCount = Assert.Throws<ArgumentOutOfRangeException>(() => new SubRange<int>(source, 0, -1));
+            Assert.AreEqual("count", negativeCount.ParamName);
+
+            var tooLargeCount = Assert.Throws<ArgumentOutOfRangeException>(() => new SubRange<int>(source, 2, 2));
+            Assert.AreEqual("count", tooLargeCount.ParamName);
+
+            var overflowSizedCount = Assert.Throws<ArgumentOutOfRangeException>(() => new SubRange<int>(source, 1, int.MaxValue));
+            Assert.AreEqual("count", overflowSizedCount.ParamName);
+        }
+
+        [Test]
+        public static void SubRangeAllowsEmptyRangeAtEnd()
+        {
+            var source = new List<int> { 1, 2, 3 };
+            var range = new SubRange<int>(source, source.Count, 0);
+
+            Assert.AreEqual(0, range.Count);
+            CollectionAssert.IsEmpty(range);
+            Assert.AreEqual(-1, range.IndexOf(1));
+        }
+
+        [Test]
+        public static void SubRangeIndexerRejectsIndexAtCount()
+        {
+            var source = new List<int> { 1, 2, 3 };
+            var range = new SubRange<int>(source, 1, 2);
+
+            Assert.Throws<IndexOutOfRangeException>(() => { var _ = range[range.Count]; });
+            Assert.Throws<IndexOutOfRangeException>(() => range[range.Count] = 10);
+        }
+
+        [Test]
+        public static void SubRangeIndexOfAndContainsHandleNullValues()
+        {
+            var source = new List<string> { "before", null, "hit", null, "after" };
+            var range = new SubRange<string>(source, 1, 3);
+
+            Assert.AreEqual(0, range.IndexOf(null));
+            Assert.IsTrue(range.Contains(null));
+            Assert.AreEqual(1, range.IndexOf("hit"));
+            Assert.IsTrue(range.Contains("hit"));
+            Assert.AreEqual(-1, range.IndexOf("before"));
+            Assert.IsFalse(range.Contains("missing"));
+        }
+
+        [Test]
         public static void FirstIndexOfRejectsNullSelf()
         {
             IList<int> self = null;
