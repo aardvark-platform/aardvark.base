@@ -2368,10 +2368,12 @@ namespace Aardvark.Base
         /// </summary>
         public static int IndexOf<T>(this IEnumerable<T> list, T elementToFind)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             int i = 0;
             foreach (T element in list)
             {
-                if (element.Equals(elementToFind))
+                if (EqualityComparer<T>.Default.Equals(element, elementToFind))
                     return i;
                 i++;
             }

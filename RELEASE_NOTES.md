@@ -1,3 +1,4 @@
+- [Base] Hardened `EnumerableEx.IndexOf` for null sources and null elements
 - [Base] Hardened `SubRange<T>` constructor, indexer, and null-value search behavior
 - [Base] Fixed `Text.IndexOf` to handle empty text and clamped forward search ranges safely
 - [Base] Hardened `IList.FirstIndexOf` argument validation for null inputs and invalid start indices

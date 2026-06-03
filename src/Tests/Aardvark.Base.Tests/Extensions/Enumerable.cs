@@ -522,6 +522,38 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void IndexOfFindsNullValue()
+        {
+            var source = new[] { "first", null, "third" };
+
+            Assert.AreEqual(1, source.IndexOf(null));
+        }
+
+        [Test]
+        public static void IndexOfSkipsNullsWhenFindingNonNullValue()
+        {
+            var source = new[] { null, "target", null };
+
+            Assert.AreEqual(1, source.IndexOf("target"));
+        }
+
+        [Test]
+        public static void IndexOfReturnsMinusOneForMissingValueWithNullElements()
+        {
+            var source = new[] { "first", null, "third" };
+
+            Assert.AreEqual(-1, source.IndexOf("missing"));
+        }
+
+        [Test]
+        public static void IndexOfThrowsForNullSource()
+        {
+            IEnumerable<string> source = null;
+
+            AssertParamName<ArgumentNullException>("list", () => source.IndexOf("value"));
+        }
+
+        [Test]
         public static void ZipDisposesEnumeratorsAfterFullEnumeration()
         {
             var first = Track(1, 2);
