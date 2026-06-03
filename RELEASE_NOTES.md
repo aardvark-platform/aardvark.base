@@ -1,7 +1,8 @@
-### 5.3.24
 - [Base] Hardened `SubRange<T>` constructor, indexer, and null-value search behavior
 - [Base] Fixed `Text.IndexOf` to handle empty text and clamped forward search ranges safely
 - [Base] Hardened `IList.FirstIndexOf` argument validation for null inputs and invalid start indices
+
+### 5.3.24
 - [Base] Fixed `Text.LastIndexOf` to search backward within sliced text ranges
 - [Base] Fixed Julian day conversion to round-trip millisecond-precision `DateTime` values
 - [Base] Disposed enumerators created by enumerable min/max helpers
