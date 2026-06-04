@@ -344,7 +344,7 @@ namespace Aardvark.Base
 
         #region Overrides
 
-        public override readonly string ToString() => String.Substring(Start, Count);
+        public override readonly string ToString() => Count == 0 ? string.Empty : String.Substring(Start, Count);
 
         public override readonly int GetHashCode()
         {

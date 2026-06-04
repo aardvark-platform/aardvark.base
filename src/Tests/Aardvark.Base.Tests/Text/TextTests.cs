@@ -7,6 +7,20 @@ namespace Aardvark.Tests.TextUtilities
     public static class TextTests
     {
         [Test]
+        public static void ToStringHandlesTextEmpty()
+        {
+            Assert.AreEqual(string.Empty, Text.Empty.ToString());
+        }
+
+        [Test]
+        public static void ToStringHandlesEmptySlice()
+        {
+            var text = new Text("abc", 3, 0);
+
+            Assert.AreEqual(string.Empty, text.ToString());
+        }
+
+        [Test]
         public static void IndexOfFindsValuesInFullText()
         {
             var text = new Text("abcabc");
