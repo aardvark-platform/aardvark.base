@@ -20,8 +20,24 @@ namespace Aardvark.Base
         {
             if (edges is null) throw new ArgumentNullException(nameof(edges));
 
+            return CreateImpl(edges);
+        }
+
+        private static IEnumerable<((TVertex, TVertex), TWeight)> CreateImpl<TVertex, TWeight>(
+            IEnumerable<((TVertex, TVertex), TWeight)> edges
+            )
+            where TWeight : IComparable<TWeight>
+        {
+            var edgeList = edges as IReadOnlyList<((TVertex, TVertex), TWeight)> ?? edges.ToList();
+
             Report.BeginTimed("create vertex set");
-            var vertexSet = new HashSet<TVertex>(edges.SelectMany(e => e.Item1));
+            var vertexSet = new HashSet<TVertex>();
+            for (var i = 0; i < edgeList.Count; i++)
+            {
+                var edge = edgeList[i].Item1;
+                vertexSet.Add(edge.Item1);
+                vertexSet.Add(edge.Item2);
+            }
             Report.End();
             if (vertexSet.Count < 2) yield break;
 
@@ -32,8 +48,9 @@ namespace Aardvark.Base
             Report.BeginTimed("init per-vertex edge priority queues");
             var v2es = new Dictionary<TVertex, List<KeyValuePair<TWeight, TVertex>>>();
             vertexSet.ForEach(v => v2es[v] = new List<KeyValuePair<TWeight, TVertex>>());
-            foreach (var e in edges)
+            for (var i = 0; i < edgeList.Count; i++)
             {
+                var e = edgeList[i];
                 v2es[e.Item1.Item1].HeapEnqueue(compare, new KeyValuePair<TWeight, TVertex>(e.Item2, e.Item1.Item2));
                 v2es[e.Item1.Item2].HeapEnqueue(compare, new KeyValuePair<TWeight, TVertex>(e.Item2, e.Item1.Item1));
             }

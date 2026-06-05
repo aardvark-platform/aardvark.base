@@ -1,3 +1,4 @@
+- [Base] Made `MinimumSpanningTree.Create` consume lazy edge sequences only once
 - [Base] Fixed `Text.Empty.ToString()` to return an empty string
 - [Base] Hardened `EnumerableEx.IndexOf` for null sources and null elements
 - [Base] Hardened `SubRange<T>` constructor, indexer, and null-value search behavior
