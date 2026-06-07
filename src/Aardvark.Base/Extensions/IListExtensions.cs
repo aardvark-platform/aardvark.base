@@ -198,6 +198,8 @@ namespace Aardvark.Base
         public static int SmallestIndex<T>(this IList<T> self)
             where T: IComparable<T>
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (self.Count == 0) throw new ArgumentOutOfRangeException(nameof(self));
             int index = 0;
             T min = self[0];
             for (int i = 1; i < self.Count; i++)
@@ -208,6 +210,8 @@ namespace Aardvark.Base
         public static int LargestIndex<T>(this IList<T> self)
             where T : IComparable<T>
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (self.Count == 0) throw new ArgumentOutOfRangeException(nameof(self));
             int index = 0;
             T max = self[0];
             for (int i = 1; i < self.Count; i++)
@@ -223,6 +227,8 @@ namespace Aardvark.Base
         public static int NSmallestIndex<T>(this IList<T> self, int n)
             where T : IComparable<T>
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (n < 0 || n >= self.Count) throw new ArgumentOutOfRangeException(nameof(n));
             if (n == 0) return self.SmallestIndex();
             T min;
             var sorted = new List<T>(self);
@@ -239,6 +245,8 @@ namespace Aardvark.Base
         public static int NLargestIndex<T>(this IList<T> self, int n)
             where T : IComparable<T>
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (n < 0 || n >= self.Count) throw new ArgumentOutOfRangeException(nameof(n));
             if (n == 0) return self.LargestIndex();
             T max;
             var sorted = new List<T>(self);

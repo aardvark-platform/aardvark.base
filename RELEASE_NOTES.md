@@ -1,4 +1,5 @@
 - [Base] Made `MinimumSpanningTree.Create` consume lazy edge sequences only once
+- [Base] Hardened list rank-index helpers for null lists, empty lists, and invalid ranks
 - [Base] Hardened ranked-index enumerable helpers for null sources and negative counts
 - [Base] Fixed `Text.Empty.ToString()` to return an empty string
 - [Base] Hardened `EnumerableEx.IndexOf` for null sources and null elements

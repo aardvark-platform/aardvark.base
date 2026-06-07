@@ -7,6 +7,13 @@ namespace Aardvark.Tests.Extensions
 {
     static class Lists
     {
+        private static void AssertParamName<TException>(string paramName, TestDelegate code)
+            where TException : ArgumentException
+        {
+            var ex = Assert.Throws<TException>(code);
+            Assert.AreEqual(paramName, ex.ParamName);
+        }
+
         [Test]
         public static void ListFunMap3TruncatesToThirdList()
         {
@@ -149,6 +156,88 @@ namespace Aardvark.Tests.Extensions
             var other = new List<int> { 1, 2 };
 
             Assert.AreEqual(2, self.FirstIndexOf(other, 1));
+        }
+
+        [Test]
+        public static void IListRankIndexHelpersRejectNullInputs()
+        {
+            IList<int> self = null;
+
+            AssertParamName<ArgumentNullException>("self", () => self.SmallestIndex());
+            AssertParamName<ArgumentNullException>("self", () => self.LargestIndex());
+            AssertParamName<ArgumentNullException>("self", () => self.NSmallestIndex(0));
+            AssertParamName<ArgumentNullException>("self", () => self.NLargestIndex(0));
+        }
+
+        [Test]
+        public static void IListRankIndexHelpersRejectEmptyInputs()
+        {
+            IList<int> self = new List<int>();
+
+            AssertParamName<ArgumentOutOfRangeException>("self", () => self.SmallestIndex());
+            AssertParamName<ArgumentOutOfRangeException>("self", () => self.LargestIndex());
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NSmallestIndex(0));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NLargestIndex(0));
+        }
+
+        [Test]
+        public static void IListRankIndexHelpersRejectInvalidRank()
+        {
+            IList<int> self = new List<int> { 1, 2 };
+
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NSmallestIndex(-1));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NLargestIndex(-1));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NSmallestIndex(self.Count));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NLargestIndex(self.Count));
+        }
+
+        [Test]
+        public static void IListRankIndexHelpersPreserveDuplicateValueBehavior()
+        {
+            IList<int> self = new List<int> { 5, 1, 3, 1, 5 };
+
+            Assert.AreEqual(1, self.SmallestIndex());
+            Assert.AreEqual(0, self.LargestIndex());
+            Assert.AreEqual(1, self.NSmallestIndex(1));
+            Assert.AreEqual(0, self.NLargestIndex(1));
+        }
+
+        [Test]
+        public static void ListRankIndexHelpersRejectNullInputs()
+        {
+            List<int> self = null;
+
+            AssertParamName<ArgumentNullException>("a", () => self.NSmallestIndex(0));
+            AssertParamName<ArgumentNullException>("a", () => self.NLargestIndex(0));
+        }
+
+        [Test]
+        public static void ListRankIndexHelpersRejectEmptyInputs()
+        {
+            var self = new List<int>();
+
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NSmallestIndex(0));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NLargestIndex(0));
+        }
+
+        [Test]
+        public static void ListRankIndexHelpersRejectInvalidRank()
+        {
+            var self = new List<int> { 1, 2 };
+
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NSmallestIndex(-1));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NLargestIndex(-1));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NSmallestIndex(self.Count));
+            AssertParamName<ArgumentOutOfRangeException>("n", () => self.NLargestIndex(self.Count));
+        }
+
+        [Test]
+        public static void ListRankIndexHelpersPreserveDuplicateValueBehavior()
+        {
+            var self = new List<int> { 5, 1, 3, 1, 5 };
+
+            Assert.AreEqual(1, self.NSmallestIndex(0));
+            Assert.AreEqual(0, self.NLargestIndex(0));
         }
     }
 }

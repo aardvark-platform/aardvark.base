@@ -9,6 +9,8 @@ namespace Aardvark.Base
         public static int NSmallestIndex<T>(this List<T> a, int n)
             where T : IComparable<T>
         {
+            if (a == null) throw new ArgumentNullException(nameof(a));
+            if (n < 0 || n >= a.Count) throw new ArgumentOutOfRangeException(nameof(n));
             if (n == 0) return a.SmallestIndex();
             var p = a.CreatePermutationQuickMedianAscending(n);
             return p[n];
@@ -17,6 +19,8 @@ namespace Aardvark.Base
         public static int NLargestIndex<T>(this List<T> a, int n)
             where T : IComparable<T>
         {
+            if (a == null) throw new ArgumentNullException(nameof(a));
+            if (n < 0 || n >= a.Count) throw new ArgumentOutOfRangeException(nameof(n));
             if (n == 0) return a.LargestIndex();
             var p = a.CreatePermutationQuickMedianDescending(n);
             return p[n];
