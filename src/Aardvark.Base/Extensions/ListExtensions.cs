@@ -274,7 +274,8 @@ namespace Aardvark.Base
                 this IEnumerable<T> values, int n)
             where T : IComparable<T>
         {
-            if (n < 0) throw new ArgumentException("n >= 0 required");
+            if (values is null) throw new ArgumentNullException(nameof(values));
+            if (n < 0) throw new ArgumentOutOfRangeException(nameof(n));
             var list = new List<ComparableIndexedValue<T>>(n + 1);
             if (n == 0) return list;
             int i = 0;
@@ -304,7 +305,8 @@ namespace Aardvark.Base
                 this IEnumerable<T> values, int n)
             where T : IComparable<T>
         {
-            if (n < 0) throw new ArgumentException("n < 0 requried");
+            if (values is null) throw new ArgumentNullException(nameof(values));
+            if (n < 0) throw new ArgumentOutOfRangeException(nameof(n));
             var list = new List<ComparableIndexedValue<T>>(n + 1);
             if (n == 0) return list;
             int i = 0;

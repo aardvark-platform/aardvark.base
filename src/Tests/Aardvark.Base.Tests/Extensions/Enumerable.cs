@@ -554,6 +554,38 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void NLargestIndicesThrowsForNullSource()
+        {
+            IEnumerable<int> source = null;
+
+            AssertParamName<ArgumentNullException>("values", () => source.NLargestIndices(1));
+        }
+
+        [Test]
+        public static void NSmallestIndicesThrowsForNullSource()
+        {
+            IEnumerable<int> source = null;
+
+            AssertParamName<ArgumentNullException>("values", () => source.NSmallestIndices(1));
+        }
+
+        [Test]
+        public static void NLargestIndicesThrowsForNegativeCount()
+        {
+            var source = new[] { 1 };
+
+            AssertParamName<ArgumentOutOfRangeException>("n", () => source.NLargestIndices(-1));
+        }
+
+        [Test]
+        public static void NSmallestIndicesThrowsForNegativeCount()
+        {
+            var source = new[] { 1 };
+
+            AssertParamName<ArgumentOutOfRangeException>("n", () => source.NSmallestIndices(-1));
+        }
+
+        [Test]
         public static void ZipDisposesEnumeratorsAfterFullEnumeration()
         {
             var first = Track(1, 2);
