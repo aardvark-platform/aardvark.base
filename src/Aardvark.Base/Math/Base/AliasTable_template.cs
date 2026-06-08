@@ -32,7 +32,7 @@ namespace Aardvark.Base
         /// </summary>
         public __at__ FromPdf(__ft__[] pdf, IRandomUniform rnd = null)
         {
-            return new __at__(pdf, 1 / pdf.Sum(), rnd);
+            return new __at__(pdf, GetPdfNorm(pdf), rnd);
         }
 
         /// <summary>
@@ -48,6 +48,8 @@ namespace Aardvark.Base
         /// </summary>
         public __at__(__ft__[] pdf, __ft__ pdfNorm, IRandomUniform rnd = null)
         {
+            ValidatePdfHeader(pdf);
+            ValidatePdfNorm(pdfNorm);
             var n = pdf.Length;
             _probablity = new __ft__[n];
             _alias = new int[n];
@@ -60,7 +62,10 @@ namespace Aardvark.Base
         /// </summary>
         public void Update(__ft__[] pdf, __ft__ pdfNorm, IRandomUniform rnd = null)
         {
-            if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!");
+            ValidatePdfHeader(pdf);
+            if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!", nameof(pdf));
+            ValidatePdfNorm(pdfNorm);
+            ValidatePdf(pdf);
 
             if (rnd == null) rnd = new RandomSystem();
 
@@ -112,6 +117,43 @@ namespace Aardvark.Base
                 _probablity[i] = 1;
                 overfull.RemoveAt(overfull.Count - 1);
             }
+        }
+
+        private static __ft__ GetPdfNorm(__ft__[] pdf)
+        {
+            return 1 / ValidatePdf(pdf);
+        }
+
+        private static void ValidatePdfHeader(__ft__[] pdf)
+        {
+            if (pdf == null) throw new ArgumentNullException(nameof(pdf));
+            if (pdf.Length == 0) throw new ArgumentException("The PDF must not be empty.", nameof(pdf));
+        }
+
+        private static void ValidatePdfNorm(__ft__ pdfNorm)
+        {
+            if (pdfNorm <= 0 || __ft__.IsNaN(pdfNorm) || __ft__.IsInfinity(pdfNorm))
+                throw new ArgumentOutOfRangeException(nameof(pdfNorm), "The PDF normalization factor must be positive and finite.");
+        }
+
+        private static __ft__ ValidatePdf(__ft__[] pdf)
+        {
+            ValidatePdfHeader(pdf);
+
+            __ft__ sum = 0;
+            for (int i = 0; i < pdf.Length; i++)
+            {
+                var value = pdf[i];
+                if (value < 0 || __ft__.IsNaN(value) || __ft__.IsInfinity(value))
+                    throw new ArgumentOutOfRangeException(nameof(pdf), "PDF entries must be non-negative finite values.");
+
+                sum += value;
+            }
+
+            if (sum <= 0)
+                throw new ArgumentException("The PDF must contain at least one positive finite weight.", nameof(pdf));
+
+            return sum;
         }
 
         /// <summary>

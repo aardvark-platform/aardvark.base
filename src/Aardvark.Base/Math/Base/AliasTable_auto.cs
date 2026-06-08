@@ -28,7 +28,7 @@ namespace Aardvark.Base
         /// </summary>
         public AliasTableF FromPdf(float[] pdf, IRandomUniform rnd = null)
         {
-            return new AliasTableF(pdf, 1 / pdf.Sum(), rnd);
+            return new AliasTableF(pdf, GetPdfNorm(pdf), rnd);
         }
 
         /// <summary>
@@ -44,6 +44,8 @@ namespace Aardvark.Base
         /// </summary>
         public AliasTableF(float[] pdf, float pdfNorm, IRandomUniform rnd = null)
         {
+            ValidatePdfHeader(pdf);
+            ValidatePdfNorm(pdfNorm);
             var n = pdf.Length;
             _probablity = new float[n];
             _alias = new int[n];
@@ -56,7 +58,10 @@ namespace Aardvark.Base
         /// </summary>
         public void Update(float[] pdf, float pdfNorm, IRandomUniform rnd = null)
         {
-            if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!");
+            ValidatePdfHeader(pdf);
+            if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!", nameof(pdf));
+            ValidatePdfNorm(pdfNorm);
+            ValidatePdf(pdf);
 
             if (rnd == null) rnd = new RandomSystem();
 
@@ -108,6 +113,43 @@ namespace Aardvark.Base
                 _probablity[i] = 1;
                 overfull.RemoveAt(overfull.Count - 1);
             }
+        }
+
+        private static float GetPdfNorm(float[] pdf)
+        {
+            return 1 / ValidatePdf(pdf);
+        }
+
+        private static void ValidatePdfHeader(float[] pdf)
+        {
+            if (pdf == null) throw new ArgumentNullException(nameof(pdf));
+            if (pdf.Length == 0) throw new ArgumentException("The PDF must not be empty.", nameof(pdf));
+        }
+
+        private static void ValidatePdfNorm(float pdfNorm)
+        {
+            if (pdfNorm <= 0 || float.IsNaN(pdfNorm) || float.IsInfinity(pdfNorm))
+                throw new ArgumentOutOfRangeException(nameof(pdfNorm), "The PDF normalization factor must be positive and finite.");
+        }
+
+        private static float ValidatePdf(float[] pdf)
+        {
+            ValidatePdfHeader(pdf);
+
+            float sum = 0;
+            for (int i = 0; i < pdf.Length; i++)
+            {
+                var value = pdf[i];
+                if (value < 0 || float.IsNaN(value) || float.IsInfinity(value))
+                    throw new ArgumentOutOfRangeException(nameof(pdf), "PDF entries must be non-negative finite values.");
+
+                sum += value;
+            }
+
+            if (sum <= 0)
+                throw new ArgumentException("The PDF must contain at least one positive finite weight.", nameof(pdf));
+
+            return sum;
         }
 
         /// <summary>
@@ -143,7 +185,7 @@ namespace Aardvark.Base
         /// </summary>
         public AliasTableD FromPdf(double[] pdf, IRandomUniform rnd = null)
         {
-            return new AliasTableD(pdf, 1 / pdf.Sum(), rnd);
+            return new AliasTableD(pdf, GetPdfNorm(pdf), rnd);
         }
 
         /// <summary>
@@ -159,6 +201,8 @@ namespace Aardvark.Base
         /// </summary>
         public AliasTableD(double[] pdf, double pdfNorm, IRandomUniform rnd = null)
         {
+            ValidatePdfHeader(pdf);
+            ValidatePdfNorm(pdfNorm);
             var n = pdf.Length;
             _probablity = new double[n];
             _alias = new int[n];
@@ -171,7 +215,10 @@ namespace Aardvark.Base
         /// </summary>
         public void Update(double[] pdf, double pdfNorm, IRandomUniform rnd = null)
         {
-            if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!");
+            ValidatePdfHeader(pdf);
+            if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!", nameof(pdf));
+            ValidatePdfNorm(pdfNorm);
+            ValidatePdf(pdf);
 
             if (rnd == null) rnd = new RandomSystem();
 
@@ -223,6 +270,43 @@ namespace Aardvark.Base
                 _probablity[i] = 1;
                 overfull.RemoveAt(overfull.Count - 1);
             }
+        }
+
+        private static double GetPdfNorm(double[] pdf)
+        {
+            return 1 / ValidatePdf(pdf);
+        }
+
+        private static void ValidatePdfHeader(double[] pdf)
+        {
+            if (pdf == null) throw new ArgumentNullException(nameof(pdf));
+            if (pdf.Length == 0) throw new ArgumentException("The PDF must not be empty.", nameof(pdf));
+        }
+
+        private static void ValidatePdfNorm(double pdfNorm)
+        {
+            if (pdfNorm <= 0 || double.IsNaN(pdfNorm) || double.IsInfinity(pdfNorm))
+                throw new ArgumentOutOfRangeException(nameof(pdfNorm), "The PDF normalization factor must be positive and finite.");
+        }
+
+        private static double ValidatePdf(double[] pdf)
+        {
+            ValidatePdfHeader(pdf);
+
+            double sum = 0;
+            for (int i = 0; i < pdf.Length; i++)
+            {
+                var value = pdf[i];
+                if (value < 0 || double.IsNaN(value) || double.IsInfinity(value))
+                    throw new ArgumentOutOfRangeException(nameof(pdf), "PDF entries must be non-negative finite values.");
+
+                sum += value;
+            }
+
+            if (sum <= 0)
+                throw new ArgumentException("The PDF must contain at least one positive finite weight.", nameof(pdf));
+
+            return sum;
         }
 
         /// <summary>

@@ -1,3 +1,4 @@
+- [Base] Hardened `AliasTableF` and `AliasTableD` PDF validation
 - [Base] Made `MinimumSpanningTree.Create` consume lazy edge sequences only once
 - [Base] Hardened list rank-index helpers for null lists, empty lists, and invalid ranks
 - [Base] Hardened ranked-index enumerable helpers for null sources and negative counts
