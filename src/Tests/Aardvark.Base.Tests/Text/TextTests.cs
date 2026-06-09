@@ -6,6 +6,19 @@ namespace Aardvark.Tests.TextUtilities
     [TestFixture]
     public static class TextTests
     {
+        private static TextParser CreateParser(Text text)
+        {
+            return new TextParser
+            {
+                Text = text,
+                Pos = text.Start,
+                LastEnd = text.Start,
+                Line = new Text.Line(0, text.Start),
+                LastWhiteSpace = -1,
+                LastCase = -1,
+            };
+        }
+
         [Test]
         public static void ToStringHandlesTextEmpty()
         {
@@ -175,6 +188,39 @@ namespace Aardvark.Tests.TextUtilities
             Assert.AreEqual(-1, text.LastIndexOf("a", 0));
             Assert.AreEqual(-1, text.LastIndexOf('a', 0, 1));
             Assert.AreEqual(-1, text.LastIndexOf("a", 0, 1));
+        }
+
+        [Test]
+        public static void TextParserTrySkipCharMatchesFinalCharacter()
+        {
+            var text = new Text("cba");
+            var parser = CreateParser(text);
+            parser.Pos = text.End - 1;
+
+            Assert.IsTrue(parser.TrySkip('a'));
+            Assert.AreEqual(text.End, parser.Pos);
+        }
+
+        [Test]
+        public static void TextParserTrySkipStringUsesAbsolutePositionInSlicedText()
+        {
+            var text = new Text("xxabcxx", 2, 3);
+            var parser = CreateParser(text);
+
+            Assert.IsTrue(parser.TrySkip("abc"));
+            Assert.AreEqual(text.End, parser.Pos);
+        }
+
+        [Test]
+        public static void TextParserTrySkipCharMismatchAtFinalCharacterDoesNotAdvance()
+        {
+            var text = new Text("cba");
+            var parser = CreateParser(text);
+            parser.Pos = text.End - 1;
+            var pos = parser.Pos;
+
+            Assert.IsFalse(parser.TrySkip('b'));
+            Assert.AreEqual(pos, parser.Pos);
         }
     }
 }

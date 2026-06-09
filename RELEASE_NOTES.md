@@ -1,3 +1,4 @@
+- [Base] Fixed `TextParser.TrySkip` final-character and sliced-text matching
 - [Base] Hardened `AliasTableF` and `AliasTableD` PDF validation
 - [Base] Made `MinimumSpanningTree.Create` consume lazy edge sequences only once
 - [Base] Hardened list rank-index helpers for null lists, empty lists, and invalid ranks

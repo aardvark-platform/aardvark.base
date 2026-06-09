@@ -643,8 +643,8 @@ namespace Aardvark.Base
         {
             var index = Math.Max(Pos, LastEnd);
             var end = index + 1;
-            if (end >= Text.End) return false;
-            if (Text[index] != skipCh) return false;
+            if (end > Text.End) return false;
+            if (Text.String[index] != skipCh) return false;
             SetPosAndCountLines(end);
             return true;
         }
@@ -655,7 +655,7 @@ namespace Aardvark.Base
             var end = index + skipStr.Length;
             if (end > Text.End) return false;
             for (int i = 0; index < end; index++, i++)
-                if (Text[index] != skipStr[i]) return false;
+                if (Text.String[index] != skipStr[i]) return false;
             SetPosAndCountLines(index);
             return true;
         }
