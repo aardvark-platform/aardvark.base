@@ -1,3 +1,4 @@
+- [Base] Made custom-comparer `EnumerableEx.Min` and `Max` consume inputs only once
 - [Base] Fixed `TextParser.TrySkip` final-character and sliced-text matching
 - [Base] Hardened `AliasTableF` and `AliasTableD` PDF validation
 - [Base] Made `MinimumSpanningTree.Create` consume lazy edge sequences only once

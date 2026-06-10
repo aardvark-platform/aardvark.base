@@ -984,11 +984,16 @@ namespace Aardvark.Base
         {
             if (seq is null) throw new ArgumentNullException(nameof(seq));
             if (lessThan is null) throw new ArgumentNullException(nameof(lessThan));
-            if (seq.IsEmptyOrNull()) throw new ArgumentNullException(nameof(seq));
 
-            var min = seq.First();
-            foreach (var x in seq.Skip(1))
+            using var en = seq.GetEnumerator();
+            if (!en.MoveNext()) throw new ArgumentNullException(nameof(seq));
+
+            var min = en.Current;
+            while (en.MoveNext())
+            {
+                var x = en.Current;
                 if (lessThan(x, min)) min = x;
+            }
             return min;
         }
 
@@ -996,11 +1001,16 @@ namespace Aardvark.Base
         {
             if (seq is null) throw new ArgumentNullException(nameof(seq));
             if (greaterThan is null) throw new ArgumentNullException(nameof(greaterThan));
-            if (seq.IsEmptyOrNull()) throw new ArgumentNullException(nameof(seq));
 
-            var max = seq.First();
-            foreach (var x in seq.Skip(1))
+            using var en = seq.GetEnumerator();
+            if (!en.MoveNext()) throw new ArgumentNullException(nameof(seq));
+
+            var max = en.Current;
+            while (en.MoveNext())
+            {
+                var x = en.Current;
                 if (greaterThan(x, max)) max = x;
+            }
             return max;
         }
 

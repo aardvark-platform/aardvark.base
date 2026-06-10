@@ -197,6 +197,63 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void MinUsesSingleEnumerator()
+        {
+            var source = new SingleUseEnumerable<int>(new[] { 5, 2, 8, 2 });
+
+            var result = source.Min((a, b) => a < b);
+
+            Assert.AreEqual(2, result);
+            Assert.AreEqual(1, source.EnumeratorCount);
+        }
+
+        [Test]
+        public static void MaxUsesSingleEnumerator()
+        {
+            var source = new SingleUseEnumerable<int>(new[] { 5, 2, 8, 8 });
+
+            var result = source.Max((a, b) => a > b);
+
+            Assert.AreEqual(8, result);
+            Assert.AreEqual(1, source.EnumeratorCount);
+        }
+
+        [Test]
+        public static void MinMaxDisposeEnumerators()
+        {
+            var minSource = Track(5, 2, 8);
+            var maxSource = Track(5, 2, 8);
+
+            Assert.AreEqual(2, minSource.Min((a, b) => a < b));
+            Assert.AreEqual(8, maxSource.Max((a, b) => a > b));
+            AssertDisposedOnce(minSource, maxSource);
+        }
+
+        [Test]
+        public static void MinMaxDisposeEmptyEnumerators()
+        {
+            var minSource = Track();
+            var maxSource = Track();
+
+            AssertParamName<ArgumentNullException>("seq", () => minSource.Min((a, b) => a < b));
+            AssertParamName<ArgumentNullException>("seq", () => maxSource.Max((a, b) => a > b));
+            AssertDisposedOnce(minSource, maxSource);
+        }
+
+        [Test]
+        public static void MinMaxThrowForNullArguments()
+        {
+            IEnumerable<int> source = null;
+            Func<int, int, bool> lessThan = null;
+            Func<int, int, bool> greaterThan = null;
+
+            AssertParamName<ArgumentNullException>("seq", () => source.Min((a, b) => a < b));
+            AssertParamName<ArgumentNullException>("seq", () => source.Max((a, b) => a > b));
+            AssertParamName<ArgumentNullException>("lessThan", () => new[] { 1 }.Min(lessThan));
+            AssertParamName<ArgumentNullException>("greaterThan", () => new[] { 1 }.Max(greaterThan));
+        }
+
+        [Test]
         public static void SelectToListFromArray()
         {
             var source = new[] { 1, 2, 3 };
