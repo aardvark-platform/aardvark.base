@@ -39,6 +39,67 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void ListFunCopyToArrayCountRejectsInvalidArguments()
+        {
+            List<int> self = null;
+            AssertParamName<ArgumentNullException>("self", () => self.CopyToArray(0));
+
+            self = new List<int> { 1, 2, 3 };
+            AssertParamName<ArgumentOutOfRangeException>("count", () => self.CopyToArray(-1));
+            AssertParamName<ArgumentOutOfRangeException>("count", () => self.CopyToArray(self.Count + 1));
+        }
+
+        [Test]
+        public static void ListFunMapToArrayCountRejectsInvalidArguments()
+        {
+            List<int> list = null;
+            Func<int, int> map = x => x * 2;
+            AssertParamName<ArgumentNullException>("list", () => list.MapToArray(0, map));
+
+            list = new List<int> { 1, 2, 3 };
+            map = null;
+            AssertParamName<ArgumentNullException>("item_fun", () => list.MapToArray(0, map));
+            AssertParamName<ArgumentOutOfRangeException>("count", () => list.MapToArray(-1, x => x));
+        }
+
+        [Test]
+        public static void ListFunMapToArrayCountPreservesPaddedResult()
+        {
+            var list = new List<int> { 1, 2 };
+
+            var result = list.MapToArray(4, x => x * 10);
+
+            CollectionAssert.AreEqual(new[] { 10, 20, 0, 0 }, result);
+        }
+
+        [Test]
+        public static void ListFunMapToArrayStartCountRejectsInvalidArguments()
+        {
+            List<int> list = null;
+            Func<int, int> map = x => x * 2;
+            AssertParamName<ArgumentNullException>("list", () => list.MapToArray(0, 0, map));
+
+            list = new List<int> { 1, 2, 3 };
+            map = null;
+            AssertParamName<ArgumentNullException>("item_fun", () => list.MapToArray(0, 0, map));
+            AssertParamName<ArgumentOutOfRangeException>("start", () => list.MapToArray(-1, 0, x => x));
+            AssertParamName<ArgumentOutOfRangeException>("start", () => list.MapToArray(list.Count + 1, 0, x => x));
+            AssertParamName<ArgumentOutOfRangeException>("count", () => list.MapToArray(0, -1, x => x));
+        }
+
+        [Test]
+        public static void ListFunMapToArrayStartCountPreservesClampedPaddedResult()
+        {
+            var list = new List<int> { 1, 2, 3 };
+
+            var result = list.MapToArray(1, 4, x => x * 10);
+            var emptyTail = list.MapToArray(list.Count, 2, x => x * 10);
+
+            CollectionAssert.AreEqual(new[] { 20, 30, 0, 0 }, result);
+            CollectionAssert.AreEqual(new[] { 0, 0 }, emptyTail);
+        }
+
+        [Test]
         public static void SubRangeRejectsInvalidConstructorArguments()
         {
             IList<int> nullSource = null;

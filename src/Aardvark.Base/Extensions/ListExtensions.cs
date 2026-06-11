@@ -81,11 +81,15 @@ namespace Aardvark.Base
 
         public static T[] CopyToArray<T>(this List<T> self)
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
             return self.CopyToArray(self.Count);
         }
 
         public static T[] CopyToArray<T>(this List<T> self, int count)
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
+            if (count < 0 || count > self.Count) throw new ArgumentOutOfRangeException(nameof(count));
+
             var result = new T[count];
             for (int i = 0; i < count; i++) result[i] = self[i];
             return result;
@@ -93,11 +97,18 @@ namespace Aardvark.Base
 
         public static Tr[] MapToArray<T, Tr>(this List<T> list, Func<T, Tr> item_fun)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if (item_fun == null) throw new ArgumentNullException(nameof(item_fun));
+
             return list.MapToArray(list.Count, item_fun);
         }
 
         public static Tr[] MapToArray<T, Tr>(this List<T> list, int count, Func<T, Tr> item_fun)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if (item_fun == null) throw new ArgumentNullException(nameof(item_fun));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             var result = new Tr[count];
             if (list.Count < count) count = list.Count;
             for (int i = 0; i < count; i++) result[i] = item_fun(list[i]);
@@ -107,8 +118,14 @@ namespace Aardvark.Base
         public static Tr[] MapToArray<T, Tr>(
                 this List<T> list, int start, int count, Func<T, Tr> item_fun)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if (item_fun == null) throw new ArgumentNullException(nameof(item_fun));
+            if (start < 0 || start > list.Count) throw new ArgumentOutOfRangeException(nameof(start));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             var result = new Tr[count];
-            if (start + count > list.Count) count = list.Count - start;
+            var availableCount = list.Count - start;
+            if (availableCount < count) count = availableCount;
             for (int i = 0; i < count; i++) result[i] = item_fun(list[i + start]);
             return result;
         }

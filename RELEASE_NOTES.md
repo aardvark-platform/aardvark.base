@@ -1,3 +1,4 @@
+- [Base] Hardened `ListFun` array copy/map helper argument validation
 - [Base] Fixed camera projection clipping-window setters to reject invalid incoming boxes
 - [Base] Made custom-comparer `EnumerableEx.Min` and `Max` consume inputs only once
 - [Base] Fixed `TextParser.TrySkip` final-character and sliced-text matching
