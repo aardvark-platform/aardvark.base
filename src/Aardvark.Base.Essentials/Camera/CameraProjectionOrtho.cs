@@ -60,7 +60,7 @@ namespace Aardvark.Base
             get { return m_box.XY; }
             set
             {
-                if (m_box.IsInvalid) throw new ArgumentOutOfRangeException();
+                if (value.IsInvalid) throw new ArgumentOutOfRangeException();
                 m_box.Min.X = value.Min.X;
                 m_box.Min.Y = value.Min.Y;
                 m_box.Max.X = value.Max.X;
