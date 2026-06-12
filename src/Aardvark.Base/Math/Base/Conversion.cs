@@ -330,109 +330,125 @@ namespace Aardvark.Base
 
         public static short NetworkToHostOrderInt16(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(short));
             return BitConverter.ToInt16(copy, 0);
         }
 
         public static short NetworkToHostOrderInt16InPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(short));
             return BitConverter.ToInt16(data, 0);
         }
 
         public static ushort NetworkToHostOrderUInt16(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(ushort));
             return BitConverter.ToUInt16(copy, 0);
         }
 
         public static ushort NetworkToHostOrderUInt16InPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(ushort));
             return BitConverter.ToUInt16(data, 0);
         }
 
         public static int NetworkToHostOrderInt32(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(int));
             return BitConverter.ToInt32(copy, 0);
         }
 
         public static int NetworkToHostOrderInt32InPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(int));
             return BitConverter.ToInt32(data, 0);
         }
 
         public static uint NetworkToHostOrderUInt32(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(uint));
             return BitConverter.ToUInt32(copy, 0);
         }
 
         public static uint NetworkToHostOrderUInt32InPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(uint));
             return BitConverter.ToUInt32(data, 0);
         }
 
         public static long NetworkToHostOrderInt64(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(long));
             return BitConverter.ToInt64(copy, 0);
         }
 
         public static long NetworkToHostOrderInt64InPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(long));
             return BitConverter.ToInt64(data, 0);
         }
 
         public static ulong NetworkToHostOrderUInt64(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(ulong));
             return BitConverter.ToUInt64(copy, 0);
         }
 
         public static ulong NetworkToHostOrderUInt64InPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(ulong));
             return BitConverter.ToUInt64(data, 0);
         }
 
         public static float NetworkToHostOrderSingle(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(float));
             return BitConverter.ToSingle(copy, 0);
         }
 
         public static float NetworkToHostOrderSingleInPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(float));
             return BitConverter.ToSingle(data, 0);
         }
 
         public static double NetworkToHostOrderDouble(byte[] data)
         {
-            byte[] copy = (byte[])data.Clone();
-            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            byte[] copy = HostOrderPrefixCopy(data, sizeof(double));
             return BitConverter.ToDouble(copy, 0);
         }
 
         public static double NetworkToHostOrderDoubleInPlace(byte[] data)
         {
-            if (BitConverter.IsLittleEndian) ReverseBytes(data);
+            ConvertNetworkPrefixInPlace(data, sizeof(double));
             return BitConverter.ToDouble(data, 0);
         }
 
         #endregion
+
+        private static byte[] HostOrderPrefixCopy(byte[] data, int byteCount)
+        {
+            ValidateNetworkBuffer(data, byteCount);
+
+            var copy = new byte[byteCount];
+            Array.Copy(data, copy, byteCount);
+
+            if (BitConverter.IsLittleEndian) ReverseBytes(copy);
+            return copy;
+        }
+
+        private static void ConvertNetworkPrefixInPlace(byte[] data, int byteCount)
+        {
+            ValidateNetworkBuffer(data, byteCount);
+
+            if (BitConverter.IsLittleEndian) ReverseBytes(data, byteCount);
+        }
+
+        private static void ValidateNetworkBuffer(byte[] data, int byteCount)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (data.Length < byteCount) throw new ArgumentException("The byte array is too short for the requested primitive.", nameof(data));
+        }
 
         /// <summary>
         /// Reverses elements of given byte array.
@@ -440,6 +456,16 @@ namespace Aardvark.Base
         public static void ReverseBytes(byte[] data)
         {
             int length = data.Length;
+            int maxIndex = length - 1;
+            for (int i = 0; i < length / 2; i++)
+            {
+                int j = maxIndex - i;
+                byte tmp = data[i]; data[i] = data[j]; data[j] = tmp;
+            }
+        }
+
+        private static void ReverseBytes(byte[] data, int length)
+        {
             int maxIndex = length - 1;
             for (int i = 0; i < length / 2; i++)
             {

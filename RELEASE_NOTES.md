@@ -1,3 +1,4 @@
+- [Base] Fixed network-to-host byte-order conversions for oversized byte buffers
 - [Base] Hardened `ListFun` array copy/map helper argument validation
 - [Base] Fixed camera projection clipping-window setters to reject invalid incoming boxes
 - [Base] Made custom-comparer `EnumerableEx.Min` and `Max` consume inputs only once
