@@ -18,6 +18,8 @@ namespace Aardvark.Base
 
         public MedianWindow(int count)
         {
+            if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             m_buffer = new double[count];
             m_indices = new int[count].SetByIndex(i => i);
         }

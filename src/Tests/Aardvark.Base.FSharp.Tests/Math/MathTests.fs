@@ -11,6 +11,33 @@ open System
 module MathTests =
 
     let equalWithin x eps = (new NUnit.Framework.Constraints.EqualConstraint(x)).Within(eps)
+
+    [<Test>]
+    let ``[Math] AverageWindow rejects non-positive window size`` () =
+        let zero = Assert.Throws<ArgumentOutOfRangeException>(TestDelegate(fun () -> AverageWindow(0) |> ignore))
+        let negative = Assert.Throws<ArgumentOutOfRangeException>(TestDelegate(fun () -> AverageWindow(-1) |> ignore))
+
+        zero.ParamName |> should equal "maxCount"
+        negative.ParamName |> should equal "maxCount"
+
+    [<Test>]
+    let ``[Math] AverageWindow keeps rolling average for valid window size`` () =
+        let window = AverageWindow(3)
+
+        window.Value |> should equal 0.0
+        window.Count |> should equal 0
+
+        window.Insert 3.0 |> should equal 3.0
+        window.Insert 6.0 |> should equal 4.5
+        window.Insert 9.0 |> should equal 6.0
+        window.Insert 12.0 |> should equal 9.0
+
+        window.Value |> should equal 9.0
+        window.Count |> should equal 3
+
+        window.Reset()
+        window.Value |> should equal 0.0
+        window.Count |> should equal 0
     
     type RotationTestCase2D =
         {

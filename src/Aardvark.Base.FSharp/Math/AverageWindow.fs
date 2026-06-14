@@ -1,8 +1,14 @@
 ﻿namespace Aardvark.Base
 
+open System
+
 /// Represents a moving average window of a sequence.
 /// It builds the average of the last N inserted values.
 type AverageWindow(maxCount : int) =
+    do
+        if maxCount <= 0 then
+            raise <| ArgumentOutOfRangeException("maxCount")
+
     let values = Array.zeroCreate maxCount
     let mutable index = 0
     let mutable count = 0
