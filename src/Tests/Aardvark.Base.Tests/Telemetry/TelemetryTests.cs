@@ -134,6 +134,74 @@ namespace Aardvark.Tests
 
         #endregion
 
+        #region View probes
+
+        [Test]
+        public void MinView_WithEmptyProbeArray_ReturnsPrimaryProbeValue()
+        {
+            double value = 5.25;
+            var primary = new Telemetry.CustomProbeDouble(() => value);
+            var view = new Telemetry.MinView(primary, Array.Empty<Telemetry.IProbe>());
+
+            Assert.That(view.Value, Is.EqualTo(5.25));
+            Assert.That(view.ValueDouble, Is.EqualTo(5.25));
+
+            value = -2.5;
+
+            Assert.That(view.Value, Is.EqualTo(-2.5));
+            Assert.That(view.ValueDouble, Is.EqualTo(-2.5));
+        }
+
+        [Test]
+        public void MinView_WithEmptyDoubleArray_ReturnsPrimaryProbeValue()
+        {
+            double value = 5.25;
+            var primary = new Telemetry.CustomProbeDouble(() => value);
+            var view = new Telemetry.MinView(primary, Array.Empty<double>());
+
+            Assert.That(view.Value, Is.EqualTo(5.25));
+            Assert.That(view.ValueDouble, Is.EqualTo(5.25));
+
+            value = -2.5;
+
+            Assert.That(view.Value, Is.EqualTo(-2.5));
+            Assert.That(view.ValueDouble, Is.EqualTo(-2.5));
+        }
+
+        [Test]
+        public void MaxView_WithEmptyProbeArray_ReturnsPrimaryProbeValue()
+        {
+            double value = 5.25;
+            var primary = new Telemetry.CustomProbeDouble(() => value);
+            var view = new Telemetry.MaxView(primary, Array.Empty<Telemetry.IProbe>());
+
+            Assert.That(view.Value, Is.EqualTo(5.25));
+            Assert.That(view.ValueDouble, Is.EqualTo(5.25));
+
+            value = -2.5;
+
+            Assert.That(view.Value, Is.EqualTo(-2.5));
+            Assert.That(view.ValueDouble, Is.EqualTo(-2.5));
+        }
+
+        [Test]
+        public void MaxView_WithEmptyDoubleArray_ReturnsPrimaryProbeValue()
+        {
+            double value = 5.25;
+            var primary = new Telemetry.CustomProbeDouble(() => value);
+            var view = new Telemetry.MaxView(primary, Array.Empty<double>());
+
+            Assert.That(view.Value, Is.EqualTo(5.25));
+            Assert.That(view.ValueDouble, Is.EqualTo(5.25));
+
+            value = -2.5;
+
+            Assert.That(view.Value, Is.EqualTo(-2.5));
+            Assert.That(view.ValueDouble, Is.EqualTo(-2.5));
+        }
+
+        #endregion
+
         #region Timing probes
 
         [Test]

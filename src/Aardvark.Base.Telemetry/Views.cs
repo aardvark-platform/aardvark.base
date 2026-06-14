@@ -195,15 +195,29 @@ namespace Aardvark.Base
             {
                 if (one is null) throw new ArgumentNullException(nameof(one));
                 if (others is null) throw new ArgumentNullException(nameof(others));
-                m_f = () => Math.Min(one.ValueDouble, others.Min(x => x.ValueDouble));
+                if (others.Length == 0)
+                {
+                    m_f = () => one.ValueDouble;
+                }
+                else
+                {
+                    m_f = () => Math.Min(one.ValueDouble, others.Min(x => x.ValueDouble));
+                }
             }
 
             public MinView(IProbe one, params double[] others)
             {
                 if (one is null) throw new ArgumentNullException(nameof(one));
                 if (others is null) throw new ArgumentNullException(nameof(others));
-                var x = others.Min();
-                m_f = () => Math.Min(one.ValueDouble, x);
+                if (others.Length == 0)
+                {
+                    m_f = () => one.ValueDouble;
+                }
+                else
+                {
+                    var x = others.Min();
+                    m_f = () => Math.Min(one.ValueDouble, x);
+                }
             }
 
             /// <summary>
@@ -222,15 +236,29 @@ namespace Aardvark.Base
             {
                 if (one is null) throw new ArgumentNullException(nameof(one));
                 if (others is null) throw new ArgumentNullException(nameof(others));
-                m_f = () => Math.Max(one.ValueDouble, others.Max(x => x.ValueDouble));
+                if (others.Length == 0)
+                {
+                    m_f = () => one.ValueDouble;
+                }
+                else
+                {
+                    m_f = () => Math.Max(one.ValueDouble, others.Max(x => x.ValueDouble));
+                }
             }
 
             public MaxView(IProbe one, params double[] others)
             {
                 if (one is null) throw new ArgumentNullException(nameof(one));
                 if (others is null) throw new ArgumentNullException(nameof(others));
-                var x = others.Max();
-                m_f = () => Math.Max(one.ValueDouble, x);
+                if (others.Length == 0)
+                {
+                    m_f = () => one.ValueDouble;
+                }
+                else
+                {
+                    var x = others.Max();
+                    m_f = () => Math.Max(one.ValueDouble, x);
+                }
             }
 
             /// <summary>
