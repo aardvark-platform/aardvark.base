@@ -1,3 +1,4 @@
+- [Essentials] Hardened `Task.WithCancellation` null task validation
 - [Base] Hardened `AverageWindow` and `MedianWindow` constructor validation
 - [Telemetry] Fixed `MinView` and `MaxView` empty params handling
 - [Base] Fixed network-to-host byte-order conversions for oversized byte buffers

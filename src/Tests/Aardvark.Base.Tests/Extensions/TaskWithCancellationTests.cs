@@ -1,5 +1,6 @@
 using Aardvark.Base;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,15 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void WithCancellationRejectsNullTask()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => ((Task<int>)null).WithCancellation(CancellationToken.None));
+
+            Assert.That(exception.ParamName, Is.EqualTo("task"));
+        }
+
+        [Test]
         public static void WithCancellationReturnsCanceledTaskForAlreadyCanceledNullableToken()
         {
             using var cts = new CancellationTokenSource();
@@ -31,6 +41,15 @@ namespace Aardvark.Tests.Extensions
 
             Assert.That(result.IsCompleted, Is.True);
             Assert.That(result.IsCanceled, Is.True);
+        }
+
+        [Test]
+        public static void WithCancellationRejectsNullTaskForNullableToken()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => ((Task<int>)null).WithCancellation((CancellationToken?)CancellationToken.None));
+
+            Assert.That(exception.ParamName, Is.EqualTo("task"));
         }
 
         [Test]

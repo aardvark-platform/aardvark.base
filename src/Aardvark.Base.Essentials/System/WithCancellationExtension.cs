@@ -17,6 +17,8 @@ namespace Aardvark.Base
         /// </summary>
         public static Task<T> WithCancellation<T>(this Task<T> task, CancellationToken ct)
         {
+            if (task == null) throw new ArgumentNullException(nameof(task));
+
             if (task.IsCompleted || !ct.CanBeCanceled)
                 return task;
             else if (ct.IsCancellationRequested)
@@ -31,6 +33,8 @@ namespace Aardvark.Base
         /// </summary>
         public static Task<T> WithCancellation<T>(this Task<T> task, CancellationToken? ct)
         {
+            if (task == null) throw new ArgumentNullException(nameof(task));
+
             if (task.IsCompleted || !ct.HasValue || !ct.Value.CanBeCanceled)
                 return task;
             else if (ct.Value.IsCancellationRequested)
