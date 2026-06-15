@@ -1,3 +1,4 @@
+- [Telemetry] Hardened telemetry environment and named-probe argument validation
 - [Essentials] Hardened `Task.WithCancellation` null task validation
 - [Base] Hardened `AverageWindow` and `MedianWindow` constructor validation
 - [Telemetry] Fixed `MinView` and `MaxView` empty params handling

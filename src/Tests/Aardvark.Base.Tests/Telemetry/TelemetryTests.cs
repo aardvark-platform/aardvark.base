@@ -134,6 +134,86 @@ namespace Aardvark.Tests
 
         #endregion
 
+        #region Environment
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void EnvSetMemberRejectsInvalidName(string name)
+        {
+            var env = new Telemetry.Env();
+            var probe = new Telemetry.Counter();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => env.SetMember(name, probe));
+
+            Assert.That(exception.ParamName, Is.EqualTo("name"));
+        }
+
+        [Test]
+        public void EnvSetMemberRejectsNullProbe()
+        {
+            var env = new Telemetry.Env();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => env.SetMember("probe", null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("probe"));
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void EnvGetMemberRejectsInvalidName(string name)
+        {
+            var env = new Telemetry.Env();
+
+            var exception = Assert.Throws<ArgumentNullException>(() => env.GetMember(name));
+
+            Assert.That(exception.ParamName, Is.EqualTo("name"));
+        }
+
+        [Test]
+        public void EnvTrySetMemberRejectsNullBinder()
+        {
+            var env = new Telemetry.Env();
+
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => env.TrySetMember(null, new Telemetry.Counter()));
+
+            Assert.That(exception.ParamName, Is.EqualTo("binder"));
+        }
+
+        [Test]
+        public void EnvDynamicAssignmentRejectsNonProbeValue()
+        {
+            dynamic env = new Telemetry.Env();
+
+            var exception = Assert.Throws<ArgumentException>(() => env.NotAProbe = 1.0);
+
+            Assert.That(exception.ParamName, Is.EqualTo("value"));
+        }
+
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase(" ")]
+        public void NamedProbeRejectsInvalidName(string name)
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new Telemetry.NamedProbe(name, new Telemetry.Counter()));
+
+            Assert.That(exception.ParamName, Is.EqualTo("name"));
+        }
+
+        [Test]
+        public void NamedProbeRejectsNullProbe()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => new Telemetry.NamedProbe("probe", null));
+
+            Assert.That(exception.ParamName, Is.EqualTo("probe"));
+        }
+
+        #endregion
+
         #region View probes
 
         [Test]

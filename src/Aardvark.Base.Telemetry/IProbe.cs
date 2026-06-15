@@ -27,10 +27,10 @@ namespace Aardvark.Base
 
             public NamedProbe(string name, IProbe probe)
             {
-                if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException();
+                if (string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException(nameof(name));
 
                 Name = name;
-                Probe = probe ?? throw new ArgumentNullException();
+                Probe = probe ?? throw new ArgumentNullException(nameof(probe));
             }
         }
 
