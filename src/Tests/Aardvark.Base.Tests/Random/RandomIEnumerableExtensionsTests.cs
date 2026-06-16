@@ -64,6 +64,15 @@ namespace Aardvark.Tests
             Assert.AreEqual("p", exception.ParamName);
         }
 
+        [Test]
+        public void TakeRandomlyWithSelectorRejectsNullSelectorWhenEnumerated()
+        {
+            var exception = Assert.Throws<ArgumentNullException>(
+                () => s_values.TakeRandomly<int, string>(null, 1.0).ToArray());
+
+            Assert.AreEqual("selector", exception.ParamName);
+        }
+
         [TestCase(-0.01)]
         [TestCase(1.01)]
         public void TakeRandomlyRejectsOutOfRangeProbabilities(double p)

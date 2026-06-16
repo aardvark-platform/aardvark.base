@@ -25,6 +25,7 @@ namespace Aardvark.Base
                                                         IRandomUniform random = null)
         {
             if (self == null) throw new ArgumentNullException(nameof(self));
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
             if (double.IsNaN(p) || p < 0 || p > 1) throw new ArgumentOutOfRangeException(nameof(p));
 
             if (random == null) random = new RandomSystem();
