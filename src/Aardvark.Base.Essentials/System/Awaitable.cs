@@ -438,6 +438,8 @@ namespace Aardvark.Base
         /// </summary>
         public static IAwaitable<T> WithCancellation<T>(this IAwaitable<T> input, CancellationToken ct)
         {
+            if (input == null) throw new ArgumentNullException(nameof(input));
+
             var result = new Awaitable<T>(ct);
             input.Subscribe(v => result.Emit(v));
             return result;
@@ -449,6 +451,8 @@ namespace Aardvark.Base
         /// </summary>
         public static IAwaitable WithCancellation(this IAwaitable input, CancellationToken ct)
         {
+            if (input == null) throw new ArgumentNullException(nameof(input));
+
             var result = new Awaitable(ct);
             input.Subscribe(() => result.Emit());
             return result;

@@ -1,3 +1,4 @@
+- [Essentials] Hardened `Await.WithCancellation` null input validation
 - [Base] Hardened random permutation and randomization argument validation
 - [Base] Hardened `TakeRandomly` selector argument validation
 - [Telemetry] Hardened telemetry environment and named-probe argument validation
