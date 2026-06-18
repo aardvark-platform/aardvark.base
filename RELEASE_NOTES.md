@@ -1,3 +1,4 @@
+- [Base] Hardened random permutation and randomization argument validation
 - [Base] Hardened `TakeRandomly` selector argument validation
 - [Telemetry] Hardened telemetry environment and named-probe argument validation
 - [Essentials] Hardened `Task.WithCancellation` null task validation

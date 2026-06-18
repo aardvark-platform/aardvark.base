@@ -371,6 +371,9 @@ namespace Aardvark.Base
         public static int[] CreatePermutationArray(
                 this IRandomUniform rnd, int count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             var p = new int[count].SetByIndex(i => i);
             rnd.Randomize(p);
             return p;
@@ -383,6 +386,9 @@ namespace Aardvark.Base
         public static long[] CreatePermutationArrayLong(
                 this IRandomUniform rnd, long count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
             var p = new long[count].SetByIndexLong(i => i);
             rnd.Randomize(p);
             return p;
@@ -544,6 +550,10 @@ namespace Aardvark.Base
         public static void Randomize<T>(
                 this IRandomUniform rnd, T[] array, long count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (array == null) throw new ArgumentNullException(nameof(array));
+            if (count < 0 || count > array.LongLength) throw new ArgumentOutOfRangeException(nameof(count));
+
             if (count <= (long)int.MaxValue)
             {
                 int intCount = (int)count;
@@ -564,6 +574,9 @@ namespace Aardvark.Base
         public static void Randomize<T>(
             this IRandomUniform rnd, T[] array)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (array == null) throw new ArgumentNullException(nameof(array));
+
             rnd.Randomize(array, array.LongLength);
         }
 
@@ -573,6 +586,9 @@ namespace Aardvark.Base
         public static void Randomize<T>(
             this IRandomUniform rnd, List<T> list)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
             int count = list.Count;
             for (int i = 0; i < count; i++)
                 list.Swap(i, rnd.UniformInt(count));
@@ -585,6 +601,11 @@ namespace Aardvark.Base
         public static void Randomize<T>(
             this IRandomUniform rnd, T[] array, int start, int count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (array == null) throw new ArgumentNullException(nameof(array));
+            if (start < 0 || start > array.Length) throw new ArgumentOutOfRangeException(nameof(start));
+            if (count < 0 || count > array.Length - start) throw new ArgumentOutOfRangeException(nameof(count));
+
             for (int i = start, e = start + count; i < e; i++)
                 array.Swap(i, start + rnd.UniformInt(count));
         }
@@ -596,6 +617,11 @@ namespace Aardvark.Base
         public static void Randomize<T>(
             this IRandomUniform rnd, T[] array, long start, long count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (array == null) throw new ArgumentNullException(nameof(array));
+            if (start < 0 || start > array.LongLength) throw new ArgumentOutOfRangeException(nameof(start));
+            if (count < 0 || count > array.LongLength - start) throw new ArgumentOutOfRangeException(nameof(count));
+
             for (long i = start, e = start + count; i < e; i++)
                 array.Swap(i, start + rnd.UniformLong(count));
         }
@@ -607,6 +633,11 @@ namespace Aardvark.Base
         public static void Randomize<T>(
             this IRandomUniform rnd, List<T> list, int start, int count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if (start < 0 || start > list.Count) throw new ArgumentOutOfRangeException(nameof(start));
+            if (count < 0 || count > list.Count - start) throw new ArgumentOutOfRangeException(nameof(count));
+
             for (int i = start; i < start + count; i++)
                 list.Swap(i, start + rnd.UniformInt(count));
         }
@@ -642,6 +673,8 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> RandomOrder<T>(this IEnumerable<T> self, IRandomUniform rnd = null)
         {
+            if (self == null) throw new ArgumentNullException(nameof(self));
+
             var tmp = self.ToArray();
             if (rnd == null) rnd = new RandomSystem();
             var perm = rnd.CreatePermutationArray(tmp.Length);
