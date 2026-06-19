@@ -413,6 +413,8 @@ namespace Aardvark.Base
         public static T[] CreateRandomSubsetOfSize<T>(
                 this T[] array, long subsetCount, IRandomUniform rnd = null)
         {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+
             if (rnd == null) rnd = new RandomSystem();
             long count = array.LongLength;
             if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
@@ -436,6 +438,8 @@ namespace Aardvark.Base
         public static T[] CreateRandomSubsetOfSize<T>(
                 this IEnumerable<T> input, long subsetCount, IRandomUniform rnd = null)
         {
+            if (input == null) throw new ArgumentNullException(nameof(input));
+
             if (rnd == null) rnd = new RandomSystem();
             long count = input.Count();
             if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
@@ -467,7 +471,10 @@ namespace Aardvark.Base
         public static long[] CreateSmallRandomSubsetIndexArrayLong(
                 this IRandomUniform rnd, long subsetCount, long count)
         {
-            if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (subsetCount < 0 || subsetCount > count) throw new ArgumentOutOfRangeException(nameof(subsetCount));
+
             var subsetIndices = new LongSet(subsetCount);
             for (int i = 0; i < subsetCount; i++)
             {
@@ -491,6 +498,10 @@ namespace Aardvark.Base
         public static long[] CreateSmallRandomOrderedSubsetIndexArrayLong(
                 this IRandomUniform rnd, long subsetCount, long count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (subsetCount < 0 || subsetCount > count) throw new ArgumentOutOfRangeException(nameof(subsetCount));
+
             var subsetIndexArray = rnd.CreateSmallRandomSubsetIndexArrayLong(subsetCount, count);
             subsetIndexArray.QuickSortAscending();
             return subsetIndexArray;
@@ -509,7 +520,10 @@ namespace Aardvark.Base
         public static int[] CreateSmallRandomSubsetIndexArray(
                 this IRandomUniform rnd, int subsetCount, int count)
         {
-            if (!(subsetCount >= 0 && subsetCount <= count)) throw new ArgumentOutOfRangeException(nameof(subsetCount));
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (subsetCount < 0 || subsetCount > count) throw new ArgumentOutOfRangeException(nameof(subsetCount));
+
             var subsetIndices = new IntSet(subsetCount);
             for (int i = 0; i < subsetCount; i++)
             {
@@ -533,6 +547,10 @@ namespace Aardvark.Base
         public static int[] CreateSmallRandomOrderedSubsetIndexArray(
                 this IRandomUniform rnd, int subsetCount, int count)
         {
+            if (rnd == null) throw new ArgumentNullException(nameof(rnd));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (subsetCount < 0 || subsetCount > count) throw new ArgumentOutOfRangeException(nameof(subsetCount));
+
             var subsetIndexArray = rnd.CreateSmallRandomSubsetIndexArray(subsetCount, count);
             subsetIndexArray.QuickSortAscending();
             return subsetIndexArray;
