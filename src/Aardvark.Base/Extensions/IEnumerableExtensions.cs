@@ -792,10 +792,20 @@ namespace Aardvark.Base
         public static IEnumerable<T> WithRepeatedLast<T>(this IEnumerable<T> self)
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
-            if (self.IsEmptyOrNull()) yield break;
 
             T last = default(T);
-            foreach (var x in self) yield return last = x;
+            using (var e = self.GetEnumerator())
+            {
+                if (!e.MoveNext()) yield break;
+
+                do
+                {
+                    last = e.Current;
+                    yield return last;
+                }
+                while (e.MoveNext());
+            }
+
             while (true) yield return last;
         }
 
@@ -836,14 +846,19 @@ namespace Aardvark.Base
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
-            if (self.IsEmpty()) yield break;
-
-            var first = self.First();
-            foreach (var x in self)
+            using (var e = self.GetEnumerator())
             {
-                yield return x;
+                if (!e.MoveNext()) yield break;
+
+                var first = e.Current;
+                do
+                {
+                    yield return e.Current;
+                }
+                while (e.MoveNext());
+
+                yield return first;
             }
-            yield return first;
         }
 
         /// <summary>
@@ -854,8 +869,18 @@ namespace Aardvark.Base
         {
             if (self is null) throw new ArgumentNullException(nameof(self));
 
-            if (self.IsEmpty()) return self;
-            return self.Skip(1).Concat(self.Take(1));
+            using (var e = self.GetEnumerator())
+            {
+                if (!e.MoveNext()) yield break;
+
+                var first = e.Current;
+                while (e.MoveNext())
+                {
+                    yield return e.Current;
+                }
+
+                yield return first;
+            }
         }
 
         /// <summary>

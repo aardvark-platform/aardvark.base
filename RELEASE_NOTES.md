@@ -1,3 +1,4 @@
+- [Base] Made enumerable tail-reordering helpers consume inputs only once
 - [Base] Hardened random subset helper argument validation
 - [Essentials] Hardened `Await.WithCancellation` null input validation
 - [Base] Hardened random permutation and randomization argument validation

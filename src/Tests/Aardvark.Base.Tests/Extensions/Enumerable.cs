@@ -643,6 +643,86 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void WithRepeatedLastEnumeratesSourceOnce()
+        {
+            var source = new SingleUseEnumerable<int>(new[] { 1, 2, 3 });
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 3, 3, 3 }, source.WithRepeatedLast().Take(5).ToArray());
+
+            Assert.AreEqual(1, source.EnumeratorCount);
+        }
+
+        [Test]
+        public static void WithRepeatedLastDisposesEnumeratorAfterEarlyTermination()
+        {
+            var source = Track(1, 2, 3);
+
+            CollectionAssert.AreEqual(new[] { 1, 2 }, source.WithRepeatedLast().Take(2).ToArray());
+
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void WithRepeatedLastHandlesEmptyInput()
+        {
+            CollectionAssert.IsEmpty(Enumerable.Empty<int>().WithRepeatedLast().ToArray());
+        }
+
+        [Test]
+        public static void AddFirstToEndEnumeratesSourceOnce()
+        {
+            var source = new SingleUseEnumerable<int>(new[] { 1, 2, 3 });
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 3, 1 }, source.AddFirstToEnd().ToArray());
+
+            Assert.AreEqual(1, source.EnumeratorCount);
+        }
+
+        [Test]
+        public static void AddFirstToEndDisposesEnumeratorAfterEarlyTermination()
+        {
+            var source = Track(1, 2, 3);
+
+            CollectionAssert.AreEqual(new[] { 1, 2 }, source.AddFirstToEnd().Take(2).ToArray());
+
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void AddFirstToEndHandlesEmptyAndSingletonInputs()
+        {
+            CollectionAssert.IsEmpty(Enumerable.Empty<int>().AddFirstToEnd().ToArray());
+            CollectionAssert.AreEqual(new[] { 4, 4 }, new[] { 4 }.AddFirstToEnd().ToArray());
+        }
+
+        [Test]
+        public static void WithFirstMovedToEndEnumeratesSourceOnce()
+        {
+            var source = new SingleUseEnumerable<int>(new[] { 1, 2, 3 });
+
+            CollectionAssert.AreEqual(new[] { 2, 3, 1 }, source.WithFirstMovedToEnd().ToArray());
+
+            Assert.AreEqual(1, source.EnumeratorCount);
+        }
+
+        [Test]
+        public static void WithFirstMovedToEndDisposesEnumeratorAfterEarlyTermination()
+        {
+            var source = Track(1, 2, 3);
+
+            CollectionAssert.AreEqual(new[] { 2 }, source.WithFirstMovedToEnd().Take(1).ToArray());
+
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void WithFirstMovedToEndHandlesEmptyAndSingletonInputs()
+        {
+            CollectionAssert.IsEmpty(Enumerable.Empty<int>().WithFirstMovedToEnd().ToArray());
+            CollectionAssert.AreEqual(new[] { 4 }, new[] { 4 }.WithFirstMovedToEnd().ToArray());
+        }
+
+        [Test]
         public static void ZipDisposesEnumeratorsAfterFullEnumeration()
         {
             var first = Track(1, 2);
