@@ -1,3 +1,4 @@
+- [Base] Implemented mutation operations for union dictionaries
 - [Base] Made enumerable tail-reordering helpers consume inputs only once
 - [Base] Hardened random subset helper argument validation
 - [Essentials] Hardened `Await.WithCancellation` null input validation

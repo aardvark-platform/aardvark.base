@@ -726,6 +726,185 @@ namespace Aardvark.Tests
             CollectionAssert.AreEqual(new[] { new KeyValuePair<Symbol, int>(second, 7) }, dict.KeyValuePairs);
         }
 
+        [Test]
+        public void UnionDictMutableOperationsUsePriorityOrder()
+        {
+            var left = new Dict<string, int>
+            {
+                { "left", 1 },
+                { "shared", 10 },
+            };
+            var right = new Dict<string, int>
+            {
+                { "shared", 20 },
+                { "right", 2 },
+            };
+            var union = new UnionDict<string, int>(left, right);
+
+            Assert.AreEqual(10, union["shared"]);
+            Assert.AreEqual(1, union.KeyValuePairs.Count(kv => kv.Key == "shared"));
+            Assert.AreEqual(10, union.KeyValuePairs.Single(kv => kv.Key == "shared").Value);
+
+            union["shared"] = 11;
+            Assert.AreEqual(11, left["shared"]);
+            Assert.AreEqual(20, right["shared"]);
+            Assert.AreEqual(11, union["shared"]);
+
+            union["right"] = 22;
+            Assert.IsFalse(left.ContainsKey("right"));
+            Assert.AreEqual(22, right["right"]);
+            Assert.AreEqual(22, union["right"]);
+
+            union["missing"] = 3;
+            Assert.AreEqual(3, left["missing"]);
+
+            union.Add("added", 4);
+            Assert.AreEqual(4, left["added"]);
+
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+                    new KeyValuePair<string, int>("left", 1),
+                    new KeyValuePair<string, int>("shared", 11),
+                    new KeyValuePair<string, int>("right", 22),
+                    new KeyValuePair<string, int>("missing", 3),
+                    new KeyValuePair<string, int>("added", 4),
+                },
+                union.KeyValuePairs);
+        }
+
+        [Test]
+        public void UnionDictRemoveDeletesAllBackingEntries()
+        {
+            var left = new Dict<string, int>
+            {
+                { "shared", 10 },
+                { "left", 1 },
+            };
+            var right = new Dict<string, int>
+            {
+                { "shared", 20 },
+                { "right", 2 },
+            };
+            var union = new UnionDict<string, int>(left, right);
+
+            Assert.IsTrue(union.Remove("shared"));
+            Assert.IsFalse(left.ContainsKey("shared"));
+            Assert.IsFalse(right.ContainsKey("shared"));
+            Assert.IsFalse(union.ContainsKey("shared"));
+            Assert.IsFalse(union.KeyValuePairs.Any(kv => kv.Key == "shared"));
+            Assert.IsFalse(union.Remove("shared"));
+        }
+
+        [Test]
+        public void UnionDictEmptyUnionRejectsMutations()
+        {
+            var union = new UnionDict<string, int>();
+
+            var setEx = Assert.Throws<InvalidOperationException>(() => union["missing"] = 1);
+            StringAssert.Contains("empty union dictionary", setEx.Message);
+
+            var addEx = Assert.Throws<InvalidOperationException>(() => union.Add("missing", 1));
+            StringAssert.Contains("empty union dictionary", addEx.Message);
+
+            Assert.IsFalse(union.Remove("missing"));
+        }
+
+        [Test]
+        public void UnionSymbolDictMutableOperationsUsePriorityOrder()
+        {
+            var leftKey = Symbol.Create("union-symbol-dict-left");
+            var sharedKey = Symbol.Create("union-symbol-dict-shared");
+            var rightKey = Symbol.Create("union-symbol-dict-right");
+            var missingKey = Symbol.Create("union-symbol-dict-missing");
+            var addedKey = Symbol.Create("union-symbol-dict-added");
+
+            var left = new SymbolDict<int>
+            {
+                { leftKey, 1 },
+                { sharedKey, 10 },
+            };
+            var right = new SymbolDict<int>
+            {
+                { sharedKey, 20 },
+                { rightKey, 2 },
+            };
+            var union = new UnionSymbolDict<int>(left, right);
+
+            Assert.AreEqual(10, union[sharedKey]);
+            Assert.AreEqual(1, union.KeyValuePairs.Count(kv => kv.Key == sharedKey));
+            Assert.AreEqual(10, union.KeyValuePairs.Single(kv => kv.Key == sharedKey).Value);
+
+            union[sharedKey] = 11;
+            Assert.AreEqual(11, left[sharedKey]);
+            Assert.AreEqual(20, right[sharedKey]);
+            Assert.AreEqual(11, union[sharedKey]);
+
+            union[rightKey] = 22;
+            Assert.IsFalse(left.ContainsKey(rightKey));
+            Assert.AreEqual(22, right[rightKey]);
+            Assert.AreEqual(22, union[rightKey]);
+
+            union[missingKey] = 3;
+            Assert.AreEqual(3, left[missingKey]);
+
+            union.Add(addedKey, 4);
+            Assert.AreEqual(4, left[addedKey]);
+
+            CollectionAssert.AreEquivalent(
+                new[]
+                {
+                    new KeyValuePair<Symbol, int>(leftKey, 1),
+                    new KeyValuePair<Symbol, int>(sharedKey, 11),
+                    new KeyValuePair<Symbol, int>(rightKey, 22),
+                    new KeyValuePair<Symbol, int>(missingKey, 3),
+                    new KeyValuePair<Symbol, int>(addedKey, 4),
+                },
+                union.KeyValuePairs);
+        }
+
+        [Test]
+        public void UnionSymbolDictRemoveDeletesAllBackingEntries()
+        {
+            var sharedKey = Symbol.Create("union-symbol-dict-remove-shared");
+            var leftKey = Symbol.Create("union-symbol-dict-remove-left");
+            var rightKey = Symbol.Create("union-symbol-dict-remove-right");
+
+            var left = new SymbolDict<int>
+            {
+                { sharedKey, 10 },
+                { leftKey, 1 },
+            };
+            var right = new SymbolDict<int>
+            {
+                { sharedKey, 20 },
+                { rightKey, 2 },
+            };
+            var union = new UnionSymbolDict<int>(left, right);
+
+            Assert.IsTrue(union.Remove(sharedKey));
+            Assert.IsFalse(left.ContainsKey(sharedKey));
+            Assert.IsFalse(right.ContainsKey(sharedKey));
+            Assert.IsFalse(union.ContainsKey(sharedKey));
+            Assert.IsFalse(union.KeyValuePairs.Any(kv => kv.Key == sharedKey));
+            Assert.IsFalse(union.Remove(sharedKey));
+        }
+
+        [Test]
+        public void UnionSymbolDictEmptyUnionRejectsMutations()
+        {
+            var key = Symbol.Create("union-symbol-dict-empty");
+            var union = new UnionSymbolDict<int>();
+
+            var setEx = Assert.Throws<InvalidOperationException>(() => union[key] = 1);
+            StringAssert.Contains("empty union symbol dictionary", setEx.Message);
+
+            var addEx = Assert.Throws<InvalidOperationException>(() => union.Add(key, 1));
+            StringAssert.Contains("empty union symbol dictionary", addEx.Message);
+
+            Assert.IsFalse(union.Remove(key));
+        }
+
         [Theory]
         public void ContainsValue(bool stackDuplicateKeys)
         {

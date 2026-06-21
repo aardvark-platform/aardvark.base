@@ -355,13 +355,22 @@ namespace Aardvark.Base
             }
             set
             {
-                throw new NotImplementedException();
+                foreach (var d in m_dictList)
+                {
+                    if (d.ContainsKey(key))
+                    {
+                        d[key] = value;
+                        return;
+                    }
+                }
+
+                FirstDictForMutation().Add(key, value);
             }
         }
 
         public void Add(TKey key, TValue value)
         {
-            throw new NotImplementedException();
+            FirstDictForMutation().Add(key, value);
         }
 
         public bool ContainsKey(TKey key)
@@ -374,7 +383,10 @@ namespace Aardvark.Base
 
         public bool Remove(TKey key)
         {
-            throw new NotImplementedException();
+            var removed = false;
+            foreach (var d in m_dictList)
+                removed |= d.Remove(key);
+            return removed;
         }
 
         public bool TryGetValue(TKey key, out TValue value)
@@ -384,6 +396,14 @@ namespace Aardvark.Base
                     return true;
             value = default(TValue);
             return false;
+        }
+
+        private IDict<TKey, TValue> FirstDictForMutation()
+        {
+            if (m_dictList.Count == 0)
+                throw new InvalidOperationException("Cannot mutate an empty union dictionary.");
+
+            return m_dictList[0];
         }
 
         #endregion
@@ -912,13 +932,22 @@ namespace Aardvark.Base
             }
             set
             {
-                throw new NotImplementedException();
+                foreach (var d in m_dictList)
+                {
+                    if (d.ContainsKey(key))
+                    {
+                        d[key] = value;
+                        return;
+                    }
+                }
+
+                FirstDictForMutation().Add(key, value);
             }
         }
 
         public void Add(Symbol key, TValue value)
         {
-            throw new NotImplementedException();
+            FirstDictForMutation().Add(key, value);
         }
 
         public bool ContainsKey(Symbol key)
@@ -931,7 +960,10 @@ namespace Aardvark.Base
 
         public bool Remove(Symbol key)
         {
-            throw new NotImplementedException();
+            var removed = false;
+            foreach (var d in m_dictList)
+                removed |= d.Remove(key);
+            return removed;
         }
 
         public bool TryGetValue(Symbol key, out TValue value)
@@ -941,6 +973,14 @@ namespace Aardvark.Base
                     return true;
             value = default(TValue);
             return false;
+        }
+
+        private IDict<Symbol, TValue> FirstDictForMutation()
+        {
+            if (m_dictList.Count == 0)
+                throw new InvalidOperationException("Cannot mutate an empty union symbol dictionary.");
+
+            return m_dictList[0];
         }
 
         #endregion
