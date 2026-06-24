@@ -56,16 +56,56 @@ namespace Aardvark.Base.Coder
 
         #region private methods
 
-        private int DoItSo(byte[] buffer, int offset, int count, Func<Stream, byte[], int, int, int> func)
+        private int FindSubStreamIndex(long position)
+        {
+            return m_streams.FindIndex(true, sub => sub.PosOffset + sub.Length > position);
+        }
+
+        private int ReadFromStreams(byte[] buffer, int offset, int count)
         {
             if (m_position < 0 || m_position >= m_totalLength) return 0;
 
-            var firstId = m_streams.FindIndex(true, sub => sub.PosOffset + sub.Length > m_position);
+            var haveBeenRead = 0;
+            while (haveBeenRead < count && m_position < m_totalLength)
+            {
+                var subId = FindSubStreamIndex(m_position);
+                if (subId < 0) break;
+
+                var sub = m_streams[subId];
+                var subPosition = m_position - sub.PosOffset;
+
+                // set position in sub-stream
+                if (sub.StartPos != 0 || subPosition != 0)
+                    sub.Stream.Position = sub.StartPos + subPosition;
+
+                // calculate bytes to read in sub-stream
+                var bytesToRead = (int)(sub.Length - subPosition);
+                if (bytesToRead > count - haveBeenRead)
+                    bytesToRead = count - haveBeenRead;
+                if (bytesToRead <= 0) break;
+
+                var actual = sub.Stream.Read(buffer, offset + haveBeenRead, bytesToRead);
+                if (actual <= 0) break;
+
+                haveBeenRead += actual;
+                m_position += actual;
+
+                if (actual < bytesToRead) break;
+            }
+
+            return haveBeenRead;
+        }
+
+        private int WriteToStreams(byte[] buffer, int offset, int count)
+        {
+            if (m_position < 0 || m_position >= m_totalLength) return 0;
+
+            var firstId = FindSubStreamIndex(m_position);
 
             var haveBeenDone = 0;
             var shouldBeenDone = 0;
             for (int i = firstId;
-                shouldBeenDone < count && i < m_streams.Count();
+                shouldBeenDone < count && i < m_streams.Length;
                 i++)
             {
                 var sub = m_streams[i];
@@ -80,8 +120,8 @@ namespace Aardvark.Base.Coder
                 if (bytesToDo > count - shouldBeenDone)
                     bytesToDo = count - shouldBeenDone;
 
-                // do it so
-                haveBeenDone += func(sub.Stream, buffer, offset + shouldBeenDone, bytesToDo);
+                sub.Stream.Write(buffer, offset + shouldBeenDone, bytesToDo);
+                haveBeenDone += bytesToDo;
                 shouldBeenDone += bytesToDo;
             }
             m_position += shouldBeenDone;
@@ -262,8 +302,7 @@ namespace Aardvark.Base.Coder
 
             //throw new ObjectDisposedException();
 
-            return DoItSo(buffer, offset, count,
-                (s, b, o, c) => s.Read(b, o, c));
+            return ReadFromStreams(buffer, offset, count);
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -300,8 +339,7 @@ namespace Aardvark.Base.Coder
             if (!CanWrite)
                 throw new NotSupportedException();
 
-            DoItSo(buffer, offset, count,
-                (s, b, o, c) => { s.Write(b, o, c); return c; });
+            WriteToStreams(buffer, offset, count);
         }
 
         #endregion

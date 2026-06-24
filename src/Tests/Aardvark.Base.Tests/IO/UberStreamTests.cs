@@ -7,6 +7,59 @@ namespace Aardvark.Tests.IO
 {
     static class UberStreamTests
     {
+        private sealed class ShortReadStream : Stream
+        {
+            private readonly MemoryStream m_inner;
+
+            public ShortReadStream(byte[] bytes)
+            {
+                m_inner = new MemoryStream(bytes);
+            }
+
+            public override bool CanRead { get { return true; } }
+            public override bool CanSeek { get { return true; } }
+            public override bool CanWrite { get { return false; } }
+            public override long Length { get { return m_inner.Length; } }
+
+            public override long Position
+            {
+                get { return m_inner.Position; }
+                set { m_inner.Position = value; }
+            }
+
+            public override void Flush()
+            {
+            }
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                return m_inner.Read(buffer, offset, Math.Min(count, 1));
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                return m_inner.Seek(offset, origin);
+            }
+
+            public override void SetLength(long value)
+            {
+                m_inner.SetLength(value);
+            }
+
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                throw new NotSupportedException();
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                    m_inner.Dispose();
+
+                base.Dispose(disposing);
+            }
+        }
+
         [Test]
         public static void SingleStreamReadAndWriteRespectSlice()
         {
@@ -61,6 +114,54 @@ namespace Aardvark.Tests.IO
 
             CollectionAssert.AreEqual(new byte[] { 0, 9 }, first);
             CollectionAssert.AreEqual(new byte[] { 8, 7, 0 }, second);
+        }
+
+        [Test]
+        public static void ReadAdvancesByActualShortReadCountInSingleStreamSlice()
+        {
+            using (var stream = new UberStream(new ShortReadStream(new byte[] { 10, 11, 12, 13 }), 1, 3))
+            {
+                var buffer = new byte[] { 99, 99, 99 };
+
+                Assert.AreEqual(1, stream.Read(buffer, 0, buffer.Length));
+                Assert.AreEqual(1, stream.Position);
+                CollectionAssert.AreEqual(new byte[] { 11, 99, 99 }, buffer);
+
+                Assert.AreEqual(1, stream.Read(buffer, 1, buffer.Length - 1));
+                Assert.AreEqual(2, stream.Position);
+                CollectionAssert.AreEqual(new byte[] { 11, 12, 99 }, buffer);
+            }
+        }
+
+        [Test]
+        public static void RepeatedShortReadsAcrossStreamsDoNotSkipOrMisplaceBytes()
+        {
+            using (var stream = new UberStream(
+                new Stream[]
+                {
+                    new ShortReadStream(new byte[] { 1, 2 }),
+                    new ShortReadStream(new byte[] { 3, 4 })
+                },
+                0,
+                4))
+            {
+                var buffer = new byte[] { 99, 99, 99, 99 };
+
+                Assert.AreEqual(1, stream.Read(buffer, 0, buffer.Length));
+                Assert.AreEqual(1, stream.Position);
+                CollectionAssert.AreEqual(new byte[] { 1, 99, 99, 99 }, buffer);
+
+                Assert.AreEqual(2, stream.Read(buffer, 1, buffer.Length - 1));
+                Assert.AreEqual(3, stream.Position);
+                CollectionAssert.AreEqual(new byte[] { 1, 2, 3, 99 }, buffer);
+
+                Assert.AreEqual(1, stream.Read(buffer, 3, buffer.Length - 3));
+                Assert.AreEqual(4, stream.Position);
+                CollectionAssert.AreEqual(new byte[] { 1, 2, 3, 4 }, buffer);
+
+                Assert.AreEqual(0, stream.Read(buffer, 0, buffer.Length));
+                Assert.AreEqual(4, stream.Position);
+            }
         }
 
         [Test]
