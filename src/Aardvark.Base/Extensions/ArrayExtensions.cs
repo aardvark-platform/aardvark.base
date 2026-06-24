@@ -510,10 +510,13 @@ namespace Aardvark.Base
         public static IEnumerable<T> TakeFraction<T>(
                 this T[] array, double fraction)
         {
-            if (fraction < 0.0 || fraction > 1.0)
-                throw new ArgumentOutOfRangeException("Fraction not in range [0.0, 1.0].");
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+            if (double.IsNaN(fraction) || fraction < 0.0 || fraction > 1.0)
+                throw new ArgumentOutOfRangeException(nameof(fraction), "Fraction not in range [0.0, 1.0].");
+
             long take = (long)(array.LongLength * fraction);
-            for (long i = 0; i < take; i++) yield return array[i];
+            return ElementsUnsafe(array, 0, take);
         }
 
         /// <summary>
@@ -522,8 +525,15 @@ namespace Aardvark.Base
         /// </summary>
         public static IEnumerable<T> SkipLast<T>(this T[] array, long count = 1)
         {
-            count = array.LongLength - count;
-            for (long i = 0; i < count; i++) yield return array[i];
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            var take = array.LongLength - count;
+            if (take < 0) take = 0;
+
+            return ElementsUnsafe(array, 0, take);
         }
 
         /// <summary>
@@ -577,18 +587,51 @@ namespace Aardvark.Base
         public static IEnumerable<T> Elements<T>(
                 this T[] array, long first, long count)
         {
-            for (long e = first + count; first < e; first++) yield return array[first];
+            ValidateRange(array, first, count);
+            return ElementsUnsafe(array, first, count);
         }
 
         public static IEnumerable<T> ElementsWhere<T>(
                 this T[] array, int first, int count, Func<T, bool> predicate)
         {
-            for (int end = first + count; first < end; first++)
-                if (predicate(array[first])) yield return array[first];
+            ValidateRange(array, first, count);
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            return ElementsWhereUnsafe(array, first, count, predicate);
         }
 
         public static IEnumerable<T> ElementsWhere<T>(
                 this T[] array, long first, long count, Func<T, bool> predicate)
+        {
+            ValidateRange(array, first, count);
+            if (predicate == null)
+                throw new ArgumentNullException(nameof(predicate));
+
+            return ElementsWhereUnsafe(array, first, count, predicate);
+        }
+
+        private static void ValidateRange<T>(T[] array, long first, long count)
+        {
+            if (array == null)
+                throw new ArgumentNullException(nameof(array));
+            if (first < 0)
+                throw new ArgumentOutOfRangeException(nameof(first));
+            if (count < 0)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            if (first > array.LongLength)
+                throw new ArgumentOutOfRangeException(nameof(first));
+            if (count > array.LongLength - first)
+                throw new ArgumentOutOfRangeException(nameof(count));
+        }
+
+        private static IEnumerable<T> ElementsUnsafe<T>(T[] array, long first, long count)
+        {
+            for (long e = first + count; first < e; first++) yield return array[first];
+        }
+
+        private static IEnumerable<T> ElementsWhereUnsafe<T>(
+                T[] array, long first, long count, Func<T, bool> predicate)
         {
             for (long end = first + count; first < end; first++)
                 if (predicate(array[first])) yield return array[first];

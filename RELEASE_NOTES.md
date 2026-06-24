@@ -1,3 +1,4 @@
+- [Base] Hardened array enumeration helper argument validation
 - [IO] Hardened `ChunkedMemoryStream` boundary validation and sparse-position writes
 - [Base] Implemented mutation operations for union dictionaries
 - [Base] Made enumerable tail-reordering helpers consume inputs only once
