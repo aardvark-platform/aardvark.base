@@ -1,3 +1,4 @@
+- [IO] Hardened `UberStream.Seek` validation for invalid origins, negative targets, and overflow
 - [IO] Fixed `UberStream.Read` accounting for short-read underlying streams
 - [Base] Hardened array enumeration helper argument validation
 - [IO] Hardened `ChunkedMemoryStream` boundary validation and sparse-position writes

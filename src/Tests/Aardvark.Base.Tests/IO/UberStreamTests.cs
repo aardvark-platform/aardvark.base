@@ -60,6 +60,15 @@ namespace Aardvark.Tests.IO
             }
         }
 
+        private static TException AssertFailedSeekKeepsPosition<TException>(UberStream stream, TestDelegate seek)
+            where TException : Exception
+        {
+            var position = stream.Position;
+            var exception = Assert.Throws<TException>(seek);
+            Assert.AreEqual(position, stream.Position);
+            return exception;
+        }
+
         [Test]
         public static void SingleStreamReadAndWriteRespectSlice()
         {
@@ -161,6 +170,67 @@ namespace Aardvark.Tests.IO
 
                 Assert.AreEqual(0, stream.Read(buffer, 0, buffer.Length));
                 Assert.AreEqual(4, stream.Position);
+            }
+        }
+
+        [Test]
+        public static void SeekRejectsInvalidOriginWithoutChangingPosition()
+        {
+            using (var stream = new UberStream(new MemoryStream(new byte[] { 1, 2, 3, 4 }), 0, 4))
+            {
+                stream.Seek(2, SeekOrigin.Begin);
+
+                var exception = AssertFailedSeekKeepsPosition<ArgumentException>(stream, () => stream.Seek(0, (SeekOrigin)42));
+                Assert.AreEqual("origin", exception.ParamName);
+            }
+        }
+
+        [Test]
+        public static void SeekRejectsNegativeTargetsWithoutChangingPosition()
+        {
+            using (var stream = new UberStream(new MemoryStream(new byte[] { 1, 2, 3, 4 }), 0, 4))
+            {
+                stream.Seek(2, SeekOrigin.Begin);
+                AssertFailedSeekKeepsPosition<IOException>(stream, () => stream.Seek(-1, SeekOrigin.Begin));
+
+                stream.Seek(1, SeekOrigin.Begin);
+                AssertFailedSeekKeepsPosition<IOException>(stream, () => stream.Seek(-2, SeekOrigin.Current));
+
+                stream.Seek(3, SeekOrigin.Begin);
+                AssertFailedSeekKeepsPosition<IOException>(stream, () => stream.Seek(-5, SeekOrigin.End));
+            }
+        }
+
+        [Test]
+        public static void SeekConvertsOverflowTargetsToIOExceptionWithoutChangingPosition()
+        {
+            using (var stream = new UberStream(new MemoryStream(new byte[] { 1, 2, 3, 4 }), 0, 4))
+            {
+                stream.Seek(1, SeekOrigin.Begin);
+                AssertFailedSeekKeepsPosition<IOException>(stream, () => stream.Seek(long.MaxValue, SeekOrigin.Current));
+
+                stream.Seek(2, SeekOrigin.Begin);
+                AssertFailedSeekKeepsPosition<IOException>(stream, () => stream.Seek(long.MaxValue, SeekOrigin.End));
+            }
+        }
+
+        [Test]
+        public static void SeekAllowsBeyondEndAndKeepsBoundedReadWriteBehavior()
+        {
+            var bytes = new byte[] { 1, 2, 3, 4 };
+            using (var stream = new UberStream(new MemoryStream(bytes, true), 0, bytes.Length))
+            {
+                Assert.AreEqual(6, stream.Seek(2, SeekOrigin.End));
+                Assert.AreEqual(6, stream.Position);
+
+                var buffer = new byte[] { 99, 99 };
+                Assert.AreEqual(0, stream.Read(buffer, 0, buffer.Length));
+                Assert.AreEqual(6, stream.Position);
+                CollectionAssert.AreEqual(new byte[] { 99, 99 }, buffer);
+
+                stream.Write(new byte[] { 9 }, 0, 1);
+                Assert.AreEqual(6, stream.Position);
+                CollectionAssert.AreEqual(new byte[] { 1, 2, 3, 4 }, bytes);
             }
         }
 

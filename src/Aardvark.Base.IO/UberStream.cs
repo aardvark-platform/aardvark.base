@@ -129,6 +129,21 @@ namespace Aardvark.Base.Coder
             return haveBeenDone;
         }
 
+        private static long AddSeekOffset(long position, long offset)
+        {
+            try
+            {
+                checked
+                {
+                    return position + offset;
+                }
+            }
+            catch (OverflowException e)
+            {
+                throw new IOException("Seek offset causes the target position to overflow.", e);
+            }
+        }
+
         #endregion
         
         #region constructors
@@ -311,19 +326,26 @@ namespace Aardvark.Base.Coder
             //throw new IOException();
             //throw new ObjectDisposedException();
 
+            long target;
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    m_position = offset;
+                    target = offset;
                     break;
                 case SeekOrigin.End:
-                    m_position = m_totalLength + offset;
+                    target = AddSeekOffset(m_totalLength, offset);
                     break;
                 case SeekOrigin.Current:
-                    m_position += offset;
+                    target = AddSeekOffset(m_position, offset);
                     break;
+                default:
+                    throw new ArgumentException("Unsupported seek origin.", nameof(origin));
             }
 
+            if (target < 0)
+                throw new IOException("An attempt was made to move the position before the beginning of the stream.");
+
+            m_position = target;
             return m_position;
         }
 
