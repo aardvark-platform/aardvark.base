@@ -177,6 +177,7 @@ namespace Aardvark.Base
                     RemoveAt(m_heap, entry.Index);
                     if (m_deleteAct != null)
                         m_deleteAct(key, entry.Value);
+                    entry.DeleteAct?.Invoke();
                     value = entry.Value;
                     return true;
                 }

@@ -1,3 +1,4 @@
+- [Base] Fixed `LruCache.TryRemove` to invoke per-entry cleanup actions
 - [IO] Hardened `UberStream.Seek` validation for invalid origins, negative targets, and overflow
 - [IO] Fixed `UberStream.Read` accounting for short-read underlying streams
 - [Base] Hardened array enumeration helper argument validation

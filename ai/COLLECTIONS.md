@@ -63,6 +63,8 @@ Key operations:
 - `Remove(...)`
 - mutable `Capacity` (can trigger eviction)
 
+`GetOrAdd(...)` accepts an optional per-entry delete action. That action is invoked when the entry leaves the cache through `Remove(...)`, `TryRemove(...)`, or capacity eviction.
+
 ## ConcurrentHashSet<T>
 
 Defined in namespace `System.Collections.Concurrent`.
