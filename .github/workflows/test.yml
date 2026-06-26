@@ -5,11 +5,13 @@ on:
     paths:
       - 'src/**'
       - 'paket.lock'
+      - 'global.json'
       - '.github/workflows/test.yml'
   pull_request:
     paths:
       - 'src/**'
       - 'paket.lock'
+      - 'global.json'
       - '.github/workflows/test.yml'
 jobs:
   codegen-check:

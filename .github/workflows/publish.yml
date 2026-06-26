@@ -5,6 +5,7 @@ on:
       - master
     paths:
       - RELEASE_NOTES.md
+      - global.json
       - .github/workflows/publish.yml
 jobs:
   release-check:
