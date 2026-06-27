@@ -26,7 +26,17 @@ type ConcurrentHashQueue<'a when 'a : equality>() =
 
         if isNull node.Next then last <- node.Prev
         else node.Next.Prev <- node.Prev
-                                 
+
+    let removeFirst() =
+        let node = first
+        let value = node.Value
+        detach node
+        nodes.Remove value |> ignore
+        node.Value <- Unchecked.defaultof<_>
+        node.Prev <- null
+        node.Next <- null
+        value
+
 
     member x.Count = lock lockObj (fun () -> nodes.Count)
 
@@ -55,11 +65,7 @@ type ConcurrentHashQueue<'a when 'a : equality>() =
             if isNull first then 
                 failwith "HashQueue empty"
             else
-                let value = first.Value
-                first <- first.Next
-                first.Prev <- null
-                nodes.Remove value |> ignore
-                value
+                removeFirst()
         )
 
     member x.TryDequeue([<Out>] result : byref<'a>) =
@@ -68,10 +74,7 @@ type ConcurrentHashQueue<'a when 'a : equality>() =
             if isNull first then 
                 false
             else
-                let value = first.Value
-                detach first
-                nodes.Remove value |> ignore
-                result <- value
+                result <- removeFirst()
                 true
         finally
             Monitor.Exit lockObj
