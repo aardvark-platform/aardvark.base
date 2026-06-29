@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Aardvark.Base;
 using NUnit.Framework;
@@ -7,6 +8,21 @@ namespace Aardvark.Tests
     [TestFixture]
     public class LruCacheTests
     {
+        private static void AssertArgumentOutOfRange(TestDelegate action, string parameterName)
+        {
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(action);
+            Assert.AreEqual(parameterName, ex.ParamName);
+        }
+
+        private static LruCache<string, string> CreateStringCache(long capacity, List<string> deletes = null)
+        {
+            return new LruCache<string, string>(
+                capacity,
+                key => 1,
+                key => "loaded-" + key,
+                (key, value) => deletes?.Add(key + ":" + value));
+        }
+
         [Test]
         public void TryRemoveReturnsValueAndRunsCleanupActions()
         {
@@ -87,6 +103,173 @@ namespace Aardvark.Tests
             cache.GetOrAdd("replacement", 1, () => "replacement-value");
 
             CollectionAssert.AreEqual(new[] { "remove", "try-remove", "evict" }, perEntryDeletes);
+        }
+
+        [Test]
+        public void IndexerReadExceptionDoesNotEvictExistingEntryOrRunCleanup()
+        {
+            var deletes = new List<string>();
+            var cache = new LruCache<string, string>(
+                1,
+                key => 1,
+                key =>
+                {
+                    if (key == "b") throw new InvalidOperationException("read failed");
+                    return "loaded-" + key;
+                },
+                (key, value) => deletes.Add(key + ":" + value));
+
+            Assert.AreEqual("loaded-a", cache["a"]);
+
+            Assert.Throws<InvalidOperationException>(() => { var _ = cache["b"]; });
+            CollectionAssert.IsEmpty(deletes);
+
+            Assert.IsTrue(cache.TryRemove("a", out var value));
+            Assert.AreEqual("loaded-a", value);
+            CollectionAssert.AreEqual(new[] { "a:loaded-a" }, deletes);
+        }
+
+        [Test]
+        public void GetOrAddFactoryExceptionDoesNotEvictExistingEntryOrRunCleanup()
+        {
+            var deletes = new List<string>();
+            var failedEntryDeleteCount = 0;
+            var cache = CreateStringCache(1, deletes);
+
+            Assert.AreEqual("value-a", cache.GetOrAdd("a", 1, () => "value-a"));
+
+            Assert.Throws<InvalidOperationException>(() =>
+                cache.GetOrAdd("b", 1, () => throw new InvalidOperationException("factory failed"), () => failedEntryDeleteCount++));
+
+            CollectionAssert.IsEmpty(deletes);
+            Assert.AreEqual(0, failedEntryDeleteCount);
+
+            Assert.IsTrue(cache.TryRemove("a", out var value));
+            Assert.AreEqual("value-a", value);
+            CollectionAssert.AreEqual(new[] { "a:value-a" }, deletes);
+        }
+
+        [Test]
+        public void ConstructorsRejectNegativeCapacity()
+        {
+            AssertArgumentOutOfRange(
+                () => new LruCache<string, string>(-1, key => 1, key => key),
+                "capacity");
+            AssertArgumentOutOfRange(
+                () => new LruCache<string, string>(-1),
+                "capacity");
+        }
+
+        [Test]
+        public void CapacityRejectsNegativeValueWithoutEvicting()
+        {
+            var deletes = new List<string>();
+            var cache = CreateStringCache(1, deletes);
+
+            Assert.AreEqual("value-a", cache.GetOrAdd("a", 1, () => "value-a"));
+
+            AssertArgumentOutOfRange(() => cache.Capacity = -1, "value");
+            Assert.AreEqual(1, cache.Capacity);
+            CollectionAssert.IsEmpty(deletes);
+
+            Assert.IsTrue(cache.TryRemove("a", out var value));
+            Assert.AreEqual("value-a", value);
+        }
+
+        [Test]
+        public void IndexerRejectsNegativeSizeWithoutEvicting()
+        {
+            var deletes = new List<string>();
+            var readKeys = new List<string>();
+            var cache = new LruCache<string, string>(
+                1,
+                key => key == "b" ? -1 : 1,
+                key =>
+                {
+                    readKeys.Add(key);
+                    return "loaded-" + key;
+                },
+                (key, value) => deletes.Add(key + ":" + value));
+
+            Assert.AreEqual("loaded-a", cache["a"]);
+
+            AssertArgumentOutOfRange(() => { var _ = cache["b"]; }, "sizeFun");
+            CollectionAssert.AreEqual(new[] { "a" }, readKeys);
+            CollectionAssert.IsEmpty(deletes);
+
+            Assert.IsTrue(cache.TryRemove("a", out var value));
+            Assert.AreEqual("loaded-a", value);
+        }
+
+        [Test]
+        public void GetOrAddRejectsNegativeSizeWithoutEvicting()
+        {
+            var deletes = new List<string>();
+            var valueFactoryCount = 0;
+            var cache = CreateStringCache(1, deletes);
+
+            Assert.AreEqual("value-a", cache.GetOrAdd("a", 1, () => "value-a"));
+
+            AssertArgumentOutOfRange(
+                () => cache.GetOrAdd("b", -1, () =>
+                {
+                    valueFactoryCount++;
+                    return "value-b";
+                }),
+                "size");
+
+            Assert.AreEqual(0, valueFactoryCount);
+            CollectionAssert.IsEmpty(deletes);
+            Assert.IsTrue(cache.TryRemove("a", out var value));
+            Assert.AreEqual("value-a", value);
+        }
+
+        [Test]
+        public void IndexerRejectsOversizedEntryWithoutEvicting()
+        {
+            var deletes = new List<string>();
+            var readKeys = new List<string>();
+            var cache = new LruCache<string, string>(
+                1,
+                key => key == "b" ? 2 : 1,
+                key =>
+                {
+                    readKeys.Add(key);
+                    return "loaded-" + key;
+                },
+                (key, value) => deletes.Add(key + ":" + value));
+
+            Assert.AreEqual("loaded-a", cache["a"]);
+
+            AssertArgumentOutOfRange(() => { var _ = cache["b"]; }, "sizeFun");
+            CollectionAssert.AreEqual(new[] { "a" }, readKeys);
+            CollectionAssert.IsEmpty(deletes);
+
+            Assert.IsTrue(cache.TryRemove("a", out var value));
+            Assert.AreEqual("loaded-a", value);
+        }
+
+        [Test]
+        public void GetOrAddRejectsOversizedEntryWithoutEvicting()
+        {
+            var deletes = new List<string>();
+            var valueFactoryCount = 0;
+            var cache = CreateStringCache(1, deletes);
+
+            Assert.AreEqual("value-a", cache.GetOrAdd("a", 1, () => "value-a"));
+
+            AssertArgumentOutOfRange(
+                () => cache.GetOrAdd("b", 2, () =>
+                {
+                    valueFactoryCount++;
+                    return "value-b";
+                }),
+                "size");
+
+            Assert.AreEqual(0, valueFactoryCount);
+            CollectionAssert.IsEmpty(deletes);
+            Assert.IsTrue(cache.TryRemove("a", out var value));
+            Assert.AreEqual("value-a", value);
         }
     }
 }

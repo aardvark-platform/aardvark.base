@@ -1,3 +1,4 @@
+- [Base] Hardened `LruCache` failed insertions and size validation
 - [FSharp] Fixed `ConcurrentHashQueue.Dequeue` for single-item queues
 - [Base] Fixed `LruCache.TryRemove` to invoke per-entry cleanup actions
 - [IO] Hardened `UberStream.Seek` validation for invalid origins, negative targets, and overflow

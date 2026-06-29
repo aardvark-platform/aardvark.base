@@ -43,6 +43,8 @@ namespace Aardvark.Base
             Action<TKey, TValue> deleteAct = null
         )
         {
+            if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+
             m_lock = new object();
             m_cache = new Dict<TKey, Entry>();
             m_heap = new List<Entry>();
@@ -58,6 +60,8 @@ namespace Aardvark.Base
             long capacity
         )
         {
+            if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+
             m_lock = new object();
             m_cache = new Dict<TKey, Entry>();
             m_heap = new List<Entry>();
@@ -77,6 +81,8 @@ namespace Aardvark.Base
             }
             set
             {
+                if (value < 0) throw new ArgumentOutOfRangeException(nameof(value));
+
                 lock (m_lock)
                 {
                     m_capacity = value;
@@ -103,6 +109,12 @@ namespace Aardvark.Base
             m_size = size;
         }
 
+        private static void ValidateEntrySize(long size, long capacity, string paramName)
+        {
+            if (size < 0) throw new ArgumentOutOfRangeException(paramName);
+            if (size > capacity) throw new ArgumentOutOfRangeException(paramName);
+        }
+
         /// <summary>
         /// Accessing items in the cache. If an item is not encountred in the cache,
         /// it is read using the read function that was specified on cache creation.
@@ -122,10 +134,12 @@ namespace Aardvark.Base
                     else
                     {
                         var size = m_sizeFun(key);
+                        ValidateEntrySize(size, m_capacity, "sizeFun");
+                        var value = m_readFun(key);
                         Shrink(m_size + size);
                         entry = new Entry
                         {
-                            Time = ++m_time, Size = size, Key = key, Value = m_readFun(key)
+                            Time = ++m_time, Size = size, Key = key, Value = value
                         };
                         m_cache[key] = entry;
                         Enqueue(m_heap, entry);
@@ -146,13 +160,15 @@ namespace Aardvark.Base
                 }
                 else
                 {
+                    ValidateEntrySize(size, m_capacity, nameof(size));
+                    var value = valueFun();
                     Shrink(m_size + size);
                     entry = new Entry
                     {
                         Time = ++m_time,
                         Size = size,
                         Key = key,
-                        Value = valueFun(),
+                        Value = value,
                         DeleteAct = deleteAct,
                     };
                     m_cache[key] = entry;
