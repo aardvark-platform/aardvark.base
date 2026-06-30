@@ -102,7 +102,7 @@ public partial class Aardvark
         // This happens when a plugin is not referenced but simply dropped next to the entry assembly (e.g. multiple projects share the same output folder).
         // Here we just try to locate the assembly next to the entry path.
         // See: https://github.com/Particular/Workshop/issues/64
-        AssemblyLoadContext.Default.Resolving += (ctx, name) =>
+        IntrospectionProperties.AssemblyLoadContext.Resolving += (ctx, name) =>
         {
             Report.Begin(4, $"Trying to resolve assembly: {name.FullName}");
 
@@ -133,7 +133,7 @@ public partial class Aardvark
         // On Linux, this can be problematic if an assembly has native dependencies consisting of
         // multiple libraries (e.g., liba and libb will be unpacked to the same directory, where liba requires libb).
         // In this case the libraries must be built with rpath set to $ORIGIN so that libb can be found next to liba.
-        AssemblyLoadContext.Default.ResolvingUnmanagedDll += (assembly, name) =>
+        IntrospectionProperties.AssemblyLoadContext.ResolvingUnmanagedDll += (assembly, name) =>
         {
             Report.Begin(4, $"Resolving native library '{name}'");
             var ptr = LoadLibrary(assembly, name, global: false, resolving: true);

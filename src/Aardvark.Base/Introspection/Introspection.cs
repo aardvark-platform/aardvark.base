@@ -260,7 +260,11 @@ public static class Introspection
 
         try
         {
+#if NET8_0_OR_GREATER
+            var assembly = customAssembly ?? IntrospectionProperties.AssemblyLoadContext.LoadFromAssemblyName(new AssemblyName(name));
+#else
             var assembly = customAssembly ?? Assembly.Load(name);
+#endif
             s_assemblies[name] = assembly;
             RegisterAssembly(assembly);
             foreach (var a in assembly.GetReferencedAssemblies())

@@ -5,9 +5,25 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+#if NET8_0_OR_GREATER
+using System.Runtime.Loader;
+#endif
 
 public static class IntrospectionProperties
 {
+#if NET8_0_OR_GREATER
+    private static AssemblyLoadContext s_assemblyLoadContext = AssemblyLoadContext.Default;
+
+    /// <summary>
+    /// Context used by introspection for loading assemblies.
+    /// </summary>
+    public static AssemblyLoadContext AssemblyLoadContext
+    {
+        get => s_assemblyLoadContext;
+        set => s_assemblyLoadContext = value ?? AssemblyLoadContext.Default;
+    }
+#endif
+
     /// <summary>
     /// Introspection is based on Assembly.GetEntryAssembly which represents the managed
     /// entry point (i.e. the first assembly that was executed by AppDomain.ExecuteAssembly).

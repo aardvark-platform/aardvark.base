@@ -89,7 +89,7 @@ public partial class Aardvark
                 // In .NET core Assembly.LoadFile uses a separate context, resulting in assemblies being
                 // potentially loaded multiple times -> leads to problems with static fields in unit tests
                 // See: https://github.com/dotnet/runtime/issues/39783
-                return AssemblyLoadContext.Default.LoadFromAssemblyPath(Path);
+                return IntrospectionProperties.AssemblyLoadContext.LoadFromAssemblyPath(Path);
     #else
                 return Assembly.LoadFile(Path);
     #endif
@@ -134,7 +134,7 @@ public partial class Aardvark
             {
     #if NETCOREAPP3_1_OR_GREATER
                 using var s = OpenRead();
-                return AssemblyLoadContext.Default.LoadFromStream(s);
+                return IntrospectionProperties.AssemblyLoadContext.LoadFromStream(s);
     #else
                 return Assembly.Load(GetData());
     #endif
