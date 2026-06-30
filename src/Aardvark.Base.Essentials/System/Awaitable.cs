@@ -507,25 +507,34 @@ namespace Aardvark.Base
         /// </summary>
         public static IAwaitable<T[]> WhenAll<T>(params IAwaitable<T>[] inputs)
         {
-            var result = new Awaitable<T[]>();
+            if (inputs == null) throw new ArgumentNullException(nameof(inputs));
 
-            var set = new HashSet<IAwaitable<T>>(inputs);
+            for (var i = 0; i < inputs.Length; i++)
+            {
+                if (inputs[i] == null) throw new ArgumentNullException(nameof(inputs));
+            }
+
+            var result = new Awaitable<T[]>();
             var output = new T[inputs.Length];
-            var i = 0;
-            foreach (var input in set)
+
+            if (inputs.Length == 0)
+            {
+                result.Emit(output);
+                return result;
+            }
+
+            var remaining = inputs.Length;
+            for (var i = 0; i < inputs.Length; i++)
             {
                 var index = i;
-                var ip = input;
-                ip.Subscribe(v =>
+                inputs[i].Subscribe(v =>
                 {
                     output[index] = v;
-                    if (set.Remove(ip) && set.Count == 0)
+                    if (Interlocked.Decrement(ref remaining) == 0)
                     {
-                        if (!result.IsCompleted) result.Emit(output);
+                        result.Emit(output);
                     }
                 });
-
-                i++;
             }
 
             return result;
@@ -536,17 +545,29 @@ namespace Aardvark.Base
         /// </summary>
         public static IAwaitable WhenAll(params IAwaitable[] inputs)
         {
+            if (inputs == null) throw new ArgumentNullException(nameof(inputs));
+
+            for (var i = 0; i < inputs.Length; i++)
+            {
+                if (inputs[i] == null) throw new ArgumentNullException(nameof(inputs));
+            }
+
             var result = new Awaitable();
 
-            var set = new HashSet<IAwaitable>(inputs);
-            foreach (var input in set)
+            if (inputs.Length == 0)
             {
-                var ip = input;
-                ip.Subscribe(() =>
+                result.Emit();
+                return result;
+            }
+
+            var remaining = inputs.Length;
+            foreach (var input in inputs)
+            {
+                input.Subscribe(() =>
                 {
-                    if (set.Remove(ip) && set.Count == 0)
+                    if (Interlocked.Decrement(ref remaining) == 0)
                     {
-                        if (!result.IsCompleted) result.Emit();
+                        result.Emit();
                     }
                 });
             }

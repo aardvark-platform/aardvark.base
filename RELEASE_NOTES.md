@@ -1,3 +1,4 @@
+- [Essentials] Hardened `Await.WhenAll` empty, duplicate, and null-input handling
 - [Base] Hardened `LruCache` failed insertions and size validation
 - [FSharp] Fixed `ConcurrentHashQueue.Dequeue` for single-item queues
 - [Base] Fixed `LruCache.TryRemove` to invoke per-entry cleanup actions
