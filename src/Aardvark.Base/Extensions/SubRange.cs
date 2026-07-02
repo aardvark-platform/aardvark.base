@@ -87,6 +87,11 @@ namespace Aardvark.Base
 
         public void CopyTo(T[] array, int arrayIndex)
         {
+            if (array == null) throw new ArgumentNullException(nameof(array));
+            if (arrayIndex < 0 || arrayIndex > array.Length) throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            if (m_count > array.Length - arrayIndex)
+                throw new ArgumentException("The destination array has insufficient capacity.", nameof(array));
+
             for (int i = 0; i < m_count; i++)
             {
                 array[arrayIndex + i] = m_base[m_start + i];

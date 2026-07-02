@@ -160,6 +160,67 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void SubRangeCopyToCopiesValidRangeWithOffset()
+        {
+            var source = new List<int> { 0, 1, 2, 3, 4 };
+            var range = new SubRange<int>(source, 1, 3);
+            var target = new[] { -1, -1, -1, -1, -1 };
+
+            range.CopyTo(target, 1);
+
+            CollectionAssert.AreEqual(new[] { -1, 1, 2, 3, -1 }, target);
+        }
+
+        [Test]
+        public static void SubRangeCopyToRejectsNullDestination()
+        {
+            var source = new List<int> { 1, 2, 3 };
+            var range = new SubRange<int>(source, 0, 2);
+
+            AssertParamName<ArgumentNullException>("array", () => range.CopyTo(null, 0));
+        }
+
+        [Test]
+        public static void SubRangeCopyToRejectsNegativeArrayIndex()
+        {
+            var source = new List<int> { 1, 2, 3 };
+            var range = new SubRange<int>(source, 0, 2);
+
+            AssertParamName<ArgumentOutOfRangeException>("arrayIndex", () => range.CopyTo(new int[3], -1));
+        }
+
+        [Test]
+        public static void SubRangeCopyToRejectsArrayIndexPastDestinationLength()
+        {
+            var source = new List<int> { 1, 2, 3 };
+            var range = new SubRange<int>(source, 0, 2);
+
+            AssertParamName<ArgumentOutOfRangeException>("arrayIndex", () => range.CopyTo(new int[3], 4));
+        }
+
+        [Test]
+        public static void SubRangeCopyToRejectsInsufficientDestinationCapacity()
+        {
+            var source = new List<int> { 1, 2, 3 };
+            var range = new SubRange<int>(source, 0, 3);
+            var target = new[] { -1, -1, -1, -1 };
+
+            AssertParamName<ArgumentException>("array", () => range.CopyTo(target, 2));
+        }
+
+        [Test]
+        public static void SubRangeCopyToDoesNotPartiallyMutateDestinationOnFailure()
+        {
+            var source = new List<int> { 1, 2, 3 };
+            var range = new SubRange<int>(source, 0, 3);
+            var target = new[] { -1, -1, -1, -1 };
+
+            Assert.Throws<ArgumentException>(() => range.CopyTo(target, 2));
+
+            CollectionAssert.AreEqual(new[] { -1, -1, -1, -1 }, target);
+        }
+
+        [Test]
         public static void FirstIndexOfRejectsNullSelf()
         {
             IList<int> self = null;
