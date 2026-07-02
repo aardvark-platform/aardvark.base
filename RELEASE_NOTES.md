@@ -1,5 +1,6 @@
-### 5.3.25
 - [Base] Hardened `SubRange<T>.CopyTo` destination validation
+
+### 5.3.25
 - [Essentials] Hardened `Await.WhenAll` empty, duplicate, and null-input handling
 - [Base] Hardened `LruCache` failed insertions and size validation
 - [FSharp] Fixed `ConcurrentHashQueue.Dequeue` for single-item queues
