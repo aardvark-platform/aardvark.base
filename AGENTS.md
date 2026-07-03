@@ -16,7 +16,8 @@ Use these commands for restore/build/test/codegen:
 | Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects, stopping on the first failing step; excludes benchmark projects and the deprecated incremental test project |
 | Test one project | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug` | Prefer this over whole-solution test |
 | Test with filter | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter; use a concrete test project |
-| Benchmark one targeted subset | `dotnet run --no-build -c Release --project src/Tests/Aardvark.Base.Benchmarks/Aardvark.Base.Benchmarks.csproj -- --targeted-transform-perf --case Box3dForwardEuclidean` | Build dependencies serially first, then rerun exact perf cases with `--no-build` |
+| Verify transform perf coverage | `dotnet run --no-build -c Release --project src/Tests/Aardvark.Base.Benchmarks/Aardvark.Base.Benchmarks.csproj -- --verify-transform-perf-coverage` | Checks targeted transform perf registry covers the correctness-test overload matrix |
+| Benchmark one targeted subset | `dotnet run --no-build -c Release --project src/Tests/Aardvark.Base.Benchmarks/Aardvark.Base.Benchmarks.csproj -- --targeted-transform-perf --case Box3dForwardEuclidean` | Build dependencies serially first, then rerun exact perf cases with `--no-build`; add `--quick` only for smoke/dogfood runs |
 | Codegen | `./generate.sh` or `.\generate.cmd` | Required after template changes |
 | Check docs drift | `./check-docs.sh` or `.\check-docs.cmd` | Validates docs against source anchors and anti-drift rules |
 
@@ -31,6 +32,7 @@ Use these commands for restore/build/test/codegen:
   then execute targeted cases with `--no-build`
 - Do not build `Aardvark.Base` and dependent projects like `Aardvark.Base.Benchmarks` in parallel; they share transitive outputs and can collide on `src/Aardvark.Base/obj/...`
 - Keep benchmark commands filterable and document representative exact-case commands near the benchmark source when useful
+- For transform overload perf, run `--verify-transform-perf-coverage` after changing the registry and inspect generated JSON/Markdown reports when dogfooding timing runs
 - Use `Release` for all benchmark runs
 
 ## Dependency Management (Paket)

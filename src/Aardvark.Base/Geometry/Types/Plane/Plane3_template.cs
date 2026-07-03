@@ -324,24 +324,15 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__euclidean3t__ trafo)
-        {
-            var n1 = trafo.Rot.Transform(Normal);
-            return new __plane3t__(n1, Distance + trafo.Trans.Dot(n1));
-        }
+            => Transformed(new __trafo3t__(trafo));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__similarity3t__ trafo)
-        {
-            var n1 = trafo.Rot.Transform(Normal) / trafo.Scale;
-            return new __plane3t__(n1, Distance + trafo.Trans.Dot(n1));
-        }
+            => Transformed(new __trafo3t__(trafo));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__affine3t__ trafo)
-        {
-            var n1 = trafo.Inverse.Linear.Transposed.Transform(Normal);
-            return new __plane3t__(n1, Distance + trafo.Trans.Dot(n1));
-        }
+            => Transformed(new __trafo3t__(trafo));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__shift3t__ trafo)
@@ -349,7 +340,7 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__rot3t__ trafo)
-            => new __plane3t__(trafo.Transform(Normal), Distance);
+            => Transformed(new __trafo3t__(trafo));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ Transformed(__scale3t__ trafo)
@@ -374,17 +365,11 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__euclidean3t__ trafo)
-        {
-            var n1 = trafo.Rot.InvTransform(Normal);
-            return new __plane3t__(n1, Distance - trafo.Trans.Dot(Normal));
-        }
+            => Transformed(new __trafo3t__(trafo).Inverse);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__similarity3t__ trafo)
-        {
-            var n1 = trafo.Rot.InvTransform(Normal) * trafo.Scale;
-            return new __plane3t__(n1, Distance - trafo.Trans.Dot(Normal));
-        }
+            => Transformed(new __trafo3t__(trafo).Inverse);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__shift3t__ trafo)
@@ -392,7 +377,7 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__rot3t__ trafo)
-            => new __plane3t__(trafo.InvTransform(Normal), Distance);
+            => Transformed(new __trafo3t__(trafo).Inverse);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __plane3t__ InvTransformed(__scale3t__ trafo)

@@ -155,7 +155,24 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ray3t__ Transformed(__trafo3t__ transform)
-            => Transformed(transform.Forward);
+        {
+            var m = transform.Forward;
+            var o = Origin;
+            var d = Direction;
+
+            return new __ray3t__(
+                new __v3t__(
+                    m.M00 * o.X + m.M01 * o.Y + m.M02 * o.Z + m.M03,
+                    m.M10 * o.X + m.M11 * o.Y + m.M12 * o.Z + m.M13,
+                    m.M20 * o.X + m.M21 * o.Y + m.M22 * o.Z + m.M23
+                ),
+                new __v3t__(
+                    m.M00 * d.X + m.M01 * d.Y + m.M02 * d.Z,
+                    m.M10 * d.X + m.M11 * d.Y + m.M12 * d.Z,
+                    m.M20 * d.X + m.M21 * d.Y + m.M22 * d.Z
+                )
+            );
+        }
 
         /// <summary>
         /// Returns the ray transformed with the given <see cref="__rot3t__"/> transformation.
@@ -198,7 +215,24 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ray3t__ InvTransformed(__trafo3t__ transform)
-            => Transformed(transform.Backward);
+        {
+            var m = transform.Backward;
+            var o = Origin;
+            var d = Direction;
+
+            return new __ray3t__(
+                new __v3t__(
+                    m.M00 * o.X + m.M01 * o.Y + m.M02 * o.Z + m.M03,
+                    m.M10 * o.X + m.M11 * o.Y + m.M12 * o.Z + m.M13,
+                    m.M20 * o.X + m.M21 * o.Y + m.M22 * o.Z + m.M23
+                ),
+                new __v3t__(
+                    m.M00 * d.X + m.M01 * d.Y + m.M02 * d.Z,
+                    m.M10 * d.X + m.M11 * d.Y + m.M12 * d.Z,
+                    m.M20 * d.X + m.M21 * d.Y + m.M22 * d.Z
+                )
+            );
+        }
 
         /// <summary>
         /// Returns the ray transformed with the inverse of the given <see cref="__euclidean3t__"/> transformation.
