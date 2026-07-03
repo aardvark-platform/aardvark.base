@@ -1,5 +1,6 @@
 ﻿namespace Aardvark.Base
 
+open System
 open System.Collections
 open System.Collections.Generic
 open System.Threading
@@ -20,7 +21,7 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
     let toCollection (s : seq<'a>) =
         match s with
-            | :? ICollection<'a> as s -> s
+            | :? ISet<'a> as s -> s :> ICollection<_>
             | _ -> System.Collections.Generic.HashSet s :> ICollection<_>
 
     let compareSeq (other : seq<'a>) =
@@ -28,6 +29,12 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
         let mutable both = 0
         let mutable onlyMe = 0
+
+        if nullCount > 0 then
+            if distinctOther.Contains Unchecked.defaultof<_> then
+                both <- both + 1
+            else
+                onlyMe <- onlyMe + 1
 
         for (o,_) in store.Values do
             if distinctOther.Contains o then
@@ -42,8 +49,13 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
     let add (v : 'a) =
         if isNull (v :> obj) then
+            let wasContained = nullCount > 0
             nullCount <- nullCount + 1
-            nullCount = 1
+            if wasContained then
+                false
+            else
+                hasChanged()
+                true
         else
             match store.TryGetValue v with
             | (true, (_,r)) ->
@@ -57,8 +69,15 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
 
     let remove (v : 'a) =
         if isNull (v :> obj) then
-            nullCount <- nullCount - 1
-            nullCount = 0
+            if nullCount > 0 then
+                nullCount <- nullCount - 1
+                if nullCount = 0 then
+                    hasChanged()
+                    true
+                else
+                    false
+            else
+                false
         else
             match store.TryGetValue v with
             | (true, (_,r)) ->
@@ -119,7 +138,8 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
                 | Rem(_, v) ->
                     let o = v :> obj
                     if isNull o then
-                        nullCount <- nullCount - 1
+                        if nullCount > 0 then
+                            nullCount <- nullCount - 1
                     else
                         match store.TryGetValue o with
                         | (true, (_,r)) ->
@@ -227,9 +247,13 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
     /// </summary>
     member x.IntersectWith (other : seq<'a>) =
         let other = toCollection other
-        for (v,_) in store.Values do
+        for (v,_) in store.Values |> Seq.toArray do
             if not <| other.Contains v then
                 x.Remove v |> ignore
+
+        if nullCount > 0 && not (other.Contains Unchecked.defaultof<_>) then
+            nullCount <- 0
+            hasChanged()
 
     /// <summary>
     /// Takes symmetric difference (XOR) with other and this set. Modifies this set.
@@ -295,18 +319,18 @@ type ReferenceCountingSet<'a>(initial : seq<'a>) =
         member x.Clear() = x.Clear()
         member x.Count = x.Count
         member x.CopyTo(arr, index) =
-            let mutable i = index
+            if isNull arr then nullArg "array"
+            if index < 0 || index > arr.Length then raise (ArgumentOutOfRangeException "arrayIndex")
+            if x.Count > arr.Length - index then raise (ArgumentException("The destination array has insufficient capacity.", "array"))
 
-            if nullCount > 0 then
-                arr.[i] <- Unchecked.defaultof<_>
-                i <- i + 1
+            let mutable i = index
 
             for e in x do
                 arr.[i] <- e
                 i <- i + 1
 
         member x.IsReadOnly = false
-        member x.Contains v = store.ContainsKey v
+        member x.Contains v = x.Contains v
 
     interface ISet<'a> with
         member x.Add item = x.Add item

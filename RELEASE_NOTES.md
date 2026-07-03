@@ -1,3 +1,4 @@
+- [FSharp] Hardened `ReferenceCountingSet` null element semantics
 - [Base] Hardened `SubRange<T>.CopyTo` destination validation
 
 ### 5.3.25
