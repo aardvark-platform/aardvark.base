@@ -438,6 +438,11 @@ namespace Aardvark.Base
         internal TValue m_value;
         internal int m_depth;
 
+        private static bool KeysEqual(TKey left, TKey right)
+        {
+            return EqualityComparer<TKey>.Default.Equals(left, right);
+        }
+
         #region Constructors
 
         public SingleDeltaDict(IDict<TKey, TValue> baseDict, TKey key, TValue value)
@@ -459,7 +464,7 @@ namespace Aardvark.Base
             {
                 yield return m_key;
                 foreach (var k in m_baseDict.Keys)
-                    if (!k.Equals(m_key))
+                    if (!KeysEqual(k, m_key))
                         yield return k;
             }
         }
@@ -470,7 +475,7 @@ namespace Aardvark.Base
             {
                 yield return m_value;
                 foreach (var kvp in m_baseDict.KeyValuePairs)
-                    if (!kvp.Key.Equals(m_key))
+                    if (!KeysEqual(kvp.Key, m_key))
                         yield return kvp.Value;
             }
         }
@@ -481,7 +486,7 @@ namespace Aardvark.Base
             {
                 yield return new KeyValuePair<TKey, TValue>(m_key, m_value);
                 foreach (var kvp in m_baseDict.KeyValuePairs)
-                    if (!kvp.Key.Equals(m_key))
+                    if (!KeysEqual(kvp.Key, m_key))
                         yield return kvp;
             }
         }
@@ -490,7 +495,7 @@ namespace Aardvark.Base
         {
             get
             {
-                if (key.Equals(m_key)) return m_value;
+                if (KeysEqual(key, m_key)) return m_value;
                 return m_baseDict[key];
             }
             set
@@ -506,7 +511,7 @@ namespace Aardvark.Base
 
         public bool ContainsKey(TKey key)
         {
-            if (key.Equals(m_key)) return true;
+            if (KeysEqual(key, m_key)) return true;
             return m_baseDict.ContainsKey(key);
         }
 
@@ -517,7 +522,7 @@ namespace Aardvark.Base
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            if (key.Equals(m_key))
+            if (KeysEqual(key, m_key))
             {
                 value = m_value;
                 return true;
@@ -1237,7 +1242,7 @@ namespace Aardvark.Base
                 TKey key, TValue value)
         {
             var sd = dict as SingleDeltaDict<TKey, TValue>;
-            if (sd != null && key.Equals(sd.m_key))
+            if (sd != null && EqualityComparer<TKey>.Default.Equals(key, sd.m_key))
                 return new SingleDeltaDict<TKey, TValue>(sd.m_baseDict, key, value);
             return new SingleDeltaDict<TKey, TValue>(dict, key, value);
         }

@@ -618,6 +618,62 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void SingleDeltaDictSupportsNullOverlayKey()
+        {
+            IDict<string, int> dict = new Dict<string, int>().WithAdded(null, 1);
+
+            Assert.IsTrue(dict.ContainsKey(null));
+            Assert.IsTrue(dict.TryGetValue(null, out var value));
+            Assert.AreEqual(1, value);
+            Assert.AreEqual(1, dict[null]);
+            CollectionAssert.AreEqual(new string[] { null }, dict.Keys.ToArray());
+            CollectionAssert.AreEqual(new[] { 1 }, dict.Values.ToArray());
+
+            var pairs = dict.KeyValuePairs.ToArray();
+            Assert.AreEqual(1, pairs.Length);
+            Assert.IsNull(pairs[0].Key);
+            Assert.AreEqual(1, pairs[0].Value);
+        }
+
+        [Test]
+        public void SingleDeltaDictWithAddedReplacesNullOverlayWithoutDuplicateKeys()
+        {
+            IDict<string, int> dict = new Dict<string, int>().WithAdded(null, 1);
+
+            var replaced = dict.WithAdded(null, 2);
+
+            Assert.IsTrue(replaced.ContainsKey(null));
+            Assert.IsTrue(replaced.TryGetValue(null, out var value));
+            Assert.AreEqual(2, value);
+            Assert.AreEqual(2, replaced[null]);
+            CollectionAssert.AreEqual(new string[] { null }, replaced.Keys.ToArray());
+            CollectionAssert.AreEqual(new[] { 2 }, replaced.Values.ToArray());
+            Assert.AreEqual(1, replaced.KeyValuePairs.Count());
+        }
+
+        [Test]
+        public void SingleDeltaDictNullOverlayMasksBaseNullKeyDuringEnumeration()
+        {
+            IDict<string, int> dict =
+                new SingleEntryDict<string, int>(null, 1)
+                    .WithAdded("base", 7)
+                    .WithAdded(null, 2);
+
+            Assert.AreEqual(2, dict[null]);
+            Assert.IsTrue(dict.TryGetValue(null, out var value));
+            Assert.AreEqual(2, value);
+            CollectionAssert.AreEqual(new string[] { null, "base" }, dict.Keys.ToArray());
+            CollectionAssert.AreEqual(new[] { 2, 7 }, dict.Values.ToArray());
+
+            var pairs = dict.KeyValuePairs.ToArray();
+            Assert.AreEqual(2, pairs.Length);
+            Assert.IsNull(pairs[0].Key);
+            Assert.AreEqual(2, pairs[0].Value);
+            Assert.AreEqual("base", pairs[1].Key);
+            Assert.AreEqual(7, pairs[1].Value);
+        }
+
+        [Test]
         public void SingleValueDictSetterAndAddAcceptSharedValueWithoutThrowing()
         {
             var dict = new SingleValueDict<string, int>(new DictSet<string>(), 7);

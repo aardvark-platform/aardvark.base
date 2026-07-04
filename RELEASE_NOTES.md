@@ -1,3 +1,4 @@
+- [Base] Fixed `SingleDeltaDict` null-key overlay comparisons
 - [FSharp] Hardened `ReferenceCountingSet` null element semantics
 - [Base] Hardened `SubRange<T>.CopyTo` destination validation
 
