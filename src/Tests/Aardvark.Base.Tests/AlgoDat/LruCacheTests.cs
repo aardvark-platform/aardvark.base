@@ -271,5 +271,44 @@ namespace Aardvark.Tests
             Assert.IsTrue(cache.TryRemove("a", out var value));
             Assert.AreEqual("value-a", value);
         }
+
+        [Test]
+        public void GetOrAddEvictsForLargeLogicalSizesWithoutOverflow()
+        {
+            var cache = new LruCache<string, string>(long.MaxValue);
+
+            Assert.AreEqual("old-value", cache.GetOrAdd("old", long.MaxValue, () => "old-value"));
+            Assert.AreEqual("new-value", cache.GetOrAdd("new", 1, () => "new-value"));
+
+            Assert.IsFalse(cache.TryRemove("old", out var removed));
+            Assert.AreEqual(default(string), removed);
+            Assert.IsTrue(cache.TryRemove("new", out removed));
+            Assert.AreEqual("new-value", removed);
+
+            Assert.AreEqual("next-value", cache.GetOrAdd("next", long.MaxValue, () => "next-value"));
+            Assert.IsTrue(cache.TryRemove("next", out removed));
+            Assert.AreEqual("next-value", removed);
+        }
+
+        [Test]
+        public void IndexerEvictsForLargeLogicalSizesWithoutOverflow()
+        {
+            var cache = new LruCache<string, string>(
+                long.MaxValue,
+                key => key == "old" ? long.MaxValue : 1,
+                key => key + "-value");
+
+            Assert.AreEqual("old-value", cache["old"]);
+            Assert.AreEqual("new-value", cache["new"]);
+
+            Assert.IsFalse(cache.TryRemove("old", out var removed));
+            Assert.AreEqual(default(string), removed);
+            Assert.IsTrue(cache.TryRemove("new", out removed));
+            Assert.AreEqual("new-value", removed);
+
+            Assert.AreEqual("next-value", cache["next"]);
+            Assert.IsTrue(cache.TryRemove("next", out removed));
+            Assert.AreEqual("next-value", removed);
+        }
     }
 }

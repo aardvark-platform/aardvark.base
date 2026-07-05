@@ -109,6 +109,26 @@ namespace Aardvark.Base
             m_size = size;
         }
 
+        private void MakeRoomFor(long size)
+        {
+            var remainingCapacity = m_capacity - size;
+            while (m_size > remainingCapacity)
+            {
+                var removeKey = Dequeue(m_heap).Key;
+                if (m_cache.TryRemove(removeKey, out Entry entry))
+                {
+                    m_deleteAct?.Invoke(removeKey, entry.Value);
+                    entry.DeleteAct?.Invoke();
+                    m_size -= entry.Size;
+                }
+                else
+                    throw new InvalidOperationException("tried to remove an item that is not in the cache");
+                    // this should never ever happen!
+            }
+
+            m_size += size;
+        }
+
         private static void ValidateEntrySize(long size, long capacity, string paramName)
         {
             if (size < 0) throw new ArgumentOutOfRangeException(paramName);
@@ -136,7 +156,7 @@ namespace Aardvark.Base
                         var size = m_sizeFun(key);
                         ValidateEntrySize(size, m_capacity, "sizeFun");
                         var value = m_readFun(key);
-                        Shrink(m_size + size);
+                        MakeRoomFor(size);
                         entry = new Entry
                         {
                             Time = ++m_time, Size = size, Key = key, Value = value
@@ -162,7 +182,7 @@ namespace Aardvark.Base
                 {
                     ValidateEntrySize(size, m_capacity, nameof(size));
                     var value = valueFun();
-                    Shrink(m_size + size);
+                    MakeRoomFor(size);
                     entry = new Entry
                     {
                         Time = ++m_time,
