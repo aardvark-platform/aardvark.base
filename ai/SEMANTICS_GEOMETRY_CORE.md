@@ -41,6 +41,35 @@ When crossing APIs that use transposed conventions, use:
 
 Do not assume identical handedness or memory/algebra conventions across systems.
 
+## Geometry Transform Overloads
+
+For the geometry value types touched by issue 57, the canonical transform semantics are:
+
+- boxes still compute axis-aligned bounds from linear coefficients plus translation; inverse overloads avoid full inverse-transform materialization where practical, while `Box3*.Transformed(Affine3*)` intentionally stays on the homogeneous-matrix path because repeated `Release` measurements did not beat that baseline
+- hulls keep the same inverse-transpose normal semantics as the `Trafo*` path; overloads should prefer existing rotation/vector helpers over converting `Rot*` values to matrices just to transform vectors
+- planes keep the same coefficient semantics as the `Trafo*` path; overloads that do not beat the canonical `Trafo*` path should delegate back to that path rather than keeping a slower direct specialization
+- rays use position-vs-direction aware transform helpers for typed transforms; `Ray3*.Transformed(Trafo3*)` / `InvTransformed(Trafo3*)` intentionally use direct `Forward`/`Backward` matrix-field evaluation because forwarding through the `M44*` overload regressed targeted perf
+- inverse convenience APIs are intentionally available on the touched geometry types for `Trafo*`, `Euclidean*`, `Similarity*`, `Shift*`, `Rot*`, and `Scale*`; raw matrices remain forward-only convenience APIs
+- `PolyRegion` has instance inverse transform overloads, but no module-level `invTransformed*` helper family
+
+When a direct specialization cannot be kept both correct and performance-competitive, the source keeps the indirect implementation with an explicit comment documenting the retained fallback.
+
+There is no `Rigid2d`/`Rigid3d` public transform type in this repo. Use `Euclidean2d`/`Euclidean3d` instead when mapping older issue text to the current API.
+
+## Geometry Transform Performance Workflow
+
+Use `Release` for transform overload performance work. Start with the smallest relevant targeted run, then broaden only when the local question requires it.
+
+```powershell
+dotnet build src\Aardvark.Base\Aardvark.Base.csproj -c Release -p:BuildInParallel=false
+dotnet build src\Tests\Aardvark.Base.Benchmarks\Aardvark.Base.Benchmarks.csproj -c Release -p:BuildInParallel=false --no-restore
+dotnet run --no-build -c Release --project src\Tests\Aardvark.Base.Benchmarks\Aardvark.Base.Benchmarks.csproj -- --verify-transform-perf-coverage
+dotnet run --no-build -c Release --project src\Tests\Aardvark.Base.Benchmarks\Aardvark.Base.Benchmarks.csproj -- --list-transform-perf-cases
+dotnet run --no-build -c Release --project src\Tests\Aardvark.Base.Benchmarks\Aardvark.Base.Benchmarks.csproj -- --targeted-transform-perf --case Plane3dForwardEuclidean
+```
+
+The `--case` value is a substring filter. Prefer a single function name while iterating, a family name such as `Plane` for final local evidence, and BenchmarkDotNet filters only for confirmation of specific suspicious cases. Add `--quick` only for smoke/dogfood runs; use the default targeted settings for evidence. Targeted runs write a canonical JSON result plus derived CSV and Markdown summaries under the selected output directory.
+
 ## Geodesy Units (Geo)
 
 `Geo.XyzFromLonLatHeight` and `Geo.LonLatHeightFromXyz` use:
