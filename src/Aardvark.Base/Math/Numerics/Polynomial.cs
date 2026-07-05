@@ -78,7 +78,7 @@ namespace Aardvark.Base
         /// </summary>
         public static double[] RealRoots(this double[] coeff)
         {
-            switch (coeff.Length)
+            switch (coeff.EffectiveLength())
             {
                 case 0:
                 case 1:
@@ -92,6 +92,13 @@ namespace Aardvark.Base
                                        coeff[1], coeff[0]).NonNanToArray();
                 default: throw new NotImplementedException();
             }
+        }
+
+        private static int EffectiveLength(this double[] coeff)
+        {
+            var length = coeff.Length;
+            while (length > 0 && Fun.IsTiny(coeff[length - 1])) length--;
+            return length;
         }
 
         /// <summary>
