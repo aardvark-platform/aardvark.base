@@ -71,6 +71,37 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void GetCombinedWithDefaultZeroTwoArgumentsTreatsNullAsZero()
+        {
+            var value = new FixedHash(17);
+
+            var hash = Aardvark.Base.HashCode.GetCombinedWithDefaultZero<FixedHash, FixedHash>(null, value);
+
+            Assert.AreEqual(Aardvark.Base.HashCode.Combine(0, 17), hash);
+        }
+
+        [Test]
+        public static void GetCombinedWithDefaultZeroThreeArgumentsTreatsNullAsZero()
+        {
+            var value = new FixedHash(23);
+
+            var hash = Aardvark.Base.HashCode.GetCombinedWithDefaultZero<FixedHash, FixedHash, FixedHash>(null, value, null);
+
+            Assert.AreEqual(Aardvark.Base.HashCode.Combine(Aardvark.Base.HashCode.UCombine(0, 23), 0), hash);
+        }
+
+        [Test]
+        public static void GetCombinedWithDefaultZeroFourArgumentsTreatsNullAsZero()
+        {
+            var value0 = new FixedHash(31);
+            var value1 = new FixedHash(43);
+
+            var hash = Aardvark.Base.HashCode.GetCombinedWithDefaultZero<FixedHash, FixedHash, FixedHash, FixedHash>(null, value0, null, value1);
+
+            Assert.AreEqual(Aardvark.Base.HashCode.Combine(Aardvark.Base.HashCode.UCombine(Aardvark.Base.HashCode.UCombine(0, 31), 0), 43), hash);
+        }
+
+        [Test]
         public static void Adler32UpdateByteArrayNullThrowsArgumentNullException()
         {
             var adler = new Adler32();
@@ -221,6 +252,21 @@ namespace Aardvark.Tests.Extensions
         {
             public bool fun1;
             public bool fun2;
+        }
+
+        private sealed class FixedHash
+        {
+            private readonly int m_hash;
+
+            public FixedHash(int hash)
+            {
+                m_hash = hash;
+            }
+
+            public override int GetHashCode()
+            {
+                return m_hash;
+            }
         }
 
         public struct MyStruct2

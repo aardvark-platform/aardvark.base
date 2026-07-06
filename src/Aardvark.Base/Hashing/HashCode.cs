@@ -200,21 +200,19 @@ namespace Aardvark.Base
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedWithDefaultZero<T0, T1>(T0 e0, T1 e1)
-            => Combine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
-                       e1.Equals(default(T1)) ? 0 : e1.GetHashCode());
+            => Combine(HashOrZero(e0), HashOrZero(e1));
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedWithDefaultZero<T0, T1, T2>(T0 e0, T1 e1, T2 e2)
-            => Combine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
-                                e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
-                                e2.Equals(default(T2)) ? 0 : e2.GetHashCode());
+            => Combine(UCombine(HashOrZero(e0), HashOrZero(e1)), HashOrZero(e2));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedWithDefaultZero<T0, T1, T2, T3>(T0 e0, T1 e1, T2 e2, T3 e3)
-            => Combine(UCombine(UCombine(e0.Equals(default(T0)) ? 0 : e0.GetHashCode(),
-                                         e1.Equals(default(T1)) ? 0 : e1.GetHashCode()),
-                                         e2.Equals(default(T2)) ? 0 : e2.GetHashCode()),
-                                         e3.Equals(default(T3)) ? 0 : e3.GetHashCode());
+            => Combine(UCombine(UCombine(HashOrZero(e0), HashOrZero(e1)), HashOrZero(e2)), HashOrZero(e3));
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int HashOrZero<T>(T value)
+            => EqualityComparer<T>.Default.Equals(value, default(T)) ? 0 : value.GetHashCode();
 
         /// <summary>
         /// Compute the first of two possible hashcodes for hashing in a 1-D

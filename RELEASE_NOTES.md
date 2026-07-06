@@ -1,3 +1,4 @@
+- [Base] Fixed `HashCode.GetCombinedWithDefaultZero` null reference handling
 - [Base] Fixed `Polynomial.RealRoots` effective degree detection for trailing zero coefficients
 - [Base] Hardened `LruCache` insertion size accounting against overflow
 - [Base] Fixed `SingleDeltaDict` null-key overlay comparisons
