@@ -23,6 +23,8 @@ namespace Aardvark.Base
 
         public void SetClippingParams(double left, double right, double bottom, double top, double near, double far)
         {
+            ValidateClippingParams(left, right, bottom, top, near, far);
+
             m_box.Min.X = left;
             m_box.Max.X = right;
             m_box.Min.Y = bottom;
@@ -125,6 +127,33 @@ namespace Aardvark.Base
                 );
 
             m_trafoChanges.Emit(m_trafo);
+        }
+
+        private static void ValidateClippingParams(double left, double right, double bottom, double top, double near, double far)
+        {
+            ValidateFinite(left, nameof(left));
+            ValidateFinite(right, nameof(right));
+            ValidateFinite(bottom, nameof(bottom));
+            ValidateFinite(top, nameof(top));
+            ValidateFinite(near, nameof(near));
+            ValidateFinite(far, nameof(far));
+
+            ValidatePositiveExtent(left, right, nameof(right));
+            ValidatePositiveExtent(bottom, top, nameof(top));
+            if (!(near > 0.0)) throw new ArgumentOutOfRangeException(nameof(near));
+            if (!(far > near)) throw new ArgumentOutOfRangeException(nameof(far));
+        }
+
+        private static void ValidateFinite(double value, string paramName)
+        {
+            if (!Fun.IsFinite(value)) throw new ArgumentOutOfRangeException(paramName);
+        }
+
+        private static void ValidatePositiveExtent(double min, double max, string paramName)
+        {
+            var extent = max - min;
+            if (!(extent > 0.0 && Fun.IsFinite(extent) && Fun.IsFinite(min + max)))
+                throw new ArgumentOutOfRangeException(paramName);
         }
     }
 }

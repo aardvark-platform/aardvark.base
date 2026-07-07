@@ -29,6 +29,8 @@ namespace Aardvark.Base
 
         public void SetClippingParams(double left, double right, double bottom, double top, double near, double far)
         {
+            ValidateClippingParams(left, right, bottom, top, near, far);
+
             m_box.Min.X = left;
             m_box.Max.X = right;
             m_box.Min.Y = bottom;
@@ -41,11 +43,12 @@ namespace Aardvark.Base
 
         public void SetClippingParams(double horizontalFovInDegrees, double near, double far, double aspectRatio = 1.0)
         {
-            var d = System.Math.Tan(Conversion.RadiansFromDegrees(horizontalFovInDegrees) * 0.5) * near;
+            ValidateFovClippingParams(horizontalFovInDegrees, near, far, aspectRatio, out var d, out var halfHeight);
+
             m_box.Min.X = -d;
             m_box.Max.X = +d;
-            m_box.Min.Y = -d / aspectRatio;
-            m_box.Max.Y = +d / aspectRatio;
+            m_box.Min.Y = -halfHeight;
+            m_box.Max.Y = +halfHeight;
             m_box.Min.Z = near;
             m_box.Max.Z = far;
 
@@ -126,6 +129,55 @@ namespace Aardvark.Base
             m_trafo = Trafo3d.PerspectiveProjectionRH(l, r, b, t, n, f);
 
             m_trafoChanges.Emit(m_trafo);
+        }
+
+        private static void ValidateClippingParams(double left, double right, double bottom, double top, double near, double far)
+        {
+            ValidateFinite(left, nameof(left));
+            ValidateFinite(right, nameof(right));
+            ValidateFinite(bottom, nameof(bottom));
+            ValidateFinite(top, nameof(top));
+            ValidateFinite(near, nameof(near));
+            ValidateFinite(far, nameof(far));
+
+            ValidatePositiveExtent(left, right, nameof(right));
+            ValidatePositiveExtent(bottom, top, nameof(top));
+            if (!(near > 0.0)) throw new ArgumentOutOfRangeException(nameof(near));
+            if (!(far > near)) throw new ArgumentOutOfRangeException(nameof(far));
+        }
+
+        private static void ValidateFovClippingParams(double horizontalFovInDegrees, double near, double far, double aspectRatio, out double halfWidth, out double halfHeight)
+        {
+            ValidateFinite(horizontalFovInDegrees, nameof(horizontalFovInDegrees));
+            ValidateFinite(near, nameof(near));
+            ValidateFinite(far, nameof(far));
+            ValidateFinite(aspectRatio, nameof(aspectRatio));
+
+            if (!(near > 0.0)) throw new ArgumentOutOfRangeException(nameof(near));
+            if (!(far > near)) throw new ArgumentOutOfRangeException(nameof(far));
+            if (!(aspectRatio > 0.0)) throw new ArgumentOutOfRangeException(nameof(aspectRatio));
+            if (!(horizontalFovInDegrees > 0.0 && horizontalFovInDegrees < 180.0))
+                throw new ArgumentOutOfRangeException(nameof(horizontalFovInDegrees));
+
+            halfWidth = System.Math.Tan(Conversion.RadiansFromDegrees(horizontalFovInDegrees) * 0.5) * near;
+            if (!(halfWidth > 0.0 && Fun.IsFinite(halfWidth)))
+                throw new ArgumentOutOfRangeException(nameof(horizontalFovInDegrees));
+
+            halfHeight = halfWidth / aspectRatio;
+            if (!(halfHeight > 0.0 && Fun.IsFinite(halfHeight)))
+                throw new ArgumentOutOfRangeException(nameof(aspectRatio));
+        }
+
+        private static void ValidateFinite(double value, string paramName)
+        {
+            if (!Fun.IsFinite(value)) throw new ArgumentOutOfRangeException(paramName);
+        }
+
+        private static void ValidatePositiveExtent(double min, double max, string paramName)
+        {
+            var extent = max - min;
+            if (!(extent > 0.0 && Fun.IsFinite(extent) && Fun.IsFinite(min + max)))
+                throw new ArgumentOutOfRangeException(paramName);
         }
     }
 }
