@@ -212,6 +212,42 @@ namespace Aardvark.Tests.TextUtilities
         }
 
         [Test]
+        public static void TextParserTrySkipRegexAdvancesToMatchEnd()
+        {
+            var text = new Text("abc123");
+            var parser = CreateParser(text);
+
+            Assert.IsTrue(parser.TrySkip(new Rx("[A-Za-z]+")));
+            Assert.AreEqual(3, parser.Pos);
+            Assert.AreEqual(3, parser.LastEnd);
+        }
+
+        [Test]
+        public static void TextParserTrySkipRegexCountsLines()
+        {
+            var text = new Text("ab\ncd!");
+            var parser = CreateParser(text);
+
+            Assert.IsTrue(parser.TrySkip(new Rx("ab\ncd")));
+            Assert.AreEqual(5, parser.Pos);
+            Assert.AreEqual(1, parser.Line.Index);
+            Assert.AreEqual(3, parser.Line.Start);
+        }
+
+        [Test]
+        public static void TextParserTrySkipRegexMismatchDoesNotAdvance()
+        {
+            var text = new Text("abc");
+            var parser = CreateParser(text);
+            var pos = parser.Pos;
+            var lastEnd = parser.LastEnd;
+
+            Assert.IsFalse(parser.TrySkip(new Rx("[0-9]+")));
+            Assert.AreEqual(pos, parser.Pos);
+            Assert.AreEqual(lastEnd, parser.LastEnd);
+        }
+
+        [Test]
         public static void TextParserTrySkipCharMismatchAtFinalCharacterDoesNotAdvance()
         {
             var text = new Text("cba");
@@ -221,6 +257,26 @@ namespace Aardvark.Tests.TextUtilities
 
             Assert.IsFalse(parser.TrySkip('b'));
             Assert.AreEqual(pos, parser.Pos);
+        }
+
+        [Test]
+        public static void XmlParserKeepsQualifiedNamesWhenSimpleNamesDisabled()
+        {
+            var parser = new XmlParser
+            {
+                SeenName = false,
+                SeenSlash = false,
+                PreserveWhiteSpace = true,
+                SimpleNames = false,
+                Separator = ':',
+            };
+            var root = new XmlItem();
+
+            TextParser<XmlParser>.Parse(new Text("<foo:bar baz:qux=\"value\" />"), parser, XmlParser.TextState, root);
+
+            Assert.AreEqual("foo:bar", root.Name.ToString());
+            Assert.AreEqual(1, root.AttList.Count);
+            Assert.AreEqual("baz:qux", root.AttList[0].Key.ToString());
         }
     }
 }

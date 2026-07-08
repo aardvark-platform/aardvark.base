@@ -665,7 +665,8 @@ namespace Aardvark.Base
             var index = Math.Max(Pos, LastEnd);
             var m = skipRx.AnchoredRegex.Match(Text.String, index, Text.End - index);
             if (!m.Success || m.Groups[2].Success) return false;
-            SetPosAndCountLines(index); LastEnd = index + m.Length;
+            var end = index + m.Length;
+            SetPosAndCountLines(end); LastEnd = end;
             return true;
         }
 
