@@ -198,6 +198,27 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void JulianDayEndOfDaySubMillisecondDoesNotDecodeAsNextMidnight()
+        {
+            var date = new DateTime(2024, 1, 1, 23, 59, 59, 999).AddTicks(9999);
+            var julianDay = date.ComputeJulianDay();
+            var decoded = DateTimeExtensions.ComputeDateFromJulianDay(julianDay);
+
+            Assert.Less(julianDay, new DateTime(2024, 1, 2).ComputeJulianDay());
+            Assert.AreNotEqual(new DateTime(2024, 1, 2, 0, 0, 0), decoded);
+            Assert.AreEqual(new DateTime(2024, 1, 1, 23, 59, 59, 999), decoded);
+        }
+
+        [Test]
+        public static void JulianDayMaxValueDecodesWithoutOverflow()
+        {
+            DateTime decoded = default(DateTime);
+
+            Assert.DoesNotThrow(() => decoded = DateTimeExtensions.ComputeDateFromJulianDay(DateTime.MaxValue.ComputeJulianDay()));
+            Assert.AreEqual(new DateTime(DateTime.MaxValue.Ticks - DateTime.MaxValue.Ticks % TimeSpan.TicksPerMillisecond), decoded);
+        }
+
+        [Test]
         public static void JulianDayRoundTripsDeterministicMillisecondSample()
         {
             var rnd = new Random(12345);
