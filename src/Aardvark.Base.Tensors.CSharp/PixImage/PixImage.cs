@@ -2128,7 +2128,7 @@ namespace Aardvark.Base
 
         /// <inheritdoc />
         public override PixImage RemappedPixImage(Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation = ImageInterpolation.Cubic)
-            => Remapped(mapX, mapX, interpolation);
+            => Remapped(mapX, mapY, interpolation);
 
         /// <inheritdoc cref="RemappedPixImage" />
         public PixImage<T> Remapped(Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation = ImageInterpolation.Cubic)

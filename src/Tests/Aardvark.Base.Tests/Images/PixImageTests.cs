@@ -11,6 +11,62 @@ namespace Aardvark.Tests.Images
     {
         static readonly RandomSystem rnd = new(0);
 
+        private sealed class CapturingRemapProcessor : IPixProcessor
+        {
+            public string Name => "Capturing remap test processor";
+
+            public PixProcessorCaps Capabilities => PixProcessorCaps.Remap;
+
+            public Matrix<float> CapturedMapX;
+            public Matrix<float> CapturedMapY;
+            public ImageInterpolation CapturedInterpolation;
+            public int RemapCallCount;
+
+            public PixImage<T> Scale<T>(PixImage<T> image, V2d scaleFactor, ImageInterpolation interpolation)
+                => null;
+
+            public PixImage<T> Rotate<T>(PixImage<T> image, double angleInRadians, bool resize, ImageInterpolation interpolation,
+                                         ImageBorderType borderType = ImageBorderType.Const,
+                                         T border = default)
+                => null;
+
+            public PixImage<T> Remap<T>(PixImage<T> image, Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation,
+                                        ImageBorderType borderType = ImageBorderType.Const,
+                                        T border = default)
+            {
+                RemapCallCount++;
+                CapturedMapX = mapX;
+                CapturedMapY = mapY;
+                CapturedInterpolation = interpolation;
+                return image;
+            }
+        }
+
+        [Test]
+        public void RemappedPixImageForwardsDistinctCoordinateMaps()
+        {
+            var processor = new CapturingRemapProcessor();
+            PixImage image = new PixImage<byte>(Col.Format.Gray, 2, 2);
+            var mapX = new Matrix<float>(new[] { 0.0f, 1.0f, 0.0f, 1.0f }, 2, 2);
+            var mapY = new Matrix<float>(new[] { 0.0f, 0.0f, 1.0f, 1.0f }, 2, 2);
+
+            PixImage.SetProcessor(processor, 1000);
+            try
+            {
+                var result = image.RemappedPixImage(mapX, mapY, ImageInterpolation.Linear);
+
+                Assert.AreSame(image, result);
+                Assert.AreEqual(1, processor.RemapCallCount);
+                Assert.AreSame(mapX.Data, processor.CapturedMapX.Data);
+                Assert.AreSame(mapY.Data, processor.CapturedMapY.Data);
+                Assert.AreEqual(ImageInterpolation.Linear, processor.CapturedInterpolation);
+            }
+            finally
+            {
+                PixImage.RemoveProcessor(processor);
+            }
+        }
+
         #region Mipmap
 
         [Test]

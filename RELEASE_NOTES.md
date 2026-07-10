@@ -1,3 +1,4 @@
+- [PixImage] Fixed base remap API forwarding of Y coordinate maps
 - [Base] Hardened Julian-day conversion at end-of-day boundaries
 - [Base] Fixed regex `TextParser.TrySkip` position advancement
 - [Essentials] Hardened camera projection clipping parameter validation
