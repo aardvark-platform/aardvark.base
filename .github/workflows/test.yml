@@ -95,7 +95,7 @@ jobs:
       run: dotnet paket restore
 
     - name: Build
-      run: dotnet build -c Release ${{ matrix.sln }}
+      run: dotnet build -c Release --no-restore ${{ matrix.sln }}
 
     - name: Test
       run: dotnet test ${{ matrix.sln }} -c Release --no-build --nologo --logger:"console;verbosity=normal"
