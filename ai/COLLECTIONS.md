@@ -69,6 +69,8 @@ Key operations:
 
 Defined in namespace `System.Collections.Concurrent`.
 
+Sequence constructors apply set semantics while consuming the input once: duplicate elements are ignored according to either the default equality comparer or the supplied custom comparer. Generic and non-generic enumeration both expose elements of type `T`.
+
 Core operations:
 
 ```csharp
