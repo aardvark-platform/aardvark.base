@@ -106,6 +106,77 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void ToArrayWithKnownCountReturnsExactResults()
+        {
+            var collection = new List<int> { 1, 2, 3 };
+            var singleUse = new SingleUseEnumerable<int>(new[] { 4, 5, 6 });
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, collection.ToArray(3));
+            CollectionAssert.AreEqual(new[] { 4, 5, 6 }, singleUse.ToArray(3));
+            Assert.AreEqual(1, singleUse.EnumeratorCount);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountReturnsSharedEmptyArrayForExactEmptySources()
+        {
+            var collectionResult = new List<int>().ToArray(0);
+            var lazySource = Track();
+            var lazyResult = lazySource.ToArray(0);
+
+            Assert.AreSame(Array.Empty<int>(), collectionResult);
+            Assert.AreSame(Array.Empty<int>(), lazyResult);
+            AssertDisposedOnce(lazySource);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountRejectsZeroCountMismatches()
+        {
+            AssertParamName<ArgumentException>("count", () => new List<int> { 1 }.ToArray(0));
+
+            var lazySource = Track(1);
+            AssertParamName<ArgumentException>("count", () => lazySource.ToArray(0));
+            AssertDisposedOnce(lazySource);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountRejectsCollectionCountMismatches()
+        {
+            var source = new List<int> { 1, 2, 3 };
+
+            AssertParamName<ArgumentException>("count", () => source.ToArray(2));
+            AssertParamName<ArgumentException>("count", () => source.ToArray(4));
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountRejectsLazyCountMismatchesAndDisposes()
+        {
+            var longerSource = Track(1, 2, 3);
+            var shorterSource = Track(1, 2, 3);
+
+            AssertParamName<ArgumentException>("count", () => longerSource.ToArray(2));
+            AssertParamName<ArgumentException>("count", () => shorterSource.ToArray(4));
+            AssertDisposedOnce(longerSource, shorterSource);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountValidatesArguments()
+        {
+            IEnumerable<int> nullSource = null;
+
+            AssertParamName<ArgumentNullException>("source", () => nullSource.ToArray(0));
+            AssertParamName<ArgumentOutOfRangeException>("count", () => Enumerable.Empty<int>().ToArray(-1));
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountDisposesEnumeratorOnSuccess()
+        {
+            var source = Track(1, 2, 3);
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, source.ToArray(3));
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
         public static void MaxIndex()
         {
             var en = 0.UpTo(5);

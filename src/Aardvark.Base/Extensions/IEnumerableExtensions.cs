@@ -2285,48 +2285,54 @@ namespace Aardvark.Base
 
         /// <summary>
         /// This is a more efficient version of System.Linq.Enumerable.ToArray() when the number of elements of <paramref name="source"/> cannot be efficiently determined but is known.
-        /// Creates an array from a <see cref="T:System.Collections.Generic.IEnumerable`1" />.
+        /// Creates an array from a <see cref="T:System.Collections.Generic.IEnumerable`1" /> and verifies that it contains exactly <paramref name="count"/> elements.
         /// </summary>
-        /// <returns>An array of size count that contains the elements from the input sequence.</returns>
+        /// <remarks>Non-collection inputs are enumerated once and their enumerator is disposed after the exact element count has been verified.</remarks>
+        /// <returns>An array of size <paramref name="count"/> that contains the elements from the input sequence.</returns>
         /// <param name="source">An <see cref="T:System.Collections.Generic.IEnumerable`1" /> to create an array from.</param>
-        /// <param name="count">The known size of the result-array.</param>
+        /// <param name="count">The non-negative number of elements expected in <paramref name="source"/>.</param>
         /// <exception cref="T:System.ArgumentNullException"><paramref name="source" /> is null.</exception>
+        /// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is negative.</exception>
         /// <exception cref="T:System.ArgumentException"><paramref name="count"/> is different from the number of elements in <paramref name="source" />.</exception>
         public static TElement[] ToArray<TElement>(this IEnumerable<TElement> source, int count)
         {
-            if (count == 0)
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+
+            if (source is ICollection<TElement> collection)
             {
-                return Array.Empty<TElement>();
+                var collectionCount = collection.Count;
+                if (collectionCount != count)
+                {
+                    var message = collectionCount > count
+                        ? "Enumerable has more elements than count."
+                        : "Enumerable has less elements than count.";
+                    throw new ArgumentException(message, nameof(count));
+                }
+
+                if (count == 0) return Array.Empty<TElement>();
+
+                var result = new TElement[count];
+                collection.CopyTo(result, 0);
+                return result;
             }
-            else
+
+            var array = count == 0 ? Array.Empty<TElement>() : new TElement[count];
+            using (var enumerator = source.GetEnumerator())
             {
-                TElement[] array = null;
-                int num = 0;
-                ICollection<TElement> collection = source as ICollection<TElement>;
-                if (collection != null)
+                for (var i = 0; i < count; i++)
                 {
-                    num = collection.Count;
-                    array = new TElement[num];
-                    if (num > 0)
-                    {
-                        collection.CopyTo(array, 0);
-                    }
+                    if (!enumerator.MoveNext())
+                        throw new ArgumentException("Enumerable has less elements than count.", nameof(count));
+
+                    array[i] = enumerator.Current;
                 }
-                else
-                {
-                    array = new TElement[count];
-                    foreach (TElement current in source)
-                    {
-                        if (count == num)
-                            throw new ArgumentException("Enumerable has more elements than count.", "count");
-                        array[num] = current;
-                        num++;
-                    }
-                }
-                if (count > num)
-                    throw new ArgumentException("Enumerable has less elements than count.", "count");
-                return array;
+
+                if (enumerator.MoveNext())
+                    throw new ArgumentException("Enumerable has more elements than count.", nameof(count));
             }
+
+            return array;
         }
 
         #endregion
