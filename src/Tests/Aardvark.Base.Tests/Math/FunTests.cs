@@ -1,6 +1,8 @@
 ﻿using Aardvark.Base;
 using NUnit.Framework;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Aardvark.Tests
 {
@@ -9,6 +11,42 @@ namespace Aardvark.Tests
     {
         public FunTests() : base() { }
         public FunTests(TestSuite.Options options) : base(options) { }
+
+        private sealed class SingleUseEnumerable<T> : IEnumerable<T>
+        {
+            private readonly T[] m_values;
+            private bool m_wasEnumerated;
+
+            public int EnumerationCount { get; private set; }
+
+            public SingleUseEnumerable(params T[] values)
+            {
+                m_values = values;
+            }
+
+            public IEnumerator<T> GetEnumerator()
+            {
+                if (m_wasEnumerated)
+                    throw new InvalidOperationException("The sequence was enumerated more than once.");
+
+                m_wasEnumerated = true;
+                EnumerationCount++;
+                return ((IEnumerable<T>)m_values).GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+
+        private static double ExpectedBinaryEntropy(double positiveWeight, double negativeWeight)
+        {
+            var total = positiveWeight + negativeWeight;
+            var positive = positiveWeight / total;
+            var negative = negativeWeight / total;
+            return -positive * Math.Log(positive, 2.0) - negative * Math.Log(negative, 2.0);
+        }
 
         [Test]
         public static void AngleDistanceTest()
@@ -81,6 +119,53 @@ namespace Aardvark.Tests
             var max = Fun.Max(a, b, c, d, e);
             var max_ref = Fun.Max(Fun.Max(Fun.Max(Fun.Max(a, b), c), d), e);
             Assert.AreEqual(max, max_ref, "Max not equal to reference");
+        }
+
+        [Test]
+        public void EntropyEnumeratesInputOnce()
+        {
+            var values = new SingleUseEnumerable<int>(1, 1, 2, 2);
+
+            Assert.AreEqual(1.0, values.Entropy(), 1e-12);
+            Assert.AreEqual(1, values.EnumerationCount);
+        }
+
+        [Test]
+        public void EntropyHandlesEmptyAllEqualNullAndMixedDistributions()
+        {
+            Assert.AreEqual(0.0, Array.Empty<int>().Entropy(), 0.0);
+            Assert.AreEqual(0.0, new[] { 7, 7, 7 }.Entropy(), 1e-12);
+            Assert.AreEqual(1.0, new[] { "a", "a", "b", "b" }.Entropy(), 1e-12);
+            Assert.AreEqual(1.5, new string[] { null, null, "x", "y" }.Entropy(), 1e-12);
+        }
+
+        [Test]
+        public void WeightedBipartiteEntropyNormalizesByTotalWeight()
+        {
+            var classes = new[] { true, false };
+
+            Assert.AreEqual(1.0, classes.Entropy(new[] { 2.0, 2.0 }), 1e-12);
+            Assert.AreEqual(ExpectedBinaryEntropy(3.0, 1.0), classes.Entropy(new[] { 3.0, 1.0 }), 1e-12);
+        }
+
+        [Test]
+        public void WeightedBipartiteEntropyIsScaleInvariant()
+        {
+            var classes = new[] { true, false };
+
+            var entropy = classes.Entropy(new[] { 3.0, 1.0 });
+            var scaledEntropy = classes.Entropy(new[] { 30.0, 10.0 });
+
+            Assert.AreEqual(entropy, scaledEntropy, 1e-12);
+        }
+
+        [Test]
+        public void WeightedBipartiteEntropyReturnsZeroForZeroClassTotals()
+        {
+            Assert.AreEqual(0.0, new[] { true, true }.Entropy(new[] { 2.0, 5.0 }), 0.0);
+            Assert.AreEqual(0.0, new[] { false, false }.Entropy(new[] { 2.0, 5.0 }), 0.0);
+            Assert.AreEqual(0.0, new[] { true, false }.Entropy(new[] { 0.0, 5.0 }), 0.0);
+            Assert.AreEqual(0.0, new[] { true, false }.Entropy(new[] { 5.0, 0.0 }), 0.0);
         }
 
         private static double NextAfter(double input, int dir)

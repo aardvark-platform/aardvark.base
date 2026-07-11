@@ -310,13 +310,18 @@ namespace Aardvark.Base
         #region Shannon Entropy
 
         /// <summary>
-        /// Shannon entropy of values.
+        /// Shannon entropy of values. The input sequence is enumerated exactly once
+        /// and buffered before grouping, preserving default equality semantics,
+        /// including null values.
         /// </summary>
         public static double Entropy<T>(this IEnumerable<T> xs)
         {
-            double total = xs.Count();
-            return xs.GroupBy(x => x)
-                .Select(g => { double p = g.Count() / total; return p * -p.Log2(); })
+            var values = xs.ToArray();
+            if (values.Length == 0) return 0.0;
+
+            var total = (double)values.Length;
+            return values.GroupBy(x => x)
+                .Select(g => { var p = g.Count() / total; return p * -p.Log2(); })
                 .Sum();
         }
 
@@ -353,7 +358,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Shannon entropy of weighted bipartite set.
+        /// Shannon entropy of weighted bipartite set. Positive and negative
+        /// class totals are normalized by their combined weight.
         /// </summary>
         public static double Entropy(this bool[] xs, double[] weights)
         {
@@ -378,8 +384,9 @@ namespace Aardvark.Base
             }
             if (countPos == 0 || countNeg == 0) return 0.0;
 
-            var pPos = countPos / (double)count;
-            var pNeg = countNeg / (double)count;
+            var totalWeight = countPos + countNeg;
+            var pPos = countPos / totalWeight;
+            var pNeg = countNeg / totalWeight;
             var hPos = -Math.Log(pPos, 2);
             var hNeg = -Math.Log(pNeg, 2);
             var H = pPos * hPos + pNeg * hNeg;

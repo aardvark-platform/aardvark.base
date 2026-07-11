@@ -1,3 +1,4 @@
+- [Base] Fixed entropy helpers to enumerate generic inputs once and normalize weighted classes by total weight
 - [PixImage] Fixed base remap API forwarding of Y coordinate maps
 - [Base] Hardened Julian-day conversion at end-of-day boundaries
 - [Base] Fixed regex `TextParser.TrySkip` position advancement
