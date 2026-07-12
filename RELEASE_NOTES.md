@@ -1,3 +1,4 @@
+- [IO] Fixed `StreamCodeReader` partial and short-read array handling
 - [Base] Fixed `ConcurrentHashSet<T>` sequence construction and non-generic enumeration semantics
 - [Base] Enforced exact counts in `EnumerableEx.ToArray(source, count)`
 - [Base] Fixed entropy helpers to enumerate generic inputs once and normalize weighted classes by total weight

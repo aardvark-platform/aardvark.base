@@ -46,7 +46,9 @@ namespace Aardvark.Base.Coder
 
         public Symbol ReadGuidSymbol()
         {
-            Read(m_guidBuffer, 0, 16);
+            if (ReadAvailable(m_guidBuffer, 0, m_guidBuffer.Length) != m_guidBuffer.Length)
+                throw new EndOfStreamException("Unable to read a complete Guid symbol.");
+
             return Symbol.Create(new Guid(m_guidBuffer));
         }
 
@@ -77,10 +79,39 @@ namespace Aardvark.Base.Coder
 
         #region Read Arrays and Lists
 
+        private int ReadAvailable(byte[] array, int index, int count)
+        {
+            var total = 0;
+            while (total < count)
+            {
+                var read = base.Read(array, index + total, count - total);
+                if (read == 0) break;
+                total += read;
+            }
+            return total;
+        }
+
+#if NET6_0_OR_GREATER
+        private int ReadAvailable(Span<byte> span)
+        {
+            var total = 0;
+            while (!span.IsEmpty)
+            {
+                var read = base.Read(span);
+                if (read == 0) break;
+                total += read;
+                span = span.Slice(read);
+            }
+            return total;
+        }
+#endif
+
+        /// <summary>Reads up to <paramref name="count"/> bytes into the specified destination range, continuing across short reads until the range is full or the stream ends.</summary>
+        /// <returns>The number of bytes actually read.</returns>
         public long ReadArray(byte[] array, long index, long count)
         {
             if (count < 1) return 0;
-            return (long)Read(array, (int)index, (int)count);
+            return ReadAvailable(array, (int)index, (int)count);
         }
 
 #if !NET6_0_OR_GREATER
@@ -104,6 +135,8 @@ namespace Aardvark.Base.Coder
         }
 #endif
 
+        /// <summary>Reads up to <paramref name="count"/> values into the specified destination range, continuing across short reads until the range is full or the stream ends.</summary>
+        /// <returns>The number of complete values read. Bytes from a trailing partial value at end of stream are not included.</returns>
         public long ReadArray<T>(T[] array, long index, long count)
             where T : struct
         {
@@ -111,21 +144,7 @@ namespace Aardvark.Base.Coder
 
 #if NET6_0_OR_GREATER
             var span = MemoryMarshal.AsBytes(array.AsSpan((int)index, (int)count));
-
-            var sizeOfT = span.Length / array.Length;
-            var bytesToRead = span.Length;
-            var offset = 0;
-
-            do
-            {
-                int finished = base.Read(span);
-                if (finished == 0) break;
-                offset += finished; bytesToRead -= finished;
-                span = span.Slice(offset, bytesToRead);
-            }
-            while (bytesToRead > 0);
-                        
-            return offset / sizeOfT;
+            return ReadAvailable(span) / Unsafe.SizeOf<T>();
 #else
             unsafe
             {
@@ -144,21 +163,18 @@ namespace Aardvark.Base.Coder
                     IntPtr backupId = *pId, backupLen = *pLen;
                     *pId = s_byteId; *pLen = byteLen;
 
-                    do
-                    {
-                        int finished = base.Read(hack.bytes, offset, bytesToRead);
-                        if (finished == 0) break;
-                        offset += finished; bytesToRead -= finished;
-                    }
-                    while (bytesToRead > 0);
+                    var bytesRead = ReadAvailable(hack.bytes, offset, bytesToRead);
 
                     *pId = backupId; *pLen = backupLen;
+
+                    return bytesRead / sizeOfT;
                 }
-                return ((long)(offset / sizeOfT) - index);
             }
 #endif
         }
 
+        /// <summary>Reads up to <paramref name="count"/> values into the two-dimensional destination in array storage order, continuing across short reads until the range is full or the stream ends.</summary>
+        /// <returns>The number of complete values read. Bytes from a trailing partial value at end of stream are not included.</returns>
         public long ReadArray<T>(T[,] array, long count)
             where T : struct
         {
@@ -167,20 +183,7 @@ namespace Aardvark.Base.Coder
 #if NET6_0_OR_GREATER
             var sizeOfT = Unsafe.SizeOf<T>();
             var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
-
-            var bytesToRead = span.Length;
-            var offset = 0;
-
-            do
-            {
-                int finished = base.Read(span);
-                if (finished == 0) break;
-                offset += finished; bytesToRead -= finished;
-                span = span.Slice(offset, bytesToRead);
-            }
-            while (bytesToRead > 0);
-
-            return offset / sizeOfT;
+            return ReadAvailable(span) / sizeOfT;
 #else
             unsafe
             {
@@ -202,21 +205,18 @@ namespace Aardvark.Base.Coder
                     IntPtr backupId = *pId, backupLen = *pLen;
                     *pId = s_byteId; *pLen = byteLen;
 
-                    do
-                    {
-                        int finished = base.Read(hack.bytes, offset, bytesToRead);
-                        if (finished == 0) break;
-                        offset += finished; bytesToRead -= finished;
-                    }
-                    while (bytesToRead > 0);
+                    var bytesRead = ReadAvailable(hack.bytes, offset, bytesToRead);
 
                     *pId = backupId; *pLen = backupLen;
+
+                    return bytesRead / sizeOfT;
                 }
-                return (long)((offset - skip) / sizeOfT);
             }
 #endif
         }
 
+        /// <summary>Reads up to <paramref name="count"/> values into the three-dimensional destination in array storage order, continuing across short reads until the range is full or the stream ends.</summary>
+        /// <returns>The number of complete values read. Bytes from a trailing partial value at end of stream are not included.</returns>
         public long ReadArray<T>(T[, ,] array, long count)
             where T : struct
         {
@@ -224,20 +224,7 @@ namespace Aardvark.Base.Coder
 #if NET6_0_OR_GREATER
             var sizeOfT = Unsafe.SizeOf<T>();
             var span = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(array), (int)count * sizeOfT);
-
-            var bytesToRead = span.Length;
-            var offset = 0;
-
-            do
-            {
-                int finished = base.Read(span);
-                if (finished == 0) break;
-                offset += finished; bytesToRead -= finished;
-                span = span.Slice(offset, bytesToRead);
-            }
-            while (bytesToRead > 0);
-
-            return offset / sizeOfT;
+            return ReadAvailable(span) / sizeOfT;
 #else
             unsafe
             {
@@ -259,17 +246,12 @@ namespace Aardvark.Base.Coder
                     IntPtr backupId = *pId, backupLen = *pLen;
                     *pId = s_byteId; *pLen = byteLen;
 
-                    do
-                    {
-                        int finished = base.Read(hack.bytes, offset, bytesToRead);
-                        if (finished == 0) break;
-                        offset += finished; bytesToRead -= finished;
-                    }
-                    while (bytesToRead > 0);
+                    var bytesRead = ReadAvailable(hack.bytes, offset, bytesToRead);
 
                     *pId = backupId; *pLen = backupLen;
+
+                    return bytesRead / sizeOfT;
                 }
-                return (long)((offset - skip) / sizeOfT);
             }
 #endif
         }
