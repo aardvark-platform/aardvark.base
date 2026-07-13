@@ -1,3 +1,4 @@
+### 5.3.26
 - [Base] Fixed dictionary duplicate popping and shared-value enumeration semantics
 - [IO] Fixed `StreamCodeReader` partial and short-read array handling
 - [Base] Fixed `ConcurrentHashSet<T>` sequence construction and non-generic enumeration semantics
