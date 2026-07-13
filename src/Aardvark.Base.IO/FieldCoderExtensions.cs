@@ -116,7 +116,7 @@ namespace Aardvark.Base.Coder
 
             /* var v = */ gen.DeclareLocal(prop.PropertyType);
             var typeOfCodeMethodArdWithoutRef =
-                Type.GetType(typeOfCodeMethodArg.FullName.Substring(0, typeOfCodeMethodArg.FullName.Length - 1));
+                Introspection.GetType(typeOfCodeMethodArg.FullName.Substring(0, typeOfCodeMethodArg.FullName.Length - 1));
             /* var v1 = */ gen.DeclareLocal(typeOfCodeMethodArdWithoutRef);
 
             var label_isReading = gen.DefineLabel();
@@ -176,7 +176,7 @@ namespace Aardvark.Base.Coder
             if (t.IsArray)
             {
                 var s = t.FullName.Substring(0, t.FullName.Length - 2);
-                var arrayOfWhat = Type.GetType(s);
+                var arrayOfWhat = Introspection.GetType(s);
                 return s_methodCodeArrayOfT.MakeGenericMethod(arrayOfWhat);
             }
 
@@ -184,7 +184,7 @@ namespace Aardvark.Base.Coder
             {
                 var i = t.FullName.IndexOf('[');
                 var s = t.FullName.Substring(i + 2, t.FullName.Length - i - 3);
-                var listOfWhat = Type.GetType(s);
+                var listOfWhat = Introspection.GetType(s);
                 return s_methodCodeListOfT.MakeGenericMethod(listOfWhat);
             }
 

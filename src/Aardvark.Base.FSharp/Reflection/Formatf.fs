@@ -156,12 +156,12 @@ module Printf =
 
             let del = 
                 if typeof<'res> = typeof<System.Void> then
-                    let funcType = typedefof<Action<_>>.FullName.Replace("1", string (args.Length)) |> Type.GetType
+                    let funcType = typedefof<Action<_>>.FullName.Replace("1", string (args.Length)) |> Introspection.GetType
                     let funcType = funcType.MakeGenericType args
 
                     meth.CreateDelegate(funcType)
                 else
-                    let funcType = typedefof<Func<_>>.FullName.Replace("1", string (args.Length + 1)) |> Type.GetType
+                    let funcType = typedefof<Func<_>>.FullName.Replace("1", string (args.Length + 1)) |> Introspection.GetType
                     let funcType = funcType.MakeGenericType (Array.append args [|typeof<'res>|])
 
                     meth.CreateDelegate(funcType)

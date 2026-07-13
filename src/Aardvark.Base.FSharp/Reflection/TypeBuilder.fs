@@ -49,10 +49,10 @@ module TypeBuilderOld =
                 let fieldType = 
                     let args = iface::args |> List.toArray
                     if ret = typeof<System.Void> then
-                        let actionType = Type.GetType(typedefof<Action<_>>.FullName.Replace("1", string args.Length))
+                        let actionType = Introspection.GetType(typedefof<Action<_>>.FullName.Replace("1", string args.Length))
                         actionType.MakeGenericType args
                     else
-                        let funcType = Type.GetType(typedefof<Func<_>>.FullName.Replace("1", string (1 + args.Length)))
+                        let funcType = Introspection.GetType(typedefof<Func<_>>.FullName.Replace("1", string (1 + args.Length)))
                         funcType.MakeGenericType (Array.append args [|ret|])
 
                 let field = bType.DefineField("m_" + name, fieldType, FieldAttributes.Private)
@@ -158,10 +158,10 @@ module TypeBuilderOld =
                 let fieldType = 
                     let args = baseType::args |> List.toArray
                     if ret = typeof<System.Void> then
-                        let actionType = Type.GetType(typedefof<Action<_>>.FullName.Replace("1", string args.Length))
+                        let actionType = Introspection.GetType(typedefof<Action<_>>.FullName.Replace("1", string args.Length))
                         actionType.MakeGenericType args
                     else
-                        let funcType = Type.GetType(typedefof<Func<_>>.FullName.Replace("1", string (1 + args.Length)))
+                        let funcType = Introspection.GetType(typedefof<Func<_>>.FullName.Replace("1", string (1 + args.Length)))
                         funcType.MakeGenericType (Array.append args [|ret|])
 
                 let field = bType.DefineField("m_" + name, fieldType, FieldAttributes.Private)
@@ -249,7 +249,7 @@ module TypeBuilderOld =
             | args ->
                 let args = List.append args [ret] |> List.toArray
                 let name = typedefof<Microsoft.FSharp.Core.OptimizedClosures.FSharpFunc<_,_,_>>.AssemblyQualifiedName.Replace("`3", "`" + string args.Length)
-                let tgen = Type.GetType(name)
+                let tgen = Introspection.GetType(name)
                 tgen.MakeGenericType args
 
     open Microsoft.FSharp.Core.OptimizedClosures
@@ -379,10 +379,10 @@ module TypeBuilder =
                 let fieldType = 
                     getDelegateType args r
 //                    if r = typeof<System.Void> then
-//                        let actionType = Type.GetType(typedefof<Action<_>>.FullName.Replace("1", string args.Length))
+//                        let actionType = Introspection.GetType(typedefof<Action<_>>.FullName.Replace("1", string args.Length))
 //                        actionType.MakeGenericType args
 //                    else
-//                        let funcType = Type.GetType(typedefof<Func<_>>.FullName.Replace("1", string (1 + args.Length)))
+//                        let funcType = Introspection.GetType(typedefof<Func<_>>.FullName.Replace("1", string (1 + args.Length)))
 //                        funcType.MakeGenericType (Array.append args [|r|])
 
 
@@ -901,7 +901,7 @@ module Serializer =
             override x.Read (r : IReader) = 
                 code { 
                     let name = r.ReadString() 
-                    return Type.GetType name
+                    return Introspection.GetType name
                 }
 
             override x.Write(w,v) = 

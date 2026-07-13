@@ -707,7 +707,7 @@ module ValueCoderTypes =
                 if name = "(null)" then
                     return null
                 else
-                    return Type.GetType name
+                    return Introspection.GetType name
             }
 
         override x.Write(w, t) =

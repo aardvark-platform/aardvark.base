@@ -83,7 +83,7 @@ public static class Introspection
     /// </summary>
     public static Type[] GetAllClassesImplementingInterface(Assembly assembly, Type interfaceType)
         => GetAll___(assembly, interfaceType.FullName,
-            lines => lines.Select(Type.GetType),
+            lines => lines.SelectNotNull(GetType),
             types => types.Where(t => (t.IsClass || t.IsValueType) && t.GetInterfaces().Contains(interfaceType)),
             result => result.Select(t => t.AssemblyQualifiedName)
         );
@@ -94,7 +94,7 @@ public static class Introspection
     /// </summary>
     public static Type[] GetAllClassesInheritingFrom(Assembly assembly, Type baseType)
         => GetAll___(assembly, baseType.FullName,
-            lines => lines.Select(Type.GetType),
+            lines => lines.SelectNotNull(GetType),
             types => types.Where(t => t.IsSubclassOf(baseType)),
             result => result.Select(t => t.AssemblyQualifiedName)
         );
@@ -106,7 +106,7 @@ public static class Introspection
     /// </summary>
     public static (Type, T[])[] GetAllTypesWithAttribute<T>(Assembly assembly)
         => GetAll___<(Type, T[])>(assembly, typeof(T).FullName,
-           lines => lines.Select(Type.GetType)
+           lines => lines.SelectNotNull(GetType)
                     .Select(t => (t, TryGetCustomAttributes<T>(t))),
            types => from t in types
                     let attribs = TryGetCustomAttributes<T>(t)
@@ -117,6 +117,7 @@ public static class Introspection
 
     private static T[] TryGetCustomAttributes<T>(Type type)
     {
+        if (type == null) return [];
         try
         {
             return type.GetCustomAttributes(typeof(T), false).Select(x => (T)x).ToArray();
@@ -130,6 +131,7 @@ public static class Introspection
 
     private static T[] TryGetCustomAttributes<T>(MethodInfo mi)
     {
+        if (mi == null) return [];
         try
         {
             return mi.GetCustomAttributes(typeof(T), false).Select(x => (T)x).ToArray();
@@ -149,7 +151,7 @@ public static class Introspection
     public static (MethodInfo, T[])[] GetAllMethodsWithAttribute<T>(Assembly assembly)
         => GetAll___<(MethodInfo, T[])>(assembly, typeof(T).FullName,
               lines => from line in lines
-                       let t = Type.GetType(line)
+                       let t = GetType(line)
                        where t != null
                        from m in t.GetMethods()
                        let attribs = TryGetCustomAttributes<T>(m)
@@ -163,6 +165,28 @@ public static class Introspection
                        select (m, attribs),
               result => result.SelectNotNull(m => m.Item1.DeclaringType?.AssemblyQualifiedName)
         );
+
+#if NET8_0_OR_GREATER
+    /// <summary>
+    /// Returns the type with the given name.
+    /// Uses <see cref="IntrospectionProperties.AssemblyLoadContext"/> to load the type.
+    /// </summary>
+    /// <param name="typeName">Name of the type to retrieve.</param>
+    /// <returns>Type with given name, or null on failure.</returns>
+#else
+    /// <summary>
+    /// Returns the type with the given name.
+    /// </summary>
+    /// <param name="typeName">Name of the type to retrieve.</param>
+    /// <returns>Type with given name, or null if not found.</returns>
+#endif
+    public static Type GetType(string typeName)
+    {
+#if NET8_0_OR_GREATER
+        using var _ = IntrospectionProperties.AssemblyLoadContext.EnterContextualReflection();
+#endif
+        return typeName != null ? Type.GetType(typeName) : null;
+    }
 
     static Introspection()
     {

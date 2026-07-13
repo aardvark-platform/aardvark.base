@@ -176,7 +176,7 @@ namespace Aardvark.Base.Coder
             }
             else
             {
-                typeInfo = new TypeInfo(typeName, Type.GetType(typeName),
+                typeInfo = new TypeInfo(typeName, Introspection.GetType(typeName),
                             TypeInfo.Option.Size | TypeInfo.Option.Version);
                 if ((m_debugMode & CoderDebugMode.ReportQualifiedNames) != 0)
                     Report.Line("qualified name \"{0}\"", typeName);
@@ -814,7 +814,7 @@ namespace Aardvark.Base.Coder
             if (TryGetTypeInfo(typeName, out ti))
                 value = ti.Type;
             else
-                value = Type.GetType(typeName);
+                value = Introspection.GetType(typeName);
         }
 
         public void CodeGuid(ref Guid value) { value = m_reader.ReadGuid(); }
@@ -962,7 +962,7 @@ namespace Aardvark.Base.Coder
                 if (TryGetTypeInfo(typeName, out ti))
                     value[i] = ti.Type;
                 else
-                    value[i] = Type.GetType(typeName);
+                    value[i] = Introspection.GetType(typeName);
             }
         }
 
@@ -1104,7 +1104,7 @@ namespace Aardvark.Base.Coder
                 if (TryGetTypeInfo(typeName, out ti))
                     value.Add(ti.Type);
                 else
-                    value.Add(Type.GetType(typeName));
+                    value.Add(Introspection.GetType(typeName));
             }
         }
 

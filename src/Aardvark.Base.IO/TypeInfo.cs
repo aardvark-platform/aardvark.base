@@ -227,7 +227,7 @@ namespace Aardvark.Base.Coder
                     if (!newMatch.Success) { typeInfo = default(TypeInfo); return false; }
                     var newShortName = newMatch.Value; var pos = newMatch.Index + newMatch.Length;
                     var newName = newFullName.Substring(0, pos) + "[]" + newFullName.Substring(pos);
-                    typeInfo = new TypeInfo(typeInfo.Name + "[]", Type.GetType(newName), TypeInfo.Option.Size | TypeInfo.Option.Version);
+                    typeInfo = new TypeInfo(typeInfo.Name + "[]", Introspection.GetType(newName), TypeInfo.Option.Size | TypeInfo.Option.Version);
                     return true;
                 }
                 return false;

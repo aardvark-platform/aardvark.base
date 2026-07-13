@@ -13,6 +13,7 @@
 - [Base] Fixed `SingleDeltaDict` null-key overlay comparisons
 - [FSharp] Hardened `ReferenceCountingSet` null element semantics
 - [Base] Hardened `SubRange<T>.CopyTo` destination validation
+- [Introspection] Added `Introspection.GetType` using `IntrospectionProperties.AssemblyLoadContext` to load assemblies.
 
 ### 5.3.25
 - [Essentials] Hardened `Await.WhenAll` empty, duplicate, and null-input handling
