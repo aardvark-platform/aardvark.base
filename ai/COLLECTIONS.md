@@ -44,6 +44,10 @@ Common helpers:
 - `Get<TType>(TypedSymbol<TType> key)`
 - `TryGetValue<TType>(TypedSymbol<TType> key, out TType value)`
 
+`DictFun.PopAll(dict, key)` removes each matching entry before yielding its value. For dictionaries configured to stack duplicate keys, values are returned in last-in-first-out order, and stopping enumeration early leaves every already-yielded entry removed.
+
+`SingleValueDict<TKey, TValue>` and `SingleValueSymbolDict<TValue>` associate every current key with one shared value. Their `Values` sequences contain that shared value once per key and are empty when the dictionaries have no keys.
+
 ## LruCache<TKey, TValue>
 
 `LruCache` is synchronized and capacity-driven.
