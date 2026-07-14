@@ -1,3 +1,4 @@
+- [Base] Restored zero-count `AliasTableF`/`AliasTableD` construction for empty PDFs while preserving non-empty PDF validation
 - [Base] Hardened `EnumHelpers` caching and full-range enum value handling
 
 ### 5.3.26

@@ -72,6 +72,7 @@ int index = t.Sample(rnd.UniformDouble());
 ```
 
 `FromPdf` / `FromNormalizedPdf` exist as instance methods on the class.
+Empty PDFs are supported as zero-count sentinel tables, e.g. `new AliasTableD(Array.Empty<double>(), 0.0)`, and expose empty `U`/`K` arrays. Do not call `Sample` on empty tables; non-empty PDFs still require finite, non-negative entries and a positive finite normalization factor.
 
 ### DistributionFunction
 

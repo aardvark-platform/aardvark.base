@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
@@ -13,18 +10,20 @@ namespace Aardvark.Base
     /// Walker 1974: https://en.wikipedia.org/wiki/Alias_method
     /// Algorithm to sample a discrete probability distribution function (PDF) in O(1).
     /// The PDF does not need to be normalized, but the normalization factor "1/Sum(pdf)" needs to be supplied.
+    /// Empty PDFs are supported as zero-count alias tables and must not be sampled.
     /// </summary>
     public class AliasTableF
     {
-        float[] _probablity; // U[i]
-        int[] _alias;         // K[i]
+        float[] _probability; // U[i]
+        int[] _alias;          // K[i]
 
-        public float[] U => _probablity;
+        public float[] U => _probability;
         public int[] K => _alias;
 
         /// <summary>
-        /// Creates an alias table from a genral PDF that does not integrate to 1.
+        /// Creates an alias table from a general PDF that does not integrate to 1.
         /// The normalization factor will be calculated for the construction.
+        /// Empty PDFs create zero-count alias tables.
         /// </summary>
         public AliasTableF FromPdf(float[] pdf, IRandomUniform rnd = null)
         {
@@ -33,6 +32,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates an alias table from an already normalized PDF (integrates to 1).
+        /// Empty PDFs create zero-count alias tables.
         /// </summary>
         public AliasTableF FromNormalizedPdf(float[] pdf, IRandomUniform rnd = null)
         {
@@ -40,14 +40,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Create an alias table from a PDf and its normalization factor: 1.0 / Sum(pdf)
+        /// Create an alias table from a PDF and its normalization factor: 1.0 / Sum(pdf).
+        /// For empty PDFs, the normalization factor may be 0 and the resulting table is empty.
         /// </summary>
         public AliasTableF(float[] pdf, float pdfNorm, IRandomUniform rnd = null)
         {
-            ValidatePdfHeader(pdf);
-            ValidatePdfNorm(pdfNorm);
+            ValidatePdfReference(pdf);
             var n = pdf.Length;
-            _probablity = new float[n];
+            _probability = new float[n];
             _alias = new int[n];
             Update(pdf, pdfNorm, rnd);
         }
@@ -55,12 +55,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Updates the alias table with the given PDF and its norm.
         /// The length of the PDF is expected to match the length of AliasTable.
+        /// Empty PDFs are supported for zero-count alias tables and must not be sampled.
         /// </summary>
         public void Update(float[] pdf, float pdfNorm, IRandomUniform rnd = null)
         {
-            ValidatePdfHeader(pdf);
+            ValidatePdfReference(pdf);
             if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!", nameof(pdf));
-            ValidatePdfNorm(pdfNorm);
+
+            var isEmpty = pdf.Length == 0;
+            ValidatePdfNorm(pdfNorm, allowZero: isEmpty);
+            if (isEmpty) return;
+
             ValidatePdf(pdf);
 
             if (rnd == null) rnd = new RandomSystem();
@@ -72,7 +77,7 @@ namespace Aardvark.Base
             for (int i = 0; i < n; i++)
             {
                 var ui = pdf[i] * pdfNorm * n;
-                _probablity[i] = ui;
+                _probability[i] = ui;
                 if (ui > 1) overfull.Add(i);
                 else if (ui < 1) underfull.Add(i);
             }
@@ -87,10 +92,10 @@ namespace Aardvark.Base
                 underfull.RemoveAt(underfull.Count - 1);
                 // rj will become exactly full (with own probability + alias for remainder)
                 _alias[rj] = ri; // K[j] = i
-                var uri = _probablity[ri];
-                var urj = _probablity[rj];
+                var uri = _probability[ri];
+                var urj = _probability[rj];
                 var uinew = uri + urj - 1; // U[i] + U[j] - 1
-                _probablity[ri] = uinew;
+                _probability[ri] = uinew;
                 if (uinew <= 1) // otherwise keep in overfull
                 {
                     overfull[ii] = overfull[overfull.Count - 1];
@@ -103,38 +108,43 @@ namespace Aardvark.Base
             while (underfull.Count > 0)
             {
                 var i = underfull[underfull.Count - 1];
-                _probablity[i] = 1;
+                _probability[i] = 1;
                 underfull.RemoveAt(underfull.Count - 1);
             }
 
             while (overfull.Count > 0)
             {
                 var i = overfull[overfull.Count - 1];
-                _probablity[i] = 1;
+                _probability[i] = 1;
                 overfull.RemoveAt(overfull.Count - 1);
             }
         }
 
         private static float GetPdfNorm(float[] pdf)
         {
-            return 1 / ValidatePdf(pdf);
+            ValidatePdfReference(pdf);
+            return pdf.Length == 0 ? 0 : 1 / ValidatePdf(pdf);
         }
 
-        private static void ValidatePdfHeader(float[] pdf)
+        private static void ValidatePdfReference(float[] pdf)
         {
             if (pdf == null) throw new ArgumentNullException(nameof(pdf));
-            if (pdf.Length == 0) throw new ArgumentException("The PDF must not be empty.", nameof(pdf));
         }
 
-        private static void ValidatePdfNorm(float pdfNorm)
+        private static void ValidatePdfNorm(float pdfNorm, bool allowZero)
         {
-            if (pdfNorm <= 0 || float.IsNaN(pdfNorm) || float.IsInfinity(pdfNorm))
-                throw new ArgumentOutOfRangeException(nameof(pdfNorm), "The PDF normalization factor must be positive and finite.");
+            if (pdfNorm < 0 || (!allowZero && pdfNorm == 0) || float.IsNaN(pdfNorm) || float.IsInfinity(pdfNorm))
+            {
+                var message = allowZero
+                    ? "The PDF normalization factor must be non-negative and finite for empty PDFs."
+                    : "The PDF normalization factor must be positive and finite.";
+                throw new ArgumentOutOfRangeException(nameof(pdfNorm), message);
+            }
         }
 
         private static float ValidatePdf(float[] pdf)
         {
-            ValidatePdfHeader(pdf);
+            ValidatePdfReference(pdf);
 
             float sum = 0;
             for (int i = 0; i < pdf.Length; i++)
@@ -158,10 +168,10 @@ namespace Aardvark.Base
         /// </summary>
         public int Sample(float x1)
         {
-            var nx = _probablity.Length * x1;
+            var nx = _probability.Length * x1;
             var i = (int)nx;
             var y = nx - i;
-            return y < _probablity[i] ? i : _alias[i];
+            return y < _probability[i] ? i : _alias[i];
         }
     }
 
@@ -170,18 +180,20 @@ namespace Aardvark.Base
     /// Walker 1974: https://en.wikipedia.org/wiki/Alias_method
     /// Algorithm to sample a discrete probability distribution function (PDF) in O(1).
     /// The PDF does not need to be normalized, but the normalization factor "1/Sum(pdf)" needs to be supplied.
+    /// Empty PDFs are supported as zero-count alias tables and must not be sampled.
     /// </summary>
     public class AliasTableD
     {
-        double[] _probablity; // U[i]
-        int[] _alias;         // K[i]
+        double[] _probability; // U[i]
+        int[] _alias;          // K[i]
 
-        public double[] U => _probablity;
+        public double[] U => _probability;
         public int[] K => _alias;
 
         /// <summary>
-        /// Creates an alias table from a genral PDF that does not integrate to 1.
+        /// Creates an alias table from a general PDF that does not integrate to 1.
         /// The normalization factor will be calculated for the construction.
+        /// Empty PDFs create zero-count alias tables.
         /// </summary>
         public AliasTableD FromPdf(double[] pdf, IRandomUniform rnd = null)
         {
@@ -190,6 +202,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Creates an alias table from an already normalized PDF (integrates to 1).
+        /// Empty PDFs create zero-count alias tables.
         /// </summary>
         public AliasTableD FromNormalizedPdf(double[] pdf, IRandomUniform rnd = null)
         {
@@ -197,14 +210,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Create an alias table from a PDf and its normalization factor: 1.0 / Sum(pdf)
+        /// Create an alias table from a PDF and its normalization factor: 1.0 / Sum(pdf).
+        /// For empty PDFs, the normalization factor may be 0 and the resulting table is empty.
         /// </summary>
         public AliasTableD(double[] pdf, double pdfNorm, IRandomUniform rnd = null)
         {
-            ValidatePdfHeader(pdf);
-            ValidatePdfNorm(pdfNorm);
+            ValidatePdfReference(pdf);
             var n = pdf.Length;
-            _probablity = new double[n];
+            _probability = new double[n];
             _alias = new int[n];
             Update(pdf, pdfNorm, rnd);
         }
@@ -212,12 +225,17 @@ namespace Aardvark.Base
         /// <summary>
         /// Updates the alias table with the given PDF and its norm.
         /// The length of the PDF is expected to match the length of AliasTable.
+        /// Empty PDFs are supported for zero-count alias tables and must not be sampled.
         /// </summary>
         public void Update(double[] pdf, double pdfNorm, IRandomUniform rnd = null)
         {
-            ValidatePdfHeader(pdf);
+            ValidatePdfReference(pdf);
             if (pdf.Length != _alias.Length) throw new ArgumentException("The length of the PDF does not match the length of the AliasTable!", nameof(pdf));
-            ValidatePdfNorm(pdfNorm);
+
+            var isEmpty = pdf.Length == 0;
+            ValidatePdfNorm(pdfNorm, allowZero: isEmpty);
+            if (isEmpty) return;
+
             ValidatePdf(pdf);
 
             if (rnd == null) rnd = new RandomSystem();
@@ -229,7 +247,7 @@ namespace Aardvark.Base
             for (int i = 0; i < n; i++)
             {
                 var ui = pdf[i] * pdfNorm * n;
-                _probablity[i] = ui;
+                _probability[i] = ui;
                 if (ui > 1) overfull.Add(i);
                 else if (ui < 1) underfull.Add(i);
             }
@@ -244,10 +262,10 @@ namespace Aardvark.Base
                 underfull.RemoveAt(underfull.Count - 1);
                 // rj will become exactly full (with own probability + alias for remainder)
                 _alias[rj] = ri; // K[j] = i
-                var uri = _probablity[ri];
-                var urj = _probablity[rj];
+                var uri = _probability[ri];
+                var urj = _probability[rj];
                 var uinew = uri + urj - 1; // U[i] + U[j] - 1
-                _probablity[ri] = uinew;
+                _probability[ri] = uinew;
                 if (uinew <= 1) // otherwise keep in overfull
                 {
                     overfull[ii] = overfull[overfull.Count - 1];
@@ -260,38 +278,43 @@ namespace Aardvark.Base
             while (underfull.Count > 0)
             {
                 var i = underfull[underfull.Count - 1];
-                _probablity[i] = 1;
+                _probability[i] = 1;
                 underfull.RemoveAt(underfull.Count - 1);
             }
 
             while (overfull.Count > 0)
             {
                 var i = overfull[overfull.Count - 1];
-                _probablity[i] = 1;
+                _probability[i] = 1;
                 overfull.RemoveAt(overfull.Count - 1);
             }
         }
 
         private static double GetPdfNorm(double[] pdf)
         {
-            return 1 / ValidatePdf(pdf);
+            ValidatePdfReference(pdf);
+            return pdf.Length == 0 ? 0 : 1 / ValidatePdf(pdf);
         }
 
-        private static void ValidatePdfHeader(double[] pdf)
+        private static void ValidatePdfReference(double[] pdf)
         {
             if (pdf == null) throw new ArgumentNullException(nameof(pdf));
-            if (pdf.Length == 0) throw new ArgumentException("The PDF must not be empty.", nameof(pdf));
         }
 
-        private static void ValidatePdfNorm(double pdfNorm)
+        private static void ValidatePdfNorm(double pdfNorm, bool allowZero)
         {
-            if (pdfNorm <= 0 || double.IsNaN(pdfNorm) || double.IsInfinity(pdfNorm))
-                throw new ArgumentOutOfRangeException(nameof(pdfNorm), "The PDF normalization factor must be positive and finite.");
+            if (pdfNorm < 0 || (!allowZero && pdfNorm == 0) || double.IsNaN(pdfNorm) || double.IsInfinity(pdfNorm))
+            {
+                var message = allowZero
+                    ? "The PDF normalization factor must be non-negative and finite for empty PDFs."
+                    : "The PDF normalization factor must be positive and finite.";
+                throw new ArgumentOutOfRangeException(nameof(pdfNorm), message);
+            }
         }
 
         private static double ValidatePdf(double[] pdf)
         {
-            ValidatePdfHeader(pdf);
+            ValidatePdfReference(pdf);
 
             double sum = 0;
             for (int i = 0; i < pdf.Length; i++)
@@ -315,10 +338,10 @@ namespace Aardvark.Base
         /// </summary>
         public int Sample(double x1)
         {
-            var nx = _probablity.Length * x1;
+            var nx = _probability.Length * x1;
             var i = (int)nx;
             var y = nx - i;
-            return y < _probablity[i] ? i : _alias[i];
+            return y < _probability[i] ? i : _alias[i];
         }
     }
 
