@@ -1,112 +1,133 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Aardvark.Base
 {
     public static class EnumHelpers
     {
-        static readonly Dict<Type, Dict<long, (object, object)>> s_neighbourValuesDicts = new Dict<Type, Dict<long, (object, object)>>();
-
-        static Dict<long, (object, object)> GetNeighbourValuesDict<T>(Type enumType)
+        private sealed class EnumMetadata
         {
-            if (!enumType.IsEnum) throw new ArgumentException($"{enumType.Name} is not an enumeration type.");
+            private readonly TypeCode m_underlyingTypeCode;
+            private readonly object[] m_values;
+            private readonly Dictionary<ulong, int> m_indices;
 
-            if (!s_neighbourValuesDicts.TryGetValue(enumType, out Dict<long, (object, object)> neighbourValuesDict))
+            public EnumMetadata(Type enumType)
             {
-                var values = (T[])Enum.GetValues(enumType);
+                m_underlyingTypeCode = Type.GetTypeCode(Enum.GetUnderlyingType(enumType));
 
-                neighbourValuesDict = new Dict<long, (object, object)>();
-                for (int i = 0; i < values.Length; i++)
+                var enumValues = Enum.GetValues(enumType);
+                var values = new List<object>(enumValues.Length);
+                m_indices = new Dictionary<ulong, int>(enumValues.Length);
+                for (var i = 0; i < enumValues.Length; i++)
                 {
-                    neighbourValuesDict[Convert.ToInt64(values[i])] = 
-                        (
-                            values[(i > 0 ? i : values.Length) - 1], 
-                            values[i < values.Length - 1 ? i + 1 : 0]
-                        ); // previous and next value
+                    var value = enumValues.GetValue(i);
+                    var key = GetKey(value);
+                    if (m_indices.ContainsKey(key)) continue;
+
+                    m_indices.Add(key, values.Count);
+                    values.Add(value);
                 }
 
-                s_neighbourValuesDicts[enumType] = neighbourValuesDict;
+                m_values = values.ToArray();
             }
 
-            return neighbourValuesDict;
+            private ulong GetKey(object value)
+            {
+                switch (m_underlyingTypeCode)
+                {
+                    case TypeCode.Byte: return Convert.ToByte(value);
+                    case TypeCode.SByte: return unchecked((byte)Convert.ToSByte(value));
+                    case TypeCode.Int16: return unchecked((ushort)Convert.ToInt16(value));
+                    case TypeCode.UInt16: return Convert.ToUInt16(value);
+                    case TypeCode.Int32: return unchecked((uint)Convert.ToInt32(value));
+                    case TypeCode.UInt32: return Convert.ToUInt32(value);
+                    case TypeCode.Int64: return unchecked((ulong)Convert.ToInt64(value));
+                    case TypeCode.UInt64: return Convert.ToUInt64(value);
+                    default: throw new InvalidOperationException("Unsupported enumeration underlying type.");
+                }
+            }
+
+            public int GetIndex(object value) => m_indices[GetKey(value)];
+
+            public object GetValue(int index) => m_values[index];
+
+            public object GetPreviousValue(object value)
+            {
+                var index = GetIndex(value);
+                return m_values[index > 0 ? index - 1 : m_values.Length - 1];
+            }
+
+            public object GetNextValue(object value)
+            {
+                var index = GetIndex(value);
+                return m_values[index < m_values.Length - 1 ? index + 1 : 0];
+            }
+        }
+
+        private static readonly ConcurrentDictionary<Type, EnumMetadata> s_metadata =
+            new ConcurrentDictionary<Type, EnumMetadata>();
+
+        private static EnumMetadata GetMetadata(Type enumType)
+        {
+            if (!enumType.IsEnum) throw new ArgumentException($"{enumType.Name} is not an enumeration type.");
+            return s_metadata.GetOrAdd(enumType, type => new EnumMetadata(type));
         }
 
         /// <summary>
-        /// Returns the previous value of the enumeration or the last when the current value is the first one.
+        /// Returns the previous distinct underlying value in <see cref="Enum.GetValues(Type)"/> order,
+        /// wrapping to the last value when the current value is first. Aliases share the same position.
         /// </summary>
         public static T GetPrevValue<T>(T enumValue)
         // NOTE: where T: enum
         {
-            var neighbourValuesDict = GetNeighbourValuesDict<T>(typeof(T));
-
-            var intValue = Convert.ToInt64(enumValue);
-            neighbourValuesDict.TryGetValue(intValue, out (object, object) result);
-            return (T)result.Item1;
+            return (T)GetMetadata(typeof(T)).GetPreviousValue(enumValue);
         }
 
         /// <summary>
-        /// Returns the next value of the enumeration or the first when the current value is the last one.
+        /// Returns the next distinct underlying value in <see cref="Enum.GetValues(Type)"/> order,
+        /// wrapping to the first value when the current value is last. Aliases share the same position.
         /// </summary>
         public static T GetNextValue<T>(T enumValue)
         // NOTE: where T: enum
         {
-            var neighbourValuesDict = GetNeighbourValuesDict<T>(typeof(T));
-
-            var intValue = Convert.ToInt64(enumValue);
-            neighbourValuesDict.TryGetValue(intValue, out (object, object) result);
-            return (T)result.Item2;
-        }
-
-        static readonly Dictionary<Type, (Array, Dictionary<long, int>)> s_valueIndexMapping = new Dictionary<Type, (Array, Dictionary<long, int>)>(); // long = worst case enum value
-
-        static (Array, Dictionary<long, int>) GetValueIndexMapping(Type enumType)
-        {
-            if (!enumType.IsEnum) throw new ArgumentException($"{enumType.Name} is not an enumeration type.");
-
-            return s_valueIndexMapping.GetCreate(enumType, et =>
-            {
-                var enumValues = Enum.GetValues(et);
-                var enumIndices = new Dictionary<long, int>();
-                for (int i = 0; i < enumValues.Length; i++)
-                    enumIndices.Add(Convert.ToInt64(enumValues.GetValue(i)), i);
-                return (enumValues, enumIndices);
-            });
+            return (T)GetMetadata(typeof(T)).GetNextValue(enumValue);
         }
 
         /// <summary>
-        /// Return the index of the enumeration value
+        /// Returns the zero-based index of the distinct underlying enumeration value in
+        /// <see cref="Enum.GetValues(Type)"/> order. Aliases share the same index.
         /// </summary>
         public static int GetIndex<T>(T enumValue)
         {
-            var mapping = GetValueIndexMapping(typeof(T));
-            return mapping.Item2[Convert.ToInt64(enumValue)];
+            return GetMetadata(typeof(T)).GetIndex(enumValue);
         }
 
         /// <summary>
-        /// Return the index of the enumeration value
+        /// Returns the zero-based index of the distinct underlying enumeration value in
+        /// <see cref="Enum.GetValues(Type)"/> order. Aliases share the same index.
         /// </summary>
         public static int GetIndex(Type enumType, object enumValue)
         {
-            var mapping = GetValueIndexMapping(enumType);
-            return mapping.Item2[Convert.ToInt64(enumValue)]; 
+            return GetMetadata(enumType).GetIndex(enumValue);
         }
 
         /// <summary>
-        /// Returns the enumeartion value of a certain index
+        /// Returns the <see cref="int"/> representation of the distinct enumeration value at the
+        /// specified index in <see cref="Enum.GetValues(Type)"/> order.
         /// </summary>
         public static int GetValue(Type enumType, int index)
         {
-            var mapping = GetValueIndexMapping(enumType);
-            return (int)mapping.Item1.GetValue(index);
+            return Convert.ToInt32(GetMetadata(enumType).GetValue(index));
         }
 
         /// <summary>
-        /// Returns the enumeartion value of a certain index
+        /// Returns the distinct enumeration value at the specified index in
+        /// <see cref="Enum.GetValues(Type)"/> order. Alias values occupy a single index.
         /// </summary>
         public static T GetValue<T>(int index)
         {
-            var mapping = GetValueIndexMapping(typeof(T));
-            return (T)mapping.Item1.GetValue(index);
+            return (T)GetMetadata(typeof(T)).GetValue(index);
         }
     }
 }

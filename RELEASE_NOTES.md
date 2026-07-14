@@ -1,3 +1,5 @@
+- [Base] Hardened `EnumHelpers` caching and full-range enum value handling
+
 ### 5.3.26
 - [Base] Fixed dictionary duplicate popping and shared-value enumeration semantics
 - [IO] Fixed `StreamCodeReader` partial and short-read array handling
