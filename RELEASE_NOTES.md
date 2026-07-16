@@ -1,3 +1,4 @@
+- [Base] Hardened `ToDictionaryDistinct` duplicate handling and selector evaluation
 - [Tensors] Fixed clamped sampling for short tensor ranges
 - [Base] Restored zero-count `AliasTableF`/`AliasTableD` construction for empty PDFs while preserving non-empty PDF validation
 - [Base] Hardened `EnumHelpers` caching and full-range enum value handling
