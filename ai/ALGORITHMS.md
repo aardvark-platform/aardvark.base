@@ -94,6 +94,21 @@ Examples:
 - `coeff.Derivative()`
 - `Polynomial.RealRootsOfNormed(...)`
 
+## Compositional Statistics
+
+`Stats<T>` accumulates selected moments according to `StatsOptions`. `Variance` and
+`StandardDeviation` independently control reporting and both enable sum-of-squares
+collection.
+
+`Stats<T>.Add(Stats<T>)` and `operator +` require matching options and compose inputs
+in left-to-right order. Minimum and maximum values are merged independently; when
+an extremum is tied, its associated data comes from the left aggregate, matching
+sequential accumulation.
+
+`Histogram.Add(Histogram)` and `operator +` require identical `SlotRange` values and
+slot counts. They sum bins plus underflow/overflow counts and union the observed
+`DataRange`; observed ranges do not need to match.
+
 ## Source Anchors
 
 - `src/Aardvark.Base/AlgoDat/ShortestPath.cs`
@@ -102,4 +117,5 @@ Examples:
 - `src/Aardvark.Base/Math/QrFactorization.cs`
 - `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
 - `src/Aardvark.Base/Math/Base/DistributionFunction.cs`
+- `src/Aardvark.Base/Math/Base/Statistics.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`

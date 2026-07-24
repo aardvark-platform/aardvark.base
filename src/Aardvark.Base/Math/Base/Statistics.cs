@@ -69,7 +69,7 @@ namespace Aardvark.Base
 
         public static Extremum<T> Min(Extremum<T> e0, Extremum<T> e1)
         {
-            return e0.m_value < e1.m_value ? e0 : e1;
+            return e0.m_value <= e1.m_value ? e0 : e1;
         }
 
         #endregion
@@ -79,6 +79,10 @@ namespace Aardvark.Base
 
     #region StatsOptions
 
+    /// <summary>
+    /// Selects the values accumulated and reported by <see cref="Stats{T}"/>.
+    /// Variance and standard deviation both require the sum of squares.
+    /// </summary>
     [Flags]
     public enum StatsOptions
     {
@@ -89,8 +93,8 @@ namespace Aardvark.Base
         Max = 0x0020,
         Range = 0x0030,
         Variance = 0x0100,
-        StandardDeviation = 000200,
-        NeedsSumOfSquares = 0x0300,
+        StandardDeviation = 0x0200,
+        NeedsSumOfSquares = Variance | StandardDeviation,
         All = 0x3fffffff,
         MaxMean = Max | Mean,
         MinMean = Min | Mean,
@@ -104,7 +108,9 @@ namespace Aardvark.Base
 
     /// <summary>
     /// A data structure for accumulating statistical moments. Currently only
-    /// Count/Sum/Min/Max/Mean/Variance is implemented. Extend as necessary.
+    /// Count/Sum/Min/Max/Mean/Variance/StandardDeviation is implemented.
+    /// Aggregates can be composed in input order; equal extrema retain the
+    /// associated data from the left aggregate.
     /// </summary>
     public struct Stats<T> : IReportable
     {
@@ -184,6 +190,10 @@ namespace Aardvark.Base
                 m_sumOfSquares.Add(Fun.Square(value));
         }
 
+        /// <summary>
+        /// Appends an aggregate with matching options. Equal extrema retain the
+        /// associated data from this aggregate.
+        /// </summary>
         public void Add(Stats<T> s)
         {
             if (s.m_options != m_options)
@@ -192,10 +202,14 @@ namespace Aardvark.Base
             m_count += s.m_count;
             m_sum.Add(s.m_sum);
             m_min = Extremum<T>.Min(m_min, s.m_min);
-            m_max = Extremum<T>.Min(m_max, s.m_max);
+            m_max = Extremum<T>.Max(m_max, s.m_max);
             m_sumOfSquares.Add(s.m_sumOfSquares);
         }
 
+        /// <summary>
+        /// Composes two aggregates with matching options in left-to-right input
+        /// order. Equal extrema retain the associated data from the left operand.
+        /// </summary>
         public static Stats<T> operator+(Stats<T> s0, Stats<T> s1)
         {
             if (s0.m_options != s1.m_options)
@@ -206,7 +220,7 @@ namespace Aardvark.Base
                 m_count = s0.m_count + s1.m_count,
                 m_sum = s0.m_sum + s1.m_sum,
                 m_min = Extremum<T>.Min(s0.m_min, s1.m_min),
-                m_max = Extremum<T>.Min(s0.m_max, s1.m_max),
+                m_max = Extremum<T>.Max(s0.m_max, s1.m_max),
                 m_sumOfSquares = s0.m_sumOfSquares + s1.m_sumOfSquares,
             };
         }
@@ -236,7 +250,7 @@ namespace Aardvark.Base
                     double variance = Variance;
                     if ((m_options & StatsOptions.Variance) != 0)
                         Report.Value(verbosity, "variance", variance);
-                    if ((m_options & StatsOptions.Variance) != 0)
+                    if ((m_options & StatsOptions.StandardDeviation) != 0)
                         Report.Value(verbosity, "standard deviation", Fun.Sqrt(variance));
                 }
             }
@@ -257,7 +271,8 @@ namespace Aardvark.Base
 
     /// <summary>
     /// A data structure that maintains a histogram with a selectable number
-    /// of slots.
+    /// of slots. Histograms with identical slot ranges and slot counts can be
+    /// composed; their observed data ranges are unioned.
     /// </summary>
     public struct Histogram : IReportable
     {
@@ -330,28 +345,38 @@ namespace Aardvark.Base
             m_histo.Set(0);
         }
 
+        private readonly void ValidateCompatible(Histogram h)
+        {
+            if (m_slotRange != h.m_slotRange || m_histo.Length != h.m_histo.Length)
+                throw new ArgumentException("adding histograms requires identical slot ranges and slot counts");
+        }
+
+        /// <summary>
+        /// Adds the counts and observed data range of a histogram with identical
+        /// slot range and slot count.
+        /// </summary>
         public void Add(Histogram h)
         {
-            if (m_dataRange != h.m_dataRange)
-                throw new ArgumentException("adding histograms requires identical data ranges");
-            if (m_scale != h.m_scale || m_histo.Length != h.m_histo.Length)
-                throw new ArgumentException("adding histograms reuqires identical scales and slots");
+            ValidateCompatible(h);
 
+            m_dataRange.ExtendBy(h.m_dataRange);
             m_small += h.m_small;
             m_large += h.m_large;
             for (int i = 0; i < m_histo.Length; i++)
                 m_histo[i] += h.m_histo[i];
         }
 
+        /// <summary>
+        /// Combines two histograms with identical slot ranges and slot counts.
+        /// </summary>
         public static Histogram operator +(Histogram h0, Histogram h1)
         {
-            if (h0.m_dataRange != h1.m_dataRange)
-                throw new ArgumentException("adding histograms requires identical data ranges");
-            if (h0.m_scale != h1.m_scale || h0.m_histo.Length != h1.m_histo.Length)
-                throw new ArgumentException("adding histograms reuqires identical scales and slots");
+            h0.ValidateCompatible(h1);
 
-            var h = new Histogram(h0.m_dataRange, h0.SlotCount);
+            var h = new Histogram(h0.m_slotRange, h0.SlotCount);
 
+            h.m_dataRange = h0.m_dataRange;
+            h.m_dataRange.ExtendBy(h1.m_dataRange);
             h.m_small = h0.m_small + h1.m_small;
             h.m_large = h0.m_large + h1.m_large;
             for (int i = 0; i < h.m_histo.Length; i++)
