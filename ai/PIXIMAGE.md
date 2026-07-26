@@ -1,16 +1,6 @@
 # Aardvark.Base Pix/Image Reference
 
-Source-verified orientation for `PixImage`, `PixVolume`, and related types.
-
-## Core Types
-
-- `PixImage` / `PixImage<T>`
-- `PixVolume` / `PixVolume<T>`
-- `PixCube`
-- `PixImageMipMap`
-- `PixFormat`
-- `PixFileFormat`
-- `PixProcessorCaps`
+`PixImage`, `PixVolume`, and related types.
 
 ## Loading and Info
 
@@ -48,13 +38,12 @@ Common `PixImage<T>` methods:
 - `Resized(...)`
 - `Scaled(...)`
 - `Rotated(...)`
-- `SubImage(...)` (view on shared storage)
-- `ToPixImage<TOut>()`
+- `SubImage(...)` (view on shared storage; edits affect shared data)
 - `ToFormat(Col.Format)`
 - `ToImageLayout()`
 - `GetChannel(long)` / `GetChannel(Col.Channel)`
 
-`SubImage(...)` returns a view; edits affect shared data.
+`ToPixImage<TOut>()` is declared on the non-generic base `PixImage`. `Scaled(double)` exists only on `PixImage<T>`; the non-generic base offers `ScaledPixImage(...)`.
 
 ## Loaders and Processors
 
@@ -99,7 +88,7 @@ Common predefined values:
 
 - `Load(string|Stream, IPixLoader?)`
 - `Create(baseImage, interpolation, maxCount, powerOfTwo)`
-- `LevelCount`
+- `LevelCount` (`ImageCount` is `[Obsolete]` — do not use)
 
 `PixCube`:
 

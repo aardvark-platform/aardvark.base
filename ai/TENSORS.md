@@ -1,6 +1,6 @@
 # Aardvark.Base Tensor Types Reference
 
-Source-verified reference for stride-based tensor containers.
+Stride-based tensor containers.
 
 ## Core Model
 
@@ -25,6 +25,8 @@ Data containers:
 - `Tensor4<Td>`
 
 These are `struct` types in generated `Tensor_auto.cs`.
+
+Each container also has an accessor-based two-parameter form `Vector<Td,Tv>` / `Matrix<Td,Tv>` / `Volume<Td,Tv>` / `Tensor4<Td,Tv>` (raw data type `Td`, view type `Tv`, e.g. `Matrix<byte, C4b>` for typed pixel access).
 
 ## Default Dense Layouts
 
@@ -58,19 +60,17 @@ On `Matrix<T>`:
 - `Row(y)` and `Col(x)` (return `Vector<T>`)
 - `Transposed`
 - `SetByCoord(...)`
-- `Foreach...` variants for iteration
+- `ForeachIndex(...)` / `ForeachCoord(...)` for iteration
 
 ## Image Layout Helpers
 
 In `Tensors/ImageTensors.cs`:
 
-- `HasImageLayout(...)`
-- `CreateImageVolume(...)`
-- `CreateImageTensor4(...)`
+- `HasImageLayout(...)` / `HasImageWindowLayout(...)`
+- `CreateImageMatrix(...)` / `CreateImageVolume(...)` / `CreateImageTensor4(...)`
 - `ToImage(...)` / `ToImageWindow(...)`
+- `MapToImage(...)` / `MapToImageWindow(...)`
 - `CopyToImage(...)` / `CopyToImageWindow(...)`
-
-These are important for high-performance pix/tensor interoperability.
 
 ## Source Anchors
 

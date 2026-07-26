@@ -63,6 +63,30 @@ public sealed class DocsAnalyzerTests
     }
 
     [Fact]
+    public void CodeGeneratorReadmeBrokenLink_IsReported()
+    {
+        using var repo = TempRepo.CreateValid();
+        repo.Write("src/CodeGenerator/README.md", "[broken](missing.md)\n");
+        var analyzer = new DocsAnalyzer();
+
+        var failures = analyzer.Analyze(repo.Root);
+
+        Assert.Contains("Broken local link in src/CodeGenerator/README.md: missing.md", failures);
+    }
+
+    [Fact]
+    public void FabricatedCoderMethodName_IsReported()
+    {
+        using var repo = TempRepo.CreateValid();
+        repo.Append("ai/SERIALIZATION.md", "\ncoder.CodeInt32(ref x);\n");
+        var analyzer = new DocsAnalyzer();
+
+        var failures = analyzer.Analyze(repo.Root);
+
+        Assert.Contains(failures, f => f.Contains("Forbidden pattern in ai/SERIALIZATION.md", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void ForbiddenPattern_IsReported()
     {
         using var repo = TempRepo.CreateValid();
@@ -180,15 +204,17 @@ public sealed class DocsAnalyzerTests
                 Write(rel, "# placeholder");
 
             Write("README.md", "[agents](AGENTS.md)\n[ai](./ai/)\n[docs](docs/CONTRIBUTING.md)\n");
-            Write("AGENTS.md", "check-docs.sh\ncheck-docs.cmd\n");
+            Write("AGENTS.md", "check-docs.sh\ncheck-docs.cmd\nmixed C#/F# project references\n");
             Write("ai/README.md", "SYMBOL_INDEX.md\nSEMANTICS_LINEAR_ALGEBRA.md\nSEMANTICS_GEOMETRY_CORE.md\n");
             Write("ai/SEMANTICS_LINEAR_ALGEBRA.md", "row-major\nFromCols\n");
-            Write("ai/SEMANTICS_GEOMETRY_CORE.md", "TransformPos and TransformDir semantics\n");
+            Write("ai/SEMANTICS_GEOMETRY_CORE.md", "TransformPos and TransformDir semantics\nFastRay slab test\n");
             Write("ai/PIXIMAGE.md", "No static `PixImage.Load<T>(...)` API exists.\n");
             Write("ai/UTILITIES.md", "Use ResetTelemetrySystem for reset.\n");
             Write("ai/TENSORS.md", "These are `struct` types in generated code.\n");
+            Write("ai/SERIALIZATION.md", "void CodeInt(ref int value);\n");
+            Write("ai/INCREMENTAL.md", "C# examples use CSharp.Data.Adaptive.\n");
             Write("docs/CONTRIBUTING.md", "dotnet test src/Aardvark.sln --filter \"FullyQualifiedName~Vector\"\n");
-            Write("docs/INTEROP.md", "This repo has mixed C#/F# project references.\n");
+            Write("docs/INTEROP.md", "Link target fixture for markdown link tests.\n");
 
             foreach (var group in rules.SourceAnchors.GroupBy(x => x.File))
             {

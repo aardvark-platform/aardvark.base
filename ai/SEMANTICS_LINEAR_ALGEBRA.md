@@ -2,7 +2,7 @@
 
 Use this when matrix/vector layout and interop correctness matter.
 
-## M44d Convention (Verified)
+## M44d Convention
 
 `M44d` fields are named by row/column: `Mrc`.
 
@@ -40,15 +40,6 @@ For `M44d`:
 - `TransformPos(p)` applies translation (`w = 1`)
 - translation lives in `M03/M13/M23`
 
-## Direct Answer: Row-Major or Column-Major?
-
-Both concerns exist, but they are different:
-
-- In-memory field/array layout is row-major.
-- Algebra supports column-vector and row-vector multiplication operators.
-
-If your external system is column-major memory, conversion is required at the boundary.
-
 ## Efficient Layout Conversion
 
 ### Row-major array -> M44d
@@ -56,6 +47,8 @@ If your external system is column-major memory, conversion is required at the bo
 ```csharp
 var m = new M44d(rowMajor16);
 ```
+
+Row-major exports also exist as the explicit `double[,]` cast operator on `M44d` and `m.CopyTo(double[] array, long index)`.
 
 ### Column-major array -> M44d
 

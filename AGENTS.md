@@ -35,16 +35,11 @@ Rules:
 - Never use `dotnet add package` in this repo
 - Change constraints in `paket.dependencies`, then regenerate lock with Paket
 - Top-level `build.*` / `test.*` scripts auto-run `dotnet paket install` when `.paket/Paket.Restore.targets` is missing; otherwise they use `dotnet paket restore`
-- Top-level `build.*` / `test.*` scripts now stop immediately on the first failing restore/build/test command and return that nonzero exit code
+- Top-level `build.*` / `test.*` scripts stop immediately on the first failing restore/build/test command and return that nonzero exit code
 
 ## Release Notes
 
-When a change needs release notes:
-- `aardvark.build` reads the first `### <version>` section as the current package version
-- unreleased notes may appear above that first version section as plain text or bullet points
-- do not add a markdown heading such as `### Preliminary` above the first version section
-- do not append new notes inside an older released version block
-- if you add pending/preliminary notes, place them above the first version section instead of inside the previous released block
+Unreleased notes go above the first `### <version>` section in `RELEASE_NOTES.md` as plain bullets — never add a heading above it and never append to an already released block. Full rules: [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md#release-notes).
 
 ## File Ownership by Change Type
 
@@ -58,24 +53,26 @@ When a change needs release notes:
 
 ## Cross-Language Reality (Important)
 
-Do not assume strict one-way C#/F# dependency rules here. This solution intentionally mixes languages:
+This repository intentionally uses mixed C#/F# project references. Do not assume strict one-way language layering:
 
-- F# projects reference C# projects
-- Some C# projects also reference F# projects (for example `Aardvark.Base.IO` references `Aardvark.Base.Tensors.fsproj`)
+- F# projects reference C# projects (for example `Aardvark.Base.FSharp.fsproj` references `Aardvark.Base.csproj`)
+- Some C# projects also reference F# projects (for example `Aardvark.Base.IO.csproj` references `Aardvark.Base.Tensors.fsproj`)
 
 Guideline for agents:
 - Preserve existing dependency direction used by neighboring projects
 - If introducing a new reference, check existing project patterns first
 - Avoid creating dependency cycles
+- Keep public API naming stable across C# and F# entry points; F# convenience wrappers (`Vec`, `Mat`, `Trafo`) use idiomatic names while preserving core semantics
+- Convert async values explicitly at language boundaries (`Async.StartAsTask`, `Async.AwaitTask`)
 
 ## Framework, SDK, and Project Matrix
 
-- SDK pin: `.NET SDK 8.0.0` with `rollForward: latestFeature` (see `global.json`)
+- SDK pin: `.NET SDK 8.0.100` with `rollForward: latestFeature` (see `global.json`)
 - Not all projects target the same framework
 
 Current project reality:
 - Mixed `net8.0;netstandard2.0`: `Aardvark.Base`, `Aardvark.Base.FSharp`, `Aardvark.Base.IO`
-- `netstandard2.0` only: `Aardvark.Base.Essentials`, `Aardvark.Base.Telemetry`, `Aardvark.Base.Tensors`, `Aardvark.Base.Tensors.CSharp`, `Aardvark.Base.Runtime`, `Aardvark.Base.Fonts`, `Aardvark.Geometry`
+- `netstandard2.0` only: `Aardvark.Base.Essentials`, `Aardvark.Base.Telemetry`, `Aardvark.Base.Tensors`, `Aardvark.Base.Tensors.CSharp`, `Aardvark.Base.Incremental`, `Aardvark.Base.Runtime`, `Aardvark.Base.Fonts`, `Aardvark.Geometry`
 - `net8.0` test/demo projects: most projects in `src/Tests` and `src/Demo`
 - Deprecated legacy test project: `src/Tests/Aardvark.Base.Incremental.Tests/Aardvark.Base.Incremental.Tests.fsproj` still targets `netcoreapp3.0`, is intentionally excluded from `src/Aardvark.sln` and the standard `test.sh` / `test.cmd` path, and is tracked for removal-or-migration in GitHub issue `#94`
 - C# language version is not uniform (`12.0` in `Aardvark.Base`, `10.0` in some other C# projects)
@@ -90,6 +87,7 @@ Current project reality:
 | Test filter returns zero tests | Wrong filter syntax | Use `FullyQualifiedName~...` pattern |
 | Docs check fails | Broken links, stale examples, missing anchors, mojibake | Run `./check-docs.sh` or `.\check-docs.cmd` and fix the reported file/pattern |
 | Rendering namespace not found | Wrong package assumption | `Aardvark.Rendering` comes from downstream package, not this repo |
+| Scripts not executable on macOS/Linux | Missing execute bit | `chmod +x build.sh test.sh generate.sh check-docs.sh` |
 
 ## Project Structure
 
@@ -131,8 +129,4 @@ See `ai/README.md` for task-based lookup across:
 3. Prefer local source as the final truth if docs and code disagree
 4. Run focused tests for touched modules before broad test runs
 5. When changing templates, regenerate before building
-6. When changing docs, run `./check-docs.sh` or `.\check-docs.cmd`
-
----
-
-Last updated: 2026-02-26
+6. When changing docs, run `./check-docs.sh` or `.\check-docs.cmd`; drift risk concentrates in docs without rules in `tools/DocsChecker/DocsRules.cs`, so add rules when documenting new API surface

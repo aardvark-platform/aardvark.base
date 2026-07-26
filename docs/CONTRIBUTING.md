@@ -4,7 +4,7 @@ This guide is aligned with the current repository scripts and project layout.
 
 ## Prerequisites
 
-- .NET SDK from `global.json` (`8.0.0` with `rollForward: latestFeature`)
+- .NET SDK from `global.json` (`8.0.100` with `rollForward: latestFeature`)
 - Git
 
 ## Restore
@@ -57,7 +57,7 @@ The standard test scripts restore tools/packages and then run only the maintaine
 - `src/Tests/Aardvark.Geometry.Tests/Aardvark.Geometry.Tests.fsproj`
 - `src/Tests/Aardvark.Base.FSharp.Tests/Aardvark.Base.FSharp.Tests.fsproj`
 
-The top-level `build.*` and `test.*` scripts now stop on the first failing restore/build/test command and return a nonzero exit code immediately, so they are safe to use in CI and shell pipelines.
+The top-level `build.*` and `test.*` scripts stop on the first failing restore/build/test command and return a nonzero exit code immediately, so they are safe to use in CI and shell pipelines.
 
 The benchmark projects are intentionally excluded from the default `test.sh` / `test.cmd` path.
 The legacy incremental test project (`src/Tests/Aardvark.Base.Incremental.Tests/Aardvark.Base.Incremental.Tests.fsproj`) is also intentionally excluded for now. It still depends on an older adaptive test/helper surface and is tracked for explicit removal-or-migration in GitHub issue `#94`, rather than being silently treated as part of the normal green test suite.
@@ -70,7 +70,7 @@ dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "F
 dotnet test src/Aardvark.sln --filter "FullyQualifiedName~Vector"
 ```
 
-Use the solution-level filtered form only for targeted discovery/debugging. The default all-tests path remains `./test.sh` / `.\test.cmd`, which now skips benchmark projects.
+Use the solution-level filtered form only for targeted discovery/debugging. The default all-tests path remains `./test.sh` / `.\test.cmd`, which skips benchmark projects.
 
 ## Code Generation
 
@@ -88,7 +88,7 @@ If you changed templates (`*_template.cs` / `*_template.fs`), regenerate:
 
 Do not edit generated `*_auto.cs` / `*_auto.fs` manually.
 The scripts forward generator CLI arguments, so `--force` can be used for a full regeneration pass.
-CI uses forced regeneration in build and publish workflows to detect stale generated files before packages are produced.
+CI uses forced regeneration in the `codegen-check` job of the test workflow (which the publish workflow reuses) to detect stale generated files before packages are produced.
 
 ## Publish
 
@@ -127,7 +127,7 @@ If a change needs a release-notes entry:
 
 When `check-docs` fails, common categories are:
 
-1. Broken markdown links in `AGENTS.md`, `ai/*.md`, or `docs/*.md`
+1. Broken markdown links in scanned docs (`README.md`, `AGENTS.md`, `ai/*.md`, `docs/*.md`, `src/CodeGenerator/README.md`)
 2. Stale command/API examples caught by forbidden-pattern rules
 3. Missing required semantic phrases in key docs
 4. Source-anchor drift (doc claims no longer match source snippets)

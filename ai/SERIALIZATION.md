@@ -32,7 +32,7 @@ Same method signature for read and write:
 // This code works for BOTH reading and writing
 public void Serialize(ICoder coder)
 {
-    coder.CodeInt32(ref _x);
+    coder.CodeInt(ref _x);
     coder.CodeString(ref _name);
     coder.CodeV3d(ref _position);
 }
@@ -67,21 +67,28 @@ using (var coder = new BinaryReadingCoder(stream))
 }
 ```
 
+### XML Coders
+
+`XmlWritingCoder` / `XmlReadingCoder` implement the same `ICoder` contract for XML streams.
+
 ---
 
 ## Type-Specific Methods
 
 ### Primitive Types
+
+Method names use C# keyword style (`CodeInt`, `CodeLong`), NOT BCL type names (`CodeInt32`, `CodeInt64` do not exist):
+
 ```csharp
 void CodeBool(ref bool value);
 void CodeByte(ref byte value);
 void CodeSByte(ref sbyte value);
-void CodeInt16(ref short value);
-void CodeUInt16(ref ushort value);
-void CodeInt32(ref int value);
-void CodeUInt32(ref uint value);
-void CodeInt64(ref long value);
-void CodeUInt64(ref ulong value);
+void CodeShort(ref short value);
+void CodeUShort(ref ushort value);
+void CodeInt(ref int value);
+void CodeUInt(ref uint value);
+void CodeLong(ref long value);
+void CodeULong(ref ulong value);
 void CodeFloat(ref float value);
 void CodeDouble(ref double value);
 void CodeChar(ref char value);
@@ -198,7 +205,7 @@ Use for backward compatibility:
 ```csharp
 public void Serialize(ICoder coder)
 {
-    coder.CodeInt32(ref _x);
+    coder.CodeInt(ref _x);
 
     if (coder.StreamVersion >= 2)
     {
@@ -219,7 +226,7 @@ Register custom types for polymorphic serialization:
 
 ```csharp
 coder.Add(new TypeInfo[] {
-    new TypeInfo(typeof(MyType), "MyType", /* version */ 1),
+    new TypeInfo("MyType", typeof(MyType), version: 1),
     // ...
 });
 
@@ -280,7 +287,7 @@ myData.Code(readingCoder);
 ```csharp
 public void Code(ICoder coder)
 {
-    coder.CodeInt32(ref _count);
+    coder.CodeInt(ref _count);
 
     if (coder.IsWriting && _data != null)
     {

@@ -1,6 +1,6 @@
 # Aardvark.Base Utilities Reference
 
-Source-verified orientation for reporting, telemetry, random, traversal, and geodesy APIs.
+Reporting, telemetry, random, traversal, and geodesy APIs.
 
 ## Report
 
@@ -66,18 +66,21 @@ int bounded = rnd.UniformInt(100);   // extension method on IRandomUniform
 double u = rnd.UniformDouble();
 ```
 
-Geometric sampling:
+Geometric sampling takes an `IRandomSeries` (e.g. `HaltonRandomSeries`), not an `IRandomUniform`:
 
 ```csharp
-var dir = RandomSample.Spherical(rnd, 0);
-var hemi = RandomSample.Lambertian(V3d.ZAxis, rnd, 0);
-var disk = RandomSample.Disk(rnd, 0);
+var series = new HaltonRandomSeries(2, rnd);
+
+var dir = RandomSample.Spherical(series, 0);
+var hemi = RandomSample.Lambertian(V3d.ZAxis, series, 0);
+var disk = RandomSample.Disk(series, 0);
 ```
+
+Alternatively, use the `(double x1, double x2)` overloads with raw uniform samples.
 
 Low-discrepancy:
 
 ```csharp
-var halton = new HaltonRandomSeries(2, rnd);
 double q = Quasi.QuasiHaltonWithIndex(2, 0.123);
 ```
 
