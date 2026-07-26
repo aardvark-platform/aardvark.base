@@ -90,6 +90,18 @@ double q = Quasi.QuasiHaltonWithIndex(2, 0.123);
 - `NodesAtDepth(depth)`
 - `DescendentsAndSelf()` and `Descendents()` (spelling in code is `Descendents`)
 
+## Path Utilities
+
+`Aardvark.Base.Coder.Dir.RelativeDir` and `RelativeFile` compute lexical paths
+without checking path existence or resolving symbolic links. Path roots must be
+compatible. Roots and components use ordinal case-insensitive comparison on
+Windows and ordinal case-sensitive comparison on other platforms.
+
+`RelativeDir` returns an empty string for identical directories and appends the
+platform directory separator to every non-empty result. Incompatible roots
+return `null`; the `TryGetRelative*` helpers then select the requested absolute
+path or empty fallback.
+
 ## Geodesy
 
 Main conversions:
@@ -123,6 +135,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base/Random/HaltonRandomSeries.cs`
 - `src/Aardvark.Base/Random/Quasi.cs`
 - `src/Aardvark.Base/AlgoDat/INode.cs`
+- `src/Aardvark.Base.IO/WorkDir.cs`
 - `src/Aardvark.Base/Geodesy/GeoConversion.cs`
 - `src/Aardvark.Base/Geodesy/GeoConsts.cs`
 - `src/Aardvark.Base/Math/Base/Constant.cs`
