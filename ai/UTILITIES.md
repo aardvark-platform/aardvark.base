@@ -88,10 +88,16 @@ double q = Quasi.QuasiHaltonWithIndex(2, 0.123);
 
 `INode` extensions:
 
+- `ComputeDepth()`
 - `DepthFirst()`
 - `BreadthFirst()`
 - `NodesAtDepth(depth)`
 - `DescendentsAndSelf()` and `Descendents()` (spelling in code is `Descendents`)
+
+`ComputeDepth()` treats leaves as depth zero and enumerates each node's
+`SubNodes` sequence once. `DepthFirst()` is iterative preorder traversal; it
+owns each child enumerator and disposes it after exhaustion, early termination,
+or traversal failure.
 
 ## Path Utilities
 
@@ -138,6 +144,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base/Random/HaltonRandomSeries.cs`
 - `src/Aardvark.Base/Random/Quasi.cs`
 - `src/Aardvark.Base/AlgoDat/INode.cs`
+- `src/Aardvark.Base/Extensions/DagExtensions.cs`
 - `src/Aardvark.Base.IO/WorkDir.cs`
 - `src/Aardvark.Base/Geodesy/GeoConversion.cs`
 - `src/Aardvark.Base/Geodesy/GeoConsts.cs`

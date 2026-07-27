@@ -1,3 +1,4 @@
+- [Base] Fixed tree traversal single-pass and enumerator disposal semantics
 - [IO] Fixed lexical relative path root and platform case handling
 - [Base] Fixed compositional statistics and histogram aggregation
 - [Base] Hardened `ToDictionaryDistinct` duplicate handling and selector evaluation
