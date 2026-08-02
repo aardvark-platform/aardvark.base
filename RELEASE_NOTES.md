@@ -1,3 +1,5 @@
+- [Essentials] Hardened `Awaitable<T>` concurrent completion, waiting, and subscription semantics
+
 ### 5.3.27
 - [Base] Fixed tree traversal single-pass and enumerator disposal semantics
 - [IO] Fixed lexical relative path root and platform case handling

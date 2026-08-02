@@ -55,6 +55,13 @@ Reset API:
 Telemetry.ResetTelemetrySystem();
 ```
 
+## Awaitables
+
+`Awaitable<T>` is a thread-safe, one-shot completion source. The first `Emit`
+wins, `Result` blocks until completion, and subscriptions accepted before or
+after completion run exactly once with the published value. Continuations run
+synchronously outside internal synchronization.
+
 ## Random
 
 `RandomSystem` implements `IRandomUniform`.
@@ -138,6 +145,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base.Telemetry/Registry.cs`
 - `src/Aardvark.Base.Telemetry/IProbe.cs`
 - `src/Aardvark.Base.Telemetry/TelemetryExtensions.cs`
+- `src/Aardvark.Base.Essentials/System/Awaitable.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
 - `src/Aardvark.Base/Random/IRandomUniform.cs`
 - `src/Aardvark.Base/Random/RandomSample.cs`
