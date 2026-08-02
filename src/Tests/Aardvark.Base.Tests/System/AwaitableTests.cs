@@ -23,7 +23,7 @@ namespace Aardvark.Tests
 
             using (var barrier = new Barrier(2))
             {
-                var producer = Task.Run(() =>
+                var producer = StartLongRunning(() =>
                 {
                     for (var i = 0; i < sources.Length; i++)
                     {
@@ -33,7 +33,7 @@ namespace Aardvark.Tests
                     }
                 });
 
-                var consumer = Task.Run(() =>
+                var consumer = StartLongRunning(() =>
                 {
                     for (var i = 0; i < sources.Length; i++)
                     {
@@ -66,7 +66,7 @@ namespace Aardvark.Tests
             {
                 for (var i = 0; i < readers.Length; i++)
                 {
-                    readers[i] = Task.Run(() =>
+                    readers[i] = StartLongRunning(() =>
                     {
                         ready.Signal();
                         if (!start.Wait(CompletionTimeout))
@@ -76,7 +76,7 @@ namespace Aardvark.Tests
                     });
                 }
 
-                var emitter = Task.Run(() =>
+                var emitter = StartLongRunning(() =>
                 {
                     if (!start.Wait(CompletionTimeout))
                         throw new TimeoutException("Emitter start was not signaled.");
@@ -110,7 +110,7 @@ namespace Aardvark.Tests
 
             using (var barrier = new Barrier(2))
             {
-                var subscriber = Task.Run(() =>
+                var subscriber = StartLongRunning(() =>
                 {
                     for (var i = 0; i < sources.Length; i++)
                     {
@@ -132,7 +132,7 @@ namespace Aardvark.Tests
                     }
                 });
 
-                var emitter = Task.Run(() =>
+                var emitter = StartLongRunning(() =>
                 {
                     for (var i = 0; i < sources.Length; i++)
                     {
@@ -206,7 +206,7 @@ namespace Aardvark.Tests
                 for (var i = 0; i < tasks.Length; i++)
                 {
                     var value = i + 1;
-                    tasks[i] = Task.Run(() =>
+                    tasks[i] = StartLongRunning(() =>
                     {
                         Synchronize(barrier);
                         source.Emit(value);
@@ -234,6 +234,20 @@ namespace Aardvark.Tests
             if (!barrier.SignalAndWait(CompletionTimeout))
                 throw new TimeoutException("Concurrent test participants did not synchronize.");
         }
+
+        private static Task StartLongRunning(Action action)
+            => Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        private static Task<TResult> StartLongRunning<TResult>(Func<TResult> action)
+            => Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
 
         private static void AssertTasksComplete(params Task[] tasks)
         {
