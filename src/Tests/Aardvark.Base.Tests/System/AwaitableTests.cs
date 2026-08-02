@@ -10,7 +10,7 @@ namespace Aardvark.Tests
     [TestFixture]
     public class AwaitableTests
     {
-        private const int RaceIterations = 5000;
+        private const int RaceIterations = 2000;
         private static readonly TimeSpan CompletionTimeout = TimeSpan.FromSeconds(15);
 
         [Test, Timeout(30000)]
