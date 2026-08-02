@@ -1,4 +1,4 @@
-- [Base] Hardened `ShortestPath<T>` asynchronous replacement, cancellation, and result publication
+- [Base] Hardened `ShortestPath<T>` asynchronous replacement, cancellation, and lock-free result snapshot publication
 - [Essentials] Hardened `Awaitable<T>` concurrent completion, waiting, and subscription semantics
 
 ### 5.3.27

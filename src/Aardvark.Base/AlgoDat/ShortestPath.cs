@@ -255,7 +255,9 @@ namespace Aardvark.Base
                 {
                     token.ThrowIfCancellationRequested();
                     if (ReferenceEquals(m_currentRun, run))
-                        m_result = new ResultSnapshot(run.SeedIndex, run.Expanded, run.Predecessors);
+                        Volatile.Write(
+                            ref m_result,
+                            new ResultSnapshot(run.SeedIndex, run.Expanded, run.Predecessors));
                 }
             }
             finally
@@ -277,9 +279,7 @@ namespace Aardvark.Base
         /// </summary>
         public List<T> GetMinimalPathByIndex(int endIndex)
         {
-            ResultSnapshot result;
-            lock (m_runLock)
-                result = m_result;
+            var result = Volatile.Read(ref m_result);
 
             var contour = new List<T>();
             var id = endIndex;
