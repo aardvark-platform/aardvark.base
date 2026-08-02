@@ -5,6 +5,12 @@ Source-verified map of key algorithm types and entry points.
 ## ShortestPath<T>
 
 `ShortestPath<T>` implements `IShortestPath<T>` and runs asynchronous shortest-path computation.
+Starting a calculation validates its seed synchronously, then atomically replaces and cancels
+the previous calculation. Each run owns its cancellation state and working arrays, and only a
+successfully completed current run publishes a result. Path queries use one immutable snapshot,
+so they continue to observe the last completed result while a replacement is running. `Cancel()`
+invalidates, cancels, and waits for the current run; expected cancellation is suppressed while
+worker failures are propagated.
 
 Key methods:
 
