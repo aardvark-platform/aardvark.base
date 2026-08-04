@@ -86,45 +86,34 @@ namespace Aardvark.Base
                 lock (m_lock)
                 {
                     m_capacity = value;
-                    Shrink(m_size);
+                    Shrink();
                 }
             }
         }
 
-        private void Shrink(long size)
+        private void EvictLeastRecentlyUsed()
         {
-            while (size > m_capacity)
-            {
-                var removeKey = Dequeue(m_heap).Key;
-                if (m_cache.TryRemove(removeKey, out Entry entry))
-                {
-                    m_deleteAct?.Invoke(removeKey, entry.Value);
-                    entry.DeleteAct?.Invoke();
-                    size -= entry.Size;
-                }
-                else
-                    throw new InvalidOperationException("tried to remove an item that is not in the cache");  
-                    // this should never ever happen!
-            }
-            m_size = size;
+            var entry = m_heap[0];
+            if (!m_cache.TryRemove(entry.Key, out _))
+                throw new InvalidOperationException("tried to remove an item that is not in the cache");
+
+            Dequeue(m_heap);
+            m_size -= entry.Size;
+            m_deleteAct?.Invoke(entry.Key, entry.Value);
+            entry.DeleteAct?.Invoke();
+        }
+
+        private void Shrink()
+        {
+            while (m_size > m_capacity)
+                EvictLeastRecentlyUsed();
         }
 
         private void MakeRoomFor(long size)
         {
             var remainingCapacity = m_capacity - size;
             while (m_size > remainingCapacity)
-            {
-                var removeKey = Dequeue(m_heap).Key;
-                if (m_cache.TryRemove(removeKey, out Entry entry))
-                {
-                    m_deleteAct?.Invoke(removeKey, entry.Value);
-                    entry.DeleteAct?.Invoke();
-                    m_size -= entry.Size;
-                }
-                else
-                    throw new InvalidOperationException("tried to remove an item that is not in the cache");
-                    // this should never ever happen!
-            }
+                EvictLeastRecentlyUsed();
 
             m_size += size;
         }

@@ -1,3 +1,4 @@
+- [Base] Made `LruCache` eviction bookkeeping exception-safe when cleanup callbacks throw
 - [Base] Hardened weighted interpolation array writes and single-pass weight enumeration
 - [Base] Hardened `ShortestPath<T>` asynchronous replacement, cancellation, and lock-free result snapshot publication
 - [Essentials] Hardened `Awaitable<T>` concurrent completion, waiting, and subscription semantics

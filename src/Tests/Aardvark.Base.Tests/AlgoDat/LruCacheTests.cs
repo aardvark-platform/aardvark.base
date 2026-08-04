@@ -150,6 +150,166 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void IndexerEvictionCacheCleanupExceptionLeavesCacheConsistent()
+        {
+            var expected = new InvalidOperationException("cache cleanup failed");
+            var callbacks = new List<string>();
+            var reads = new List<string>();
+            var throwCleanup = true;
+            var cache = new LruCache<string, string>(
+                2,
+                key => 1,
+                key =>
+                {
+                    reads.Add(key);
+                    return "loaded-" + key;
+                },
+                (key, value) =>
+                {
+                    callbacks.Add("cache:" + key);
+                    if (key == "a" && throwCleanup)
+                    {
+                        throwCleanup = false;
+                        throw expected;
+                    }
+                });
+
+            cache.GetOrAdd("a", 1, () => "value-a", () => callbacks.Add("entry:a"));
+            cache.GetOrAdd("b", 1, () => "value-b", () => callbacks.Add("entry:b"));
+
+            var exception = Assert.Throws<InvalidOperationException>(() => { var _ = cache["c"]; });
+            Assert.AreSame(expected, exception);
+            CollectionAssert.AreEqual(new[] { "cache:a" }, callbacks);
+            Assert.IsFalse(cache.TryRemove("a", out _));
+            Assert.AreEqual(
+                "value-b",
+                cache.GetOrAdd("b", 1, () => throw new AssertionException("Survivor was reloaded.")));
+
+            Assert.AreEqual("loaded-c", cache["c"]);
+            CollectionAssert.AreEqual(new[] { "cache:a" }, callbacks);
+
+            Assert.AreEqual("loaded-d", cache["d"]);
+            CollectionAssert.AreEqual(new[] { "cache:a", "cache:b", "entry:b" }, callbacks);
+            Assert.IsFalse(cache.TryRemove("b", out _));
+            Assert.AreEqual("loaded-c", cache["c"]);
+            Assert.AreEqual("loaded-d", cache["d"]);
+            CollectionAssert.AreEqual(new[] { "c", "c", "d" }, reads);
+        }
+
+        [Test]
+        public void GetOrAddEvictionEntryCleanupExceptionLeavesCacheConsistent()
+        {
+            var expected = new InvalidOperationException("entry cleanup failed");
+            var callbacks = new List<string>();
+            var throwCleanup = true;
+            var cache = new LruCache<string, string>(
+                1,
+                key => 1,
+                key => "loaded-" + key,
+                (key, value) => callbacks.Add("cache:" + key));
+
+            cache.GetOrAdd("a", 1, () => "value-a", () =>
+            {
+                callbacks.Add("entry:a");
+                if (throwCleanup)
+                {
+                    throwCleanup = false;
+                    throw expected;
+                }
+            });
+
+            int factoryCount = 0;
+            Action deleteB = () => callbacks.Add("entry:b");
+            var exception = Assert.Throws<InvalidOperationException>(() =>
+                cache.GetOrAdd("b", 1, () => "value-b-" + ++factoryCount, deleteB));
+
+            Assert.AreSame(expected, exception);
+            CollectionAssert.AreEqual(new[] { "cache:a", "entry:a" }, callbacks);
+            Assert.IsFalse(cache.TryRemove("a", out _));
+
+            Assert.AreEqual(
+                "value-b-2",
+                cache.GetOrAdd("b", 1, () => "value-b-" + ++factoryCount, deleteB));
+            Assert.AreEqual(2, factoryCount);
+            CollectionAssert.AreEqual(new[] { "cache:a", "entry:a" }, callbacks);
+
+            Assert.AreEqual("value-c", cache.GetOrAdd("c", 1, () => "value-c"));
+            CollectionAssert.AreEqual(
+                new[] { "cache:a", "entry:a", "cache:b", "entry:b" }, callbacks);
+            Assert.IsFalse(cache.TryRemove("b", out _));
+            Assert.AreEqual(
+                "value-c",
+                cache.GetOrAdd("c", 1, () => throw new AssertionException("Current entry was reloaded.")));
+        }
+
+        [TestCase(true)]
+        [TestCase(false)]
+        public void CapacityShrinkCleanupExceptionLeavesCacheConsistent(bool cacheCleanupThrows)
+        {
+            var expected = new InvalidOperationException("cleanup failed");
+            var callbacks = new List<string>();
+            var throwCleanup = true;
+            var cache = new LruCache<string, string>(
+                3,
+                key => 1,
+                key => "loaded-" + key,
+                (key, value) =>
+                {
+                    callbacks.Add("cache:" + key);
+                    if (cacheCleanupThrows && key == "a" && throwCleanup)
+                    {
+                        throwCleanup = false;
+                        throw expected;
+                    }
+                });
+
+            Action Delete(string key)
+            {
+                return () =>
+                {
+                    callbacks.Add("entry:" + key);
+                    if (!cacheCleanupThrows && key == "a" && throwCleanup)
+                    {
+                        throwCleanup = false;
+                        throw expected;
+                    }
+                };
+            }
+
+            cache.GetOrAdd("a", 1, () => "value-a", Delete("a"));
+            cache.GetOrAdd("b", 1, () => "value-b", Delete("b"));
+            cache.GetOrAdd("c", 1, () => "value-c", Delete("c"));
+
+            var exception = Assert.Throws<InvalidOperationException>(() => cache.Capacity = 2);
+            Assert.AreSame(expected, exception);
+            Assert.AreEqual(2, cache.Capacity);
+            CollectionAssert.AreEqual(
+                cacheCleanupThrows
+                    ? new[] { "cache:a" }
+                    : new[] { "cache:a", "entry:a" },
+                callbacks);
+            Assert.IsFalse(cache.TryRemove("a", out _));
+            Assert.AreEqual(
+                "value-b",
+                cache.GetOrAdd("b", 1, () => throw new AssertionException("Survivor was reloaded.")));
+            Assert.AreEqual(
+                "value-c",
+                cache.GetOrAdd("c", 1, () => throw new AssertionException("Survivor was reloaded.")));
+
+            cache.Capacity = 2;
+            int callbackCount = callbacks.Count;
+            cache.Capacity = 1;
+
+            Assert.AreEqual(callbackCount + 2, callbacks.Count);
+            Assert.AreEqual("cache:b", callbacks[callbackCount]);
+            Assert.AreEqual("entry:b", callbacks[callbackCount + 1]);
+            Assert.IsFalse(cache.TryRemove("b", out _));
+            Assert.AreEqual(
+                "value-c",
+                cache.GetOrAdd("c", 1, () => throw new AssertionException("Current entry was reloaded.")));
+        }
+
+        [Test]
         public void ConstructorsRejectNegativeCapacity()
         {
             AssertArgumentOutOfRange(

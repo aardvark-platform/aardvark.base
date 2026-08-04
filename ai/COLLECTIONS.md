@@ -79,6 +79,8 @@ Key operations:
 
 `GetOrAdd(...)` accepts an optional per-entry delete action. That action is invoked when the entry leaves the cache through `Remove(...)`, `TryRemove(...)`, or capacity eviction.
 
+Eviction removes the least-recently-used entry and updates size accounting before invoking cleanup callbacks. The cache-wide delete action runs before the per-entry delete action. If either callback throws, the same exception propagates, the victim remains removed, later callbacks in that eviction are not invoked, and subsequent cache operations remain valid. A candidate value whose eviction cleanup fails is not inserted.
+
 ## ConcurrentHashSet<T>
 
 Defined in namespace `System.Collections.Concurrent`.
