@@ -271,7 +271,9 @@ namespace Aardvark.Base
         /// Perform the supplied action on grid regions of a supplied step
         /// size. Only near the borders, the regions may be smaller. The
         /// (possibly) smaller border region size is distributed to all four
-        /// borders.
+        /// borders. Each physical endpoint passed to <paramref name="region"/>
+        /// corresponds to its supplied grid index using the grid origin and
+        /// delta.
         /// </summary>
         public void SampleRegular(V2l step,
                     Action<long, long, long, long,
@@ -306,7 +308,7 @@ namespace Aardvark.Base
                  yi < regularLast.Y; yi = nyi, nyi += step.Y)
             {
                 double minY = m_region.Min.Y + yi * m_delta.Y;
-                double maxY = minY + m_delta.Y;
+                double maxY = m_region.Min.Y + nyi * m_delta.Y;
                 if (offset.X > 0)
                     region(0, offset.X, yi, nyi,
                         m_region.Min.X,

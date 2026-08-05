@@ -1,3 +1,4 @@
+- [Base] Fixed `SampleGrid2d.SampleRegular` region callback Y endpoints
 - [Base] Made `LruCache` eviction bookkeeping exception-safe when cleanup callbacks throw
 - [Base] Hardened weighted interpolation array writes and single-pass weight enumeration
 - [Base] Hardened `ShortestPath<T>` asynchronous replacement, cancellation, and lock-free result snapshot publication
