@@ -365,8 +365,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates an array that contains a random permutation of the
-        /// ints in the interval [0, count-1].
+        /// Creates an array that contains a uniformly distributed random
+        /// permutation of the ints in the interval [0, count-1]. The exact
+        /// permutation produced for a given seed may change between versions.
         /// </summary>
         public static int[] CreatePermutationArray(
                 this IRandomUniform rnd, int count)
@@ -380,8 +381,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Creates an array that contains a random permutation of the
-        /// numbers in the interval [0, count-1].
+        /// Creates an array that contains a uniformly distributed random
+        /// permutation of the numbers in the interval [0, count-1]. The exact
+        /// permutation produced for a given seed may change between versions.
         /// </summary>
         public static long[] CreatePermutationArrayLong(
                 this IRandomUniform rnd, long count)
@@ -561,9 +563,9 @@ namespace Aardvark.Base
         #region Randomizing Existing Arrays
 
         /// <summary>
-        /// Randomly permute the first count elements of the
-        /// supplied array. This does work with counts of up
-        /// to about 2^50. 
+        /// Uniformly permutes the first count elements of the supplied array
+        /// in place. This does work with counts of up to about 2^50. The exact
+        /// permutation produced for a given seed may change between versions.
         /// </summary>
         public static void Randomize<T>(
                 this IRandomUniform rnd, T[] array, long count)
@@ -575,19 +577,20 @@ namespace Aardvark.Base
             if (count <= (long)int.MaxValue)
             {
                 int intCount = (int)count;
-                for (int i = 0; i < intCount; i++)
-                    array.Swap(i, rnd.UniformInt(intCount));
+                for (int i = intCount - 1; i > 0; i--)
+                    array.Swap(i, rnd.UniformInt(i + 1));
             }
             else
             {
-                for (long i = 0; i < count; i++)
-                    array.Swap(i, rnd.UniformLong(count));
+                for (long i = count - 1; i > 0; i--)
+                    array.Swap(i, rnd.UniformLong(i + 1));
             }
         }
 
         /// <summary>
-        /// Randomly permute the elements of the supplied array. This does
-        /// work with arrays up to a length of about 2^50. 
+        /// Uniformly permutes the elements of the supplied array in place.
+        /// This does work with arrays up to a length of about 2^50. The exact
+        /// permutation produced for a given seed may change between versions.
         /// </summary>
         public static void Randomize<T>(
             this IRandomUniform rnd, T[] array)
@@ -599,7 +602,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Randomly permute the elements of the supplied list.
+        /// Uniformly permutes the elements of the supplied list in place. The
+        /// exact permutation produced for a given seed may change between
+        /// versions.
         /// </summary>
         public static void Randomize<T>(
             this IRandomUniform rnd, List<T> list)
@@ -608,13 +613,14 @@ namespace Aardvark.Base
             if (list == null) throw new ArgumentNullException(nameof(list));
 
             int count = list.Count;
-            for (int i = 0; i < count; i++)
-                list.Swap(i, rnd.UniformInt(count));
+            for (int i = count - 1; i > 0; i--)
+                list.Swap(i, rnd.UniformInt(i + 1));
         }
 
         /// <summary>
-        /// Randomly permute the specified number of elements in the supplied
-        /// array starting at the specified index.
+        /// Uniformly permutes in place the specified number of elements in the
+        /// supplied array starting at the specified index. The exact
+        /// permutation produced for a given seed may change between versions.
         /// </summary>
         public static void Randomize<T>(
             this IRandomUniform rnd, T[] array, int start, int count)
@@ -624,13 +630,14 @@ namespace Aardvark.Base
             if (start < 0 || start > array.Length) throw new ArgumentOutOfRangeException(nameof(start));
             if (count < 0 || count > array.Length - start) throw new ArgumentOutOfRangeException(nameof(count));
 
-            for (int i = start, e = start + count; i < e; i++)
-                array.Swap(i, start + rnd.UniformInt(count));
+            for (int i = count - 1; i > 0; i--)
+                array.Swap(start + i, start + rnd.UniformInt(i + 1));
         }
 
         /// <summary>
-        /// Randomly permute the specified number of elements in the supplied
-        /// array starting at the specified index.
+        /// Uniformly permutes in place the specified number of elements in the
+        /// supplied array starting at the specified index. The exact
+        /// permutation produced for a given seed may change between versions.
         /// </summary>
         public static void Randomize<T>(
             this IRandomUniform rnd, T[] array, long start, long count)
@@ -640,13 +647,14 @@ namespace Aardvark.Base
             if (start < 0 || start > array.LongLength) throw new ArgumentOutOfRangeException(nameof(start));
             if (count < 0 || count > array.LongLength - start) throw new ArgumentOutOfRangeException(nameof(count));
 
-            for (long i = start, e = start + count; i < e; i++)
-                array.Swap(i, start + rnd.UniformLong(count));
+            for (long i = count - 1; i > 0; i--)
+                array.Swap(start + i, start + rnd.UniformLong(i + 1));
         }
 
         /// <summary>
-        /// Randomly permute the specified number of elements in the supplied
-        /// list starting at the specified index.
+        /// Uniformly permutes in place the specified number of elements in the
+        /// supplied list starting at the specified index. The exact
+        /// permutation produced for a given seed may change between versions.
         /// </summary>
         public static void Randomize<T>(
             this IRandomUniform rnd, List<T> list, int start, int count)
@@ -656,8 +664,8 @@ namespace Aardvark.Base
             if (start < 0 || start > list.Count) throw new ArgumentOutOfRangeException(nameof(start));
             if (count < 0 || count > list.Count - start) throw new ArgumentOutOfRangeException(nameof(count));
 
-            for (int i = start; i < start + count; i++)
-                list.Swap(i, start + rnd.UniformInt(count));
+            for (int i = count - 1; i > 0; i--)
+                list.Swap(start + i, start + rnd.UniformInt(i + 1));
         }
 
         #endregion

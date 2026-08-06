@@ -73,6 +73,13 @@ int bounded = rnd.UniformInt(100);   // extension method on IRandomUniform
 double u = rnd.UniformDouble();
 ```
 
+`Randomize` uses an allocation-free Fisher-Yates shuffle to uniformly permute
+arrays, lists, prefixes, and ranges in place. Elements outside a selected range
+are unchanged, and empty or singleton selections consume no random values.
+`CreatePermutationArray` and `CreatePermutationArrayLong` use the same shuffle.
+Do not rely on an exact permutation for a given seed remaining stable across
+library versions.
+
 Geometric sampling takes an `IRandomSeries` (e.g. `HaltonRandomSeries`), not an `IRandomUniform`:
 
 ```csharp
