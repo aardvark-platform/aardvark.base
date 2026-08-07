@@ -46,7 +46,8 @@ bool hits = fast.Intersects(box, ref tmin, ref tmax);
 Semantics (`Ray3_auto.cs`, `FastRay3d.Intersects`):
 
 - `tmin`/`tmax` are in/out: they seed the search interval and are narrowed to the intersection interval on success.
-- The comparison is strict (`t <= tmin` / `t >= tmax` reject), so the slab interval is treated as **open**: exact grazing hits (ray touching a box exactly at `t == tmin`/`t == tmax`, e.g. through a corner) and boxes that are flat in a traversed axis (`Min == Max`) report **no** intersection.
+- Slab overlap is inclusive: a far endpoint is rejected only below `tmin`, and a near endpoint only above `tmax`. Exact endpoint, edge, and corner contacts therefore count as hits.
+- Boxes may be degenerate in one or more axes (`Min == Max`), including point boxes. A hit can narrow the interval to a single parameter with `tmin == tmax`.
 - Axes with zero direction components are handled via `DirFlags`; the ray origin must lie between the slabs of such an axis for a hit.
 
 ## Source Anchors

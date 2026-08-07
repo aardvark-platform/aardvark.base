@@ -410,12 +410,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Max.X - Ray.Origin.X) * InvDir.X;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) tmax = t;
                 }
                 {
                     __ftype__ t = (box.Min.X - Ray.Origin.X) * InvDir.X;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) tmin = t;
                 }
             }
@@ -423,12 +423,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Min.X - Ray.Origin.X) * InvDir.X;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) tmax = t;
                 }
                 {
                     __ftype__ t = (box.Max.X - Ray.Origin.X) * InvDir.X;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) tmin = t;
                 }
             }
@@ -442,12 +442,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) tmax = t;
                 }
                 {
                     __ftype__ t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) tmin = t;
                 }
             }
@@ -455,12 +455,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) tmax = t;
                 }
                 {
                     __ftype__ t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) tmin = t;
                 }
             }
@@ -495,12 +495,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Max.X - Ray.Origin.X) * InvDir.X;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MaxX; }
                 }
                 {
                     __ftype__ t = (box.Min.X - Ray.Origin.X) * InvDir.X;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinX; }
                 }
             }
@@ -508,12 +508,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Min.X - Ray.Origin.X) * InvDir.X;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MinX; }
                 }
                 {
                     __ftype__ t = (box.Max.X - Ray.Origin.X) * InvDir.X;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MaxX; }
                 }
             }
@@ -527,12 +527,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MaxY; }
                 }
                 {
                     __ftype__ t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinY; }
                 }
             }
@@ -540,12 +540,12 @@ namespace Aardvark.Base
             {
                 {
                     __ftype__ t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t <= tmin) return false;
+                    if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MinY; }
                 }
                 {
                     __ftype__ t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
-                    if (t >= tmax) return false;
+                    if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MaxY; }
                 }
             }

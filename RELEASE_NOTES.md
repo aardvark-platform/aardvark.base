@@ -1,3 +1,4 @@
+- [Base] Fixed `FastRay` closed box intersections for endpoint, grazing, and degenerate-box hits
 - [Base] Replaced biased randomization with allocation-free Fisher-Yates shuffling
 - [Base] Fixed `SampleGrid2d.SampleRegular` region callback Y endpoints
 - [Base] Made `LruCache` eviction bookkeeping exception-safe when cleanup callbacks throw
