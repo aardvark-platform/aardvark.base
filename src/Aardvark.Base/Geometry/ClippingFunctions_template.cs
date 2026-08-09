@@ -204,54 +204,80 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Line-Segments of line inside the Polygon (CCW ordered).
-        /// Works only with Convex-Polygons
-        /// If the line is clipped entirely, the points of the returned __line2t__ are NaN.
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Uses <c>Constant&lt;__rtype__&gt;.PositiveTinyValue</c> as absolute point-distance tolerance.
+        /// The result preserves the line's P0-to-P1 ordering and unchanged endpoints exactly.
+        /// If the line is clipped entirely, both points of the returned line are NaN.
         /// </summary>
         public static __line2t__ ClipWithConvex(this __line2t__ line, __polygon2t__ poly)
+            => line.ClipWithConvex(poly, Constant<__rtype__>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Each non-zero polygon edge defines a left half-plane. The non-negative
+        /// <paramref name="absoluteEpsilon"/> is scaled by the edge length for signed-cross-product
+        /// comparisons, so it represents an absolute point-distance tolerance. Zero-length edges
+        /// are ignored. The result preserves the line's P0-to-P1 ordering and unchanged endpoints
+        /// exactly. If the clipping interval is empty, both returned points are NaN.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="poly">The counter-clockwise convex clipping polygon.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static __line2t__ ClipWithConvex(
+            this __line2t__ line, __polygon2t__ poly, __rtype__ absoluteEpsilon
+        )
         {
-            var p = __v2t__.NaN;
-            bool i0, i1;
+            var pointCount = poly.PointCount;
+            if (pointCount < 3)
+                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
 
-            i0 = poly.Contains(line.P0);
-            i1 = poly.Contains(line.P1);
+            var direction = line.P1 - line.P0;
+            __rtype__ t0 = 0;
+            __rtype__ t1 = 1;
 
-            if (i0 && i1) return line;
-            else if ((!i0 && i1) || (i0 && !i1))
+            var edgeStart = poly[pointCount - 1];
+            for (int i = 0; i < pointCount; i++)
             {
-                foreach (var l in poly.EdgeLines)
-                {
-                    if (line.Intersects(l, out p)) break;
-                }
+                var edgeEnd = poly[i];
+                var edge = edgeEnd - edgeStart;
+                var edgeLength = edge.Length;
 
-                if (i0) return new __line2t__(line.P0, p);
-                else return new __line2t__(p, line.P1);
-            }
-            else
-            {
-                __v2t__ p0 = __v2t__.NaN;
-                __v2t__ p1 = __v2t__.NaN;
-                int c = 0;
-
-                foreach (var l in poly.EdgeLines)
+                if (edgeLength != 0)
                 {
-                    if (line.Intersects(l, out p))
+                    var pointOffset = line.P0 - edgeStart;
+                    var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
+                    var directionCross = edge.X * direction.Y - edge.Y * direction.X;
+                    var boundary = -absoluteEpsilon * edgeLength;
+
+                    if (directionCross == 0)
                     {
-                        if (c == 0) p0 = p;
-                        else p1 = p;
-                        c++;
+                        if (signedCross < boundary)
+                            return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                    }
+                    else
+                    {
+                        var t = (boundary - signedCross) / directionCross;
+                        if (directionCross > 0)
+                        {
+                            if (t > t1)
+                                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                            if (t > t0) t0 = t;
+                        }
+                        else
+                        {
+                            if (t < t0)
+                                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                            if (t < t1) t1 = t;
+                        }
                     }
                 }
 
-                if (c == 2)
-                {
-                    __v2t__ u = p1 - p0;
-
-                    if (u.Dot(line.Direction) > 0) return new __line2t__(p0, p1);
-                    else return new __line2t__(p1, p0);
-                }
-                else return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                edgeStart = edgeEnd;
             }
+
+            var p0 = t0 == 0 ? line.P0 : line.P0 + t0 * direction;
+            var p1 = t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new __line2t__(p0, p1);
         }
 
         #endregion

@@ -193,54 +193,80 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Line-Segments of line inside the Polygon (CCW ordered).
-        /// Works only with Convex-Polygons
-        /// If the line is clipped entirely, the points of the returned Line2f are NaN.
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Uses <c>Constant&lt;float&gt;.PositiveTinyValue</c> as absolute point-distance tolerance.
+        /// The result preserves the line's P0-to-P1 ordering and unchanged endpoints exactly.
+        /// If the line is clipped entirely, both points of the returned line are NaN.
         /// </summary>
         public static Line2f ClipWithConvex(this Line2f line, Polygon2f poly)
+            => line.ClipWithConvex(poly, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Each non-zero polygon edge defines a left half-plane. The non-negative
+        /// <paramref name="absoluteEpsilon"/> is scaled by the edge length for signed-cross-product
+        /// comparisons, so it represents an absolute point-distance tolerance. Zero-length edges
+        /// are ignored. The result preserves the line's P0-to-P1 ordering and unchanged endpoints
+        /// exactly. If the clipping interval is empty, both returned points are NaN.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="poly">The counter-clockwise convex clipping polygon.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2f ClipWithConvex(
+            this Line2f line, Polygon2f poly, float absoluteEpsilon
+        )
         {
-            var p = V2f.NaN;
-            bool i0, i1;
+            var pointCount = poly.PointCount;
+            if (pointCount < 3)
+                return new Line2f(V2f.NaN, V2f.NaN);
 
-            i0 = poly.Contains(line.P0);
-            i1 = poly.Contains(line.P1);
+            var direction = line.P1 - line.P0;
+            float t0 = 0;
+            float t1 = 1;
 
-            if (i0 && i1) return line;
-            else if ((!i0 && i1) || (i0 && !i1))
+            var edgeStart = poly[pointCount - 1];
+            for (int i = 0; i < pointCount; i++)
             {
-                foreach (var l in poly.EdgeLines)
-                {
-                    if (line.Intersects(l, out p)) break;
-                }
+                var edgeEnd = poly[i];
+                var edge = edgeEnd - edgeStart;
+                var edgeLength = edge.Length;
 
-                if (i0) return new Line2f(line.P0, p);
-                else return new Line2f(p, line.P1);
-            }
-            else
-            {
-                V2f p0 = V2f.NaN;
-                V2f p1 = V2f.NaN;
-                int c = 0;
-
-                foreach (var l in poly.EdgeLines)
+                if (edgeLength != 0)
                 {
-                    if (line.Intersects(l, out p))
+                    var pointOffset = line.P0 - edgeStart;
+                    var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
+                    var directionCross = edge.X * direction.Y - edge.Y * direction.X;
+                    var boundary = -absoluteEpsilon * edgeLength;
+
+                    if (directionCross == 0)
                     {
-                        if (c == 0) p0 = p;
-                        else p1 = p;
-                        c++;
+                        if (signedCross < boundary)
+                            return new Line2f(V2f.NaN, V2f.NaN);
+                    }
+                    else
+                    {
+                        var t = (boundary - signedCross) / directionCross;
+                        if (directionCross > 0)
+                        {
+                            if (t > t1)
+                                return new Line2f(V2f.NaN, V2f.NaN);
+                            if (t > t0) t0 = t;
+                        }
+                        else
+                        {
+                            if (t < t0)
+                                return new Line2f(V2f.NaN, V2f.NaN);
+                            if (t < t1) t1 = t;
+                        }
                     }
                 }
 
-                if (c == 2)
-                {
-                    V2f u = p1 - p0;
-
-                    if (u.Dot(line.Direction) > 0) return new Line2f(p0, p1);
-                    else return new Line2f(p1, p0);
-                }
-                else return new Line2f(V2f.NaN, V2f.NaN);
+                edgeStart = edgeEnd;
             }
+
+            var p0 = t0 == 0 ? line.P0 : line.P0 + t0 * direction;
+            var p1 = t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line2f(p0, p1);
         }
 
         #endregion
@@ -675,54 +701,80 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Line-Segments of line inside the Polygon (CCW ordered).
-        /// Works only with Convex-Polygons
-        /// If the line is clipped entirely, the points of the returned Line2d are NaN.
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Uses <c>Constant&lt;double&gt;.PositiveTinyValue</c> as absolute point-distance tolerance.
+        /// The result preserves the line's P0-to-P1 ordering and unchanged endpoints exactly.
+        /// If the line is clipped entirely, both points of the returned line are NaN.
         /// </summary>
         public static Line2d ClipWithConvex(this Line2d line, Polygon2d poly)
+            => line.ClipWithConvex(poly, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Each non-zero polygon edge defines a left half-plane. The non-negative
+        /// <paramref name="absoluteEpsilon"/> is scaled by the edge length for signed-cross-product
+        /// comparisons, so it represents an absolute point-distance tolerance. Zero-length edges
+        /// are ignored. The result preserves the line's P0-to-P1 ordering and unchanged endpoints
+        /// exactly. If the clipping interval is empty, both returned points are NaN.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="poly">The counter-clockwise convex clipping polygon.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2d ClipWithConvex(
+            this Line2d line, Polygon2d poly, double absoluteEpsilon
+        )
         {
-            var p = V2d.NaN;
-            bool i0, i1;
+            var pointCount = poly.PointCount;
+            if (pointCount < 3)
+                return new Line2d(V2d.NaN, V2d.NaN);
 
-            i0 = poly.Contains(line.P0);
-            i1 = poly.Contains(line.P1);
+            var direction = line.P1 - line.P0;
+            double t0 = 0;
+            double t1 = 1;
 
-            if (i0 && i1) return line;
-            else if ((!i0 && i1) || (i0 && !i1))
+            var edgeStart = poly[pointCount - 1];
+            for (int i = 0; i < pointCount; i++)
             {
-                foreach (var l in poly.EdgeLines)
-                {
-                    if (line.Intersects(l, out p)) break;
-                }
+                var edgeEnd = poly[i];
+                var edge = edgeEnd - edgeStart;
+                var edgeLength = edge.Length;
 
-                if (i0) return new Line2d(line.P0, p);
-                else return new Line2d(p, line.P1);
-            }
-            else
-            {
-                V2d p0 = V2d.NaN;
-                V2d p1 = V2d.NaN;
-                int c = 0;
-
-                foreach (var l in poly.EdgeLines)
+                if (edgeLength != 0)
                 {
-                    if (line.Intersects(l, out p))
+                    var pointOffset = line.P0 - edgeStart;
+                    var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
+                    var directionCross = edge.X * direction.Y - edge.Y * direction.X;
+                    var boundary = -absoluteEpsilon * edgeLength;
+
+                    if (directionCross == 0)
                     {
-                        if (c == 0) p0 = p;
-                        else p1 = p;
-                        c++;
+                        if (signedCross < boundary)
+                            return new Line2d(V2d.NaN, V2d.NaN);
+                    }
+                    else
+                    {
+                        var t = (boundary - signedCross) / directionCross;
+                        if (directionCross > 0)
+                        {
+                            if (t > t1)
+                                return new Line2d(V2d.NaN, V2d.NaN);
+                            if (t > t0) t0 = t;
+                        }
+                        else
+                        {
+                            if (t < t0)
+                                return new Line2d(V2d.NaN, V2d.NaN);
+                            if (t < t1) t1 = t;
+                        }
                     }
                 }
 
-                if (c == 2)
-                {
-                    V2d u = p1 - p0;
-
-                    if (u.Dot(line.Direction) > 0) return new Line2d(p0, p1);
-                    else return new Line2d(p1, p0);
-                }
-                else return new Line2d(V2d.NaN, V2d.NaN);
+                edgeStart = edgeEnd;
             }
+
+            var p0 = t0 == 0 ? line.P0 : line.P0 + t0 * direction;
+            var p1 = t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line2d(p0, p1);
         }
 
         #endregion
