@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using static System.Math;
 
@@ -152,16 +152,33 @@ namespace Aardvark.Base
                 e1.GetHashCode()), e2.GetHashCode()), e3.GetHashCode()), e4.GetHashCode());
 
         /// <summary>
-        /// Compute the combined hash code of an IEnumerable of items.
+        /// Computes the ordered combined hash code of a sequence. An empty sequence
+        /// returns zero, a singleton returns its element hash, and each subsequent
+        /// element hash is folded with <see cref="UCombine(uint, int)"/>. The result
+        /// matches the array overload for the same ordered elements.
         /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="items"/> is null.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this IEnumerable<T> items)
             where T : struct
-            => (int)items.Aggregate(0U, (h, i) => UCombine(h, i.GetHashCode()));
+        {
+            if (items == null) throw new ArgumentNullException(nameof(items));
+
+            using (var enumerator = items.GetEnumerator())
+            {
+                if (!enumerator.MoveNext()) return 0;
+
+                var h = (uint)enumerator.Current.GetHashCode();
+                while (enumerator.MoveNext())
+                    h = UCombine(h, enumerator.Current.GetHashCode());
+
+                return (int)h;
+            }
+        }
 
         /// <summary>
-        /// Compute the combined hash code of an array of items (explicit
-        /// implementation in order to be faster than IEnumerable version).
+        /// Computes the ordered combined hash code of an array. The empty, singleton,
+        /// and ordered-fold semantics match the <see cref="IEnumerable{T}"/> overload.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this T[] array)
@@ -169,8 +186,8 @@ namespace Aardvark.Base
             => array.GetCombinedHashCode(array.LongLength);
 
         /// <summary>
-        /// Compute the combined hash code of an array of items (explicit
-        /// implementation in order to be faster than IEnumerable version).
+        /// Computes the ordered combined hash code of the first <paramref name="count"/>
+        /// array elements using the same empty, singleton, and fold semantics.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this T[] array, long count)
@@ -184,8 +201,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Compute the combined hash code of an array of items (explicit
-        /// implementation in order to be faster than IEnumerable version).
+        /// Computes the ordered combined hash code of an array range using the same
+        /// empty, singleton, and fold semantics.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetCombinedHashCode<T>(this T[] array, long first, long count)

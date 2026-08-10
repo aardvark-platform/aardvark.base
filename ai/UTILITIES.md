@@ -62,6 +62,15 @@ wins, `Result` blocks until completion, and subscriptions accepted before or
 after completion run exactly once with the published value. Continuations run
 synchronously outside internal synchronization.
 
+## Ordered Hash Combination
+
+`HashCode.GetCombinedHashCode<T>` uses the same order-sensitive fold for arrays
+and `IEnumerable<T>` values. Empty inputs return zero, singletons return the
+element hash directly, and each later element hash is incorporated with
+`HashCode.UCombine`. The enumerable overload consumes the sequence once and
+disposes its enumerator, so the same ordered values hash identically regardless
+of whether the caller exposes them as an array, list, or lazy sequence.
+
 ## Random
 
 `RandomSystem` implements `IRandomUniform`.
@@ -153,6 +162,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base.Telemetry/IProbe.cs`
 - `src/Aardvark.Base.Telemetry/TelemetryExtensions.cs`
 - `src/Aardvark.Base.Essentials/System/Awaitable.cs`
+- `src/Aardvark.Base/Hashing/HashCode.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
 - `src/Aardvark.Base/Random/IRandomUniform.cs`
 - `src/Aardvark.Base/Random/RandomSample.cs`
