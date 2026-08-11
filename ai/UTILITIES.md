@@ -71,6 +71,17 @@ element hash directly, and each later element hash is incorporated with
 disposes its enumerator, so the same ordered values hash identically regardless
 of whether the caller exposes them as an array, list, or lazy sequence.
 
+## Introspection Method Queries
+
+`Introspection.GetAllMethodsWithAttribute<T>(Assembly)` scans public instance
+and static methods declared directly by each assembly type. Each matching
+`MethodInfo` is returned once together with all attached `T` attribute instances.
+
+The version-1 query cache stores one assembly-qualified name per declaring type
+in first-seen order. Cache reads deduplicate declaring-type lines before resolving
+and scanning them, so legacy files containing repeated lines produce the same
+method sequence and count as a cache miss.
+
 ## Random
 
 `RandomSystem` implements `IRandomUniform`.
@@ -163,6 +174,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base.Telemetry/TelemetryExtensions.cs`
 - `src/Aardvark.Base.Essentials/System/Awaitable.cs`
 - `src/Aardvark.Base/Hashing/HashCode.cs`
+- `src/Aardvark.Base/Introspection/Introspection.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
 - `src/Aardvark.Base/Random/IRandomUniform.cs`
 - `src/Aardvark.Base/Random/RandomSample.cs`

@@ -71,8 +71,9 @@ public static class Introspection
         => AllAssemblies.SelectMany(GetAllTypesWithAttribute<T>);
 
     /// <summary>
-    /// Enumerates all methods decorated with attribute T as tuples of MethodInfo
-    /// and its one or more T-attributes.
+    /// Enumerates all public instance and static methods declared by known types and
+    /// decorated with attribute T. Each method is returned once together with all of
+    /// its T-attribute instances.
     /// </summary>
     public static IEnumerable<(MethodInfo, T[])> GetAllMethodsWithAttribute<T>()
         => AllAssemblies.SelectMany(GetAllMethodsWithAttribute<T>);
@@ -143,27 +144,82 @@ public static class Introspection
         return [];
     }
 
+    private const BindingFlags PublicDeclaredMethods =
+        BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+
+    private static IEnumerable<(MethodInfo, T[])> GetMethodsWithAttribute<T>(IEnumerable<Type> types)
+    {
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+
+            foreach (var method in type.GetMethods(PublicDeclaredMethods))
+            {
+                var attributes = TryGetCustomAttributes<T>(method);
+                if (attributes.Length > 0) yield return (method, attributes);
+            }
+        }
+    }
+
+    private static IEnumerable<Type> ResolveUniqueTypes(IEnumerable<string> lines)
+    {
+        string first = null;
+        HashSet<string> seen = null;
+
+        foreach (var line in lines)
+        {
+            if (line == null) continue;
+
+            if (first == null)
+            {
+                first = line;
+            }
+            else
+            {
+                seen ??= new HashSet<string>(StringComparer.Ordinal) { first };
+                if (!seen.Add(line)) continue;
+            }
+
+            var type = GetType(line);
+            if (type != null) yield return type;
+        }
+    }
+
+    private static IEnumerable<string> GetUniqueDeclaringTypeNames<T>((MethodInfo, T[])[] methods)
+    {
+        string first = null;
+        HashSet<string> seen = null;
+
+        foreach (var method in methods)
+        {
+            var name = method.Item1.DeclaringType?.AssemblyQualifiedName;
+            if (name == null) continue;
+
+            if (first == null)
+            {
+                first = name;
+            }
+            else
+            {
+                seen ??= new HashSet<string>(StringComparer.Ordinal) { first };
+                if (!seen.Add(name)) continue;
+            }
+
+            yield return name;
+        }
+    }
+
     /// <summary>
-    /// Enumerates all methods from the specified assembly
-    /// decorated with attribute T as tuples of MethodInfo
-    /// and its one or more T-attributes.
+    /// Enumerates public instance and static methods declared by types in the specified
+    /// assembly and decorated with attribute T. Each method is returned once together
+    /// with all of its T-attribute instances. The query cache stores each declaring type
+    /// once and ignores repeated declaring-type lines in legacy cache files.
     /// </summary>
     public static (MethodInfo, T[])[] GetAllMethodsWithAttribute<T>(Assembly assembly)
         => GetAll___<(MethodInfo, T[])>(assembly, typeof(T).FullName,
-              lines => from line in lines
-                       let t = GetType(line)
-                       where t != null
-                       from m in t.GetMethods()
-                       let attribs = TryGetCustomAttributes<T>(m)
-                       where attribs.Length > 0
-                       select (m, attribs),
-              types => from t in types
-                       where t != null
-                       from m in t.GetMethods()
-                       let attribs = TryGetCustomAttributes<T>(m)
-                       where attribs.Length > 0
-                       select (m, attribs),
-              result => result.SelectNotNull(m => m.Item1.DeclaringType?.AssemblyQualifiedName)
+              lines => GetMethodsWithAttribute<T>(ResolveUniqueTypes(lines)),
+              types => GetMethodsWithAttribute<T>(types),
+              GetUniqueDeclaringTypeNames
         );
 
 #if NET8_0_OR_GREATER
