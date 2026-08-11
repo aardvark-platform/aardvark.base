@@ -27,6 +27,20 @@ new ShortestPath<T>(List<T> nodes, List<(int,int)> edges, Func<T,T,float> getCos
 new ShortestPath<T>(T[] nodes, List<int>[] neighbors, Func<T,T,float> getCost);
 ```
 
+## Dense Graph Minimum-Spanning Trees
+
+`DenseGraph<TVertex, TCost>.BuildMinimumSpanningTreePrim()` implements canonical
+dense `O(V^2)` Prim traversal rooted at vertex index zero. It tracks the cheapest
+edge from the visited set to every unvisited vertex. Equal costs select the lowest
+vertex index and then the lowest parent index, making the result deterministic.
+Empty and singleton graphs produce trees with no edges.
+
+`AbstractGraph<TVertex, TCost>.Tree.Traverse` visits every reachable vertex once
+and invokes its edge callback exactly once per undirected tree edge. `Tree.Cost`
+therefore counts each edge once. `Tree.TraverseEuler` emits no values for an empty
+tree; otherwise it emits a depth-first `2E+1` walk that starts and ends at index
+zero and traverses every tree edge once in each direction.
+
 ## BbTree
 
 Bounding-box hierarchy in `Geometry/BbTree.cs`.
@@ -118,6 +132,7 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 ## Source Anchors
 
 - `src/Aardvark.Base/AlgoDat/ShortestPath.cs`
+- `src/Aardvark.Base/AlgoDat/SalesmanOfDeath.cs`
 - `src/Aardvark.Base/Geometry/BbTree.cs`
 - `src/Aardvark.Base/Math/LuFactorization.cs`
 - `src/Aardvark.Base/Math/QrFactorization.cs`
