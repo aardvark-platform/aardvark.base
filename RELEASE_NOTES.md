@@ -1,3 +1,4 @@
+- [Base] Added allocation-free 2D/3D line-segment clipping against plane half-spaces
 - [Base] Fixed duplicate introspection method-query cache entries
 - [Base] Corrected DenseGraph minimum-spanning trees and single-edge traversal accounting
 - [Base] Fixed enumerable combined hash codes to match ordered array semantics

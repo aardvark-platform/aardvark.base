@@ -114,6 +114,112 @@ namespace Aardvark.Base
 
         #region Intersections (float)
 
+        #region Line2f - Plane2f
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;float&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line2f ClipByPlane(this Line2f line, Plane2f plane)
+            => line.ClipByPlane(plane, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2f ClipByPlane(
+            this Line2f line, Plane2f plane, float absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (normalLength == 0) return line;
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line2f(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line2f(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line2f(V2f.NaN, V2f.NaN);
+            if (h1 == boundary) return new Line2f(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line2f(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
+        #region Line3f - Plane3f
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;float&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line3f ClipByPlane(this Line3f line, Plane3f plane)
+            => line.ClipByPlane(plane, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line3f ClipByPlane(
+            this Line3f line, Plane3f plane, float absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (normalLength == 0) return line;
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line3f(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line3f(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line3f(V3f.NaN, V3f.NaN);
+            if (h1 == boundary) return new Line3f(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line3f(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
         #region Line2f - Polygon2f
 
         /// <summary>
@@ -621,6 +727,112 @@ namespace Aardvark.Base
         #endregion
 
         #region Intersections (double)
+
+        #region Line2d - Plane2d
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;double&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line2d ClipByPlane(this Line2d line, Plane2d plane)
+            => line.ClipByPlane(plane, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2d ClipByPlane(
+            this Line2d line, Plane2d plane, double absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (normalLength == 0) return line;
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line2d(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line2d(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line2d(V2d.NaN, V2d.NaN);
+            if (h1 == boundary) return new Line2d(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line2d(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
+        #region Line3d - Plane3d
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;double&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line3d ClipByPlane(this Line3d line, Plane3d plane)
+            => line.ClipByPlane(plane, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line3d ClipByPlane(
+            this Line3d line, Plane3d plane, double absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (normalLength == 0) return line;
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line3d(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line3d(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line3d(V3d.NaN, V3d.NaN);
+            if (h1 == boundary) return new Line3d(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line3d(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
 
         #region Line2d - Polygon2d
 
