@@ -1,4 +1,6 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Columns;
+using BenchmarkDotNet.Configs;
 
 namespace Aardvark.Base.Benchmarks.Geometry
 {
@@ -10,124 +12,81 @@ namespace Aardvark.Base.Benchmarks.Geometry
     }
 
     [MemoryDiagnoser]
-    public class PlaneClipping2dBenchmark
+    [CategoriesColumn]
+    [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
+    public class PlaneClippingBenchmark
     {
-        private readonly Plane2d m_plane = new Plane2d(V2d.XAxis, 0.0);
-        private Line2d m_line;
+        private readonly Plane2f m_plane2f = new Plane2f(V2f.XAxis, 0.0f);
+        private readonly Plane2d m_plane2d = new Plane2d(V2d.XAxis, 0.0);
+        private readonly Plane3f m_plane3f = new Plane3f(V3f.XAxis, 0.0f);
+        private readonly Plane3d m_plane3d = new Plane3d(V3d.XAxis, 0.0);
 
-        [Params(
-            PlaneClippingScenario.Retained,
-            PlaneClippingScenario.Crossing,
-            PlaneClippingScenario.Rejected
-        )]
+        private Line2f m_line2f;
+        private Line2d m_line2d;
+        private Line3f m_line3f;
+        private Line3d m_line3d;
+
+        [ParamsAllValues]
         public PlaneClippingScenario Scenario { get; set; }
 
         [GlobalSetup]
         public void Setup()
         {
-            m_line = Scenario switch
+            switch (Scenario)
             {
-                PlaneClippingScenario.Retained => new Line2d(new V2d(1.0, 2.0), new V2d(3.0, 4.0)),
-                PlaneClippingScenario.Crossing => new Line2d(new V2d(-2.0, 2.0), new V2d(2.0, 4.0)),
-                PlaneClippingScenario.Rejected => new Line2d(new V2d(-3.0, 2.0), new V2d(-1.0, 4.0)),
-                _ => default
-            };
-        }
+                case PlaneClippingScenario.Retained:
+                    m_line2f = new Line2f(new V2f(1.0f, 2.0f), new V2f(3.0f, 4.0f));
+                    m_line2d = new Line2d(new V2d(1.0, 2.0), new V2d(3.0, 4.0));
+                    m_line3f = new Line3f(new V3f(1.0f, 2.0f, 3.0f), new V3f(3.0f, 4.0f, 5.0f));
+                    m_line3d = new Line3d(new V3d(1.0, 2.0, 3.0), new V3d(3.0, 4.0, 5.0));
+                    break;
 
-        [Benchmark(Baseline = true)]
-        public Line2d DirectScalar()
-            => ClipDirect(m_line, m_plane, Constant<double>.PositiveTinyValue);
+                case PlaneClippingScenario.Crossing:
+                    m_line2f = new Line2f(new V2f(-2.0f, 2.0f), new V2f(2.0f, 4.0f));
+                    m_line2d = new Line2d(new V2d(-2.0, 2.0), new V2d(2.0, 4.0));
+                    m_line3f = new Line3f(new V3f(-2.0f, 2.0f, 3.0f), new V3f(2.0f, 4.0f, 5.0f));
+                    m_line3d = new Line3d(new V3d(-2.0, 2.0, 3.0), new V3d(2.0, 4.0, 5.0));
+                    break;
 
-        [Benchmark]
-        public Line2d Extension()
-            => m_line.ClipByPlane(m_plane);
-
-        private static Line2d ClipDirect(Line2d line, Plane2d plane, double absoluteEpsilon)
-        {
-            var normalLength = plane.Normal.Length;
-            if (normalLength == 0.0) return line;
-
-            var boundary = -absoluteEpsilon * normalLength;
-            var h0 = plane.Height(line.P0);
-            var h1 = plane.Height(line.P1);
-            var p0Inside = h0 >= boundary;
-            var p1Inside = h1 >= boundary;
-
-            if (p0Inside)
-            {
-                if (p1Inside) return line;
-                if (h0 == boundary) return new Line2d(line.P0, line.P0);
-
-                var t = (boundary - h0) / (h1 - h0);
-                return new Line2d(line.P0, line.P0 + t * (line.P1 - line.P0));
+                case PlaneClippingScenario.Rejected:
+                    m_line2f = new Line2f(new V2f(-3.0f, 2.0f), new V2f(-1.0f, 4.0f));
+                    m_line2d = new Line2d(new V2d(-3.0, 2.0), new V2d(-1.0, 4.0));
+                    m_line3f = new Line3f(new V3f(-3.0f, 2.0f, 3.0f), new V3f(-1.0f, 4.0f, 5.0f));
+                    m_line3d = new Line3d(new V3d(-3.0, 2.0, 3.0), new V3d(-1.0, 4.0, 5.0));
+                    break;
             }
-
-            if (!p1Inside) return new Line2d(V2d.NaN, V2d.NaN);
-            if (h1 == boundary) return new Line2d(line.P1, line.P1);
-
-            var t0 = (boundary - h0) / (h1 - h0);
-            return new Line2d(line.P0 + t0 * (line.P1 - line.P0), line.P1);
-        }
-    }
-
-    [MemoryDiagnoser]
-    public class PlaneClipping3dBenchmark
-    {
-        private readonly Plane3d m_plane = new Plane3d(V3d.XAxis, 0.0);
-        private Line3d m_line;
-
-        [Params(
-            PlaneClippingScenario.Retained,
-            PlaneClippingScenario.Crossing,
-            PlaneClippingScenario.Rejected
-        )]
-        public PlaneClippingScenario Scenario { get; set; }
-
-        [GlobalSetup]
-        public void Setup()
-        {
-            m_line = Scenario switch
-            {
-                PlaneClippingScenario.Retained => new Line3d(new V3d(1.0, 2.0, 3.0), new V3d(3.0, 4.0, 5.0)),
-                PlaneClippingScenario.Crossing => new Line3d(new V3d(-2.0, 2.0, 3.0), new V3d(2.0, 4.0, 5.0)),
-                PlaneClippingScenario.Rejected => new Line3d(new V3d(-3.0, 2.0, 3.0), new V3d(-1.0, 4.0, 5.0)),
-                _ => default
-            };
         }
 
-        [Benchmark(Baseline = true)]
-        public Line3d DirectScalar()
-            => ClipDirect(m_line, m_plane, Constant<double>.PositiveTinyValue);
+        [Benchmark(Baseline = true), BenchmarkCategory("Line2f")]
+        public Line2f Line2fExplicitTolerance()
+            => m_line2f.ClipByPlane(m_plane2f, Constant<float>.PositiveTinyValue);
 
-        [Benchmark]
-        public Line3d Extension()
-            => m_line.ClipByPlane(m_plane);
+        [Benchmark, BenchmarkCategory("Line2f")]
+        public Line2f Line2fDefaultTolerance()
+            => m_line2f.ClipByPlane(m_plane2f);
 
-        private static Line3d ClipDirect(Line3d line, Plane3d plane, double absoluteEpsilon)
-        {
-            var normalLength = plane.Normal.Length;
-            if (normalLength == 0.0) return line;
+        [Benchmark(Baseline = true), BenchmarkCategory("Line2d")]
+        public Line2d Line2dExplicitTolerance()
+            => m_line2d.ClipByPlane(m_plane2d, Constant<double>.PositiveTinyValue);
 
-            var boundary = -absoluteEpsilon * normalLength;
-            var h0 = plane.Height(line.P0);
-            var h1 = plane.Height(line.P1);
-            var p0Inside = h0 >= boundary;
-            var p1Inside = h1 >= boundary;
+        [Benchmark, BenchmarkCategory("Line2d")]
+        public Line2d Line2dDefaultTolerance()
+            => m_line2d.ClipByPlane(m_plane2d);
 
-            if (p0Inside)
-            {
-                if (p1Inside) return line;
-                if (h0 == boundary) return new Line3d(line.P0, line.P0);
+        [Benchmark(Baseline = true), BenchmarkCategory("Line3f")]
+        public Line3f Line3fExplicitTolerance()
+            => m_line3f.ClipByPlane(m_plane3f, Constant<float>.PositiveTinyValue);
 
-                var t = (boundary - h0) / (h1 - h0);
-                return new Line3d(line.P0, line.P0 + t * (line.P1 - line.P0));
-            }
+        [Benchmark, BenchmarkCategory("Line3f")]
+        public Line3f Line3fDefaultTolerance()
+            => m_line3f.ClipByPlane(m_plane3f);
 
-            if (!p1Inside) return new Line3d(V3d.NaN, V3d.NaN);
-            if (h1 == boundary) return new Line3d(line.P1, line.P1);
+        [Benchmark(Baseline = true), BenchmarkCategory("Line3d")]
+        public Line3d Line3dExplicitTolerance()
+            => m_line3d.ClipByPlane(m_plane3d, Constant<double>.PositiveTinyValue);
 
-            var t0 = (boundary - h0) / (h1 - h0);
-            return new Line3d(line.P0 + t0 * (line.P1 - line.P0), line.P1);
-        }
+        [Benchmark, BenchmarkCategory("Line3d")]
+        public Line3d Line3dDefaultTolerance()
+            => m_line3d.ClipByPlane(m_plane3d);
     }
 }
