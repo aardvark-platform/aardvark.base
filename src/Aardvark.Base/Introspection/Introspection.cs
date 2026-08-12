@@ -80,43 +80,50 @@ public static class Introspection
 
     /// <summary>
     /// Enumerates all classes from the specified assembly
-    /// implementing the specified interface.
+    /// implementing the specified interface. Successful matches are retained if
+    /// inspecting another type fails; incomplete live scans are not cached.
     /// </summary>
     public static Type[] GetAllClassesImplementingInterface(Assembly assembly, Type interfaceType)
         => GetAll___(assembly, interfaceType.FullName,
-            lines => lines.SelectNotNull(GetType),
-            types => types.Where(t => (t.IsClass || t.IsValueType) && t.GetInterfaces().Contains(interfaceType)),
+            (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
+                ResolveTypes(lines, false, ref diagnostics),
+            (Type[] types, ref QueryDiagnostics diagnostics) =>
+                FilterTypes(types,
+                    t => (t.IsClass || t.IsValueType) && t.GetInterfaces().Contains(interfaceType),
+                    ref diagnostics),
             result => result.Select(t => t.AssemblyQualifiedName)
         );
 
     /// <summary>
     /// Enumerates all classes from the specified assembly
-    /// inheriting from the specified base class.
+    /// inheriting from the specified base class. Successful matches are retained
+    /// if inspecting another type fails; incomplete live scans are not cached.
     /// </summary>
     public static Type[] GetAllClassesInheritingFrom(Assembly assembly, Type baseType)
         => GetAll___(assembly, baseType.FullName,
-            lines => lines.SelectNotNull(GetType),
-            types => types.Where(t => t.IsSubclassOf(baseType)),
+            (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
+                ResolveTypes(lines, false, ref diagnostics),
+            (Type[] types, ref QueryDiagnostics diagnostics) =>
+                FilterTypes(types, t => t.IsSubclassOf(baseType), ref diagnostics),
             result => result.Select(t => t.AssemblyQualifiedName)
         );
 
     /// <summary>
     /// Enumerates all types from the specified assembly
     /// decorated with attribute T as tuples of type
-    /// and its one or more T-attributes.
+    /// and its one or more T-attributes. Successful matches are retained when
+    /// other attributes cannot be constructed; incomplete live scans are not cached.
     /// </summary>
     public static (Type, T[])[] GetAllTypesWithAttribute<T>(Assembly assembly)
         => GetAll___<(Type, T[])>(assembly, typeof(T).FullName,
-           lines => lines.SelectNotNull(GetType)
-                    .Select(t => (t, TryGetCustomAttributes<T>(t))),
-           types => from t in types
-                    let attribs = TryGetCustomAttributes<T>(t)
-                    where attribs.Length > 0
-                    select (t, attribs),
+           (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
+                DecodeTypesWithAttribute<T>(lines, ref diagnostics),
+           (Type[] types, ref QueryDiagnostics diagnostics) =>
+                GetTypesWithAttribute<T>(types, ref diagnostics),
            result => result.Select(t => t.Item1.AssemblyQualifiedName)
         );
 
-    private static T[] TryGetCustomAttributes<T>(Type type)
+    private static T[] GetCustomAttributes<T>(Type type, ref QueryDiagnostics diagnostics)
     {
         if (type == null) return [];
         try
@@ -125,12 +132,12 @@ public static class Introspection
         }
         catch (Exception e)
         {
-            Report.Line(3, "[Introspection] Failed to get custom attributes for {0}: {1} ({2})", type.FullName, e.Message, e.GetType().Name);
+            AddDiagnostic(ref diagnostics, DiagnosticKind.TypeAttributes, GetTypeNameSafe(type), e);
         }
         return [];
     }
 
-    private static T[] TryGetCustomAttributes<T>(MethodInfo mi)
+    private static T[] GetCustomAttributes<T>(MethodInfo mi, ref QueryDiagnostics diagnostics)
     {
         if (mi == null) return [];
         try
@@ -139,7 +146,8 @@ public static class Introspection
         }
         catch (Exception e)
         {
-            Report.Line(3, "[Introspection] Failed to get custom attributes for {0}.{1}: {2} ({3})", mi.DeclaringType?.FullName, mi.Name, e.Message, e.GetType().Name);
+            AddDiagnostic(ref diagnostics, DiagnosticKind.MethodAttributes,
+                GetMethodNameSafe(mi), e);
         }
         return [];
     }
@@ -147,22 +155,47 @@ public static class Introspection
     private const BindingFlags PublicDeclaredMethods =
         BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
 
-    private static IEnumerable<(MethodInfo, T[])> GetMethodsWithAttribute<T>(IEnumerable<Type> types)
+    private static ScanResult<(MethodInfo, T[])> GetMethodsWithAttribute<T>(
+        Type[] types, ref QueryDiagnostics diagnostics
+    )
     {
+        var initialFailureCount = GetFailureCount(diagnostics);
+        var result = new List<(MethodInfo, T[])>();
+
         foreach (var type in types)
         {
             if (type == null) continue;
 
-            foreach (var method in type.GetMethods(PublicDeclaredMethods))
+            MethodInfo[] methods;
+            try
             {
-                var attributes = TryGetCustomAttributes<T>(method);
-                if (attributes.Length > 0) yield return (method, attributes);
+                methods = type.GetMethods(PublicDeclaredMethods) ?? [];
+            }
+            catch (Exception e)
+            {
+                AddDiagnostic(ref diagnostics, DiagnosticKind.MethodEnumeration,
+                    GetTypeNameSafe(type), e);
+                continue;
+            }
+
+            foreach (var method in methods)
+            {
+                var attributes = GetCustomAttributes<T>(method, ref diagnostics);
+                if (attributes.Length > 0) result.Add((method, attributes));
             }
         }
+
+        return new ScanResult<(MethodInfo, T[])>(
+            result.ToArray(), GetFailureCount(diagnostics) != initialFailureCount
+        );
     }
 
-    private static IEnumerable<Type> ResolveUniqueTypes(IEnumerable<string> lines)
+    private static ScanResult<Type> ResolveTypes(
+        IEnumerable<string> lines, bool unique, ref QueryDiagnostics diagnostics
+    )
     {
+        var initialFailureCount = GetFailureCount(diagnostics);
+        var result = new List<Type>();
         string first = null;
         HashSet<string> seen = null;
 
@@ -170,19 +203,103 @@ public static class Introspection
         {
             if (line == null) continue;
 
-            if (first == null)
+            if (unique && first == null)
             {
                 first = line;
             }
-            else
+            else if (unique)
             {
                 seen ??= new HashSet<string>(StringComparer.Ordinal) { first };
                 if (!seen.Add(line)) continue;
             }
 
-            var type = GetType(line);
-            if (type != null) yield return type;
+            try
+            {
+                var type = GetType(line);
+                if (type != null)
+                {
+                    result.Add(type);
+                }
+                else
+                {
+                    AddDiagnostic(ref diagnostics, DiagnosticKind.CacheTypeResolution, line,
+                        nameof(TypeLoadException), "Cached type could not be resolved.");
+                }
+            }
+            catch (Exception e)
+            {
+                AddDiagnostic(ref diagnostics, DiagnosticKind.CacheTypeResolution, line, e);
+            }
         }
+
+        return new ScanResult<Type>(
+            result.ToArray(), GetFailureCount(diagnostics) != initialFailureCount
+        );
+    }
+
+    private static ScanResult<Type> FilterTypes(
+        Type[] types, Func<Type, bool> predicate, ref QueryDiagnostics diagnostics
+    )
+    {
+        var initialFailureCount = GetFailureCount(diagnostics);
+        var result = new List<Type>();
+
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+
+            try
+            {
+                if (predicate(type)) result.Add(type);
+            }
+            catch (Exception e)
+            {
+                AddDiagnostic(ref diagnostics, DiagnosticKind.TypeInspection,
+                    GetTypeNameSafe(type), e);
+            }
+        }
+
+        return new ScanResult<Type>(
+            result.ToArray(), GetFailureCount(diagnostics) != initialFailureCount
+        );
+    }
+
+    private static ScanResult<(Type, T[])> DecodeTypesWithAttribute<T>(
+        IEnumerable<string> lines, ref QueryDiagnostics diagnostics
+    )
+    {
+        var resolved = ResolveTypes(lines, false, ref diagnostics);
+        var result = GetTypesWithAttribute<T>(resolved.Items, ref diagnostics);
+        return new ScanResult<(Type, T[])>(result.Items, resolved.Incomplete || result.Incomplete);
+    }
+
+    private static ScanResult<(Type, T[])> GetTypesWithAttribute<T>(
+        Type[] types, ref QueryDiagnostics diagnostics
+    )
+    {
+        var initialFailureCount = GetFailureCount(diagnostics);
+        var result = new List<(Type, T[])>();
+
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+
+            var attributes = GetCustomAttributes<T>(type, ref diagnostics);
+            if (attributes.Length > 0) result.Add((type, attributes));
+        }
+
+        return new ScanResult<(Type, T[])>(
+            result.ToArray(), GetFailureCount(diagnostics) != initialFailureCount
+        );
+    }
+
+    private static ScanResult<(MethodInfo, T[])> DecodeMethodsWithAttribute<T>(
+        IEnumerable<string> lines, ref QueryDiagnostics diagnostics
+    )
+    {
+        var resolved = ResolveTypes(lines, true, ref diagnostics);
+        var result = GetMethodsWithAttribute<T>(resolved.Items, ref diagnostics);
+        return new ScanResult<(MethodInfo, T[])>(result.Items, resolved.Incomplete || result.Incomplete);
     }
 
     private static IEnumerable<string> GetUniqueDeclaringTypeNames<T>((MethodInfo, T[])[] methods)
@@ -213,12 +330,16 @@ public static class Introspection
     /// Enumerates public instance and static methods declared by types in the specified
     /// assembly and decorated with attribute T. Each method is returned once together
     /// with all of its T-attribute instances. The query cache stores each declaring type
-    /// once and ignores repeated declaring-type lines in legacy cache files.
+    /// once and ignores repeated declaring-type lines in legacy cache files. Successful
+    /// matches are retained when other reflection operations fail; incomplete cache
+    /// entries are retried live and incomplete live scans are not cached.
     /// </summary>
     public static (MethodInfo, T[])[] GetAllMethodsWithAttribute<T>(Assembly assembly)
         => GetAll___<(MethodInfo, T[])>(assembly, typeof(T).FullName,
-              lines => GetMethodsWithAttribute<T>(ResolveUniqueTypes(lines)),
-              types => GetMethodsWithAttribute<T>(types),
+              (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
+                  DecodeMethodsWithAttribute<T>(lines, ref diagnostics),
+              (Type[] types, ref QueryDiagnostics diagnostics) =>
+                  GetMethodsWithAttribute<T>(types, ref diagnostics),
               GetUniqueDeclaringTypeNames
         );
 
@@ -394,15 +515,262 @@ public static class Introspection
             };
         }
     }
+
+    private enum DiagnosticKind
+    {
+        LoaderExceptions,
+        TypeEnumeration,
+        CacheTypeResolution,
+        TypeInspection,
+        TypeAttributes,
+        MethodEnumeration,
+        MethodAttributes,
+        CacheAccess,
+    }
+
+    private sealed class DiagnosticExample
+    {
+        public readonly string ExceptionType;
+        public readonly string Message;
+        public readonly string Subject;
+
+        public DiagnosticExample(string exceptionType, string message, string subject)
+        {
+            ExceptionType = exceptionType;
+            Message = message;
+            Subject = subject;
+        }
+    }
+
+    private sealed class DiagnosticGroup
+    {
+        private const int MaxExamples = 3;
+        private readonly HashSet<string> m_unique = new(StringComparer.Ordinal);
+        private readonly List<DiagnosticExample> m_examples = [];
+
+        public int Count { get; private set; }
+        public int UniqueCount => m_unique.Count;
+        public IReadOnlyList<DiagnosticExample> Examples => m_examples;
+
+        public void Add(string exceptionType, string message, string subject)
+        {
+            Count++;
+            var key = $"{exceptionType}\n{message}";
+            if (!m_unique.Add(key)) return;
+            if (m_examples.Count < MaxExamples)
+                m_examples.Add(new DiagnosticExample(exceptionType, message, subject));
+        }
+    }
+
+    private sealed class QueryDiagnostics
+    {
+        private readonly DiagnosticGroup[] m_groups =
+            new DiagnosticGroup[(int)DiagnosticKind.CacheAccess + 1];
+
+        public int FailureCount { get; private set; }
+        public int ReflectionTypeLoadCount { get; private set; }
+
+        public void Add(DiagnosticKind kind, string subject, string exceptionType, string message)
+        {
+            FailureCount++;
+            var index = (int)kind;
+            var group = m_groups[index] ??= new DiagnosticGroup();
+            group.Add(Compact(exceptionType), Compact(message), Compact(subject));
+        }
+
+        public void Add(ReflectionTypeLoadException exception)
+        {
+            ReflectionTypeLoadCount++;
+            var loaderExceptions = exception.LoaderExceptions;
+            if (loaderExceptions == null || loaderExceptions.Length == 0)
+            {
+                Add(DiagnosticKind.LoaderExceptions, null, exception.GetType().Name, exception.Message);
+                return;
+            }
+
+            var added = false;
+            foreach (var loaderException in loaderExceptions)
+            {
+                if (loaderException == null) continue;
+                var unwrapped = Unwrap(loaderException);
+                Add(DiagnosticKind.LoaderExceptions, null, unwrapped.GetType().Name, unwrapped.Message);
+                added = true;
+            }
+
+            if (!added)
+                Add(DiagnosticKind.LoaderExceptions, null, exception.GetType().Name, exception.Message);
+        }
+
+        public DiagnosticGroup GetGroup(DiagnosticKind kind) => m_groups[(int)kind];
+
+        private static string Compact(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return value ?? "";
+
+            const int maxLength = 240;
+            var compact = value.Replace('\r', ' ').Replace('\n', ' ');
+            return compact.Length <= maxLength ? compact : compact.Substring(0, maxLength) + "...";
+        }
+    }
+
+    private readonly struct ScanResult<T>
+    {
+        public readonly T[] Items;
+        public readonly bool Incomplete;
+
+        public ScanResult(T[] items, bool incomplete)
+        {
+            Items = items;
+            Incomplete = incomplete;
+        }
+    }
+
+    private delegate ScanResult<T> DecodeQuery<T>(
+        IEnumerable<string> lines, ref QueryDiagnostics diagnostics
+    );
+
+    private delegate ScanResult<T> ScanTypes<T>(
+        Type[] types, ref QueryDiagnostics diagnostics
+    );
+
+    private static int GetFailureCount(QueryDiagnostics diagnostics)
+        => diagnostics?.FailureCount ?? 0;
+
+    private static Exception Unwrap(Exception exception)
+    {
+        while (exception is TargetInvocationException && exception.InnerException != null)
+            exception = exception.InnerException;
+        return exception;
+    }
+
+    private static string GetTypeNameSafe(Type type)
+    {
+        if (type == null) return "<unknown type>";
+        try
+        {
+            return type.FullName ?? type.Name ?? "<unknown type>";
+        }
+        catch
+        {
+            return "<unknown type>";
+        }
+    }
+
+    private static string GetMethodNameSafe(MethodInfo method)
+    {
+        if (method == null) return "<unknown method>";
+        try
+        {
+            return $"{GetTypeNameSafe(method.DeclaringType)}.{method.Name}";
+        }
+        catch
+        {
+            return "<unknown method>";
+        }
+    }
+
+    private static string GetAssemblyNameSafe(Assembly assembly)
+    {
+        if (assembly == null) return "<unknown assembly>";
+        try
+        {
+            return assembly.GetName()?.Name ?? assembly.FullName ?? "<unknown assembly>";
+        }
+        catch
+        {
+            return "<unknown assembly>";
+        }
+    }
+
+    private static void AddDiagnostic(
+        ref QueryDiagnostics diagnostics, DiagnosticKind kind, string subject, Exception exception
+    )
+    {
+        exception = Unwrap(exception);
+        AddDiagnostic(ref diagnostics, kind, subject, exception.GetType().Name, exception.Message);
+    }
+
+    private static void AddDiagnostic(
+        ref QueryDiagnostics diagnostics, DiagnosticKind kind, string subject,
+        string exceptionType, string message
+    )
+    {
+        diagnostics ??= new QueryDiagnostics();
+        diagnostics.Add(kind, subject, exceptionType, message);
+    }
+
+    private static string GetDiagnosticLabel(DiagnosticKind kind)
+    {
+        return kind switch
+        {
+            DiagnosticKind.LoaderExceptions => "loader exceptions",
+            DiagnosticKind.TypeEnumeration => "type enumeration",
+            DiagnosticKind.CacheTypeResolution => "cached type resolution",
+            DiagnosticKind.TypeInspection => "type inspection",
+            DiagnosticKind.TypeAttributes => "type attribute construction",
+            DiagnosticKind.MethodEnumeration => "method enumeration",
+            DiagnosticKind.MethodAttributes => "method attribute construction",
+            DiagnosticKind.CacheAccess => "cache access",
+            _ => "unknown",
+        };
+    }
+
+    private static void ReportDiagnostics(
+        Assembly assembly, string discriminator, QueryDiagnostics diagnostics
+    )
+    {
+        if (diagnostics == null) return;
+
+        Report.Begin(3,
+            "[Introspection] Query {0} for assembly {1} encountered {2} failure(s)",
+            discriminator, GetAssemblyNameSafe(assembly), diagnostics.FailureCount);
+        try
+        {
+            if (diagnostics.ReflectionTypeLoadCount > 0)
+            {
+                Report.Line(3, "ReflectionTypeLoadException affected {0} assembly type scan(s).",
+                    diagnostics.ReflectionTypeLoadCount);
+            }
+
+            for (var i = 0; i <= (int)DiagnosticKind.CacheAccess; i++)
+            {
+                var kind = (DiagnosticKind)i;
+                var group = diagnostics.GetGroup(kind);
+                if (group == null) continue;
+
+                Report.Line(3, "{0}: {1} failure(s), {2} unique diagnostic(s).",
+                    GetDiagnosticLabel(kind), group.Count, group.UniqueCount);
+
+                foreach (var example in group.Examples)
+                {
+                    if (string.IsNullOrEmpty(example.Subject))
+                        Report.Line(3, "  {0}: {1}", example.ExceptionType, example.Message);
+                    else
+                        Report.Line(3, "  {0}: {1} [{2}]",
+                            example.ExceptionType, example.Message, example.Subject);
+                }
+
+                var omitted = group.UniqueCount - group.Examples.Count;
+                if (omitted > 0)
+                    Report.Line(3, "  {0} additional unique diagnostic(s) omitted.", omitted);
+            }
+        }
+        finally
+        {
+            Report.End(3);
+        }
+    }
+
     private static T[] GetAll___<T>(
         Assembly a, string discriminator,
-        Func<IEnumerable<string>, IEnumerable<T>> decode,
-        Func<IEnumerable<Type>, IEnumerable<T>> createResult,
+        DecodeQuery<T> decode,
+        ScanTypes<T> createResult,
         Func<T[], IEnumerable<string>> encode
         )
     {
         var cacheFileName = "";
         var assemblyTimeStamp = DateTime.MinValue;
+        QueryDiagnostics diagnostics = null;
 
         // whatever happens, don't halt just because of caching... this actually happens for self-contained deployments https://github.com/aardvark-platform/aardvark.base/issues/65
         try
@@ -417,14 +785,29 @@ public static class Introspection
                 var header = lines.Length > 0 ? CacheFileHeader.Parse(lines[0]) : null;
                 if (header != null && header.TimeStampOfCachedFile == assemblyTimeStamp)
                 {
-                    // return cached types
                     Report.Line(4, "[cache hit ] {0}", a);
-                    return decode(lines.Skip(1)).ToArray();
+                    ScanResult<T> cached;
+                    try
+                    {
+                        cached = decode(lines.Skip(1), ref diagnostics);
+                    }
+                    catch (Exception e)
+                    {
+                        AddDiagnostic(ref diagnostics, DiagnosticKind.CacheAccess,
+                            cacheFileName, e);
+                        cached = new ScanResult<T>([], true);
+                    }
+
+                    if (!cached.Incomplete) return cached.Items;
+
+                    TryDeleteCacheFile(cacheFileName, ref diagnostics);
+                    Report.Line(3, "[Introspection] Retrying incomplete cache query live for {0}", a);
                 }
             }
-        } catch(Exception e)
+        }
+        catch(Exception e)
         {
-            Report.Warn("Could not get cache for {1}: {0}", e.Message, a.FullName);
+            AddDiagnostic(ref diagnostics, DiagnosticKind.CacheAccess, cacheFileName, e);
         }
 
         Report.Line(4, "[cache miss] {0}", a);
@@ -435,49 +818,82 @@ public static class Introspection
         // types in result set. Just continue processing with these types
         // effect: dlls with external unused dependencies don't have to be shipped.
         Type[] ts;
+        var typeScanIncomplete = false;
         try
         {
-            ts = a.GetTypes();
+            ts = a.GetTypes() ?? [];
         }
         catch (ReflectionTypeLoadException e)
         {
-            Report.Begin("ReflectionTypeLoadException error in assembly {0}", a.GetName().Name);
-            Report.Line("Full assembly name is {0}.", a.FullName);
-            Report.Line("Exception is {0}", e);
-            Report.Begin("Loader exceptions are");
-            foreach (var x in e.LoaderExceptions)
-            {
-                Report.Line("{0}", x);
-            }
-            Report.End();
-            Report.End();
-            ts = e.Types.Where(t => t != null).ToArray();
+            diagnostics ??= new QueryDiagnostics();
+            diagnostics.Add(e);
+            typeScanIncomplete = true;
+            ts = e.Types?.Where(t => t != null).ToArray() ?? [];
+        }
+        catch (Exception e)
+        {
+            AddDiagnostic(ref diagnostics, DiagnosticKind.TypeEnumeration,
+                GetAssemblyNameSafe(a), e);
+            typeScanIncomplete = true;
+            ts = [];
         }
 
-        var result = createResult(ts).ToArray();
-
-
-        // whatever happens, don't halt everything just because caching fails
+        ScanResult<T> scan;
         try
         {
-            // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
-            if (!string.IsNullOrEmpty(cacheFileName))
+            scan = createResult(ts, ref diagnostics);
+        }
+        catch (Exception e)
+        {
+            AddDiagnostic(ref diagnostics, DiagnosticKind.TypeEnumeration,
+                GetAssemblyNameSafe(a), e);
+            scan = new ScanResult<T>([], true);
+        }
+
+        var incomplete = typeScanIncomplete || scan.Incomplete;
+        if (incomplete)
+        {
+            TryDeleteCacheFile(cacheFileName, ref diagnostics);
+        }
+        else
+        {
+            // whatever happens, don't halt everything just because caching fails
+            try
             {
+                // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
+                if (!string.IsNullOrEmpty(cacheFileName))
+                {
+                    var headerLine =
+                        new CacheFileHeader { Version = 1, TimeStampOfCachedFile = assemblyTimeStamp }
+                        .ToString()
+                        .IntoIEnumerable();
 
-                // write cache file
-                var headerLine =
-                    new CacheFileHeader { Version = 1, TimeStampOfCachedFile = assemblyTimeStamp }
-                    .ToString()
-                    .IntoIEnumerable();
-
-                File.WriteAllLines(cacheFileName, headerLine.Concat(encode(result)).ToArray());
+                    File.WriteAllLines(cacheFileName, headerLine.Concat(encode(scan.Items)).ToArray());
+                }
+            }
+            catch(Exception e)
+            {
+                AddDiagnostic(ref diagnostics, DiagnosticKind.CacheAccess, cacheFileName, e);
             }
         }
-        catch(Exception e)
-        {
-            Report.Warn("Could not write cache for {1}: {0}", e.Message, a.FullName);
-        }
 
-        return result;
+        ReportDiagnostics(a, discriminator, diagnostics);
+        return scan.Items;
+    }
+
+    private static void TryDeleteCacheFile(
+        string cacheFileName, ref QueryDiagnostics diagnostics
+    )
+    {
+        if (string.IsNullOrEmpty(cacheFileName) || !File.Exists(cacheFileName)) return;
+
+        try
+        {
+            File.Delete(cacheFileName);
+        }
+        catch (Exception e)
+        {
+            AddDiagnostic(ref diagnostics, DiagnosticKind.CacheAccess, cacheFileName, e);
+        }
     }
 }
