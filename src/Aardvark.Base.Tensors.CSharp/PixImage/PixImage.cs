@@ -1414,6 +1414,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns a scaled copy of this image by the given factors.
+        /// Built-in <see cref="ImageInterpolation.SuperSample"/> scaling uses exact area-weighted
+        /// downsampling when neither axis is enlarged and falls back to cubic interpolation otherwise.
         /// </summary>
         /// <param name="scaleFactor">The scale factor to apply in X and Y (1.0 keeps the size).</param>
         /// <param name="interpolation">The interpolation method to use during resampling.</param>
@@ -2210,7 +2212,7 @@ namespace Aardvark.Base
             if (scaleFactor.AnySmallerOrEqual(0))
                 throw new ArgumentOutOfRangeException($"Scale factor must be positive ({scaleFactor}).");
 
-            // SuperSample is only available for scale factors < 1; fall back to Cubic
+            // SuperSample is only available when neither axis is enlarged; fall back to Cubic.
             if (scaleFactor.AnyGreater(1.0) && interpolation == ImageInterpolation.SuperSample)
                 interpolation = ImageInterpolation.Cubic;
 

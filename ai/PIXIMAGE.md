@@ -45,6 +45,12 @@ Common `PixImage<T>` methods:
 
 `ToPixImage<TOut>()` is declared on the non-generic base `PixImage`. `Scaled(double)` exists only on `PixImage<T>`; the non-generic base offers `ScaledPixImage(...)`.
 
+### Supersampled Scaling
+
+Built-in `ImageInterpolation.SuperSample` scaling uses exact area-weighted separable downsampling for `byte`, `ushort`, `uint`, `Half`, `float`, and `double` images. Horizontal and vertical scale factors may differ, and an unchanged axis is supported. Tensor windows and arbitrary positive strides are preserved. If either axis is enlarged, the operation uses cubic interpolation for both axes instead.
+
+The same behavior is available through `PixImage<T>.Scaled(...)`, `Volume<T>.Scaled(...)`, and the generated `Matrix<T>.SetScaledSuperSample(...)` methods.
+
 ## Loaders and Processors
 
 Loader hooks:
@@ -101,4 +107,6 @@ Common predefined values:
 - `src/Aardvark.Base.Tensors.CSharp/PixImage/PixCube.cs`
 - `src/Aardvark.Base.Tensors.CSharp/PixImage/PixImageMipMap.cs`
 - `src/Aardvark.Base.Tensors.CSharp/PixImage/PixProcessor.cs`
+- `src/Aardvark.Base.Tensors.CSharp/TensorExtensions.cs`
+- `src/Aardvark.Base.Tensors.CSharp/TensorExtensions_template.cs`
 - `src/Aardvark.Base/Math/Colors/Color.cs`

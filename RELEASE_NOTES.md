@@ -1,3 +1,4 @@
+- [Tensors] Added built-in exact area-weighted `SuperSample` image downscaling
 - [Tests] Benchmarked actual float/double 2D/3D plane-clipping overloads without duplicated baselines
 - [Base] Added allocation-free 2D/3D line-segment clipping against plane half-spaces
 - [Base] Fixed duplicate introspection method-query cache entries
