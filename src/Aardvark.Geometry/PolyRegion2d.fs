@@ -21,6 +21,24 @@ module private LibTess =
 
         arr
 
+    let closedWithAttributes (path : V2d[]) (attributes : 'a[]) =
+        if isNull path then nullArg "path"
+        if isNull attributes then nullArg "attributes"
+        if path.Length <> attributes.Length then
+            invalidArg "attributes" "Point and attribute arrays must have equal lengths."
+
+        if path.Length = 0 then
+            [||]
+        else
+            let contour = closed path
+            for i in 0 .. path.Length - 1 do
+                contour.[i].Data <- box attributes.[i]
+
+            if contour.Length > path.Length then
+                contour.[path.Length].Data <- box attributes.[0]
+
+            contour
+
     let closed3 (path : array<V3d>) =
         let isClosed = path.[0] = path.[path.Length-1]
            
@@ -139,6 +157,8 @@ type Triangle2d<'a> =
         new(p0, a0, p1, a1, p2, a2) = { P0 = p0; P1 = p1; P2 = p2; A0 = a0; A1 = a1; A2 = a2 }
     end
 
+/// A polygon carrying one attribute of type <typeparamref name="a"/> for each point.
+/// Consumers of attributed tessellation require the point and attribute arrays to have equal lengths.
 type Polygon2d<'a> =
     struct
         val mutable public Points : V2d[]
@@ -174,10 +194,9 @@ type PolygonTessellator private() =
     [<Extension>]
     static member Combine (regions : seq<V2d[] * 'a[]>, rule : TessellationRule, interpolate : float[] -> 'a[] -> 'a) =
         let t = Tess()
-                
+
         for (pts, att) in regions do
-            let contour = LibTess.closed pts
-            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i % att.Length]
+            let contour = LibTess.closedWithAttributes pts att
             t.AddContour(contour)
 
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
@@ -248,10 +267,9 @@ type PolygonTessellator private() =
     [<Extension>]
     static member Triangulate (regions : seq<V2d[] * 'a[]>, rule : TessellationRule, interpolate : float[] -> 'a[] -> 'a) : list<Triangle2d<'a>> =
         let t = Tess()
-                
+
         for (pts, att) in regions do
-            let contour = LibTess.closed pts
-            for i in 0 .. contour.Length - 1 do contour.[i].Data <- att.[i % att.Length]
+            let contour = LibTess.closedWithAttributes pts att
             t.AddContour(contour)
 
         let combine (pos : Vec3) (data : obj[]) (weights : float[]) =
@@ -477,7 +495,116 @@ type PolygonTessellator private() =
     static member Triangulate (regions : seq<Polygon3d>, rule : TessellationRule) =
         let regions = regions |> Seq.map (fun p -> Seq.toArray p.Points)
         PolygonTessellator.Triangulate(regions, rule)
-           
+
+module private AttributedPolyRegion =
+
+    let validate (polygon : Polygon2d<'a>) =
+        if isNull polygon.Points then nullArg "polygon.Points"
+        if isNull polygon.Attributes then nullArg "polygon.Attributes"
+        if polygon.Points.Length <> polygon.Attributes.Length then
+            invalidArg "polygon" "Point and attribute arrays must have equal lengths."
+
+    let reversed (polygon : Polygon2d<'a>) =
+        validate polygon
+        Polygon2d<'a>(Array.rev polygon.Points, Array.rev polygon.Attributes)
+
+    let ensureCcw (polygon : Polygon2d<'a>) =
+        if Polygon2d(polygon.Points).IsCcw() then polygon
+        else reversed polygon
+
+    let private removeRedundant (points : V2d[], attributes : 'a[]) =
+        match LibTess.nonRedundantPoints Constant.PositiveTinyValue points with
+        | Some indices ->
+            let retainedPoints = indices |> Array.map (fun i -> points.[i])
+            let retainedAttributes = indices |> Array.map (fun i -> attributes.[i])
+            Some (Polygon2d<'a>(retainedPoints, retainedAttributes))
+        | None ->
+            None
+
+    let boundary
+        (rule : TessellationRule)
+        (interpolate : float[] -> 'a[] -> 'a)
+        (polygons : seq<Polygon2d<'a>>)
+        =
+        PolygonTessellator.Combine(polygons, rule, interpolate)
+        |> List.choose removeRedundant
+
+/// Represents a set of polygon contours whose vertices carry attributes of type <typeparamref name="a"/>.
+/// Boolean operations and triangulation require an interpolation callback because LibTess may invent
+/// vertices where input edges cross. Union and difference use positive winding, intersection retains
+/// winding magnitude greater than one, and exclusive union and triangulation use even-odd winding.
+/// Input point and attribute arrays are never reordered or mutated.
+type PolyRegion<'a> private(polygons : list<Polygon2d<'a>>) =
+    static let empty = PolyRegion<'a> []
+
+    /// The empty attributed region.
+    static member Empty = empty
+
+    /// Gets the boundary contours with point and attribute arrays in matching order. Boolean results
+    /// retain LibTess boundary orientation so clockwise contours can represent holes.
+    member x.Polygons = polygons
+
+    /// Gets whether this region contains no contours.
+    member x.IsEmpty = List.isEmpty polygons
+
+    /// Triangulates this region using the even-odd winding rule.
+    /// The callback interpolates attributes for vertices introduced by tessellation.
+    member x.Triangulate(interpolate : float[] -> 'a[] -> 'a) =
+        PolygonTessellator.Triangulate(polygons, TessellationRule.EvenOdd, interpolate)
+
+    /// Returns the positive-winding union of two regions.
+    /// The callback interpolates attributes for newly introduced boundary vertices.
+    static member Union
+        (l : PolyRegion<'a>, r : PolyRegion<'a>, interpolate : float[] -> 'a[] -> 'a) =
+        Seq.append l.Polygons r.Polygons
+        |> AttributedPolyRegion.boundary TessellationRule.Positive interpolate
+        |> PolyRegion<'a>
+
+    /// Subtracts the second region from the first using positive winding.
+    /// The callback interpolates attributes for newly introduced boundary vertices.
+    static member Difference
+        (l : PolyRegion<'a>, r : PolyRegion<'a>, interpolate : float[] -> 'a[] -> 'a) =
+        let reversedRight = r.Polygons |> Seq.map AttributedPolyRegion.reversed
+        Seq.append l.Polygons reversedRight
+        |> AttributedPolyRegion.boundary TessellationRule.Positive interpolate
+        |> PolyRegion<'a>
+
+    /// Returns the intersection of two regions.
+    /// The callback interpolates attributes for newly introduced boundary vertices.
+    static member Intersection
+        (l : PolyRegion<'a>, r : PolyRegion<'a>, interpolate : float[] -> 'a[] -> 'a) =
+        Seq.append l.Polygons r.Polygons
+        |> AttributedPolyRegion.boundary TessellationRule.AbsGreater1 interpolate
+        |> PolyRegion<'a>
+
+    /// Returns the even-odd exclusive union of two regions.
+    /// The callback interpolates attributes for newly introduced boundary vertices.
+    static member Xor
+        (l : PolyRegion<'a>, r : PolyRegion<'a>, interpolate : float[] -> 'a[] -> 'a) =
+        Seq.append l.Polygons r.Polygons
+        |> AttributedPolyRegion.boundary TessellationRule.EvenOdd interpolate
+        |> PolyRegion<'a>
+
+    /// Constructs a region from an attributed polygon using the supplied winding rule. Result contours
+    /// are oriented counter-clockwise, with attributes reversed together with their points when needed.
+    /// The callback interpolates attributes if normalizing the polygon introduces vertices.
+    new(polygon : Polygon2d<'a>, rule : TessellationRule, interpolate : float[] -> 'a[] -> 'a) =
+        AttributedPolyRegion.validate polygon
+        if polygon.Points.Length < 3 then
+            PolyRegion<'a> []
+        else
+            let polygons =
+                polygon
+                |> Seq.singleton
+                |> AttributedPolyRegion.boundary rule interpolate
+                |> List.map AttributedPolyRegion.ensureCcw
+            PolyRegion<'a>(polygons)
+
+    /// Constructs a region from an attributed polygon using the even-odd winding rule.
+    /// The callback interpolates attributes if normalizing the polygon introduces vertices.
+    new(polygon : Polygon2d<'a>, interpolate : float[] -> 'a[] -> 'a) =
+        PolyRegion<'a>(polygon, TessellationRule.EvenOdd, interpolate)
+
 
 /// PolyRegion represents a set of non-overlapping, counterclockwise polygons surrounding
 /// the intended region.
@@ -714,4 +841,3 @@ module PolyRegion =
                 [| p000; p100; p110; p010|] |> projectConvex
                 [| p001; p101; p111; p011|] |> projectConvex
             ]
-            
