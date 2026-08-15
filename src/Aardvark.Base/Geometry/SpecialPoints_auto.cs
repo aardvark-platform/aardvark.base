@@ -141,13 +141,19 @@ namespace Aardvark.Base
             => query.GetClosestPointOn(ray);
 
         /// <summary>
-        /// Returns the t-parameter along <paramref name="ray"/> at which the closest point to <paramref name="query"/> is.
+        /// Returns the signed parameter on the supporting line of <paramref name="ray"/> at which the closest point to
+        /// <paramref name="query"/> lies. The parameter is not clamped; a zero direction returns zero.
         /// </summary>
         /// <param name="query">Find the closest point on the ray to this point.</param>
         /// <param name="ray">Find the closest point on this ray.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetClosestPointTOn(this V2f query, Ray2f ray)
-            => Vec.Dot(query - ray.Origin, ray.Direction) / ray.Direction.LengthSquared;
+        {
+            var lengthSquared = ray.Direction.LengthSquared;
+            return lengthSquared == 0
+                ? 0
+                : Vec.Dot(query - ray.Origin, ray.Direction) / lengthSquared;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f GetClosestPointOn(this V2f query, Ray2f ray, out float t)
@@ -478,11 +484,17 @@ namespace Aardvark.Base
         public static V3f GetClosestPointOn(this Ray3f ray, V3f query)
             => query.GetClosestPointOn(ray);
 
+        /// <summary>
+        /// Returns the closest point on the supporting line of <paramref name="ray"/> and its signed, unclamped parameter.
+        /// A ray with a zero direction is treated as its origin and returns parameter zero.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f GetClosestPointOn(this V3f query, Ray3f ray, out float t)
         {
-            t = Vec.Dot(query - ray.Origin, ray.Direction)
-                        / ray.Direction.LengthSquared;
+            var lengthSquared = ray.Direction.LengthSquared;
+            t = lengthSquared == 0
+                ? 0
+                : Vec.Dot(query - ray.Origin, ray.Direction) / lengthSquared;
             return ray.Origin + t * ray.Direction;
         }
 
@@ -594,22 +606,14 @@ namespace Aardvark.Base
 
         #region Ray3f - Ray3f
 
+        /// <summary>
+        /// Returns the point on the supporting line of <paramref name="ray1"/> closest to the supporting line of
+        /// <paramref name="ray0"/>. Zero directions are treated as points.
+        /// </summary>
         public static V3f GetClosestPointOn(this Ray3f ray0, Ray3f ray1)
         {
-            var a = ray0.Origin - ray1.Origin;
-            var u = ray0.Direction.Normalized;
-            var v = ray1.Direction.Normalized;
-
-            var uDotv = u.Dot(v);
-            var n = (uDotv * uDotv - 1);
-            // make sure rays are not parallel
-            if (!n.Abs().IsTiny())
-            {
-                var my = (a.Dot(u) * uDotv - a.Dot(v)) / n;
-                return ray1.Origin + my * v;
-            }
-
-            return ray1.Origin;
+            GetClosestRayParameters(ray0, ray1, out float t0, out float t1);
+            return ray1.Origin + t1 * ray1.Direction;
         }
 
         #endregion
@@ -761,13 +765,19 @@ namespace Aardvark.Base
             => query.GetClosestPointOn(ray);
 
         /// <summary>
-        /// Returns the t-parameter along <paramref name="ray"/> at which the closest point to <paramref name="query"/> is.
+        /// Returns the signed parameter on the supporting line of <paramref name="ray"/> at which the closest point to
+        /// <paramref name="query"/> lies. The parameter is not clamped; a zero direction returns zero.
         /// </summary>
         /// <param name="query">Find the closest point on the ray to this point.</param>
         /// <param name="ray">Find the closest point on this ray.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetClosestPointTOn(this V2d query, Ray2d ray)
-            => Vec.Dot(query - ray.Origin, ray.Direction) / ray.Direction.LengthSquared;
+        {
+            var lengthSquared = ray.Direction.LengthSquared;
+            return lengthSquared == 0
+                ? 0
+                : Vec.Dot(query - ray.Origin, ray.Direction) / lengthSquared;
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d GetClosestPointOn(this V2d query, Ray2d ray, out double t)
@@ -1098,11 +1108,17 @@ namespace Aardvark.Base
         public static V3d GetClosestPointOn(this Ray3d ray, V3d query)
             => query.GetClosestPointOn(ray);
 
+        /// <summary>
+        /// Returns the closest point on the supporting line of <paramref name="ray"/> and its signed, unclamped parameter.
+        /// A ray with a zero direction is treated as its origin and returns parameter zero.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d GetClosestPointOn(this V3d query, Ray3d ray, out double t)
         {
-            t = Vec.Dot(query - ray.Origin, ray.Direction)
-                        / ray.Direction.LengthSquared;
+            var lengthSquared = ray.Direction.LengthSquared;
+            t = lengthSquared == 0
+                ? 0
+                : Vec.Dot(query - ray.Origin, ray.Direction) / lengthSquared;
             return ray.Origin + t * ray.Direction;
         }
 
@@ -1214,22 +1230,14 @@ namespace Aardvark.Base
 
         #region Ray3d - Ray3d
 
+        /// <summary>
+        /// Returns the point on the supporting line of <paramref name="ray1"/> closest to the supporting line of
+        /// <paramref name="ray0"/>. Zero directions are treated as points.
+        /// </summary>
         public static V3d GetClosestPointOn(this Ray3d ray0, Ray3d ray1)
         {
-            var a = ray0.Origin - ray1.Origin;
-            var u = ray0.Direction.Normalized;
-            var v = ray1.Direction.Normalized;
-
-            var uDotv = u.Dot(v);
-            var n = (uDotv * uDotv - 1);
-            // make sure rays are not parallel
-            if (!n.Abs().IsTiny())
-            {
-                var my = (a.Dot(u) * uDotv - a.Dot(v)) / n;
-                return ray1.Origin + my * v;
-            }
-
-            return ray1.Origin;
+            GetClosestRayParameters(ray0, ray1, out double t0, out double t1);
+            return ray1.Origin + t1 * ray1.Direction;
         }
 
         #endregion
@@ -1345,6 +1353,89 @@ namespace Aardvark.Base
 
     public static partial class GeometryFun
     {
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetClosestRayParameters(Ray2f ray0, Ray2f ray1, out float t0, out float t1)
+        {
+            var a = ray0.Origin - ray1.Origin;
+            var u = ray0.Direction;
+            var v = ray1.Direction;
+            var uu = Vec.Dot(u, u);
+            var vv = Vec.Dot(v, v);
+
+            if (uu == 0)
+            {
+                t0 = 0;
+                t1 = vv == 0 ? 0 : Vec.Dot(a, v) / vv;
+                return;
+            }
+
+            if (vv == 0)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var uv = Vec.Dot(u, v);
+            var scale = uu * vv;
+            var determinant = scale - uv * uv;
+            var epsilon = Constant<float>.PositiveTinyValue;
+
+            if (determinant <= epsilon * (2 - epsilon) * scale)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var au = Vec.Dot(a, u);
+            var av = Vec.Dot(a, v);
+            t0 = (uv * av - vv * au) / determinant;
+            t1 = (uu * av - uv * au) / determinant;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetClosestRayParameters(Ray3f ray0, Ray3f ray1, out float t0, out float t1)
+        {
+            var a = ray0.Origin - ray1.Origin;
+            var u = ray0.Direction;
+            var v = ray1.Direction;
+            var uu = Vec.Dot(u, u);
+            var vv = Vec.Dot(v, v);
+
+            if (uu == 0)
+            {
+                t0 = 0;
+                t1 = vv == 0 ? 0 : Vec.Dot(a, v) / vv;
+                return;
+            }
+
+            if (vv == 0)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var uv = Vec.Dot(u, v);
+            var scale = uu * vv;
+            var determinant = scale - uv * uv;
+            var epsilon = Constant<float>.PositiveTinyValue;
+
+            if (determinant <= epsilon * (2 - epsilon) * scale)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var au = Vec.Dot(a, u);
+            var av = Vec.Dot(a, v);
+            t0 = (uv * av - vv * au) / determinant;
+            t1 = (uu * av - uv * au) / determinant;
+        }
+
         #region Range1f - Range1f
 
         public static float GetMinimalDistanceTo(this Range1f range0, Range1f range1)
@@ -1359,41 +1450,24 @@ namespace Aardvark.Base
         #region Ray2f - Ray2f
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// Zero directions are treated as points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetMinimalDistanceTo(this Ray2f ray0, Ray2f ray1)
             => ray0.GetMinimalDistanceTo(ray1, out float t0, out float t1);
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
-        /// t0 and t1 hold the correspunding ray parameters.
-        /// if both rays are parallel the t0 and t1 are from the origin of ray1
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// <paramref name="t0"/> and <paramref name="t1"/> are signed parameters in the original directions.
+        /// For parallel directions, <paramref name="t1"/> is zero and <paramref name="t0"/> projects the second origin
+        /// onto the first line. Zero directions are treated as points and use parameter zero.
         /// </summary>
         public static float GetMinimalDistanceTo(this Ray2f ray0, Ray2f ray1, out float t0, out float t1)
         {
-            // NOTE: copy of Ray3f to Ray3f distance
-
             var a = ray0.Origin - ray1.Origin;
-            var u = ray0.Direction.Normalized;
-            var v = ray1.Direction.Normalized;
-
-            var uDotv = u.Dot(v);
-            if (uDotv.Abs().ApproximateEquals(1, Constant<float>.PositiveTinyValue)) // rays are parallel
-            {
-                // return origin of ray 1
-                t1 = 0;
-                t0 = ray0.GetT(ray1.Origin);
-            }
-            else
-            {
-                // change by lui: added normalization (ortherwise in case the directions are not normalized t0 and t1 are wrong)
-                t1 = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1);
-                t0 = (t1 * uDotv - a.Dot(u)) / ray0.Direction.Length;
-                t1 = t1 / ray1.Direction.Length;
-            }
-
-            return (t1 * ray1.Direction - a - t0 * ray0.Direction).Length;
+            GetClosestRayParameters(ray0, ray1, out t0, out t1);
+            return (a + t0 * ray0.Direction - t1 * ray1.Direction).Length;
         }
 
         #endregion
@@ -1495,27 +1569,13 @@ namespace Aardvark.Base
 
         #region V3f - Ray3f
 
-        /*  Performance Test .........................................................................
-                Faster Method:                                      V3f.MinimalDistanceTo(Ray3f)
-                V3f.MinimalDistanceTo(Ray3f):                       1,841s
-                (V3f - V3f.GetClosestPointOn(Ray3f)).Length:        3,058s
-                Total Executions:                                   10000000
-                Errors outside tolerance(1E-7):                     0
-                Average Squared-Distance of Results:                2,24116481902135E-32
-                Speedup-factor:                                     1,66
-         */
-
         /// <summary>
-        /// Returns the minimal distance between the point and the ray.
+        /// Returns the minimal distance between the point and the supporting line represented by the ray.
+        /// A ray with a zero direction is treated as its origin.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetMinimalDistanceTo(this V3f point, Ray3f ray)
-        {
-            var a = point - ray.Origin;
-            float lu2 = ray.Direction.LengthSquared;
-            float acu2 = Vec.Cross(a, ray.Direction).LengthSquared;
-
-            return Fun.Sqrt(acu2 / lu2);
-        }
+            => point.GetMinimalDistanceTo(ray, out float t);
 
         /// <summary>
         /// returns the minimal distance between the point and the Ray.
@@ -1525,20 +1585,22 @@ namespace Aardvark.Base
             => point.GetMinimalDistanceTo(ray);
 
         /// <summary>
-        /// returns the minimal distance between the point and the Ray.
-        /// t holds the ray parameter for the closest point.
+        /// Returns the minimal distance between the point and the supporting line represented by the ray.
+        /// <paramref name="t"/> receives the signed, unclamped ray parameter. A zero direction is treated as the ray
+        /// origin and returns parameter zero.
         /// </summary>
         public static float GetMinimalDistanceTo(this V3f point, Ray3f ray, out float t)
         {
             var a = point - ray.Origin;
-            var lu2 = ray.Direction.LengthSquared;
-            var acu2 = Vec.Cross(a, ray.Direction).LengthSquared;
+            var lengthSquared = ray.Direction.LengthSquared;
+            if (lengthSquared == 0)
+            {
+                t = 0;
+                return a.Length;
+            }
 
-            var NormalPart2 = acu2 / lu2;
-            var ParallelPart2 = lu2 - NormalPart2;
-
-            t = Fun.Sqrt(ParallelPart2 / lu2);
-            return Fun.Sqrt(NormalPart2);
+            t = Vec.Dot(a, ray.Direction) / lengthSquared;
+            return (a - t * ray.Direction).Length;
         }
 
         /// <summary>
@@ -1785,44 +1847,110 @@ namespace Aardvark.Base
         #region Ray3f - Ray3f
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// Zero directions are treated as points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float GetMinimalDistanceTo(this Ray3f ray0, Ray3f ray1)
             => ray0.GetMinimalDistanceTo(ray1, out float t0, out float t1);
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
-        /// t0 and t1 hold the correspunding ray parameters.
-        /// if both rays are parallel the t0 and t1 are from the origin of ray1
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// <paramref name="t0"/> and <paramref name="t1"/> are signed parameters in the original directions.
+        /// For parallel directions, <paramref name="t1"/> is zero and <paramref name="t0"/> projects the second origin
+        /// onto the first line. Zero directions are treated as points and use parameter zero.
         /// </summary>
         public static float GetMinimalDistanceTo(this Ray3f ray0, Ray3f ray1, out float t0, out float t1)
         {
-            // TODO: computation probalby possible without Direction.Normalized and Direction.Length
-
             var a = ray0.Origin - ray1.Origin;
-            var u = ray0.Direction.Normalized;
-            var v = ray1.Direction.Normalized;
-
-            var uDotv = u.Dot(v);
-            if (uDotv.Abs().ApproximateEquals(1, Constant<float>.PositiveTinyValue)) // rays are parallel
-            {
-                // return origin of ray 1
-                t1 = 0;
-                t0 = ray0.GetTOfProjectedPoint(ray1.Origin);
-            }
-            else
-            {
-                // change by lui: added normalization (ortherwise in case the directions are not normalized t0 and t1 are wrong)
-                t1 = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1);
-                t0 = (t1 * uDotv - a.Dot(u)) / ray0.Direction.Length;
-                t1 = t1 / ray1.Direction.Length;
-            }
-
-            return (t1 * ray1.Direction - a - t0 * ray0.Direction).Length;
+            GetClosestRayParameters(ray0, ray1, out t0, out t1);
+            return (a + t0 * ray0.Direction - t1 * ray1.Direction).Length;
         }
 
         #endregion
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetClosestRayParameters(Ray2d ray0, Ray2d ray1, out double t0, out double t1)
+        {
+            var a = ray0.Origin - ray1.Origin;
+            var u = ray0.Direction;
+            var v = ray1.Direction;
+            var uu = Vec.Dot(u, u);
+            var vv = Vec.Dot(v, v);
+
+            if (uu == 0)
+            {
+                t0 = 0;
+                t1 = vv == 0 ? 0 : Vec.Dot(a, v) / vv;
+                return;
+            }
+
+            if (vv == 0)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var uv = Vec.Dot(u, v);
+            var scale = uu * vv;
+            var determinant = scale - uv * uv;
+            var epsilon = Constant<double>.PositiveTinyValue;
+
+            if (determinant <= epsilon * (2 - epsilon) * scale)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var au = Vec.Dot(a, u);
+            var av = Vec.Dot(a, v);
+            t0 = (uv * av - vv * au) / determinant;
+            t1 = (uu * av - uv * au) / determinant;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetClosestRayParameters(Ray3d ray0, Ray3d ray1, out double t0, out double t1)
+        {
+            var a = ray0.Origin - ray1.Origin;
+            var u = ray0.Direction;
+            var v = ray1.Direction;
+            var uu = Vec.Dot(u, u);
+            var vv = Vec.Dot(v, v);
+
+            if (uu == 0)
+            {
+                t0 = 0;
+                t1 = vv == 0 ? 0 : Vec.Dot(a, v) / vv;
+                return;
+            }
+
+            if (vv == 0)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var uv = Vec.Dot(u, v);
+            var scale = uu * vv;
+            var determinant = scale - uv * uv;
+            var epsilon = Constant<double>.PositiveTinyValue;
+
+            if (determinant <= epsilon * (2 - epsilon) * scale)
+            {
+                t0 = -Vec.Dot(a, u) / uu;
+                t1 = 0;
+                return;
+            }
+
+            var au = Vec.Dot(a, u);
+            var av = Vec.Dot(a, v);
+            t0 = (uv * av - vv * au) / determinant;
+            t1 = (uu * av - uv * au) / determinant;
+        }
 
         #region Range1d - Range1d
 
@@ -1838,41 +1966,24 @@ namespace Aardvark.Base
         #region Ray2d - Ray2d
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// Zero directions are treated as points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetMinimalDistanceTo(this Ray2d ray0, Ray2d ray1)
             => ray0.GetMinimalDistanceTo(ray1, out double t0, out double t1);
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
-        /// t0 and t1 hold the correspunding ray parameters.
-        /// if both rays are parallel the t0 and t1 are from the origin of ray1
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// <paramref name="t0"/> and <paramref name="t1"/> are signed parameters in the original directions.
+        /// For parallel directions, <paramref name="t1"/> is zero and <paramref name="t0"/> projects the second origin
+        /// onto the first line. Zero directions are treated as points and use parameter zero.
         /// </summary>
         public static double GetMinimalDistanceTo(this Ray2d ray0, Ray2d ray1, out double t0, out double t1)
         {
-            // NOTE: copy of Ray3d to Ray3d distance
-
             var a = ray0.Origin - ray1.Origin;
-            var u = ray0.Direction.Normalized;
-            var v = ray1.Direction.Normalized;
-
-            var uDotv = u.Dot(v);
-            if (uDotv.Abs().ApproximateEquals(1, Constant<double>.PositiveTinyValue)) // rays are parallel
-            {
-                // return origin of ray 1
-                t1 = 0;
-                t0 = ray0.GetT(ray1.Origin);
-            }
-            else
-            {
-                // change by lui: added normalization (ortherwise in case the directions are not normalized t0 and t1 are wrong)
-                t1 = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1);
-                t0 = (t1 * uDotv - a.Dot(u)) / ray0.Direction.Length;
-                t1 = t1 / ray1.Direction.Length;
-            }
-
-            return (t1 * ray1.Direction - a - t0 * ray0.Direction).Length;
+            GetClosestRayParameters(ray0, ray1, out t0, out t1);
+            return (a + t0 * ray0.Direction - t1 * ray1.Direction).Length;
         }
 
         #endregion
@@ -1974,27 +2085,13 @@ namespace Aardvark.Base
 
         #region V3d - Ray3d
 
-        /*  Performance Test .........................................................................
-                Faster Method:                                      V3d.MinimalDistanceTo(Ray3d)
-                V3d.MinimalDistanceTo(Ray3d):                       1,841s
-                (V3d - V3d.GetClosestPointOn(Ray3d)).Length:        3,058s
-                Total Executions:                                   10000000
-                Errors outside tolerance(1E-7):                     0
-                Average Squared-Distance of Results:                2,24116481902135E-32
-                Speedup-factor:                                     1,66
-         */
-
         /// <summary>
-        /// Returns the minimal distance between the point and the ray.
+        /// Returns the minimal distance between the point and the supporting line represented by the ray.
+        /// A ray with a zero direction is treated as its origin.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetMinimalDistanceTo(this V3d point, Ray3d ray)
-        {
-            var a = point - ray.Origin;
-            double lu2 = ray.Direction.LengthSquared;
-            double acu2 = Vec.Cross(a, ray.Direction).LengthSquared;
-
-            return Fun.Sqrt(acu2 / lu2);
-        }
+            => point.GetMinimalDistanceTo(ray, out double t);
 
         /// <summary>
         /// returns the minimal distance between the point and the Ray.
@@ -2004,20 +2101,22 @@ namespace Aardvark.Base
             => point.GetMinimalDistanceTo(ray);
 
         /// <summary>
-        /// returns the minimal distance between the point and the Ray.
-        /// t holds the ray parameter for the closest point.
+        /// Returns the minimal distance between the point and the supporting line represented by the ray.
+        /// <paramref name="t"/> receives the signed, unclamped ray parameter. A zero direction is treated as the ray
+        /// origin and returns parameter zero.
         /// </summary>
         public static double GetMinimalDistanceTo(this V3d point, Ray3d ray, out double t)
         {
             var a = point - ray.Origin;
-            var lu2 = ray.Direction.LengthSquared;
-            var acu2 = Vec.Cross(a, ray.Direction).LengthSquared;
+            var lengthSquared = ray.Direction.LengthSquared;
+            if (lengthSquared == 0)
+            {
+                t = 0;
+                return a.Length;
+            }
 
-            var NormalPart2 = acu2 / lu2;
-            var ParallelPart2 = lu2 - NormalPart2;
-
-            t = Fun.Sqrt(ParallelPart2 / lu2);
-            return Fun.Sqrt(NormalPart2);
+            t = Vec.Dot(a, ray.Direction) / lengthSquared;
+            return (a - t * ray.Direction).Length;
         }
 
         /// <summary>
@@ -2264,41 +2363,24 @@ namespace Aardvark.Base
         #region Ray3d - Ray3d
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// Zero directions are treated as points.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double GetMinimalDistanceTo(this Ray3d ray0, Ray3d ray1)
             => ray0.GetMinimalDistanceTo(ray1, out double t0, out double t1);
 
         /// <summary>
-        /// returns the minimal distance between the given rays.
-        /// t0 and t1 hold the correspunding ray parameters.
-        /// if both rays are parallel the t0 and t1 are from the origin of ray1
+        /// Returns the minimal distance between the supporting lines represented by the given rays.
+        /// <paramref name="t0"/> and <paramref name="t1"/> are signed parameters in the original directions.
+        /// For parallel directions, <paramref name="t1"/> is zero and <paramref name="t0"/> projects the second origin
+        /// onto the first line. Zero directions are treated as points and use parameter zero.
         /// </summary>
         public static double GetMinimalDistanceTo(this Ray3d ray0, Ray3d ray1, out double t0, out double t1)
         {
-            // TODO: computation probalby possible without Direction.Normalized and Direction.Length
-
             var a = ray0.Origin - ray1.Origin;
-            var u = ray0.Direction.Normalized;
-            var v = ray1.Direction.Normalized;
-
-            var uDotv = u.Dot(v);
-            if (uDotv.Abs().ApproximateEquals(1, Constant<double>.PositiveTinyValue)) // rays are parallel
-            {
-                // return origin of ray 1
-                t1 = 0;
-                t0 = ray0.GetTOfProjectedPoint(ray1.Origin);
-            }
-            else
-            {
-                // change by lui: added normalization (ortherwise in case the directions are not normalized t0 and t1 are wrong)
-                t1 = (a.Dot(u) * uDotv - a.Dot(v)) / (uDotv * uDotv - 1);
-                t0 = (t1 * uDotv - a.Dot(u)) / ray0.Direction.Length;
-                t1 = t1 / ray1.Direction.Length;
-            }
-
-            return (t1 * ray1.Direction - a - t0 * ray0.Direction).Length;
+            GetClosestRayParameters(ray0, ray1, out t0, out t1);
+            return (a + t0 * ray0.Direction - t1 * ray1.Direction).Length;
         }
 
         #endregion

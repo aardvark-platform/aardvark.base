@@ -1,3 +1,4 @@
+- [Base] Corrected ray projection and closest-distance parameters for non-unit and degenerate directions
 - [Geometry] Added attributed `PolyRegion` boolean operations and triangulation with explicit interpolation
 - [Tensors] Added built-in exact area-weighted `SuperSample` image downscaling
 - [Tests] Benchmarked actual float/double 2D/3D plane-clipping overloads without duplicated baselines
