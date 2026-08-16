@@ -16,8 +16,24 @@ Use these commands for restore/build/test/codegen:
 | Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects, stopping on the first failing step; excludes benchmark projects and the deprecated incremental test project |
 | Test one project | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug` | Prefer this over whole-solution test |
 | Test with filter | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter; use a concrete test project |
+| Verify transform perf coverage | `dotnet run --no-build -c Release --project src/Tests/Aardvark.Base.Benchmarks/Aardvark.Base.Benchmarks.csproj -- --verify-transform-perf-coverage` | Checks targeted transform perf registry covers the correctness-test overload matrix |
+| Benchmark one targeted subset | `dotnet run --no-build -c Release --project src/Tests/Aardvark.Base.Benchmarks/Aardvark.Base.Benchmarks.csproj -- --targeted-transform-perf --case Box3dForwardEuclidean` | Build dependencies serially first, then rerun exact perf cases with `--no-build`; add `--quick` only for smoke/dogfood runs |
 | Codegen | `./generate.sh` or `.\generate.cmd` | Required after template changes |
 | Check docs drift | `./check-docs.sh` or `.\check-docs.cmd` | Validates docs against source anchors and anti-drift rules |
+
+## Performance Benchmarking
+
+- Design benchmark fixtures so they can be executed independently in the smallest useful subset right now
+- Prefer one benchmark class or targeted perf case per exact specialization rather than monolithic benchmark types
+- When iterating, run only the exact perf case you changed before expanding to broader perf coverage
+- For repeated perf runs, build dependencies serially once:
+  `dotnet build src/Aardvark.Base/Aardvark.Base.csproj -c Release`
+  `dotnet build src/Tests/Aardvark.Base.Benchmarks/Aardvark.Base.Benchmarks.csproj -c Release`
+  then execute targeted cases with `--no-build`
+- Do not build `Aardvark.Base` and dependent projects like `Aardvark.Base.Benchmarks` in parallel; they share transitive outputs and can collide on `src/Aardvark.Base/obj/...`
+- Keep benchmark commands filterable and document representative exact-case commands near the benchmark source when useful
+- For transform overload perf, run `--verify-transform-perf-coverage` after changing the registry and inspect generated JSON/Markdown reports when dogfooding timing runs
+- Use `Release` for all benchmark runs
 
 ## Dependency Management (Paket)
 
@@ -84,6 +100,7 @@ Current project reality:
 | `dotnet paket restore` fails | Paket/tool state mismatch | `dotnet tool restore` then `dotnet paket restore`; if `.paket/Paket.Restore.targets` is missing or scripts are not being used, run `dotnet paket install` |
 | Compile errors in generated files | Template/output out of sync | Run `./generate.sh` or `.\generate.cmd` |
 | Build fails due framework mismatch | Running old SDK/runtime | Install .NET 8 SDK; verify `dotnet --info` and `global.json` |
+| `CS2012` / cannot open `Aardvark.Base.dll` for writing | Parallel builds or a still-running benchmark process is holding the dependency output | Stop the active process, build dependent projects serially, then rerun targeted perf commands with `--no-build` |
 | Test filter returns zero tests | Wrong filter syntax | Use `FullyQualifiedName~...` pattern |
 | Docs check fails | Broken links, stale examples, missing anchors, mojibake | Run `./check-docs.sh` or `.\check-docs.cmd` and fix the reported file/pattern |
 | Rendering namespace not found | Wrong package assumption | `Aardvark.Rendering` comes from downstream package, not this repo |

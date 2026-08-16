@@ -1,3 +1,4 @@
+- [Geometry] Added typed transform overloads for boxes, hulls, planes, rays, and PolyRegion inverse transforms. Existing transform semantics are preserved; recompiled calls can bind to more direct overloads and avoid unnecessary conversion/inversion work.
 - [Geometry] Corrected `PolyRegion` containment for holes, nested contours, boundaries, and reversed orientations
 ### 5.3.28-prerelease0001
 - [Base] Corrected ray projection and closest-distance parameters for non-unit, degenerate, and extreme finite directions

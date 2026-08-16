@@ -14,6 +14,7 @@ obj
 bin
 *.*~
 /buildLog.log
+/artifacts/
 /src/.vs
 tmp
 /docs
