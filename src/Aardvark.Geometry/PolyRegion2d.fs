@@ -606,9 +606,9 @@ type PolyRegion<'a> private(polygons : list<Polygon2d<'a>>) =
         PolyRegion<'a>(polygon, TessellationRule.EvenOdd, interpolate)
 
 
-/// PolyRegion represents a set of non-overlapping, counterclockwise polygons surrounding
-/// the intended region.
-/// When constructed using a polygon the implementation enforces these invariants
+/// PolyRegion represents a set of polygon contours interpreted using the even-odd rule.
+/// Boolean results can contain both counterclockwise shells and clockwise holes, and
+/// transformations with a negative determinant can reverse their orientation.
 type PolyRegion private(polygons : list<Polygon2d>) =
     static let empty = PolyRegion []
     
@@ -679,10 +679,46 @@ type PolyRegion private(polygons : list<Polygon2d>) =
     static member inline (+) (l : PolyRegion, r : PolyRegion) = PolyRegion.Union(l,r)
     static member inline (-) (l : PolyRegion, r : PolyRegion) = PolyRegion.Difference(l,r)
     
+    /// Returns whether the point lies inside the region according to the even-odd rule.
+    /// Contour orientation is ignored and points on contour edges or vertices are included.
     member x.Contains(pt : V2d) =
-        polygons |> Seq.exists (fun p ->
-            p.Contains pt
-        )
+        let mutable inside = false
+        let mutable onBoundary = false
+        let mutable remaining = polygons
+
+        while not onBoundary && not remaining.IsEmpty do
+            let polygon = remaining.Head
+            remaining <- remaining.Tail
+
+            let count = polygon.PointCount
+            if count >= 3 then
+                let mutable previous = polygon.[count - 1]
+                let mutable i = 0
+
+                while not onBoundary && i < count do
+                    let current = polygon.[i]
+                    let edge = current - previous
+                    let offset = pt - previous
+                    let lengthSquared = edge.LengthSquared
+
+                    if lengthSquared = 0.0 then
+                        onBoundary <- pt = previous
+                    else
+                        let projection = Vec.Dot(offset, edge)
+                        let cross = edge.X * offset.Y - edge.Y * offset.X
+                        if cross = 0.0 && projection >= 0.0 && projection <= lengthSquared then
+                            onBoundary <- true
+                        elif (previous.Y > pt.Y) <> (current.Y > pt.Y) then
+                            let crossingX =
+                                previous.X
+                                + (pt.Y - previous.Y) * (current.X - previous.X) / (current.Y - previous.Y)
+                            if crossingX > pt.X then
+                                inside <- not inside
+
+                    previous <- current
+                    i <- i + 1
+
+        onBoundary || inside
 
     member x.Contains(contained : PolyRegion) =
         // TODO: better implementation possible

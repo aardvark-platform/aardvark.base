@@ -82,6 +82,15 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - Results preserve the input `P0`-to-`P1` order. Endpoints that do not require clipping are returned bit-for-bit unchanged, and a single boundary contact is returned as a point segment.
 - Fully rejected segments use NaN for both result points. A plane with a zero normal is treated as a no-op, including `Plane2f.Invalid`/`Plane2d.Invalid` and `Plane3f.Invalid`/`Plane3d.Invalid`.
 
+## Polygon Region Containment
+
+`PolyRegion.Contains(V2d)` interprets all contours together using the even-odd rule:
+
+- Contour orientation does not affect containment. Clockwise holes, reversed contours, and contours transformed by a negative determinant retain their geometric meaning.
+- Each contour crossing toggles containment, so holes are excluded and nested islands are included.
+- Points on contour edges or vertices are contained. Contours with fewer than three vertices do not contribute.
+- Containment scans contour edges directly without tessellation or per-query allocation.
+
 ## Attributed Polygon Regions
 
 `Polygon2d<'a>` stores parallel point and attribute arrays. `PolyRegion<'a>` carries those attributes through normalization, boolean operations, and triangulation:
@@ -102,4 +111,4 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f`/`Line2d`/`Line3f`/`Line3d.ClipByPlane`)
-- `src/Aardvark.Geometry/PolyRegion2d.fs` (`Polygon2d<'a>`, `PolyRegion<'a>`, `PolygonTessellator`)
+- `src/Aardvark.Geometry/PolyRegion2d.fs` (`PolyRegion.Contains`, `Polygon2d<'a>`, `PolyRegion<'a>`, `PolygonTessellator`)
