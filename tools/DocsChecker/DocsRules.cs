@@ -31,8 +31,6 @@ internal sealed class DocsRules
                 "ai/INCREMENTAL.md",
                 "ai/SERIALIZATION.md",
                 "docs/CONTRIBUTING.md",
-                "docs/INTEROP.md",
-                "docs/TROUBLESHOOTING.md",
             ],
             ForbiddenPatterns =
             [
@@ -41,7 +39,15 @@ internal sealed class DocsRules
                 new("docs/CONTRIBUTING.md", ".\\build.cmd --project", "build.sh/build.cmd do not support --project."),
                 new("docs/CONTRIBUTING.md", "./test.sh --filter", "Use dotnet test ... --filter for filtered runs."),
                 new("docs/CONTRIBUTING.md", ".\\test.cmd --filter", "Use dotnet test ... --filter for filtered runs."),
-                new("docs/INTEROP.md", "F# Projects Reference C#, Never the Reverse", "Repository intentionally has mixed C#/F# reference directions."),
+                new("AGENTS.md", "F# Projects Reference C#, Never the Reverse", "Repository intentionally has mixed C#/F# reference directions."),
+                new("README.md", "ray.Intersects(box", "Ray-box intersection is an extension on the box: box.Intersects(ray, out t)."),
+                new("ai/PRIMITIVE_TYPES.md", "ray.Hits(box", "Ray3d has no Hits overload for boxes; use box.Intersects(ray, out t)."),
+                new("ai/PRIMITIVE_TYPES.md", "V3d.Dot(", "Dot/Cross/Distance are Vec extension methods, not static V3d members."),
+                new("ai/SERIALIZATION.md", "coder.CodeInt32", "Primitive coder methods use C# keyword names: CodeInt, not CodeInt32."),
+                new("ai/SERIALIZATION.md", "coder.CodeInt64", "Primitive coder methods use C# keyword names: CodeLong, not CodeInt64."),
+                new("ai/FSHARP_INTEROP.md", "getColors", "ColorBrewer has no getColors; use Scheme.getPalette and ColorBrewerSchemes."),
+                new("ai/FSHARP_INTEROP.md", "= MicroTime.Now", "MicroTime has no Now member; construct from units or ticks."),
+                new("ai/FSHARP_INTEROP.md", "Mem.mebibytes", "Actual API is Mem.ofMebibytes / Mem.FromMebibytes."),
                 new("ai/UTILITIES.md", "Telemetry.Reset()", "Actual API is Telemetry.ResetTelemetrySystem()."),
                 new("ai/UTILITIES.md", "Constant<float>.Pi", "Pi/E are on Constant / ConstantF, not Constant<T>."),
                 new("ai/UTILITIES.md", "Constant<double>.Pi", "Pi/E are on Constant / ConstantF, not Constant<T>."),
@@ -65,7 +71,10 @@ internal sealed class DocsRules
                 new("ai/UTILITIES.md", "ResetTelemetrySystem", "Utilities docs should use correct telemetry reset API."),
                 new("ai/TENSORS.md", "`struct` types", "Tensor docs should call out struct container reality."),
                 new("docs/CONTRIBUTING.md", "dotnet test src/Aardvark.sln --filter", "Contributing guide should show valid filtered test command."),
-                new("docs/INTEROP.md", "mixed C#/F# project references", "Interop guide must reflect actual dependency reality."),
+                new("AGENTS.md", "mixed C#/F# project references", "Agent guide must reflect actual dependency reality."),
+                new("ai/SERIALIZATION.md", "void CodeInt(ref int value);", "Serialization docs should list actual primitive coder names."),
+                new("ai/INCREMENTAL.md", "CSharp.Data.Adaptive", "C# adaptive examples require the CSharp.Data.Adaptive namespace/package."),
+                new("ai/SEMANTICS_GEOMETRY_CORE.md", "FastRay", "Geometry semantics should cover FastRay slab-test conventions."),
             ],
             SourceAnchors =
             [
@@ -97,11 +106,13 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/Geometry/BbTree.cs", "public class BbTree"),
                 new("src/Aardvark.Base/Math/Base/DistributionFunction.cs", "public class DistributionFunction"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "public static class Polynomial"),
+                new("src/Aardvark.Base.IO/ICoder_auto.cs", "void CodeInt(ref int value);"),
+                new("src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs", "public readonly struct FastRay3d"),
+                new("src/Aardvark.Base/Geometry/SpecialPoints_auto.cs", "public static double GetMinimalDistanceTo(this V3d point, Ray3d ray, out double t)"),
+                new("src/Aardvark.Base/Geometry/SpecialPoints_auto.cs", "public static double GetMinimalDistanceTo(this Ray3d ray0, Ray3d ray1, out double t0, out double t1)"),
+                new("src/Aardvark.Base.FSharp/Utilities/Interop/HashSet.fs", "let inline unionWith (xs : seq<'a>) (s : HashSet<'a>) ="),
             ],
-            LinkValidationIgnoreFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "ai/RECIPE_AI_FRIENDLINESS.md",
-            },
+            LinkValidationIgnoreFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
             MojibakeTokens = ["â", "Ã", "Â", "�"],
         };
 }

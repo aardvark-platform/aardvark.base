@@ -1,8 +1,50 @@
 - [Geometry] Added typed transform overloads for boxes, hulls, planes, rays, and PolyRegion inverse transforms. Existing transform semantics are preserved; recompiled calls can bind to more direct overloads and avoid unnecessary conversion/inversion work.
+- [Geometry] Corrected `PolyRegion` containment for holes, nested contours, boundaries, and reversed orientations
+### 5.3.28-prerelease0001
+- [Base] Corrected ray projection and closest-distance parameters for non-unit, degenerate, and extreme finite directions
+- [Geometry] Added attributed `PolyRegion` boolean operations and triangulation with explicit interpolation
+- [Tensors] Added built-in exact area-weighted `SuperSample` image downscaling
+- [Tests] Benchmarked ray-distance, plane/polygon clipping, and flag-returning `FastRay` overloads
+- [Base] Added allocation-free 2D/3D line-segment clipping against plane half-spaces with robust extreme finite normals
+- [Base] Fixed duplicate, stale, cross-query, and foreign-assembly introspection method-cache results
+- [Base] Corrected DenseGraph minimum-spanning trees and single-edge traversal accounting
+- [Base] Fixed enumerable combined hash codes to match ordered array semantics
+- [Base] Fixed tolerant convex polygon line clipping for extreme finite edges and removed per-call allocations
+- [Base] Fixed `FastRay` closed box intersections and accumulated all tied face flags for corner and point-box hits
+- [Base] Replaced biased randomization with allocation-free Fisher-Yates shuffling
+- [Base] Fixed `SampleGrid2d.SampleRegular` region callback Y endpoints
+- [Base] Made `LruCache` eviction bookkeeping exception-safe when cleanup callbacks throw
+- [Base] Hardened weighted interpolation array writes and single-pass weight enumeration
+- [Base] Hardened `ShortestPath<T>` asynchronous replacement, cancellation, and lock-free result snapshot publication
+- [Essentials] Hardened `Awaitable<T>` concurrent completion, waiting, and subscription semantics
+
+### 5.3.27
+- [Base] Fixed tree traversal single-pass and enumerator disposal semantics
+- [IO] Fixed lexical relative path root and platform case handling
+- [Base] Fixed compositional statistics and histogram aggregation
+- [Base] Hardened `ToDictionaryDistinct` duplicate handling and selector evaluation
+- [Tensors] Fixed clamped sampling for short tensor ranges
+- [Base] Restored zero-count `AliasTableF`/`AliasTableD` construction for empty PDFs while preserving non-empty PDF validation
+- [Base] Hardened `EnumHelpers` caching and full-range enum value handling
+- [PixImage] Made `GetFormatOfExtension` public and exception-safe
+
+### 5.3.26
+- [Base] Fixed dictionary duplicate popping and shared-value enumeration semantics
+- [IO] Fixed `StreamCodeReader` partial and short-read array handling
+- [Base] Fixed `ConcurrentHashSet<T>` sequence construction and non-generic enumeration semantics
+- [Base] Enforced exact counts in `EnumerableEx.ToArray(source, count)`
+- [Base] Fixed entropy helpers to enumerate generic inputs once and normalize weighted classes by total weight
+- [PixImage] Fixed base remap API forwarding of Y coordinate maps
+- [Base] Hardened Julian-day conversion at end-of-day boundaries
+- [Base] Fixed regex `TextParser.TrySkip` position advancement
+- [Essentials] Hardened camera projection clipping parameter validation
+- [Base] Fixed `HashCode.GetCombinedWithDefaultZero` null reference handling
+- [Base] Fixed `Polynomial.RealRoots` effective degree detection for trailing zero coefficients
 - [Base] Hardened `LruCache` insertion size accounting against overflow
 - [Base] Fixed `SingleDeltaDict` null-key overlay comparisons
 - [FSharp] Hardened `ReferenceCountingSet` null element semantics
 - [Base] Hardened `SubRange<T>.CopyTo` destination validation
+- [Introspection] Added `Introspection.GetType` using `IntrospectionProperties.AssemblyLoadContext` to load assemblies.
 
 ### 5.3.25
 - [Essentials] Hardened `Await.WhenAll` empty, duplicate, and null-input handling

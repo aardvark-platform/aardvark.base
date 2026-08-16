@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace System.Collections.Concurrent
 {
@@ -31,12 +30,20 @@ namespace System.Collections.Concurrent
 
         public ConcurrentHashSet(IEnumerable<T> collection)
         {
-            m_entries = new ConcurrentDictionary<T, int>(collection.Select(e => new KeyValuePair<T, int>(e, 1)));
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
+
+            m_entries = new ConcurrentDictionary<T, int>();
+            foreach (var item in collection)
+                m_entries.TryAdd(item, 1);
         }
 
         public ConcurrentHashSet(IEnumerable<T> collection, IEqualityComparer<T> comparer)
         {
-            m_entries = new ConcurrentDictionary<T, int>(collection.Select(e => new KeyValuePair<T, int>(e, 1)), comparer);
+            if (collection == null) throw new ArgumentNullException(nameof(collection));
+
+            m_entries = new ConcurrentDictionary<T, int>(comparer);
+            foreach (var item in collection)
+                m_entries.TryAdd(item, 1);
         }
 
         #endregion
@@ -98,7 +105,7 @@ namespace System.Collections.Concurrent
 
             public void Dispose() => m_enumerator.Dispose();
 
-            object IEnumerator.Current => ((IEnumerator)m_enumerator).Current;
+            object IEnumerator.Current => Current;
 
             public bool MoveNext() => m_enumerator.MoveNext();
 

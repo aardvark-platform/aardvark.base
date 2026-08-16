@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base
@@ -114,6 +115,193 @@ namespace Aardvark.Base
 
         #region Intersections (float)
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ClipLineByHeight(
+            float h0, float h1, float boundary, out float t0, out float t1)
+        {
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+            if (p0Inside && p1Inside)
+            {
+                t0 = 0;
+                t1 = 1;
+                return true;
+            }
+
+            if (!p0Inside && !p1Inside)
+            {
+                t0 = 0;
+                t1 = 0;
+                return false;
+            }
+
+            var t = (boundary - h0) / (h1 - h0);
+            t0 = p0Inside ? 0 : t;
+            t1 = p0Inside ? t : 1;
+            return true;
+        }
+
+        // An unsigned bit-range check keeps ordinary norm checks to one exceptional branch.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFinitePositiveMagnitude(float value)
+        {
+            return (uint)(value.FloatToBits() - 1) < 0x7f7fffffU;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Line2f ClipLineByScaledPlane(
+            Line2f line, Plane2f plane, float absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new Line2f(V2f.NaN, V2f.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new Line2f(V2f.NaN, V2f.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line2f(p0, p1);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Line3f ClipLineByScaledPlane(
+            Line3f line, Plane3f plane, float absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new Line3f(V3f.NaN, V3f.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new Line3f(V3f.NaN, V3f.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line3f(p0, p1);
+        }
+
+        #region Line2f - Plane2f
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;float&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line2f ClipByPlane(this Line2f line, Plane2f plane)
+            => line.ClipByPlane(plane, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2f ClipByPlane(
+            this Line2f line, Plane2f plane, float absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line2f(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line2f(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line2f(V2f.NaN, V2f.NaN);
+            if (h1 == boundary) return new Line2f(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line2f(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
+        #region Line3f - Plane3f
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;float&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line3f ClipByPlane(this Line3f line, Plane3f plane)
+            => line.ClipByPlane(plane, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line3f ClipByPlane(
+            this Line3f line, Plane3f plane, float absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line3f(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line3f(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line3f(V3f.NaN, V3f.NaN);
+            if (h1 == boundary) return new Line3f(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line3f(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
         #region Line2f - Polygon2f
 
         /// <summary>
@@ -193,54 +381,89 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Line-Segments of line inside the Polygon (CCW ordered).
-        /// Works only with Convex-Polygons
-        /// If the line is clipped entirely, the points of the returned Line2f are NaN.
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Uses <c>Constant&lt;float&gt;.PositiveTinyValue</c> as absolute point-distance tolerance.
+        /// The result preserves the line's P0-to-P1 ordering and unchanged endpoints exactly.
+        /// If the line is clipped entirely, both points of the returned line are NaN.
         /// </summary>
         public static Line2f ClipWithConvex(this Line2f line, Polygon2f poly)
+            => line.ClipWithConvex(poly, Constant<float>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Each non-zero polygon edge defines a left half-plane. The non-negative
+        /// <paramref name="absoluteEpsilon"/> is scaled by the edge length for signed-cross-product
+        /// comparisons, so it represents an absolute point-distance tolerance. Zero-length edges
+        /// are ignored. The result preserves the line's P0-to-P1 ordering and unchanged endpoints
+        /// exactly. If the clipping interval is empty, both returned points are NaN.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="poly">The counter-clockwise convex clipping polygon.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2f ClipWithConvex(
+            this Line2f line, Polygon2f poly, float absoluteEpsilon
+        )
         {
-            var p = V2f.NaN;
-            bool i0, i1;
+            var pointCount = poly.PointCount;
+            if (pointCount < 3)
+                return new Line2f(V2f.NaN, V2f.NaN);
 
-            i0 = poly.Contains(line.P0);
-            i1 = poly.Contains(line.P1);
+            var direction = line.P1 - line.P0;
+            float t0 = 0;
+            float t1 = 1;
 
-            if (i0 && i1) return line;
-            else if ((!i0 && i1) || (i0 && !i1))
+            var edgeStart = poly[pointCount - 1];
+            for (int i = 0; i < pointCount; i++)
             {
-                foreach (var l in poly.EdgeLines)
+                var edgeEnd = poly[i];
+                var edge = edgeEnd - edgeStart;
+                var edgeLength = edge.Length;
+                if (!IsFinitePositiveMagnitude(edgeLength))
                 {
-                    if (line.Intersects(l, out p)) break;
+                    var edgeScale = edge.NormMax;
+                    if (!(edgeScale > 0) || !edgeScale.IsFinite())
+                    {
+                        edgeStart = edgeEnd;
+                        continue;
+                    }
+
+                    edge /= edgeScale;
+                    edgeLength = edge.Length;
                 }
 
-                if (i0) return new Line2f(line.P0, p);
-                else return new Line2f(p, line.P1);
-            }
-            else
-            {
-                V2f p0 = V2f.NaN;
-                V2f p1 = V2f.NaN;
-                int c = 0;
+                var pointOffset = line.P0 - edgeStart;
+                var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
+                var directionCross = edge.X * direction.Y - edge.Y * direction.X;
+                var boundary = -absoluteEpsilon * edgeLength;
 
-                foreach (var l in poly.EdgeLines)
+                if (directionCross == 0)
                 {
-                    if (line.Intersects(l, out p))
+                    if (signedCross < boundary)
+                        return new Line2f(V2f.NaN, V2f.NaN);
+                }
+                else
+                {
+                    var t = (boundary - signedCross) / directionCross;
+                    if (directionCross > 0)
                     {
-                        if (c == 0) p0 = p;
-                        else p1 = p;
-                        c++;
+                        if (t > t1)
+                            return new Line2f(V2f.NaN, V2f.NaN);
+                        if (t > t0) t0 = t;
+                    }
+                    else
+                    {
+                        if (t < t0)
+                            return new Line2f(V2f.NaN, V2f.NaN);
+                        if (t < t1) t1 = t;
                     }
                 }
 
-                if (c == 2)
-                {
-                    V2f u = p1 - p0;
-
-                    if (u.Dot(line.Direction) > 0) return new Line2f(p0, p1);
-                    else return new Line2f(p1, p0);
-                }
-                else return new Line2f(V2f.NaN, V2f.NaN);
+                edgeStart = edgeEnd;
             }
+
+            var p0 = t0 == 0 ? line.P0 : line.P0 + t0 * direction;
+            var p1 = t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line2f(p0, p1);
         }
 
         #endregion
@@ -596,6 +819,193 @@ namespace Aardvark.Base
 
         #region Intersections (double)
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ClipLineByHeight(
+            double h0, double h1, double boundary, out double t0, out double t1)
+        {
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+            if (p0Inside && p1Inside)
+            {
+                t0 = 0;
+                t1 = 1;
+                return true;
+            }
+
+            if (!p0Inside && !p1Inside)
+            {
+                t0 = 0;
+                t1 = 0;
+                return false;
+            }
+
+            var t = (boundary - h0) / (h1 - h0);
+            t0 = p0Inside ? 0 : t;
+            t1 = p0Inside ? t : 1;
+            return true;
+        }
+
+        // An unsigned bit-range check keeps ordinary norm checks to one exceptional branch.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFinitePositiveMagnitude(double value)
+        {
+            return (ulong)(value.FloatToBits() - 1L) < 0x7fefffffffffffffUL;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Line2d ClipLineByScaledPlane(
+            Line2d line, Plane2d plane, double absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new Line2d(V2d.NaN, V2d.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new Line2d(V2d.NaN, V2d.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line2d(p0, p1);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static Line3d ClipLineByScaledPlane(
+            Line3d line, Plane3d plane, double absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new Line3d(V3d.NaN, V3d.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new Line3d(V3d.NaN, V3d.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line3d(p0, p1);
+        }
+
+        #region Line2d - Plane2d
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;double&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line2d ClipByPlane(this Line2d line, Plane2d plane)
+            => line.ClipByPlane(plane, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2d ClipByPlane(
+            this Line2d line, Plane2d plane, double absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line2d(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line2d(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line2d(V2d.NaN, V2d.NaN);
+            if (h1 == boundary) return new Line2d(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line2d(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
+        #region Line3d - Plane3d
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;double&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static Line3d ClipByPlane(this Line3d line, Plane3d plane)
+            => line.ClipByPlane(plane, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line3d ClipByPlane(
+            this Line3d line, Plane3d plane, double absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new Line3d(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new Line3d(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new Line3d(V3d.NaN, V3d.NaN);
+            if (h1 == boundary) return new Line3d(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new Line3d(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
         #region Line2d - Polygon2d
 
         /// <summary>
@@ -675,54 +1085,89 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Line-Segments of line inside the Polygon (CCW ordered).
-        /// Works only with Convex-Polygons
-        /// If the line is clipped entirely, the points of the returned Line2d are NaN.
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Uses <c>Constant&lt;double&gt;.PositiveTinyValue</c> as absolute point-distance tolerance.
+        /// The result preserves the line's P0-to-P1 ordering and unchanged endpoints exactly.
+        /// If the line is clipped entirely, both points of the returned line are NaN.
         /// </summary>
         public static Line2d ClipWithConvex(this Line2d line, Polygon2d poly)
+            => line.ClipWithConvex(poly, Constant<double>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Each non-zero polygon edge defines a left half-plane. The non-negative
+        /// <paramref name="absoluteEpsilon"/> is scaled by the edge length for signed-cross-product
+        /// comparisons, so it represents an absolute point-distance tolerance. Zero-length edges
+        /// are ignored. The result preserves the line's P0-to-P1 ordering and unchanged endpoints
+        /// exactly. If the clipping interval is empty, both returned points are NaN.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="poly">The counter-clockwise convex clipping polygon.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static Line2d ClipWithConvex(
+            this Line2d line, Polygon2d poly, double absoluteEpsilon
+        )
         {
-            var p = V2d.NaN;
-            bool i0, i1;
+            var pointCount = poly.PointCount;
+            if (pointCount < 3)
+                return new Line2d(V2d.NaN, V2d.NaN);
 
-            i0 = poly.Contains(line.P0);
-            i1 = poly.Contains(line.P1);
+            var direction = line.P1 - line.P0;
+            double t0 = 0;
+            double t1 = 1;
 
-            if (i0 && i1) return line;
-            else if ((!i0 && i1) || (i0 && !i1))
+            var edgeStart = poly[pointCount - 1];
+            for (int i = 0; i < pointCount; i++)
             {
-                foreach (var l in poly.EdgeLines)
+                var edgeEnd = poly[i];
+                var edge = edgeEnd - edgeStart;
+                var edgeLength = edge.Length;
+                if (!IsFinitePositiveMagnitude(edgeLength))
                 {
-                    if (line.Intersects(l, out p)) break;
+                    var edgeScale = edge.NormMax;
+                    if (!(edgeScale > 0) || !edgeScale.IsFinite())
+                    {
+                        edgeStart = edgeEnd;
+                        continue;
+                    }
+
+                    edge /= edgeScale;
+                    edgeLength = edge.Length;
                 }
 
-                if (i0) return new Line2d(line.P0, p);
-                else return new Line2d(p, line.P1);
-            }
-            else
-            {
-                V2d p0 = V2d.NaN;
-                V2d p1 = V2d.NaN;
-                int c = 0;
+                var pointOffset = line.P0 - edgeStart;
+                var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
+                var directionCross = edge.X * direction.Y - edge.Y * direction.X;
+                var boundary = -absoluteEpsilon * edgeLength;
 
-                foreach (var l in poly.EdgeLines)
+                if (directionCross == 0)
                 {
-                    if (line.Intersects(l, out p))
+                    if (signedCross < boundary)
+                        return new Line2d(V2d.NaN, V2d.NaN);
+                }
+                else
+                {
+                    var t = (boundary - signedCross) / directionCross;
+                    if (directionCross > 0)
                     {
-                        if (c == 0) p0 = p;
-                        else p1 = p;
-                        c++;
+                        if (t > t1)
+                            return new Line2d(V2d.NaN, V2d.NaN);
+                        if (t > t0) t0 = t;
+                    }
+                    else
+                    {
+                        if (t < t0)
+                            return new Line2d(V2d.NaN, V2d.NaN);
+                        if (t < t1) t1 = t;
                     }
                 }
 
-                if (c == 2)
-                {
-                    V2d u = p1 - p0;
-
-                    if (u.Dot(line.Direction) > 0) return new Line2d(p0, p1);
-                    else return new Line2d(p1, p0);
-                }
-                else return new Line2d(V2d.NaN, V2d.NaN);
+                edgeStart = edgeEnd;
             }
+
+            var p0 = t0 == 0 ? line.P0 : line.P0 + t0 * direction;
+            var p1 = t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new Line2d(p0, p1);
         }
 
         #endregion

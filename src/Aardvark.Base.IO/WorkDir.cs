@@ -2,106 +2,145 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base.Coder
 {
     public static class Dir
     {
+        private static readonly StringComparer s_pathComparer =
+            Path.DirectorySeparatorChar == '\\'
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+
+        private static readonly char[] s_pathSeparators =
+        {
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar
+        };
+
+        private static string NormalizeRoot(string root)
+        {
+            if (Path.AltDirectorySeparatorChar != Path.DirectorySeparatorChar)
+                root = root.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+            var length = root.Length;
+            while (length > 1 && root[length - 1] == Path.DirectorySeparatorChar)
+                length--;
+
+            return length == root.Length ? root : root.Substring(0, length);
+        }
+
+        private static string[] GetPathComponents(string path, out string root)
+        {
+            var fullPath = Path.GetFullPath(path);
+            var pathRoot = Path.GetPathRoot(fullPath) ?? string.Empty;
+            root = NormalizeRoot(pathRoot);
+
+            return fullPath
+                .Substring(pathRoot.Length)
+                .Split(s_pathSeparators, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         /// <summary>
-        /// Converts the absolute directory path into a relative one, relative
-        /// to the provided relativeTo directory path. Returns null if not possible
-        /// (e.g. paths are on different drives).
+        /// Computes a lexical path from <paramref name="relativeToDir"/> to
+        /// <paramref name="absoluteDir"/>.
         /// </summary>
         /// <param name="absoluteDir">The directory where the result should point at.</param>
         /// <param name="relativeToDir">The directory from where the result should start from.</param>
-        /// <returns>The relative path from <paramref name="relativeToDir"/> to <paramref name="absoluteDir"/> 
-        /// or null if no relative path can be found.</returns>
+        /// <returns>
+        /// The relative path, or <c>null</c> when the normalized path roots are incompatible.
+        /// Equal roots and components are compared ordinally and case-insensitively on Windows,
+        /// and ordinally and case-sensitively on other platforms. Identical directories return
+        /// an empty string; every non-empty result ends with
+        /// <see cref="Path.DirectorySeparatorChar"/>.
+        /// </returns>
         public static string RelativeDir(string absoluteDir, string relativeToDir)
         {
             return RelativeDir(new DirectoryInfo(absoluteDir), new DirectoryInfo(relativeToDir));
         }
 
         /// <summary>
-        /// Converts the absolute directory path into a relative one, relative
-        /// to the provided relativeTo directory path. Returns null if not possible
-        /// (e.g. paths are on different drives).
+        /// Computes a lexical path from <paramref name="relativeToDir"/> to
+        /// <paramref name="absoluteDir"/>.
         /// </summary>
         /// <param name="absoluteDir">The directory where the result should point at.</param>
         /// <param name="relativeToDir">The directory from where the result should start from.</param>
-        /// <returns>The relative path from <paramref name="relativeToDir"/> to <paramref name="absoluteDir"/> 
-        /// or null if no relative path can be found.</returns>
+        /// <returns>
+        /// The relative path, or <c>null</c> when the normalized path roots are incompatible.
+        /// Equal roots and components are compared ordinally and case-insensitively on Windows,
+        /// and ordinally and case-sensitively on other platforms. Identical directories return
+        /// an empty string; every non-empty result ends with
+        /// <see cref="Path.DirectorySeparatorChar"/>.
+        /// </returns>
         public static string RelativeDir(DirectoryInfo absoluteDir, DirectoryInfo relativeToDir)
         {
-            var absoluteDirS = absoluteDir.FullName;
-            var relativeToDirS = relativeToDir.FullName;
+            var absoluteDirectories = GetPathComponents(absoluteDir.FullName, out var absoluteRoot);
+            var relativeDirectories = GetPathComponents(relativeToDir.FullName, out var relativeRoot);
 
-            var separators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-            string[] absoluteDirectories = Path.GetFullPath(absoluteDirS).Split(separators, StringSplitOptions.RemoveEmptyEntries);
-            string[] relativeDirectories = Path.GetFullPath(relativeToDirS).Split(separators, StringSplitOptions.RemoveEmptyEntries);
-
-            // get the shortest of the two paths
-            int length = System.Math.Min(absoluteDirectories.Length, relativeDirectories.Length);
-
-
-            // find common root
-            int index;
-            for (index = 0; index < length; index++)
-                if (absoluteDirectories[index].ToLower() != relativeDirectories[index].ToLower())
-                    break;
-            // use to determine where in the loop we exited
-            int lastCommonRoot = index - 1;
-
-            // if we didn't find a common prefix then return null
-            if (lastCommonRoot < 0)
+            if (!s_pathComparer.Equals(absoluteRoot, relativeRoot))
                 return null;
 
-            // build up the relative path
-            StringBuilder relativePath = new StringBuilder();
+            var commonCount = 0;
+            var commonLimit = Math.Min(absoluteDirectories.Length, relativeDirectories.Length);
+            while (commonCount < commonLimit &&
+                   s_pathComparer.Equals(absoluteDirectories[commonCount], relativeDirectories[commonCount]))
+            {
+                commonCount++;
+            }
 
-            // add on the ..
-            for (index = lastCommonRoot + 1; index < relativeDirectories.Length; index++)
-                if (relativeDirectories[index].Length > 0)
-                    relativePath.Append(".." + Path.DirectorySeparatorChar);
+            var relativeComponents = new List<string>(
+                relativeDirectories.Length - commonCount + absoluteDirectories.Length - commonCount);
 
-            // add on the folders
-            for (index = lastCommonRoot + 1; index < absoluteDirectories.Length; index++)
-                relativePath.Append(absoluteDirectories[index] + Path.DirectorySeparatorChar);
+            for (var index = commonCount; index < relativeDirectories.Length; index++)
+                relativeComponents.Add("..");
 
-            return relativePath.ToString();
+            for (var index = commonCount; index < absoluteDirectories.Length; index++)
+                relativeComponents.Add(absoluteDirectories[index]);
+
+            if (relativeComponents.Count == 0)
+                return string.Empty;
+
+            return string.Join(Path.DirectorySeparatorChar.ToString(), relativeComponents) +
+                   Path.DirectorySeparatorChar;
         }
 
         /// <summary>
-        /// Converts the absolute file path into a relative one, relative
-        /// to the provided relativeTo directory path. Returns null if not possible
-        /// (e.g. paths are on different drives).
+        /// Computes a lexical file path from <paramref name="relativeTo"/> to
+        /// <paramref name="absoluteFile"/>.
         /// </summary>
         /// <param name="absoluteFile">The file where the result should point at.</param>
         /// <param name="relativeTo">The directory from where the result should start from.</param>
-        /// <returns>The relative path from <paramref name="relativeTo"/> to <paramref name="absoluteFile"/> 
-        /// or null if no relative path can be found.</returns>
+        /// <returns>
+        /// The relative file path, or <c>null</c> when the normalized path roots are incompatible.
+        /// Directory components use ordinal case-insensitive comparison on Windows and ordinal
+        /// case-sensitive comparison on other platforms.
+        /// </returns>
         public static string RelativeFile(FileInfo absoluteFile, DirectoryInfo relativeTo)
         {
-            return RelativeDir(absoluteFile.Directory, relativeTo) + absoluteFile.Name;
+            var relativeDir = RelativeDir(absoluteFile.Directory, relativeTo);
+            return relativeDir == null ? null : relativeDir + absoluteFile.Name;
         }
 
         /// <summary>
-        /// Converts the absolute file path into a relative one, relative
-        /// to the provided relativeTo directory path. Returns null if not possible
-        /// (e.g. paths are on different drives).
+        /// Computes a lexical file path from <paramref name="relativeTo"/> to
+        /// <paramref name="absoluteFile"/>.
         /// </summary>
         /// <param name="absoluteFile">The file where the result should point at.</param>
         /// <param name="relativeTo">The directory from where the result should start from.</param>
-        /// <returns>The relative path from <paramref name="relativeTo"/> to <paramref name="absoluteFile"/> 
-        /// or null if no relative path can be found.</returns>
+        /// <returns>
+        /// The relative file path, or <c>null</c> when the normalized path roots are incompatible.
+        /// Directory components use ordinal case-insensitive comparison on Windows and ordinal
+        /// case-sensitive comparison on other platforms.
+        /// </returns>
         public static string RelativeFile(string absoluteFile, string relativeTo)
         {
             return RelativeFile(new FileInfo(absoluteFile), new DirectoryInfo(relativeTo));
         }
 
         /// <summary>
-        /// Returns the relative directory path if possible, if not it returns the absolute path if
-        /// UseAbsolutePathsIfNecessary is set to true (default behaviour) else returns String.Empty.
+        /// Returns the lexical relative directory path when the roots are compatible. Otherwise,
+        /// returns <paramref name="absoluteDir"/> when <paramref name="useAbsolutePathsIfNecessary"/>
+        /// is true, or <see cref="string.Empty"/> when it is false.
         /// </summary>
         public static string TryGetRelativeDir(string absoluteDir, string relativeTo, bool useAbsolutePathsIfNecessary)
         {
@@ -123,8 +162,9 @@ namespace Aardvark.Base.Coder
         }
 
         /// <summary>
-        /// Returns the relative file path if possible, if not it returns the absolute path if
-        /// UseAbsolutePathsIfNecessary is set to true (default behaviour) else returns String.Empty.
+        /// Returns the lexical relative file path when the roots are compatible. Otherwise,
+        /// returns <paramref name="absoluteFile"/> when <paramref name="useAbsolutePathsIfNecessary"/>
+        /// is true, or <see cref="string.Empty"/> when it is false.
         /// </summary>
         public static string TryGetRelativeFileName(string absoluteFile, string relativeTo, bool useAbsolutePathsIfNecessary)
         {

@@ -12,6 +12,7 @@ Quick symbol-to-doc map for incremental discovery.
 | `M44d` layout/interoperability | [SEMANTICS_LINEAR_ALGEBRA.md](SEMANTICS_LINEAR_ALGEBRA.md) |
 | Transform semantics (`TransformPos`, `TransformDir`) | [SEMANTICS_GEOMETRY_CORE.md](SEMANTICS_GEOMETRY_CORE.md) |
 | `Box3d`, `Ray3d`, `Plane3d` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
+| `FastRay2d`, `FastRay3d`, `RayHit3d`, intersection conventions | [SEMANTICS_GEOMETRY_CORE.md](SEMANTICS_GEOMETRY_CORE.md) |
 
 ## Images / Tensors
 
@@ -34,6 +35,7 @@ Quick symbol-to-doc map for incremental discovery.
 | `DistributionFunction` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Polynomial` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `LuFactorize`, `LuSolve`, `QrFactorize` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `Stats<T>`, `Histogram` | [ALGORITHMS.md](ALGORITHMS.md) |
 
 ## Collections / Infrastructure
 
@@ -43,22 +45,27 @@ Quick symbol-to-doc map for incremental discovery.
 | `Dict<TKey,TValue>`, `SymbolDict<T>`, `SymbolSet` | [COLLECTIONS.md](COLLECTIONS.md) |
 | `LruCache<TKey,TValue>` | [COLLECTIONS.md](COLLECTIONS.md) |
 | `ConcurrentHashSet<T>` | [COLLECTIONS.md](COLLECTIONS.md) |
+| `ToDictionaryDistinct`, `DictFun`, `SingleValueDict`, `SingleEntryDict` | [COLLECTIONS.md](COLLECTIONS.md) |
 | `Report` | [UTILITIES.md](UTILITIES.md) |
 | `Telemetry` | [UTILITIES.md](UTILITIES.md) |
-| `RandomSystem`, `RandomSample`, `HaltonRandomSeries` | [UTILITIES.md](UTILITIES.md) |
+| `RandomSystem`, `RandomSample`, `HaltonRandomSeries`, `Quasi` | [UTILITIES.md](UTILITIES.md) |
 | `Geo`, `GeoEllipsoid` | [UTILITIES.md](UTILITIES.md) |
+| `Constant`, `ConstantF`, `INode` | [UTILITIES.md](UTILITIES.md) |
+| `Dir` (relative path utilities) | [UTILITIES.md](UTILITIES.md) |
+
+## Serialization
+
+| Symbol | Primary Doc |
+|--------|-------------|
+| `ICoder`, `IReadingCoder`, `IWritingCoder` | [SERIALIZATION.md](SERIALIZATION.md) |
+| `BinaryReadingCoder`, `BinaryWritingCoder`, `XmlReadingCoder`, `XmlWritingCoder` | [SERIALIZATION.md](SERIALIZATION.md) |
+| `TypeInfo` | [SERIALIZATION.md](SERIALIZATION.md) |
 
 ## F# / Incremental
 
 | Symbol | Primary Doc |
 |--------|-------------|
 | `Vec`, `Mat`, `Trafo`, `Lens` | [FSHARP_INTEROP.md](FSHARP_INTEROP.md) |
+| `ColorBrewer`, `MicroTime`, `Mem` | [FSHARP_INTEROP.md](FSHARP_INTEROP.md) |
 | `aval`, `cval`, `aset`, `amap`, `alist` | [INCREMENTAL.md](INCREMENTAL.md) |
-
-## Verification Tip
-
-After landing on a doc, validate exact API names in source:
-
-```bash
-rg "SymbolName" src
-```
+| `afun`, `astate`, `Controller`, `astream`, `Proc`, `ChangeTracker` | [INCREMENTAL.md](INCREMENTAL.md) |

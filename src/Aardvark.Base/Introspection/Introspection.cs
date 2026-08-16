@@ -71,8 +71,9 @@ public static class Introspection
         => AllAssemblies.SelectMany(GetAllTypesWithAttribute<T>);
 
     /// <summary>
-    /// Enumerates all methods decorated with attribute T as tuples of MethodInfo
-    /// and its one or more T-attributes.
+    /// Enumerates all public instance and static methods declared by known types and
+    /// decorated with attribute T. Each method is returned once together with all of
+    /// its T-attribute instances.
     /// </summary>
     public static IEnumerable<(MethodInfo, T[])> GetAllMethodsWithAttribute<T>()
         => AllAssemblies.SelectMany(GetAllMethodsWithAttribute<T>);
@@ -83,7 +84,7 @@ public static class Introspection
     /// </summary>
     public static Type[] GetAllClassesImplementingInterface(Assembly assembly, Type interfaceType)
         => GetAll___(assembly, interfaceType.FullName,
-            lines => lines.Select(Type.GetType),
+            lines => lines.SelectNotNull(GetType),
             types => types.Where(t => (t.IsClass || t.IsValueType) && t.GetInterfaces().Contains(interfaceType)),
             result => result.Select(t => t.AssemblyQualifiedName)
         );
@@ -94,7 +95,7 @@ public static class Introspection
     /// </summary>
     public static Type[] GetAllClassesInheritingFrom(Assembly assembly, Type baseType)
         => GetAll___(assembly, baseType.FullName,
-            lines => lines.Select(Type.GetType),
+            lines => lines.SelectNotNull(GetType),
             types => types.Where(t => t.IsSubclassOf(baseType)),
             result => result.Select(t => t.AssemblyQualifiedName)
         );
@@ -106,7 +107,7 @@ public static class Introspection
     /// </summary>
     public static (Type, T[])[] GetAllTypesWithAttribute<T>(Assembly assembly)
         => GetAll___<(Type, T[])>(assembly, typeof(T).FullName,
-           lines => lines.Select(Type.GetType)
+           lines => lines.SelectNotNull(GetType)
                     .Select(t => (t, TryGetCustomAttributes<T>(t))),
            types => from t in types
                     let attribs = TryGetCustomAttributes<T>(t)
@@ -117,6 +118,7 @@ public static class Introspection
 
     private static T[] TryGetCustomAttributes<T>(Type type)
     {
+        if (type == null) return [];
         try
         {
             return type.GetCustomAttributes(typeof(T), false).Select(x => (T)x).ToArray();
@@ -130,6 +132,7 @@ public static class Introspection
 
     private static T[] TryGetCustomAttributes<T>(MethodInfo mi)
     {
+        if (mi == null) return [];
         try
         {
             return mi.GetCustomAttributes(typeof(T), false).Select(x => (T)x).ToArray();
@@ -141,28 +144,112 @@ public static class Introspection
         return [];
     }
 
+    private const BindingFlags PublicDeclaredMethods =
+        BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
+
+    private const string MethodQueryCacheVersion = "public-declared-v2";
+
+    private static string GetMethodQueryCacheDiscriminator(Type attributeType)
+        => $"{MethodQueryCacheVersion}|{attributeType.AssemblyQualifiedName}";
+
+    private static IEnumerable<(MethodInfo, T[])> GetMethodsWithAttribute<T>(IEnumerable<Type> types)
+    {
+        foreach (var type in types)
+        {
+            if (type == null) continue;
+
+            foreach (var method in type.GetMethods(PublicDeclaredMethods))
+            {
+                var attributes = TryGetCustomAttributes<T>(method);
+                if (attributes.Length > 0) yield return (method, attributes);
+            }
+        }
+    }
+
+    private static IEnumerable<Type> ResolveUniqueTypes(IEnumerable<string> lines, Assembly assembly)
+    {
+        string first = null;
+        HashSet<string> seen = null;
+
+        foreach (var line in lines)
+        {
+            if (line == null) continue;
+
+            if (first == null)
+            {
+                first = line;
+            }
+            else
+            {
+                seen ??= new HashSet<string>(StringComparer.Ordinal) { first };
+                if (!seen.Add(line)) continue;
+            }
+
+            var type = GetType(line);
+            if (type?.Assembly == assembly) yield return type;
+        }
+    }
+
+    private static IEnumerable<string> GetUniqueDeclaringTypeNames<T>((MethodInfo, T[])[] methods)
+    {
+        string first = null;
+        HashSet<string> seen = null;
+
+        foreach (var method in methods)
+        {
+            var name = method.Item1.DeclaringType?.AssemblyQualifiedName;
+            if (name == null) continue;
+
+            if (first == null)
+            {
+                first = name;
+            }
+            else
+            {
+                seen ??= new HashSet<string>(StringComparer.Ordinal) { first };
+                if (!seen.Add(name)) continue;
+            }
+
+            yield return name;
+        }
+    }
+
     /// <summary>
-    /// Enumerates all methods from the specified assembly
-    /// decorated with attribute T as tuples of MethodInfo
-    /// and its one or more T-attributes.
+    /// Enumerates public instance and static methods declared by types in the specified
+    /// assembly and decorated with attribute T. Each method is returned once together
+    /// with all of its T-attribute instances. The query cache stores each declaring type
+    /// once, ignores repeated declaring-type lines, and rejects cached types from other assemblies.
     /// </summary>
     public static (MethodInfo, T[])[] GetAllMethodsWithAttribute<T>(Assembly assembly)
-        => GetAll___<(MethodInfo, T[])>(assembly, typeof(T).FullName,
-              lines => from line in lines
-                       let t = Type.GetType(line)
-                       where t != null
-                       from m in t.GetMethods()
-                       let attribs = TryGetCustomAttributes<T>(m)
-                       where attribs.Length > 0
-                       select (m, attribs),
-              types => from t in types
-                       where t != null
-                       from m in t.GetMethods()
-                       let attribs = TryGetCustomAttributes<T>(m)
-                       where attribs.Length > 0
-                       select (m, attribs),
-              result => result.SelectNotNull(m => m.Item1.DeclaringType?.AssemblyQualifiedName)
+        => GetAll___<(MethodInfo, T[])>(
+              assembly,
+              GetMethodQueryCacheDiscriminator(typeof(T)),
+              lines => GetMethodsWithAttribute<T>(ResolveUniqueTypes(lines, assembly)),
+              types => GetMethodsWithAttribute<T>(types),
+              GetUniqueDeclaringTypeNames
         );
+
+#if NET8_0_OR_GREATER
+    /// <summary>
+    /// Returns the type with the given name.
+    /// Uses <see cref="IntrospectionProperties.AssemblyLoadContext"/> to load the type.
+    /// </summary>
+    /// <param name="typeName">Name of the type to retrieve.</param>
+    /// <returns>Type with given name, or null on failure.</returns>
+#else
+    /// <summary>
+    /// Returns the type with the given name.
+    /// </summary>
+    /// <param name="typeName">Name of the type to retrieve.</param>
+    /// <returns>Type with given name, or null if not found.</returns>
+#endif
+    public static Type GetType(string typeName)
+    {
+#if NET8_0_OR_GREATER
+        using var _ = IntrospectionProperties.AssemblyLoadContext.EnterContextualReflection();
+#endif
+        return typeName != null ? Type.GetType(typeName) : null;
+    }
 
     static Introspection()
     {

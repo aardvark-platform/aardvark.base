@@ -6,6 +6,13 @@ namespace Aardvark.Base
 {
     public static class DateTimeExtensions
     {
+        private const long MillisecondsPerDay = 24 * 60 * 60 * 1000;
+
+        private static double PreviousRepresentablePositiveDouble(double value)
+        {
+            return (value.FloatToBits() - 1).FloatFromBits();
+        }
+
         /// <summary>
         /// Calculates the UTC Julian day from the given DateTime and time zone.
         /// Julian days start at 12h noon January 1, 4713 BC (day 0). The fractional part contains the fraction of a day since the last noon. 
@@ -33,8 +40,16 @@ namespace Aardvark.Base
             }
 
             int jd = d + (153 * m - 457) / 5 + 365 * y + (y / 4) - (y / 100) + (y / 400);
+            var dayStart = jd + 1721118.5;
+            var result = dayStart + dt;
 
-            return jd + 1721118.5 + dt;
+            if (date.TimeOfDay.Ticks > 0)
+            {
+                var nextDay = dayStart + 1.0;
+                if (result >= nextDay) result = PreviousRepresentablePositiveDouble(nextDay);
+            }
+
+            return result;
         }
 
         // whatever the use of this should be
@@ -74,7 +89,8 @@ namespace Aardvark.Base
             var D = t - 2447 * u / 80;
 
             var timeOfDay = (jd + 0.5).Frac();
-            var totalMilliseconds = (long)Math.Round(timeOfDay * 24 * 60 * 60 * 1000);
+            var totalMilliseconds = (long)Math.Round(timeOfDay * MillisecondsPerDay);
+            if (totalMilliseconds >= MillisecondsPerDay) totalMilliseconds = MillisecondsPerDay - 1;
 
             return new DateTime(Y, M, D).AddTicks(totalMilliseconds * TimeSpan.TicksPerMillisecond);
         }

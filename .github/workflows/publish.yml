@@ -7,16 +7,18 @@ on:
       - RELEASE_NOTES.md
       - global.json
       - .github/workflows/publish.yml
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   release-check:
-    name: Check release version
-    runs-on: windows-latest
-    permissions:
-      contents: read
+    name: Check for Release
+    runs-on: ubuntu-latest
     outputs:
-      should_publish: ${{ steps.compare.outputs.should_publish }}
-      release_notes_version: ${{ steps.compare.outputs.release_notes_version }}
-      latest_release_version: ${{ steps.compare.outputs.latest_release_version }}
+      should-skip: ${{ steps.check.outputs.skip }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -29,73 +31,36 @@ jobs:
       - name: Restore Tools
         run: dotnet tool restore
 
-      - name: Compare release versions
-        id: compare
-        shell: pwsh
+      - name: Check if release exists
+        id: check
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          function Normalize-Version([string] $Version) {
-            if ([string]::IsNullOrWhiteSpace($Version)) {
-              return ""
-            }
+          VERSION=$(dotnet aardpack --parse-only)
+          EXIT_CODE=$?
 
-            return $Version.Trim() -replace '^[vV]', ''
-          }
+          if [ $EXIT_CODE -ne 0 ]; then
+            echo "Error: dotnet aardpack --parse-only failed with exit code $EXIT_CODE"
+            exit 1
+          fi
 
-          $parseOutput = & dotnet aardpack --parse-only
-          if ($LASTEXITCODE -ne 0) {
-            throw "dotnet aardpack --parse-only failed with exit code $LASTEXITCODE."
-          }
+          if [ -z "$VERSION" ]; then
+            echo "Error: dotnet aardpack --parse-only returned an empty string"
+            exit 1
+          fi
 
-          $releaseNotesVersion = ($parseOutput | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -Last 1).Trim()
-          if ([string]::IsNullOrWhiteSpace($releaseNotesVersion)) {
-            throw "dotnet aardpack --parse-only did not return a release notes version."
-          }
-
-          $headers = @{
-            Authorization = "Bearer $env:GITHUB_TOKEN"
-            Accept = "application/vnd.github+json"
-            "X-GitHub-Api-Version" = "2022-11-28"
-            "User-Agent" = "github-actions"
-          }
-
-          $latestReleaseVersion = ""
-          $shouldPublish = "true"
-          try {
-            $latestRelease = Invoke-RestMethod `
-              -Uri "https://api.github.com/repos/${{ github.repository }}/releases/latest" `
-              -Headers $headers
-            $latestReleaseVersion = [string] $latestRelease.tag_name
-
-            if ((Normalize-Version $releaseNotesVersion) -eq (Normalize-Version $latestReleaseVersion)) {
-              $shouldPublish = "false"
-            }
-          }
-          catch {
-            $statusCode = $_.Exception.Response.StatusCode.value__
-            if ($statusCode -eq 404) {
-              Write-Host "No latest GitHub release found. Continuing publish workflow."
-            }
-            else {
-              throw
-            }
-          }
-
-          "release_notes_version=$releaseNotesVersion" >> $env:GITHUB_OUTPUT
-          "latest_release_version=$latestReleaseVersion" >> $env:GITHUB_OUTPUT
-          "should_publish=$shouldPublish" >> $env:GITHUB_OUTPUT
-
-          "## Publish release check" >> $env:GITHUB_STEP_SUMMARY
-          "" >> $env:GITHUB_STEP_SUMMARY
-          "- Release notes version: ``$releaseNotesVersion``" >> $env:GITHUB_STEP_SUMMARY
-          "- Latest GitHub release: ``$latestReleaseVersion``" >> $env:GITHUB_STEP_SUMMARY
-          "- Should publish: ``$shouldPublish``" >> $env:GITHUB_STEP_SUMMARY
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            echo "Release $VERSION exists. Setting skip to true."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "Release $VERSION new. Setting skip to false."
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
 
   test:
     name: Test
     needs: release-check
-    if: needs.release-check.outputs.should_publish == 'true'
+    if: needs.release-check.outputs.should-skip != 'true'
     uses: ./.github/workflows/test.yml
 
   pack:

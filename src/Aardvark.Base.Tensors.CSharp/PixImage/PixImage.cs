@@ -713,31 +713,48 @@ namespace Aardvark.Base
                 result[PixFileFormat.PbmRaw] = result[PixFileFormat.Pbm];
                 result[PixFileFormat.PgmRaw] = result[PixFileFormat.Pgm];
                 result[PixFileFormat.PpmRaw] = result[PixFileFormat.Ppm];
+                result[PixFileFormat.Tiff] = ".tiff";
+                result[PixFileFormat.Targa] = ".tga";
+                result[PixFileFormat.J2k] = ".j2k";
+                result[PixFileFormat.Jpeg] = ".jpg";
+                result[PixFileFormat.Pict] = ".pct";
                 return result;
             },
             LazyThreadSafetyMode.PublicationOnly
             );
 
         /// <summary>
-        /// Gets the image file format from a file path.
-        /// Throws exception if file name has no extension, or extension is unknown format.
+        /// Extracts the extension from the specified file path and identifies its corresponding image format.
         /// </summary>
-        protected static PixFileFormat GetFormatOfExtension(string filename)
+        /// <param name="filename">The file name, full path, or extension containing a leading dot (e.g., <c>".png"</c>).</param>
+        /// <returns>
+        /// The matching <see cref="PixFileFormat"/> if recognized; otherwise, <see cref="PixFileFormat.Unknown"/>
+        /// if the format is unsupported, the extension is missing, or the input is invalid.
+        /// </returns>
+        public static PixFileFormat GetFormatOfExtension(string filename)
         {
-            if (!Path.HasExtension(filename))
-                throw new ArgumentException("File name has no extension: " + filename);
-
-            var ext = Path.GetExtension(filename).ToLowerInvariant();
-            if (s_formatOfExtension.TryGetValue(ext, out var format))
-                return format;
-            else
-                throw new ArgumentException("File name has unknown extension: " + ext);
+            try
+            {
+                var ext = Path.GetExtension(filename)?.ToLowerInvariant();
+                if (ext == null) return PixFileFormat.Unknown;
+                return s_formatOfExtension.TryGetValue(ext, out var format) ? format : PixFileFormat.Unknown;
+            }
+            catch
+            {
+                return PixFileFormat.Unknown;
+            }
         }
 
+        /// <summary>
+        /// Retrieves the primary file extension associated with a specific image format.
+        /// </summary>
+        /// <param name="format">The <see cref="PixFileFormat"/> to query.</param>
+        /// <returns>
+        /// A lowercase string representing the file extension including the leading dot (e.g., <c>".png"</c>),
+        /// or <see langword="null"/> if the format is unrecognized or has no associated extension.
+        /// </returns>
         public static string GetPreferredExtensionOfFormat(PixFileFormat format)
-        {
-            return s_preferredExtensionOfFormat.Value[format];
-        }
+            => s_preferredExtensionOfFormat.Value.TryGetValue(format, out var result) ? result : null;
 
         #endregion
 
@@ -988,36 +1005,11 @@ namespace Aardvark.Base
         /// </example>
         public static string NormalizedFileName(string fileName, PixFileFormat format)
         {
-            bool appendExtension = false;
-            if (Path.HasExtension(fileName))
-            {
-                var ext = Path.GetExtension(fileName).ToLowerInvariant();
-                if (s_formatOfExtension.TryGetValue(ext, out var value))
-                {
-                    if (value != format)
-                    {
-                        // conflicting extension
-                        // e.g. NormalizedFileName("foo.jpg", PixFileFormat.Png)
-                        appendExtension = true;
-                    }
-                }
-                else
-                {
-                    // unknown extension
-                    // e.g. NormalizedFileName("foo.123.2011", PixFileFormat.Png)
-                    appendExtension = true;
-                }
-            }
-            else
-            {
-                // no extension
-                // e.g. NormalizedFileName("foo", PixFileFormat.Png)
-                appendExtension = true;
-            }
+            var ext = GetPreferredExtensionOfFormat(format);
 
-            if (appendExtension)
+            if (ext != null && GetFormatOfExtension(fileName) != format)
             {
-                fileName += GetPreferredExtensionOfFormat(format);
+                return fileName + ext;
             }
 
             return fileName;
@@ -1422,6 +1414,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns a scaled copy of this image by the given factors.
+        /// Built-in <see cref="ImageInterpolation.SuperSample"/> scaling uses exact area-weighted
+        /// downsampling when neither axis is enlarged and falls back to cubic interpolation otherwise.
         /// </summary>
         /// <param name="scaleFactor">The scale factor to apply in X and Y (1.0 keeps the size).</param>
         /// <param name="interpolation">The interpolation method to use during resampling.</param>
@@ -2128,7 +2122,7 @@ namespace Aardvark.Base
 
         /// <inheritdoc />
         public override PixImage RemappedPixImage(Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation = ImageInterpolation.Cubic)
-            => Remapped(mapX, mapX, interpolation);
+            => Remapped(mapX, mapY, interpolation);
 
         /// <inheritdoc cref="RemappedPixImage" />
         public PixImage<T> Remapped(Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation = ImageInterpolation.Cubic)
@@ -2218,7 +2212,7 @@ namespace Aardvark.Base
             if (scaleFactor.AnySmallerOrEqual(0))
                 throw new ArgumentOutOfRangeException($"Scale factor must be positive ({scaleFactor}).");
 
-            // SuperSample is only available for scale factors < 1; fall back to Cubic
+            // SuperSample is only available when neither axis is enlarged; fall back to Cubic.
             if (scaleFactor.AnyGreater(1.0) && interpolation == ImageInterpolation.SuperSample)
                 interpolation = ImageInterpolation.Cubic;
 

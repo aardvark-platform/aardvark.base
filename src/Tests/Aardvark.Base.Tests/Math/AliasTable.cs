@@ -1,10 +1,8 @@
 ﻿using Aardvark.Base;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Aardvark.Tests
 {
@@ -16,6 +14,12 @@ namespace Aardvark.Tests
         {
             var ex = Assert.Throws<TException>(code);
             Assert.AreEqual(paramName, ex.ParamName);
+        }
+
+        private static void AssertEmptyTable(Array probabilities, int[] aliases)
+        {
+            Assert.AreEqual(0, probabilities.Length);
+            Assert.AreEqual(0, aliases.Length);
         }
 
         static void PrintHistogram(double[] pdf, int[] hist)
@@ -71,10 +75,45 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void AliasTableFAllowsEmptyPdfAsZeroCountTable()
+        {
+            var pdf = Array.Empty<float>();
+
+            var table = new AliasTableF(pdf, 0f);
+            AssertEmptyTable(table.U, table.K);
+
+            table.Update(pdf, 0f);
+            AssertEmptyTable(table.U, table.K);
+
+            var fromPdf = table.FromPdf(pdf);
+            AssertEmptyTable(fromPdf.U, fromPdf.K);
+
+            var fromNormalizedPdf = table.FromNormalizedPdf(pdf);
+            AssertEmptyTable(fromNormalizedPdf.U, fromNormalizedPdf.K);
+        }
+
+        [Test]
+        public void AliasTableDAllowsEmptyPdfAsZeroCountTable()
+        {
+            var pdf = Array.Empty<double>();
+
+            var table = new AliasTableD(pdf, 0.0);
+            AssertEmptyTable(table.U, table.K);
+
+            table.Update(pdf, 0.0);
+            AssertEmptyTable(table.U, table.K);
+
+            var fromPdf = table.FromPdf(pdf);
+            AssertEmptyTable(fromPdf.U, fromPdf.K);
+
+            var fromNormalizedPdf = table.FromNormalizedPdf(pdf);
+            AssertEmptyTable(fromNormalizedPdf.U, fromNormalizedPdf.K);
+        }
+
+        [Test]
         public void AliasTableFRejectsInvalidPdfArguments()
         {
             AssertParamName<ArgumentNullException>("pdf", () => new AliasTableF(null, 1f));
-            AssertParamName<ArgumentException>("pdf", () => new AliasTableF(new float[0], 1f));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => new AliasTableF(new[] { -1f, 1f }, 1f));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => new AliasTableF(new[] { float.NaN, 1f }, 1f));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => new AliasTableF(new[] { float.PositiveInfinity, 1f }, 1f));
@@ -82,7 +121,6 @@ namespace Aardvark.Tests
 
             var table = new AliasTableF(new[] { 1f }, 1f);
             AssertParamName<ArgumentNullException>("pdf", () => table.FromPdf(null));
-            AssertParamName<ArgumentException>("pdf", () => table.FromPdf(new float[0]));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => table.FromPdf(new[] { float.NegativeInfinity, 1f }));
             AssertParamName<ArgumentException>("pdf", () => table.FromPdf(new[] { 0f, 0f }));
         }
@@ -91,7 +129,6 @@ namespace Aardvark.Tests
         public void AliasTableDRejectsInvalidPdfArguments()
         {
             AssertParamName<ArgumentNullException>("pdf", () => new AliasTableD(null, 1.0));
-            AssertParamName<ArgumentException>("pdf", () => new AliasTableD(new double[0], 1.0));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => new AliasTableD(new[] { -1.0, 1.0 }, 1.0));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => new AliasTableD(new[] { double.NaN, 1.0 }, 1.0));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => new AliasTableD(new[] { double.PositiveInfinity, 1.0 }, 1.0));
@@ -99,7 +136,6 @@ namespace Aardvark.Tests
 
             var table = new AliasTableD(new[] { 1.0 }, 1.0);
             AssertParamName<ArgumentNullException>("pdf", () => table.FromPdf(null));
-            AssertParamName<ArgumentException>("pdf", () => table.FromPdf(new double[0]));
             AssertParamName<ArgumentOutOfRangeException>("pdf", () => table.FromPdf(new[] { double.NegativeInfinity, 1.0 }));
             AssertParamName<ArgumentException>("pdf", () => table.FromPdf(new[] { 0.0, 0.0 }));
         }
@@ -112,6 +148,11 @@ namespace Aardvark.Tests
             AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableF(pdf, -1f));
             AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableF(pdf, float.NaN));
             AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableF(pdf, float.PositiveInfinity));
+
+            var emptyPdf = Array.Empty<float>();
+            AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableF(emptyPdf, -1f));
+            AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableF(emptyPdf, float.NaN));
+            AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableF(emptyPdf, float.PositiveInfinity));
         }
 
         [Test]
@@ -122,6 +163,11 @@ namespace Aardvark.Tests
             AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableD(pdf, -1.0));
             AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableD(pdf, double.NaN));
             AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableD(pdf, double.PositiveInfinity));
+
+            var emptyPdf = Array.Empty<double>();
+            AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableD(emptyPdf, -1.0));
+            AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableD(emptyPdf, double.NaN));
+            AssertParamName<ArgumentOutOfRangeException>("pdfNorm", () => new AliasTableD(emptyPdf, double.PositiveInfinity));
         }
 
         [Test]

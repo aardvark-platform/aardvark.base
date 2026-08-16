@@ -11,6 +11,62 @@ namespace Aardvark.Tests.Images
     {
         static readonly RandomSystem rnd = new(0);
 
+        private sealed class CapturingRemapProcessor : IPixProcessor
+        {
+            public string Name => "Capturing remap test processor";
+
+            public PixProcessorCaps Capabilities => PixProcessorCaps.Remap;
+
+            public Matrix<float> CapturedMapX;
+            public Matrix<float> CapturedMapY;
+            public ImageInterpolation CapturedInterpolation;
+            public int RemapCallCount;
+
+            public PixImage<T> Scale<T>(PixImage<T> image, V2d scaleFactor, ImageInterpolation interpolation)
+                => null;
+
+            public PixImage<T> Rotate<T>(PixImage<T> image, double angleInRadians, bool resize, ImageInterpolation interpolation,
+                                         ImageBorderType borderType = ImageBorderType.Const,
+                                         T border = default)
+                => null;
+
+            public PixImage<T> Remap<T>(PixImage<T> image, Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation,
+                                        ImageBorderType borderType = ImageBorderType.Const,
+                                        T border = default)
+            {
+                RemapCallCount++;
+                CapturedMapX = mapX;
+                CapturedMapY = mapY;
+                CapturedInterpolation = interpolation;
+                return image;
+            }
+        }
+
+        [Test]
+        public void RemappedPixImageForwardsDistinctCoordinateMaps()
+        {
+            var processor = new CapturingRemapProcessor();
+            PixImage image = new PixImage<byte>(Col.Format.Gray, 2, 2);
+            var mapX = new Matrix<float>(new[] { 0.0f, 1.0f, 0.0f, 1.0f }, 2, 2);
+            var mapY = new Matrix<float>(new[] { 0.0f, 0.0f, 1.0f, 1.0f }, 2, 2);
+
+            PixImage.SetProcessor(processor, 1000);
+            try
+            {
+                var result = image.RemappedPixImage(mapX, mapY, ImageInterpolation.Linear);
+
+                Assert.AreSame(image, result);
+                Assert.AreEqual(1, processor.RemapCallCount);
+                Assert.AreSame(mapX.Data, processor.CapturedMapX.Data);
+                Assert.AreSame(mapY.Data, processor.CapturedMapY.Data);
+                Assert.AreEqual(ImageInterpolation.Linear, processor.CapturedInterpolation);
+            }
+            finally
+            {
+                PixImage.RemoveProcessor(processor);
+            }
+        }
+
         #region Mipmap
 
         [Test]
@@ -778,6 +834,143 @@ namespace Aardvark.Tests.Images
             Assert.IsFalse(cube.IsEmpty);
             Assert.AreEqual(cube.PixFormat, PixFormat.FloatRG);
         }
+
+        #endregion
+
+        #region File Formats and Extensions
+
+        #region GetFormatOfExtension Tests
+
+        [TestCase("photo.png", PixFileFormat.Png)]
+        [TestCase("PHOTO.PNG", PixFileFormat.Png)] // Case insensitivity
+        [TestCase("C:/path/to/image.jpg", PixFileFormat.Jpeg)] // Full path handling
+        [TestCase(".webp", PixFileFormat.Webp)] // Pure extension with dot
+        [TestCase("archive.tar.gz.tiff", PixFileFormat.Tiff)] // Multiple dots in name
+        public void GetFormatOfExtensionValidInput(string fileName, PixFileFormat expectedFormat)
+        {
+            var result = PixImage.GetFormatOfExtension(fileName);
+            Assert.That(result, Is.EqualTo(expectedFormat));
+        }
+
+        [TestCase("png")] // Missing leading dot
+        [TestCase("photo.unknown_ext")] // Unrecognized extension
+        [TestCase("no_extension_file")] // Plain file name without extension
+        [TestCase("")] // Empty string
+        [TestCase(null)] // Null input safety
+        public void GetFormatOfExtensionInvalidOrUnknownInput(string fileName)
+        {
+            var result = PixImage.GetFormatOfExtension(fileName);
+            Assert.That(result, Is.EqualTo(PixFileFormat.Unknown));
+        }
+
+        #endregion
+
+        #region GetPreferredExtensionOfFormat Tests
+
+        [TestCase(PixFileFormat.Targa, ".tga")]
+        [TestCase(PixFileFormat.Jpeg, ".jpg")]
+        [TestCase(PixFileFormat.J2k, ".j2k")]
+        [TestCase(PixFileFormat.Pict, ".pct")]
+        [TestCase(PixFileFormat.Tiff, ".tiff")]
+        public void GetPreferredExtensionOfFormatValidFormat(PixFileFormat format, string expectedExtension)
+        {
+            var result = PixImage.GetPreferredExtensionOfFormat(format);
+            Assert.That(result, Is.EqualTo(expectedExtension));
+        }
+
+        [TestCase(PixFileFormat.Unknown)]
+        [TestCase((PixFileFormat)(-1))]
+        public void GetPreferredExtensionOfFormatInvalidFormat(PixFileFormat format)
+        {
+            var result = PixImage.GetPreferredExtensionOfFormat(format);
+            Assert.That(result, Is.Null);
+        }
+
+        #endregion
+
+        #region Symmetry & Round-Trip Tests
+
+        [Test]
+        public void FormatToExtensionRoundTrip()
+        {
+            foreach (PixFileFormat format in Enum.GetValues(typeof(PixFileFormat)))
+            {
+                // No preferrred extension or not symmetric
+                if (format == PixFileFormat.Unknown) continue;
+                if (format == PixFileFormat.PbmRaw) continue;
+                if (format == PixFileFormat.PgmRaw) continue;
+                if (format == PixFileFormat.PpmRaw) continue;
+
+                // Act: Get preferred extension, then pass it back into format lookup
+                string ext = PixImage.GetPreferredExtensionOfFormat(format);
+
+                Assert.That(ext, Is.Not.Null, $"Enum entry {format} missing a mapping in GetPreferredExtensionOfFormat.");
+                Assert.That(ext.StartsWith("."), $"Extension '{ext}' for {format} must start with a dot.");
+                Assert.That(ext, Is.EqualTo(ext.ToLowerInvariant()), $"Extension '{ext}' for {format} must be entirely lowercase.");
+
+                PixFileFormat roundTripFormat = PixImage.GetFormatOfExtension(ext);
+
+                // Assert perfect symmetry
+                Assert.That(roundTripFormat, Is.EqualTo(format),
+                    $"Symmetry broken: Format {format} yields extension '{ext}', but tracking '{ext}' back gives {roundTripFormat}.");
+            }
+        }
+
+        #endregion
+
+        #region NormalizeFileName Tests
+
+        [TestCase("photo", PixFileFormat.Png, "photo.png")]
+        [TestCase("photo.jpg", PixFileFormat.Png, "photo.jpg.png")] // Predictable append-only rule
+        [TestCase("version.1.0-backup", PixFileFormat.Webp, "version.1.0-backup.webp")] // Internal dots preserved
+        public void NormalizedFileNameMissingOrMismatchedFormat(string inputName, PixFileFormat format, string expectedResult)
+        {
+            string result = PixImage.NormalizedFileName(inputName, format);
+            Assert.That(result, Is.EqualTo(expectedResult));
+        }
+
+        [TestCase("photo.png", PixFileFormat.Png)]
+        [TestCase("PHOTO.PNG", PixFileFormat.Png)] // Case-insensitive matching skips append
+        [TestCase("C:/path/image.jpg", PixFileFormat.Jpeg)]
+        [TestCase("archive.tar.gz.tiff", PixFileFormat.Tiff)]
+        public void NormalizedFileNameFormatAlreadyMatches(string inputName, PixFileFormat format)
+        {
+            string result = PixImage.NormalizedFileName(inputName, format);
+
+            // Verifies it returns the exact same string content
+            Assert.That(result, Is.EqualTo(inputName));
+
+            // Verifies it returns the exact same object reference (no extra string allocation)
+            Assert.That(result, Is.SameAs(inputName));
+        }
+
+        [TestCase("photo.png", PixFileFormat.Unknown)]
+        [TestCase("document", PixFileFormat.Unknown)]
+        public void NormalizedFileNameTargetHasNoPreferredExtension(string inputName, PixFileFormat format)
+        {
+            string result = PixImage.NormalizedFileName(inputName, format);
+
+            Assert.That(result, Is.EqualTo(inputName));
+            Assert.That(result, Is.SameAs(inputName)); // Ensures zero allocation on unmapped fallbacks
+        }
+
+        [Test]
+        public void NormalizedFileNameIdempotency()
+        {
+            string baseName = "image.tar";
+            PixFileFormat targetFormat = PixFileFormat.Png;
+
+            // First run appends the extension
+            string firstPass = PixImage.NormalizedFileName(baseName, targetFormat);
+            Assert.That(firstPass, Is.EqualTo("image.tar.png"));
+
+            // Second run sees that it already matches ".png" and returns it unmodified
+            string secondPass = PixImage.NormalizedFileName(firstPass, targetFormat);
+            Assert.That(secondPass, Is.EqualTo("image.tar.png"));
+            Assert.That(secondPass, Is.SameAs(firstPass)); // Should bypass allocations on subsequent passes
+        }
+
+        #endregion
 
         #endregion
     }

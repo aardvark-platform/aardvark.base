@@ -176,25 +176,28 @@ namespace Aardvark.Base
     }
 
     /// <summary>
-    /// Represents an awaitable with clear-push semantics. 
-    /// Since Task/TaskCompletionSource are likely to spawn new threads 
-    /// and execute the respective continuations on haphazardous threads 
-    /// we implemeted our own awaitable executing all continuations on 
-    /// the thread which they were triggered on.
+    /// Represents a thread-safe, one-shot awaitable that completes with a value.
+    /// The first call to <see cref="Emit(T)"/> wins and publishes its result to all
+    /// readers and subscribers. Registered continuations run synchronously on the
+    /// completing thread, while late subscriptions run on the subscribing thread.
     /// </summary>
+    /// <remarks>
+    /// <see cref="Result"/> blocks until completion. Continuations are invoked outside
+    /// internal synchronization and exceptions from registered continuations are isolated.
+    /// </remarks>
     public class Awaitable<T> : IAwaitable<T>, IEventEmitter<T>
     {
         private int m_isCompleted;
         private T m_result;
 
-        private List<Action> m_continuations;
-        private SpinLock m_continuationLock;
+        private List<Action<T>> m_continuations;
+        private readonly object m_syncRoot;
 
         private CancellationToken? m_ct;
         private CancellationTokenRegistration m_ctRegistration;
 
         private readonly Awaiter m_awaiter;
-        private ManualResetEventSlim m_onPush = null;
+        private ManualResetEventSlim m_onPush;
 
         #region Constructors
 
@@ -205,8 +208,8 @@ namespace Aardvark.Base
             m_isCompleted = 0;
             m_result = default(T);
 
-            m_continuations = new List<Action>();
-            m_continuationLock = new SpinLock();
+            m_continuations = new List<Action<T>>();
+            m_syncRoot = new object();
 
             m_ct = ct;
             if (m_ct.HasValue)
@@ -225,30 +228,35 @@ namespace Aardvark.Base
         #region Properties
 
         /// <summary>
+        /// Gets whether a result has been published.
         /// </summary>
         public bool IsCompleted
         {
-            get { return m_isCompleted == 1; }
+            get { return Volatile.Read(ref m_isCompleted) == 1; }
         }
 
         /// <summary>
+        /// Gets the published result, blocking the caller until the awaitable completes.
         /// </summary>
         public T Result
         {
             get
             {
-                if (m_isCompleted == 1) return m_result;
-                else
+                ManualResetEventSlim waiter;
+                lock (m_syncRoot)
                 {
+                    if (m_isCompleted == 1) return m_result;
+
                     if (m_onPush == null)
-                    {
-                        Interlocked.CompareExchange(ref m_onPush, new ManualResetEventSlim(), null);
-                    }
+                        m_onPush = new ManualResetEventSlim();
 
-                    m_onPush.Wait();
-
-                    return m_result;
+                    waiter = m_onPush;
                 }
+
+                waiter.Wait();
+
+                lock (m_syncRoot)
+                    return m_result;
             }
         }
 
@@ -257,67 +265,56 @@ namespace Aardvark.Base
         #region Methods
 
         /// <summary>
+        /// Completes the awaitable with <paramref name="value"/>. Only the first call wins.
         /// </summary>
         public void Emit(T value)
         {
-            var old = Interlocked.Exchange(ref m_isCompleted, 1);
-            if (old == 0)
+            List<Action<T>> continuations;
+            ManualResetEventSlim waiter;
+
+            lock (m_syncRoot)
             {
+                if (m_isCompleted == 1) return;
+
                 m_result = value;
-                //If the Awaitable has a CancellationToken release the registration
-                if (m_ct.HasValue) m_ctRegistration.Dispose();
+                continuations = m_continuations;
+                m_continuations = null;
+                waiter = m_onPush;
+                m_onPush = null;
 
-                List<Action> actions = null;
-                bool taken = false;
-                try
-                {
-                    m_continuationLock.Enter(ref taken);
-                    actions = m_continuations;
-                    m_continuations = null;
-                }
-                finally
-                {
-                    if (taken) m_continuationLock.Exit();
-                }
+                Volatile.Write(ref m_isCompleted, 1);
+            }
 
-                if (actions != null)
-                {
-                    //Run all registered Continuations
-                    var acts = Interlocked.Exchange(ref actions, new List<Action>());
-                    foreach (var c in acts)
-                    {
-                        try { c(); }
-                        catch { }
-                    }
-                }
+            waiter?.Set();
 
-                if (m_onPush != null)
-                {
-                    m_onPush.Set();
-                    m_onPush = null;
-                }
+            // If the Awaitable has a CancellationToken, release the registration.
+            if (m_ct.HasValue) m_ctRegistration.Dispose();
 
+            if (continuations != null)
+            {
+                foreach (var continuation in continuations)
+                {
+                    try { continuation(value); }
+                    catch { }
+                }
             }
         }
 
         /// <summary>
+        /// Registers a continuation, or invokes it synchronously if already completed.
         /// </summary>
         public void Subscribe(Action continuation)
         {
-            bool execute = false;
-            bool taken = false;
-            try
+            bool execute;
+            lock (m_syncRoot)
             {
-                m_continuationLock.Enter(ref taken);
-
                 if (m_isCompleted == 1)
                     execute = true;
                 else
-                    m_continuations.Add(continuation);
-            }
-            finally
-            {
-                if (taken) m_continuationLock.Exit();
+                {
+                    execute = false;
+                    m_continuations.Add(_ => continuation());
+                }
             }
 
             if (execute)
@@ -325,27 +322,30 @@ namespace Aardvark.Base
         }
 
         /// <summary>
+        /// Registers a continuation that receives the result, or invokes it synchronously
+        /// with the published result if already completed.
         /// </summary>
         public void Subscribe(Action<T> continuation)
         {
-            if (m_isCompleted == 1)
+            bool execute;
+            T result = default(T);
+
+            lock (m_syncRoot)
             {
-                Report.Warn("awaiting already completed Awaitable");
-                continuation(m_result);
-            }
-            else
-            {
-                bool taken = false;
-                try
+                if (m_isCompleted == 1)
                 {
-                    m_continuationLock.Enter(ref taken);
-                    m_continuations.Add(() => continuation(m_result));
+                    execute = true;
+                    result = m_result;
                 }
-                finally
+                else
                 {
-                    if (taken) m_continuationLock.Exit();
+                    execute = false;
+                    m_continuations.Add(continuation);
                 }
             }
+
+            if (execute)
+                continuation(result);
         }
 
         #endregion
@@ -394,7 +394,7 @@ namespace Aardvark.Base
 
             public bool IsCompleted
             {
-                get { return m_source.m_isCompleted == 1; }
+                get { return m_source.IsCompleted; }
             }
 
             public T GetResult()
@@ -403,7 +403,8 @@ namespace Aardvark.Base
                 if (m_source.m_ct.HasValue && m_source.m_ct.Value.IsCancellationRequested) 
                     throw new TaskCanceledException();
 
-                return m_source.m_result;
+                lock (m_source.m_syncRoot)
+                    return m_source.m_result;
             }
 
             public void OnCompleted(Action continuation)

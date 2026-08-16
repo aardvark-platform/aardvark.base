@@ -129,6 +129,10 @@ internal sealed class DocsAnalyzer
         var agents = FullPath(root, "AGENTS.md");
         if (File.Exists(agents))
             yield return agents;
+
+        var codeGenReadme = FullPath(root, "src/CodeGenerator/README.md");
+        if (File.Exists(codeGenReadme))
+            yield return codeGenReadme;
     }
 
     private void ValidateMarkdownLinks(

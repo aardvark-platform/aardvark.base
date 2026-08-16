@@ -7,6 +7,13 @@ namespace Aardvark.Base
 {
     public static partial class Tensor
     {
+        private static long ClampedSampleOffset(long sample, long center, long first, long end, long stride)
+        {
+            if (sample < first) sample = first;
+            else if (sample >= end) sample = end - 1;
+            return (sample - center) * stride;
+        }
+
         /// <summary>
         /// Raw sample access without checks.
         /// </summary>
@@ -14,7 +21,9 @@ namespace Aardvark.Base
             Index2SamplesRaw = (i, min, max, d) => new Tup2<long>(0L, d);
 
         /// <summary>
-        /// Provides sample clamping to the border value.
+        /// Provides sample clamping to the border value. The valid logical coordinate interval
+        /// is the non-empty range [<c>first</c>, <c>end</c>), with an
+        /// exclusive end coordinate.
         /// </summary>
         public static readonly Func<long, long, long, long, Tup2<long>>
             Index2SamplesClamped = (i, first, end, d) =>
@@ -56,7 +65,9 @@ namespace Aardvark.Base
             Index3SamplesRaw = (i, first, end, d) => new Tup3<long>(-d, 0L, d);
 
         /// <summary>
-        /// Provides sample clamping to the border value.
+        /// Provides sample clamping to the border value. The valid logical coordinate interval
+        /// is the non-empty range [<c>first</c>, <c>end</c>), with an
+        /// exclusive end coordinate.
         /// </summary>
         public static readonly Func<long, long, long, long, Tup3<long>>
             Index3SamplesClamped = (i, first, end, d) =>
@@ -77,7 +88,9 @@ namespace Aardvark.Base
             Index4SamplesRaw = (i, first, end, d) => new Tup4<long>(-d, 0L, d, d + d);
 
         /// <summary>
-        /// Provides sample clamping to the border value.
+        /// Provides sample clamping to the border value. The valid logical coordinate interval
+        /// is the non-empty range [<c>first</c>, <c>end</c>), with an
+        /// exclusive end coordinate.
         /// </summary>
         public static readonly Func<long, long, long, long, Tup4<long>>
             Index4SamplesClamped = (i, first, end, d) =>
@@ -155,13 +168,23 @@ namespace Aardvark.Base
 
 
         /// <summary>
-        /// Provides sample clamping to the border value. Note that this
-        /// function currently requires that max - min >= 5! i.e. it 
-        /// does not work for too small source tensors.
+        /// Provides sample clamping to the border value. The valid logical coordinate interval
+        /// is the non-empty range [<c>first</c>, <c>end</c>), with an
+        /// exclusive end coordinate.
         /// </summary>
         public static readonly Func<long, long, long, long, Tup5<long>>
             Index5SamplesClamped = (i, first, end, d) =>
             {
+                if (end - first < 4)
+                {
+                    return new Tup5<long>(
+                        ClampedSampleOffset(i - 2, i, first, end, d),
+                        ClampedSampleOffset(i - 1, i, first, end, d),
+                        ClampedSampleOffset(i, i, first, end, d),
+                        ClampedSampleOffset(i + 1, i, first, end, d),
+                        ClampedSampleOffset(i + 2, i, first, end, d));
+                }
+
                 long i0 = i - first, i1 = i - end + 1;
                 long d2 = d + d;
                 if (i0 < 2)
@@ -178,8 +201,8 @@ namespace Aardvark.Base
                 {
                     switch (i1)
                     {
-                        case -1: return new Tup5<long>(-d2, d, 0L, d, d);
-                        case 0: return new Tup5<long>(-d2, d, 0L, 0L, 0L);
+                        case -1: return new Tup5<long>(-d2, -d, 0L, d, d);
+                        case 0: return new Tup5<long>(-d2, -d, 0L, 0L, 0L);
                         case 1: return new Tup5<long>(-d2, -d, -d, -d, -d);
                         default: return new Tup5<long>(-i1 * d);
                     }
@@ -189,13 +212,24 @@ namespace Aardvark.Base
 
 
         /// <summary>
-        /// Provides sample clamping to the border value. Note that this
-        /// function currently requires that max - min >= 5! i.e. it 
-        /// does not work for too small source tensors.
+        /// Provides sample clamping to the border value. The valid logical coordinate interval
+        /// is the non-empty range [<c>first</c>, <c>end</c>), with an
+        /// exclusive end coordinate.
         /// </summary>
         public static readonly Func<long, long, long, long, Tup6<long>>
             Index6SamplesClamped = (i, first, end, d) =>
             {
+                if (end - first < 5)
+                {
+                    return new Tup6<long>(
+                        ClampedSampleOffset(i - 2, i, first, end, d),
+                        ClampedSampleOffset(i - 1, i, first, end, d),
+                        ClampedSampleOffset(i, i, first, end, d),
+                        ClampedSampleOffset(i + 1, i, first, end, d),
+                        ClampedSampleOffset(i + 2, i, first, end, d),
+                        ClampedSampleOffset(i + 3, i, first, end, d));
+                }
+
                 long i0 = i - first, i1 = i - end + 1;
                 long d2 = d + d;
                 if (i0 < 2)
@@ -224,13 +258,25 @@ namespace Aardvark.Base
             };
 
         /// <summary>
-        /// Provides sample clamping to the border value. Note that this
-        /// function currently requires that max - min >= 5! i.e. it 
-        /// does not work for too small source tensors.
+        /// Provides sample clamping to the border value. The valid logical coordinate interval
+        /// is the non-empty range [<c>first</c>, <c>end</c>), with an
+        /// exclusive end coordinate.
         /// </summary>
         public static readonly Func<long, long, long, long, Tup7<long>>
             Index7SamplesClamped = (i, first, end, d) =>
             {
+                if (end - first < 6)
+                {
+                    return new Tup7<long>(
+                        ClampedSampleOffset(i - 3, i, first, end, d),
+                        ClampedSampleOffset(i - 2, i, first, end, d),
+                        ClampedSampleOffset(i - 1, i, first, end, d),
+                        ClampedSampleOffset(i, i, first, end, d),
+                        ClampedSampleOffset(i + 1, i, first, end, d),
+                        ClampedSampleOffset(i + 2, i, first, end, d),
+                        ClampedSampleOffset(i + 3, i, first, end, d));
+                }
+
                 long i0 = i - first, i1 = i - end + 1;
                 long d2 = d + d;
                 if (i0 < 3)

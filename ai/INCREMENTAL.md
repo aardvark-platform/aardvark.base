@@ -11,7 +11,9 @@ Built on **FSharp.Data.Adaptive** (external NuGet package). Aardvark.Base.Increm
 - `astream` - event streams with history (experimental)
 - `Proc` - cancellable continuations
 
-Namespace: `FSharp.Data.Adaptive` (core types from external package)
+Namespaces:
+- F#: `open FSharp.Data.Adaptive` (core types from external package)
+- C#: `using CSharp.Data.Adaptive;` — the C# surface (`ChangeableValue<T>`, `.Map`, `.Filter`, `Adaptive.Transact`, readers) lives in the separate `CSharp.Data.Adaptive` package; without it the C# examples below do not resolve
 
 ## Core Types
 
@@ -31,6 +33,8 @@ let value = AVal.force doubled  // 0
 
 ```csharp
 // C#
+using CSharp.Data.Adaptive;
+
 var counter = new ChangeableValue<int>(0);
 var doubled = counter.Map(x => x * 2);
 int value = doubled.GetValue();  // 0
@@ -38,11 +42,13 @@ int value = doubled.GetValue();  // 0
 
 ### Adaptive Collections
 
-| Type | C# Type | Delta Type |
-|------|---------|------------|
-| `aset<'a>` | `ChangeableHashSet<T>` | `HashSetDelta<T>` |
-| `amap<'k,'v>` | `ChangeableHashMap<K,V>` | `HashMapDelta<K,V>` |
-| `alist<'a>` | `ChangeableIndexList<T>` | `IndexListDelta<T>` |
+Read-only adaptive views (`a*`) and mutable sources (`c*`) are distinct types:
+
+| F# read-only | F# source | C# read-only | C# source | Delta Type |
+|--------------|-----------|--------------|-----------|------------|
+| `aset<'a>` | `cset<'a>` | `IAdaptiveHashSet<T>` | `ChangeableHashSet<T>` | `HashSetDelta<T>` |
+| `amap<'k,'v>` | `cmap<'k,'v>` | `IAdaptiveHashMap<K,V>` | `ChangeableHashMap<K,V>` | `HashMapDelta<K,V>` |
+| `alist<'a>` | `clist<'a>` | `IAdaptiveIndexList<T>` | `ChangeableIndexList<T>` | `IndexListDelta<T>` |
 
 Collections track changes via delta objects. Use readers to get incremental updates.
 
@@ -117,7 +123,7 @@ let a = cval 10
 let b = cval 20
 let sum = a %+ b        // aval<int> = 30
 let forced = !!sum      // int = 30
-let const = ~~100       // aval<int> (constant)
+let hundred = ~~100     // aval<int> (constant)
 ```
 
 ## Adaptive Functions (afun)
@@ -198,13 +204,13 @@ type Controller<'a> = astate<ControllerState, 'a>
 | `pre aval` | Get previous value |
 | `differentiate aval` | Get `current - previous` |
 
-```fsharp
-let deltaController = controller {
-    let! (prev, curr) = withLast positionAVal
-    return curr - prev  // movement delta
-}
+The `controller { ... }` expression must return a *function*; the builder's `Run` is applied automatically and converts `Controller<'a -> 'b>` into `afun<'a, 'b>`:
 
-let myFunc : afun<'a, 'b> = controller.Run(deltaController)
+```fsharp
+let applyDelta : afun<V3d, V3d> = controller {
+    let! (prev, curr) = withLast positionAVal
+    return fun (x : V3d) -> x + (curr - prev)  // apply movement delta
+}
 ```
 
 ## Adaptive Streams (astream)
@@ -343,7 +349,7 @@ if myAVal.IsConstant then
 3. **Dispose readers** - `IStreamReader` and collection readers hold references; dispose when done
 4. **astream is experimental** - namespace is `Aardvark.Base.Incremental.Experimental`, API may change
 5. **Proc vs Async** - Proc is simpler continuation-based; use for UI/rendering pipelines, Async for I/O
-6. **Controller state** - `ControllerState` tracks pulled values between evaluations; initialize via `controller.Run`
+6. **Controller state** - `ControllerState` tracks pulled values between evaluations; the `controller` builder initializes it when converting to `afun` — never call `controller.Run` manually
 
 ## See Also
 

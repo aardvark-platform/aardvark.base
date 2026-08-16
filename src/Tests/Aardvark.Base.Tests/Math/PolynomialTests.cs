@@ -67,6 +67,30 @@ namespace Aardvark.Tests
             Assert.That(roots[1], Is.EqualTo(0.0));
         }
 
+        [Test]
+        public void RealRoots_QuarticIgnoresTrailingZeroCoefficients()
+        {
+            var roots = new[] { 6.0, 1.0, -7.0, -1.0, 1.0, 0.0, 0.0 }.RealRoots();
+
+            AssertRoots(roots, -2.0, -1.0, 1.0, 3.0);
+        }
+
+        [Test]
+        public void RealRoots_LowerDegreePolynomialIgnoresTrailingZeroCoefficients()
+        {
+            var roots = new[] { -1.0, 0.0, 1.0, 0.0, 0.0, 0.0 }.RealRoots();
+
+            AssertRoots(roots, -1.0, 1.0);
+        }
+
+        [Test]
+        public void RealRoots_AllZeroPaddedPolynomialHasNoRoots()
+        {
+            var roots = new[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 }.RealRoots();
+
+            Assert.That(roots, Is.Empty);
+        }
+
         public void Run()
         {
             RootsTest3(0.01);
@@ -247,6 +271,15 @@ namespace Aardvark.Tests
         }
 
 #endif
+
+        private static void AssertRoots(double[] roots, params double[] expected)
+        {
+            Array.Sort(roots);
+
+            Assert.That(roots, Has.Length.EqualTo(expected.Length));
+            for (var i = 0; i < expected.Length; i++)
+                Assert.That(roots[i], Is.EqualTo(expected[i]).Within(1e-10));
+        }
 
         static int CountDoubles(double[] a, double eps)
         {

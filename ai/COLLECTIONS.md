@@ -44,6 +44,20 @@ Common helpers:
 - `Get<TType>(TypedSymbol<TType> key)`
 - `TryGetValue<TType>(TypedSymbol<TType> key, out TType value)`
 
+`DictFun.PopAll(dict, key)` removes each matching entry before yielding its value. For dictionaries configured to stack duplicate keys, values are returned in last-in-first-out order, and stopping enumeration early leaves every already-yielded entry removed.
+
+`SingleValueDict<TKey, TValue>` and `SingleValueSymbolDict<TValue>` associate every current key with one shared value. Their `Values` sequences contain that shared value once per key and are empty when the dictionaries have no keys.
+
+## EnumerableEx.ToDictionaryDistinct
+
+All `ToDictionaryDistinct` overloads evaluate the key and element selectors exactly once per source element. Duplicate keys are handled explicitly according to the selected policy:
+
+- The fixed duplicate-value overload replaces the stored value with that fixed value.
+- The keep-or-replace callback receives the existing value first and the incoming value second. Returning `true` keeps the existing value; returning `false` stores the incoming value.
+- The merge callback receives the existing value first and the incoming value second, and its result becomes the stored value.
+
+Selector and key hashing or equality exceptions propagate directly without retrying the operation.
+
 ## LruCache<TKey, TValue>
 
 `LruCache` is synchronized and capacity-driven.
@@ -65,9 +79,13 @@ Key operations:
 
 `GetOrAdd(...)` accepts an optional per-entry delete action. That action is invoked when the entry leaves the cache through `Remove(...)`, `TryRemove(...)`, or capacity eviction.
 
+Eviction removes the least-recently-used entry and updates size accounting before invoking cleanup callbacks. The cache-wide delete action runs before the per-entry delete action. If either callback throws, the same exception propagates, the victim remains removed, later callbacks in that eviction are not invoked, and subsequent cache operations remain valid. A candidate value whose eviction cleanup fails is not inserted.
+
 ## ConcurrentHashSet<T>
 
 Defined in namespace `System.Collections.Concurrent`.
+
+Sequence constructors apply set semantics while consuming the input once: duplicate elements are ignored according to either the default equality comparer or the supplied custom comparer. Generic and non-generic enumeration both expose elements of type `T`.
 
 Core operations:
 
@@ -91,3 +109,4 @@ set.UnionWith(other);
 - `src/Aardvark.Base/Symbol/IDict.cs`
 - `src/Aardvark.Base/AlgoDat/LruCache.cs`
 - `src/Aardvark.Base/AlgoDat/ConcurrentHashSet.cs`
+- `src/Aardvark.Base/Extensions/IEnumerableExtensions.cs`

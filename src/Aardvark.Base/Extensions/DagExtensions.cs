@@ -5,6 +5,13 @@ namespace Aardvark.VRVis
 {
     public static class TreeExtensions
     {
+        /// <summary>
+        /// Enumerates a tree iteratively in depth-first preorder.
+        /// </summary>
+        /// <remarks>
+        /// The traversal owns every child enumerator obtained from <paramref name="subNodes"/>
+        /// and disposes it after exhaustion or when enumeration stops early or fails.
+        /// </remarks>
         public static IEnumerable<T> DepthFirst<T>(
             this T self,
             Func<T, IEnumerable<T>> subNodes
@@ -13,20 +20,29 @@ namespace Aardvark.VRVis
             yield return self;
 
             var stack = new Stack<IEnumerator<T>>();
-            stack.Push(subNodes(self).GetEnumerator());
-
-            while (stack.Count > 0)
+            try
             {
-                var e = stack.Peek();
-                if (e.MoveNext())
+                stack.Push(subNodes(self).GetEnumerator());
+
+                while (stack.Count > 0)
                 {
-                    yield return e.Current;
-                    stack.Push(subNodes(e.Current).GetEnumerator());
+                    var enumerator = stack.Peek();
+                    if (enumerator.MoveNext())
+                    {
+                        var current = enumerator.Current;
+                        yield return current;
+                        stack.Push(subNodes(current).GetEnumerator());
+                    }
+                    else
+                    {
+                        stack.Pop().Dispose();
+                    }
                 }
-                else
-                {
-                    stack.Pop();
-                }
+            }
+            finally
+            {
+                while (stack.Count > 0)
+                    stack.Pop().Dispose();
             }
         }
 

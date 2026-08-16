@@ -19,11 +19,19 @@ namespace Aardvark.VRVis
     /// </summary>
     public static class INodeExtensions
     {
+        /// <summary>
+        /// Computes the maximum edge depth below this node. A leaf has depth zero.
+        /// </summary>
+        /// <remarks>
+        /// Each node's <see cref="INode.SubNodes"/> sequence is enumerated exactly once.
+        /// </remarks>
         public static int ComputeDepth(this INode self)
         {
-            var subNodes = self.SubNodes;
-            if (subNodes.Count() == 0) return 0;
-            return 1 + subNodes.Max(x => x.ComputeDepth());
+            var depth = 0;
+            foreach (var subNode in self.SubNodes)
+                depth = Math.Max(depth, 1 + subNode.ComputeDepth());
+
+            return depth;
         }
 
         public static IEnumerable<T> NodesAtDepth<T>(this INode self, int depth)
@@ -50,7 +58,7 @@ namespace Aardvark.VRVis
         }
 
         /// <summary>
-        /// Enumerates all nodes of this scene graph in depth first order.
+        /// Enumerates all nodes of this scene graph in depth-first preorder.
         /// </summary>
         public static IEnumerable<INode> DepthFirst(this INode self)
         {

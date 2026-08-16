@@ -102,7 +102,7 @@ public double Max(double a, double b) => a > b ? a : b;
 ## How It Works (Technical Overview)
 
 ### 1. Template Discovery
-The CodeGenerator scans the project directory for all `*_template.cs`, `*_template.fs`, and `*_template.cl` files (supporting C#, F#, and OpenCL).
+The CodeGenerator scans the project directory for all `*_template.cs`, `*_template.fs`, and `*_template.cl` files (supporting C#, F#, and OpenCL; no `*_template.cl` files currently exist in this repository).
 
 ### 2. Template Parsing
 Each template is parsed by `TemplateProcessor` using a custom syntax:
@@ -150,38 +150,7 @@ Below is a representative sample of template → generated file mappings:
 | `src/Aardvark.Base.IO/BinaryReadingCoder_template.cs` | `BinaryReadingCoder_auto.cs` | Serialization variants for numeric types |
 | `src/Aardvark.Base/Geometry/IntersectionTests_template.cs` | `IntersectionTests_auto.cs` | Geometric intersection test functions for float/double |
 
-## Complete Generated Files List
-
-All `*_auto.cs` files (97 total):
-
-**Aardvark.Base:**
-- Math/Vectors: `Vector_auto.cs`, `VectorIEnumerableExtensions_auto.cs`, `VectorTypeConverter_auto.cs`
-- Math/Trafos: `Matrix_auto.cs`, `M33_auto.cs`, `M44_auto.cs`, `Rot2_auto.cs`, `Rot3_auto.cs`, `Affine_auto.cs`, `Euclidean_auto.cs`, `Similarity_auto.cs`, `Scale_auto.cs`, `Shift_auto.cs`, `Trafo_auto.cs`
-- Math/Base: `Fun_auto.cs`, `Complex_auto.cs`, `Quaternion_auto.cs`, `AliasTable_auto.cs`
-- Math/Colors: `Color_auto.cs`
-- Math/RangesBoxes: `Box_auto.cs`, `OrientedBox_auto.cs`
-- Math/Interfaces: `ISize_auto.cs`
-- Geometry/Types: `Geometry_auto.cs`, `Geometry1i_auto.cs`, `Vector_auto.cs`, `Box_auto.cs`, `Capsule3_auto.cs`, `Circle2_auto.cs`, `Circle3_auto.cs`, `Cone3_auto.cs`, `Conic2_auto.cs`, `Cylinder3_auto.cs`, `Ellipse_auto.cs`, `Ellipse2_auto.cs`, `Ellipse3_auto.cs`, `Hull2_auto.cs`, `Hull3_auto.cs`, `Line2_auto.cs`, `Line3_auto.cs`, `Plane2_auto.cs`, `Plane3_auto.cs`, `Polygon2_auto.cs`, `Polygon3_auto.cs`, `PolygonExtensions_auto.cs`, `IImmutablePolygonExtensions_auto.cs`, `Quad2_auto.cs`, `Quad3_auto.cs`, `Quadric_auto.cs`, `Ray2_auto.cs`, `Ray3_auto.cs`, `Sphere3_auto.cs`, `Torus3_auto.cs`, `Triangle2_auto.cs`, `Triangle3_auto.cs`
-- Geometry/Relations: `LinearCombination_auto.cs`, `Orthogonality_auto.cs`, `Parallelism_auto.cs`, `SubPrimitives_auto.cs`
-- Geometry/Interfaces: `IBoundingBox_auto.cs`
-- Geometry/Algorithms: `Algorithms_auto.cs`, `ClippingFunctions_auto.cs`, `IntersectionTests_auto.cs`, `SpecialPoints_auto.cs`
-- Sorting: `Sorting_auto.cs`
-- Delegates: `Delegates_auto.cs`
-- Extensions: `FuncActionExtensions_auto.cs`, `SequenceExtensions_auto.cs`
-- Symbol: `Dict_auto.cs`
-- Tup: `Tuples_auto.cs`
-
-**Aardvark.Base.IO:**
-- `BinaryReadingCoder_auto.cs`, `BinaryWritingCoder_auto.cs`, `ICoder_auto.cs`, `StreamCodeReader_auto.cs`, `StreamCodeWriter_auto.cs`, `TypeCoder_auto.cs`, `XmlReadingCoder_auto.cs`, `XmlWritingCoder_auto.cs`
-
-**Aardvark.Base.Tensors.CSharp:**
-- `Tensor_auto.cs`, `TensorExtensions_auto.cs`, `TensorMathExt_auto.cs`
-- Tensors: `Accessors_auto.cs`
-
-**Benchmarks:**
-- `Indexers_auto.cs`
-- Math: `AngleBetween_auto.cs`, `DistanceRot3_auto.cs`, `IntegerPower_auto.cs`, `PowerOfTwo_auto.cs`, `Rot3GetEuler_auto.cs`, `RotateInto_auto.cs`
-- Math/Tensors: `MatrixOrthogonalize_auto.cs`
+The full set of generated files is whatever `*_auto.cs` / `*_auto.fs` matches under `src/` (C# outputs plus three F# outputs: `RangeSet_auto.fs`, `TypeMeta_auto.fs`, `Tuples_auto.fs`). List them with `rg --files -g '*_auto.*' src` instead of relying on a hand-maintained inventory.
 
 ## Implementation Details
 

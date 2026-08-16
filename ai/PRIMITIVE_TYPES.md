@@ -13,17 +13,19 @@ Pattern: `{TypeName}{Dimension}{Suffix}`
 | Suffix | Meaning |
 |--------|---------|
 | `i` | `int` |
+| `ui` | `uint` (vectors and `Range1ui`; not matrices/boxes) |
 | `l` | `long` |
 | `f` | `float` |
 | `d` | `double` |
-| `b` | `byte` |
 
 Examples:
 - `V3d` = 3D vector (`double`)
 - `M44f` = 4x4 matrix (`float`)
 - `Box3d` = 3D axis-aligned box (`double`)
 
-## Important Reality
+1D ranges cover more element types than the multi-dimensional families (`Range1b`, `Range1sb`, `Range1s`, `Range1us`, `Range1ui`, ...). Color types use their own suffixes (`C3b`, `C4b`, `C4f`, ...).
+
+## Struct Semantics
 
 - Core vector/matrix structs are mutable value types (`struct`), not uniformly `readonly struct`.
 - For matrix/vector math in 3D, prefer explicit methods (`TransformPos`, `TransformDir`) over ambiguous shorthand.
@@ -32,16 +34,16 @@ Examples:
 
 Common families:
 - `V2*`, `V3*`, `V4*`
-- integer and floating-point variants (`i`, `l`, `f`, `d`)
+- integer and floating-point variants (`i`, `ui`, `l`, `f`, `d`)
 
-Typical APIs:
+Typical APIs (`Dot`/`Cross`/`Distance` are extension methods on the static class `Vec`, not static members of `V3d`):
 ```csharp
 var a = new V3d(1, 2, 3);
 var b = new V3d(4, 5, 6);
 
-var dot = V3d.Dot(a, b);
-var cross = V3d.Cross(a, b);
-var dist = V3d.Distance(a, b);
+var dot = a.Dot(b);          // or Vec.Dot(a, b)
+var cross = a.Cross(b);      // or Vec.Cross(a, b)
+var dist = a.Distance(b);    // or Vec.Distance(a, b)
 var unit = a.Normalized;
 ```
 
@@ -50,7 +52,7 @@ var unit = a.Normalized;
 Common families:
 - `M22*`, `M23*`, `M33*`, `M34*`, `M44*`
 
-### M44d Construction (Verified)
+### M44d Construction
 ```csharp
 var t = M44d.Translation(new V3d(1, 2, 3));
 var s = M44d.Scale(new V3d(2, 2, 2));
@@ -67,7 +69,7 @@ var rot = Rot3d.RotationZ(0.5);
 var rotAsMatrix = (M44d)rot;
 ```
 
-### M44d Operations (Verified)
+### M44d Operations
 ```csharp
 var m = M44d.Translation(new V3d(1, 2, 3));
 
@@ -101,26 +103,24 @@ var p = trafo.TransformPos(new V3d(1, 2, 3));
 
 Common primitives:
 - `Box2*`, `Box3*`
-- `Ray2*`, `Ray3*`
+- `Ray2*`, `Ray3*` and precomputed `FastRay2*`, `FastRay3*`
 - `Plane2*`, `Plane3*`
 - `Sphere3*`, `Circle2*`, `Circle3*`
 - `Triangle2*`, `Triangle3*`
 - `Hull2*`, `Hull3*`
 
-Typical APIs:
+Typical APIs (ray-box intersection is an extension on the box, not the ray; see `SEMANTICS_GEOMETRY_CORE.md`):
 ```csharp
 var box = new Box3d(V3d.Zero, V3d.One);
 var ray = new Ray3d(V3d.Zero, V3d.XAxis);
 
 var contains = box.Contains(new V3d(0.5, 0.5, 0.5));
-var hit = ray.Hits(box, out double t);
+var hit = box.Intersects(ray, out double t);
 ```
 
 ## Gotchas
 
-1. Matrix convention details (layout, multiplication side, interop) are critical for performance and correctness: use `SEMANTICS_LINEAR_ALGEBRA.md`.
-2. `TransformPos` vs `TransformDir` matters for translation handling.
-3. Subtle precision loss exists when converting from `d` variants to `f` variants.
+`TransformPos` vs `TransformDir` matters for translation handling.
 
 ## Source Anchors
 

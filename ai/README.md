@@ -31,16 +31,10 @@ Goal: open one focused document, not the whole `ai/` folder.
 | Need | Read |
 |------|------|
 | Symbol-to-doc lookup | [SYMBOL_INDEX.md](SYMBOL_INDEX.md) |
-| Drift and accuracy audit log | [DOC_ACCURACY_AUDIT.md](DOC_ACCURACY_AUDIT.md) |
-| AI-friendliness recipe for other repos | [RECIPE_AI_FRIENDLINESS.md](RECIPE_AI_FRIENDLINESS.md) |
 
 ## Accuracy Contract
 
 - Docs are orientation, source is truth.
 - If a method/type matters, verify with `rg` before coding.
-- If docs and code differ, fix docs in the same change.
+- If docs and code differ, fix docs in the same change and run `./check-docs.sh` or `.\check-docs.cmd`.
 - Prefer examples that reflect current scripts and project targets.
-
----
-
-Last verified against repository state: 2026-02-26

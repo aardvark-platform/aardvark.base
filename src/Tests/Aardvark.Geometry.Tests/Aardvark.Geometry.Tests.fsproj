@@ -18,6 +18,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PolyRegion2dTests.fs" />
+    <Compile Include="AttributedPolyRegionTests.fs" />
     <Compile Include="Regression.fs" />
     <Compile Include="TexturePacking.fs" />
     <Compile Include="Program.fs" />

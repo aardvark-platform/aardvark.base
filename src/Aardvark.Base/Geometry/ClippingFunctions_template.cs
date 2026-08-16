@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base
@@ -14,7 +15,10 @@ namespace Aardvark.Base
         //#   var v3t = "V3" + tc;
         //#   var box2t = "Box2" + tc;
         //#   var line2t = "Line2" + tc;
+        //#   var plane2t = "Plane2" + tc;
         //#   var box3t = "Box3" + tc;
+        //#   var line3t = "Line3" + tc;
+        //#   var plane3t = "Plane3" + tc;
         //#   var triangle2t = "Triangle2" + tc;
         //#   var polygon2t = "Polygon2" + tc;
         //#   var eps = isDouble ? "0.001" : "0.001f";
@@ -125,6 +129,197 @@ namespace Aardvark.Base
 
         #region Intersections (__rtype__)
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ClipLineByHeight(
+            __rtype__ h0, __rtype__ h1, __rtype__ boundary, out __rtype__ t0, out __rtype__ t1)
+        {
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+            if (p0Inside && p1Inside)
+            {
+                t0 = 0;
+                t1 = 1;
+                return true;
+            }
+
+            if (!p0Inside && !p1Inside)
+            {
+                t0 = 0;
+                t1 = 0;
+                return false;
+            }
+
+            var t = (boundary - h0) / (h1 - h0);
+            t0 = p0Inside ? 0 : t;
+            t1 = p0Inside ? t : 1;
+            return true;
+        }
+
+        // An unsigned bit-range check keeps ordinary norm checks to one exceptional branch.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFinitePositiveMagnitude(__rtype__ value)
+        {
+            //# if (isDouble) {
+            return (ulong)(value.FloatToBits() - 1L) < 0x7fefffffffffffffUL;
+            //# } else {
+            return (uint)(value.FloatToBits() - 1) < 0x7f7fffffU;
+            //# }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static __line2t__ ClipLineByScaledPlane(
+            __line2t__ line, __plane2t__ plane, __rtype__ absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new __line2t__(p0, p1);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static __line3t__ ClipLineByScaledPlane(
+            __line3t__ line, __plane3t__ plane, __rtype__ absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new __line3t__(__v3t__.NaN, __v3t__.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new __line3t__(__v3t__.NaN, __v3t__.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new __line3t__(p0, p1);
+        }
+
+        #region __line2t__ - __plane2t__
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;__rtype__&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static __line2t__ ClipByPlane(this __line2t__ line, __plane2t__ plane)
+            => line.ClipByPlane(plane, Constant<__rtype__>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static __line2t__ ClipByPlane(
+            this __line2t__ line, __plane2t__ plane, __rtype__ absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new __line2t__(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new __line2t__(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+            if (h1 == boundary) return new __line2t__(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new __line2t__(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
+        #region __line3t__ - __plane3t__
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space.
+        /// Uses <c>Constant&lt;__rtype__&gt;.PositiveTinyValue</c> as absolute
+        /// point-distance tolerance.
+        /// </summary>
+        public static __line3t__ ClipByPlane(this __line3t__ line, __plane3t__ plane)
+            => line.ClipByPlane(plane, Constant<__rtype__>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the plane's inclusive positive half-space, where
+        /// <c>(plane.Normal dot point - plane.Distance) / |plane.Normal|</c> is at least
+        /// <c>-absoluteEpsilon</c>.
+        /// The tolerance is independent of plane-normal length. The result preserves
+        /// P0-to-P1 ordering and every endpoint that does not require clipping exactly.
+        /// A tangency returns a point segment, full rejection returns NaN endpoints, and
+        /// a plane with a zero normal leaves the line unchanged.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="plane">The plane defining the retained positive half-space.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static __line3t__ ClipByPlane(
+            this __line3t__ line, __plane3t__ plane, __rtype__ absoluteEpsilon
+        )
+        {
+            var normalLength = plane.Normal.Length;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
+
+            var boundary = -absoluteEpsilon * normalLength;
+            var h0 = plane.Height(line.P0);
+            var h1 = plane.Height(line.P1);
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+
+            if (p0Inside)
+            {
+                if (p1Inside) return line;
+                if (h0 == boundary) return new __line3t__(line.P0, line.P0);
+
+                var t = (boundary - h0) / (h1 - h0);
+                return new __line3t__(line.P0, line.P0 + t * (line.P1 - line.P0));
+            }
+
+            if (!p1Inside) return new __line3t__(__v3t__.NaN, __v3t__.NaN);
+            if (h1 == boundary) return new __line3t__(line.P1, line.P1);
+
+            var t0 = (boundary - h0) / (h1 - h0);
+            return new __line3t__(line.P0 + t0 * (line.P1 - line.P0), line.P1);
+        }
+
+        #endregion
+
         #region __line2t__ - __polygon2t__
 
         /// <summary>
@@ -204,54 +399,89 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the Line-Segments of line inside the Polygon (CCW ordered).
-        /// Works only with Convex-Polygons
-        /// If the line is clipped entirely, the points of the returned __line2t__ are NaN.
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Uses <c>Constant&lt;__rtype__&gt;.PositiveTinyValue</c> as absolute point-distance tolerance.
+        /// The result preserves the line's P0-to-P1 ordering and unchanged endpoints exactly.
+        /// If the line is clipped entirely, both points of the returned line are NaN.
         /// </summary>
         public static __line2t__ ClipWithConvex(this __line2t__ line, __polygon2t__ poly)
+            => line.ClipWithConvex(poly, Constant<__rtype__>.PositiveTinyValue);
+
+        /// <summary>
+        /// Clips the line segment to the inclusive interior of the counter-clockwise convex polygon.
+        /// Each non-zero polygon edge defines a left half-plane. The non-negative
+        /// <paramref name="absoluteEpsilon"/> is scaled by the edge length for signed-cross-product
+        /// comparisons, so it represents an absolute point-distance tolerance. Zero-length edges
+        /// are ignored. The result preserves the line's P0-to-P1 ordering and unchanged endpoints
+        /// exactly. If the clipping interval is empty, both returned points are NaN.
+        /// </summary>
+        /// <param name="line">The line segment to clip.</param>
+        /// <param name="poly">The counter-clockwise convex clipping polygon.</param>
+        /// <param name="absoluteEpsilon">The non-negative absolute point-distance tolerance.</param>
+        public static __line2t__ ClipWithConvex(
+            this __line2t__ line, __polygon2t__ poly, __rtype__ absoluteEpsilon
+        )
         {
-            var p = __v2t__.NaN;
-            bool i0, i1;
+            var pointCount = poly.PointCount;
+            if (pointCount < 3)
+                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
 
-            i0 = poly.Contains(line.P0);
-            i1 = poly.Contains(line.P1);
+            var direction = line.P1 - line.P0;
+            __rtype__ t0 = 0;
+            __rtype__ t1 = 1;
 
-            if (i0 && i1) return line;
-            else if ((!i0 && i1) || (i0 && !i1))
+            var edgeStart = poly[pointCount - 1];
+            for (int i = 0; i < pointCount; i++)
             {
-                foreach (var l in poly.EdgeLines)
+                var edgeEnd = poly[i];
+                var edge = edgeEnd - edgeStart;
+                var edgeLength = edge.Length;
+                if (!IsFinitePositiveMagnitude(edgeLength))
                 {
-                    if (line.Intersects(l, out p)) break;
+                    var edgeScale = edge.NormMax;
+                    if (!(edgeScale > 0) || !edgeScale.IsFinite())
+                    {
+                        edgeStart = edgeEnd;
+                        continue;
+                    }
+
+                    edge /= edgeScale;
+                    edgeLength = edge.Length;
                 }
 
-                if (i0) return new __line2t__(line.P0, p);
-                else return new __line2t__(p, line.P1);
-            }
-            else
-            {
-                __v2t__ p0 = __v2t__.NaN;
-                __v2t__ p1 = __v2t__.NaN;
-                int c = 0;
+                var pointOffset = line.P0 - edgeStart;
+                var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
+                var directionCross = edge.X * direction.Y - edge.Y * direction.X;
+                var boundary = -absoluteEpsilon * edgeLength;
 
-                foreach (var l in poly.EdgeLines)
+                if (directionCross == 0)
                 {
-                    if (line.Intersects(l, out p))
+                    if (signedCross < boundary)
+                        return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                }
+                else
+                {
+                    var t = (boundary - signedCross) / directionCross;
+                    if (directionCross > 0)
                     {
-                        if (c == 0) p0 = p;
-                        else p1 = p;
-                        c++;
+                        if (t > t1)
+                            return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                        if (t > t0) t0 = t;
+                    }
+                    else
+                    {
+                        if (t < t0)
+                            return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                        if (t < t1) t1 = t;
                     }
                 }
 
-                if (c == 2)
-                {
-                    __v2t__ u = p1 - p0;
-
-                    if (u.Dot(line.Direction) > 0) return new __line2t__(p0, p1);
-                    else return new __line2t__(p1, p0);
-                }
-                else return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                edgeStart = edgeEnd;
             }
+
+            var p0 = t0 == 0 ? line.P0 : line.P0 + t0 * direction;
+            var p1 = t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new __line2t__(p0, p1);
         }
 
         #endregion

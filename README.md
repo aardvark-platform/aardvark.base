@@ -14,7 +14,7 @@ Foundation of the [Aardvark Platform](https://github.com/aardvark-platform) ecos
 **Mathematics & Geometry**
 - Vectors, matrices, quaternions, transformations (2D/3D/4D)
 - Ranges, boxes, spheres, planes, rays, frustums
-- Polygons, meshes, BVH acceleration structures
+- Polygons, meshes, bounding-box tree acceleration structures
 - Linear/ellipsoid regression, geometric algorithms
 
 **Image Processing**
@@ -26,7 +26,7 @@ Foundation of the [Aardvark Platform](https://github.com/aardvark-platform) ecos
 **Data Structures & Algorithms**
 - Incremental/reactive programming primitives
 - Efficient collections (IntDict, SymbolDict, MapExt)
-- Spatial indexing (KdTree, BVH)
+- Spatial indexing (KdTree, BbTree)
 - Fast serialization/deserialization
 
 ## Quick Start
@@ -40,14 +40,14 @@ var m = M44d.RotationX(45.0.RadiansFromDegrees());
 var transformed = m.TransformPos(v);
 
 // Image processing
-var image = PixImage.Load("image.jpg");
+var image = new PixImage<byte>("image.jpg");
 var scaled = image.Scaled(0.5);
 scaled.Save("output.png");
 
 // Geometry
 var box = new Box3d(V3d.Zero, V3d.One);
 var ray = new Ray3d(V3d.Zero, V3d.XAxis);
-var hit = ray.Intersects(box, out double t);
+var hit = box.Intersects(ray, out double t);
 ```
 
 ## Installation

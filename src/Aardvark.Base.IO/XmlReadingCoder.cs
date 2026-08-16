@@ -145,7 +145,7 @@ namespace Aardvark.Base.Coder
                 {
                     typeName = m_state.Current.Attribute(TypeSymbol).ToString();
                     if (!TypeInfo.TryGetOfFullName(typeName, out typeInfo))
-                        typeInfo = new TypeInfo(typeName, Type.GetType(typeName),
+                        typeInfo = new TypeInfo(typeName, Introspection.GetType(typeName),
                                     TypeInfo.Option.Size | TypeInfo.Option.Version);
                     if (typeInfo.Type == null)
                     {
@@ -294,7 +294,7 @@ namespace Aardvark.Base.Coder
                         fieldType = typeInfo.Type;
                     else
                     {
-                        fieldType = Type.GetType(fieldTypeName);
+                        fieldType = Introspection.GetType(fieldTypeName);
                         if (fieldName == "object")
                         {
                             fieldTypeName = fieldType.Name;
@@ -879,7 +879,7 @@ namespace Aardvark.Base.Coder
                 {
                     typeName = m_state.Element.Attribute("type").Value;
                     if (!TypeInfo.TryGetOfFullName(typeName, out typeInfo))
-                        typeInfo = new TypeInfo(typeName, Type.GetType(typeName),
+                        typeInfo = new TypeInfo(typeName, Introspection.GetType(typeName),
                                     TypeInfo.Option.Size | TypeInfo.Option.Version);
                     if (typeInfo.Type == null)
                     {
@@ -1030,7 +1030,7 @@ namespace Aardvark.Base.Coder
                         fieldType = typeInfo.Type;
                     else
                     {
-                        fieldType = Type.GetType(fieldTypeName);
+                        fieldType = Introspection.GetType(fieldTypeName);
                         if (fieldName == "object")
                         {
                             fieldTypeName = fieldType.Name;
@@ -1473,7 +1473,7 @@ namespace Aardvark.Base.Coder
             if (TryGetTypeInfo(typeName, out ti))
                 value = ti.Type;
             else
-                value = Type.GetType(typeName);
+                value = Introspection.GetType(typeName);
         }
 
         public void CodeGuid(ref Guid v) { v = new Guid(CurrentValue()); }
@@ -1594,7 +1594,7 @@ namespace Aardvark.Base.Coder
                 if (TryGetTypeInfo(typeName, out ti))
                     value[i] = ti.Type;
                 else
-                    value[i] = Type.GetType(typeName);
+                    value[i] = Introspection.GetType(typeName);
             }
         }
 
@@ -1668,7 +1668,7 @@ namespace Aardvark.Base.Coder
                 if (TryGetTypeInfo(typeName, out ti))
                     value.Add(ti.Type);
                 else
-                    value.Add(Type.GetType(typeName));
+                    value.Add(Introspection.GetType(typeName));
             }
         }
 

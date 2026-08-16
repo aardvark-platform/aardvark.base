@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Aardvark.Base
 {
@@ -198,17 +197,48 @@ namespace Aardvark.Base
             return result;
         }
 
+        /// <summary>
+        /// Writes up to <paramref name="length"/> combined values to the requested target slice.
+        /// The weight sequence is enumerated once and only until the slice is full. If it ends
+        /// early, the remaining target entries are left unchanged. A zero-length slice is a no-op.
+        /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="target"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if <paramref name="offset"/> or <paramref name="length"/> does not describe a
+        /// valid slice of <paramref name="target"/>.
+        /// </exception>
         public static void CombineTo<T>(
                 this T[] source, IEnumerable<WeightedIndex[]> weightedIndexArrays,
                 Func<T[], WeightedIndex[], T> combine,
                 T[] target, int offset, int length)
         {
-            length += offset;
-            foreach (var wia in weightedIndexArrays)
+            ValidateTargetSlice(target, offset, length);
+            if (length == 0) return;
+
+            int end = offset + length;
+            using (var enumerator = weightedIndexArrays.GetEnumerator())
             {
-                target[offset++] = combine(source, wia);
-                if (offset == length) break;
+                while (offset < end && enumerator.MoveNext())
+                    target[offset++] = combine(source, enumerator.Current);
             }
+        }
+
+        private static void ValidateTargetSlice(Array target, int offset, int length)
+        {
+            if (target == null)
+                throw new ArgumentNullException(nameof(target));
+            if (offset < 0 || offset > target.Length)
+                throw new ArgumentOutOfRangeException(nameof(offset));
+            if (length < 0 || length > target.Length - offset)
+                throw new ArgumentOutOfRangeException(nameof(length));
+        }
+
+        private static int GetRemainingTargetLength(Array target, int offset)
+        {
+            ValidateTargetSlice(target, offset, 0);
+            return target.Length - offset;
         }
 
         private static readonly Dictionary<Type,
@@ -238,9 +268,17 @@ namespace Aardvark.Base
             };
 
         /// <summary>
-        /// Fills the target array starting at offset for length entries
-        /// with Lerp/weighted combinations of the source array.
+        /// Writes up to <paramref name="length"/> weighted combinations to the requested target
+        /// slice. The weight sequence is enumerated once and only until the slice is full. If it
+        /// ends early, the remaining target entries are left unchanged. A zero length is a no-op.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="target"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if <paramref name="offset"/> or <paramref name="length"/> does not describe a
+        /// valid slice of <paramref name="target"/>.
+        /// </exception>
         public static Array LerpTo(
                 this Array source,
                 IEnumerable<WeightedIndex[]> weightedIndexArrays,
@@ -253,15 +291,22 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Fills the target array starting at offset with Lerp/weighted
-        /// combinations of the source array.
+        /// Streams weighted combinations into the target from <paramref name="offset"/> to its
+        /// end. The weight sequence is enumerated once and only up to the remaining target
+        /// capacity; if it ends early, the remaining entries are left unchanged.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="target"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if <paramref name="offset"/> is outside the target array.
+        /// </exception>
         public static Array LerpTo(
                 this Array source,
                 IEnumerable<WeightedIndex[]> weightedIndexArrays,
                 Array target, int offset)
         {
-            int length = Fun.Min(weightedIndexArrays.Count(), target.Length - offset);
+            int length = GetRemainingTargetLength(target, offset);
             return source.LerpTo(weightedIndexArrays, target, offset, length);
         }
 
@@ -276,9 +321,18 @@ namespace Aardvark.Base
             };
 
         /// <summary>
-        /// Fills the target array starting at offset for length entries
-        /// with normalized Lerp/weighted combinations of the source array.
+        /// Writes up to <paramref name="length"/> normalized weighted combinations to the
+        /// requested target slice. The weight sequence is enumerated once and only until the
+        /// slice is full. If it ends early, the remaining target entries are left unchanged. A
+        /// zero length is a no-op.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="target"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if <paramref name="offset"/> or <paramref name="length"/> does not describe a
+        /// valid slice of <paramref name="target"/>.
+        /// </exception>
         public static Array LerpAndNormalizeTo(
                 this Array source,
                 IEnumerable<WeightedIndex[]> weightedIndexArrays,
@@ -291,15 +345,23 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Fills the target array starting at offset with normalized
-        /// Lerp/weighted combinations of the source array.
+        /// Streams normalized weighted combinations into the target from
+        /// <paramref name="offset"/> to its end. The weight sequence is enumerated once and only
+        /// up to the remaining target capacity; if it ends early, the remaining entries are left
+        /// unchanged.
         /// </summary>
+        /// <exception cref="ArgumentNullException">
+        /// Thrown if <paramref name="target"/> is <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Thrown if <paramref name="offset"/> is outside the target array.
+        /// </exception>
         public static Array LerpAndNormalizeTo(
                 this Array source,
                 IEnumerable<WeightedIndex[]> weightedIndexArrays,
                 Array target, int offset)
         {
-            int length = Fun.Min(weightedIndexArrays.Count(), target.Length - offset);
+            int length = GetRemainingTargetLength(target, offset);
             return source.LerpAndNormalizeTo(weightedIndexArrays, target, offset, length);
         }
 

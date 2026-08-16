@@ -1,6 +1,7 @@
 ﻿using Aardvark.Base;
 using NUnit.Framework;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -68,6 +69,99 @@ namespace Aardvark.Tests.Extensions
             var adlerNew = floats.ComputeAdler32Checksum();
             Report.Line("Checksum: {0:X}", adlerNew);
             Assert.True(adlerNew != adler);
+        }
+
+        [Test]
+        public static void GetCombinedWithDefaultZeroTwoArgumentsTreatsNullAsZero()
+        {
+            var value = new FixedHash(17);
+
+            var hash = Aardvark.Base.HashCode.GetCombinedWithDefaultZero<FixedHash, FixedHash>(null, value);
+
+            Assert.AreEqual(Aardvark.Base.HashCode.Combine(0, 17), hash);
+        }
+
+        [Test]
+        public static void GetCombinedWithDefaultZeroThreeArgumentsTreatsNullAsZero()
+        {
+            var value = new FixedHash(23);
+
+            var hash = Aardvark.Base.HashCode.GetCombinedWithDefaultZero<FixedHash, FixedHash, FixedHash>(null, value, null);
+
+            Assert.AreEqual(Aardvark.Base.HashCode.Combine(Aardvark.Base.HashCode.UCombine(0, 23), 0), hash);
+        }
+
+        [Test]
+        public static void GetCombinedWithDefaultZeroFourArgumentsTreatsNullAsZero()
+        {
+            var value0 = new FixedHash(31);
+            var value1 = new FixedHash(43);
+
+            var hash = Aardvark.Base.HashCode.GetCombinedWithDefaultZero<FixedHash, FixedHash, FixedHash, FixedHash>(null, value0, null, value1);
+
+            Assert.AreEqual(Aardvark.Base.HashCode.Combine(Aardvark.Base.HashCode.UCombine(Aardvark.Base.HashCode.UCombine(0, 31), 0), 43), hash);
+        }
+
+        [Test]
+        public static void GetCombinedHashCodeEnumerableUsesOrderedArraySemantics()
+        {
+            Assert.AreEqual(0, ((IEnumerable<int>)Array.Empty<int>()).GetCombinedHashCode());
+            Assert.AreEqual(-7, ((IEnumerable<int>)new[] { -7 }).GetCombinedHashCode());
+
+            var values = new[] { 3, 20, 37 };
+            var expected = (int)Aardvark.Base.HashCode.UCombine(
+                Aardvark.Base.HashCode.UCombine(3, 20), 37
+            );
+
+            Assert.AreEqual(expected, ((IEnumerable<int>)values).GetCombinedHashCode());
+            Assert.AreEqual(expected, values.GetCombinedHashCode());
+        }
+
+        [Test]
+        public static void GetCombinedHashCodeMatchesAcrossSequenceRepresentations()
+        {
+            var values = new[] { 3, 20, 37, 54, 71 };
+            var expected = values.GetCombinedHashCode();
+
+            Assert.AreEqual(expected, ((IEnumerable<int>)values).GetCombinedHashCode());
+            Assert.AreEqual(expected, new List<int>(values).GetCombinedHashCode());
+            Assert.AreEqual(expected, Enumerate(values).GetCombinedHashCode());
+        }
+
+        [Test]
+        public static void GetCombinedHashCodeEnumeratesOnceAndDisposes()
+        {
+            var values = new[] { 3, 20, 37 };
+            var sequence = new TrackingEnumerable(values);
+
+            Assert.AreEqual(values.GetCombinedHashCode(), sequence.GetCombinedHashCode());
+            Assert.AreEqual(1, sequence.EnumeratorCount);
+            Assert.AreEqual(1, sequence.DisposeCount);
+        }
+
+        [Test]
+        public static void GetCombinedHashCodeDisposesAndPreservesIterationException()
+        {
+            var failure = new InvalidOperationException("iteration failed");
+            var sequence = new TrackingEnumerable(new[] { 3, 20, 37 }, 1, failure);
+
+            var actual = Assert.Throws<InvalidOperationException>(
+                () => sequence.GetCombinedHashCode()
+            );
+
+            Assert.That(actual, Is.SameAs(failure));
+            Assert.AreEqual(1, sequence.EnumeratorCount);
+            Assert.AreEqual(1, sequence.DisposeCount);
+        }
+
+        [Test]
+        public static void GetCombinedHashCodeNullEnumerableThrowsArgumentNullException()
+        {
+            IEnumerable<int> values = null;
+
+            var ex = Assert.Throws<ArgumentNullException>(() => values.GetCombinedHashCode());
+
+            Assert.AreEqual("items", ex.ParamName);
         }
 
         [Test]
@@ -221,6 +315,75 @@ namespace Aardvark.Tests.Extensions
         {
             public bool fun1;
             public bool fun2;
+        }
+
+        private sealed class FixedHash
+        {
+            private readonly int m_hash;
+
+            public FixedHash(int hash)
+            {
+                m_hash = hash;
+            }
+
+            public override int GetHashCode()
+            {
+                return m_hash;
+            }
+        }
+
+        private sealed class TrackingEnumerable : IEnumerable<int>
+        {
+            private readonly int[] m_values;
+            private readonly int m_throwAfter;
+            private readonly Exception m_exception;
+
+            public int EnumeratorCount { get; private set; }
+            public int DisposeCount { get; private set; }
+
+            public TrackingEnumerable(
+                int[] values, int throwAfter = -1, Exception exception = null
+            )
+            {
+                m_values = values;
+                m_throwAfter = throwAfter;
+                m_exception = exception;
+            }
+
+            public IEnumerator<int> GetEnumerator()
+            {
+                EnumeratorCount++;
+                if (EnumeratorCount != 1)
+                    throw new InvalidOperationException("sequence enumerated more than once");
+
+                return Enumerate().GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+            private IEnumerable<int> Enumerate()
+            {
+                try
+                {
+                    for (int i = 0; i < m_values.Length; i++)
+                    {
+                        if (i == m_throwAfter) throw m_exception;
+                        yield return m_values[i];
+                    }
+
+                    if (m_throwAfter == m_values.Length) throw m_exception;
+                }
+                finally
+                {
+                    DisposeCount++;
+                }
+            }
+        }
+
+        private static IEnumerable<int> Enumerate(int[] values)
+        {
+            for (int i = 0; i < values.Length; i++)
+                yield return values[i];
         }
 
         public struct MyStruct2

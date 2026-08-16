@@ -86,6 +86,77 @@ namespace Aardvark.Tests.Extensions
             }
         }
 
+        private sealed class ThrowOnceHashKey
+        {
+            public readonly ArgumentException Exception = new ArgumentException("Hash failed.");
+
+            public int HashCount { get; private set; }
+
+            public override int GetHashCode()
+            {
+                HashCount++;
+                if (HashCount == 1) throw Exception;
+                return 0;
+            }
+
+            public override bool Equals(object obj) => ReferenceEquals(this, obj);
+        }
+
+        private sealed class ThrowOnceEqualityState
+        {
+            public readonly ArgumentException Exception = new ArgumentException("Equality failed.");
+
+            public int EqualityCount { get; set; }
+        }
+
+        private sealed class ThrowOnceEqualityKey
+        {
+            private readonly ThrowOnceEqualityState m_state;
+
+            public ThrowOnceEqualityKey(ThrowOnceEqualityState state, int value)
+            {
+                m_state = state;
+                Value = value;
+            }
+
+            public int Value { get; }
+
+            public override int GetHashCode() => 0;
+
+            public override bool Equals(object obj)
+            {
+                m_state.EqualityCount++;
+                if (m_state.EqualityCount == 1) throw m_state.Exception;
+                return obj is ThrowOnceEqualityKey;
+            }
+        }
+
+        private static Dictionary<TKey, TElement> ToDictionaryDistinctWithPolicy<TSource, TKey, TElement>(
+            int policy,
+            IEnumerable<TSource> source,
+            Func<TSource, TKey> keySelector,
+            Func<TSource, TElement> elementSelector,
+            TElement duplicateValue)
+        {
+            switch (policy)
+            {
+                case 0:
+                    return source.ToDictionaryDistinct(keySelector, elementSelector, duplicateValue);
+                case 1:
+                    return source.ToDictionaryDistinct(
+                        keySelector,
+                        elementSelector,
+                        new Func<TElement, TElement, bool>((existing, incoming) => true));
+                case 2:
+                    return source.ToDictionaryDistinct(
+                        keySelector,
+                        elementSelector,
+                        new Func<TElement, TElement, TElement>((existing, incoming) => incoming));
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(policy));
+            }
+        }
+
         private static DisposeTrackingEnumerable<int> Track(params int[] values)
             => new DisposeTrackingEnumerable<int>(values);
 
@@ -103,6 +174,254 @@ namespace Aardvark.Tests.Extensions
         {
             var ex = Assert.Throws<TException>(code);
             Assert.AreEqual(paramName, ex.ParamName);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountReturnsExactResults()
+        {
+            var collection = new List<int> { 1, 2, 3 };
+            var singleUse = new SingleUseEnumerable<int>(new[] { 4, 5, 6 });
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, collection.ToArray(3));
+            CollectionAssert.AreEqual(new[] { 4, 5, 6 }, singleUse.ToArray(3));
+            Assert.AreEqual(1, singleUse.EnumeratorCount);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountReturnsSharedEmptyArrayForExactEmptySources()
+        {
+            var collectionResult = new List<int>().ToArray(0);
+            var lazySource = Track();
+            var lazyResult = lazySource.ToArray(0);
+
+            Assert.AreSame(Array.Empty<int>(), collectionResult);
+            Assert.AreSame(Array.Empty<int>(), lazyResult);
+            AssertDisposedOnce(lazySource);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountRejectsZeroCountMismatches()
+        {
+            AssertParamName<ArgumentException>("count", () => new List<int> { 1 }.ToArray(0));
+
+            var lazySource = Track(1);
+            AssertParamName<ArgumentException>("count", () => lazySource.ToArray(0));
+            AssertDisposedOnce(lazySource);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountRejectsCollectionCountMismatches()
+        {
+            var source = new List<int> { 1, 2, 3 };
+
+            AssertParamName<ArgumentException>("count", () => source.ToArray(2));
+            AssertParamName<ArgumentException>("count", () => source.ToArray(4));
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountRejectsLazyCountMismatchesAndDisposes()
+        {
+            var longerSource = Track(1, 2, 3);
+            var shorterSource = Track(1, 2, 3);
+
+            AssertParamName<ArgumentException>("count", () => longerSource.ToArray(2));
+            AssertParamName<ArgumentException>("count", () => shorterSource.ToArray(4));
+            AssertDisposedOnce(longerSource, shorterSource);
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountValidatesArguments()
+        {
+            IEnumerable<int> nullSource = null;
+
+            AssertParamName<ArgumentNullException>("source", () => nullSource.ToArray(0));
+            AssertParamName<ArgumentOutOfRangeException>("count", () => Enumerable.Empty<int>().ToArray(-1));
+        }
+
+        [Test]
+        public static void ToArrayWithKnownCountDisposesEnumeratorOnSuccess()
+        {
+            var source = Track(1, 2, 3);
+
+            CollectionAssert.AreEqual(new[] { 1, 2, 3 }, source.ToArray(3));
+            AssertDisposedOnce(source);
+        }
+
+        [Test]
+        public static void ToDictionaryDistinctUsesFixedDuplicateValue()
+        {
+            var source = new[]
+            {
+                new KeyValuePair<string, int>("a", 1),
+                new KeyValuePair<string, int>("b", 2),
+                new KeyValuePair<string, int>("a", 3),
+                new KeyValuePair<string, int>("a", 4)
+            };
+
+            var result = source.ToDictionaryDistinct(value => value.Key, value => value.Value, -1);
+
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(-1, result["a"]);
+            Assert.AreEqual(2, result["b"]);
+        }
+
+        [Test]
+        public static void ToDictionaryDistinctKeepCallbackReceivesExistingThenIncoming()
+        {
+            var calls = new List<string>();
+
+            var result = new[] { 5, 3, 8 }.ToDictionaryDistinct(
+                value => 0,
+                value => value,
+                new Func<int, int, bool>((existing, incoming) =>
+                {
+                    calls.Add($"{existing}:{incoming}");
+                    return existing >= incoming;
+                }));
+
+            CollectionAssert.AreEqual(new[] { "5:3", "5:8" }, calls);
+            Assert.AreEqual(8, result[0]);
+        }
+
+        [Test]
+        public static void ToDictionaryDistinctMergeCallbackReceivesExistingThenIncoming()
+        {
+            var calls = new List<string>();
+
+            var result = new[] { 1, 2, 3 }.ToDictionaryDistinct(
+                value => 0,
+                value => value,
+                new Func<int, int, int>((existing, incoming) =>
+                {
+                    calls.Add($"{existing}:{incoming}");
+                    return existing * 10 + incoming;
+                }));
+
+            CollectionAssert.AreEqual(new[] { "1:2", "12:3" }, calls);
+            Assert.AreEqual(123, result[0]);
+        }
+
+        [Test]
+        public static void ToDictionaryDistinctEvaluatesStatefulSelectorsOnceForEveryPolicy()
+        {
+            for (var policy = 0; policy < 3; policy++)
+            {
+                var keyCalls = 0;
+                var elementCalls = 0;
+
+                var result = ToDictionaryDistinctWithPolicy(
+                    policy,
+                    new[] { 1, 3, 5 },
+                    value =>
+                    {
+                        keyCalls++;
+                        return value & 1;
+                    },
+                    value =>
+                    {
+                        elementCalls++;
+                        return value + elementCalls * 100;
+                    },
+                    -1);
+
+                Assert.AreEqual(3, keyCalls, $"key selector, policy {policy}");
+                Assert.AreEqual(3, elementCalls, $"element selector, policy {policy}");
+                Assert.AreEqual(policy == 0 ? -1 : policy == 1 ? 101 : 305, result[1]);
+            }
+        }
+
+        [Test]
+        public static void ToDictionaryDistinctPropagatesSelectorArgumentExceptionsWithoutRetry()
+        {
+            for (var policy = 0; policy < 3; policy++)
+            {
+                var keyException = new ArgumentException("Key selector failed.");
+                var keyCalls = 0;
+                var elementCalls = 0;
+                var actualKeyException = Assert.Throws<ArgumentException>(() =>
+                {
+                    ToDictionaryDistinctWithPolicy<int, int, int>(
+                        policy,
+                        new[] { 1 },
+                        value =>
+                        {
+                            keyCalls++;
+                            throw keyException;
+                        },
+                        value =>
+                        {
+                            elementCalls++;
+                            return value;
+                        },
+                        -1);
+                });
+
+                Assert.AreSame(keyException, actualKeyException);
+                Assert.AreEqual(1, keyCalls, $"key selector, policy {policy}");
+                Assert.AreEqual(0, elementCalls, $"element selector after key failure, policy {policy}");
+
+                var elementException = new ArgumentException("Element selector failed.");
+                keyCalls = 0;
+                elementCalls = 0;
+                var actualElementException = Assert.Throws<ArgumentException>(() =>
+                {
+                    ToDictionaryDistinctWithPolicy(
+                        policy,
+                        new[] { 1 },
+                        value =>
+                        {
+                            keyCalls++;
+                            return value;
+                        },
+                        value =>
+                        {
+                            elementCalls++;
+                            throw elementException;
+                        },
+                        -1);
+                });
+
+                Assert.AreSame(elementException, actualElementException);
+                Assert.AreEqual(1, keyCalls, $"key selector before element failure, policy {policy}");
+                Assert.AreEqual(1, elementCalls, $"element selector, policy {policy}");
+            }
+        }
+
+        [Test]
+        public static void ToDictionaryDistinctDoesNotRetryArgumentExceptionFromHashing()
+        {
+            for (var policy = 0; policy < 3; policy++)
+            {
+                var key = new ThrowOnceHashKey();
+                var actual = Assert.Throws<ArgumentException>(() =>
+                {
+                    ToDictionaryDistinctWithPolicy(policy, new[] { key }, value => value, value => 1, -1);
+                });
+
+                Assert.AreSame(key.Exception, actual);
+                Assert.AreEqual(1, key.HashCount, $"policy {policy}");
+            }
+        }
+
+        [Test]
+        public static void ToDictionaryDistinctDoesNotRetryArgumentExceptionFromEquality()
+        {
+            for (var policy = 0; policy < 3; policy++)
+            {
+                var state = new ThrowOnceEqualityState();
+                var keys = new[]
+                {
+                    new ThrowOnceEqualityKey(state, 1),
+                    new ThrowOnceEqualityKey(state, 2)
+                };
+                var actual = Assert.Throws<ArgumentException>(() =>
+                {
+                    ToDictionaryDistinctWithPolicy(policy, keys, value => value, value => value.Value, -1);
+                });
+
+                Assert.AreSame(state.Exception, actual);
+                Assert.AreEqual(1, state.EqualityCount, $"policy {policy}");
+            }
         }
 
         [Test]

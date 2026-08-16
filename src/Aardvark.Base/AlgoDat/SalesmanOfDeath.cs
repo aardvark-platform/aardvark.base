@@ -288,6 +288,7 @@ namespace Aardvark.Base
             private readonly AbstractGraph<TVertex, TCost> m_graph;
 
             private readonly List<Tup<int, int>> m_edges;
+            private readonly int[] m_edgeTails;
 
             private int m_edgeCount;
             private readonly bool[] m_visited;
@@ -303,8 +304,9 @@ namespace Aardvark.Base
                 {
                     m_edges.Add(new Tup<int, int>(-1, -1));
                 }
-                
-                m_visited = new bool[m_graph.m_nodes.Count].SetByIndex(i => false);
+
+                m_edgeTails = new int[m_graph.m_nodes.Count];
+                m_visited = new bool[m_graph.m_nodes.Count];
                 m_edgeCount = 0;
             }
 
@@ -312,7 +314,7 @@ namespace Aardvark.Base
 
             #region Edges
 
-            private void AddHalfEdge(Edge e, int l, int r)
+            private void AddHalfEdge(int l, int r)
             {
                 int index = l;
 
@@ -321,24 +323,24 @@ namespace Aardvark.Base
                 {
                     tup.E0 = r;
                     m_edges[index] = tup;
+                    m_edgeTails[l] = index;
                 }
                 else
                 {
-                    while (tup.E1 >= 0)
-                    {
-                        index = tup.E1;
-                        tup = m_edges[index];
-                    }
-                    tup.E1 = m_edges.Count;
+                    index = m_edgeTails[l];
+                    tup = m_edges[index];
+                    int next = m_edges.Count;
+                    tup.E1 = next;
                     m_edges[index] = tup;
                     m_edges.Add(new Tup<int, int>(r, -1));
+                    m_edgeTails[l] = next;
                 }
             }
 
             internal void AddEdge(Edge edge)
             {
-                AddHalfEdge(edge, edge.Index0, edge.Index1);
-                AddHalfEdge(edge, edge.Index1, edge.Index0);
+                AddHalfEdge(edge.Index0, edge.Index1);
+                AddHalfEdge(edge.Index1, edge.Index0);
                 m_edgeCount++;
             }
 
@@ -353,26 +355,30 @@ namespace Aardvark.Base
 
                 nodeAction(m_graph.m_nodes[n]);
 
-                var tup = m_edges[n];
-                if (tup.E0 < 0) return;
-
-                int edgeIndex = n;
-                edgeAction(new Edge(m_graph, n, tup.E0));
-                TraverseAux(tup.E0, nodeAction, edgeAction);
-                
-                while (tup.E1 >= 0)
+                var link = m_edges[n];
+                while (link.E0 >= 0)
                 {
-                    edgeIndex = tup.E1;
-                    tup = m_edges[edgeIndex];
+                    int neighbor = link.E0;
+                    if (!m_visited[neighbor])
+                    {
+                        edgeAction(new Edge(m_graph, n, neighbor));
+                        TraverseAux(neighbor, nodeAction, edgeAction);
+                    }
 
-                    edgeAction(new Edge(m_graph, n, tup.E0));
-                    TraverseAux(tup.E0, nodeAction, edgeAction);
+                    if (link.E1 < 0) break;
+                    link = m_edges[link.E1];
                 }
             }
 
+            /// <summary>
+            /// Traverses the tree from vertex index zero. Each reachable vertex and each
+            /// undirected tree edge is reported exactly once. An empty tree invokes no callbacks.
+            /// </summary>
             public void Traverse(Action<TVertex> nodeAction, Action<Edge> edgeAction)
             {
-                m_visited.SetByIndex(i => false);
+                if (m_visited.Length == 0) return;
+
+                Array.Clear(m_visited, 0, m_visited.Length);
                 TraverseAux(0, nodeAction, edgeAction);
             }
 
@@ -381,28 +387,33 @@ namespace Aardvark.Base
                 if (m_visited[n]) return;
                 m_visited[n] = true;
 
-                int nodeIndex = n;
-                action(nodeIndex);//m_graph.m_nodes[n]);
+                action(n);
 
-                var tup = m_edges[n];
-                if (tup.E0 < 0) return;
-
-                TraverseEulerAux(tup.E0, action);
-                action(nodeIndex);//m_graph.m_nodes[n]);
-
-                while (tup.E1 >= 0)
+                var link = m_edges[n];
+                while (link.E0 >= 0)
                 {
-                    n = tup.E1;
-                    tup = m_edges[n];
+                    int neighbor = link.E0;
+                    if (!m_visited[neighbor])
+                    {
+                        TraverseEulerAux(neighbor, action);
+                        action(n);
+                    }
 
-                    TraverseEulerAux(tup.E0, action);
-                    action(nodeIndex);//m_graph.m_nodes[n]);
+                    if (link.E1 < 0) break;
+                    link = m_edges[link.E1];
                 }
             }
 
+            /// <summary>
+            /// Emits a depth-first Euler walk from vertex index zero. A non-empty tree emits
+            /// <c>2 * EdgeCount + 1</c> indices, traversing each edge once in each direction;
+            /// an empty tree emits no indices.
+            /// </summary>
             public void TraverseEuler(Action<int> action)
             {
-                m_visited.SetByIndex(i => false);
+                if (m_visited.Length == 0) return;
+
+                Array.Clear(m_visited, 0, m_visited.Length);
                 TraverseEulerAux(0, action);
             }
 
@@ -937,53 +948,93 @@ namespace Aardvark.Base
         }
         
         /// <summary>
-        /// Builds the minimum-spanning-tree using Prim's algorithm in O(|V|^2)
-        /// where |V| is the number of vertices (nodes) in the Graph
+        /// Builds the minimum-spanning tree using Prim's algorithm in O(|V|^2), rooted
+        /// at vertex index zero. Equal costs select the lowest vertex and parent indices.
+        /// Empty and singleton graphs produce trees without edges.
         /// </summary>
-        /// <returns></returns>
         public Tree BuildMinimumSpanningTreePrim()
         {
-            int node = 0;
-            bool[] visited = new bool[m_nodes.Count].Set(false);
-            Tree tree = new Tree(this);
+            int count = m_nodes.Count;
+            var tree = new Tree(this);
+            if (count < 2) return tree;
 
-            while (tree.EdgeCount < m_nodes.Count - 1)
+            var visited = new bool[count];
+            var bestCosts = new TCost[count];
+            var parents = new int[count];
+
+            for (int i = 0; i < count; i++) parents[i] = -1;
+
+            int current = 0;
+            visited[0] = true;
+            for (int selectedCount = 1; selectedCount < count; selectedCount++)
             {
-                visited[node] = true;
-                int next = FindClosestUnvisited(node, visited);
+                int next = -1;
+                TCost nextCost = default(TCost);
+                long costIndex = current;
 
-                tree.AddEdge(new Edge(this, node, next));
-                node = next;
+                for (int candidate = 0; candidate < current; candidate++)
+                {
+                    if (!visited[candidate])
+                    {
+                        var cost = m_costs[costIndex];
+                        int parent = parents[candidate];
+                        var bestCost = bestCosts[candidate];
+                        int comparison = parent < 0
+                            ? -1
+                            : cost.CompareTo(bestCost);
+                        if (comparison < 0 ||
+                            (comparison == 0 && current < parent))
+                        {
+                            bestCost = cost;
+                            bestCosts[candidate] = bestCost;
+                            parents[candidate] = current;
+                        }
+
+                        if (next < 0 || bestCost.CompareTo(nextCost) < 0)
+                        {
+                            next = candidate;
+                            nextCost = bestCost;
+                        }
+                    }
+
+                    costIndex += count - candidate - 1;
+                }
+
+                costIndex++;
+                for (int candidate = current + 1; candidate < count; candidate++)
+                {
+                    if (!visited[candidate])
+                    {
+                        var cost = m_costs[costIndex];
+                        int parent = parents[candidate];
+                        var bestCost = bestCosts[candidate];
+                        int comparison = parent < 0
+                            ? -1
+                            : cost.CompareTo(bestCost);
+                        if (comparison < 0 ||
+                            (comparison == 0 && current < parent))
+                        {
+                            bestCost = cost;
+                            bestCosts[candidate] = bestCost;
+                            parents[candidate] = current;
+                        }
+
+                        if (next < 0 || bestCost.CompareTo(nextCost) < 0)
+                        {
+                            next = candidate;
+                            nextCost = bestCost;
+                        }
+                    }
+
+                    costIndex++;
+                }
+
+                tree.AddEdge(new Edge(this, parents[next], next));
+                visited[next] = true;
+                current = next;
             }
 
             return tree;
-        }
-
-        private int FindClosestUnvisited(int node, bool[] visited)
-        {
-            int N = m_nodes.Count;
-
-            long nearest = -1;
-            TCost min = default(TCost);
-            m_costs.ForeachX(node, (i, p) =>
-            {
-                if (node != p.X && !visited[p.X])
-                {
-                    var w = m_costs[i];
-                    if (nearest < 0 || w.CompareTo(min) < 0) { min = w; nearest = p.X; }
-                }
-            });
-
-            m_costs.ForeachY(node, (i, p) =>
-            {
-                if (node != p.Y && !visited[p.Y])
-                {
-                    var w = m_costs[i];
-                    if (nearest < 0 || w.CompareTo(min) < 0) { min = w; nearest = p.Y; }
-                }
-            });
-
-            return (int)nearest;
         }
 
         #endregion

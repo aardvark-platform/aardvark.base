@@ -115,11 +115,19 @@ Functional lenses for immutable state updates. Used extensively with Adaptify-ge
 
 ### Lens Type
 
+`Lens<'s,'a>` is a class with virtual defaults, not an interface — each member has a default implemented via the others, so an object expression may override any subset (e.g. only `Get` + `Set`, or only `Update`):
+
 ```fsharp
-type Lens<'s, 'a> =
-    abstract Get : 's -> 'a
-    abstract Set : 's * 'a -> 's
-    abstract Update : 's * ('a -> 'a) -> 's
+type Lens<'s, 'a>() =
+    abstract member Get : 's -> 'a
+    abstract member Set : 's * 'a -> 's
+    abstract member Update : 's * ('a -> 'a) -> 's
+    // defaults: Get/Set via Update, Update via Get+Set
+
+let custom =
+    { new Lens<int list, int>() with
+        member x.Get s = List.head s
+        member x.Set(s, v) = v :: List.tail s }
 ```
 
 ### Operators
@@ -165,18 +173,26 @@ List.Lens.item 0          // Lens<list<'a>, Option<'a>>
 
 ## Color Module (ColorBrewer)
 
-Color scheme generation for data visualization.
+Color schemes for data visualization. Named schemes live in the auto-opened `ColorBrewerSchemes` module as `ColorBrewer.Scheme.<Type>.<Name>` values; palettes are fetched with `Scheme.getPalette`:
 
 ```fsharp
 open Aardvark.Base
+open Aardvark.Base.ColorBrewer
 
-// Get sequential color scheme
-let colors = ColorBrewer.getColors ColorBrewer.SchemeType.Sequential "Blues" 5
+// Named scheme -> palette of a given size -> C3b colors
+let palette = Scheme.getPalette 5 ColorBrewer.Scheme.Sequential.Blues
+let colors = palette.Colors    // C3b[]
 
-// Available scheme types
-ColorBrewer.SchemeType.Sequential    // Light to dark
-ColorBrewer.SchemeType.Diverging     // Two-ended
-ColorBrewer.SchemeType.Qualitative   // Distinct categories
+// Scheme module functions
+Scheme.isEmpty scheme
+Scheme.minSize scheme
+Scheme.maxSize scheme
+Scheme.filterUsage PaletteUsage.Print scheme
+
+// Scheme types (on the scheme record's Type field)
+SchemeType.Sequential    // Light to dark
+SchemeType.Diverging     // Two-ended
+SchemeType.Qualitative   // Distinct categories
 ```
 
 ---
@@ -192,41 +208,39 @@ open Aardvark.Base
 
 let dict = System.Collections.Generic.Dictionary<string, int>()
 
-// F#-style access
-dict.["key"] <- 42
-let v = dict.["key"]
-
-// TryFind returns Option
+// TryFind returns Option (Aardvark extension; TryFindV returns ValueOption)
 match dict.TryFind "key" with
 | Some v -> ...
 | None -> ...
 ```
 
-### HashSet Extensions
+### HashSet Module
+
+The `HashSet` module wraps BCL `HashSet<'a>`. `union` builds a new set from a sequence of sets; `unionWith`/`intersectWith`/`exceptWith` mutate the given set in place and return `unit`:
 
 ```fsharp
 open Aardvark.Base
 
-let set = System.Collections.Generic.HashSet<int>()
+let merged = HashSet.union [setA; setB]   // new set
 
-// Set operations return new sets
-let union = set.Union otherSet
-let inter = set.Intersect otherSet
+HashSet.unionWith moreItems setA          // mutates setA
+HashSet.intersectWith keepItems setA      // mutates setA
 ```
 
 ---
 
 ## Memory and Native Utilities
 
-### MicroTime (High-Resolution Timing)
+### MicroTime (Time Spans)
+
+`MicroTime` is a nanosecond-resolution time span. There is no `MicroTime.Now`; construct values from units or ticks (e.g. from `System.Diagnostics.Stopwatch`):
 
 ```fsharp
 open Aardvark.Base
 
-let start = MicroTime.Now
-// ... work ...
-let elapsed = MicroTime.Now - start
-printfn "Elapsed: %A" elapsed
+let t1 = MicroTime.ofMilliseconds 12.5
+let t2 = MicroTime.FromTicks(System.Diagnostics.Stopwatch.GetTimestamp())
+let sum = t1 + MicroTime.ofSeconds 1
 ```
 
 ### Mem (Memory Sizes)
@@ -234,7 +248,7 @@ printfn "Elapsed: %A" elapsed
 ```fsharp
 open Aardvark.Base
 
-let size = Mem.mebibytes 512L
+let size = Mem.ofMebibytes 512    // or Mem.FromMebibytes 512.0
 printfn "%d bytes" size.Bytes
 ```
 

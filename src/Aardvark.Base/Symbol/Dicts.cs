@@ -133,7 +133,7 @@ namespace Aardvark.Base
 
         public IEnumerable<TValue> Values
         {
-            get { yield return m_value; }
+            get { return m_keys.Items.Select(_ => m_value); }
         }
 
         public IEnumerable<KeyValuePair<TKey, TValue>> KeyValuePairs
@@ -706,7 +706,7 @@ namespace Aardvark.Base
 
         public IEnumerable<TValue> Values
         {
-            get { yield return m_value; }
+            get { return m_keys.Items.Select(_ => m_value); }
         }
 
         public IEnumerable<KeyValuePair<Symbol, TValue>> KeyValuePairs
@@ -1439,15 +1439,8 @@ namespace Aardvark.Base
         public static IEnumerable<Tv> PopAll<Tk, Tv>(this Dict<Tk, Tv> dict, Tk key)
             where Tk : IEquatable<Tk>
         {
-            while (true)
-            {
-                Tv value;
-                if (dict.TryGetValue(key, out value))
-                    yield return value;
-                else
-                    yield break;
-                dict.Remove(key);
-            }
+            while (dict.TryRemove(key, out var value))
+                yield return value;
         }
 
         public static int Pop(this IntSet self)

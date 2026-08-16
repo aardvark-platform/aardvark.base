@@ -15,17 +15,77 @@ namespace Aardvark.Base
         List<T> GetMinimalPathByIndex(int posIdx);
     }
 
+    /// <summary>
+    /// Asynchronously computes shortest paths from a seed node.
+    /// </summary>
+    /// <remarks>
+    /// Starting a calculation cancels and replaces the current calculation. Path queries are
+    /// thread-safe and use the last fully completed result until the replacement completes.
+    /// </remarks>
     public class ShortestPath<T> : IShortestPath<T>
     {
+        private sealed class CalculationRun : IDisposable
+        {
+            private readonly object m_resourceLock = new object();
+            private readonly CancellationTokenSource m_cancellation = new CancellationTokenSource();
+            private bool m_disposed;
+
+            public CalculationRun(int seedIndex, int nodeCount)
+            {
+                SeedIndex = seedIndex;
+                Expanded = new bool[nodeCount];
+                Predecessors = new int[nodeCount].Set(seedIndex);
+                Token = m_cancellation.Token;
+            }
+
+            public int SeedIndex { get; }
+            public bool[] Expanded { get; }
+            public int[] Predecessors { get; }
+            public CancellationToken Token { get; }
+            public Task Task { get; set; }
+
+            public void Cancel()
+            {
+                lock (m_resourceLock)
+                {
+                    if (!m_disposed)
+                        m_cancellation.Cancel();
+                }
+            }
+
+            public void Dispose()
+            {
+                lock (m_resourceLock)
+                {
+                    if (m_disposed)
+                        return;
+
+                    m_disposed = true;
+                    m_cancellation.Dispose();
+                }
+            }
+        }
+
+        private sealed class ResultSnapshot
+        {
+            public ResultSnapshot(int seedIndex, bool[] expanded, int[] predecessors)
+            {
+                SeedIndex = seedIndex;
+                Expanded = expanded;
+                Predecessors = predecessors;
+            }
+
+            public int SeedIndex { get; }
+            public bool[] Expanded { get; }
+            public int[] Predecessors { get; }
+        }
+
         private readonly List<T> m_nodes;
         private readonly List<int>[] m_neighbors;
         private readonly Func<T, T, float> m_getCostFunc;
-        private bool[] m_expanded;
-        private int[] m_pointers;
-        private bool m_cancelTask = false;
-        private int m_seedId;
-        private Task m_task = null;
-        private CancellationTokenSource m_cancellationToken;
+        private readonly object m_runLock = new object();
+        private CalculationRun m_currentRun;
+        private ResultSnapshot m_result;
 
         public ShortestPath(List<T> nodes, List<(int, int)> edges, Func<T, T, float> getCostFunc)
         {
@@ -38,116 +98,208 @@ namespace Aardvark.Base
                 m_neighbors[e.Item2].Add(e.Item1);
             }
             m_getCostFunc = getCostFunc;
-            m_expanded = new bool[nodes.Count];
+            m_result = CreateInitialResult(nodes.Count);
         }
+
         public ShortestPath(T[] nodes, List<int>[] neighbors, Func<T, T, float> getCostFunc)
         {
             m_nodes = nodes.ToList();
             m_neighbors = neighbors;
             m_getCostFunc = getCostFunc;
-            m_expanded = new bool[nodes.Length];
+            m_result = CreateInitialResult(nodes.Length);
         }
 
+        /// <summary>
+        /// Cancels and waits for the current calculation, if any.
+        /// </summary>
+        /// <remarks>The last successfully completed result remains available to path queries.</remarks>
         public void Cancel()
         {
-            if (m_task != null && !(m_task.IsCanceled || m_task.IsCompleted))
+            CalculationRun run;
+            lock (m_runLock)
             {
-                m_cancelTask = true;
-                if (m_cancellationToken != null) m_cancellationToken.Cancel();
-                m_task.Wait();
+                run = m_currentRun;
+                m_currentRun = null;
             }
-            m_task = null;
-            m_cancelTask = false;
+
+            if (run == null)
+                return;
+
+            run.Cancel();
+            try
+            {
+                run.Task.GetAwaiter().GetResult();
+            }
+            catch (OperationCanceledException e) when (
+                run.Token.IsCancellationRequested && e.CancellationToken == run.Token)
+            {
+            }
+            finally
+            {
+                run.Dispose();
+            }
         }
 
+        /// <summary>
+        /// Starts a shortest-path calculation from <paramref name="seed"/>.
+        /// </summary>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="seed"/> is not present in the node collection.
+        /// </exception>
         public void CalculateShortestPaths(T seed)
         {
-            //Cancel();
-            if (m_cancellationToken != null) m_cancellationToken.Cancel();
-            m_cancellationToken = new CancellationTokenSource();
-            m_task = Task.Factory.StartNew(delegate { Calculate(seed); }, m_cancellationToken);
+            var index = m_nodes.IndexOf(seed);
+            if (index < 0)
+                throw new ArgumentException("The seed node is not present in the graph.", nameof(seed));
+
+            StartCalculation(index);
         }
+
+        /// <summary>
+        /// Starts a shortest-path calculation from the node at <paramref name="index"/>.
+        /// </summary>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> is outside the node collection.
+        /// </exception>
         public void CalculateShortestPathsByIndex(int index)
         {
-            //Cancel();
-            if (m_cancellationToken != null) m_cancellationToken.Cancel();
-            m_cancellationToken = new CancellationTokenSource();
-            m_task = Task.Factory.StartNew(delegate { CalculateByIndex(index); }, m_cancellationToken);
+            if (index < 0 || index >= m_nodes.Count)
+                throw new ArgumentOutOfRangeException(nameof(index));
+
+            StartCalculation(index);
         }
 
-        private void Calculate(T seed)
+        private static ResultSnapshot CreateInitialResult(int nodeCount)
         {
-            CalculateByIndex(m_nodes.IndexOf(seed));
+            return new ResultSnapshot(0, new bool[nodeCount], new int[nodeCount]);
         }
-        
-        private void CalculateByIndex(int index)
+
+        private void StartCalculation(int seedIndex)
         {
-            Report.BeginTimed("Shortest paths calculation");
-            m_seedId = index;
+            var run = new CalculationRun(seedIndex, m_nodes.Count);
+            CalculationRun previous;
 
-            var activePixels = new FibonacciHeap<int>();
-            var inActiveList = new Dictionary<int, FibonacciHeap<int>.Node>();
-            inActiveList[m_seedId] = activePixels.Insert(0, m_seedId);
-
-            var totalCost = new float[m_nodes.Count].Set(float.MaxValue);
-            m_expanded = new bool[m_nodes.Count];
-            m_pointers = new int[m_nodes.Count].Set(m_seedId);
-
-            totalCost[m_seedId] = 0;
-
-            while (!activePixels.IsEmpty())
+            try
             {
-                if (m_cancelTask)
+                lock (m_runLock)
                 {
-                    Report.End("Canceled Dijkstra");
-                    return;
-                }
-                var q = activePixels.DeleteMin();
-                inActiveList.Remove(q);
-
-                m_expanded[q] = true;
-                var totalCostQ = totalCost[q];
-
-                foreach (var r in m_neighbors[q])
-                {
-                    if (m_expanded[r]) continue;
-
-                    var gtemp = totalCostQ + m_getCostFunc(m_nodes[q], m_nodes[r]);
-                    var isActive = inActiveList.ContainsKey(r);
-
-                    if (!isActive || gtemp < totalCost[r])
-                    {
-                        if (isActive)
-                            activePixels.DecreaseKey(inActiveList[r], gtemp);
-                        else
-                            inActiveList[r] = activePixels.Insert(gtemp, r);
-
-                        totalCost[r] = gtemp;
-                        m_pointers[r] = q;
-                    }
+                    previous = m_currentRun;
+                    run.Task = Task.Run(() => Calculate(run));
+                    m_currentRun = run;
                 }
             }
-            Report.End();
+            catch
+            {
+                run.Dispose();
+                throw;
+            }
+
+            previous?.Cancel();
         }
 
+        private void Calculate(CalculationRun run)
+        {
+            var reportStarted = false;
+            try
+            {
+                Report.BeginTimed("Shortest paths calculation");
+                reportStarted = true;
+
+                var token = run.Token;
+                token.ThrowIfCancellationRequested();
+
+                var activePixels = new FibonacciHeap<int>();
+                var inActiveList = new Dictionary<int, FibonacciHeap<int>.Node>();
+                inActiveList[run.SeedIndex] = activePixels.Insert(0, run.SeedIndex);
+
+                var totalCost = new float[m_nodes.Count].Set(float.MaxValue);
+                totalCost[run.SeedIndex] = 0;
+
+                while (!activePixels.IsEmpty())
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    var q = activePixels.DeleteMin();
+                    token.ThrowIfCancellationRequested();
+                    inActiveList.Remove(q);
+
+                    run.Expanded[q] = true;
+                    var totalCostQ = totalCost[q];
+
+                    foreach (var r in m_neighbors[q])
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (run.Expanded[r])
+                            continue;
+
+                        var edgeCost = m_getCostFunc(m_nodes[q], m_nodes[r]);
+                        token.ThrowIfCancellationRequested();
+                        var newCost = totalCostQ + edgeCost;
+                        var isActive = inActiveList.TryGetValue(r, out var activeNode);
+
+                        if (!isActive || newCost < totalCost[r])
+                        {
+                            if (isActive)
+                                activePixels.DecreaseKey(activeNode, newCost);
+                            else
+                                inActiveList[r] = activePixels.Insert(newCost, r);
+
+                            totalCost[r] = newCost;
+                            run.Predecessors[r] = q;
+                        }
+                    }
+                }
+
+                token.ThrowIfCancellationRequested();
+                lock (m_runLock)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (ReferenceEquals(m_currentRun, run))
+                        Volatile.Write(
+                            ref m_result,
+                            new ResultSnapshot(run.SeedIndex, run.Expanded, run.Predecessors));
+                }
+            }
+            finally
+            {
+                try
+                {
+                    if (reportStarted)
+                        Report.End();
+                }
+                finally
+                {
+                    run.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the path from the indexed target toward the seed using one completed result snapshot.
+        /// </summary>
         public List<T> GetMinimalPathByIndex(int endIndex)
         {
+            var result = Volatile.Read(ref m_result);
+
             var contour = new List<T>();
             var id = endIndex;
             var end = m_nodes[id];
-            var seed = m_nodes[m_seedId];
+            var seed = m_nodes[result.SeedIndex];
 
-            if (!m_expanded[id])
+            if (!result.Expanded[id])
                 return new List<T>() { end, seed };
 
-            while (id != m_seedId)
+            while (id != result.SeedIndex)
             {
                 contour.Add(m_nodes[id]);
-                id = m_pointers[id];
+                id = result.Predecessors[id];
             }
             return contour;
         }
 
+        /// <summary>
+        /// Gets the path from <paramref name="end"/> toward the seed using one completed result snapshot.
+        /// </summary>
         public List<T> GetMinimalPath(T end)
         {
             var id = m_nodes.IndexOf(end);

@@ -5,6 +5,12 @@ Source-verified map of key algorithm types and entry points.
 ## ShortestPath<T>
 
 `ShortestPath<T>` implements `IShortestPath<T>` and runs asynchronous shortest-path computation.
+Starting a calculation validates its seed synchronously, then atomically replaces and cancels
+the previous calculation. Each run owns its cancellation state and working arrays, and only a
+successfully completed current run publishes a result. Path queries use one immutable snapshot,
+so they continue to observe the last completed result while a replacement is running. `Cancel()`
+invalidates, cancels, and waits for the current run; expected cancellation is suppressed while
+worker failures are propagated.
 
 Key methods:
 
@@ -20,6 +26,20 @@ Constructors:
 new ShortestPath<T>(List<T> nodes, List<(int,int)> edges, Func<T,T,float> getCost);
 new ShortestPath<T>(T[] nodes, List<int>[] neighbors, Func<T,T,float> getCost);
 ```
+
+## Dense Graph Minimum-Spanning Trees
+
+`DenseGraph<TVertex, TCost>.BuildMinimumSpanningTreePrim()` implements canonical
+dense `O(V^2)` Prim traversal rooted at vertex index zero. It tracks the cheapest
+edge from the visited set to every unvisited vertex. Equal costs select the lowest
+vertex index and then the lowest parent index, making the result deterministic.
+Empty and singleton graphs produce trees with no edges.
+
+`AbstractGraph<TVertex, TCost>.Tree.Traverse` visits every reachable vertex once
+and invokes its edge callback exactly once per undirected tree edge. `Tree.Cost`
+therefore counts each edge once. `Tree.TraverseEuler` emits no values for an empty
+tree; otherwise it emits a depth-first `2E+1` walk that starts and ends at index
+zero and traverses every tree edge once in each direction.
 
 ## BbTree
 
@@ -72,6 +92,7 @@ int index = t.Sample(rnd.UniformDouble());
 ```
 
 `FromPdf` / `FromNormalizedPdf` exist as instance methods on the class.
+Empty PDFs are supported as zero-count sentinel tables, e.g. `new AliasTableD(Array.Empty<double>(), 0.0)`, and expose empty `U`/`K` arrays. Do not call `Sample` on empty tables; non-empty PDFs still require finite, non-negative entries and a positive finite normalization factor.
 
 ### DistributionFunction
 
@@ -93,12 +114,29 @@ Examples:
 - `coeff.Derivative()`
 - `Polynomial.RealRootsOfNormed(...)`
 
+## Compositional Statistics
+
+`Stats<T>` accumulates selected moments according to `StatsOptions`. `Variance` and
+`StandardDeviation` independently control reporting and both enable sum-of-squares
+collection.
+
+`Stats<T>.Add(Stats<T>)` and `operator +` require matching options and compose inputs
+in left-to-right order. Minimum and maximum values are merged independently; when
+an extremum is tied, its associated data comes from the left aggregate, matching
+sequential accumulation.
+
+`Histogram.Add(Histogram)` and `operator +` require identical `SlotRange` values and
+slot counts. They sum bins plus underflow/overflow counts and union the observed
+`DataRange`; observed ranges do not need to match.
+
 ## Source Anchors
 
 - `src/Aardvark.Base/AlgoDat/ShortestPath.cs`
+- `src/Aardvark.Base/AlgoDat/SalesmanOfDeath.cs`
 - `src/Aardvark.Base/Geometry/BbTree.cs`
 - `src/Aardvark.Base/Math/LuFactorization.cs`
 - `src/Aardvark.Base/Math/QrFactorization.cs`
 - `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
 - `src/Aardvark.Base/Math/Base/DistributionFunction.cs`
+- `src/Aardvark.Base/Math/Base/Statistics.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`

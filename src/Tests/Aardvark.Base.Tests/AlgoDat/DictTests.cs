@@ -549,6 +549,33 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void PopAllRemovesValueBeforeYielding()
+        {
+            var dict = new Dict<string, int>(stackDuplicateKeys: true);
+            dict.Add("target", 1);
+            dict.Add("target", 2);
+
+            Assert.AreEqual(2, dict.PopAll("target").First());
+            Assert.AreEqual(1, dict.Count);
+            Assert.AreEqual(1, dict["target"]);
+        }
+
+        [Test]
+        public void PopAllReturnsDuplicateValuesInLifoOrderAndPreservesOtherKeys()
+        {
+            var dict = new Dict<string, int>(stackDuplicateKeys: true);
+            dict.Add("target", 1);
+            dict.Add("other", 99);
+            dict.Add("target", 2);
+            dict.Add("target", 3);
+
+            CollectionAssert.AreEqual(new[] { 3, 2, 1 }, dict.PopAll("target").ToArray());
+            Assert.IsFalse(dict.ContainsKey("target"));
+            Assert.AreEqual(99, dict["other"]);
+            Assert.AreEqual(1, dict.Count);
+        }
+
+        [Test]
         public void SingleEntryDictSetterUpdatesExistingKeyWithoutThrowing()
         {
             var dict = new SingleEntryDict<string, int>("key", 1);
@@ -693,6 +720,24 @@ namespace Aardvark.Tests
         }
 
         [Test]
+        public void SingleValueDictValuesMatchKeyCardinality()
+        {
+            var dict = new SingleValueDict<string, int>(7);
+
+            CollectionAssert.IsEmpty(dict.Values);
+
+            dict.Add("first", 7);
+            dict.Add("second", 7);
+            CollectionAssert.AreEqual(new[] { 7, 7 }, dict.Values.ToArray());
+
+            Assert.IsTrue(dict.Remove("first"));
+            CollectionAssert.AreEqual(new[] { 7 }, dict.Values.ToArray());
+
+            Assert.IsTrue(dict.Remove("second"));
+            CollectionAssert.IsEmpty(dict.Values);
+        }
+
+        [Test]
         public void SingleValueDictValueOnlyConstructorCreatesUsableEmptyDict()
         {
             var dict = new SingleValueDict<string, int>(7);
@@ -780,6 +825,26 @@ namespace Aardvark.Tests
             Assert.IsTrue(dict.ContainsKey(second));
             CollectionAssert.AreEqual(new[] { second }, dict.Keys);
             CollectionAssert.AreEqual(new[] { new KeyValuePair<Symbol, int>(second, 7) }, dict.KeyValuePairs);
+        }
+
+        [Test]
+        public void SingleValueSymbolDictValuesMatchKeyCardinality()
+        {
+            var dict = new SingleValueSymbolDict<int>(7);
+            var first = Symbol.Create("single-value-symbol-dict-values-first");
+            var second = Symbol.Create("single-value-symbol-dict-values-second");
+
+            CollectionAssert.IsEmpty(dict.Values);
+
+            dict.Add(first, 7);
+            dict.Add(second, 7);
+            CollectionAssert.AreEqual(new[] { 7, 7 }, dict.Values.ToArray());
+
+            Assert.IsTrue(dict.Remove(first));
+            CollectionAssert.AreEqual(new[] { 7 }, dict.Values.ToArray());
+
+            Assert.IsTrue(dict.Remove(second));
+            CollectionAssert.IsEmpty(dict.Values);
         }
 
         [Test]

@@ -1573,12 +1573,12 @@ module Assembler =
                 if m.ArgumentTypes.Length = 0 then
                     typeof<Action>
                 else
-                    let funcType = typedefof<Action<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length)) |> Type.GetType
+                    let funcType = typedefof<Action<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length)) |> Introspection.GetType
                     let funcType = funcType.MakeGenericType m.ArgumentTypes
 
                     funcType
             else
-                let funcType = typedefof<Func<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length + 1)) |> Type.GetType
+                let funcType = typedefof<Func<_>>.FullName.Replace("1", string (m.ArgumentTypes.Length + 1)) |> Introspection.GetType
                 let funcType = funcType.MakeGenericType (Array.append m.ArgumentTypes [|m.ReturnType|])
 
                 funcType
