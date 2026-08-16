@@ -15,6 +15,12 @@ namespace Aardvark.Tests.Geometry
         private static void AssertNear(float expected, float actual, float tolerance = 1e-5f)
             => Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
 
+        private static void AssertRelative(double expected, double actual, double tolerance = 1e-12)
+            => Assert.That(actual / expected, Is.EqualTo(1.0).Within(tolerance));
+
+        private static void AssertRelative(float expected, float actual, float tolerance = 1e-5f)
+            => Assert.That(actual / expected, Is.EqualTo(1.0f).Within(tolerance));
+
         private static void AssertNear(V2d expected, V2d actual, double tolerance = 1e-10)
             => Assert.That((actual - expected).Length, Is.LessThanOrEqualTo(tolerance));
 
@@ -186,6 +192,96 @@ namespace Aardvark.Tests.Geometry
             AssertNear(5.0f, ray3f1.GetMinimalDistanceTo(ray3f0, out var reverseT3f0, out var reverseT3f1));
             AssertNear(t3f1, reverseT3f0);
             AssertNear(t3f0, reverseT3f1);
+        }
+
+        [Test]
+        public void ExtremeDirectionScalesPreservePointProjection()
+        {
+            foreach (var scale in new[] { 1e-200, 1e200 })
+            {
+                var ray2d = new Ray2d(V2d.Zero, scale * V2d.XAxis);
+                var point2d = new V2d(3.0 * scale, 4.0);
+                AssertNear(3.0, point2d.GetClosestPointTOn(ray2d));
+                AssertNear(new V2d(3.0 * scale, 0.0), point2d.GetClosestPointOn(ray2d, out var t2d), 1e-10 * scale.Abs());
+                AssertNear(3.0, t2d);
+
+                var ray3d = new Ray3d(V3d.Zero, scale * V3d.XAxis);
+                var point3d = new V3d(3.0 * scale, 4.0, 0.0);
+                AssertNear(4.0, point3d.GetMinimalDistanceTo(ray3d, out var t3d));
+                AssertNear(3.0, t3d);
+            }
+
+            foreach (var scale in new[] { 1e-30f, 1e20f })
+            {
+                var ray2f = new Ray2f(V2f.Zero, scale * V2f.XAxis);
+                var point2f = new V2f(3.0f * scale, 4.0f);
+                AssertNear(3.0f, point2f.GetClosestPointTOn(ray2f));
+                AssertNear(new V2f(3.0f * scale, 0.0f), point2f.GetClosestPointOn(ray2f, out var t2f), 1e-5f * scale.Abs());
+                AssertNear(3.0f, t2f);
+
+                var ray3f = new Ray3f(V3f.Zero, scale * V3f.XAxis);
+                var point3f = new V3f(3.0f * scale, 4.0f, 0.0f);
+                AssertNear(4.0f, point3f.GetMinimalDistanceTo(ray3f, out var t3f));
+                AssertNear(3.0f, t3f);
+            }
+        }
+
+        [Test]
+        public void ExtremeDirectionScalesPreserveRayPairGeometry()
+        {
+            foreach (var scale in new[] { 1e-200, 1e200 })
+            {
+                var ray2d0 = new Ray2d(V2d.Zero, scale * V2d.XAxis);
+                var ray2d1 = new Ray2d(new V2d(2.0, -3.0), scale * V2d.YAxis);
+                AssertNear(0.0, ray2d0.GetMinimalDistanceTo(ray2d1, out var t2d0, out var t2d1));
+                AssertRelative(2.0 / scale, t2d0);
+                AssertRelative(3.0 / scale, t2d1);
+                AssertNear(ray2d0.GetPointOnRay(t2d0), ray2d1.GetPointOnRay(t2d1));
+
+                var ray3d0 = new Ray3d(V3d.Zero, scale * V3d.XAxis);
+                var ray3d1 = new Ray3d(new V3d(2.0, -3.0, 5.0), scale * V3d.YAxis);
+                AssertNear(5.0, ray3d0.GetMinimalDistanceTo(ray3d1, out var t3d0, out var t3d1));
+                AssertRelative(2.0 / scale, t3d0);
+                AssertRelative(3.0 / scale, t3d1);
+            }
+
+            foreach (var scale in new[] { 1e-20f, 1e20f })
+            {
+                var ray2f0 = new Ray2f(V2f.Zero, scale * V2f.XAxis);
+                var ray2f1 = new Ray2f(new V2f(2.0f, -3.0f), scale * V2f.YAxis);
+                AssertNear(0.0f, ray2f0.GetMinimalDistanceTo(ray2f1, out var t2f0, out var t2f1));
+                AssertRelative(2.0f / scale, t2f0);
+                AssertRelative(3.0f / scale, t2f1);
+                AssertNear(ray2f0.GetPointOnRay(t2f0), ray2f1.GetPointOnRay(t2f1));
+
+                var ray3f0 = new Ray3f(V3f.Zero, scale * V3f.XAxis);
+                var ray3f1 = new Ray3f(new V3f(2.0f, -3.0f, 5.0f), scale * V3f.YAxis);
+                AssertNear(5.0f, ray3f0.GetMinimalDistanceTo(ray3f1, out var t3f0, out var t3f1));
+                AssertRelative(2.0f / scale, t3f0);
+                AssertRelative(3.0f / scale, t3f1);
+            }
+        }
+
+        [Test]
+        public void ExtremeAndZeroDirectionRayPairs()
+        {
+            var point2d = new Ray2d(new V2d(2.0, 3.0), V2d.Zero);
+            var large2d = new Ray2d(V2d.Zero, 1e200 * V2d.XAxis);
+            AssertNear(3.0, point2d.GetMinimalDistanceTo(large2d, out var pointT2d, out var largeT2d));
+            AssertNear(0.0, pointT2d);
+            AssertRelative(2e-200, largeT2d);
+            AssertNear(3.0, large2d.GetMinimalDistanceTo(point2d, out largeT2d, out pointT2d));
+            AssertRelative(2e-200, largeT2d);
+            AssertNear(0.0, pointT2d);
+
+            var point3f = new Ray3f(new V3f(2.0f, 3.0f, 4.0f), V3f.Zero);
+            var large3f = new Ray3f(V3f.Zero, 1e20f * V3f.XAxis);
+            AssertNear(5.0f, point3f.GetMinimalDistanceTo(large3f, out var pointT3f, out var largeT3f));
+            AssertNear(0.0f, pointT3f);
+            AssertRelative(2e-20f, largeT3f);
+            AssertNear(5.0f, large3f.GetMinimalDistanceTo(point3f, out largeT3f, out pointT3f));
+            AssertRelative(2e-20f, largeT3f);
+            AssertNear(0.0f, pointT3f);
         }
 
         [Test]

@@ -48,6 +48,7 @@ Semantics (`Ray3_auto.cs`, `FastRay3d.Intersects`):
 - `tmin`/`tmax` are in/out: they seed the search interval and are narrowed to the intersection interval on success.
 - Slab overlap is inclusive: a far endpoint is rejected only below `tmin`, and a near endpoint only above `tmax`. Exact endpoint, edge, and corner contacts therefore count as hits.
 - Boxes may be degenerate in one or more axes (`Min == Max`), including point boxes. A hit can narrow the interval to a single parameter with `tmin == tmax`.
+- Flag-returning overloads report the union of every box face tied at each interval bound; a corner hit can therefore return two or three face bits. Masked overloads report only selected faces.
 - Axes with zero direction components are handled via `DirFlags`; the ray origin must lie between the slabs of such an axis for a hit.
 
 ## Supporting-Line Distance And Parameters
@@ -58,6 +59,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - Ray-pair overloads return `t0` and `t1` in each input's original direction parameterization. Rescaling a direction therefore inversely rescales its parameter without changing the reconstructed closest point or distance.
 - Parallel and near-parallel pairs keep the established asymmetric convention: `t1` is zero, while `t0` projects the second origin onto the first supporting line. The angular threshold is independent of direction lengths.
 - A finite zero direction represents a point and receives parameter zero. If only one direction is zero, the other parameter projects that point onto the non-degenerate supporting line.
+- Extreme finite directions use component-scaled fallbacks only when raw squared norms or norm products underflow or overflow; ordinary finite magnitudes stay on the direct arithmetic path.
 - Segment (`Line2*`/`Line3*`) and line/ray callers apply their own `[0, 1]` bounds after obtaining these supporting-line parameters.
 
 ## Convex Polygon Line Clipping
@@ -66,6 +68,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 
 - Each non-zero polygon edge defines an inclusive left half-plane; duplicate consecutive points and other zero-length edges are ignored.
 - The default overload uses `Constant<float/double>.PositiveTinyValue` as an absolute point-distance tolerance. The explicit overload accepts a non-negative absolute epsilon. Internally, that distance is multiplied by each edge length before signed-cross-product comparisons.
+- If a non-zero finite edge's raw length underflows to zero or overflows to infinity, a component-scaled fallback preserves the same half-plane and point-distance tolerance.
 - Boundary-collinear segments and single-point vertex contacts are retained.
 - The result keeps the input `P0`-to-`P1` direction. An endpoint that does not require clipping is returned bit-for-bit unchanged.
 - If the segment has no non-empty parameter interval inside the polygon, both result points are NaN.
@@ -75,7 +78,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 `Line2f`/`Line2d` and `Line3f`/`Line3d` provide `ClipByPlane` overloads for their matching plane types:
 
 - The retained region is the inclusive positive half-space. For a non-zero normal, a point is retained when `(Normal dot point - Distance) / |Normal| >= -absoluteEpsilon`.
-- The default overload uses `Constant<float/double>.PositiveTinyValue`; the explicit overload accepts a non-negative absolute point-distance tolerance. Scaling both a plane normal and its distance by the same positive factor does not change the result.
+- The default overload uses `Constant<float/double>.PositiveTinyValue`; the explicit overload accepts a non-negative absolute point-distance tolerance. Scaling both a plane normal and its distance by the same positive factor does not change the result, including when a finite raw normal length underflows or overflows.
 - Results preserve the input `P0`-to-`P1` order. Endpoints that do not require clipping are returned bit-for-bit unchanged, and a single boundary contact is returned as a point segment.
 - Fully rejected segments use NaN for both result points. A plane with a zero normal is treated as a no-op, including `Plane2f.Invalid`/`Plane2d.Invalid` and `Plane3f.Invalid`/`Plane3d.Invalid`.
 

@@ -1,13 +1,13 @@
-- [Base] Corrected ray projection and closest-distance parameters for non-unit and degenerate directions
+- [Base] Corrected ray projection and closest-distance parameters for non-unit, degenerate, and extreme finite directions
 - [Geometry] Added attributed `PolyRegion` boolean operations and triangulation with explicit interpolation
 - [Tensors] Added built-in exact area-weighted `SuperSample` image downscaling
-- [Tests] Benchmarked actual float/double 2D/3D plane-clipping overloads without duplicated baselines
-- [Base] Added allocation-free 2D/3D line-segment clipping against plane half-spaces
-- [Base] Fixed duplicate introspection method-query cache entries
+- [Tests] Benchmarked ray-distance, plane/polygon clipping, and flag-returning `FastRay` overloads
+- [Base] Added allocation-free 2D/3D line-segment clipping against plane half-spaces with robust extreme finite normals
+- [Base] Fixed duplicate, stale, cross-query, and foreign-assembly introspection method-cache results
 - [Base] Corrected DenseGraph minimum-spanning trees and single-edge traversal accounting
 - [Base] Fixed enumerable combined hash codes to match ordered array semantics
-- [Base] Fixed tolerant convex polygon line clipping and removed per-call allocations
-- [Base] Fixed `FastRay` closed box intersections for endpoint, grazing, and degenerate-box hits
+- [Base] Fixed tolerant convex polygon line clipping for extreme finite edges and removed per-call allocations
+- [Base] Fixed `FastRay` closed box intersections and accumulated all tied face flags for corner and point-box hits
 - [Base] Replaced biased randomization with allocation-free Fisher-Yates shuffling
 - [Base] Fixed `SampleGrid2d.SampleRegular` region callback Y endpoints
 - [Base] Made `LruCache` eviction bookkeeping exception-safe when cleanup callbacks throw

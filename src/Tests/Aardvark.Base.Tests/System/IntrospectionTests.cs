@@ -1,6 +1,7 @@
 using Aardvark.Base;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -44,7 +45,7 @@ namespace Aardvark.Tests
         }
 
         [Test]
-        public void LegacyMethodAttributeCacheLinesAreDeduplicated()
+        public void CurrentMethodAttributeCacheLinesAreDeduplicated()
         {
             WithFreshCache(() =>
             {
@@ -71,6 +72,64 @@ namespace Aardvark.Tests
             });
         }
 
+        [Test]
+        public void LegacyMethodCacheIsInvalidated()
+        {
+            WithFreshCache(() =>
+            {
+                var miss = Query();
+                AssertExpectedMethods(miss);
+
+                var currentFile = GetSingleCacheFile();
+                var header = File.ReadLines(currentFile).First();
+                File.Delete(currentFile);
+
+                var currentGuid = GetMethodCacheDiscriminator(typeof(MethodCacheTestAttribute)).ToGuid();
+                var legacyGuid = typeof(MethodCacheTestAttribute).FullName.ToGuid();
+                var legacyFile = currentFile.Replace(currentGuid.ToString(), legacyGuid.ToString());
+                File.WriteAllLines(legacyFile, new[] { header });
+
+                var result = Query();
+                AssertExpectedMethods(result);
+                Assert.That(GetCurrentCacheFiles(typeof(MethodCacheTestAttribute)), Has.Length.EqualTo(1));
+            });
+        }
+
+        [Test]
+        public void TypeAndMethodAttributeQueriesUseIndependentCaches()
+        {
+            WithFreshCache(() =>
+            {
+                var types = Introspection.GetAllTypesWithAttribute<MixedCacheTestAttribute>(s_assembly);
+                var methods = Introspection.GetAllMethodsWithAttribute<MixedCacheTestAttribute>(s_assembly);
+
+                CollectionAssert.AreEqual(new[] { typeof(MixedCacheFixture) }, types.Select(x => x.Item1).ToArray());
+                CollectionAssert.AreEqual(
+                    new[] { nameof(MixedCacheFixture.Marked) },
+                    methods.Select(x => x.Item1.Name).ToArray()
+                );
+                Assert.That(GetAllCacheFiles(typeof(MixedCacheTestAttribute)), Has.Length.EqualTo(2));
+            }, typeof(MixedCacheTestAttribute));
+        }
+
+        [Test]
+        public void ForeignAssemblyTypesInCurrentMethodCacheAreIgnored()
+        {
+            WithFreshCache(() =>
+            {
+                var miss = Introspection.GetAllMethodsWithAttribute<ObsoleteAttribute>(s_assembly);
+                var cacheFile = GetCurrentCacheFiles(typeof(ObsoleteAttribute)).Single();
+                File.AppendAllLines(cacheFile, new[] { typeof(Introspection).AssemblyQualifiedName });
+
+                var hit = Introspection.GetAllMethodsWithAttribute<ObsoleteAttribute>(s_assembly);
+                CollectionAssert.AreEqual(
+                    miss.Select(result => result.Item1).ToArray(),
+                    hit.Select(result => result.Item1).ToArray()
+                );
+                Assert.That(hit.All(result => result.Item1.DeclaringType?.Assembly == s_assembly), Is.True);
+            }, typeof(ObsoleteAttribute));
+        }
+
         private static (MethodInfo, MethodCacheTestAttribute[])[] Query()
             => Introspection.GetAllMethodsWithAttribute<MethodCacheTestAttribute>(s_assembly);
 
@@ -93,40 +152,58 @@ namespace Aardvark.Tests
                 .Select(result => $"{result.Item1.DeclaringType.AssemblyQualifiedName}|{result.Item1.MetadataToken}")
                 .ToArray();
 
-        private static void WithFreshCache(Action action)
+        private const string MethodQueryCacheVersion = "public-declared-v2";
+
+        private static string GetMethodCacheDiscriminator(Type attributeType)
+            => $"{MethodQueryCacheVersion}|{attributeType.AssemblyQualifiedName}";
+
+        private static void WithFreshCache(Action action, params Type[] attributeTypes)
         {
-            DeleteFixtureCacheFiles();
+            if (attributeTypes.Length == 0)
+                attributeTypes = new[] { typeof(MethodCacheTestAttribute) };
+
+            DeleteFixtureCacheFiles(attributeTypes);
             try
             {
                 action();
             }
             finally
             {
-                DeleteFixtureCacheFiles();
+                DeleteFixtureCacheFiles(attributeTypes);
             }
         }
 
         private static string GetSingleCacheFile()
         {
-            var files = GetFixtureCacheFiles();
+            var files = GetCurrentCacheFiles(typeof(MethodCacheTestAttribute));
             Assert.AreEqual(1, files.Length);
             return files[0];
         }
 
-        private static string[] GetFixtureCacheFiles()
+        private static string[] GetCurrentCacheFiles(Type attributeType)
+            => GetCacheFiles(GetMethodCacheDiscriminator(attributeType));
+
+        private static string[] GetAllCacheFiles(Type attributeType)
+            => GetCacheFiles(attributeType.FullName)
+                .Concat(GetCurrentCacheFiles(attributeType))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+        private static string[] GetCacheFiles(string discriminator)
         {
             if (!Directory.Exists(Introspection.CacheDirectory)) return Array.Empty<string>();
 
-            var guid = typeof(MethodCacheTestAttribute).FullName.ToGuid();
+            var guid = discriminator.ToGuid();
             return Directory.GetFiles(
                 Introspection.CacheDirectory,
                 $"*_{guid}.query",
                 SearchOption.TopDirectoryOnly);
         }
 
-        private static void DeleteFixtureCacheFiles()
+        private static void DeleteFixtureCacheFiles(IEnumerable<Type> attributeTypes)
         {
-            foreach (var file in GetFixtureCacheFiles()) File.Delete(file);
+            foreach (var file in attributeTypes.SelectMany(GetAllCacheFiles))
+                File.Delete(file);
         }
 
         [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
@@ -154,6 +231,18 @@ namespace Aardvark.Tests
         {
             [MethodCacheTest("derived")]
             public void DerivedInstance() { }
+        }
+
+        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
+        private sealed class MixedCacheTestAttribute : Attribute
+        {
+        }
+
+        [MixedCacheTest]
+        private sealed class MixedCacheFixture
+        {
+            [MixedCacheTest]
+            public void Marked() { }
         }
     }
 }

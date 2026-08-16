@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Aardvark.Base
@@ -128,6 +129,89 @@ namespace Aardvark.Base
 
         #region Intersections (__rtype__)
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool ClipLineByHeight(
+            __rtype__ h0, __rtype__ h1, __rtype__ boundary, out __rtype__ t0, out __rtype__ t1)
+        {
+            var p0Inside = h0 >= boundary;
+            var p1Inside = h1 >= boundary;
+            if (p0Inside && p1Inside)
+            {
+                t0 = 0;
+                t1 = 1;
+                return true;
+            }
+
+            if (!p0Inside && !p1Inside)
+            {
+                t0 = 0;
+                t1 = 0;
+                return false;
+            }
+
+            var t = (boundary - h0) / (h1 - h0);
+            t0 = p0Inside ? 0 : t;
+            t1 = p0Inside ? t : 1;
+            return true;
+        }
+
+        // An unsigned bit-range check keeps ordinary norm checks to one exceptional branch.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFinitePositiveMagnitude(__rtype__ value)
+        {
+            //# if (isDouble) {
+            return (ulong)(value.FloatToBits() - 1L) < 0x7fefffffffffffffUL;
+            //# } else {
+            return (uint)(value.FloatToBits() - 1) < 0x7f7fffffU;
+            //# }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static __line2t__ ClipLineByScaledPlane(
+            __line2t__ line, __plane2t__ plane, __rtype__ absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new __line2t__(p0, p1);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static __line3t__ ClipLineByScaledPlane(
+            __line3t__ line, __plane3t__ plane, __rtype__ absoluteEpsilon)
+        {
+            var normalScale = plane.Normal.NormMax;
+            if (normalScale == 0) return line;
+            if (!normalScale.IsFinite())
+                return new __line3t__(__v3t__.NaN, __v3t__.NaN);
+
+            var normal = plane.Normal / normalScale;
+            var distance = plane.Distance / normalScale;
+            var boundary = -absoluteEpsilon * normal.Length;
+            var h0 = Vec.Dot(normal, line.P0) - distance;
+            var h1 = Vec.Dot(normal, line.P1) - distance;
+            if (!ClipLineByHeight(h0, h1, boundary, out var t0, out var t1))
+                return new __line3t__(__v3t__.NaN, __v3t__.NaN);
+
+            var direction = line.P1 - line.P0;
+            var p0 = t0 == 0 ? line.P0 : t0 == 1 ? line.P1 : line.P0 + t0 * direction;
+            var p1 = t1 == 0 ? line.P0 : t1 == 1 ? line.P1 : line.P0 + t1 * direction;
+            return new __line3t__(p0, p1);
+        }
+
         #region __line2t__ - __plane2t__
 
         /// <summary>
@@ -155,7 +239,8 @@ namespace Aardvark.Base
         )
         {
             var normalLength = plane.Normal.Length;
-            if (normalLength == 0) return line;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
 
             var boundary = -absoluteEpsilon * normalLength;
             var h0 = plane.Height(line.P0);
@@ -208,7 +293,8 @@ namespace Aardvark.Base
         )
         {
             var normalLength = plane.Normal.Length;
-            if (normalLength == 0) return line;
+            if (!IsFinitePositiveMagnitude(normalLength))
+                return ClipLineByScaledPlane(line, plane, absoluteEpsilon);
 
             var boundary = -absoluteEpsilon * normalLength;
             var h0 = plane.Height(line.P0);
@@ -350,34 +436,43 @@ namespace Aardvark.Base
                 var edgeEnd = poly[i];
                 var edge = edgeEnd - edgeStart;
                 var edgeLength = edge.Length;
-
-                if (edgeLength != 0)
+                if (!IsFinitePositiveMagnitude(edgeLength))
                 {
-                    var pointOffset = line.P0 - edgeStart;
-                    var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
-                    var directionCross = edge.X * direction.Y - edge.Y * direction.X;
-                    var boundary = -absoluteEpsilon * edgeLength;
-
-                    if (directionCross == 0)
+                    var edgeScale = edge.NormMax;
+                    if (!(edgeScale > 0) || !edgeScale.IsFinite())
                     {
-                        if (signedCross < boundary)
+                        edgeStart = edgeEnd;
+                        continue;
+                    }
+
+                    edge /= edgeScale;
+                    edgeLength = edge.Length;
+                }
+
+                var pointOffset = line.P0 - edgeStart;
+                var signedCross = edge.X * pointOffset.Y - edge.Y * pointOffset.X;
+                var directionCross = edge.X * direction.Y - edge.Y * direction.X;
+                var boundary = -absoluteEpsilon * edgeLength;
+
+                if (directionCross == 0)
+                {
+                    if (signedCross < boundary)
+                        return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                }
+                else
+                {
+                    var t = (boundary - signedCross) / directionCross;
+                    if (directionCross > 0)
+                    {
+                        if (t > t1)
                             return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                        if (t > t0) t0 = t;
                     }
                     else
                     {
-                        var t = (boundary - signedCross) / directionCross;
-                        if (directionCross > 0)
-                        {
-                            if (t > t1)
-                                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
-                            if (t > t0) t0 = t;
-                        }
-                        else
-                        {
-                            if (t < t0)
-                                return new __line2t__(__v2t__.NaN, __v2t__.NaN);
-                            if (t < t1) t1 = t;
-                        }
+                        if (t < t0)
+                            return new __line2t__(__v2t__.NaN, __v2t__.NaN);
+                        if (t < t1) t1 = t;
                     }
                 }
 

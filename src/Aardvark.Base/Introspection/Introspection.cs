@@ -147,6 +147,11 @@ public static class Introspection
     private const BindingFlags PublicDeclaredMethods =
         BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
 
+    private const string MethodQueryCacheVersion = "public-declared-v2";
+
+    private static string GetMethodQueryCacheDiscriminator(Type attributeType)
+        => $"{MethodQueryCacheVersion}|{attributeType.AssemblyQualifiedName}";
+
     private static IEnumerable<(MethodInfo, T[])> GetMethodsWithAttribute<T>(IEnumerable<Type> types)
     {
         foreach (var type in types)
@@ -161,7 +166,7 @@ public static class Introspection
         }
     }
 
-    private static IEnumerable<Type> ResolveUniqueTypes(IEnumerable<string> lines)
+    private static IEnumerable<Type> ResolveUniqueTypes(IEnumerable<string> lines, Assembly assembly)
     {
         string first = null;
         HashSet<string> seen = null;
@@ -181,7 +186,7 @@ public static class Introspection
             }
 
             var type = GetType(line);
-            if (type != null) yield return type;
+            if (type?.Assembly == assembly) yield return type;
         }
     }
 
@@ -213,11 +218,13 @@ public static class Introspection
     /// Enumerates public instance and static methods declared by types in the specified
     /// assembly and decorated with attribute T. Each method is returned once together
     /// with all of its T-attribute instances. The query cache stores each declaring type
-    /// once and ignores repeated declaring-type lines in legacy cache files.
+    /// once, ignores repeated declaring-type lines, and rejects cached types from other assemblies.
     /// </summary>
     public static (MethodInfo, T[])[] GetAllMethodsWithAttribute<T>(Assembly assembly)
-        => GetAll___<(MethodInfo, T[])>(assembly, typeof(T).FullName,
-              lines => GetMethodsWithAttribute<T>(ResolveUniqueTypes(lines)),
+        => GetAll___<(MethodInfo, T[])>(
+              assembly,
+              GetMethodQueryCacheDiscriminator(typeof(T)),
+              lines => GetMethodsWithAttribute<T>(ResolveUniqueTypes(lines, assembly)),
               types => GetMethodsWithAttribute<T>(types),
               GetUniqueDeclaringTypeNames
         );

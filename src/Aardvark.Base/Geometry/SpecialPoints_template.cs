@@ -142,12 +142,7 @@ namespace Aardvark.Base
         /// <param name="ray">Find the closest point on this ray.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __rtype__ GetClosestPointTOn(this __v2t__ query, __ray2t__ ray)
-        {
-            var lengthSquared = ray.Direction.LengthSquared;
-            return lengthSquared == 0
-                ? 0
-                : Vec.Dot(query - ray.Origin, ray.Direction) / lengthSquared;
-        }
+            => GetClosestPointT(query - ray.Origin, ray.Direction);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __v2t__ query, __ray2t__ ray, out __rtype__ t)
@@ -485,10 +480,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOn(this __v3t__ query, __ray3t__ ray, out __rtype__ t)
         {
-            var lengthSquared = ray.Direction.LengthSquared;
-            t = lengthSquared == 0
-                ? 0
-                : Vec.Dot(query - ray.Origin, ray.Direction) / lengthSquared;
+            t = GetClosestPointT(query - ray.Origin, ray.Direction);
             return ray.Origin + t * ray.Direction;
         }
 
@@ -753,6 +745,141 @@ namespace Aardvark.Base
         //#   var polygon3t = "Polygon3" + tc;
         //#   var half = isDouble ? "0.5" : "0.5f";
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static __rtype__ GetClosestPointTScaled(__v2t__ offset, __v2t__ direction)
+        {
+            var directionScale = direction.NormMax;
+            if (directionScale == 0) return 0;
+            if (!directionScale.IsFinite()) return __rtype__.NaN;
+
+            var scaledDirection = direction / directionScale;
+            return (Vec.Dot(offset, scaledDirection) / Vec.Dot(scaledDirection, scaledDirection)) / directionScale;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __rtype__ GetClosestPointT(__v2t__ offset, __v2t__ direction)
+        {
+            var lengthSquared = Vec.Dot(direction, direction);
+            if (!IsFinitePositiveMagnitude(lengthSquared))
+                return GetClosestPointTScaled(offset, direction);
+
+            return Vec.Dot(offset, direction) / lengthSquared;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static __rtype__ GetClosestPointTScaled(__v3t__ offset, __v3t__ direction)
+        {
+            var directionScale = direction.NormMax;
+            if (directionScale == 0) return 0;
+            if (!directionScale.IsFinite()) return __rtype__.NaN;
+
+            var scaledDirection = direction / directionScale;
+            return (Vec.Dot(offset, scaledDirection) / Vec.Dot(scaledDirection, scaledDirection)) / directionScale;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __rtype__ GetClosestPointT(__v3t__ offset, __v3t__ direction)
+        {
+            var lengthSquared = Vec.Dot(direction, direction);
+            if (!IsFinitePositiveMagnitude(lengthSquared))
+                return GetClosestPointTScaled(offset, direction);
+
+            return Vec.Dot(offset, direction) / lengthSquared;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void SolveClosestRayParameters(
+            __rtype__ uu, __rtype__ vv, __rtype__ uv, __rtype__ au, __rtype__ av,
+            out __rtype__ t0, out __rtype__ t1)
+        {
+            var scale = uu * vv;
+            var determinant = scale - uv * uv;
+            var epsilon = Constant<__rtype__>.PositiveTinyValue;
+            if (determinant <= epsilon * (2 - epsilon) * scale)
+            {
+                t0 = -au / uu;
+                t1 = 0;
+                return;
+            }
+
+            t0 = (uv * av - vv * au) / determinant;
+            t1 = (uu * av - uv * au) / determinant;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void GetClosestRayParametersScaled(
+            __v2t__ a, __v2t__ u, __v2t__ v, out __rtype__ t0, out __rtype__ t1)
+        {
+            var uScale = u.NormMax;
+            var vScale = v.NormMax;
+
+            if (uScale == 0)
+            {
+                t0 = 0;
+                t1 = GetClosestPointT(a, v);
+                return;
+            }
+
+            if (vScale == 0)
+            {
+                t0 = -GetClosestPointT(a, u);
+                t1 = 0;
+                return;
+            }
+
+            if (!uScale.IsFinite() || !vScale.IsFinite())
+            {
+                t0 = __rtype__.NaN;
+                t1 = __rtype__.NaN;
+                return;
+            }
+
+            var us = u / uScale;
+            var vs = v / vScale;
+            SolveClosestRayParameters(
+                Vec.Dot(us, us), Vec.Dot(vs, vs), Vec.Dot(us, vs),
+                Vec.Dot(a, us), Vec.Dot(a, vs), out var scaledT0, out var scaledT1);
+            t0 = scaledT0 / uScale;
+            t1 = scaledT1 / vScale;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void GetClosestRayParametersScaled(
+            __v3t__ a, __v3t__ u, __v3t__ v, out __rtype__ t0, out __rtype__ t1)
+        {
+            var uScale = u.NormMax;
+            var vScale = v.NormMax;
+
+            if (uScale == 0)
+            {
+                t0 = 0;
+                t1 = GetClosestPointT(a, v);
+                return;
+            }
+
+            if (vScale == 0)
+            {
+                t0 = -GetClosestPointT(a, u);
+                t1 = 0;
+                return;
+            }
+
+            if (!uScale.IsFinite() || !vScale.IsFinite())
+            {
+                t0 = __rtype__.NaN;
+                t1 = __rtype__.NaN;
+                return;
+            }
+
+            var us = u / uScale;
+            var vs = v / vScale;
+            SolveClosestRayParameters(
+                Vec.Dot(us, us), Vec.Dot(vs, vs), Vec.Dot(us, vs),
+                Vec.Dot(a, us), Vec.Dot(a, vs), out var scaledT0, out var scaledT1);
+            t0 = scaledT0 / uScale;
+            t1 = scaledT1 / vScale;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void GetClosestRayParameters(__ray2t__ ray0, __ray2t__ ray1, out __rtype__ t0, out __rtype__ t1)
         {
@@ -762,25 +889,16 @@ namespace Aardvark.Base
             var uu = Vec.Dot(u, u);
             var vv = Vec.Dot(v, v);
 
-            if (uu == 0)
+            var scale = uu * vv;
+            if (!IsFinitePositiveMagnitude(scale))
             {
-                t0 = 0;
-                t1 = vv == 0 ? 0 : Vec.Dot(a, v) / vv;
-                return;
-            }
-
-            if (vv == 0)
-            {
-                t0 = -Vec.Dot(a, u) / uu;
-                t1 = 0;
+                GetClosestRayParametersScaled(a, u, v, out t0, out t1);
                 return;
             }
 
             var uv = Vec.Dot(u, v);
-            var scale = uu * vv;
             var determinant = scale - uv * uv;
             var epsilon = Constant<__rtype__>.PositiveTinyValue;
-
             if (determinant <= epsilon * (2 - epsilon) * scale)
             {
                 t0 = -Vec.Dot(a, u) / uu;
@@ -803,25 +921,16 @@ namespace Aardvark.Base
             var uu = Vec.Dot(u, u);
             var vv = Vec.Dot(v, v);
 
-            if (uu == 0)
+            var scale = uu * vv;
+            if (!IsFinitePositiveMagnitude(scale))
             {
-                t0 = 0;
-                t1 = vv == 0 ? 0 : Vec.Dot(a, v) / vv;
-                return;
-            }
-
-            if (vv == 0)
-            {
-                t0 = -Vec.Dot(a, u) / uu;
-                t1 = 0;
+                GetClosestRayParametersScaled(a, u, v, out t0, out t1);
                 return;
             }
 
             var uv = Vec.Dot(u, v);
-            var scale = uu * vv;
             var determinant = scale - uv * uv;
             var epsilon = Constant<__rtype__>.PositiveTinyValue;
-
             if (determinant <= epsilon * (2 - epsilon) * scale)
             {
                 t0 = -Vec.Dot(a, u) / uu;
@@ -991,14 +1100,7 @@ namespace Aardvark.Base
         public static __rtype__ GetMinimalDistanceTo(this __v3t__ point, __ray3t__ ray, out __rtype__ t)
         {
             var a = point - ray.Origin;
-            var lengthSquared = ray.Direction.LengthSquared;
-            if (lengthSquared == 0)
-            {
-                t = 0;
-                return a.Length;
-            }
-
-            t = Vec.Dot(a, ray.Direction) / lengthSquared;
+            t = GetClosestPointT(a, ray.Direction);
             return (a - t * ray.Direction).Length;
         }
 

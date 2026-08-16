@@ -77,10 +77,12 @@ of whether the caller exposes them as an array, list, or lazy sequence.
 and static methods declared directly by each assembly type. Each matching
 `MethodInfo` is returned once together with all attached `T` attribute instances.
 
-The version-1 query cache stores one assembly-qualified name per declaring type
-in first-seen order. Cache reads deduplicate declaring-type lines before resolving
-and scanning them, so legacy files containing repeated lines produce the same
-method sequence and count as a cache miss.
+Method queries use a versioned cache discriminator that includes the attribute's
+assembly-qualified name, keeping them separate from type queries and older method
+semantics. Cache files store one assembly-qualified name per declaring type in
+first-seen order. Reads deduplicate those lines and reject resolved types from any
+assembly other than the one being queried. Older cache keys are ignored and
+rebuilt on the next query.
 
 ## Random
 

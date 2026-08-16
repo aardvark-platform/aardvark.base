@@ -477,7 +477,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// This variant of the intersection method returns the affected
-        /// planes of the box if the box was hit.
+        /// planes of the box if the box was hit. Flags are combined when
+        /// multiple planes produce the same interval bound.
         /// </summary>
         public bool Intersects(
             __box2t__ box,
@@ -497,11 +498,13 @@ namespace Aardvark.Base
                     __ftype__ t = (box.Max.X - Ray.Origin.X) * InvDir.X;
                     if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MaxX; }
+                    else if (t == tmax) { tmaxFlags |= Box.Flags.MaxX; }
                 }
                 {
                     __ftype__ t = (box.Min.X - Ray.Origin.X) * InvDir.X;
                     if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinX; }
+                    else if (t == tmin) { tminFlags |= Box.Flags.MinX; }
                 }
             }
             else if ((dirFlags & DirFlags.NegativeX) != 0)
@@ -510,11 +513,13 @@ namespace Aardvark.Base
                     __ftype__ t = (box.Min.X - Ray.Origin.X) * InvDir.X;
                     if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MinX; }
+                    else if (t == tmax) { tmaxFlags |= Box.Flags.MinX; }
                 }
                 {
                     __ftype__ t = (box.Max.X - Ray.Origin.X) * InvDir.X;
                     if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MaxX; }
+                    else if (t == tmin) { tminFlags |= Box.Flags.MaxX; }
                 }
             }
             else    // ray parallel to X-plane
@@ -529,11 +534,13 @@ namespace Aardvark.Base
                     __ftype__ t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
                     if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MaxY; }
+                    else if (t == tmax) { tmaxFlags |= Box.Flags.MaxY; }
                 }
                 {
                     __ftype__ t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
                     if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MinY; }
+                    else if (t == tmin) { tminFlags |= Box.Flags.MinY; }
                 }
             }
             else if ((dirFlags & DirFlags.NegativeY) != 0)
@@ -542,11 +549,13 @@ namespace Aardvark.Base
                     __ftype__ t = (box.Min.Y - Ray.Origin.Y) * InvDir.Y;
                     if (t < tmin) return false;
                     if (t < tmax) { tmax = t; tmaxFlags = Box.Flags.MinY; }
+                    else if (t == tmax) { tmaxFlags |= Box.Flags.MinY; }
                 }
                 {
                     __ftype__ t = (box.Max.Y - Ray.Origin.Y) * InvDir.Y;
                     if (t > tmax) return false;
                     if (t > tmin) { tmin = t; tminFlags = Box.Flags.MaxY; }
+                    else if (t == tmin) { tminFlags |= Box.Flags.MaxY; }
                 }
             }
             else    // ray parallel to Y-plane
