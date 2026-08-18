@@ -6980,53 +6980,177 @@ namespace Aardvark.Base
 
         #region Common Divisor and Multiple
 
-        /// TODO: Handle negative inputs?
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint UnsignedMagnitude(int value)
+            => value < 0 ? unchecked(0u - (uint)value) : (uint)value;
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong UnsignedMagnitude(long value)
+            => value < 0 ? unchecked(0UL - (ulong)value) : (ulong)value;
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint GreatestCommonDivisorUnsigned(uint a, uint b)
+        {
+            while (b != 0)
+            {
+                uint remainder = a % b;
+                a = b;
+                b = remainder;
+            }
+
+            return a;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong GreatestCommonDivisorUnsigned(ulong a, ulong b)
+        {
+            while (b != 0)
+            {
+                ulong remainder = a % b;
+                a = b;
+                b = remainder;
+            }
+
+            return a;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint MultiplyWithLimit(uint a, uint b, uint maxValue)
+        {
+            ulong product = (ulong)a * b;
+            if (product > maxValue) throw new OverflowException();
+            return (uint)product;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong MultiplyWithLimit(ulong a, ulong b, ulong maxValue)
+        {
+            // Compute the full 128-bit product from 32-bit limbs.
+            ulong aLow = (uint)a;
+            ulong aHigh = a >> 32;
+            ulong bLow = (uint)b;
+            ulong bHigh = b >> 32;
+
+            ulong lowLow = aLow * bLow;
+            ulong lowHigh = aLow * bHigh;
+            ulong highLow = aHigh * bLow;
+            ulong high = aHigh * bHigh + (lowHigh >> 32) + (highLow >> 32);
+
+            ulong shifted = lowHigh << 32;
+            ulong low = lowLow + shifted;
+            if (low < shifted) high++;
+
+            shifted = highLow << 32;
+            low += shifted;
+            if (low < shifted) high++;
+
+            if (high != 0 || low > maxValue) throw new OverflowException();
+            return low;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint LeastCommonMultipleUnsigned(uint a, uint b, uint maxValue)
+        {
+            if (a == 0 || b == 0) return 0;
+
+            uint reduced = a / GreatestCommonDivisorUnsigned(a, b);
+            return MultiplyWithLimit(reduced, b, maxValue);
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong LeastCommonMultipleUnsigned(ulong a, ulong b, ulong maxValue)
+        {
+            if (a == 0 || b == 0) return 0;
+
+            ulong reduced = a / GreatestCommonDivisorUnsigned(a, b);
+            return MultiplyWithLimit(reduced, b, maxValue);
+        }
+
+        /// <summary>
+        /// Returns the non-negative greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="int.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GreatestCommonDivisor(this int a, int b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+        {
+            uint result = GreatestCommonDivisorUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b));
+            if (result > (uint)int.MaxValue) throw new OverflowException();
+            return (int)result;
+        }
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the non-negative least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="int.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int LeastCommonMultiple(this int a, int b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => (int)LeastCommonMultipleUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b), (uint)int.MaxValue);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the non-negative greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="long.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long GreatestCommonDivisor(this long a, long b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+        {
+            ulong result = GreatestCommonDivisorUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b));
+            if (result > (ulong)long.MaxValue) throw new OverflowException();
+            return (long)result;
+        }
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the non-negative least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="long.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LeastCommonMultiple(this long a, long b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => (long)LeastCommonMultipleUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b), (ulong)long.MaxValue);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GreatestCommonDivisor(this uint a, uint b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+            => GreatestCommonDivisorUnsigned(a, b);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="uint.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint LeastCommonMultiple(this uint a, uint b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => LeastCommonMultipleUnsigned(a, b, uint.MaxValue);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong GreatestCommonDivisor(this ulong a, ulong b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+            => GreatestCommonDivisorUnsigned(a, b);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="ulong.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong LeastCommonMultiple(this ulong a, ulong b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => LeastCommonMultipleUnsigned(a, b, ulong.MaxValue);
 
         #endregion
 

@@ -39,6 +39,21 @@ var smallPrime = Fun.IsPrime(17);       // true
 var notPrime = Fun.IsPrime(1L);         // false
 ```
 
+## Integer Common Divisors and Multiples
+
+`Fun.GreatestCommonDivisor` and `Fun.LeastCommonMultiple` are defined for `int`, `long`, `uint`, and `ulong`, with component-wise overloads for generated integer vectors.
+
+- GCD is non-negative and `gcd(0, 0)` is zero.
+- LCM is non-negative and is zero if either input is zero.
+- Signed inputs use their mathematical magnitudes, including `MinValue`.
+- An `OverflowException` is thrown only when the exact non-negative result cannot fit the return type. In particular, signed `gcd(MinValue, 0)` overflows, while zero LCM values and representable results do not.
+
+```csharp
+var gcd = Fun.GreatestCommonDivisor(-18, 24);  // 6
+var lcm = Fun.LeastCommonMultiple(-18L, 24L); // 72
+var zero = Fun.LeastCommonMultiple(0u, 0u);   // 0
+```
+
 ## Vector Families
 
 Common families:
@@ -133,7 +148,7 @@ var hit = box.Intersects(ray, out double t);
 
 ## Source Anchors
 
-- `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`)
+- `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`, `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple`)
 - `src/Aardvark.Base/Math/Vectors/Vector_auto.cs` (`V3d`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`M44d`, transforms, operators)
 - `src/Aardvark.Base/Math/Trafos/Rot3_auto.cs` (`Rot3d` to `M44d` cast)

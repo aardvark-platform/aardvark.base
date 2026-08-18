@@ -30,6 +30,7 @@ Quick symbol-to-doc map for incremental discovery.
 | Symbol | Primary Doc |
 |--------|-------------|
 | `Fun.IsPrime(int)`, `Fun.IsPrime(long)` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
+| `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `ShortestPath<T>` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `BbTree` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `AliasTableF`, `AliasTableD` | [ALGORITHMS.md](ALGORITHMS.md) |
