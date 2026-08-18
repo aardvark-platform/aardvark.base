@@ -30,6 +30,15 @@ Examples:
 - Core vector/matrix structs are mutable value types (`struct`), not uniformly `readonly struct`.
 - For matrix/vector math in 3D, prefer explicit methods (`TransformPos`, `TransformDir`) over ambiguous shorthand.
 
+## Integer Primality
+
+`Fun.IsPrime(int)` and `Fun.IsPrime(long)` return `true` exactly for prime integers: values greater than or equal to 2 whose only positive divisors are 1 and themselves. Negative values, zero, and one return `false`.
+
+```csharp
+var smallPrime = Fun.IsPrime(17);       // true
+var notPrime = Fun.IsPrime(1L);         // false
+```
+
 ## Vector Families
 
 Common families:
@@ -124,6 +133,7 @@ var hit = box.Intersects(ray, out double t);
 
 ## Source Anchors
 
+- `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`)
 - `src/Aardvark.Base/Math/Vectors/Vector_auto.cs` (`V3d`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`M44d`, transforms, operators)
 - `src/Aardvark.Base/Math/Trafos/Rot3_auto.cs` (`Rot3d` to `M44d` cast)

@@ -6899,10 +6899,14 @@ namespace Aardvark.Base
         [Pure]
         public static bool IsPrime(this int value)
         {
+            if (value < 2) return false;
+            if (value == 2 || value == 3) return true;
+            if (value % 2 == 0 || value % 3 == 0) return false;
+
             int imax = (int)Sqrt(value);
 
-            for (int i = 2; i <= imax; i++)
-                if (value % i == 0) return false;
+            for (int i = 5; i <= imax; i += 6)
+                if (value % i == 0 || value % (i + 2) == 0) return false;
 
             return true;
         }
@@ -6915,10 +6919,14 @@ namespace Aardvark.Base
         [Pure]
         public static bool IsPrime(this long value)
         {
+            if (value < 2) return false;
+            if (value == 2 || value == 3) return true;
+            if (value % 2 == 0 || value % 3 == 0) return false;
+
             long imax = (long)Sqrt(value);
 
-            for (long i = 2; i <= imax; i++)
-                if (value % i == 0) return false;
+            for (long i = 5; i <= imax; i += 6)
+                if (value % i == 0 || value % (i + 2) == 0) return false;
 
             return true;
         }
