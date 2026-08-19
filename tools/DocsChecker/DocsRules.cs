@@ -108,7 +108,7 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/Math/Base/DistributionFunction.cs", "public class DistributionFunction"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "public static class Polynomial"),
                 new("src/Aardvark.Base.IO/ICoder_auto.cs", "void CodeInt(ref int value);"),
-                new("src/Aardvark.Base/Geometry/IntersectionTests_auto.cs", "this Box2d box,\n            Plane2d plane,\n            out Line2d line"),
+                new("src/Aardvark.Base/Geometry/IntersectionTests_auto.cs", "double min = nx * (nx < 0 ? xmax : xmin) + ny * (ny < 0 ? ymax : ymin);"),
                 new("src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs", "public readonly struct FastRay3d"),
                 new("src/Aardvark.Base/Geometry/SpecialPoints_auto.cs", "public static double GetMinimalDistanceTo(this V3d point, Ray3d ray, out double t)"),
                 new("src/Aardvark.Base/Geometry/SpecialPoints_auto.cs", "public static double GetMinimalDistanceTo(this Ray3d ray0, Ray3d ray1, out double t0, out double t1)"),
