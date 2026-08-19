@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
@@ -71,7 +67,7 @@ namespace Aardvark.Base
                         alu[j, i] -= alu[k, i] * factor;
                 }
             }
-            return true;
+            return n == 0 || !Fun.IsTiny(alu[n - 1, n - 1]);
         }
 
         /// <summary>
@@ -227,7 +223,8 @@ namespace Aardvark.Base
         {
             long n = p.LongLength;
             p.SetByIndex(i => i);
-            for (long k = 0, ak = a0, a_k = 0; k < n - 1; k++, ak += ay, a_k += ax)
+            long ak = a0, a_k = 0;
+            for (long k = 0; k < n - 1; k++, ak += ay, a_k += ax)
             {
                 long pi = k;
                 float pivot = alu[ak + a_k], absPivot = Fun.Abs(pivot);
@@ -254,7 +251,7 @@ namespace Aardvark.Base
                         alu[aji] -= alu[aki] * factor;
                 }
             }
-            return true;
+            return n == 0 || !Fun.IsTiny(alu[ak + a_k]);
         }
 
         /// <summary>
@@ -378,7 +375,8 @@ namespace Aardvark.Base
         {
             for (long i = 0; i < n; i++) p[i] = (int)i;
 
-            for (long k = 0, ak = a0, a_k = 0; k < n - 1; k++, ak += ay, a_k += ax)
+            long ak = a0, a_k = 0;
+            for (long k = 0; k < n - 1; k++, ak += ay, a_k += ax)
             {
                 long pi = k;
                 float pivot = alu[ak + a_k], absPivot = Fun.Abs(pivot);
@@ -405,7 +403,7 @@ namespace Aardvark.Base
                         alu[aji] -= alu[aki] * factor;
                 }
             }
-            return true;
+            return n == 0 || !Fun.IsTiny(alu[ak + a_k]);
         }
 
 
@@ -542,7 +540,7 @@ namespace Aardvark.Base
                         alu[j, i] -= alu[k, i] * factor;
                 }
             }
-            return true;
+            return n == 0 || !Fun.IsTiny(alu[n - 1, n - 1]);
         }
 
         /// <summary>
@@ -698,7 +696,8 @@ namespace Aardvark.Base
         {
             long n = p.LongLength;
             p.SetByIndex(i => i);
-            for (long k = 0, ak = a0, a_k = 0; k < n - 1; k++, ak += ay, a_k += ax)
+            long ak = a0, a_k = 0;
+            for (long k = 0; k < n - 1; k++, ak += ay, a_k += ax)
             {
                 long pi = k;
                 double pivot = alu[ak + a_k], absPivot = Fun.Abs(pivot);
@@ -725,7 +724,7 @@ namespace Aardvark.Base
                         alu[aji] -= alu[aki] * factor;
                 }
             }
-            return true;
+            return n == 0 || !Fun.IsTiny(alu[ak + a_k]);
         }
 
         /// <summary>
@@ -849,7 +848,8 @@ namespace Aardvark.Base
         {
             for (long i = 0; i < n; i++) p[i] = (int)i;
 
-            for (long k = 0, ak = a0, a_k = 0; k < n - 1; k++, ak += ay, a_k += ax)
+            long ak = a0, a_k = 0;
+            for (long k = 0; k < n - 1; k++, ak += ay, a_k += ax)
             {
                 long pi = k;
                 double pivot = alu[ak + a_k], absPivot = Fun.Abs(pivot);
@@ -876,7 +876,7 @@ namespace Aardvark.Base
                         alu[aji] -= alu[aki] * factor;
                 }
             }
-            return true;
+            return n == 0 || !Fun.IsTiny(alu[ak + a_k]);
         }
 
 
@@ -1016,7 +1016,9 @@ namespace Aardvark.Base
                         alu[j, i] -= alu[k, i] * factor;
                 }
             }
-            return true;
+            if (n == 0) return true;
+            ComplexD finalPivot = alu[n - 1, n - 1];
+            return !Fun.IsTiny(finalPivot.Real) || !Fun.IsTiny(finalPivot.Imag);
         }
 
         /// <summary>
@@ -1172,7 +1174,8 @@ namespace Aardvark.Base
         {
             long n = p.LongLength;
             p.SetByIndex(i => i);
-            for (long k = 0, ak = a0, a_k = 0; k < n - 1; k++, ak += ay, a_k += ax)
+            long ak = a0, a_k = 0;
+            for (long k = 0; k < n - 1; k++, ak += ay, a_k += ax)
             {
                 long pi = k;
                 ComplexD pivot = alu[ak + a_k];
@@ -1201,7 +1204,9 @@ namespace Aardvark.Base
                         alu[aji] -= alu[aki] * factor;
                 }
             }
-            return true;
+            if (n == 0) return true;
+            ComplexD finalPivot = alu[ak + a_k];
+            return !Fun.IsTiny(finalPivot.Real) || !Fun.IsTiny(finalPivot.Imag);
         }
 
         /// <summary>
@@ -1324,7 +1329,8 @@ namespace Aardvark.Base
         {
             for (long i = 0; i < n; i++) p[i] = (int)i;
 
-            for (long k = 0, ak = a0, a_k = 0; k < n - 1; k++, ak += ay, a_k += ax)
+            long ak = a0, a_k = 0;
+            for (long k = 0; k < n - 1; k++, ak += ay, a_k += ax)
             {
                 long pi = k;
                 ComplexD pivot = alu[ak + a_k];
@@ -1353,7 +1359,9 @@ namespace Aardvark.Base
                         alu[aji] -= alu[aki] * factor;
                 }
             }
-            return true;
+            if (n == 0) return true;
+            ComplexD finalPivot = alu[ak + a_k];
+            return !Fun.IsTiny(finalPivot.Real) || !Fun.IsTiny(finalPivot.Imag);
         }
 
 

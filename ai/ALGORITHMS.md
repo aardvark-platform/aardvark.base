@@ -72,7 +72,12 @@ Available in `Math/LuFactorization.cs` and `Math/QrFactorization.cs`:
 - `LuInverse`
 - `QrFactorize`
 
-`LuFactorize` is in-place.
+`LuFactorize` is in-place and may partially overwrite its input before reporting a singular
+matrix. Boolean overloads return `false` when any pivot, including the final post-elimination
+diagonal, is tiny according to the existing scalar or complex-component tolerance; an order-zero
+factorization succeeds. The allocating multidimensional-array overloads throw `ArgumentException`
+for the same singular condition. Fixed-size `LuInvert` returns `false` without changing its matrix,
+while `LuInverse` returns the corresponding zero matrix.
 
 ## Probability Sampling
 
