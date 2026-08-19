@@ -51,6 +51,16 @@ Semantics (`Ray3_auto.cs`, `FastRay3d.Intersects`):
 - Flag-returning overloads report the union of every box face tied at each interval bound; a corner hit can therefore return two or three face bits. Masked overloads report only selected faces.
 - Axes with zero direction components are handled via `DirFlags`; the ray origin must lie between the slabs of such an axis for a hit.
 
+## Box/Plane Intersection
+
+`Box2f`/`Box2d` plane intersections use the full plane equation `Normal dot point == Distance`:
+
+- Both the boolean and segment-producing overloads accept finite valid boxes and finite planes with a non-zero normal. Invalid or non-finite inputs report no intersection.
+- Intersection is closed: edge and corner contact count as hits. Tangency returns a point segment, and line or point boxes are supported.
+- Scaling both `Normal` and `Distance` by the same non-zero factor, including a negative factor, preserves the result.
+- On a miss, the segment-producing overload returns `false` and leaves its output at `default`. Ordinary crossing segments retain the established order from lower to higher Y, or lower to higher X for horizontal results.
+- The boolean overload tests the box's normal-projection interval directly and does not allocate a corner array.
+
 ## Supporting-Line Distance And Parameters
 
 The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` treat `Ray2f`/`Ray2d` and `Ray3f`/`Ray3d` as unbounded supporting lines. They do not clamp parameters to a forward half-ray:
@@ -106,7 +116,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`TransformPos`, `TransformDir`, `TransformPosProj`)
 - `src/Aardvark.Base/Math/Trafos/Trafo_auto.cs` (`Trafo3d`, `Forward`, `Backward`)
-- `src/Aardvark.Base/Geometry/IntersectionTests_auto.cs` (`Box3d.Intersects(Ray3d, out t)`)
+- `src/Aardvark.Base/Geometry/IntersectionTests_auto.cs` (`Box3d.Intersects(Ray3d, out t)`, `Box2f`/`Box2d` plane intersections)
 - `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, `RayHit3d`, `FastRay3d`)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)

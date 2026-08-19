@@ -1395,7 +1395,8 @@ namespace Aardvark.Base
         #region Box2f intersects Plane2f
 
         /// <summary>
-        /// returns true if the box and the plane intersect
+        /// Returns true if the finite plane intersects the finite valid box.
+        /// Boundary contact counts as an intersection.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -1403,13 +1404,24 @@ namespace Aardvark.Base
             Plane2f plane
             )
         {
-            //UNTESTED
-            return plane.Divides(box.ComputeCorners());
+            float xmin = box.Min.X, ymin = box.Min.Y;
+            float xmax = box.Max.X, ymax = box.Max.Y;
+            float nx = plane.Normal.X, ny = plane.Normal.Y, d = plane.Distance;
+
+            if (!xmin.IsFinite() || !ymin.IsFinite() || !xmax.IsFinite() || !ymax.IsFinite()
+                || !nx.IsFinite() || !ny.IsFinite() || !d.IsFinite()
+                || xmin > xmax || ymin > ymax || (nx == 0 && ny == 0))
+                return false;
+
+            float min = nx * (nx < 0 ? xmax : xmin) + ny * (ny < 0 ? ymax : ymin);
+            float max = nx * (nx < 0 ? xmin : xmax) + ny * (ny < 0 ? ymin : ymax);
+            return min <= d && d <= max;
         }
 
 
         /// <summary>
-        /// NOT TESTED YET.
+        /// Intersects the finite plane with the finite valid box using closed boundary semantics.
+        /// The result is a point segment for tangential contact and default on a miss.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -1417,75 +1429,152 @@ namespace Aardvark.Base
             Plane2f plane,
             out Line2f line)
         {
+            V2f normal = plane.Normal;
+            if (normal.X == 0 && (normal.Y == 1 || normal.Y == -1))
+            {
+                float y = normal.Y > 0 ? plane.Distance : -plane.Distance;
+                if (box.IsValid && box.Min.AllFinite && box.Max.AllFinite && y.IsFinite()
+                    && y >= box.Min.Y && y <= box.Max.Y)
+                {
+                    line = new Line2f(new V2f(box.Min.X, y), new V2f(box.Max.X, y));
+                    return true;
+                }
+                line = default;
+                return false;
+            }
+
+            if (normal.Y == 0 && (normal.X == 1 || normal.X == -1))
+            {
+                float x = normal.X > 0 ? plane.Distance : -plane.Distance;
+                if (box.IsValid && box.Min.AllFinite && box.Max.AllFinite && x.IsFinite()
+                    && x >= box.Min.X && x <= box.Max.X)
+                {
+                    line = new Line2f(new V2f(x, box.Min.Y), new V2f(x, box.Max.Y));
+                    return true;
+                }
+                line = default;
+                return false;
+            }
+
             return Intersects(
-                    plane.Normal.X, plane.Normal.Y, plane.Distance,
+                    normal.X, normal.Y, plane.Distance,
                     box.Min.X, box.Min.Y, box.Max.X, box.Max.Y,
                     out line);
         }
 
         /// <summary>
-        /// Intersects an infinite line given by its normal vector [nx, ny]
-        /// and its distance to the origin d, with an axis aligned box given
-        /// by it minimal point [xmin, ymin] and its maximal point
-        /// [xmax, ymax]. Returns true if there is an intersection and computes
-        /// the actual intersection line.
-        /// NOT TESTED YET.
+        /// Intersects the infinite line <c>nx*x + ny*y = d</c> with the finite valid
+        /// axis-aligned box. Boundary contact counts as an intersection. The result is
+        /// a point segment for tangency and default on a miss.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
                 float nx, float ny, float d,
                 float xmin, float ymin, float xmax, float ymax,
                 out Line2f line)
         {
-            if (nx.IsTiny()) // horizontal
+            line = default;
+            if (!xmin.IsFinite() || !ymin.IsFinite() || !xmax.IsFinite() || !ymax.IsFinite()
+                || !nx.IsFinite() || !ny.IsFinite() || !d.IsFinite()
+                || xmin > xmax || ymin > ymax || (nx == 0 && ny == 0))
+                return false;
+
+            if (nx == 0) // horizontal
             {
-                if (d <= ymin || d >= ymax) { line = default; return false; }
-                line = new Line2f(new V2f(xmin, d), new V2f(xmax, d));
+                float y = ny == 1 ? d : ny == -1 ? -d : d / ny;
+                if (!y.IsFinite() || y < ymin || y > ymax) return false;
+                line = new Line2f(new V2f(xmin, y), new V2f(xmax, y));
                 return true;
             }
 
-            if (ny.IsTiny()) // vertical
+            if (ny == 0) // vertical
             {
-                if (d <= xmin || d >= xmax) { line = default; return false; }
-                line = new Line2f(new V2f(d, ymin), new V2f(d, ymax));
+                float x = nx == 1 ? d : nx == -1 ? -d : d / nx;
+                if (!x.IsFinite() || x < xmin || x > xmax) return false;
+                line = new Line2f(new V2f(x, ymin), new V2f(x, ymax));
                 return true;
             }
 
-            if (nx.Sign() != ny.Sign())
+            if (Fun.Abs(nx) >= Fun.Abs(ny))
             {
                 float x0 = (d - ny * ymin) / nx;
-                if (x0 >= xmax) { line = default; return false; }
-                if (x0 > xmin) xmin = x0;
                 float x1 = (d - ny * ymax) / nx;
-                if (x1 <= xmin) { line = default; return false; }
-                if (x1 < xmax) xmax = x1;
+                if (!x0.IsFinite() || !x1.IsFinite()) return false;
 
-                float y0 = (d - nx * xmin) / ny;
-                if (y0 >= ymax) { line = default; return false; }
-                if (y0 > ymin) ymin = y0;
-                float y1 = (d - nx * xmax) / ny;
-                if (y1 <= ymin) { line = default; return false; }
-                if (y1 < ymax) ymax = y1;
+                if (x0 >= xmin && x0 <= xmax && x1 >= xmin && x1 <= xmax)
+                {
+                    line = new Line2f(new V2f(x0, ymin), new V2f(x1, ymax));
+                    return true;
+                }
 
-                line = new Line2f(new V2f(xmin, ymin), new V2f(xmax, ymax));
+                float dx = x1 - x0;
+                float t0 = 0, t1 = 1;
+                if (dx > 0)
+                {
+                    t0 = (xmin - x0) / dx;
+                    t1 = (xmax - x0) / dx;
+                }
+                else if (dx < 0)
+                {
+                    t0 = (xmax - x0) / dx;
+                    t1 = (xmin - x0) / dx;
+                }
+                else if (x0 < xmin || x0 > xmax)
+                {
+                    return false;
+                }
+
+                if (t0 < 0) t0 = 0;
+                if (t1 > 1) t1 = 1;
+                if (t0 > t1) return false;
+
+                float sy = ymax - ymin;
+                line = new Line2f(
+                    new V2f(x0 + dx * t0, ymin + sy * t0),
+                    new V2f(x0 + dx * t1, ymin + sy * t1));
+                return true;
             }
             else
             {
-                float x0 = (d - ny * ymax) / nx;
-                if (x0 >= xmax) { line = default; return false; }
-                if (x0 > xmin) xmin = x0;
-                float x1 = (d - ny * ymin) / nx;
-                if (x1 <= xmin) { line = default; return false; }
-                if (x1 < xmax) xmax = x1;
-                float y0 = (d - nx * xmax) / ny;
-                if (y0 >= ymax) { line = default; return false; }
-                if (y0 > ymin) ymin = y0;
-                float y1 = (d - nx * xmin) / ny;
-                if (y1 <= ymin) { line = default; return false; }
-                if (y1 < ymax) ymax = y1;
+                float y0 = (d - nx * xmin) / ny;
+                float y1 = (d - nx * xmax) / ny;
+                if (!y0.IsFinite() || !y1.IsFinite()) return false;
 
-                line = new Line2f(new V2f(xmax, ymin), new V2f(xmin, ymax));
+                if (y0 >= ymin && y0 <= ymax && y1 >= ymin && y1 <= ymax)
+                {
+                    V2f q0 = new V2f(xmin, y0);
+                    V2f q1 = new V2f(xmax, y1);
+                    line = y0 <= y1 ? new Line2f(q0, q1) : new Line2f(q1, q0);
+                    return true;
+                }
+
+                float dy = y1 - y0;
+                float t0 = 0, t1 = 1;
+                if (dy > 0)
+                {
+                    t0 = (ymin - y0) / dy;
+                    t1 = (ymax - y0) / dy;
+                }
+                else if (dy < 0)
+                {
+                    t0 = (ymax - y0) / dy;
+                    t1 = (ymin - y0) / dy;
+                }
+                else if (y0 < ymin || y0 > ymax)
+                {
+                    return false;
+                }
+
+                if (t0 < 0) t0 = 0;
+                if (t1 > 1) t1 = 1;
+                if (t0 > t1) return false;
+
+                float sx = xmax - xmin;
+                V2f p0 = new V2f(xmin + sx * t0, y0 + dy * t0);
+                V2f p1 = new V2f(xmin + sx * t1, y0 + dy * t1);
+                line = p0.Y <= p1.Y ? new Line2f(p0, p1) : new Line2f(p1, p0);
+                return true;
             }
-            return true;
         }
 
         #endregion
@@ -5620,7 +5709,8 @@ namespace Aardvark.Base
         #region Box2d intersects Plane2d
 
         /// <summary>
-        /// returns true if the box and the plane intersect
+        /// Returns true if the finite plane intersects the finite valid box.
+        /// Boundary contact counts as an intersection.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -5628,13 +5718,24 @@ namespace Aardvark.Base
             Plane2d plane
             )
         {
-            //UNTESTED
-            return plane.Divides(box.ComputeCorners());
+            double xmin = box.Min.X, ymin = box.Min.Y;
+            double xmax = box.Max.X, ymax = box.Max.Y;
+            double nx = plane.Normal.X, ny = plane.Normal.Y, d = plane.Distance;
+
+            if (!xmin.IsFinite() || !ymin.IsFinite() || !xmax.IsFinite() || !ymax.IsFinite()
+                || !nx.IsFinite() || !ny.IsFinite() || !d.IsFinite()
+                || xmin > xmax || ymin > ymax || (nx == 0 && ny == 0))
+                return false;
+
+            double min = nx * (nx < 0 ? xmax : xmin) + ny * (ny < 0 ? ymax : ymin);
+            double max = nx * (nx < 0 ? xmin : xmax) + ny * (ny < 0 ? ymin : ymax);
+            return min <= d && d <= max;
         }
 
 
         /// <summary>
-        /// NOT TESTED YET.
+        /// Intersects the finite plane with the finite valid box using closed boundary semantics.
+        /// The result is a point segment for tangential contact and default on a miss.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -5642,75 +5743,152 @@ namespace Aardvark.Base
             Plane2d plane,
             out Line2d line)
         {
+            V2d normal = plane.Normal;
+            if (normal.X == 0 && (normal.Y == 1 || normal.Y == -1))
+            {
+                double y = normal.Y > 0 ? plane.Distance : -plane.Distance;
+                if (box.IsValid && box.Min.AllFinite && box.Max.AllFinite && y.IsFinite()
+                    && y >= box.Min.Y && y <= box.Max.Y)
+                {
+                    line = new Line2d(new V2d(box.Min.X, y), new V2d(box.Max.X, y));
+                    return true;
+                }
+                line = default;
+                return false;
+            }
+
+            if (normal.Y == 0 && (normal.X == 1 || normal.X == -1))
+            {
+                double x = normal.X > 0 ? plane.Distance : -plane.Distance;
+                if (box.IsValid && box.Min.AllFinite && box.Max.AllFinite && x.IsFinite()
+                    && x >= box.Min.X && x <= box.Max.X)
+                {
+                    line = new Line2d(new V2d(x, box.Min.Y), new V2d(x, box.Max.Y));
+                    return true;
+                }
+                line = default;
+                return false;
+            }
+
             return Intersects(
-                    plane.Normal.X, plane.Normal.Y, plane.Distance,
+                    normal.X, normal.Y, plane.Distance,
                     box.Min.X, box.Min.Y, box.Max.X, box.Max.Y,
                     out line);
         }
 
         /// <summary>
-        /// Intersects an infinite line given by its normal vector [nx, ny]
-        /// and its distance to the origin d, with an axis aligned box given
-        /// by it minimal point [xmin, ymin] and its maximal point
-        /// [xmax, ymax]. Returns true if there is an intersection and computes
-        /// the actual intersection line.
-        /// NOT TESTED YET.
+        /// Intersects the infinite line <c>nx*x + ny*y = d</c> with the finite valid
+        /// axis-aligned box. Boundary contact counts as an intersection. The result is
+        /// a point segment for tangency and default on a miss.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
                 double nx, double ny, double d,
                 double xmin, double ymin, double xmax, double ymax,
                 out Line2d line)
         {
-            if (nx.IsTiny()) // horizontal
+            line = default;
+            if (!xmin.IsFinite() || !ymin.IsFinite() || !xmax.IsFinite() || !ymax.IsFinite()
+                || !nx.IsFinite() || !ny.IsFinite() || !d.IsFinite()
+                || xmin > xmax || ymin > ymax || (nx == 0 && ny == 0))
+                return false;
+
+            if (nx == 0) // horizontal
             {
-                if (d <= ymin || d >= ymax) { line = default; return false; }
-                line = new Line2d(new V2d(xmin, d), new V2d(xmax, d));
+                double y = ny == 1 ? d : ny == -1 ? -d : d / ny;
+                if (!y.IsFinite() || y < ymin || y > ymax) return false;
+                line = new Line2d(new V2d(xmin, y), new V2d(xmax, y));
                 return true;
             }
 
-            if (ny.IsTiny()) // vertical
+            if (ny == 0) // vertical
             {
-                if (d <= xmin || d >= xmax) { line = default; return false; }
-                line = new Line2d(new V2d(d, ymin), new V2d(d, ymax));
+                double x = nx == 1 ? d : nx == -1 ? -d : d / nx;
+                if (!x.IsFinite() || x < xmin || x > xmax) return false;
+                line = new Line2d(new V2d(x, ymin), new V2d(x, ymax));
                 return true;
             }
 
-            if (nx.Sign() != ny.Sign())
+            if (Fun.Abs(nx) >= Fun.Abs(ny))
             {
                 double x0 = (d - ny * ymin) / nx;
-                if (x0 >= xmax) { line = default; return false; }
-                if (x0 > xmin) xmin = x0;
                 double x1 = (d - ny * ymax) / nx;
-                if (x1 <= xmin) { line = default; return false; }
-                if (x1 < xmax) xmax = x1;
+                if (!x0.IsFinite() || !x1.IsFinite()) return false;
 
-                double y0 = (d - nx * xmin) / ny;
-                if (y0 >= ymax) { line = default; return false; }
-                if (y0 > ymin) ymin = y0;
-                double y1 = (d - nx * xmax) / ny;
-                if (y1 <= ymin) { line = default; return false; }
-                if (y1 < ymax) ymax = y1;
+                if (x0 >= xmin && x0 <= xmax && x1 >= xmin && x1 <= xmax)
+                {
+                    line = new Line2d(new V2d(x0, ymin), new V2d(x1, ymax));
+                    return true;
+                }
 
-                line = new Line2d(new V2d(xmin, ymin), new V2d(xmax, ymax));
+                double dx = x1 - x0;
+                double t0 = 0, t1 = 1;
+                if (dx > 0)
+                {
+                    t0 = (xmin - x0) / dx;
+                    t1 = (xmax - x0) / dx;
+                }
+                else if (dx < 0)
+                {
+                    t0 = (xmax - x0) / dx;
+                    t1 = (xmin - x0) / dx;
+                }
+                else if (x0 < xmin || x0 > xmax)
+                {
+                    return false;
+                }
+
+                if (t0 < 0) t0 = 0;
+                if (t1 > 1) t1 = 1;
+                if (t0 > t1) return false;
+
+                double sy = ymax - ymin;
+                line = new Line2d(
+                    new V2d(x0 + dx * t0, ymin + sy * t0),
+                    new V2d(x0 + dx * t1, ymin + sy * t1));
+                return true;
             }
             else
             {
-                double x0 = (d - ny * ymax) / nx;
-                if (x0 >= xmax) { line = default; return false; }
-                if (x0 > xmin) xmin = x0;
-                double x1 = (d - ny * ymin) / nx;
-                if (x1 <= xmin) { line = default; return false; }
-                if (x1 < xmax) xmax = x1;
-                double y0 = (d - nx * xmax) / ny;
-                if (y0 >= ymax) { line = default; return false; }
-                if (y0 > ymin) ymin = y0;
-                double y1 = (d - nx * xmin) / ny;
-                if (y1 <= ymin) { line = default; return false; }
-                if (y1 < ymax) ymax = y1;
+                double y0 = (d - nx * xmin) / ny;
+                double y1 = (d - nx * xmax) / ny;
+                if (!y0.IsFinite() || !y1.IsFinite()) return false;
 
-                line = new Line2d(new V2d(xmax, ymin), new V2d(xmin, ymax));
+                if (y0 >= ymin && y0 <= ymax && y1 >= ymin && y1 <= ymax)
+                {
+                    V2d q0 = new V2d(xmin, y0);
+                    V2d q1 = new V2d(xmax, y1);
+                    line = y0 <= y1 ? new Line2d(q0, q1) : new Line2d(q1, q0);
+                    return true;
+                }
+
+                double dy = y1 - y0;
+                double t0 = 0, t1 = 1;
+                if (dy > 0)
+                {
+                    t0 = (ymin - y0) / dy;
+                    t1 = (ymax - y0) / dy;
+                }
+                else if (dy < 0)
+                {
+                    t0 = (ymax - y0) / dy;
+                    t1 = (ymin - y0) / dy;
+                }
+                else if (y0 < ymin || y0 > ymax)
+                {
+                    return false;
+                }
+
+                if (t0 < 0) t0 = 0;
+                if (t1 > 1) t1 = 1;
+                if (t0 > t1) return false;
+
+                double sx = xmax - xmin;
+                V2d p0 = new V2d(xmin + sx * t0, y0 + dy * t0);
+                V2d p1 = new V2d(xmin + sx * t1, y0 + dy * t1);
+                line = p0.Y <= p1.Y ? new Line2d(p0, p1) : new Line2d(p1, p0);
+                return true;
             }
-            return true;
         }
 
         #endregion

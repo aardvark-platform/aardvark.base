@@ -74,6 +74,7 @@ internal sealed class DocsRules
                 new("AGENTS.md", "mixed C#/F# project references", "Agent guide must reflect actual dependency reality."),
                 new("ai/SERIALIZATION.md", "void CodeInt(ref int value);", "Serialization docs should list actual primitive coder names."),
                 new("ai/INCREMENTAL.md", "CSharp.Data.Adaptive", "C# adaptive examples require the CSharp.Data.Adaptive namespace/package."),
+                new("ai/SEMANTICS_GEOMETRY_CORE.md", "`Box2f`/`Box2d` plane intersections", "Geometry semantics should cover closed, scale-invariant box/plane intersections."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "FastRay", "Geometry semantics should cover FastRay slab-test conventions."),
             ],
             SourceAnchors =
@@ -107,6 +108,7 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/Math/Base/DistributionFunction.cs", "public class DistributionFunction"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "public static class Polynomial"),
                 new("src/Aardvark.Base.IO/ICoder_auto.cs", "void CodeInt(ref int value);"),
+                new("src/Aardvark.Base/Geometry/IntersectionTests_auto.cs", "this Box2d box,\n            Plane2d plane,\n            out Line2d line"),
                 new("src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs", "public readonly struct FastRay3d"),
                 new("src/Aardvark.Base/Geometry/SpecialPoints_auto.cs", "public static double GetMinimalDistanceTo(this V3d point, Ray3d ray, out double t)"),
                 new("src/Aardvark.Base/Geometry/SpecialPoints_auto.cs", "public static double GetMinimalDistanceTo(this Ray3d ray0, Ray3d ray1, out double t0, out double t1)"),

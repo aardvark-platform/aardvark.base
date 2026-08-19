@@ -1,3 +1,4 @@
+- [Base] Corrected and accelerated 2D box/plane intersections for scaled normals and boundary contact
 - [Base] Corrected LU singularity detection for final pivots and 1x1 matrices
 - [Base] Corrected integer GCD and LCM sign, zero, and overflow semantics
 - [Base] Corrected and accelerated integer primality checks
