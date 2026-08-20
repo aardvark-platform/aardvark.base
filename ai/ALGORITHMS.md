@@ -79,6 +79,15 @@ factorization succeeds. The allocating multidimensional-array overloads throw `A
 for the same singular condition. Fixed-size `LuInvert` returns `false` without changing its matrix,
 while `LuInverse` returns the corresponding zero matrix.
 
+`QrFactorize` stores normalized Householder vectors in place and returns the diagonal of the
+triangular factor. For every active row or column, the Householder coefficient has the active
+vector's norm and the stable sign opposite a non-zero pivot. If either signed zero is the pivot
+but the active norm is non-zero, the coefficient deterministically uses the negative norm; this
+keeps full-rank permutation, tall, and wide matrices finite. A zero active norm remains subject
+to the existing rank-deficient behavior. Managed and offset/strided row and column paths share
+these semantics. Wide strided `QrSolve` applies each row reflector starting at the matching
+solution index, including when the solution has a non-zero offset or non-unit stride.
+
 ## Probability Sampling
 
 ### Alias tables
