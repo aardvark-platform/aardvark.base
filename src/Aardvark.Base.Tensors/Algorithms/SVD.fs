@@ -9,7 +9,7 @@ open System.Runtime.CompilerServices
 module private SVDHelpers =
     let inline pythag a b = sqrt (a*a + b*b)
     
-    let inline svdBidiagonalNative (anorm : ^a) (U : NativeMatrix< ^a >) (B : NativeMatrix< ^a >) (Vt : NativeMatrix< ^a >) : bool =
+    let inline svdBidiagonalNative (anorm : ^a) (U : NativeMatrixView< ^a >) (B : NativeMatrixView< ^a >) (Vt : NativeMatrixView< ^a >) : bool =
         let two = LanguagePrimitives.GenericOne + LanguagePrimitives.GenericOne
         let mutable c : ^a = LanguagePrimitives.GenericZero
         let mutable s = LanguagePrimitives.GenericZero
@@ -22,7 +22,7 @@ module private SVDHelpers =
         let n = int B.SY
         let m = min (int B.SX) n
 
-        let pB = NativePtr.toNativeInt B.Pointer
+        let pB = NativePtr.toNativeInt B.Pointer + nativeint B.Origin * nativeint sizeof< ^a >
         let sa = nativeint sizeof< ^a >
         let dbc = nativeint B.DX * sa
         let dbr = nativeint B.DY * sa
@@ -174,60 +174,20 @@ module private SVDHelpers =
             setw i1 t
             applyGivensTransposedMat Vt i0 i1 LanguagePrimitives.GenericZero LanguagePrimitives.GenericOne
 
-        let cmp =
-            { new System.Collections.Generic.IComparer< ^a > with
-                member x.Compare(l, r) =
-                    compare (abs l) (abs r)
-            }
+        // Select the largest remaining magnitude in place. Equal magnitudes keep
+        // the first remaining position, making repeated and zero values deterministic.
+        for i0 in 0 .. m - 2 do
+            let mutable biggestIdx = i0
+            let mutable biggestMagnitude = abs (w i0)
+            for i1 in i0 + 1 .. m - 1 do
+                let magnitude = abs (w i1)
+                if magnitude > biggestMagnitude then
+                    biggestMagnitude <- magnitude
+                    biggestIdx <- i1
 
-        let values = 
-            //SortedSetExt< ^a * _ >(cmp)
-            System.Collections.Generic.SortedDictionary< ^a, _ >(cmp)
-        for i in 0 .. m - 1 do
-            let v = w i //B.[i,i]
-            match values.TryGetValue(v) with
-            | (true,o) -> 
-                values.[v] <- i::o
-            | _ -> 
-                values.[v] <- [i]
-                // values <- 
-                //     MapExt.alter v (fun o ->
-                //         let o = defaultArg o []
-                //         Some (i :: o)
-                //     ) values
-                
-        for i0 in 0..m-1 do
-            let biggestIdx =
-                let (KeyValue(key,indices)) = values |> Seq.last
-                //let (key, indices) = MapExt.tryItem (values.Count - 1) values |> Option.get
-                match indices with
-                    | [i0] -> 
-                        values.Remove(key) |> ignore
-                        //values <- MapExt.remove key values
-                        i0
-                    | i0 :: r ->
-                        values.[key] <- r
-                        //values <- MapExt.add key r values
-                        i0
-                    | _ ->
-                        failwith ""
-                
             if biggestIdx <> i0 then
-                let v0 = w i0 //B.[i0, i0]
                 swap i0 biggestIdx
-               
-                match values.TryGetValue(v0) with
-                | (true,o) -> 
-                    values.[v0] <- o |> List.map (fun ii -> if ii = i0 then biggestIdx else ii)
-                | _ -> 
-                    values.[v0] <- []                
-                // values <- 
-                //     MapExt.alter v0 (fun o ->
-                //         let o = Option.defaultValue [] o
-                //         o |> List.map (fun ii -> if ii = i0 then biggestIdx else ii) |> Some
-                //     ) values
 
-    
         for i0 in 0..m-2 do
             if w i0 < LanguagePrimitives.GenericZero then
                 let i1 = m-1
@@ -237,6 +197,19 @@ module private SVDHelpers =
 
         suc
 
+    let inline svdDecomposeNative (eps : ^a) (U : NativeMatrixView< ^a >) (S : NativeMatrixView< ^a >) (Vt : NativeMatrixView< ^a >) =
+        if S.SX <= S.SY then
+            let anorm = qrBidiagonalizeNative eps U S Vt
+            svdBidiagonalNative anorm U S Vt
+        else
+            // B = U * B' * Vt
+            // Bt = V * Bt' * Ut
+            let Ut = U.Transposed
+            let V = Vt.Transposed
+            let St = S.Transposed
+            let anorm = qrBidiagonalizeNative eps V St Ut
+            svdBidiagonalNative anorm V St Ut
+
 [<AbstractClass; Sealed>]
 type SVD private() =
 
@@ -244,30 +217,10 @@ type SVD private() =
     static let floatEps = float32 1E-6
 
     static member DecomposeInPlace(U : NativeMatrix<float>, S : NativeMatrix<float>, Vt : NativeMatrix<float>) =
-        if S.SX <= S.SY then
-            let anorm = qrBidiagonalizeNative doubleEps U S Vt
-            svdBidiagonalNative anorm U S Vt
-        else
-            // B = U * B' * Vt
-            // Bt = V * Bt' * Ut
-            let Ut = U.Transposed
-            let V = Vt.Transposed
-            let St = S.Transposed
-            let anorm = qrBidiagonalizeNative doubleEps V St Ut
-            svdBidiagonalNative anorm V St Ut
+        svdDecomposeNative doubleEps (nativeMatrixView U) (nativeMatrixView S) (nativeMatrixView Vt)
 
     static member DecomposeInPlace(U : NativeMatrix<float32>, S : NativeMatrix<float32>, Vt : NativeMatrix<float32>) =
-        if S.SX <= S.SY then
-            let anorm = qrBidiagonalizeNative floatEps U S Vt
-            svdBidiagonalNative anorm U S Vt
-        else
-            // B = U * B' * Vt
-            // Bt = V * Bt' * Ut
-            let Ut = U.Transposed
-            let V = Vt.Transposed
-            let St = S.Transposed
-            let anorm = qrBidiagonalizeNative floatEps V St Ut
-            svdBidiagonalNative anorm V St Ut
+        svdDecomposeNative floatEps (nativeMatrixView U) (nativeMatrixView S) (nativeMatrixView Vt)
             
     static member DecomposeInPlace(U : Matrix<float>, S : Matrix<float>, Vt : Matrix<float>) =
         let mutable U = U
@@ -373,10 +326,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M22f> 1
         let pVt = NativePtr.stackalloc<M22f> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tS  = NativeMatrix<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tVt = NativeMatrix<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrixView<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tVt = NativeMatrixView<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        if svdDecomposeNative floatEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -392,10 +345,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M23f> 1
         let pVt = NativePtr.stackalloc<M33f> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tS  = NativeMatrix<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
-        let tVt = NativeMatrix<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrixView<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tVt = NativeMatrixView<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        if svdDecomposeNative floatEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -411,10 +364,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M33f> 1
         let pVt = NativePtr.stackalloc<M33f> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tS  = NativeMatrix<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tVt = NativeMatrix<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrixView<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tVt = NativeMatrixView<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        if svdDecomposeNative floatEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -430,10 +383,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M34f> 1
         let pVt = NativePtr.stackalloc<M44f> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tS  = NativeMatrix<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
-        let tVt = NativeMatrix<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrixView<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tVt = NativeMatrixView<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        if svdDecomposeNative floatEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -449,10 +402,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M44f> 1
         let pVt = NativePtr.stackalloc<M44f> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tS  = NativeMatrix<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tVt = NativeMatrix<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float32>(NativePtr.cast pU,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tS  = NativeMatrixView<float32>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tVt = NativeMatrixView<float32>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        if svdDecomposeNative floatEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -468,10 +421,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M22d> 1
         let pVt = NativePtr.stackalloc<M22d> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrixView<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tVt = NativeMatrixView<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        if svdDecomposeNative doubleEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -487,10 +440,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M23d> 1
         let pVt = NativePtr.stackalloc<M33d> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
-        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tS  = NativeMatrixView<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tVt = NativeMatrixView<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        if svdDecomposeNative doubleEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -506,10 +459,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M33d> 1
         let pVt = NativePtr.stackalloc<M33d> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrixView<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tVt = NativeMatrixView<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        if svdDecomposeNative doubleEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -525,10 +478,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M34d> 1
         let pVt = NativePtr.stackalloc<M44d> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
-        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tS  = NativeMatrixView<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tVt = NativeMatrixView<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        if svdDecomposeNative doubleEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone
@@ -544,10 +497,10 @@ type SVD private() =
         let pS  = NativePtr.stackalloc<M44d> 1
         let pVt = NativePtr.stackalloc<M44d> 1
         NativePtr.write pS m
-        let tU  = NativeMatrix<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tS  = NativeMatrix<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tVt = NativeMatrix<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        if SVD.DecomposeInPlace(tU,tS,tVt) then
+        let tU  = NativeMatrixView<float>(NativePtr.cast pU,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tS  = NativeMatrixView<float>(NativePtr.cast pS,  MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tVt = NativeMatrixView<float>(NativePtr.cast pVt, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        if svdDecomposeNative doubleEps tU tS tVt then
             ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))
         else
             ValueNone

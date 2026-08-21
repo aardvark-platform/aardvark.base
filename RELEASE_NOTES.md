@@ -1,3 +1,4 @@
+- [Tensors] Eliminated transient allocations and accelerated fixed-size matrix decompositions
 - [Base] Corrected QR zero-pivot factorization and wide strided solve indexing
 - [Base] Corrected and accelerated 2D box/plane intersections for scaled normals and boundary contact
 - [Base] Corrected LU singularity detection for final pivots and 1x1 matrices

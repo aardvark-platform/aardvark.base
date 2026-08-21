@@ -2035,3 +2035,289 @@ module SVDTests =
                                 if not (Fun.ApproximateEquals(test, mat, float32 1e-2)) then
                                     failwithf "Invalid SVD at %d" i
             | _ -> failwith "NONE"
+
+
+module TensorDecompositionRegressionTests =
+    open Microsoft.FSharp.NativeInterop
+
+    let private matrix64 (values : float[,]) =
+        let rows = values.GetLength 0
+        let cols = values.GetLength 1
+        let data = Array.init (rows * cols) (fun i -> values.[i / cols, i % cols])
+        Matrix<float>(data, V2l(cols, rows))
+
+    let private matrix32 (values : float32[,]) =
+        Array2D.init (values.GetLength 0) (values.GetLength 1) (fun y x -> float values.[y, x])
+        |> matrix64
+
+    let private matrixM33d (value : M33d) =
+        Matrix<float>(value.ToArray(), V2l(3, 3))
+
+    let private matrixM33f (value : M33f) =
+        Matrix<float>(value.ToArray() |> Array.map float, V2l(3, 3))
+
+    let private assertApprox (tolerance : float) (expected : Matrix<float>) (actual : Matrix<float>) =
+        Assert.That(actual.SX, Is.EqualTo expected.SX)
+        Assert.That(actual.SY, Is.EqualTo expected.SY)
+        let mutable error = 0.0
+        for y in 0 .. int actual.SY - 1 do
+            for x in 0 .. int actual.SX - 1 do
+                error <- max error (abs (actual.[x, y] - expected.[x, y]))
+        Assert.That(error, Is.LessThanOrEqualTo tolerance)
+
+    let private assertOrthogonal tolerance (matrix : Matrix<float>) =
+        let product = matrix.Multiply(matrix.Transposed)
+        let mutable identity = Matrix<float>(product.SX, product.SY)
+        for i in 0 .. int (min identity.SX identity.SY) - 1 do
+            identity.[i, i] <- 1.0
+        assertApprox tolerance identity product
+
+    let private assertUpperTriangular tolerance (matrix : Matrix<float>) =
+        for y in 0 .. int matrix.SY - 1 do
+            for x in 0 .. min (y - 1) (int matrix.SX - 1) do
+                Assert.That(abs matrix.[x, y], Is.LessThanOrEqualTo tolerance)
+
+    let private assertBidiagonal tolerance (matrix : Matrix<float>) =
+        for y in 0 .. int matrix.SY - 1 do
+            for x in 0 .. int matrix.SX - 1 do
+                if x <> y && x <> y + 1 then
+                    Assert.That(abs matrix.[x, y], Is.LessThanOrEqualTo tolerance)
+
+    let private assertDiagonalDescending tolerance (matrix : Matrix<float>) =
+        for y in 0 .. int matrix.SY - 1 do
+            for x in 0 .. int matrix.SX - 1 do
+                if x <> y then
+                    Assert.That(abs matrix.[x, y], Is.LessThanOrEqualTo tolerance)
+
+        let diagonalCount = int (min matrix.SX matrix.SY)
+        for i in 1 .. diagonalCount - 1 do
+            Assert.That(abs matrix.[i, i], Is.LessThanOrEqualTo(abs matrix.[i - 1, i - 1] + tolerance))
+
+    let private validateQr tolerance (input : Matrix<float>) (q : Matrix<float>) (r : Matrix<float>) =
+        assertApprox tolerance input (q.Multiply r)
+        assertOrthogonal tolerance q
+        assertUpperTriangular tolerance r
+
+    let private validateRq tolerance (input : Matrix<float>) (r : Matrix<float>) (q : Matrix<float>) =
+        assertApprox tolerance input (r.Multiply q)
+        assertOrthogonal tolerance q
+        assertUpperTriangular tolerance r
+
+    let private validateBidiagonal tolerance (input : Matrix<float>) (u : Matrix<float>) (b : Matrix<float>) (vt : Matrix<float>) =
+        assertApprox tolerance input (u.Multiply(b.Multiply vt))
+        assertOrthogonal tolerance u
+        assertOrthogonal tolerance vt
+        assertBidiagonal tolerance b
+
+    let private validateSvd tolerance (input : Matrix<float>) (u : Matrix<float>) (s : Matrix<float>) (vt : Matrix<float>) =
+        assertApprox tolerance input (u.Multiply(s.Multiply vt))
+        assertOrthogonal tolerance u
+        assertOrthogonal tolerance vt
+        assertDiagonalDescending tolerance s
+
+    let private runNative<'a when 'a : unmanaged and 'a : equality>
+        (canary : 'a)
+        (input : 'a[,])
+        (operation : NativeMatrix<'a> -> NativeMatrix<'a> -> NativeMatrix<'a> -> bool) =
+
+        let rows = input.GetLength 0
+        let cols = input.GetLength 1
+        Assert.That(rows, Is.EqualTo 3)
+        Assert.That(cols, Is.EqualTo 3)
+
+        let origin = 5L
+        let dx = 2L
+        let dy = 9L
+        let count = 34
+        let info = MatrixInfo(origin, V2l(cols, rows), V2l(dx, dy))
+        let active = Array.zeroCreate count
+        for y in 0 .. rows - 1 do
+            for x in 0 .. cols - 1 do
+                active.[int (origin + int64 x * dx + int64 y * dy)] <- true
+
+        let pA = NativePtr.alloc<'a> count
+        let pB = NativePtr.alloc<'a> count
+        let pC = NativePtr.alloc<'a> count
+
+        let initialize pointer =
+            for i in 0 .. count - 1 do
+                NativePtr.write (NativePtr.add pointer i) canary
+
+        let checkCanaries pointer =
+            for i in 0 .. count - 1 do
+                if not active.[i] then
+                    Assert.That(NativePtr.read (NativePtr.add pointer i), Is.EqualTo canary)
+
+        try
+            initialize pA
+            initialize pB
+            initialize pC
+
+            let a = NativeMatrix<'a>(pA, info)
+            let b = NativeMatrix<'a>(pB, info)
+            let c = NativeMatrix<'a>(pC, info)
+            for y in 0 .. rows - 1 do
+                for x in 0 .. cols - 1 do
+                    b.[x, y] <- input.[y, x]
+
+            let success = operation a b c
+            checkCanaries pA
+            checkCanaries pB
+            checkCanaries pC
+
+            let extract (matrix : NativeMatrix<'a>) =
+                Array2D.init rows cols (fun y x -> matrix.[x, y])
+
+            success, extract a, extract b, extract c
+        finally
+            NativePtr.free pA
+            NativePtr.free pB
+            NativePtr.free pC
+
+    let private fixedInput64 =
+        M33d(4.0, -2.0, 1.0,
+             1.5, 3.0, -0.5,
+             -1.0, 2.0, 5.0)
+
+    let private fixedInput32 =
+        M33f(4.0f, -2.0f, 1.0f,
+             1.5f, 3.0f, -0.5f,
+             -1.0f, 2.0f, 5.0f)
+
+    let private managedInput64 =
+        array2D [
+            [4.0; -2.0; 1.0; 0.5]
+            [1.5; 3.0; -0.5; 2.0]
+            [-1.0; 2.0; 5.0; -1.5]
+        ]
+
+    let private managedInput32 =
+        array2D [
+            [4.0f; -2.0f; 1.0f; 0.5f]
+            [1.5f; 3.0f; -0.5f; 2.0f]
+            [-1.0f; 2.0f; 5.0f; -1.5f]
+        ]
+
+    [<Test>]
+    let ``[Tensor decomposition] fixed float64 kernels preserve invariants and deterministic ties``() =
+        let input = matrixM33d fixedInput64
+
+        let struct (q, r) = QR.DecomposeV fixedInput64
+        validateQr 1E-10 input (matrixM33d q) (matrixM33d r)
+
+        let struct (rr, rq) = RQ.DecomposeV fixedInput64
+        validateRq 1E-10 input (matrixM33d rr) (matrixM33d rq)
+
+        let struct (u, b, vt) = QR.BidiagonalizeV fixedInput64
+        validateBidiagonal 1E-10 input (matrixM33d u) (matrixM33d b) (matrixM33d vt)
+
+        match SVD.DecomposeV fixedInput64 with
+        | ValueSome(struct (su, s, svt)) ->
+            validateSvd 1E-9 input (matrixM33d su) (matrixM33d s) (matrixM33d svt)
+        | ValueNone -> Assert.Fail("SVD did not converge")
+
+        let repeated = M33d(3.0, 0.0, 0.0,
+                            0.0, 3.0, 0.0,
+                            0.0, 0.0, 0.0)
+        match SVD.DecomposeV repeated, SVD.DecomposeV repeated with
+        | ValueSome first, ValueSome second ->
+            Assert.That(first, Is.EqualTo second)
+            let struct (tu, ts, tvt) = first
+            validateSvd 1E-12 (matrixM33d repeated) (matrixM33d tu) (matrixM33d ts) (matrixM33d tvt)
+        | _ -> Assert.Fail("Repeated/zero singular values did not converge")
+
+    [<Test>]
+    let ``[Tensor decomposition] fixed float32 kernels preserve invariants and deterministic ties``() =
+        let input = matrixM33f fixedInput32
+
+        let struct (q, r) = QR.DecomposeV fixedInput32
+        validateQr 2E-4 input (matrixM33f q) (matrixM33f r)
+
+        let struct (rr, rq) = RQ.DecomposeV fixedInput32
+        validateRq 2E-4 input (matrixM33f rr) (matrixM33f rq)
+
+        let struct (u, b, vt) = QR.BidiagonalizeV fixedInput32
+        validateBidiagonal 2E-4 input (matrixM33f u) (matrixM33f b) (matrixM33f vt)
+
+        match SVD.DecomposeV fixedInput32 with
+        | ValueSome(struct (su, s, svt)) ->
+            validateSvd 5E-4 input (matrixM33f su) (matrixM33f s) (matrixM33f svt)
+        | ValueNone -> Assert.Fail("SVD did not converge")
+
+        let repeated = M33f(3.0f, 0.0f, 0.0f,
+                            0.0f, 3.0f, 0.0f,
+                            0.0f, 0.0f, 0.0f)
+        match SVD.DecomposeV repeated, SVD.DecomposeV repeated with
+        | ValueSome first, ValueSome second ->
+            Assert.That(first, Is.EqualTo second)
+            let struct (tu, ts, tvt) = first
+            validateSvd 1E-6 (matrixM33f repeated) (matrixM33f tu) (matrixM33f ts) (matrixM33f tvt)
+        | _ -> Assert.Fail("Repeated/zero singular values did not converge")
+
+    [<Test>]
+    let ``[Tensor decomposition] managed float64 matrices preserve all structures``() =
+        let input = matrix64 managedInput64
+        let q, r = QR.Decompose managedInput64
+        validateQr 1E-10 input (matrix64 q) (matrix64 r)
+
+        let rr, rq = RQ.Decompose managedInput64
+        validateRq 1E-10 input (matrix64 rr) (matrix64 rq)
+
+        let u, b, vt = QR.Bidiagonalize managedInput64
+        validateBidiagonal 1E-10 input (matrix64 u) (matrix64 b) (matrix64 vt)
+
+        match SVD.Decompose managedInput64 with
+        | Some (su, s, svt) -> validateSvd 1E-9 input (matrix64 su) (matrix64 s) (matrix64 svt)
+        | None -> Assert.Fail("SVD did not converge")
+
+    [<Test>]
+    let ``[Tensor decomposition] managed float32 matrices preserve all structures``() =
+        let input = matrix32 managedInput32
+        let q, r = QR.Decompose managedInput32
+        validateQr 2E-4 input (matrix32 q) (matrix32 r)
+
+        let rr, rq = RQ.Decompose managedInput32
+        validateRq 2E-4 input (matrix32 rr) (matrix32 rq)
+
+        let u, b, vt = QR.Bidiagonalize managedInput32
+        validateBidiagonal 2E-4 input (matrix32 u) (matrix32 b) (matrix32 vt)
+
+        match SVD.Decompose managedInput32 with
+        | Some (su, s, svt) -> validateSvd 5E-4 input (matrix32 su) (matrix32 s) (matrix32 svt)
+        | None -> Assert.Fail("SVD did not converge")
+
+    [<Test>]
+    let ``[Tensor decomposition] non-dense float64 native views preserve canaries``() =
+        let source = array2D [[4.0; -2.0; 1.0]; [1.5; 3.0; -0.5]; [-1.0; 2.0; 5.0]]
+        let input = matrix64 source
+
+        let _, q, r, _ = runNative -12345.0 source (fun q r _ -> QR.DecomposeInPlace(q, r); true)
+        validateQr 1E-10 input (matrix64 q) (matrix64 r)
+
+        let _, rq, rr, _ = runNative -12345.0 source (fun q r _ -> RQ.DecomposeInPlace(r, q); true)
+        validateRq 1E-10 input (matrix64 rr) (matrix64 rq)
+
+        let _, u, b, vt = runNative -12345.0 source (fun u b vt -> QR.BidiagonalizeInPlace(u, b, vt); true)
+        validateBidiagonal 1E-10 input (matrix64 u) (matrix64 b) (matrix64 vt)
+
+        let success, su, s, svt = runNative -12345.0 source (fun u s vt -> SVD.DecomposeInPlace(u, s, vt))
+        Assert.That(success, Is.True)
+        validateSvd 1E-9 input (matrix64 su) (matrix64 s) (matrix64 svt)
+
+    [<Test>]
+    let ``[Tensor decomposition] non-dense float32 native views preserve canaries``() =
+        let source = array2D [[4.0f; -2.0f; 1.0f]; [1.5f; 3.0f; -0.5f]; [-1.0f; 2.0f; 5.0f]]
+        let input = matrix32 source
+
+        let _, q, r, _ = runNative -12345.0f source (fun q r _ -> QR.DecomposeInPlace(q, r); true)
+        validateQr 2E-4 input (matrix32 q) (matrix32 r)
+
+        let _, rq, rr, _ = runNative -12345.0f source (fun q r _ -> RQ.DecomposeInPlace(r, q); true)
+        validateRq 2E-4 input (matrix32 rr) (matrix32 rq)
+
+        let _, u, b, vt = runNative -12345.0f source (fun u b vt -> QR.BidiagonalizeInPlace(u, b, vt); true)
+        validateBidiagonal 2E-4 input (matrix32 u) (matrix32 b) (matrix32 vt)
+
+        let success, su, s, svt = runNative -12345.0f source (fun u s vt -> SVD.DecomposeInPlace(u, s, vt))
+        Assert.That(success, Is.True)
+        validateSvd 5E-4 input (matrix32 su) (matrix32 s) (matrix32 svt)

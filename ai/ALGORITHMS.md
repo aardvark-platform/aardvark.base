@@ -88,6 +88,14 @@ to the existing rank-deficient behavior. Managed and offset/strided row and colu
 these semantics. Wide strided `QrSolve` applies each row reflector starting at the matching
 solution index, including when the solution has a non-zero offset or non-unit stride.
 
+The tensor `QR`, `RQ`, bidiagonalization, and `SVD` kernels produce orthogonal factors with the
+corresponding triangular, upper-bidiagonal, or diagonal middle factor. SVD orders singular values
+by descending absolute magnitude using deterministic in-place selection; equal magnitudes retain
+the first remaining position. Coupled factor swaps preserve reconstruction and established sign
+normalization. Native views honor origins and arbitrary matrix strides, while fixed-size value
+kernels use stack storage without transient managed allocations. See `TENSORS.md` for the layout
+and API details.
+
 ## Probability Sampling
 
 ### Alias tables
@@ -150,6 +158,8 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/Geometry/BbTree.cs`
 - `src/Aardvark.Base/Math/LuFactorization.cs`
 - `src/Aardvark.Base/Math/QrFactorization.cs`
+- `src/Aardvark.Base.Tensors/Algorithms/QR.fs`
+- `src/Aardvark.Base.Tensors/Algorithms/SVD.fs`
 - `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
 - `src/Aardvark.Base/Math/Base/DistributionFunction.cs`
 - `src/Aardvark.Base/Math/Base/Statistics.cs`

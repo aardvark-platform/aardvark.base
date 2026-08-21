@@ -5,20 +5,53 @@ open System.Runtime.CompilerServices
 
 #nowarn "9"
 
+[<Struct>]
+type internal NativeMatrixView<'a when 'a : unmanaged> =
+    val Pointer : nativeptr<'a>
+    val Info : MatrixInfo
+
+    new(pointer, info) =
+        { Pointer = pointer; Info = info }
+
+    member x.Origin = x.Info.Origin
+    member x.SX = x.Info.SX
+    member x.SY = x.Info.SY
+    member x.DX = x.Info.DX
+    member x.DY = x.Info.DY
+    member x.Transposed = NativeMatrixView<'a>(x.Pointer, x.Info.Transposed)
+
 [<AutoOpen>]
 module internal QRHelpers =
+
+    let inline nativeMatrixView (matrix : NativeMatrix<'a>) =
+        NativeMatrixView<'a>(matrix.Pointer, matrix.Info)
+
+    let inline setIdentityNative (matrix : NativeMatrixView< ^a >) =
+        let one : ^a = LanguagePrimitives.GenericOne
+        let zero : ^a = LanguagePrimitives.GenericZero
+        let elementSize = nativeint sizeof< ^a >
+        let dx = nativeint matrix.DX * elementSize
+        let dy = nativeint matrix.DY * elementSize
+        let mutable row = NativePtr.toNativeInt matrix.Pointer + nativeint matrix.Origin * elementSize
+
+        for y in 0 .. int matrix.SY - 1 do
+            let mutable current = row
+            for x in 0 .. int matrix.SX - 1 do
+                NativeInt.write current (if x = y then one else zero)
+                current <- current + dx
+            row <- row + dy
 
     let inline sgn v = if v < LanguagePrimitives.GenericZero then -LanguagePrimitives.GenericOne else LanguagePrimitives.GenericOne
 
     let inline tiny (eps : 'a) (v : 'a) =
         abs v <= eps
 
-    let inline applyGivensMat (mat : NativeMatrix< ^a >) (c : int) (r : int) (cos : ^a) (sin : ^a) =
+    let inline applyGivensMat (mat : NativeMatrixView< ^a >) (c : int) (r : int) (cos : ^a) (sin : ^a) =
 #if DEBUG
         let s = min mat.SX mat.SY |> int
         if c < 0 || c >= s || r < 0 || r >= s then failwithf "bad givens (%d, %d)" c r
 #endif
-        let ptrQ = NativePtr.toNativeInt mat.Pointer
+        let ptrQ = NativePtr.toNativeInt mat.Pointer + nativeint mat.Origin * nativeint sizeof< ^a >
         let dcQ = nativeint sizeof< ^a > * nativeint mat.DX
         let drQ = nativeint sizeof< ^a > * nativeint mat.DY
         let rows = int mat.SY
@@ -38,12 +71,12 @@ module internal QRHelpers =
             p0 <- p0 + drQ
             p1 <- p1 + drQ
                 
-    let inline applyGivensTransposedMat (mat : NativeMatrix< ^a >) (c : int) (r : int) (cos : ^a) (sin :  ^a) =
+    let inline applyGivensTransposedMat (mat : NativeMatrixView< ^a >) (c : int) (r : int) (cos : ^a) (sin :  ^a) =
 #if DEBUG
         let s = min mat.SX mat.SY |> int
         if c < 0 || c >= s || r < 0 || r >= s then failwithf "bad givens (%d, %d)" c r
 #endif
-        let ptrQ = NativePtr.toNativeInt mat.Pointer
+        let ptrQ = NativePtr.toNativeInt mat.Pointer + nativeint mat.Origin * nativeint sizeof< ^a >
         let dcQ = nativeint sizeof< ^a > * nativeint mat.DX
         let drQ = nativeint sizeof< ^a > * nativeint mat.DY
         let cols = int mat.SX
@@ -60,31 +93,36 @@ module internal QRHelpers =
             p0 <- p0 + dcQ
             p1 <- p1 + dcQ
             
-    let inline qrDecomposeNative (eps : ^a) (pQ : NativeMatrix< ^a >) (pR : NativeMatrix< ^a >) =
+    let inline qrDecomposeNative (eps : ^a) (pQ : NativeMatrixView< ^a >) (pR : NativeMatrixView< ^a >) =
         let rows = int pR.SY
         let cols = int pR.SX
 
         // pQ <- identity
-        pQ.SetByCoord (fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
+        setIdentityNative pQ
         
         let sa = nativeint sizeof< ^a >
         let drR = nativeint pR.DY * sa
         let dcR = nativeint pR.DX * sa
 
-        let pr = NativePtr.toNativeInt pR.Pointer
+        let pr = NativePtr.toNativeInt pR.Pointer + nativeint pR.Origin * sa
 
 #if DEBUG
-        let maxp = nativeint (rows * cols) * sa
+        let minColumnOffset = if cols > 0 then min 0n (nativeint (cols - 1) * dcR) else 0n
+        let maxColumnOffset = if cols > 0 then max 0n (nativeint (cols - 1) * dcR) else 0n
+        let minRowOffset = if rows > 0 then min 0n (nativeint (rows - 1) * drR) else 0n
+        let maxRowOffset = if rows > 0 then max 0n (nativeint (rows - 1) * drR) else 0n
+        let minp = minColumnOffset + minRowOffset
+        let maxp = maxColumnOffset + maxRowOffset
 #endif
         let inline read (p : nativeint) : ^a =
 #if DEBUG    
-            if p < 0n || p > maxp then failwithf "[QR] bad read: %A outside %A" p maxp
+            if p < minp || p > maxp then failwithf "[QR] bad read: %A outside [%A, %A]" p minp maxp
 #endif        
             NativeInt.read< ^a > (pr + p)
 
         let inline write (p : nativeint) (v : ^a ) : unit =
 #if DEBUG    
-            if p < 0n || p > maxp then failwithf "[RQ] bad write: %A outside %A" p maxp
+            if p < minp || p > maxp then failwithf "[QR] bad write: %A outside [%A, %A]" p minp maxp
 #endif        
             NativeInt.write< ^a > (pr + p) v
 
@@ -129,33 +167,38 @@ module internal QRHelpers =
             pc0 <- pc0 + drR
             pcc <- pcc + drR + dcR
             
-    let inline rqDecomposeNative (eps : ^a) (pR : NativeMatrix< ^a >) (pQ : NativeMatrix< ^a >) =
+    let inline rqDecomposeNative (eps : ^a) (pR : NativeMatrixView< ^a >) (pQ : NativeMatrixView< ^a >) =
         let rows = int pR.SY
         let cols = int pR.SX
 #if DEBUG    
         if rows > cols then failwithf "cannot RQ decompose matrix with %d rows > %d cols" rows cols
 #endif
         // pQ <- identity
-        pQ.SetByCoord (fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
+        setIdentityNative pQ
 
         let sa = nativeint sizeof< ^a >
         let drR = nativeint pR.DY * sa
         let dcR = nativeint pR.DX * sa
 
-        let pr = NativePtr.toNativeInt pR.Pointer
+        let pr = NativePtr.toNativeInt pR.Pointer + nativeint pR.Origin * sa
 
 #if DEBUG
-        let maxp = nativeint (rows * cols) * sa
+        let minColumnOffset = if cols > 0 then min 0n (nativeint (cols - 1) * dcR) else 0n
+        let maxColumnOffset = if cols > 0 then max 0n (nativeint (cols - 1) * dcR) else 0n
+        let minRowOffset = if rows > 0 then min 0n (nativeint (rows - 1) * drR) else 0n
+        let maxRowOffset = if rows > 0 then max 0n (nativeint (rows - 1) * drR) else 0n
+        let minp = minColumnOffset + minRowOffset
+        let maxp = maxColumnOffset + maxRowOffset
 #endif    
         let inline read (p : nativeint) : ^a = 
 #if DEBUG    
-            if p < 0n || p > maxp then failwithf "[RQ] bad read: %A outside %A" p maxp
+            if p < minp || p > maxp then failwithf "[RQ] bad read: %A outside [%A, %A]" p minp maxp
 #endif        
             NativeInt.read< ^a > (pr + p)
         
         let inline write (p : nativeint) (v : ^a ) : unit = 
 #if DEBUG
-            if p < 0n || p > maxp then failwithf "[RQ] bad write: %A outside %A" p maxp
+            if p < minp || p > maxp then failwithf "[RQ] bad write: %A outside [%A, %A]" p minp maxp
 #endif    
             NativeInt.write< ^a > (pr + p) v
 
@@ -212,34 +255,37 @@ module internal QRHelpers =
     /// creates a (in-place) decomposition B = U * B' * Vt where
     /// U and V a orthonormal rotations and B' is upper bidiagonal
     /// returns the "anorm" of the resulting B matrix
-    let inline qrBidiagonalizeNative (eps : ^a) (U : NativeMatrix< ^a >) (B : NativeMatrix< ^a >) (Vt : NativeMatrix< ^a >) =
+    let inline qrBidiagonalizeNative (eps : ^a) (U : NativeMatrixView< ^a >) (B : NativeMatrixView< ^a >) (Vt : NativeMatrixView< ^a >) =
         let rows = int B.SY
         let cols = int B.SX
 
         // set u and v to identity
-        U.SetByCoord(fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
-        Vt.SetByCoord(fun (v : V2i) -> if v.X = v.Y then LanguagePrimitives.GenericOne else LanguagePrimitives.GenericZero)
-
-        let pbSize = nativeint B.SX * nativeint B.SY * nativeint sizeof< ^a >
+        setIdentityNative U
+        setIdentityNative Vt
 
         let sa = nativeint sizeof< ^a >
-        let pB = NativePtr.toNativeInt B.Pointer
+        let pB = NativePtr.toNativeInt B.Pointer + nativeint B.Origin * sa
         let dbr = nativeint B.DY * sa
         let dbc = nativeint B.DX * sa
+
+#if DEBUG
+        let minColumnOffset = if cols > 0 then min 0n (nativeint (cols - 1) * dbc) else 0n
+        let maxColumnOffset = if cols > 0 then max 0n (nativeint (cols - 1) * dbc) else 0n
+        let minRowOffset = if rows > 0 then min 0n (nativeint (rows - 1) * dbr) else 0n
+        let maxRowOffset = if rows > 0 then max 0n (nativeint (rows - 1) * dbr) else 0n
+        let minp = pB + minColumnOffset + minRowOffset
+        let maxp = pB + maxColumnOffset + maxRowOffset
+#endif
         
         let inline read (ptr : nativeint) : ^a = 
 #if DEBUG
-             let dist = ptr - pB
-             if dist < 0n || dist >= pbSize then 
-                 failwithf "bad offset: %A" (int64 pbSize / int64 sizeof< ^a >)
+             if ptr < minp || ptr > maxp then failwithf "bad read: %A" ptr
 #endif
              NativeInt.read< ^a> ptr
 
         let inline write (ptr : nativeint) (value : ^a) =  
 #if DEBUG
-             let dist = ptr - pB
-             if dist < 0n || dist >= pbSize then 
-                 failwithf "bad offset: %A" (int64 pbSize / int64 sizeof< ^a >)
+             if ptr < minp || ptr > maxp then failwithf "bad write: %A" ptr
 #endif
              NativeInt.write< ^a > ptr value
 
@@ -362,7 +408,7 @@ type QR private() =
         tensor {
             let! pQ = &Q
             let! pR = &R
-            qrDecomposeNative doubleEps pQ pR
+            qrDecomposeNative doubleEps (nativeMatrixView pQ) (nativeMatrixView pR)
         }
 
     static member DecomposeInPlace(Q : float32[,], R : float32[,]) =
@@ -371,14 +417,14 @@ type QR private() =
         tensor {
             let! pQ = &Q
             let! pR = &R
-            qrDecomposeNative floatEps pQ pR
+            qrDecomposeNative floatEps (nativeMatrixView pQ) (nativeMatrixView pR)
         }
 
     static member DecomposeInPlace(Q : NativeMatrix<float>, R : NativeMatrix<float>) =
-        qrDecomposeNative doubleEps Q R
+        qrDecomposeNative doubleEps (nativeMatrixView Q) (nativeMatrixView R)
         
     static member DecomposeInPlace(Q : NativeMatrix<float32>, R : NativeMatrix<float32>) =
-        qrDecomposeNative floatEps Q R
+        qrDecomposeNative floatEps (nativeMatrixView Q) (nativeMatrixView R)
         
     static member DecomposeInPlace(Q : Matrix<float>, R : Matrix<float>) =
         let mutable Q = Q
@@ -386,7 +432,7 @@ type QR private() =
         tensor {
             let! pQ = &Q
             let! pR = &R
-            qrDecomposeNative doubleEps pQ pR
+            qrDecomposeNative doubleEps (nativeMatrixView pQ) (nativeMatrixView pR)
         }
         
     static member DecomposeInPlace(Q : Matrix<float32>, R : Matrix<float32>) =
@@ -395,7 +441,7 @@ type QR private() =
         tensor {
             let! pQ = &Q
             let! pR = &R
-            qrDecomposeNative floatEps pQ pR
+            qrDecomposeNative floatEps (nativeMatrixView pQ) (nativeMatrixView pR)
         }
         
     static member Decompose (m : float[,]) =
@@ -425,13 +471,13 @@ type QR private() =
         Q, R
 
     static member BidiagonalizeInPlaceWithNorm(U : NativeMatrix<float>, B : NativeMatrix<float>, Vt : NativeMatrix<float>) =
-        qrBidiagonalizeNative doubleEps U B Vt
+        qrBidiagonalizeNative doubleEps (nativeMatrixView U) (nativeMatrixView B) (nativeMatrixView Vt)
         
     static member BidiagonalizeInPlace(U : NativeMatrix<float>, B : NativeMatrix<float>, Vt : NativeMatrix<float>) =
-        qrBidiagonalizeNative doubleEps U B Vt |> ignore
+        qrBidiagonalizeNative doubleEps (nativeMatrixView U) (nativeMatrixView B) (nativeMatrixView Vt) |> ignore
         
     static member BidiagonalizeInPlace(U : NativeMatrix<float32>, B : NativeMatrix<float32>, Vt : NativeMatrix<float32>) =
-        qrBidiagonalizeNative floatEps U B Vt |> ignore
+        qrBidiagonalizeNative floatEps (nativeMatrixView U) (nativeMatrixView B) (nativeMatrixView Vt) |> ignore
 
     static member BidiagonalizeInPlace(U : Matrix<float>, B : Matrix<float>, Vt : Matrix<float>) =
         let mutable U = U
@@ -442,7 +488,7 @@ type QR private() =
             let! pU = &U
             let! pB = &B
             let! pVt = &Vt
-            return qrBidiagonalizeNative doubleEps pU pB pVt |> ignore
+            return qrBidiagonalizeNative doubleEps (nativeMatrixView pU) (nativeMatrixView pB) (nativeMatrixView pVt) |> ignore
         }
 
     static member BidiagonalizeInPlace(U : Matrix<float32>, B : Matrix<float32>, Vt : Matrix<float32>) =
@@ -454,7 +500,7 @@ type QR private() =
             let! pU = &U
             let! pB = &B
             let! pVt = &Vt
-            return qrBidiagonalizeNative floatEps pU pB pVt |> ignore
+            return qrBidiagonalizeNative floatEps (nativeMatrixView pU) (nativeMatrixView pB) (nativeMatrixView pVt) |> ignore
         }
 
     static member BidiagonalizeInPlace(U : float[,], B : float[,], Vt : float[,]) =
@@ -466,7 +512,7 @@ type QR private() =
             let! pU = &U
             let! pB = &B
             let! pVt = &Vt
-            return qrBidiagonalizeNative doubleEps pU pB pVt |> ignore
+            return qrBidiagonalizeNative doubleEps (nativeMatrixView pU) (nativeMatrixView pB) (nativeMatrixView pVt) |> ignore
         }
 
     static member BidiagonalizeInPlace(U : float32[,], B : float32[,], Vt : float32[,]) =
@@ -478,7 +524,7 @@ type QR private() =
             let! pU = &U
             let! pB = &B
             let! pVt = &Vt
-            return qrBidiagonalizeNative floatEps pU pB pVt |> ignore
+            return qrBidiagonalizeNative floatEps (nativeMatrixView pU) (nativeMatrixView pB) (nativeMatrixView pVt) |> ignore
         }
 
     static member Bidiagonalize(m : Matrix<float>) =
@@ -519,9 +565,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M22f> 1
         let pR = NativePtr.stackalloc<M22f> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        qrDecomposeNative floatEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M22f) = 
@@ -533,9 +579,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M22f> 1
         let pR = NativePtr.stackalloc<M23f> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        qrDecomposeNative floatEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M23f) = 
@@ -547,9 +593,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M33f> 1
         let pR = NativePtr.stackalloc<M33f> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        qrDecomposeNative floatEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M33f) = 
@@ -561,9 +607,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M33f> 1
         let pR = NativePtr.stackalloc<M34f> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        qrDecomposeNative floatEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M34f) = 
@@ -575,9 +621,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M44f> 1
         let pR = NativePtr.stackalloc<M44f> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        qrDecomposeNative floatEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M44f) = 
@@ -589,9 +635,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M22d> 1
         let pR = NativePtr.stackalloc<M22d> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        qrDecomposeNative doubleEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M22d) = 
@@ -603,9 +649,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M22d> 1
         let pR = NativePtr.stackalloc<M23d> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        qrDecomposeNative doubleEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M23d) = 
@@ -617,9 +663,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M33d> 1
         let pR = NativePtr.stackalloc<M33d> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        qrDecomposeNative doubleEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M33d) = 
@@ -631,9 +677,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M33d> 1
         let pR = NativePtr.stackalloc<M34d> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        qrDecomposeNative doubleEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M34d) = 
@@ -645,9 +691,9 @@ type QR private() =
         let pQ = NativePtr.stackalloc<M44d> 1
         let pR = NativePtr.stackalloc<M44d> 1
         NativePtr.write pR m
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        QR.DecomposeInPlace(tQ, tR)
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        qrDecomposeNative doubleEps tQ tR
         struct(NativePtr.read pQ, NativePtr.read pR)
     
     static member Decompose(m : M44d) = 
@@ -663,10 +709,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M22f> 1
         let pV = NativePtr.stackalloc<M22f> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tB = NativeMatrix<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tV = NativeMatrix<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB = NativeMatrixView<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tV = NativeMatrixView<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        qrBidiagonalizeNative floatEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M22f) = 
@@ -679,10 +725,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M23f> 1
         let pV = NativePtr.stackalloc<M33f> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tB = NativeMatrix<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
-        let tV = NativeMatrix<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB = NativeMatrixView<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tV = NativeMatrixView<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        qrBidiagonalizeNative floatEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M23f) = 
@@ -695,10 +741,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M33f> 1
         let pV = NativePtr.stackalloc<M33f> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tB = NativeMatrix<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tV = NativeMatrix<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB = NativeMatrixView<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tV = NativeMatrixView<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        qrBidiagonalizeNative floatEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M33f) = 
@@ -711,10 +757,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M34f> 1
         let pV = NativePtr.stackalloc<M44f> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tB = NativeMatrix<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
-        let tV = NativeMatrix<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB = NativeMatrixView<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tV = NativeMatrixView<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        qrBidiagonalizeNative floatEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M34f) = 
@@ -727,10 +773,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M44f> 1
         let pV = NativePtr.stackalloc<M44f> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tB = NativeMatrix<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tV = NativeMatrix<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float32>(NativePtr.cast pU, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tB = NativeMatrixView<float32>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tV = NativeMatrixView<float32>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        qrBidiagonalizeNative floatEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M44f) = 
@@ -743,10 +789,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M22d> 1
         let pV = NativePtr.stackalloc<M22d> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tB = NativeMatrix<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tV = NativeMatrix<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB = NativeMatrixView<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tV = NativeMatrixView<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        qrBidiagonalizeNative doubleEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M22d) = 
@@ -759,10 +805,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M23d> 1
         let pV = NativePtr.stackalloc<M33d> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
-        let tB = NativeMatrix<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
-        let tV = NativeMatrix<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(2,2), V2l(1, 2)))
+        let tB = NativeMatrixView<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,2), V2l(1, 3)))
+        let tV = NativeMatrixView<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        qrBidiagonalizeNative doubleEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M23d) = 
@@ -775,10 +821,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M33d> 1
         let pV = NativePtr.stackalloc<M33d> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tB = NativeMatrix<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tV = NativeMatrix<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB = NativeMatrixView<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tV = NativeMatrixView<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        qrBidiagonalizeNative doubleEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M33d) = 
@@ -791,10 +837,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M34d> 1
         let pV = NativePtr.stackalloc<M44d> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
-        let tB = NativeMatrix<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
-        let tV = NativeMatrix<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(3,3), V2l(1, 3)))
+        let tB = NativeMatrixView<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,3), V2l(1, 4)))
+        let tV = NativeMatrixView<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        qrBidiagonalizeNative doubleEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M34d) = 
@@ -807,10 +853,10 @@ type QR private() =
         let pB = NativePtr.stackalloc<M44d> 1
         let pV = NativePtr.stackalloc<M44d> 1
         NativePtr.write pB m
-        let tU = NativeMatrix<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tB = NativeMatrix<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        let tV = NativeMatrix<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
-        QR.BidiagonalizeInPlace(tU,tB,tV)
+        let tU = NativeMatrixView<float>(NativePtr.cast pU, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tB = NativeMatrixView<float>(NativePtr.cast pB, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        let tV = NativeMatrixView<float>(NativePtr.cast pV, MatrixInfo(0L, V2l(4,4), V2l(1, 4)))
+        qrBidiagonalizeNative doubleEps tU tB tV |> ignore
         struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)
     
     static member Bidiagonalize(m : M44d) = 
@@ -852,7 +898,7 @@ type RQ private() =
         tensor {
             let! pQ = &Q
             let! pR = &R
-            rqDecomposeNative doubleEps pR pQ
+            rqDecomposeNative doubleEps (nativeMatrixView pR) (nativeMatrixView pQ)
         }
 
     static member DecomposeInPlace(R : float32[,], Q : float32[,]) =
@@ -861,14 +907,14 @@ type RQ private() =
         tensor {
             let! pQ = &Q
             let! pR = &R
-            rqDecomposeNative floatEps pR pQ
+            rqDecomposeNative floatEps (nativeMatrixView pR) (nativeMatrixView pQ)
         }
 
     static member DecomposeInPlace(R : NativeMatrix<float>, Q : NativeMatrix<float>) =
-        rqDecomposeNative doubleEps R Q
+        rqDecomposeNative doubleEps (nativeMatrixView R) (nativeMatrixView Q)
         
     static member DecomposeInPlace(R : NativeMatrix<float32>, Q : NativeMatrix<float32>) =
-        rqDecomposeNative floatEps R Q
+        rqDecomposeNative floatEps (nativeMatrixView R) (nativeMatrixView Q)
         
     static member DecomposeInPlace(R : Matrix<float>, Q : Matrix<float>) =
         let mutable R = R
@@ -876,7 +922,7 @@ type RQ private() =
         tensor {
             let! pR = &R
             let! pQ = &Q
-            rqDecomposeNative doubleEps pR pQ
+            rqDecomposeNative doubleEps (nativeMatrixView pR) (nativeMatrixView pQ)
         }
         
     static member DecomposeInPlace(R : Matrix<float32>, Q : Matrix<float32>) =
@@ -885,7 +931,7 @@ type RQ private() =
         tensor {
             let! pR = &R
             let! pQ = &Q
-            rqDecomposeNative floatEps pR pQ
+            rqDecomposeNative floatEps (nativeMatrixView pR) (nativeMatrixView pQ)
         }
         
     static member Decompose (m : float[,]) =
@@ -920,9 +966,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M22f> 1
         let pQ = NativePtr.stackalloc<M22f> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        rqDecomposeNative floatEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M22f) = 
@@ -934,9 +980,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M23f> 1
         let pQ = NativePtr.stackalloc<M33f> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        rqDecomposeNative floatEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M23f) = 
@@ -948,9 +994,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M33f> 1
         let pQ = NativePtr.stackalloc<M33f> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        rqDecomposeNative floatEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M33f) = 
@@ -962,9 +1008,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M34f> 1
         let pQ = NativePtr.stackalloc<M44f> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        rqDecomposeNative floatEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M34f) = 
@@ -976,9 +1022,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M44f> 1
         let pQ = NativePtr.stackalloc<M44f> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        let tQ = NativeMatrix<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float32>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tQ = NativeMatrixView<float32>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        rqDecomposeNative floatEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M44f) = 
@@ -990,9 +1036,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M22d> 1
         let pQ = NativePtr.stackalloc<M22d> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(2,2),V2l(1,2)))
+        rqDecomposeNative doubleEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M22d) = 
@@ -1004,9 +1050,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M23d> 1
         let pQ = NativePtr.stackalloc<M33d> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,2),V2l(1,3)))
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        rqDecomposeNative doubleEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M23d) = 
@@ -1018,9 +1064,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M33d> 1
         let pQ = NativePtr.stackalloc<M33d> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(3,3),V2l(1,3)))
+        rqDecomposeNative doubleEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M33d) = 
@@ -1032,9 +1078,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M34d> 1
         let pQ = NativePtr.stackalloc<M44d> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,3),V2l(1,4)))
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        rqDecomposeNative doubleEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M34d) = 
@@ -1046,9 +1092,9 @@ type RQ private() =
         let pR = NativePtr.stackalloc<M44d> 1
         let pQ = NativePtr.stackalloc<M44d> 1
         NativePtr.write pR m
-        let tR = NativeMatrix<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        let tQ = NativeMatrix<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
-        RQ.DecomposeInPlace(tR, tQ)
+        let tR = NativeMatrixView<float>(NativePtr.cast pR, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        let tQ = NativeMatrixView<float>(NativePtr.cast pQ, MatrixInfo(0L,V2l(4,4),V2l(1,4)))
+        rqDecomposeNative doubleEps tR tQ
         struct(NativePtr.read pR, NativePtr.read pQ)
     
     static member Decompose(m : M44d) = 
