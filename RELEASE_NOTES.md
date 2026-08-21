@@ -1,3 +1,4 @@
+- [Base] Corrected full-precision bulk uniform double generation
 - [Base] Corrected QR zero-pivot factorization and wide strided solve indexing
 - [Base] Corrected and accelerated 2D box/plane intersections for scaled normals and boundary contact
 - [Base] Corrected LU singularity detection for final pivots and 1x1 matrices

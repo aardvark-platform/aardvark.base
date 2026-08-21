@@ -93,7 +93,17 @@ var rnd = new RandomSystem(1);
 int raw = rnd.UniformInt();
 int bounded = rnd.UniformInt(100);   // extension method on IRandomUniform
 double u = rnd.UniformDouble();
+double full = rnd.UniformDoubleFull();
 ```
+
+`UniformDoubleFull` and `FillUniformFull` produce 53-bit samples in the half-open
+interval `[0, 1)`. Generators whose `GeneratesFullDoubles` capability is true use
+one `UniformDouble` draw per sample. Other generators reconstruct each sample
+from two `UniformInt` draws. Bulk filling evaluates the capability once, is
+allocation-free, preserves the same draw order and values as repeated scalar
+`UniformDoubleFull` calls, and consumes no random values for an empty array.
+`CreateUniformDoubleFullArray` allocates the destination and then uses the same
+bulk semantics.
 
 `Randomize` uses an allocation-free Fisher-Yates shuffle to uniformly permute
 arrays, lists, prefixes, and ranges in place. Elements outside a selected range
