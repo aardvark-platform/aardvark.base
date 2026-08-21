@@ -33,6 +33,7 @@
     <Compile Include="NullCheckBench.fs" />
     <Compile Include="ArrayChooseBench.fs" />
     <Compile Include="BvhIntersectBench.fs" />
+    <Compile Include="TensorDecompositionBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

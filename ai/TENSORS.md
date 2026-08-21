@@ -62,6 +62,26 @@ On `Matrix<T>`:
 - `SetByCoord(...)`
 - `ForeachIndex(...)` / `ForeachCoord(...)` for iteration
 
+## Native Decomposition Kernels
+
+`QR`, `RQ`, and `SVD` in `Aardvark.Base.Tensors` provide managed, native in-place, and fixed-size
+matrix decompositions:
+
+- QR: `A = Q * R`, with orthogonal `Q` and upper-triangular `R`.
+- RQ: `A = R * Q`, with upper-triangular `R` and orthogonal `Q`.
+- Bidiagonalization: `A = U * B * Vt`, with orthogonal factors and upper-bidiagonal `B`.
+- SVD: `A = U * S * Vt`, with orthogonal factors and diagonal `S`.
+
+SVD orders diagonal entries by descending absolute magnitude. Ordering uses deterministic in-place
+selection: when magnitudes are equal, the first remaining position wins. Coupled `U`/`S`/`Vt`
+swaps preserve reconstruction and the established sign/orientation normalization.
+
+Native in-place paths honor `Origin`, `DX`, and `DY`; identity initialization touches only logical
+matrix elements, including for offset and non-dense views. Fixed-size `DecomposeV`,
+`BidiagonalizeV`, and SVD value-option kernels use stack storage and internal value views, so their
+warmed hot paths have no transient managed allocations. Managed allocating overloads still create
+their documented result containers.
+
 ## Image Layout Helpers
 
 In `Tensors/ImageTensors.cs`:
@@ -76,3 +96,5 @@ In `Tensors/ImageTensors.cs`:
 
 - `src/Aardvark.Base.Tensors.CSharp/Tensor_auto.cs`
 - `src/Aardvark.Base.Tensors.CSharp/Tensors/ImageTensors.cs`
+- `src/Aardvark.Base.Tensors/Algorithms/QR.fs`
+- `src/Aardvark.Base.Tensors/Algorithms/SVD.fs`

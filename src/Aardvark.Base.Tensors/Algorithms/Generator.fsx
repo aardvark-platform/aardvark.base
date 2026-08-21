@@ -16,6 +16,7 @@ let qrDecomposeCode (indent : string) =
     let b = StringBuilder()
     let printfn fmt =fmt |> Printf.kprintf (fun str -> b.Append indent |> ignore; b.AppendLine str |> ignore) 
     for (c, t) in ["f", "float32"; "d", "float"] do
+        let eps = if c = "f" then "floatEps" else "doubleEps"
         for rows in 2 .. 4 do
             for cols in rows .. min 4 (rows + 1) do
                 let mat = sprintf "M%d%d%s" rows cols c
@@ -26,9 +27,9 @@ let qrDecomposeCode (indent : string) =
                 printfn "    let pQ = NativePtr.stackalloc<%s> 1" qmat
                 printfn "    let pR = NativePtr.stackalloc<%s> 1" mat
                 printfn "    NativePtr.write pR m"
-                printfn "    let tQ = NativeMatrix<%s>(NativePtr.cast pQ, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t rows rows rows
-                printfn "    let tR = NativeMatrix<%s>(NativePtr.cast pR, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t cols rows cols
-                printfn "    QR.DecomposeInPlace(tQ, tR)"
+                printfn "    let tQ = NativeMatrixView<%s>(NativePtr.cast pQ, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t rows rows rows
+                printfn "    let tR = NativeMatrixView<%s>(NativePtr.cast pR, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t cols rows cols
+                printfn "    qrDecomposeNative %s tQ tR" eps
                 printfn "    struct(NativePtr.read pQ, NativePtr.read pR)"
                 printfn ""
                 printfn "static member Decompose(m : %s) = " mat
@@ -41,6 +42,7 @@ let qrBidiagonalizeCode (indent : string) =
     let b = StringBuilder()
     let printfn fmt =fmt |> Printf.kprintf (fun str -> b.Append indent |> ignore; b.AppendLine str |> ignore) 
     for (c, t) in ["f", "float32"; "d", "float"] do
+        let eps = if c = "f" then "floatEps" else "doubleEps"
         for rows in 2 .. 4 do
             for cols in rows .. min 4 (rows + 1) do
                 let mat = sprintf "M%d%d%s" rows cols c
@@ -53,10 +55,10 @@ let qrBidiagonalizeCode (indent : string) =
                 printfn "    let pB = NativePtr.stackalloc<%s> 1" mat
                 printfn "    let pV = NativePtr.stackalloc<%s> 1" rmat
                 printfn "    NativePtr.write pB m"
-                printfn "    let tU = NativeMatrix<%s>(NativePtr.cast pU, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t rows rows rows
-                printfn "    let tB = NativeMatrix<%s>(NativePtr.cast pB, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols rows cols
-                printfn "    let tV = NativeMatrix<%s>(NativePtr.cast pV, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols cols cols
-                printfn "    QR.BidiagonalizeInPlace(tU,tB,tV)"
+                printfn "    let tU = NativeMatrixView<%s>(NativePtr.cast pU, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t rows rows rows
+                printfn "    let tB = NativeMatrixView<%s>(NativePtr.cast pB, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols rows cols
+                printfn "    let tV = NativeMatrixView<%s>(NativePtr.cast pV, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols cols cols
+                printfn "    qrBidiagonalizeNative %s tU tB tV |> ignore" eps
                 printfn "    struct(NativePtr.read pU, NativePtr.read pB, NativePtr.read pV)"
                 printfn ""
                 printfn "static member Bidiagonalize(m : %s) = " mat
@@ -69,6 +71,7 @@ let rqDecomposeCode (indent : string) =
     let b = StringBuilder()
     let printfn fmt =fmt |> Printf.kprintf (fun str -> b.Append indent |> ignore; b.AppendLine str |> ignore) 
     for (c, t) in ["f", "float32"; "d", "float"] do
+        let eps = if c = "f" then "floatEps" else "doubleEps"
         for rows in 2 .. 4 do
             for cols in rows .. min 4 (rows + 1) do
                 let mat = sprintf "M%d%d%s" rows cols c
@@ -79,9 +82,9 @@ let rqDecomposeCode (indent : string) =
                 printfn "    let pR = NativePtr.stackalloc<%s> 1" mat
                 printfn "    let pQ = NativePtr.stackalloc<%s> 1" qmat
                 printfn "    NativePtr.write pR m"
-                printfn "    let tR = NativeMatrix<%s>(NativePtr.cast pR, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t cols rows cols
-                printfn "    let tQ = NativeMatrix<%s>(NativePtr.cast pQ, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t cols cols cols
-                printfn "    RQ.DecomposeInPlace(tR, tQ)"
+                printfn "    let tR = NativeMatrixView<%s>(NativePtr.cast pR, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t cols rows cols
+                printfn "    let tQ = NativeMatrixView<%s>(NativePtr.cast pQ, MatrixInfo(0L,V2l(%d,%d),V2l(1,%d)))" t cols cols cols
+                printfn "    rqDecomposeNative %s tR tQ" eps
                 printfn "    struct(NativePtr.read pR, NativePtr.read pQ)"
                 printfn ""
                 printfn "static member Decompose(m : %s) = " mat
@@ -111,7 +114,7 @@ do
                 let indent = m0.Groups.[1].Value
                 let repl = repl indent
 
-                text <- pre + "\r\n" + repl + post
+                text <- pre + Environment.NewLine + repl + post
 
     File.WriteAllText(qrFile, text)
 
@@ -120,6 +123,7 @@ let svdDecomposeCode (indent : string) =
     let b = StringBuilder()
     let printfn fmt =fmt |> Printf.kprintf (fun str -> b.Append indent |> ignore; b.AppendLine str |> ignore) 
     for (c, t) in ["f", "float32"; "d", "float"] do
+        let eps = if c = "f" then "floatEps" else "doubleEps"
         for rows in 2 .. 4 do
             for cols in rows .. min 4 (rows + 1) do
                 let mat = sprintf "M%d%d%s" rows cols c
@@ -132,10 +136,10 @@ let svdDecomposeCode (indent : string) =
                 printfn "    let pS  = NativePtr.stackalloc<%s> 1" mat
                 printfn "    let pVt = NativePtr.stackalloc<%s> 1" rmat
                 printfn "    NativePtr.write pS m"
-                printfn "    let tU  = NativeMatrix<%s>(NativePtr.cast pU,  MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t rows rows rows
-                printfn "    let tS  = NativeMatrix<%s>(NativePtr.cast pS,  MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols rows cols
-                printfn "    let tVt = NativeMatrix<%s>(NativePtr.cast pVt, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols cols cols
-                printfn "    if SVD.DecomposeInPlace(tU,tS,tVt) then"
+                printfn "    let tU  = NativeMatrixView<%s>(NativePtr.cast pU,  MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t rows rows rows
+                printfn "    let tS  = NativeMatrixView<%s>(NativePtr.cast pS,  MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols rows cols
+                printfn "    let tVt = NativeMatrixView<%s>(NativePtr.cast pVt, MatrixInfo(0L, V2l(%d,%d), V2l(1, %d)))" t cols cols cols
+                printfn "    if svdDecomposeNative %s tU tS tVt then" eps
                 printfn "        ValueSome(struct(NativePtr.read pU, NativePtr.read pS, NativePtr.read pVt))"
                 printfn "    else"
                 printfn "        ValueNone"
@@ -167,7 +171,7 @@ do
                 let indent = m0.Groups.[1].Value
                 let repl = repl indent
 
-                text <- pre + "\r\n" + repl + post
+                text <- pre + Environment.NewLine + repl + post
 
     File.WriteAllText(svdFile, text)
 
