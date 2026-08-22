@@ -77,6 +77,7 @@ internal sealed class DocsRules
                 new("ai/INCREMENTAL.md", "CSharp.Data.Adaptive", "C# adaptive examples require the CSharp.Data.Adaptive namespace/package."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "`Box2f`/`Box2d` plane intersections", "Geometry semantics should cover closed, scale-invariant box/plane intersections."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "FastRay", "Geometry semantics should cover FastRay slab-test conventions."),
+                new("ai/ALGORITHMS.md", "`MedianWindow` retains the latest values", "Algorithm docs should describe rolling median semantics."),
             ],
             SourceAnchors =
             [
@@ -108,6 +109,7 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/AlgoDat/ShortestPath.cs", "public class ShortestPath<T> : IShortestPath<T>"),
                 new("src/Aardvark.Base/Geometry/BbTree.cs", "public class BbTree"),
                 new("src/Aardvark.Base/Math/Base/DistributionFunction.cs", "public class DistributionFunction"),
+                new("src/Aardvark.Base/Math/Base/MedianWindow.cs", "public class MedianWindow"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "public static class Polynomial"),
                 new("src/Aardvark.Base.IO/ICoder_auto.cs", "void CodeInt(ref int value);"),
                 new("src/Aardvark.Base/Geometry/IntersectionTests_auto.cs", "double min = nx * (nx < 0 ? xmax : xmin) + ny * (ny < 0 ? ymax : ymin);"),

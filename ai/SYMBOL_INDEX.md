@@ -38,6 +38,7 @@ Quick symbol-to-doc map for incremental discovery.
 | `Polynomial` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `LuFactorize`, `LuSolve`, `QrFactorize` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Stats<T>`, `Histogram` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `MedianWindow` | [ALGORITHMS.md](ALGORITHMS.md) |
 
 ## Collections / Infrastructure
 

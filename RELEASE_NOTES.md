@@ -1,3 +1,4 @@
+- [Base] Corrected and accelerated rolling median windows
 - [Base] Corrected full-precision bulk uniform double generation
 - [Base] Corrected QR zero-pivot factorization and wide strided solve indexing
 - [Base] Corrected and accelerated 2D box/plane intersections for scaled normals and boundary contact

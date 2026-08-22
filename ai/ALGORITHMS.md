@@ -88,6 +88,20 @@ to the existing rank-deficient behavior. Managed and offset/strided row and colu
 these semantics. Wide strided `QrSolve` applies each row reflector starting at the matching
 solution index, including when the solution has a non-zero offset or non-unit stride.
 
+## Rolling Median Window
+
+`MedianWindow` retains the latest values in a fixed-size ring and maintains the
+sorted active ring-slot indices incrementally without transient allocations.
+Before the window is full, `Insert` returns the upper median of all values seen
+so far; afterward it returns the upper median of the latest window. For an even
+active count, the upper of the two middle values is selected. Equal values,
+including signed zero, retain their current tie order.
+
+`Value` is the current median. `Last` returns the most recently inserted value,
+or `0.0` before the first insertion and after `Reset()`. `History` exposes the
+ring storage and is not cleared by reset. `Reset()` is constant-time and starts
+a new active window while preserving that storage.
+
 ## Probability Sampling
 
 ### Alias tables
@@ -153,4 +167,5 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
 - `src/Aardvark.Base/Math/Base/DistributionFunction.cs`
 - `src/Aardvark.Base/Math/Base/Statistics.cs`
+- `src/Aardvark.Base/Math/Base/MedianWindow.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`
