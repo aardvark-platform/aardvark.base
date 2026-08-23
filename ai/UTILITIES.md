@@ -112,6 +112,13 @@ are unchanged, and empty or singleton selections consume no random values.
 Do not rely on an exact permutation for a given seed remaining stable across
 library versions.
 
+`PerlinNoise.InterpolateNoise` supports signed coordinates in one, two, and
+three dimensions. Each component selects its containing lattice cell using
+mathematical floor, so the interpolation fraction remains in `[0, 1)` and the
+result stays continuous across negative integer boundaries. Integer lattice
+nodes and nonnegative-coordinate results retain their established values.
+Interpolation is allocation-free.
+
 Geometric sampling takes an `IRandomSeries` (e.g. `HaltonRandomSeries`), not an `IRandomUniform`:
 
 ```csharp
@@ -189,6 +196,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base/Introspection/Introspection.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
 - `src/Aardvark.Base/Random/IRandomUniform.cs`
+- `src/Aardvark.Base/Random/PerlinNoise.cs`
 - `src/Aardvark.Base/Random/RandomSample.cs`
 - `src/Aardvark.Base/Random/HaltonRandomSeries.cs`
 - `src/Aardvark.Base/Random/Quasi.cs`

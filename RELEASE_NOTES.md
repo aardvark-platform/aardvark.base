@@ -1,3 +1,4 @@
+- [Base] Corrected Perlin interpolation across negative coordinates
 - [Base] Corrected and accelerated rolling median windows
 - [Base] Corrected full-precision bulk uniform double generation
 - [Base] Corrected QR zero-pivot factorization and wide strided solve indexing
