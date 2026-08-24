@@ -1885,13 +1885,16 @@ namespace Aardvark.Base
         public static bool IsPrime(this __t.Name__ value)
         {
             if (value < 2) return false;
-            if (value == 2 || value == 3) return true;
-            if (value % 2 == 0 || value % 3 == 0) return false;
+            if (value == 2 || value == 3 || value == 5) return true;
+            if (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) return false;
 
             __t.Name__ imax = (__t.Name__)Sqrt(value);
 
-            for (__t.Name__ i = 5; i <= imax; i += 6)
-                if (value % i == 0 || value % (i + 2) == 0) return false;
+            for (__t.Name__ i = 7; i <= imax; i += 30)
+                if (value % i == 0 || value % (i + 4) == 0 ||
+                    value % (i + 6) == 0 || value % (i + 10) == 0 ||
+                    value % (i + 12) == 0 || value % (i + 16) == 0 ||
+                    value % (i + 22) == 0 || value % (i + 24) == 0) return false;
 
             return true;
         }

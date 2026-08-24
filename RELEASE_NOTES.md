@@ -1,3 +1,4 @@
+- [Base] Repaired primality testing and concurrent indexed prime-table growth
 - [Base] Corrected Perlin interpolation across negative coordinates
 - [Base] Corrected and accelerated rolling median windows
 - [Base] Corrected full-precision bulk uniform double generation

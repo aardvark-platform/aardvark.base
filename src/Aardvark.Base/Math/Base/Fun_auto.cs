@@ -6900,13 +6900,16 @@ namespace Aardvark.Base
         public static bool IsPrime(this int value)
         {
             if (value < 2) return false;
-            if (value == 2 || value == 3) return true;
-            if (value % 2 == 0 || value % 3 == 0) return false;
+            if (value == 2 || value == 3 || value == 5) return true;
+            if (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) return false;
 
             int imax = (int)Sqrt(value);
 
-            for (int i = 5; i <= imax; i += 6)
-                if (value % i == 0 || value % (i + 2) == 0) return false;
+            for (int i = 7; i <= imax; i += 30)
+                if (value % i == 0 || value % (i + 4) == 0 ||
+                    value % (i + 6) == 0 || value % (i + 10) == 0 ||
+                    value % (i + 12) == 0 || value % (i + 16) == 0 ||
+                    value % (i + 22) == 0 || value % (i + 24) == 0) return false;
 
             return true;
         }
@@ -6920,13 +6923,16 @@ namespace Aardvark.Base
         public static bool IsPrime(this long value)
         {
             if (value < 2) return false;
-            if (value == 2 || value == 3) return true;
-            if (value % 2 == 0 || value % 3 == 0) return false;
+            if (value == 2 || value == 3 || value == 5) return true;
+            if (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) return false;
 
             long imax = (long)Sqrt(value);
 
-            for (long i = 5; i <= imax; i += 6)
-                if (value % i == 0 || value % (i + 2) == 0) return false;
+            for (long i = 7; i <= imax; i += 30)
+                if (value % i == 0 || value % (i + 4) == 0 ||
+                    value % (i + 6) == 0 || value % (i + 10) == 0 ||
+                    value % (i + 12) == 0 || value % (i + 16) == 0 ||
+                    value % (i + 22) == 0 || value % (i + 24) == 0) return false;
 
             return true;
         }

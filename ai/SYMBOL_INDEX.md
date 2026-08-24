@@ -52,6 +52,7 @@ Quick symbol-to-doc map for incremental discovery.
 | `Report` | [UTILITIES.md](UTILITIES.md) |
 | `Telemetry` | [UTILITIES.md](UTILITIES.md) |
 | `RandomSystem`, `RandomSample`, `HaltonRandomSeries`, `Quasi` | [UTILITIES.md](UTILITIES.md) |
+| `Prime` | [UTILITIES.md](UTILITIES.md) |
 | `PerlinNoise` | [UTILITIES.md](UTILITIES.md) |
 | `Geo`, `GeoEllipsoid` | [UTILITIES.md](UTILITIES.md) |
 | `Constant`, `ConstantF`, `INode` | [UTILITIES.md](UTILITIES.md) |

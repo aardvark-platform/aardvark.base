@@ -105,6 +105,20 @@ allocation-free, preserves the same draw order and values as repeated scalar
 `CreateUniformDoubleFullArray` allocates the destination and then uses the same
 bulk semantics.
 
+`Prime.IsTrueFor(long)` has the same mathematical semantics as
+`Fun.IsPrime(long)`: values below two are not prime. `Prime.WithIndex(i)` returns
+the zero-based indexed prime (`WithIndex(0) == 2`), and
+`Prime.InverseWithIndex(i)` returns its exact computed reciprocal. Indexed prime
+and inverse tables expand lazily. Expansion is serialized and publishes only a
+complete matching prefix; already-cached lookups remain lock-free and
+allocation-free.
+
+```csharp
+bool prime = Prime.IsTrueFor(104729);       // true
+int p = Prime.WithIndex(9999);              // 104729
+double inverse = Prime.InverseWithIndex(9999); // 1.0 / 104729
+```
+
 `Randomize` uses an allocation-free Fisher-Yates shuffle to uniformly permute
 arrays, lists, prefixes, and ranges in place. Elements outside a selected range
 are unchanged, and empty or singleton selections consume no random values.
