@@ -80,6 +80,8 @@ internal sealed class DocsRules
                 new("ai/INCREMENTAL.md", "CSharp.Data.Adaptive", "C# adaptive examples require the CSharp.Data.Adaptive namespace/package."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "`Box2f`/`Box2d` plane intersections", "Geometry semantics should cover closed, scale-invariant box/plane intersections."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "FastRay", "Geometry semantics should cover FastRay slab-test conventions."),
+                new("ai/SEMANTICS_GEOMETRY_CORE.md", "`GeometryFun.Simplify` implements Ramer-Douglas-Peucker", "Geometry semantics should cover polyline simplification."),
+                new("ai/SEMANTICS_GEOMETRY_CORE.md", "A distance equal to `epsilon` is within tolerance", "Polyline simplification docs should define threshold inclusion."),
                 new("ai/ALGORITHMS.md", "`MedianWindow` retains the latest values", "Algorithm docs should describe rolling median semantics."),
             ],
             SourceAnchors =
@@ -115,6 +117,8 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/AlgoDat/ConcurrentHashSet.cs", "public bool Remove(T item) => m_entries.TryRemove(item, out int dummy);"),
                 new("src/Aardvark.Base/AlgoDat/ShortestPath.cs", "public class ShortestPath<T> : IShortestPath<T>"),
                 new("src/Aardvark.Base/Geometry/BbTree.cs", "public class BbTree"),
+                new("src/Aardvark.Base/Geometry/Algorithms_auto.cs", "public static int[] Simplify(this V2d[] polyline, double epsilon)"),
+                new("src/Aardvark.Base/Geometry/Algorithms_auto.cs", "segments = ArrayPool<long>.Shared.Rent(count);"),
                 new("src/Aardvark.Base/Math/Base/DistributionFunction.cs", "public class DistributionFunction"),
                 new("src/Aardvark.Base/Math/Base/MedianWindow.cs", "public class MedianWindow"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "public static class Polynomial"),

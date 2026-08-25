@@ -61,6 +61,17 @@ Semantics (`Ray3_auto.cs`, `FastRay3d.Intersects`):
 - On a miss, the segment-producing overload returns `false` and leaves its output at `default`. Ordinary crossing segments retain the established order from lower to higher Y, or lower to higher X for horizontal results.
 - The boolean overload tests the box's normal-projection interval directly and does not allocate a corner array.
 
+## Polyline Simplification
+
+`GeometryFun.Simplify` implements Ramer-Douglas-Peucker simplification for
+`V2f[]` and `V2d[]` polylines and returns strictly increasing source indices.
+
+- A null polyline throws `ArgumentNullException`. A negative or NaN `epsilon` throws `ArgumentOutOfRangeException`; positive infinity is allowed.
+- Empty, singleton, and two-point inputs return `[]`, `[0]`, and `[0, 1]`, respectively. For every longer input the first and last indices are retained.
+- Error is measured from each source point to the current endpoint segment. A distance equal to `epsilon` is within tolerance and does not cause a split.
+- Equal farthest distances select the first source index, preserving deterministic left-to-right output.
+- A root segment already within tolerance allocates only its final two-index result. Inputs requiring splits use pooled, exception-safely returned iterative workspace and allocate only the final result after warmup; traversal does not consume call stack proportional to input size.
+
 ## Supporting-Line Distance And Parameters
 
 The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` treat `Ray2f`/`Ray2d` and `Ray3f`/`Ray3d` as unbounded supporting lines. They do not clamp parameters to a forward half-ray:
@@ -117,6 +128,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`TransformPos`, `TransformDir`, `TransformPosProj`)
 - `src/Aardvark.Base/Math/Trafos/Trafo_auto.cs` (`Trafo3d`, `Forward`, `Backward`)
 - `src/Aardvark.Base/Geometry/IntersectionTests_auto.cs` (`Box3d.Intersects(Ray3d, out t)`, `Box2f`/`Box2d` plane intersections)
+- `src/Aardvark.Base/Geometry/Algorithms_auto.cs` (`GeometryFun.Simplify` for `V2f[]`/`V2d[]`)
 - `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, `RayHit3d`, `FastRay3d`)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)

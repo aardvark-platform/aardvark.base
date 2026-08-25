@@ -1,5 +1,6 @@
 ﻿using Aardvark.Base.Sorting;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -295,39 +296,95 @@ namespace Aardvark.Base
         #region Ramer–Douglas–Peucker (__rtype__)
 
         /// <summary>
-        /// Returns those indices of the supplied polyline that constitute
-        /// the simplified polyline. A larger epsilon results in a simpler polyline.
-        /// Implemented via the Ramer–Douglas–Peucker algorithm.
-        /// http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
+        /// Returns the strictly increasing source indices of a polyline simplified
+        /// with the Ramer-Douglas-Peucker algorithm. Endpoints are retained and a
+        /// point whose distance is equal to <paramref name="epsilon"/> is within
+        /// tolerance. Farthest-point ties select the first source index.
         /// </summary>
+        /// <param name="polyline">The source polyline.</param>
+        /// <param name="epsilon">A non-negative distance tolerance. Positive infinity is allowed.</param>
+        /// <returns>The retained source indices, or an empty array for an empty polyline.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="polyline"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="epsilon"/> is negative or NaN.</exception>
         public static int[] Simplify(this __v2t__[] polyline, __rtype__ epsilon)
         {
-            return Simplify(polyline, epsilon, 0, polyline.Length - 1);
+            if (polyline == null) throw new ArgumentNullException(nameof(polyline));
+            if (epsilon < 0 || __rtype__.IsNaN(epsilon))
+                throw new ArgumentOutOfRangeException(nameof(epsilon), "Epsilon must be non-negative and not NaN.");
+
+            int count = polyline.Length;
+            if (count == 0) return Array.Empty<int>();
+            if (count == 1) return new[] { 0 };
+            if (count == 2) return new[] { 0, 1 };
+
+            int last = count - 1;
+            int rootSplit = SimplifyFarthestPoint(polyline, 0, last, out __rtype__ rootDistance);
+            if (rootDistance <= epsilon) return new[] { 0, last };
+
+            long[] segments = null;
+            int[] selected = null;
+            try
+            {
+                segments = ArrayPool<long>.Shared.Rent(count);
+                selected = ArrayPool<int>.Shared.Rent(count);
+                int segmentCount = 0;
+                int selectedCount = 0;
+
+                segments[segmentCount++] = ((long)rootSplit << 32) | (uint)last;
+                segments[segmentCount++] = (uint)rootSplit;
+
+                while (segmentCount > 0)
+                {
+                    long segment = segments[--segmentCount];
+                    int indexFirst = (int)(segment >> 32);
+                    int indexLast = (int)segment;
+
+                    if (indexLast == indexFirst + 1)
+                    {
+                        selected[selectedCount++] = indexFirst;
+                        continue;
+                    }
+
+                    int indexMax = SimplifyFarthestPoint(polyline, indexFirst, indexLast, out __rtype__ distanceMax);
+                    if (distanceMax > epsilon)
+                    {
+                        segments[segmentCount++] = ((long)indexMax << 32) | (uint)indexLast;
+                        segments[segmentCount++] = ((long)indexFirst << 32) | (uint)indexMax;
+                    }
+                    else
+                    {
+                        selected[selectedCount++] = indexFirst;
+                    }
+                }
+
+                var result = new int[selectedCount + 1];
+                Array.Copy(selected, result, selectedCount);
+                result[selectedCount] = last;
+                return result;
+            }
+            finally
+            {
+                if (selected != null) ArrayPool<int>.Shared.Return(selected);
+                if (segments != null) ArrayPool<long>.Shared.Return(segments);
+            }
         }
 
-        private static int[] Simplify(__v2t__[] polyline, __rtype__ eps, int indexFirst, int indexLast)
+        private static int SimplifyFarthestPoint(
+            __v2t__[] polyline, int indexFirst, int indexLast, out __rtype__ distanceMax)
         {
-            if (indexFirst == indexLast - 1) return new[] { indexFirst, indexLast };
-
-            var pFirst = polyline[indexFirst]; var pLast = polyline[indexLast];
-            var line = new __line2t__(pFirst, pLast);
-
-            __rtype__ distMax = 0; var indexMax = 0;
-            for (var i = indexFirst + 1; i < indexLast; i++)
+            var line = new __line2t__(polyline[indexFirst], polyline[indexLast]);
+            distanceMax = 0;
+            int indexMax = indexFirst;
+            for (int i = indexFirst + 1; i < indexLast; i++)
             {
-                var d = line.GetDistanceToLine(polyline[i]);
-                if (d > distMax) { distMax = d; indexMax = i; }
+                __rtype__ distance = line.GetDistanceToLine(polyline[i]);
+                if (distance > distanceMax)
+                {
+                    distanceMax = distance;
+                    indexMax = i;
+                }
             }
-
-            if (distMax < eps) return new[] { indexFirst, indexLast };
-
-            var left = Simplify(polyline, eps, indexFirst, indexMax);
-            var right = Simplify(polyline, eps, indexMax, indexLast);
-
-            var result = new int[left.Length + right.Length - 1];
-            left.CopyTo(result, 0);
-            right.CopyTo(1, right.Length - 1, result, left.Length);
-            return result;
+            return indexMax;
         }
 
         #endregion

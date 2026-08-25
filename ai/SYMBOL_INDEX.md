@@ -39,6 +39,7 @@ Quick symbol-to-doc map for incremental discovery.
 | `LuFactorize`, `LuSolve`, `QrFactorize` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Stats<T>`, `Histogram` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `MedianWindow` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `GeometryFun.Simplify` | [SEMANTICS_GEOMETRY_CORE.md](SEMANTICS_GEOMETRY_CORE.md) |
 
 ## Collections / Infrastructure
 
