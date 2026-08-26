@@ -1,3 +1,4 @@
+- [Base] Corrected `Half` comparison and collection semantics
 - [Base] Corrected and reduced allocations in 2D polyline simplification
 - [Base] Repaired primality testing and concurrent indexed prime-table growth
 - [Base] Corrected Perlin interpolation across negative coordinates

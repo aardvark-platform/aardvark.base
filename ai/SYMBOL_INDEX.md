@@ -6,6 +6,7 @@ Quick symbol-to-doc map for incremental discovery.
 
 | Symbol | Primary Doc |
 |--------|-------------|
+| `Half` comparison and collection semantics | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `V2d`, `V3d`, `V4d` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `M22d..M44d` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `Rot3d`, `Trafo3d` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |

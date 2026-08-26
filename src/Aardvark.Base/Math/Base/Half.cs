@@ -262,10 +262,6 @@ namespace Aardvark.Base
             => Half.ToHalf((ushort)(half.value & 0x7fff));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNaN(Half half)
-            => ((half.value & 0x7fff) > 0x7c00);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsInfinity(Half half)
             => ((half.value & 0x7fff) == 0x7c00);
 
@@ -291,6 +287,20 @@ namespace Aardvark.Base
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal ushort value;
+
+        private const ushort MagnitudeMask = 0x7fff;
+        private const ushort InfinityBits = 0x7c00;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsNaNBits(ushort bits)
+            => (bits & MagnitudeMask) > InfinityBits;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int SignedMagnitudeOrder(ushort bits)
+        {
+            int sign = bits >> 15;
+            return ((bits & MagnitudeMask) ^ -sign) + sign;
+        }
 
         #region Constants
 
@@ -540,9 +550,16 @@ namespace Aardvark.Base
         /// </summary>
         /// <param name="half1">A Half.</param>
         /// <param name="half2">A Half.</param>
-        /// <returns>true if half1 and half2 are equal; otherwise, false.</returns>
+        /// <returns>
+        /// true if half1 and half2 represent the same non-NaN value; otherwise, false.
+        /// Positive and negative zero compare equal. NaN is unequal to every value, including itself.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator ==(Half half1, Half half2) { return (!IsNaN(half1) && (half1.value == half2.value)); }
+        public static bool operator ==(Half half1, Half half2)
+        {
+            if (half1.value == half2.value) return !IsNaNBits(half1.value);
+            return ((half1.value | half2.value) & MagnitudeMask) == 0;
+        }
 
         /// <summary>
         /// Returns a value indicating whether two instances of Half are not equal.
@@ -551,43 +568,48 @@ namespace Aardvark.Base
         /// <param name="half2">A Half.</param>
         /// <returns>true if half1 and half2 are not equal; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator !=(Half half1, Half half2) { return !(half1.value == half2.value); }
+        public static bool operator !=(Half half1, Half half2)
+            => !(half1 == half2);
 
         /// <summary>
         /// Returns a value indicating whether a specified Half is less than another specified Half.
         /// </summary>
         /// <param name="half1">A Half.</param>
         /// <param name="half2">A Half.</param>
-        /// <returns>true if half1 is less than half1; otherwise, false.</returns>
+        /// <returns>true if half1 is less than half2; otherwise, false. Returns false if either operand is NaN.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <(Half half1, Half half2) { return (float)half1 < (float)half2; }
+        public static bool operator <(Half half1, Half half2)
+            => (float)half1 < (float)half2;
 
         /// <summary>
         /// Returns a value indicating whether a specified Half is greater than another specified Half.
         /// </summary>
         /// <param name="half1">A Half.</param>
         /// <param name="half2">A Half.</param>
-        /// <returns>true if half1 is greater than half2; otherwise, false.</returns>
+        /// <returns>true if half1 is greater than half2; otherwise, false. Returns false if either operand is NaN.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >(Half half1, Half half2) { return (float)half1 > (float)half2; }
+        public static bool operator >(Half half1, Half half2)
+            => (float)half1 > (float)half2;
 
         /// <summary>
         /// Returns a value indicating whether a specified Half is less than or equal to another specified Half.
         /// </summary>
         /// <param name="half1">A Half.</param>
         /// <param name="half2">A Half.</param>
-        /// <returns>true if half1 is less than or equal to half2; otherwise, false.</returns>
+        /// <returns>true if half1 is less than or equal to half2; otherwise, false. Returns false if either operand is NaN.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator <=(Half half1, Half half2) { return (half1 == half2) || (half1 < half2); }
+        public static bool operator <=(Half half1, Half half2)
+            => (float)half1 <= (float)half2;
 
         /// <summary>
         /// Returns a value indicating whether a specified Half is greater than or equal to another specified Half.
         /// </summary>
         /// <param name="half1">A Half.</param>
         /// <param name="half2">A Half.</param>
-        /// <returns>true if half1 is greater than or equal to half2; otherwise, false.</returns>
+        /// <returns>true if half1 is greater than or equal to half2; otherwise, false. Returns false if either operand is NaN.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool operator >=(Half half1, Half half2) { return (half1 == half2) || (half1 > half2); }
+        public static bool operator >=(Half half1, Half half2)
+            => (float)half1 >= (float)half2;
 
         #endregion
 
@@ -798,31 +820,20 @@ namespace Aardvark.Base
         /// Return Value Meaning Less than zero This instance is less than value. Zero
         /// This instance is equal to value. Greater than zero This instance is greater than value.
         /// </returns>
+        /// <remarks>
+        /// NaN compares equal to every NaN for ordering and precedes every non-NaN value.
+        /// Positive and negative zero compare equal.
+        /// </remarks>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly int CompareTo(Half other)
         {
-            int result = 0;
-            if (this < other)
-            {
-                result = -1;
-            }
-            else if (this > other)
-            {
-                result = 1;
-            }
-            else if (this != other)
-            {
-                if (!IsNaN(this))
-                {
-                    result = 1;
-                }
-                else if (!IsNaN(other))
-                {
-                    result = -1;
-                }
-            }
+            if (this < other) return -1;
+            if (this > other) return 1;
 
-            return result;
+            bool thisIsNaN = IsNaNBits(value);
+            bool otherIsNaN = IsNaNBits(other.value);
+            if (thisIsNaN) return otherIsNaN ? 0 : -1;
+            return otherIsNaN ? 1 : 0;
         }
 
         /// <summary>
@@ -863,11 +874,16 @@ namespace Aardvark.Base
         /// Returns a value indicating whether this instance and a specified Half object represent the same value.
         /// </summary>
         /// <param name="other">A Half object to compare to this instance.</param>
-        /// <returns>true if value is equal to this instance; otherwise, false.</returns>
+        /// <returns>
+        /// true if value is equal to this instance; otherwise, false. Unlike the equality operator,
+        /// all NaN encodings are equal for collection semantics. Positive and negative zero are equal.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Equals(Half other)
         {
-            return ((other == this) || (IsNaN(other) && IsNaN(this)));
+            if (value == other.value) return true;
+            if (((value | other.value) & MagnitudeMask) == 0) return true;
+            return IsNaNBits(value) && IsNaNBits(other.value);
         }
 
         /// <summary>
@@ -878,26 +894,21 @@ namespace Aardvark.Base
         /// <returns>true if value is a Half and equal to this instance; otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override readonly bool Equals(object obj)
-        {
-            bool result = false;
-            if (obj is Half half)
-            {
-                if ((half == this) || (IsNaN(half) && IsNaN(this)))
-                {
-                    result = true;
-                }
-            }
-
-            return result;
-        }
+            => obj is Half half && Equals(half);
 
         /// <summary>
         /// Returns the hash code for this instance.
         /// </summary>
-        /// <returns>A 32-bit signed integer hash code.</returns>
+        /// <returns>
+        /// A 32-bit signed integer hash code. Signed zeros share one hash code, as do all NaN encodings.
+        /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override readonly int GetHashCode()
-            => value.GetHashCode();
+        {
+            if ((value & MagnitudeMask) == 0) return 0;
+            if (IsNaNBits(value)) return InfinityBits;
+            return value;
+        }
 
         /// <summary>
         /// Returns the System.TypeCode for value type Half.
@@ -963,27 +974,15 @@ namespace Aardvark.Base
         /// A number indicating the sign of value. Number Description -1 value is less
         /// than zero. 0 value is equal to zero. 1 value is greater than zero.
         /// </returns>
-        /// <exception cref="System.ArithmeticException">value is equal to Half.NaN.</exception>
+        /// <exception cref="System.ArithmeticException">value is NaN.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Sign(Half value)
         {
-            if (value < 0)
-            {
-                return -1;
-            }
-            else if (value > 0)
-            {
-                return 1;
-            }
-            else
-            {
-                if (value != 0)
-                {
-                    throw new ArithmeticException("Function does not accept floating point Not-a-Number values.");
-                }
-            }
+            if (IsNaNBits(value.value))
+                throw new ArithmeticException("Function does not accept floating point Not-a-Number values.");
 
-            return 0;
+            int order = SignedMagnitudeOrder(value.value);
+            return order < 0 ? -1 : order > 0 ? 1 : 0;
         }
         /// <summary>
         /// Returns the absolute value of a half-precision floating-point number.
@@ -1000,12 +999,20 @@ namespace Aardvark.Base
         /// <param name="value1">The first of two half-precision floating-point numbers to compare.</param>
         /// <param name="value2">The second of two half-precision floating-point numbers to compare.</param>
         /// <returns>
-        /// Parameter value1 or value2, whichever is larger. If value1, or value2, or both val1
-        /// and value2 are equal to Half.NaN, Half.NaN is returned.
+        /// Parameter value1 or value2, whichever is larger. If either value is NaN, Half.NaN is returned.
+        /// For opposite-signed zeros, positive zero is returned.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Half Max(Half value1, Half value2)
-            => (value1 < value2) ? value2 : value1;
+        {
+            if (IsNaNBits(value1.value) || IsNaNBits(value2.value)) return NaN;
+
+            int order1 = SignedMagnitudeOrder(value1.value);
+            int order2 = SignedMagnitudeOrder(value2.value);
+            if (order1 > order2) return value1;
+            if (order1 < order2) return value2;
+            return order1 == 0 ? ToHalf((ushort)(value1.value & value2.value)) : value1;
+        }
 
         /// <summary>
         /// Returns the smaller of two half-precision floating-point numbers.
@@ -1013,12 +1020,20 @@ namespace Aardvark.Base
         /// <param name="value1">The first of two half-precision floating-point numbers to compare.</param>
         /// <param name="value2">The second of two half-precision floating-point numbers to compare.</param>
         /// <returns>
-        /// Parameter value1 or value2, whichever is smaller. If value1, or value2, or both val1
-        /// and value2 are equal to Half.NaN, Half.NaN is returned.
+        /// Parameter value1 or value2, whichever is smaller. If either value is NaN, Half.NaN is returned.
+        /// For opposite-signed zeros, negative zero is returned.
         /// </returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Half Min(Half value1, Half value2)
-            => (value1 < value2) ? value1 : value2;
+        {
+            if (IsNaNBits(value1.value) || IsNaNBits(value2.value)) return NaN;
+
+            int order1 = SignedMagnitudeOrder(value1.value);
+            int order2 = SignedMagnitudeOrder(value2.value);
+            if (order1 < order2) return value1;
+            if (order1 > order2) return value2;
+            return order1 == 0 ? ToHalf((ushort)(value1.value | value2.value)) : value1;
+        }
 
         #endregion
 
@@ -1031,7 +1046,7 @@ namespace Aardvark.Base
         /// <returns>true if value evaluates to not a number (Half.NaN); otherwise, false.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNaN(Half half)
-            => HalfHelper.IsNaN(half);
+            => IsNaNBits(half.value);
 
         /// <summary>
         /// Returns a value indicating whether the specified number evaluates to negative or positive infinity.

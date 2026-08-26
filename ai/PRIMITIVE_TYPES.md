@@ -30,6 +30,18 @@ Examples:
 - Core vector/matrix structs are mutable value types (`struct`), not uniformly `readonly struct`.
 - For matrix/vector math in 3D, prefer explicit methods (`TransformPos`, `TransformDir`) over ambiguous shorthand.
 
+## Half Comparison and Collection Semantics
+
+`Aardvark.Base.Half` follows `System.Half` comparison conventions while retaining its existing conversion and arithmetic behavior.
+
+- Comparison operators use IEEE semantics: every NaN is unequal through `==`, `!=` is its exact complement, all ordered relations involving NaN are `false`, and positive/negative zero compare equal.
+- `CompareTo` provides collection ordering: all NaN encodings compare equal to each other and before every non-NaN value; signed zeros compare equal.
+- `Equals` treats all NaN encodings as equal and also equates signed zeros. `GetHashCode` canonicalizes both groups, so dictionaries and sets satisfy the equality/hash contract.
+- `Sign` returns zero for either signed zero and throws `ArithmeticException` for every NaN encoding.
+- `Max` and `Min` propagate NaN regardless of operand position. Between opposite-signed zeros, `Max` selects positive zero and `Min` selects negative zero.
+
+Raw encodings remain available through `Half.ToHalf(ushort)` and `Half.GetBits(Half)` when payload or zero-sign distinctions are required.
+
 ## Integer Primality
 
 `Fun.IsPrime(int)` and `Fun.IsPrime(long)` return `true` exactly for prime integers: values greater than or equal to 2 whose only positive divisors are 1 and themselves. Negative values, zero, and one return `false`.
@@ -148,6 +160,7 @@ var hit = box.Intersects(ray, out double t);
 
 ## Source Anchors
 
+- `src/Aardvark.Base/Math/Base/Half.cs` (`Half` comparison, equality, hashing, ordering, and extrema semantics)
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`, `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple`)
 - `src/Aardvark.Base/Math/Vectors/Vector_auto.cs` (`V3d`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`M44d`, transforms, operators)
