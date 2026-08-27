@@ -180,14 +180,29 @@ path or empty fallback.
 
 ## Geodesy
 
-Main conversions:
+Geodetic vectors use `V3d(longitude, latitude, ellipsoidalHeight)`: angles are degrees and height is meters. Geocentric ECEF vectors use XYZ meters.
 
 ```csharp
 var xyz = Geo.XyzFromLonLatHeight(new V3d(lonDeg, latDeg, hMeters), GeoEllipsoid.Wgs84);
 var llh = Geo.LonLatHeightFromXyz(xyz, GeoEllipsoid.Wgs84);
 ```
 
-`GeoEllipsoid` presets include `Wgs84`, `Grs80`, `Bessel1841`.
+`LonLatHeightFromXyz` returns longitude in `[-180, 180]` degrees. On the nonzero polar axis it returns longitude zero, latitude `+90` or `-90` degrees, and height `abs(z) - ellipsoid.B`. The ellipsoid center has no defined longitude/latitude and returns NaNs.
+
+Gauss-Krueger methods use a central meridian in degrees east of Greenwich:
+
+```csharp
+var plane = Geo.GaussKruegerEllipsoidToPlane(
+    lonLatHeight, GeoEllipsoid.Bessel1841, GeoConstant.AustriaM31
+);
+var restored = Geo.GaussKruegerPlaneToEllipsoid(
+    plane, GeoEllipsoid.Bessel1841, GeoConstant.AustriaM31
+);
+```
+
+`GaussKruegerEllipsoidToPlane` returns `V3d(easting, northing - 5_000_000, height)`. Easting is relative to the supplied central meridian without a false-easting prefix; the five-million-meter shift applies only to northing. The inverse expects the same component ordering and preserves height unchanged.
+
+`GeoEllipsoid` presets include `Wgs84`, `Grs80`, and `Bessel1841`. Austrian central-meridian constants `AustriaM28`, `AustriaM31`, and `AustriaM34` are Greenwich longitudes despite their historical Ferro names.
 
 ## Constants
 

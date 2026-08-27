@@ -41,49 +41,57 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the longitude, latitude and height from XYZ-coords on a given world reference ellipsoid. 
+        /// Returns longitude in degrees within [-180, 180], latitude in degrees, and height in meters
+        /// from geocentric XYZ coordinates in meters on a given reference ellipsoid.
         /// </summary>
-        /// <param name="xyz">Vector with xyz.</param>
-        /// <param name="ellipsoid">GeoEllipsoid from the GeoConsts class.</param>
-        /// <returns>Position vector with Lon,Lat,Hei</returns>
+        /// <param name="xyz">Geocentric XYZ coordinates in meters.</param>
+        /// <param name="ellipsoid">Reference ellipsoid.</param>
+        /// <returns>Longitude, latitude, and ellipsoidal height.</returns>
+        /// <remarks>
+        /// Uses Bowring's closed-form inverse. On the nonzero polar axis longitude is zero and latitude
+        /// is positive or negative 90 degrees. The ellipsoid center remains undefined and returns NaNs.
+        /// </remarks>
         public static V3d LonLatHeightFromXyz(V3d xyz, GeoEllipsoid ellipsoid)
         {
-            // this implementation follows the Bowring Method (85).
-            // It might be extended to the newer Toms Method (99), but is delivers suitable results.
-
             double a = ellipsoid.A;
             double b = ellipsoid.B;
+            double w = Sqrt(xyz.X * xyz.X + xyz.Y * xyz.Y);
 
-            // Distance between x and y.
-            double W = (xyz.X * xyz.X + xyz.Y * xyz.Y).Sqrt();
+            if (w == 0.0)
+            {
+                if (xyz.Z == 0.0 || double.IsNaN(xyz.Z))
+                    return new V3d(double.NaN, double.NaN, double.NaN);
 
-            // apprx phi
-            double PHI = Atan((xyz.Z * a) / (W * b));
+                double latitude = xyz.Z > 0.0 ? 90.0 : -90.0;
+                return new V3d(0.0, latitude, Abs(xyz.Z) - b);
+            }
 
             double eq = ellipsoid.EQ;
-            double e2q = ellipsoid.E2Q;// (eq / (1.0 - eq)).Sqrt();
+            double e2q = ellipsoid.E2Q;
+            double betaY = xyz.Z * a;
+            double betaX = w * b;
+            double betaInvLength = 1.0 / Sqrt(betaX * betaX + betaY * betaY);
+            double sinBeta = betaY * betaInvLength;
+            double cosBeta = betaX * betaInvLength;
+            double sinBetaTo3 = sinBeta * sinBeta * sinBeta;
+            double cosBetaTo3 = cosBeta * cosBeta * cosBeta;
 
-            double lam = Atan(xyz.Y / xyz.X);
+            double phiY = xyz.Z + e2q * b * sinBetaTo3;
+            double phiX = w - eq * a * cosBetaTo3;
+            double phi = Atan2(phiY, phiX);
+            double phiInvLength = 1.0 / Sqrt(phiX * phiX + phiY * phiY);
+            double sinPhi = phiY * phiInvLength;
+            double cosPhi = phiX * phiInvLength;
 
-            double sinPhi = (PHI).Sin();
-            double sinPhiTo3 = sinPhi * sinPhi * sinPhi;
+            // Curvature in the prime vertical. Select the height formula whose divisor is well-conditioned.
+            double rv = a / Sqrt(1.0 - eq * sinPhi * sinPhi);
+            double h = Abs(cosPhi) > Abs(sinPhi)
+                ? w / cosPhi - rv
+                : xyz.Z / sinPhi - (1.0 - eq) * rv;
 
-            double cosPhi = (PHI).Cos();
-            double cosPhiTo3 = cosPhi * cosPhi * cosPhi;
-
-            double phi = Atan((xyz.Z + e2q * b * sinPhiTo3) / (W - eq * a * cosPhiTo3));
-            double sinphi = phi.Sin();
-
-            // curvature in the prime vertical
-            double Rv = a / (1.0 - eq * sinphi * sinphi).Sqrt();
-
-            double cosphi = phi.Cos();
-            double h = W / cosphi - Rv;
-
-            double lat = Conversion.DegreesFromRadians(phi);// phi * 180 / pi;
-            double lon = Conversion.DegreesFromRadians(lam); // lam * 180 / pi;
-
-            return new V3d(lon, lat, h);
+            double longitude = Conversion.DegreesFromRadians(Atan2(xyz.Y, xyz.X));
+            double latitudeDegrees = Conversion.DegreesFromRadians(phi);
+            return new V3d(longitude, latitudeDegrees, h);
         }
 
         /// <summary>
@@ -132,11 +140,14 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gauss-Krueger projection from a reference ellipsoid datum (Lon/Lat/Height) to local GK-coordinates (in meters).
+        /// Projects ellipsoidal longitude/latitude/height to local Gauss-Krueger coordinates.
         /// </summary>
-        /// <param name="lonLatHeight">V3d with Lon/Lat/Height.</param>
-        /// <param name="ellipsoid"></param>
-        /// <param name="zeroMeridian"></param>
+        /// <param name="lonLatHeight">Longitude and latitude in degrees, followed by height in meters.</param>
+        /// <param name="ellipsoid">Reference ellipsoid.</param>
+        /// <param name="zeroMeridian">Central meridian in degrees east of Greenwich.</param>
+        /// <returns>
+        /// Relative easting, meridional northing minus 5,000,000 meters, and unchanged height, in that order.
+        /// </returns>
         public static V3d GaussKruegerEllipsoidToPlane(
             V3d lonLatHeight, GeoEllipsoid ellipsoid, double zeroMeridian
             )
@@ -214,8 +225,8 @@ namespace Aardvark.Base
             //% x-coord: breite
             double x1 = t / 2.0 * N * cosphiTo2 * lamTo2;
             double x2 = t / 24.0 * N * cosphiTo4 * (5.0 - tTo2 + 9.0 * nuTo2 + 4.0 * nuTo4) * lamTo4;
-            double x3 = t / 720.0 * N * cosphiTo6 * (61.0 - 58.0 * tTo2 + tTo4 + 270.0 * nuTo2 - 330.0 * tTo2 * nuTo4) * lamTo6;
-            double x4 = t / 403204.0 * N * cosphiTo8 * (1385.0 - 3111.0 * tTo2 + 543.0 * tTo4 - tTo6) * lamTo8;
+            double x3 = t / 720.0 * N * cosphiTo6 * (61.0 - 58.0 * tTo2 + tTo4 + 270.0 * nuTo2 - 330.0 * tTo2 * nuTo2) * lamTo6;
+            double x4 = t / 40320.0 * N * cosphiTo8 * (1385.0 - 3111.0 * tTo2 + 543.0 * tTo4 - tTo6) * lamTo8;
 
             double nX = B + x1 + x2 + x3 + x4;
             nX = nX - 5000000; // <-- im model 
@@ -231,6 +242,15 @@ namespace Aardvark.Base
             return new V3d(nY, nX, lonLatHeight.Z); //<-- Laenge, Breite, Hoehe
         }
 
+        /// <summary>
+        /// Unprojects local Gauss-Krueger coordinates to ellipsoidal longitude/latitude/height.
+        /// </summary>
+        /// <param name="rightHeightAlt">
+        /// Relative easting, meridional northing minus 5,000,000 meters, and height.
+        /// </param>
+        /// <param name="ellipsoid">Reference ellipsoid.</param>
+        /// <param name="referenceMeridan">Central meridian in degrees east of Greenwich.</param>
+        /// <returns>Longitude and latitude in degrees, followed by unchanged height in meters.</returns>
         public static V3d GaussKruegerPlaneToEllipsoid(
             V3d rightHeightAlt, GeoEllipsoid ellipsoid, double referenceMeridan
             )
@@ -247,8 +267,8 @@ namespace Aardvark.Base
             double nTo4 = nTo3 * n;
             double nTo5 = nTo4 * n;
 
-            double c1 = (a + b) / 2.0 * (1.0 + 1.0 / 4.0 * nTo2 * 1.0 / 64.0 * nTo4);
-            double c2 = 3.0 / 2.0 * n - 27.0 / 32.0 * nTo3 - 269.0 / 512.0 * nTo5;
+            double c1 = (a + b) / 2.0 * (1.0 + 1.0 / 4.0 * nTo2 + 1.0 / 64.0 * nTo4);
+            double c2 = 3.0 / 2.0 * n - 27.0 / 32.0 * nTo3 + 269.0 / 512.0 * nTo5;
             double c3 = 21.0 / 16.0 * nTo2 - 55.0 / 32 * nTo4;
             double c4 = 151.0 / 96.0 * nTo3 - 417.0 / 128.0 * nTo5;
             double c5 = 1097.0 / 512.0 * nTo4;
