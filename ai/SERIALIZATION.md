@@ -71,6 +71,19 @@ using (var coder = new BinaryReadingCoder(stream))
 
 `XmlWritingCoder` / `XmlReadingCoder` implement the same `ICoder` contract for XML streams.
 
+### Network-order primitive streams
+
+`NetworkOrderBinaryReader` and `NetworkOrderBinaryWriter` in `Aardvark.Base.Coder`
+read and write a fixed big-endian wire format:
+
+- `short`/`ushort`, `int`/`uint`, and `long`/`ulong` use 16, 32, and 64 bits respectively, most-significant byte first.
+- `float` and `double` preserve their complete IEEE 754 bit patterns, including signed zero, infinities, subnormals, and NaN payloads.
+- `byte` and `sbyte` are unchanged because they have no byte order.
+- `V2f`, `V2d`, `V3f`, `V3d`, `C3f`, and `C4f` writes concatenate scalar components in declaration order; the corresponding available aggregate reads use the same ordering.
+- Truncated multi-byte scalar reads throw `EndOfStreamException`.
+
+After construction and stream provisioning, these numeric scalar and aggregate operations are allocation-free. String and character layout remains controlled by the constructor encoding; use `Encoding.BigEndianUnicode` when big-endian UTF-16 is required.
+
 ---
 
 ## Type-Specific Methods

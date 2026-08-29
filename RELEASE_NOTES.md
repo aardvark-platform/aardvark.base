@@ -1,3 +1,4 @@
+- [IO] Made network-order primitive and aggregate I/O allocation-free
 - [Base] Corrected ECEF and Gauss-Krueger geodetic conversions
 - [Base] Corrected `Half` comparison and collection semantics
 - [Base] Corrected and reduced allocations in 2D polyline simplification
