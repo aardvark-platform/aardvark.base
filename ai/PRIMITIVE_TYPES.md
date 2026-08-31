@@ -42,6 +42,19 @@ Examples:
 
 Raw encodings remain available through `Half.ToHalf(ushort)` and `Half.GetBits(Half)` when payload or zero-sign distinctions are required.
 
+## Fraction Semantics
+
+`Fraction` stores its serialized representation directly as mutable `long Numerator` and `long Denominator` fields. Construction normally makes the denominator non-negative but does not automatically reduce finite values.
+
+- Finite comparison operators are mathematically exact across the full stored 64-bit range. They use raw equality and rounded `double` ordering as fast paths, then an allocation-free continued-fraction comparison only when the rounded values tie; production comparison does not use `BigInteger` or cross-products that can overflow.
+- Unreduced equivalents such as `new Fraction(1, 2)` and `new Fraction(3, 6)` compare equal. `Equals` and `GetHashCode` use the same numerical finite equality, so dictionaries and sets group equivalent fractions and all finite zero representations.
+- A zero denominator with zero numerator is `Fraction.NaN`; a zero denominator with a negative or positive numerator is signed infinity. `IsNaN` and `IsInfinity` are mutually exclusive.
+- Operators follow IEEE-style NaN semantics: NaN is unequal through `==`, `!=` is the exact complement of `==`, and all ordered comparisons involving NaN are false. `Equals` treats NaNs as equal for collection semantics. Signed infinities compare and hash by sign.
+- `Reduced` returns finite values in lowest terms and canonicalizes special values to `0/0`, `-1/0`, or `1/0`.
+- Addition and subtraction propagate NaN; equal-signed infinities remain infinite, while opposite infinities produce NaN.
+
+The struct remains two sequential 64-bit fields, and binary/XML coders continue to serialize those raw fields. Existing finite arithmetic still uses `long` operations and can overflow independently of the exact comparison implementation.
+
 ## Integer Primality
 
 `Fun.IsPrime(int)` and `Fun.IsPrime(long)` return `true` exactly for prime integers: values greater than or equal to 2 whose only positive divisors are 1 and themselves. Negative values, zero, and one return `false`.

@@ -1,3 +1,4 @@
+- [Base] Corrected exact `Fraction` comparison and special-value semantics
 - [IO] Made network-order primitive and aggregate I/O allocation-free
 - [Base] Corrected ECEF and Gauss-Krueger geodetic conversions
 - [Base] Corrected `Half` comparison and collection semantics
