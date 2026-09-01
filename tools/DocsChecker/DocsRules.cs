@@ -91,6 +91,9 @@ internal sealed class DocsRules
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "FastRay", "Geometry semantics should cover FastRay slab-test conventions."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "`GeometryFun.Simplify` implements Ramer-Douglas-Peucker", "Geometry semantics should cover polyline simplification."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "A distance equal to `epsilon` is within tolerance", "Polyline simplification docs should define threshold inclusion."),
+                new("ai/ALGORITHMS.md", "`Fun.Variance` and `Fun.StandardDeviation` enumerate", "Algorithm docs should describe one-pass enumerable variance semantics."),
+                new("ai/ALGORITHMS.md", "selector exactly once per element", "Algorithm docs should define variance selector invocation semantics."),
+                new("ai/SYMBOL_INDEX.md", "`Fun.Variance`, `Fun.StandardDeviation`", "The symbol index should expose enumerable population statistics."),
                 new("ai/ALGORITHMS.md", "`MedianWindow` retains the latest values", "Algorithm docs should describe rolling median semantics."),
             ],
             SourceAnchors =
@@ -139,6 +142,8 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/Math/Base/Fraction.cs", "private static int ComparePositive(ulong aNumerator, ulong aDenominator, ulong bNumerator, ulong bDenominator)"),
                 new("src/Aardvark.Base/Math/Base/Fraction.cs", "return IsInfinity(a) ? CanonicalInfinity(a) : CanonicalInfinity(b);"),
                 new("src/Aardvark.Base/Math/Base/Fraction.cs", "return f.Denominator == 0 && f.Numerator == 0;"),
+                new("src/Aardvark.Base/Math/Base/Fun_auto.cs", "private static double FinalizeVariance(long count, KahanSum deviationSum, KahanSum squaredDeviationSum)"),
+                new("src/Aardvark.Base/Math/Base/Fun_auto.cs", "double deviation = VarianceDifference(x, origin);"),
                 new("src/Aardvark.Base/Math/Base/MedianWindow.cs", "public class MedianWindow"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "public static class Polynomial"),
                 new("src/Aardvark.Base.IO/ICoder_auto.cs", "void CodeInt(ref int value);"),

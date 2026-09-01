@@ -142,6 +142,21 @@ Examples:
 - `coeff.Derivative()`
 - `Polynomial.RealRootsOfNormed(...)`
 
+## Enumerable Population Variance
+
+`Fun.Variance` and `Fun.StandardDeviation` enumerate `IEnumerable<int>`,
+`IEnumerable<long>`, `IEnumerable<float>`, and `IEnumerable<double>` inputs once.
+The selector overloads likewise invoke the selector exactly once per element. Variance
+is the population moment: deviations from the first selected value and their squares
+are accumulated in compensated `KahanSum` values, then centered and divided by the
+`long` element count. `StandardDeviation` is the square root of that result.
+
+Empty or non-finite inputs return `NaN`; singleton and all-equal finite inputs return
+zero. Signed `long` differences are formed before conversion without overflowing, so
+equal and adjacent values remain distinct even near `long.MinValue` and
+`long.MaxValue`. Only finite negative centered residuals caused by round-off are
+clamped to zero.
+
 ## Compositional Statistics
 
 `Stats<T>` accumulates selected moments according to `StatsOptions`. `Variance` and
@@ -167,5 +182,6 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
 - `src/Aardvark.Base/Math/Base/DistributionFunction.cs`
 - `src/Aardvark.Base/Math/Base/Statistics.cs`
+- `src/Aardvark.Base/Math/Base/Fun_auto.cs`
 - `src/Aardvark.Base/Math/Base/MedianWindow.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`

@@ -1779,28 +1779,77 @@ namespace Aardvark.Base
 
         #region Variance & Standard Deviation
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double VarianceDifference(long value, long origin)
+        {
+            if ((value < 0) == (origin < 0))
+                return (double)(value - origin);
+
+            if (value >= 0)
+                return (double)value + (double)(-(origin + 1)) + 1.0;
+
+            return -((double)origin + (double)(-(value + 1)) + 1.0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double FinalizeVariance(long count, KahanSum deviationSum, KahanSum squaredDeviationSum)
+        {
+            double sum = deviationSum.Value;
+            double centered = squaredDeviationSum.Value - sum * sum / count;
+            if (centered < 0.0 && !double.IsInfinity(centered)) centered = 0.0;
+            return centered / count;
+        }
+
         //# ilfdtypes.ForEach(t => { var type = t.Name;
         //# if (Meta.UnsignedTypes.Contains(t)) return;
+        //# var difference = type == "long" ? "VarianceDifference(x, origin)" : "(double)x - origin";
         /// <summary>
-        /// Calculates the variance of given elements.
+        /// Calculates the population variance in a single enumeration.
         /// </summary>
         [Pure]
         public static double Variance(this IEnumerable<__type__> data)
         {
-            int count = 0;
-            double sum = 0, mean = data.Mean();
+            __type__ origin = default;
+            bool hasOrigin = false;
+            long count = 0;
+            var deviationSum = KahanSum.Zero;
+            var squaredDeviationSum = KahanSum.Zero;
 
-            foreach (var x in data)
+            if (data is __type__[] array)
             {
-                sum += (x - mean).Square();
-                count++;
+                if (array.Length > 0) origin = array[0];
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var x = array[i];
+                    double deviation = __difference__;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
+            }
+            else
+            {
+                foreach (var x in data)
+                {
+                    if (!hasOrigin)
+                    {
+                        origin = x;
+                        hasOrigin = true;
+                    }
+
+                    double deviation = __difference__;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
             }
 
-            return sum / count;
+            return FinalizeVariance(count, deviationSum, squaredDeviationSum);
         }
 
         /// <summary>
-        /// Calculates the standard deviation of given elements.
+        /// Calculates the population standard deviation in a single enumeration.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1808,7 +1857,7 @@ namespace Aardvark.Base
 
         //# });
         /// <summary>
-        /// Calculates the variance of given elements.
+        /// Calculates the population variance in a single enumeration, invoking <paramref name="selector"/> once per element.
         /// </summary>
         [Pure]
         public static double Variance<T>(
@@ -1816,20 +1865,54 @@ namespace Aardvark.Base
             Func<T, double> selector
             )
         {
-            int count = 0;
-            double sum = 0, mean = data.Mean(selector);
+            double origin = 0.0;
+            bool hasOrigin = false;
+            long count = 0;
+            var deviationSum = KahanSum.Zero;
+            var squaredDeviationSum = KahanSum.Zero;
 
-            foreach (var x in data)
+            if (data is T[] array)
             {
-                sum += (selector(x) - mean).Square();
-                count++;
+                if (array.Length > 0)
+                {
+                    origin = selector(array[0]);
+                    double firstDeviation = origin - origin;
+                    deviationSum.Add(firstDeviation);
+                    squaredDeviationSum.Add(firstDeviation * firstDeviation);
+                    count++;
+
+                    for (int i = 1; i < array.Length; i++)
+                    {
+                        double deviation = selector(array[i]) - origin;
+                        deviationSum.Add(deviation);
+                        squaredDeviationSum.Add(deviation * deviation);
+                        count++;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var x in data)
+                {
+                    double value = selector(x);
+                    if (!hasOrigin)
+                    {
+                        origin = value;
+                        hasOrigin = true;
+                    }
+
+                    double deviation = value - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
             }
 
-            return sum / count;
+            return FinalizeVariance(count, deviationSum, squaredDeviationSum);
         }
 
         /// <summary>
-        /// Calculates the standard deviation of given elements.
+        /// Calculates the population standard deviation in a single enumeration, invoking <paramref name="selector"/> once per element.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

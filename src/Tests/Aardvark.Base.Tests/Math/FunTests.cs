@@ -168,6 +168,104 @@ namespace Aardvark.Tests
             Assert.AreEqual(0.0, new[] { true, false }.Entropy(new[] { 5.0, 0.0 }), 0.0);
         }
 
+        [Test]
+        public void VarianceEnumeratesDirectAndSelectedInputOnce()
+        {
+            var direct = new SingleUseEnumerable<double>(1.0, 2.0, 3.0, 4.0);
+            Assert.AreEqual(1.25, direct.Variance(), 1e-12);
+            Assert.AreEqual(1, direct.EnumerationCount);
+
+            var selected = new SingleUseEnumerable<int>(1, 2, 3, 4);
+            int selectorCalls = 0;
+            Assert.AreEqual(1.25, selected.Variance(x => { selectorCalls++; return x; }), 1e-12);
+            Assert.AreEqual(1, selected.EnumerationCount);
+            Assert.AreEqual(4, selectorCalls);
+
+            var selectedDeviation = new SingleUseEnumerable<int>(1, 2, 3, 4);
+            selectorCalls = 0;
+            Assert.AreEqual(Math.Sqrt(1.25), selectedDeviation.StandardDeviation(x => { selectorCalls++; return x; }), 1e-12);
+            Assert.AreEqual(1, selectedDeviation.EnumerationCount);
+            Assert.AreEqual(4, selectorCalls);
+        }
+
+        [Test]
+        public void GeneratedNumericVarianceOverloadsReturnPopulationMoments()
+        {
+            const double expectedVariance = 1.25;
+            double expectedDeviation = Math.Sqrt(expectedVariance);
+
+            Assert.AreEqual(expectedVariance, new[] { 1, 2, 3, 4 }.Variance(), 1e-12);
+            Assert.AreEqual(expectedDeviation, new[] { 1, 2, 3, 4 }.StandardDeviation(), 1e-12);
+
+            Assert.AreEqual(expectedVariance, new long[] { 1, 2, 3, 4 }.Variance(), 1e-12);
+            Assert.AreEqual(expectedDeviation, new long[] { 1, 2, 3, 4 }.StandardDeviation(), 1e-12);
+
+            Assert.AreEqual(expectedVariance, new[] { 1.0f, 2.0f, 3.0f, 4.0f }.Variance(), 1e-12);
+            Assert.AreEqual(expectedDeviation, new[] { 1.0f, 2.0f, 3.0f, 4.0f }.StandardDeviation(), 1e-12);
+
+            Assert.AreEqual(expectedVariance, new[] { 1.0, 2.0, 3.0, 4.0 }.Variance(), 1e-12);
+            Assert.AreEqual(expectedDeviation, new[] { 1.0, 2.0, 3.0, 4.0 }.StandardDeviation(), 1e-12);
+        }
+
+        [Test]
+        public void VarianceRetainsSmallMomentsAtLargeDoubleOffsets()
+        {
+            var values = new[] { 1.0e16, 1.0e16, 1.0e16 + 2.0, 1.0e16 + 2.0 };
+
+            Assert.AreEqual(1.0, values.Variance(), 0.0);
+            Assert.AreEqual(1.0, values.StandardDeviation(), 0.0);
+        }
+
+        [Test]
+        public void LongVarianceHandlesEqualAdjacentAndOppositeExtremes()
+        {
+            Assert.AreEqual(0.0, new[] { long.MaxValue, long.MaxValue }.Variance(), 0.0);
+            Assert.AreEqual(0.0, new[] { long.MinValue, long.MinValue }.Variance(), 0.0);
+            Assert.AreEqual(0.25, new[] { long.MaxValue - 1, long.MaxValue }.Variance(), 0.0);
+            Assert.AreEqual(0.25, new[] { long.MinValue, long.MinValue + 1 }.Variance(), 0.0);
+
+            double oppositeExtremeVariance = Math.Pow(2.0, 126.0);
+            Assert.AreEqual(oppositeExtremeVariance, new[] { long.MinValue, long.MaxValue }.Variance(), 0.0);
+            Assert.AreEqual(Math.Pow(2.0, 63.0), new[] { long.MinValue, long.MaxValue }.StandardDeviation(), 0.0);
+        }
+
+        [Test]
+        public void VarianceDefinesEmptySingletonAndNonFiniteInputs()
+        {
+            Assert.IsTrue(double.IsNaN(Array.Empty<int>().Variance()));
+            Assert.IsTrue(double.IsNaN(Array.Empty<long>().Variance()));
+            Assert.IsTrue(double.IsNaN(Array.Empty<float>().Variance()));
+            Assert.IsTrue(double.IsNaN(Array.Empty<double>().Variance()));
+            Assert.IsTrue(double.IsNaN(Array.Empty<double>().StandardDeviation()));
+
+            int selectorCalls = 0;
+            Assert.IsTrue(double.IsNaN(Array.Empty<int>().Variance(x => { selectorCalls++; return x; })));
+            Assert.AreEqual(0, selectorCalls);
+
+            Assert.AreEqual(0.0, new[] { 7 }.Variance(), 0.0);
+            Assert.AreEqual(0.0, new[] { long.MinValue }.Variance(), 0.0);
+            Assert.AreEqual(0.0, new[] { 7.0f }.Variance(), 0.0);
+            Assert.AreEqual(0.0, new[] { 7.0 }.Variance(), 0.0);
+            Assert.AreEqual(0.0, new[] { 7.0 }.StandardDeviation(), 0.0);
+
+            selectorCalls = 0;
+            Assert.AreEqual(0.0, new[] { 7 }.StandardDeviation(x => { selectorCalls++; return x; }), 0.0);
+            Assert.AreEqual(1, selectorCalls);
+
+            Assert.IsTrue(double.IsNaN(new[] { double.NaN }.Variance()));
+            Assert.IsTrue(double.IsNaN(new[] { double.PositiveInfinity }.Variance()));
+            Assert.IsTrue(double.IsNaN(new[] { 1.0, double.NegativeInfinity, 2.0 }.Variance()));
+            Assert.IsTrue(double.IsNaN(new[] { double.PositiveInfinity }.StandardDeviation()));
+
+            selectorCalls = 0;
+            Assert.IsTrue(double.IsNaN(new[] { 1, 2, 3 }.Variance(x =>
+            {
+                selectorCalls++;
+                return x == 2 ? double.PositiveInfinity : x;
+            })));
+            Assert.AreEqual(3, selectorCalls);
+        }
+
         private static double NextAfter(double input, int dir)
             => BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(input) + dir);
 
