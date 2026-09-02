@@ -254,10 +254,36 @@ namespace Aardvark.Base
             }
         }
 
+        private static double RefineCubicDiscriminant(
+            double c2, double c1, double c0, double discriminant)
+        {
+            // The depressed form can lose the sign near a repeated root while
+            // eliminating the quadratic term. Evaluate the equivalent cubic
+            // discriminant and accept its sign only outside its rounding bound.
+            double t0 = 18.0 * c2 * c1 * c0;
+            double t1 = -4.0 * c2 * c2 * c2 * c0;
+            double t2 = c2 * c2 * c1 * c1;
+            double t3 = -4.0 * c1 * c1 * c1;
+            double t4 = -27.0 * c0 * c0;
+
+            var sum = new KahanSum(t0);
+            sum.Add(t1);
+            sum.Add(t2);
+            sum.Add(t3);
+            sum.Add(t4);
+            double direct = sum.Value;
+            double error = 8.0 * Constant<double>.PositiveTinyValue *
+                (Fun.Abs(t0) + Fun.Abs(t1) + Fun.Abs(t2) + Fun.Abs(t3) + Fun.Abs(t4));
+
+            if (!direct.IsFinite() || !error.IsFinite()) return discriminant;
+            if (Fun.Abs(direct) <= error) return 0.0;
+            return direct < 0.0 ? Fun.Abs(discriminant) : -Fun.Abs(discriminant);
+        }
+
         /// <summary>
         /// Return real roots of the equation: a x^3 + b x^2 + c x + d = 0.
         /// Double and triple solutions are returned as replicated values.
-        /// Imaginary and non existing solutions are returned as NaNs.
+        /// A single real root is followed by two NaNs.
         /// </summary>
         public static (double, double, double) RealRootsOf(
                 double a, double b, double c, double d)
@@ -271,9 +297,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Return real roots of the equation: x^3 + c2 x^2 + c1 x + c0 = 0
-        /// Double and triple solutions are returned as replicated values.
-        /// Imaginary and non existing solutions are returned as NaNs.
+        /// Return real roots of the equation: x^3 + c2 x^2 + c1 x + c0 = 0.
+        /// Roots are sorted ascending when all three are real. A positive
+        /// discriminant returns the single real root followed by two NaNs;
+        /// repeated finite roots are returned only for a zero discriminant.
         /// </summary>
         public static (double, double, double) RealRootsOfNormed(
                 double c2, double c1, double c0)
@@ -283,8 +310,9 @@ namespace Aardvark.Base
             double p3 = 1/3.0 * /* p */(-1/3.0 * d + c1);
             double q2 = 1/2.0 * /* q */((2/27.0 * d - 1/3.0 * c1) * c2 + c0);
             double p3c = p3 * p3 * p3;
+            double q2c = q2 * q2;
             double shift = 1/3.0 * c2;
-            d = q2 * q2 + p3c;
+            d = q2c + p3c;
             if (d < 0)            // casus irreducibilis: three real solutions
             {
                 double phi = 1 / 3.0 * Fun.Acos(-q2 / Fun.Sqrt(-p3c));
@@ -294,21 +322,55 @@ namespace Aardvark.Base
                 double r2 = -t * Fun.Cos(phi - Constant.Pi / 3.0) - shift;
                 return TupleExtensions.CreateAscending(r0, r1, r2);
             }
-            // else if (Fun.IsTiny(q2))			           // one triple root
-            // {                                           // too unlikely for
-            //     double r = -1/3.0 * c2;                 // special handling
-            //     return (r, r, r);                       // to pay off
-            // }
-            d = Fun.Sqrt(d);                 // one single and one double root
-            double uav = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2);
-            double s0 = uav - shift, s1 = -0.5 * uav - shift;
-            return s0 < s1  ? (s0, s1, s1) : (s1, s1, s0);
+
+            bool refined = false;
+            if (d > 0.0)
+            {
+                double absoluteDiscriminant = Fun.Abs(d);
+                if (absoluteDiscriminant <= Constant<double>.PositiveTinyValue ||
+                    absoluteDiscriminant <= 1e-8 * (q2c + Fun.Abs(p3c)))
+                {
+                    d = RefineCubicDiscriminant(c2, c1, c0, d);
+                    refined = true;
+                    if (d < 0.0)
+                    {
+                        double phi = 1 / 3.0 * Fun.Acos(-q2 / Fun.Sqrt(-p3c));
+                        double t = 2 * Fun.Sqrt(-p3);
+                        double r0 = t * Fun.Cos(phi) - shift;
+                        double r1 = -t * Fun.Cos(phi + Constant.Pi / 3.0) - shift;
+                        double r2 = -t * Fun.Cos(phi - Constant.Pi / 3.0) - shift;
+                        return TupleExtensions.CreateAscending(r0, r1, r2);
+                    }
+                }
+                if (d > 0.0)
+                {
+                    d = Fun.Sqrt(d);
+                    double root = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2) - shift;
+                    return (root, double.NaN, double.NaN);
+                }
+            }
+
+            if (d == 0.0)
+            {
+                if ((p3 == 0.0 && q2 == 0.0) ||
+                    (refined && Fun.IsTiny(p3) && Fun.IsTiny(q2)))
+                {
+                    double root = -shift;
+                    return (root, root, root);
+                }
+
+                double uav = Fun.Cbrt(-q2) - Fun.Cbrt(q2);
+                double s0 = uav - shift, s1 = -0.5 * uav - shift;
+                return s0 < s1 ? (s0, s1, s1) : (s1, s1, s0);
+            }
+            return (double.NaN, double.NaN, double.NaN);
         }
 
         /// <summary>
-        /// Return real roots of the equation: x^3 + p x + q = 0
-        /// Double and triple solutions are returned as replicated values.
-        /// Imaginary and non existing solutions are returned as NaNs.
+        /// Return real roots of the equation: x^3 + p x + q = 0.
+        /// Roots are sorted ascending when all three are real. A positive
+        /// discriminant returns the single real root followed by two NaNs;
+        /// repeated finite roots are returned only for a zero discriminant.
         /// </summary>
         public static (double, double, double) RealRootsOfDepressed(
                 double p, double q)
@@ -324,10 +386,22 @@ namespace Aardvark.Base
                 double r2 = -t * Fun.Cos(phi - Constant.Pi / 3.0);
                 return TupleExtensions.CreateAscending(r0, r1, r2);
             }
-            d = Fun.Sqrt(d);  // one triple root or a single and a double root
-            double s0 = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2);
-            double s1 = -0.5 * s0;
-            return s0 < s1  ? (s0, s1, s1) : (s1, s1, s0);
+            if (d > 0.0)
+            {
+                d = Fun.Sqrt(d);
+                double root = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2);
+                return (root, double.NaN, double.NaN);
+            }
+            if (d == 0.0)
+            {
+                if (p3 == 0.0 && q2 == 0.0)
+                    return (0.0, 0.0, 0.0);
+
+                double s0 = Fun.Cbrt(-q2) - Fun.Cbrt(q2);
+                double s1 = -0.5 * s0;
+                return s0 < s1 ? (s0, s1, s1) : (s1, s1, s0);
+            }
+            return (double.NaN, double.NaN, double.NaN);
         }
 
         /// <summary>
@@ -409,6 +483,7 @@ namespace Aardvark.Base
             var q = (0.0, 0.0, 0.0, 0.0);
             int tc = t.CountNonNaNs();
             int i = 0, ti = 0;
+            bool added = false;
             while (ti < tc)
             {
                 if (t.Get(ti) < d)
@@ -416,9 +491,11 @@ namespace Aardvark.Base
                 else
                 {
                     q.Set(i++, d + shift);
+                    added = true;
                     break;
                 }
             }
+            if (!added) q.Set(i++, d + shift);
             while (ti < tc) q.Set(i++, t.Get(ti++) + shift);
             while (i < 4) q.Set(i++, double.NaN);
             return q;

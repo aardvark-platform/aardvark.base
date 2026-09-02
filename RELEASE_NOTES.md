@@ -1,3 +1,4 @@
+- [Base] Corrected positive-discriminant cubic solvers to return only their real root
 - [Base] Corrected and accelerated single-pass enumerable population variance
 - [Base] Corrected exact `Fraction` comparison and special-value semantics
 - [IO] Made network-order primitive and aggregate I/O allocation-free

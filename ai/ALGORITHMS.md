@@ -142,6 +142,19 @@ Examples:
 - `coeff.Derivative()`
 - `Polynomial.RealRootsOfNormed(...)`
 
+Polynomial coefficient arrays are stored in ascending degree order.
+`RealRoots` and `RealRootsNormed` return only finite real roots, sorted ascending.
+Fixed-width tuple APIs place any unused entries at the end as `NaN`. For cubic solvers, a negative
+Cardano discriminant produces three ascending real roots, a zero discriminant
+preserves repeated double or triple roots, and a positive discriminant produces one
+finite root followed by two `NaN` values. Near a repeated root, the solver checks the
+equivalent cubic discriminant with a compensated sum and an operation-error bound so
+round-off from depressing a normalized cubic does not invent a complex pair.
+
+Trailing `NaN` entries are part of the tuple contract: array conversion drops them,
+and the quartic zero-factor path merges only the finite prefix with its additional
+real root.
+
 ## Enumerable Population Variance
 
 `Fun.Variance` and `Fun.StandardDeviation` enumerate `IEnumerable<int>`,
