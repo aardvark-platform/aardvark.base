@@ -1,3 +1,4 @@
+- [Base] Corrected 3D circle frames, representative points, and bounds
 - [Base] Made generic minimum-spanning trees deterministic and linearithmic
 - [Base] Corrected positive-discriminant cubic solvers to return only their real root
 - [Base] Corrected and accelerated single-pass enumerable population variance

@@ -45,7 +45,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Creates a circle from it's center, a normal vector (normalized) and a radius.
+        /// Creates a circle from its center, a normalized normal vector, and a radius.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public __type__(__v3t__ center, __v3t__ normal, __ftype__ radius)
@@ -129,60 +129,69 @@ namespace Aardvark.Base
             get => Radius < 0;
         }
 
-        /// <summary>
-        /// Returns a point on the circumference (AxisU).
-        /// </summary>
-        public readonly __v3t__ Point
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Center + AxisU * Radius;
-        }
-
-        /// <summary>
-        /// Returns an axis aligned vector pointing from the center to the circumference.
-        /// </summary>
-        public readonly __v3t__ AxisU
+        private readonly __v3t__ UnitTangent
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                __v3t__ dir = Normal.Dot(__v3t__.XAxis).Abs() > __dotnine__ ? __v3t__.YAxis : __v3t__.XAxis;
-                var pdir = Normal.Cross(dir);
-                return pdir.Normalized * Radius;
+                __v3t__ reference = Normal.Dot(__v3t__.XAxis).Abs() > __dotnine__
+                    ? __v3t__.YAxis
+                    : __v3t__.XAxis;
+                return Normal.Cross(reference).Normalized;
             }
         }
 
         /// <summary>
-        /// Returns an axis aligned vector pointing from the center to the circumference.
+        /// Returns the deterministic representative point <see cref="GetPoint(__ftype__)"/>(0)
+        /// on the circumference.
+        /// </summary>
+        public readonly __v3t__ Point
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Center + AxisU;
+        }
+
+        /// <summary>
+        /// Returns the radius-length first tangent axis, orthogonal to <see cref="Normal"/>.
+        /// </summary>
+        public readonly __v3t__ AxisU
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => UnitTangent * Radius;
+        }
+
+        /// <summary>
+        /// Returns the radius-length second tangent axis, orthogonal to
+        /// <see cref="Normal"/> and <see cref="AxisU"/>.
         /// </summary>
         public readonly __v3t__ AxisV
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var axisU = AxisU;
-                return AxisU.Cross(Normal).Normalized * Radius;
+                var unitTangent = UnitTangent;
+                return unitTangent.Cross(Normal).Normalized * Radius;
             }
         }
 
         /// <summary>
-        /// Return an IEnumerable of points on the circle's circumference, optionally repeating the first point as the last.
+        /// Generates points on the circumference, optionally repeating the first point last.
         /// </summary>
-        /// <param name="tesselation">number of distinct points to generate. the actual number of points returned depends on the <para>duplicateClosePoint</para> parameter. must be 3 or larger.</param>
-        /// <param name="duplicateClosePoint">if true, the first point is repeated as the last</param>
-        /// <returns>IEnumerable of points on the circle's circumference. if diplicateClosePoint is true, <para>tesselation</para>+1 points are returned.</returns>
+        /// <param name="tesselation">The number of distinct points to generate; must be at least three.</param>
+        /// <param name="duplicateClosePoint">Whether to repeat the first point after the distinct points.</param>
+        /// <returns>The generated circumference points in increasing angular order.</returns>
         public readonly IEnumerable<__v3t__> Points(int tesselation, bool duplicateClosePoint = false)
 		{
 			if (tesselation < 3)
 				throw new ArgumentOutOfRangeException("tesselation", "tesselation must be at least 3.");
 
-			var off = 0;
-			if (duplicateClosePoint)
-				off = 1;
+            var axisU = AxisU;
+            var axisV = AxisV;
+			var off = duplicateClosePoint ? 1 : 0;
 			for (int i = 0; i < tesselation + off; i++)
 			{
 				var angle = ((__ftype__)i) / tesselation * __constant__.PiTimesTwo;
-				yield return Center + AxisU * Fun.Cos(angle) + AxisV * Fun.Sin(angle);
+				yield return Center + axisU * Fun.Cos(angle) + axisV * Fun.Sin(angle);
 			}
 		}
 
@@ -192,9 +201,17 @@ namespace Aardvark.Base
             get => new __plane3t__(Normal, Center);
         }
 
+        /// <summary>
+        /// Returns the circumference point at the given angle in radians.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __v3t__ GetPoint(__ftype__ angle)
-            => Center + AxisU * angle.Cos() + AxisV * angle.Sin();
+        {
+            var unitTangent = UnitTangent;
+            var axisU = unitTangent * Radius;
+            var axisV = unitTangent.Cross(Normal).Normalized * Radius;
+            return Center + axisU * angle.Cos() + axisV * angle.Sin();
+        }
 
         #endregion
 
@@ -238,13 +255,19 @@ namespace Aardvark.Base
 
         #region __iboundingbox__ Members
 
+        /// <summary>
+        /// Returns the exact axis-aligned bounds for the normalized-normal representation.
+        /// </summary>
         public readonly __box3t__ BoundingBox3__tc__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var u = AxisU; var v = AxisV;
-                return new __box3t__(Center + u, Center - u, Center + v, Center - v);
+                var extent = new __v3t__(
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.X * Normal.X)),
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Y * Normal.Y)),
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Z * Normal.Z)));
+                return new __box3t__(Center - extent, Center + extent);
             }
         }
 

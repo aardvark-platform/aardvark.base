@@ -32,6 +32,28 @@ var hit = RayHit3d.MaxRange;
 bool hitsTri = ray.Hits(triangle, 0.0, double.MaxValue, ref hit);
 ```
 
+## Circle3 Frame And Bounds
+
+`Circle3f` and `Circle3d` represent a circle by `Center`, a normalized `Normal`,
+and `Radius`. Their tangent frame is deterministic and independent of radius:
+the first unit tangent is the normalized cross product of `Normal` with X, except
+that Y is used when the normal is nearly X-aligned; the second is the normalized
+cross product of the first tangent with `Normal`. `AxisU` and `AxisV` scale these
+unit tangents by `Radius` only after constructing the frame. This preserves the
+established orientation for ordinary normalized normals and keeps finite extreme
+radii from collapsing `AxisV` through intermediate normalization overflow or
+underflow. A zero radius produces two zero axes.
+
+`Point` is `Center + AxisU` and equals `GetPoint(0)`. `GetPoint` and `Points`
+use the same oriented frame; `Points` constructs its scaled axes once per enumeration.
+These frame and point operations do not allocate.
+
+For a normalized normal `n`, the exact axis-aligned bound extent in component `i`
+is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. The non-negative clamp handles
+normalization round-off before the square root. `BoundingBox3f` and `BoundingBox3d`
+use these projection extents directly rather than bounding only four frame-cardinal
+points, so oblique-circle extrema are not underestimated; the properties do not allocate.
+
 ## FastRay Slab Test
 
 `FastRay2d`/`FastRay2f`/`FastRay3d`/`FastRay3f` wrap a ray with precomputed `InvDir` and `DirFlags` for repeated axis-aligned box tests (kd-tree/BbTree traversal):
@@ -130,6 +152,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Geometry/IntersectionTests_auto.cs` (`Box3d.Intersects(Ray3d, out t)`, `Box2f`/`Box2d` plane intersections)
 - `src/Aardvark.Base/Geometry/Algorithms_auto.cs` (`GeometryFun.Simplify` for `V2f[]`/`V2d[]`)
 - `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, `RayHit3d`, `FastRay3d`)
+- `src/Aardvark.Base/Geometry/Types/Circle/Circle3_auto.cs` (`Circle3f`/`Circle3d` frame, points, and bounds)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f`/`Line2d`/`Line3f`/`Line3d.ClipByPlane`)
