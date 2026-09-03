@@ -96,6 +96,8 @@ internal sealed class DocsRules
                 new("ai/ALGORITHMS.md", "selector exactly once per element", "Algorithm docs should define variance selector invocation semantics."),
                 new("ai/SYMBOL_INDEX.md", "`Fun.Variance`, `Fun.StandardDeviation`", "The symbol index should expose enumerable population statistics."),
                 new("ai/ALGORITHMS.md", "`MedianWindow` retains the latest values", "Algorithm docs should describe rolling median semantics."),
+                new("ai/ALGORITHMS.md", "`MinimumSpanningTree.Create<TVertex, TWeight>(edges)` consumes", "Algorithm docs should define generic minimum-spanning-tree semantics."),
+                new("ai/ALGORITHMS.md", "`O(E log E)` time and `O(V + E)` auxiliary memory", "Algorithm docs should state generic minimum-spanning-tree complexity."),
             ],
             SourceAnchors =
             [
@@ -133,6 +135,8 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/AlgoDat/LruCache.cs", "public class LruCache<TKey, TValue>"),
                 new("src/Aardvark.Base/AlgoDat/ConcurrentHashSet.cs", "public bool Remove(T item) => m_entries.TryRemove(item, out int dummy);"),
                 new("src/Aardvark.Base/AlgoDat/ShortestPath.cs", "public class ShortestPath<T> : IShortestPath<T>"),
+                new("src/Aardvark.Base/AlgoDat/MinimumSpanningTree.cs", "public static class MinimumSpanningTree"),
+                new("src/Aardvark.Base/AlgoDat/MinimumSpanningTree.cs", "The graph is disconnected and cannot produce a spanning tree."),
                 new("src/Aardvark.Base/Geometry/BbTree.cs", "public class BbTree"),
                 new("src/Aardvark.Base/Geometry/Algorithms_auto.cs", "public static int[] Simplify(this V2d[] polyline, double epsilon)"),
                 new("src/Aardvark.Base/Geometry/Algorithms_auto.cs", "segments = ArrayPool<long>.Shared.Rent(count);"),

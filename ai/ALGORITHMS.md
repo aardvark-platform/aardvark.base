@@ -41,6 +41,24 @@ therefore counts each edge once. `Tree.TraverseEuler` emits no values for an emp
 tree; otherwise it emits a depth-first `2E+1` walk that starts and ends at index
 zero and traverses every tree edge once in each direction.
 
+## Generic Minimum-Spanning Trees
+
+`MinimumSpanningTree.Create<TVertex, TWeight>(edges)` consumes the source edge
+sequence once and treats each edge as undirected. Vertices are discovered in source
+order; Prim traversal starts at the first discovered vertex, and equal-weight frontier
+edges are selected in source edge order. The emitted orientation runs from the visited
+endpoint to the newly reached endpoint. Self-loops are ignored as candidates, while
+parallel edges participate normally.
+
+Empty input and input describing only one distinct vertex produce no edges. Connected
+input produces exactly `V - 1` edges of minimum total weight. Input describing two or
+more disconnected components throws `InvalidOperationException`; the API defines a
+single tree rather than a spanning forest.
+
+The implementation materializes one source pass into compact indexed adjacency storage
+and uses one global binary-heap frontier. Each non-loop edge is enqueued at most once,
+for `O(E log E)` time and `O(V + E)` auxiliary memory.
+
 ## BbTree
 
 Bounding-box hierarchy in `Geometry/BbTree.cs`.
@@ -188,6 +206,7 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 ## Source Anchors
 
 - `src/Aardvark.Base/AlgoDat/ShortestPath.cs`
+- `src/Aardvark.Base/AlgoDat/MinimumSpanningTree.cs`
 - `src/Aardvark.Base/AlgoDat/SalesmanOfDeath.cs`
 - `src/Aardvark.Base/Geometry/BbTree.cs`
 - `src/Aardvark.Base/Math/LuFactorization.cs`
