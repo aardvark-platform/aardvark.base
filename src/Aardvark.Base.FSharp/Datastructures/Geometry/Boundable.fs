@@ -132,128 +132,20 @@ type RayPart =
         [<Extension>]
         static member Intersects(x : RayPart, cylinder : Cylinder3d) =
             let ray = x.Ray.Ray
-            let tmin = x.TMin
-            let tmax = x.TMax
-            // taken from http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
-            let v = ray.Direction
-            let va = cylinder.P1 - cylinder.P0
-            let la = Vec.length va
-            let va = va / la
-            let dp = ray.Origin - cylinder.P0
-            let r2 = cylinder.Radius * cylinder.Radius
-
-            let v' = v - (Vec.dot v va * va)
-            let dp' = dp - (Vec.dot dp va) * va
-
-            let a = v' |> Vec.lengthSquared
-            let b = 2.0 * (Vec.dot v' dp')
-            let c = Vec.lengthSquared dp' - r2
-            let s = b*b - 4.0*a*c
-            if s < 0.0 then
-                None
+            let mutable t = Double.NaN
+            if ray.HitsCylinder(cylinder.P0, cylinder.P1, cylinder.Radius, x.TMin, x.TMax, &t) then
+                Some t
             else
-                let s = sqrt s
-                let t1 = (-b + s) / (2.0 * a)
-                let t2 = (-b - s) / (2.0 * a)
-
-                let p0 = Plane3d(va, cylinder.P0)
-                let p1 = Plane3d(va, cylinder.P1)
-
-                let inline isValid (t : float) =
-                    let pt = ray.GetPointOnRay t
-                    t >= tmin && t <= tmax && p0.Height pt >= 0.0 && p1.Height pt <= 0.0
-
-                let t1 = if isValid t1 then ValueSome t1 else ValueNone
-                let t2 = if isValid t2 then ValueSome t2 else ValueNone
-
-                let t3 = 
-                    let mutable t = 0.0
-                    let mutable pt = V3d.Zero
-                    if ray.Intersects(p0, &t, &pt) then
-                        let d = Vec.lengthSquared (pt - cylinder.P0)
-                        if d <= r2 then ValueSome t
-                        else ValueNone
-                    else
-                        ValueNone
-
-                let t4 = 
-                    let mutable t = 0.0
-                    let mutable pt = V3d.Zero
-                    if ray.Intersects(p1, &t, &pt) then
-                        let d = Vec.lengthSquared (pt - cylinder.P1)
-                        if d <= r2 then ValueSome t
-                        else ValueNone
-                    else
-                        ValueNone
-
-                let hits = Array.chooseV id [|t1;t2;t3;t4|]
-                if hits.Length > 0 then
-                    hits |> Array.min |> Some
-                else
-                    None
+                None
 
         [<Extension>]
         static member IntersectsV(x : RayPart, cylinder : Cylinder3d) =
             let ray = x.Ray.Ray
-            let tmin = x.TMin
-            let tmax = x.TMax
-            // taken from http://mrl.nyu.edu/~dzorin/rend05/lecture2.pdf
-            let v = ray.Direction
-            let va = cylinder.P1 - cylinder.P0
-            let la = Vec.length va
-            let va = va / la
-            let dp = ray.Origin - cylinder.P0
-            let r2 = cylinder.Radius * cylinder.Radius
-
-            let v' = v - (Vec.dot v va * va)
-            let dp' = dp - (Vec.dot dp va) * va
-
-            let a = v' |> Vec.lengthSquared
-            let b = 2.0 * (Vec.dot v' dp')
-            let c = Vec.lengthSquared dp' - r2
-            let s = b*b - 4.0*a*c
-            if s < 0.0 then
-                ValueNone
+            let mutable t = Double.NaN
+            if ray.HitsCylinder(cylinder.P0, cylinder.P1, cylinder.Radius, x.TMin, x.TMax, &t) then
+                ValueSome t
             else
-                let s = sqrt s
-                let t1 = (-b + s) / (2.0 * a)
-                let t2 = (-b - s) / (2.0 * a)
-
-                let p0 = Plane3d(va, cylinder.P0)
-                let p1 = Plane3d(va, cylinder.P1)
-
-                let inline isValid (t : float) =
-                    let pt = ray.GetPointOnRay t
-                    t >= tmin && t <= tmax && p0.Height pt >= 0.0 && p1.Height pt <= 0.0
-
-                let t1 = if isValid t1 then ValueSome t1 else ValueNone
-                let t2 = if isValid t2 then ValueSome t2 else ValueNone
-
-                let t3 =
-                    let mutable t = 0.0
-                    let mutable pt = V3d.Zero
-                    if ray.Intersects(p0, &t, &pt) then
-                        let d = Vec.lengthSquared (pt - cylinder.P0)
-                        if d <= r2 then ValueSome t
-                        else ValueNone
-                    else
-                        ValueNone
-
-                let t4 =
-                    let mutable t = 0.0
-                    let mutable pt = V3d.Zero
-                    if ray.Intersects(p1, &t, &pt) then
-                        let d = Vec.lengthSquared (pt - cylinder.P1)
-                        if d <= r2 then ValueSome t
-                        else ValueNone
-                    else
-                        ValueNone
-
-                let hits = Array.chooseV id [|t1;t2;t3;t4|]
-                if hits.Length > 0 then
-                    hits |> Array.min |> ValueSome
-                else
-                    ValueNone
+                ValueNone
 
         new(ray, min, max) = { Ray = ray; TMin = min; TMax = max }
         new(ray) = { Ray = ray; TMin = 0.0; TMax = Double.PositiveInfinity }

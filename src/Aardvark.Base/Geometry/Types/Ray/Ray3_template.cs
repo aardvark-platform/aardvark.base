@@ -915,69 +915,415 @@ namespace Aardvark.Base
 
         #region Ray-Cylinder hit intersection
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFiniteCylinderCandidate(__ftype__ t, __ftype__ tmin, __ftype__ best)
+            => t >= tmin && t < best && t.IsFinite();
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool IsInsideScaledCylinderCap(__v3t__ radial, __ftype__ radius)
+        {
+            var scale = Fun.Max(radial.NormMax, radius);
+            if (!(scale > 0)) return scale == 0;
+            if (!scale.IsFinite()) return false;
+
+            radial /= scale;
+            var scaledRadius = radius / scale;
+            return radial.LengthSquared <= scaledRadius * scaledRadius;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInsideCylinderCap(
+            __v3t__ originPerpendicular, __v3t__ directionPerpendicular,
+            __ftype__ t, __ftype__ radius)
+        {
+            var radial = originPerpendicular + directionPerpendicular * t;
+            var radialSquared = radial.LengthSquared;
+            var radiusSquared = radius * radius;
+            return radialSquared.IsFinite() && radiusSquared.IsFinite()
+                ? radialSquared <= radiusSquared
+                : IsInsideScaledCylinderCap(radial, radius);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void GetScaledCylinderBarrelRoots(
+            __v3t__ directionPerpendicular, __v3t__ originPerpendicular,
+            __ftype__ radius, out __ftype__ root0, out __ftype__ root1)
+        {
+            root0 = __ftype__.NaN;
+            root1 = __ftype__.NaN;
+
+            var directionScale = directionPerpendicular.NormMax;
+            if (!(directionScale > 0) || !directionScale.IsFinite()) return;
+
+            var originScale = Fun.Max(originPerpendicular.NormMax, radius);
+            if (!(originScale > 0))
+            {
+                root0 = 0;
+                root1 = 0;
+                return;
+            }
+            if (!originScale.IsFinite()) return;
+
+            var scaledDirection = directionPerpendicular / directionScale;
+            var scaledOrigin = originPerpendicular / originScale;
+            var scaledRadius = radius / originScale;
+            var a = scaledDirection.LengthSquared;
+            var b = scaledDirection.Dot(scaledOrigin);
+            var c = scaledOrigin.LengthSquared - scaledRadius * scaledRadius;
+            var discriminant = b * b - a * c;
+            var rootScale = originScale / directionScale;
+
+            if (!(a > 0) || !discriminant.IsFinite() || !rootScale.IsFinite() || discriminant < 0)
+                return;
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                root0 = (-b / a) * rootScale;
+                root1 = root0;
+                return;
+            }
+
+            var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+            if (b > 0)
+            {
+                root0 = (q / a) * rootScale;
+                root1 = (c / q) * rootScale;
+            }
+            else
+            {
+                root0 = (c / q) * rootScale;
+                root1 = (q / a) * rootScale;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetCylinderBarrelRoots(
+            __v3t__ directionPerpendicular, __v3t__ originPerpendicular,
+            __ftype__ radius, out __ftype__ root0, out __ftype__ root1)
+        {
+            var a = directionPerpendicular.LengthSquared;
+            var b = directionPerpendicular.Dot(originPerpendicular);
+            var c = originPerpendicular.LengthSquared - radius * radius;
+            var discriminant = b * b - a * c;
+
+            if (!(a > 0) || !discriminant.IsFinite())
+            {
+                GetScaledCylinderBarrelRoots(
+                    directionPerpendicular, originPerpendicular, radius, out root0, out root1);
+                return;
+            }
+
+            if (discriminant < 0)
+            {
+                root0 = __ftype__.NaN;
+                root1 = __ftype__.NaN;
+                return;
+            }
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                root0 = -b / a;
+                root1 = root0;
+                return;
+            }
+
+            var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+            if (b > 0)
+            {
+                root0 = q / a;
+                root1 = c / q;
+            }
+            else
+            {
+                root0 = c / q;
+                root1 = q / a;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCylinderHit(
+            __v3t__ p0, __v3t__ p1, __ftype__ radius,
+            __ftype__ tmin, __ftype__ tmax, __ftype__ distanceScale,
+            out __ftype__ t)
+        {
+            if (distanceScale != 0)
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, distanceScale, out t);
+
+            return TryGetCylinderHitFast(p0, p1, radius, tmin, tmax, out t);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCylinderHitFast(
+            __v3t__ p0, __v3t__ p1, __ftype__ radius,
+            __ftype__ tmin, __ftype__ tmax, out __ftype__ t)
+        {
+            t = __ftype__.NaN;
+            if (!(radius >= 0) || radius > __ftype__.MaxValue || !(tmin < tmax))
+                return false;
+
+            var axis = p1 - p0;
+            var axisLengthSquared = axis.LengthSquared;
+            if (!(axisLengthSquared > 0) || !axisLengthSquared.IsFinite())
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+            var axisLength = Fun.Sqrt(axisLengthSquared);
+            var axisDirection = axis * (1 / axisLength);
+            var originOffset = Origin - p0;
+            var directionAlongAxis = Direction.Dot(axisDirection);
+            var originAlongAxis = originOffset.Dot(axisDirection);
+            var directionPerpendicular = Direction - directionAlongAxis * axisDirection;
+            var originPerpendicular = originOffset - originAlongAxis * axisDirection;
+            var radiusSquared = radius * radius;
+
+            var best = tmax;
+            var found = false;
+            if (directionPerpendicular != __v3t__.Zero)
+            {
+                var a = directionPerpendicular.LengthSquared;
+                var b = directionPerpendicular.Dot(originPerpendicular);
+                var c = originPerpendicular.LengthSquared - radiusSquared;
+                var discriminant = b * b - a * c;
+                if (!(a > 0) || !discriminant.IsFinite() || !radiusSquared.IsFinite())
+                    return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+                if (discriminant >= 0)
+                {
+                    var sqrtDiscriminant = Fun.Sqrt(discriminant);
+                    __ftype__ root0;
+                    __ftype__ root1;
+                    if (sqrtDiscriminant == 0)
+                    {
+                        root0 = -b / a;
+                        root1 = root0;
+                    }
+                    else
+                    {
+                        var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+                        if (b > 0)
+                        {
+                            root0 = q / a;
+                            root1 = c / q;
+                        }
+                        else
+                        {
+                            root0 = c / q;
+                            root1 = q / a;
+                        }
+                    }
+
+                    if (root0 >= tmin && root0 < best)
+                    {
+                        var axial = originAlongAxis + root0 * directionAlongAxis;
+                        if (axial >= 0 && axial <= axisLength)
+                        {
+                            best = root0;
+                            found = true;
+                        }
+                    }
+                    if (root1 >= tmin && root1 < best)
+                    {
+                        var axial = originAlongAxis + root1 * directionAlongAxis;
+                        if (axial >= 0 && axial <= axisLength)
+                        {
+                            best = root1;
+                            found = true;
+                        }
+                    }
+                }
+            }
+
+            if (directionAlongAxis != 0)
+            {
+                var cap0 = -originAlongAxis / directionAlongAxis;
+                if (cap0 >= tmin && cap0 < best)
+                {
+                    var radial = originPerpendicular + directionPerpendicular * cap0;
+                    var radialSquared = radial.LengthSquared;
+                    if (!radialSquared.IsFinite() || !radiusSquared.IsFinite())
+                        return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+                    if (radialSquared <= radiusSquared)
+                    {
+                        best = cap0;
+                        found = true;
+                    }
+                }
+
+                var cap1 = (axisLength - originAlongAxis) / directionAlongAxis;
+                if (cap1 >= tmin && cap1 < best)
+                {
+                    var radial = originPerpendicular + directionPerpendicular * cap1;
+                    var radialSquared = radial.LengthSquared;
+                    if (!radialSquared.IsFinite() || !radiusSquared.IsFinite())
+                        return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+                    if (radialSquared <= radiusSquared)
+                    {
+                        best = cap1;
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found || !best.IsFinite()) return false;
+            if (!(Origin + Direction * best).IsFinite)
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+            t = best;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private readonly bool TryGetCylinderHitRobust(
+            __v3t__ p0, __v3t__ p1, __ftype__ radius,
+            __ftype__ tmin, __ftype__ tmax, __ftype__ distanceScale,
+            out __ftype__ t)
+        {
+            t = __ftype__.NaN;
+            if (!(radius >= 0) || radius > __ftype__.MaxValue || !(tmin < tmax))
+                return false;
+
+            var axis = p1 - p0;
+
+            __v3t__ axisDirection;
+            var axisLengthSquared = axis.LengthSquared;
+            __ftype__ axisLength;
+            if (axisLengthSquared > 0 && axisLengthSquared.IsFinite())
+            {
+                axisLength = Fun.Sqrt(axisLengthSquared);
+                axisDirection = axis * (1 / axisLength);
+            }
+            else
+            {
+                var axisScale = axis.NormMax;
+                if (!(axisScale > 0) || !axisScale.IsFinite()) return false;
+
+                var scaledAxis = axis / axisScale;
+                var scaledLength = scaledAxis.Length;
+                axisLength = axisScale * scaledLength;
+                axisDirection = scaledAxis * (1 / scaledLength);
+                if (!axisLength.IsFinite() || !axisDirection.IsFinite) return false;
+            }
+
+            var originOffset = Origin - p0;
+            var directionAlongAxis = Direction.Dot(axisDirection);
+            var originAlongAxis = originOffset.Dot(axisDirection);
+            var directionPerpendicular = Direction - directionAlongAxis * axisDirection;
+            var originPerpendicular = originOffset - originAlongAxis * axisDirection;
+
+            if (distanceScale != 0)
+            {
+                if (!distanceScale.IsFinite()) return false;
+                __ftype__ closestParameter;
+                var perpendicularLengthSquared = directionPerpendicular.LengthSquared;
+                var perpendicularDot = directionPerpendicular.Dot(originPerpendicular);
+                if (perpendicularLengthSquared > 0 && perpendicularLengthSquared.IsFinite() && perpendicularDot.IsFinite())
+                {
+                    closestParameter = -perpendicularDot / perpendicularLengthSquared;
+                }
+                else if (directionPerpendicular != __v3t__.Zero)
+                {
+                    var directionScale = directionPerpendicular.NormMax;
+                    var originScale = originPerpendicular.NormMax;
+                    if (!(directionScale > 0) || !directionScale.IsFinite() || !originScale.IsFinite())
+                        return false;
+
+                    if (originScale > 0)
+                    {
+                        var scaledDirection = directionPerpendicular / directionScale;
+                        var scaledOrigin = originPerpendicular / originScale;
+                        closestParameter = -(originScale / directionScale)
+                            * scaledDirection.Dot(scaledOrigin) / scaledDirection.LengthSquared;
+                    }
+                    else
+                    {
+                        closestParameter = 0;
+                    }
+                }
+                else
+                {
+                    closestParameter = 0;
+                }
+
+                var directionLength = Direction.Length;
+                if (!(directionLength > 0) || !directionLength.IsFinite())
+                {
+                    var directionScale = Direction.NormMax;
+                    var scaledDirection = Direction / directionScale;
+                    directionLength = directionScale * scaledDirection.Length;
+                }
+
+                var distance = Fun.Abs(closestParameter) * directionLength;
+                radius = ((radius / distanceScale) * distance) * 2;
+                if (!radius.IsFinite() || radius < 0) return false;
+            }
+
+            var best = tmax;
+            var found = false;
+
+            if (directionPerpendicular != __v3t__.Zero)
+            {
+                GetCylinderBarrelRoots(directionPerpendicular, originPerpendicular, radius, out var root0, out var root1);
+                if (IsFiniteCylinderCandidate(root0, tmin, best))
+                {
+                    var axial = originAlongAxis + root0 * directionAlongAxis;
+                    if (axial >= 0 && axial <= axisLength)
+                    {
+                        best = root0;
+                        found = true;
+                    }
+                }
+                if (IsFiniteCylinderCandidate(root1, tmin, best))
+                {
+                    var axial = originAlongAxis + root1 * directionAlongAxis;
+                    if (axial >= 0 && axial <= axisLength)
+                    {
+                        best = root1;
+                        found = true;
+                    }
+                }
+            }
+
+            if (directionAlongAxis != 0)
+            {
+                var cap0 = -originAlongAxis / directionAlongAxis;
+                if (IsFiniteCylinderCandidate(cap0, tmin, best)
+                    && IsInsideCylinderCap(originPerpendicular, directionPerpendicular, cap0, radius))
+                {
+                    best = cap0;
+                    found = true;
+                }
+
+                var cap1 = (axisLength - originAlongAxis) / directionAlongAxis;
+                if (IsFiniteCylinderCandidate(cap1, tmin, best)
+                    && IsInsideCylinderCap(originPerpendicular, directionPerpendicular, cap1, radius))
+                {
+                    best = cap1;
+                    found = true;
+                }
+            }
+
+            if (!found || !(Origin + Direction * best).IsFinite) return false;
+            t = best;
+            return true;
+        }
+
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the finite capped cylinder within the supplied parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
         /// </summary>
         public readonly bool HitsCylinder(__v3t__ p0, __v3t__ p1, __ftype__ radius,
                 __ftype__ tmin, __ftype__ tmax,
                 ref __rayhit3t__ hit)
         {
-            var axis = new __line3t__(p0, p1);
-            var axisDir = axis.Direction.Normalized;
+            if (!TryGetCylinderHit(p0, p1, radius, tmin, tmax, 0, out var t) || !(t < hit.T))
+                return false;
 
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - p0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            var t = -normal2.Dot(unitNormal) / normal.Length;
-
-            // between enitre rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                hit.T = t1;
-                hit.Point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new __plane3t__(-axisDir, p0);
-                var topPlane = new __plane3t__(axisDir, p1);
-                var heightBottom = bottomPlane.Height(hit.Point);
-                var heightTop = topPlane.Height(hit.Point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    hit.T = tmax;
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
-
-                    // hit still close enough to cylinder axis?
-                    var distance = axis.__ray3t__.GetMinimalDistanceTo(hit.Point);
-
-                    if (distance <= radius && (bottomHit || topHit))
-                        return true;
-                }
-                else
-                    return true;
-            }
-
-            hit.T = tmax;
-            hit.Point = __v3t__.NaN;
-            return false;
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
+            return true;
         }
 
         /// <summary>
@@ -988,71 +1334,15 @@ namespace Aardvark.Base
         public readonly bool HitsCylinder(__v3t__ p0, __v3t__ p1, __ftype__ radius, ref __rayhit3t__ hit)
             => HitsCylinder(p0, p1, radius, 0, __ftype__.MaxValue, ref hit);
 
+        /// <summary>
+        /// Returns true if the ray hits the finite capped cylinder within the half-open parameter
+        /// interval [<paramref name="tmin"/>, <paramref name="tmax"/>). On failure,
+        /// <paramref name="t"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCylinder(__v3t__ p0, __v3t__ p1, __ftype__ radius,
                 __ftype__ tmin, __ftype__ tmax, out __ftype__ t)
-        {
-            var axis = new __line3t__(p0, p1);
-            var axisDir = axis.Direction.Normalized;
-
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - p0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            t = -normal2.Dot(unitNormal) / normal.Length;
-
-            // between entire rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                t = t1;
-                var point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new __plane3t__(-axisDir, p0);
-                var topPlane = new __plane3t__(axisDir, p1);
-                var heightBottom = bottomPlane.Height(point);
-                var heightTop = topPlane.Height(point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsCircle(p0, -axisDir, radius, tmin, tmax, out t);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsCircle(p1, axisDir, radius, tmin, tmax, out __ftype__ ttop);
-
-                    if (topHit)
-                    {
-                        if (bottomHit)
-                        {
-                            if (ttop.Abs() < t)
-                                t = ttop;
-                        }
-                        else
-                            t = ttop;
-                    }
-
-                    return topHit || bottomHit;
-                }
-                else
-                    return true;
-            }
-
-            t = __ftype__.NaN;
-            return false;
-        }
+            => TryGetCylinderHit(p0, p1, radius, tmin, tmax, 0, out t);
 
         /// <summary>
         /// Returns true if the ray intersects with the primitive. A hit with this
@@ -1070,74 +1360,23 @@ namespace Aardvark.Base
             => Hits(cylinder, tmin, tmax, 0, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the finite capped cylinder within the supplied parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
+        /// A nonzero <paramref name="distanceScale"/> grows the effective radius with distance.
         /// </summary>
         public readonly bool Hits(__cylinder3t__ cylinder, __ftype__ tmin, __ftype__ tmax, __ftype__ distanceScale, ref __rayhit3t__ hit)
         {
-            var axisDir = cylinder.Axis.Direction.Normalized;
+            if (!TryGetCylinderHit(
+                    cylinder.P0, cylinder.P1, cylinder.Radius,
+                    tmin, tmax, distanceScale, out var t)
+                || !(t < hit.T))
+                return false;
 
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - cylinder.P0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            var t = -normal2.Dot(unitNormal) / normal.Length;
-
-            var radius = cylinder.Radius;
-            if (distanceScale != 0)
-            {   // cylinder gets bigger, the further away it is
-                var pnt = GetPointOnRay(t);
-
-                var dis = Vec.Distance(pnt, this.Origin);
-                radius = ((cylinder.Radius / distanceScale) * dis) * 2;
-            }
-
-            // between enitre rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                hit.T = t1;
-                hit.Point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new __plane3t__(cylinder.Circle0.Normal, cylinder.Circle0.Center);
-                var topPlane = new __plane3t__(cylinder.Circle1.Normal, cylinder.Circle1.Center);
-                var heightBottom = bottomPlane.Height(hit.Point);
-                var heightTop = topPlane.Height(hit.Point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    hit.T = tmax;
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
-
-                    // hit still close enough to cylinder axis?
-                    var distance = cylinder.Axis.__ray3t__.GetMinimalDistanceTo(hit.Point);
-
-                    if (distance <= radius && (bottomHit || topHit))
-                        return true;
-                }
-                else
-                    return true;
-            }
-
-            hit.T = tmax;
-            hit.Point = __v3t__.NaN;
-            return false;
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
+            return true;
         }
 
         /// <summary>

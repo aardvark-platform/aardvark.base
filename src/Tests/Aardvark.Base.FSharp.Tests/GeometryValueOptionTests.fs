@@ -1,5 +1,6 @@
 namespace Aardvark.Base.FSharp.Tests
 
+open System
 open Aardvark.Base
 open Aardvark.Base.Geometry
 
@@ -73,6 +74,29 @@ module GeometryValueOptionTests =
         match RayPart.intersectV part box with
         | ValueSome t -> ValueSome <| RayHit(t, box.Center.Z)
         | ValueNone -> ValueNone
+
+    [<Test>]
+    let ``[Geometry] RayPart cylinder option forms match core capped intersections`` () =
+        let cylinder = Cylinder3d(V3d.Zero, 4.0 * V3d.ZAxis, 1.0)
+        let cases =
+            [|
+                RayPart.create (FastRay3d(Ray3d(V3d(-3.0, 0.0, 0.5), V3d(2.0, 0.0, 1.0)))) 0.0 10.0
+                RayPart.create (FastRay3d(Ray3d(V3d(0.5, 0.0, -2.0), V3d.ZAxis))) 0.0 10.0
+                RayPart.create (FastRay3d(Ray3d(V3d(1.5, 0.0, -2.0), V3d.ZAxis))) 0.0 10.0
+                RayPart.create (FastRay3d(Ray3d(V3d(-2.0, 0.0, 2.0), V3d.XAxis))) 0.0 1.0
+            |]
+
+        for part in cases do
+            let ray = part.Ray.Ray
+            let mutable t : float = Double.NaN
+            let expected =
+                if ray.HitsCylinder(cylinder.P0, cylinder.P1, cylinder.Radius, part.TMin, part.TMax, &t) then
+                    Some t
+                else
+                    None
+
+            RayPart.intersect part cylinder |> should equal expected
+            RayPart.intersectV part cylinder |> toOption |> should equal expected
 
     [<Test>]
     let ``[Geometry] BvhTree.intersectV matches intersect for hit and miss rays`` () =

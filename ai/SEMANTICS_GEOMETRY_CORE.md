@@ -54,6 +54,37 @@ normalization round-off before the square root. `BoundingBox3f` and `BoundingBox
 use these projection extents directly rather than bounding only four frame-cardinal
 points, so oblique-circle extrema are not underestimated; the properties do not allocate.
 
+## Capped-Cylinder Ray Intersections
+
+`Ray3f.HitsCylinder` and `Ray3d.HitsCylinder` intersect the finite capped surface
+whose axis runs from `p0` to `p1` and whose radius is non-negative. The candidate
+set consists of both roots of the perpendicular barrel quadratic, clipped to the
+closed axial extent, and both circular end caps. Endpoint order does not affect
+the geometry. Axis-parallel rays still test the caps, rays starting inside select
+their first permitted exit, and a tangent barrel contact counts as a hit. A zero
+radius retains the degenerate axis segment; a zero-length axis, zero ray direction,
+negative/non-finite radius, non-finite geometry, or empty/NaN parameter interval
+reports no hit.
+
+Candidates are ordered by their ray parameter, not by absolute distance. The
+supplied interval is half-open: `t` must be finite and in `[tmin, tmax)`. Thus
+`tmin` is included and `tmax` is excluded; default overloads use a non-negative
+interval and therefore reject intersections behind the ray origin. An `out t`
+miss always writes NaN.
+
+The `ref RayHit3f`/`ref RayHit3d` overloads are closest-hit accumulators. They
+return true and update `T`, `Point`, `Coord`, and `BackSide` only when the nearest
+valid cylinder candidate is also strictly closer than the existing `hit.T`.
+They preserve `Part`, and leave the entire hit unchanged on geometric misses,
+range misses, invalid input, and candidates hidden by an existing closer hit.
+A nonzero `distanceScale` retains the established distance-based effective-radius
+growth before candidates pass through the same finite capped-cylinder kernel.
+
+The `RayPart` cylinder option and value-option forms in `Boundable.fs` delegate
+to the double-precision core, so they share the same cap, range, and finite-result
+semantics without constructing candidate arrays. The core and accumulator paths
+do not allocate.
+
 ## FastRay Slab Test
 
 `FastRay2d`/`FastRay2f`/`FastRay3d`/`FastRay3f` wrap a ray with precomputed `InvDir` and `DirFlags` for repeated axis-aligned box tests (kd-tree/BbTree traversal):
@@ -151,7 +182,8 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Math/Trafos/Trafo_auto.cs` (`Trafo3d`, `Forward`, `Backward`)
 - `src/Aardvark.Base/Geometry/IntersectionTests_auto.cs` (`Box3d.Intersects(Ray3d, out t)`, `Box2f`/`Box2d` plane intersections)
 - `src/Aardvark.Base/Geometry/Algorithms_auto.cs` (`GeometryFun.Simplify` for `V2f[]`/`V2d[]`)
-- `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, `RayHit3d`, `FastRay3d`)
+- `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, capped-cylinder kernel, `RayHit3d`, `FastRay3d`)
+- `src/Aardvark.Base.FSharp/Datastructures/Geometry/Boundable.fs` (`RayPart` cylinder option/value-option delegation)
 - `src/Aardvark.Base/Geometry/Types/Circle/Circle3_auto.cs` (`Circle3f`/`Circle3d` frame, points, and bounds)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)
