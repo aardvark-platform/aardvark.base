@@ -106,6 +106,11 @@ internal sealed class DocsRules
                 new("ai/ALGORITHMS.md", "`AdaBoost.Train<T>` treats `iterations` as a strict upper bound", "Algorithm docs should define AdaBoost iteration-budget semantics."),
                 new("ai/ALGORITHMS.md", "An all-wrong learner is a perfect inverse", "Algorithm docs should define AdaBoost degenerate-learner semantics."),
                 new("ai/ALGORITHMS.md", "`O(K)` time and allocates no managed memory per call", "Algorithm docs should state AdaBoost inference complexity and allocation behavior."),
+                new("ai/ALGORITHMS.md", "`Ipol.CubicHermite.Eval`, `EvalD1`, `EvalD2`, and `EvalD3`", "Algorithm docs should expose cubic Hermite value and derivative evaluation."),
+                new("ai/ALGORITHMS.md", "Parameters are not clamped: values outside `[0, 1]` extrapolate", "Algorithm docs should define cubic curve extrapolation semantics."),
+                new("ai/ALGORITHMS.md", "is independent of `t`, including for non-finite", "Algorithm docs should define constant third-derivative semantics."),
+                new("ai/ALGORITHMS.md", "allocation-free after warmup", "Algorithm docs should state cubic-family allocation behavior."),
+                new("ai/SYMBOL_INDEX.md", "`Ipol.CubicHermite`, `Ipol.CatmullRom`, `Ipol.KochanekBartels`", "The symbol index should expose cubic curve families."),
             ],
             SourceAnchors =
             [
@@ -165,6 +170,9 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "return (root, double.NaN, double.NaN);"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "if (!added) q.Set(i++, d + shift);"),
                 new("src/Aardvark.Base/Math/Numerics/Polynomial.cs", "private static double RefineCubicDiscriminant("),
+                new("src/Aardvark.Base/Math/Curves/Curves.cs", "public static partial class CubicHermite"),
+                new("src/Aardvark.Base/Math/Curves/Curves.cs", "private static void GetWeights("),
+                new("src/Aardvark.Base/Math/Curves/Curves.cs", "private static void GetWeightsD3("),
                 new("src/Aardvark.Base.IO/ICoder_auto.cs", "void CodeInt(ref int value);"),
                 new("src/Aardvark.Base.IO/NetworkOrderBinaryReader.cs", "return Fun.FloatFromBits(BinaryPrimitives.ReverseEndianness(base.ReadInt64()));"),
                 new("src/Aardvark.Base.IO/NetworkOrderBinaryWriter.cs", "base.Write(BinaryPrimitives.ReverseEndianness(Fun.FloatToBits(value)));"),

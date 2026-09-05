@@ -193,6 +193,24 @@ Trailing `NaN` entries are part of the tuple contract: array conversion drops th
 and the quartic zero-factor path merges only the finite prefix with its additional
 real root.
 
+## Cubic Curve Evaluation
+
+`Ipol.CubicHermite.Eval`, `EvalD1`, `EvalD2`, and `EvalD3` evaluate scalar, `V2d`,
+and `V3d` cubic Hermite segments. They form the four basis coefficients in scalar locals
+and allocate no managed memory per call after warmup. The value basis remains
+`(2t^3 - 3t^2 + 1, t^3 - 2t^2 + t, t^3 - t^2, -2t^3 + 3t^2)` for
+`(a, tangentIn, tangentOut, b)`, with the corresponding analytical derivatives.
+
+Parameters are not clamped: values outside `[0, 1]` extrapolate the same cubic polynomial.
+At `t = 0` and `t = 1`, `Eval` returns `a` and `b`, while `EvalD1` returns the respective
+incoming and outgoing tangent. `EvalD3` is the constant
+`12a + 6tangentIn + 6tangentOut - 12b` and is independent of `t`, including for non-finite
+parameter values.
+
+`Ipol.CatmullRom` and `Ipol.KochanekBartels` derive their tangents and delegate all four
+value/derivative orders to the same Hermite kernels. Their scalar, `V2d`, and `V3d`
+evaluation paths are therefore likewise constant-time and allocation-free after warmup.
+
 ## Enumerable Population Variance
 
 `Fun.Variance` and `Fun.StandardDeviation` enumerate `IEnumerable<int>`,
@@ -238,3 +256,4 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs`
 - `src/Aardvark.Base/Math/Base/MedianWindow.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`
+- `src/Aardvark.Base/Math/Curves/Curves.cs`

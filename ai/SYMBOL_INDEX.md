@@ -38,6 +38,7 @@ Quick symbol-to-doc map for incremental discovery.
 | `AliasTableF`, `AliasTableD` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `DistributionFunction` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Polynomial` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `Ipol.CubicHermite`, `Ipol.CatmullRom`, `Ipol.KochanekBartels` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `LuFactorize`, `LuSolve`, `QrFactorize` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Stats<T>`, `Histogram` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Fun.Variance`, `Fun.StandardDeviation` | [ALGORITHMS.md](ALGORITHMS.md) |
