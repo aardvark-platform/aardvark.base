@@ -15,6 +15,8 @@ namespace Aardvark.Base.Benchmarks.Geometry
         private static readonly Ray3f CapRayF = new(new V3f(0.0f, 0.0f, 6.0f), new V3f(0.25f, 0.0f, -1.0f));
         private static readonly Ray3f ParallelRayF = new(new V3f(0.5f, 0.0f, -2.0f), V3f.ZAxis);
         private static readonly Ray3f MissRayF = new(new V3f(2.0f, 0.0f, -2.0f), V3f.ZAxis);
+        private static readonly Ray3f CircleHitRayF = new(new V3f(0.25f, -0.5f, -2.0f), V3f.ZAxis);
+        private static readonly Ray3f CircleMissRayF = new(new V3f(2.0f, 0.0f, -2.0f), V3f.ZAxis);
 
         private static readonly V3d P0d = V3d.Zero;
         private static readonly V3d P1d = 4.0 * V3d.ZAxis;
@@ -22,6 +24,8 @@ namespace Aardvark.Base.Benchmarks.Geometry
         private static readonly Ray3d CapRayD = new(new V3d(0.0, 0.0, 6.0), new V3d(0.25, 0.0, -1.0));
         private static readonly Ray3d ParallelRayD = new(new V3d(0.5, 0.0, -2.0), V3d.ZAxis);
         private static readonly Ray3d MissRayD = new(new V3d(2.0, 0.0, -2.0), V3d.ZAxis);
+        private static readonly Ray3d CircleHitRayD = new(new V3d(0.25, -0.5, -2.0), V3d.ZAxis);
+        private static readonly Ray3d CircleMissRayD = new(new V3d(2.0, 0.0, -2.0), V3d.ZAxis);
 
         [Benchmark]
         public float BarrelFloat() => Intersect(BarrelRayF);
@@ -36,6 +40,12 @@ namespace Aardvark.Base.Benchmarks.Geometry
         public float MissFloat() => Intersect(MissRayF);
 
         [Benchmark]
+        public float CircleHitFloat() => IntersectCircle(CircleHitRayF);
+
+        [Benchmark]
+        public float CircleMissFloat() => IntersectCircle(CircleMissRayF);
+
+        [Benchmark]
         public double BarrelDouble() => Intersect(BarrelRayD);
 
         [Benchmark]
@@ -46,6 +56,12 @@ namespace Aardvark.Base.Benchmarks.Geometry
 
         [Benchmark]
         public double MissDouble() => Intersect(MissRayD);
+
+        [Benchmark]
+        public double CircleHitDouble() => IntersectCircle(CircleHitRayD);
+
+        [Benchmark]
+        public double CircleMissDouble() => IntersectCircle(CircleMissRayD);
 
         private static float Intersect(Ray3f ray)
         {
@@ -61,6 +77,24 @@ namespace Aardvark.Base.Benchmarks.Geometry
             var sum = 0.0;
             for (var i = 0; i < Count; i++)
                 if (ray.HitsCylinder(P0d, P1d, 1.0, 0.0, double.MaxValue, out var t))
+                    sum += t;
+            return sum;
+        }
+
+        private static float IntersectCircle(Ray3f ray)
+        {
+            var sum = 0.0f;
+            for (var i = 0; i < Count; i++)
+                if (ray.HitsCircle(V3f.Zero, V3f.ZAxis, 1.0f, 0.0f, float.MaxValue, out var t))
+                    sum += t;
+            return sum;
+        }
+
+        private static double IntersectCircle(Ray3d ray)
+        {
+            var sum = 0.0;
+            for (var i = 0; i < Count; i++)
+                if (ray.HitsCircle(V3d.Zero, V3d.ZAxis, 1.0, 0.0, double.MaxValue, out var t))
                     sum += t;
             return sum;
         }

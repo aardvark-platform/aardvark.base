@@ -54,6 +54,29 @@ normalization round-off before the square root. `BoundingBox3f` and `BoundingBox
 use these projection extents directly rather than bounding only four frame-cardinal
 points, so oblique-circle extrema are not underestimated; the properties do not allocate.
 
+## Circle Ray Intersections
+
+`Ray3f.HitsCircle` and `Ray3d.HitsCircle` intersect the ray with the circle's
+supporting plane and then test the resulting point against the closed disk. The
+radius must be finite and non-negative; a zero radius retains the center point.
+Parallel rays, invalid radii, empty or NaN ranges, non-finite candidates, and
+plane contacts outside the disk report no hit.
+
+The circle's supplied parameter interval is half-open: a finite candidate must
+lie in `[tmin, tmax)`, so `tmin` is included and `tmax` is excluded.
+Every `out t` miss writes NaN, including off-disk and invalid-input misses.
+
+The `ref RayHit3f`/`ref RayHit3d` overloads update `T`, `Point`, `Coord`, and
+`BackSide` only after confirming a valid disk contact that is strictly closer
+than the existing `hit.T`. They preserve `Part` on success and leave every field unchanged
+on geometric, range, validity, or farther-candidate misses.
+
+Ordinary disk containment uses the direct squared-distance comparison. Radii
+whose square overflows or underflows, including zero-radius comparisons against
+nonzero subnormal-scale offsets, use the same component-scaled disk predicate as cylinder caps.
+Thus clearly inside and outside contacts remain distinguishable at extreme finite scales.
+Both paths are allocation-free.
+
 ## Capped-Cylinder Ray Intersections
 
 `Ray3f.HitsCylinder` and `Ray3d.HitsCylinder` intersect the finite capped surface
@@ -182,7 +205,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Math/Trafos/Trafo_auto.cs` (`Trafo3d`, `Forward`, `Backward`)
 - `src/Aardvark.Base/Geometry/IntersectionTests_auto.cs` (`Box3d.Intersects(Ray3d, out t)`, `Box2f`/`Box2d` plane intersections)
 - `src/Aardvark.Base/Geometry/Algorithms_auto.cs` (`GeometryFun.Simplify` for `V2f[]`/`V2d[]`)
-- `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, capped-cylinder kernel, `RayHit3d`, `FastRay3d`)
+- `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, circle/capped-cylinder kernels, `RayHit3d`, `FastRay3d`)
 - `src/Aardvark.Base.FSharp/Datastructures/Geometry/Boundable.fs` (`RayPart` cylinder option/value-option delegation)
 - `src/Aardvark.Base/Geometry/Types/Circle/Circle3_auto.cs` (`Circle3f`/`Circle3d` frame, points, and bounds)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)

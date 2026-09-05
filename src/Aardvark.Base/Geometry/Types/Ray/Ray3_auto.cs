@@ -789,97 +789,105 @@ namespace Aardvark.Base
         #region Ray-Circle hit intersection
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, float tmin, float tmax, ref RayHit3f hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, ref RayHit3f hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, float.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, ref RayHit3f hit)
             => HitsCircle(center, normal, radius, 0, float.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
+        /// The radius must be finite and non-negative. The hit remains unchanged on failure.
         /// </summary>
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, float tmin, float tmax, ref RayHit3f hit)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
+            if (!TryGetCircleHit(center, normal, radius, tmin, tmax, out var t)
+                || !(t < hit.T))
                 return false;
 
-            var t = dw / dc;
-            if (!ComputeHit(t, tmin, tmax, ref hit))
-                return false;
-
-            if (Vec.DistanceSquared(hit.Point, center) > radius * radius)
-            {
-                hit.Point = V3f.NaN;
-                hit.T = tmax;
-                return false;
-            }
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
             return true;
         }
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, float tmin, float tmax, out float t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, out float t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, float.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, out float t)
             => HitsCircle(center, normal, radius, 0, float.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the half-open parameter interval
+        /// [<paramref name="tmin"/>, <paramref name="tmax"/>). The radius must be finite
+        /// and non-negative. On failure, <paramref name="t"/> is NaN.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, float tmin, float tmax, out float t)
+            => TryGetCircleHit(center, normal, radius, tmin, tmax, out t);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCircleHit(
+            V3f center, V3f normal, float radius,
+            float tmin, float tmax, out float t)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
-            {
-                t = float.NaN;
-                return false;
-            }
-
-            t = dw / dc;
-            if (t < tmin || t > tmax)
+            t = float.NaN;
+            if (!(radius >= 0) || radius > float.MaxValue || !(tmin < tmax))
                 return false;
 
-            var point = GetPointOnRay(t); // add point as out parameter?
-            return Vec.DistanceSquared(point, center) <= radius * radius;
+            var directionDotNormal = normal.Dot(Direction);
+            if (directionDotNormal == 0)
+                return false;
+
+            var candidate = normal.Dot(center - Origin) / directionDotNormal;
+            if (!(candidate >= tmin && candidate < tmax))
+                return false;
+
+            var point = GetPointOnRay(candidate);
+            if (!IsInsideDisk(point.X - center.X, point.Y - center.Y, point.Z - center.Z, radius))
+                return false;
+
+            t = candidate;
+            return true;
         }
 
         #endregion
@@ -891,15 +899,32 @@ namespace Aardvark.Base
             => t >= tmin && t < best && t.IsFinite();
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool IsInsideScaledCylinderCap(V3f radial, float radius)
+        private static bool IsInsideScaledDisk(
+            float x, float y, float z, float radius)
         {
-            var scale = Fun.Max(radial.NormMax, radius);
+            var scale = Fun.Max(
+                Fun.Max(Fun.Abs(x), Fun.Abs(y)),
+                Fun.Max(Fun.Abs(z), radius));
             if (!(scale > 0)) return scale == 0;
             if (!scale.IsFinite()) return false;
 
-            radial /= scale;
+            x /= scale;
+            y /= scale;
+            z /= scale;
             var scaledRadius = radius / scale;
-            return radial.LengthSquared <= scaledRadius * scaledRadius;
+            return x * x + y * y + z * z <= scaledRadius * scaledRadius;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInsideDisk(
+            float x, float y, float z, float radius)
+        {
+            var radiusSquared = radius * radius;
+            // A normal finite radius square makes radial-square underflow/overflow decisive.
+            if (radiusSquared >= 1.17549435e-38f && radiusSquared <= float.MaxValue)
+                return x * x + y * y + z * z <= radiusSquared;
+
+            return IsInsideScaledDisk(x, y, z, radius);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -908,11 +933,7 @@ namespace Aardvark.Base
             float t, float radius)
         {
             var radial = originPerpendicular + directionPerpendicular * t;
-            var radialSquared = radial.LengthSquared;
-            var radiusSquared = radius * radius;
-            return radialSquared.IsFinite() && radiusSquared.IsFinite()
-                ? radialSquared <= radiusSquared
-                : IsInsideScaledCylinderCap(radial, radius);
+            return IsInsideDisk(radial.X, radial.Y, radial.Z, radius);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -2818,97 +2839,105 @@ namespace Aardvark.Base
         #region Ray-Circle hit intersection
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, double tmin, double tmax, ref RayHit3d hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, ref RayHit3d hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, double.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, ref RayHit3d hit)
             => HitsCircle(center, normal, radius, 0, double.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
+        /// The radius must be finite and non-negative. The hit remains unchanged on failure.
         /// </summary>
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, ref RayHit3d hit)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
+            if (!TryGetCircleHit(center, normal, radius, tmin, tmax, out var t)
+                || !(t < hit.T))
                 return false;
 
-            var t = dw / dc;
-            if (!ComputeHit(t, tmin, tmax, ref hit))
-                return false;
-
-            if (Vec.DistanceSquared(hit.Point, center) > radius * radius)
-            {
-                hit.Point = V3d.NaN;
-                hit.T = tmax;
-                return false;
-            }
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
             return true;
         }
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, double tmin, double tmax, out double t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, out double t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, double.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, out double t)
             => HitsCircle(center, normal, radius, 0, double.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the half-open parameter interval
+        /// [<paramref name="tmin"/>, <paramref name="tmax"/>). The radius must be finite
+        /// and non-negative. On failure, <paramref name="t"/> is NaN.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, out double t)
+            => TryGetCircleHit(center, normal, radius, tmin, tmax, out t);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCircleHit(
+            V3d center, V3d normal, double radius,
+            double tmin, double tmax, out double t)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
-            {
-                t = double.NaN;
-                return false;
-            }
-
-            t = dw / dc;
-            if (t < tmin || t > tmax)
+            t = double.NaN;
+            if (!(radius >= 0) || radius > double.MaxValue || !(tmin < tmax))
                 return false;
 
-            var point = GetPointOnRay(t); // add point as out parameter?
-            return Vec.DistanceSquared(point, center) <= radius * radius;
+            var directionDotNormal = normal.Dot(Direction);
+            if (directionDotNormal == 0)
+                return false;
+
+            var candidate = normal.Dot(center - Origin) / directionDotNormal;
+            if (!(candidate >= tmin && candidate < tmax))
+                return false;
+
+            var point = GetPointOnRay(candidate);
+            if (!IsInsideDisk(point.X - center.X, point.Y - center.Y, point.Z - center.Z, radius))
+                return false;
+
+            t = candidate;
+            return true;
         }
 
         #endregion
@@ -2920,15 +2949,32 @@ namespace Aardvark.Base
             => t >= tmin && t < best && t.IsFinite();
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static bool IsInsideScaledCylinderCap(V3d radial, double radius)
+        private static bool IsInsideScaledDisk(
+            double x, double y, double z, double radius)
         {
-            var scale = Fun.Max(radial.NormMax, radius);
+            var scale = Fun.Max(
+                Fun.Max(Fun.Abs(x), Fun.Abs(y)),
+                Fun.Max(Fun.Abs(z), radius));
             if (!(scale > 0)) return scale == 0;
             if (!scale.IsFinite()) return false;
 
-            radial /= scale;
+            x /= scale;
+            y /= scale;
+            z /= scale;
             var scaledRadius = radius / scale;
-            return radial.LengthSquared <= scaledRadius * scaledRadius;
+            return x * x + y * y + z * z <= scaledRadius * scaledRadius;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInsideDisk(
+            double x, double y, double z, double radius)
+        {
+            var radiusSquared = radius * radius;
+            // A normal finite radius square makes radial-square underflow/overflow decisive.
+            if (radiusSquared >= 2.2250738585072014e-308 && radiusSquared <= double.MaxValue)
+                return x * x + y * y + z * z <= radiusSquared;
+
+            return IsInsideScaledDisk(x, y, z, radius);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2937,11 +2983,7 @@ namespace Aardvark.Base
             double t, double radius)
         {
             var radial = originPerpendicular + directionPerpendicular * t;
-            var radialSquared = radial.LengthSquared;
-            var radiusSquared = radius * radius;
-            return radialSquared.IsFinite() && radiusSquared.IsFinite()
-                ? radialSquared <= radiusSquared
-                : IsInsideScaledCylinderCap(radial, radius);
+            return IsInsideDisk(radial.X, radial.Y, radial.Z, radius);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

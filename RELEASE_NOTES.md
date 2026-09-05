@@ -1,3 +1,4 @@
+- [Base] Corrected robust ray-circle intersections and closest-hit accumulation
 - [Base] Made cubic Hermite and delegated spline evaluation allocation-free
 - [Base] Bounded AdaBoost training and made ensemble inference allocation-free
 - [Base] Corrected finite capped-cylinder ray intersections
