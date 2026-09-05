@@ -1,3 +1,4 @@
+- [Base] Bounded AdaBoost training and made ensemble inference allocation-free
 - [Base] Corrected finite capped-cylinder ray intersections
 - [Base] Corrected 3D circle frames, representative points, and bounds
 - [Base] Made generic minimum-spanning trees deterministic and linearithmic

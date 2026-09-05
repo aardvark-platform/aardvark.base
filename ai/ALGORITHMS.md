@@ -59,6 +59,26 @@ The implementation materializes one source pass into compact indexed adjacency s
 and uses one global binary-heap frontier. Each non-loop edge is enqueued at most once,
 for `O(E log E)` time and `O(V + E)` auxiliary memory.
 
+## AdaBoost
+
+`AdaBoost.Train<T>` treats `iterations` as a strict upper bound on weak-classifier
+factory invocations. Every ordinary accepted learner updates the sample weights and then
+invokes the optional callback with a stable snapshot of the current ensemble. A callback
+result of `true` stops training.
+
+A learner whose weighted error is within the existing open band of 0.02 around 0.5
+terminates training without being retained. A learner that is correct for all samples
+replaces the ensemble with one positive finite vote. An all-wrong learner is a perfect inverse
+and replaces it with one negative finite vote. Both perfect cases stop immediately and do not
+invoke the ordinary-iteration callback. Degenerate non-finite importance or normalization
+also terminates before another factory invocation receives invalid weights.
+
+Excluding work performed by the supplied factory, `I` attempted iterations over `N`
+training items take `O(I * N)` time. Training retains `O(N + K)` auxiliary state for one
+sample-weight array, one reusable prediction buffer, and `K` accepted learner/weight pairs.
+A returned classifier evaluates its `K` retained learners with a direct loop. Inference takes
+`O(K)` time and allocates no managed memory per call after warmup.
+
 ## BbTree
 
 Bounding-box hierarchy in `Geometry/BbTree.cs`.
@@ -207,6 +227,7 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 
 - `src/Aardvark.Base/AlgoDat/ShortestPath.cs`
 - `src/Aardvark.Base/AlgoDat/MinimumSpanningTree.cs`
+- `src/Aardvark.Base/AlgoDat/AdaBoost.cs`
 - `src/Aardvark.Base/AlgoDat/SalesmanOfDeath.cs`
 - `src/Aardvark.Base/Geometry/BbTree.cs`
 - `src/Aardvark.Base/Math/LuFactorization.cs`

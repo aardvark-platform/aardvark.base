@@ -103,6 +103,9 @@ internal sealed class DocsRules
                 new("ai/ALGORITHMS.md", "`MedianWindow` retains the latest values", "Algorithm docs should describe rolling median semantics."),
                 new("ai/ALGORITHMS.md", "`MinimumSpanningTree.Create<TVertex, TWeight>(edges)` consumes", "Algorithm docs should define generic minimum-spanning-tree semantics."),
                 new("ai/ALGORITHMS.md", "`O(E log E)` time and `O(V + E)` auxiliary memory", "Algorithm docs should state generic minimum-spanning-tree complexity."),
+                new("ai/ALGORITHMS.md", "`AdaBoost.Train<T>` treats `iterations` as a strict upper bound", "Algorithm docs should define AdaBoost iteration-budget semantics."),
+                new("ai/ALGORITHMS.md", "An all-wrong learner is a perfect inverse", "Algorithm docs should define AdaBoost degenerate-learner semantics."),
+                new("ai/ALGORITHMS.md", "`O(K)` time and allocates no managed memory per call", "Algorithm docs should state AdaBoost inference complexity and allocation behavior."),
             ],
             SourceAnchors =
             [
@@ -142,6 +145,9 @@ internal sealed class DocsRules
                 new("src/Aardvark.Base/AlgoDat/ShortestPath.cs", "public class ShortestPath<T> : IShortestPath<T>"),
                 new("src/Aardvark.Base/AlgoDat/MinimumSpanningTree.cs", "public static class MinimumSpanningTree"),
                 new("src/Aardvark.Base/AlgoDat/MinimumSpanningTree.cs", "The graph is disconnected and cannot produce a spanning tree."),
+                new("src/Aardvark.Base/AlgoDat/AdaBoost.cs", "public static class AdaBoost"),
+                new("src/Aardvark.Base/AlgoDat/AdaBoost.cs", "weakClassifiers.Add(new WeakClassifier<T>(-1.0, classifier));"),
+                new("src/Aardvark.Base/AlgoDat/AdaBoost.cs", "for (int i = 0; i < m_weakClassifiers.Length; i++)"),
                 new("src/Aardvark.Base/Geometry/BbTree.cs", "public class BbTree"),
                 new("src/Aardvark.Base/Geometry/Algorithms_auto.cs", "public static int[] Simplify(this V2d[] polyline, double epsilon)"),
                 new("src/Aardvark.Base/Geometry/Algorithms_auto.cs", "segments = ArrayPool<long>.Shared.Rent(count);"),

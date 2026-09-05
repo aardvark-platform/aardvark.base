@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Aardvark.Base
 {
@@ -12,6 +11,11 @@ namespace Aardvark.Base
     {
         /// <summary>
         /// Creates a strong binary classifier out of an ensemble of weak classifiers.
+        /// Each iteration invokes <paramref name="getNextWeakClassifier"/> at most once, so
+        /// <paramref name="iterations"/> is also a strict upper bound on factory invocations.
+        /// Training terminates when the next learner is within 0.02 of random error. A learner
+        /// that is correct for every training item, or wrong for every item and therefore a
+        /// perfect inverse, replaces the current ensemble and terminates training immediately.
         /// </summary>
         /// <typeparam name="T">Type of items to be classified.</typeparam>
         /// <param name="items">Training set.</param>
@@ -20,130 +24,128 @@ namespace Aardvark.Base
         /// Returns a new weak classifier for given weighted items.
         /// (double[] weights, T[] items, bool[] groundTruth) => T => bool.
         /// </param>
-        /// <param name="iterations">Maximium number of weak classifiers to combine.</param>
-        /// <param name="onIteration">Optional callback for each learning iteration.
-        /// If onIteration returns true, then learning is stopped.</param>
-        /// <param name="stopIfWeakClassifierHasLessImportanceThan">Default is 0.0, which means that the
-        /// maximum number of iterations will be performed.</param>
-        /// <returns>A strong classifier for Ts based on a weighted majority vote of
-        /// weak classifiers.</returns>
+        /// <param name="iterations">Maximum number of weak-classifier factory invocations.</param>
+        /// <param name="onIteration">Optional callback after each ordinary weak classifier is
+        /// accepted and its sample weights are updated. If the callback returns true, learning
+        /// stops. Degenerate random, perfect, and perfectly inverted learners do not invoke it.</param>
+        /// <param name="stopIfWeakClassifierHasLessImportanceThan">Stops before adding an
+        /// ordinary learner whose absolute vote weight is below this value. The default is 0.0.</param>
+        /// <returns>A strong classifier for <typeparamref name="T"/> based on a weighted majority
+        /// vote. Classification takes linear time in the retained learner count and allocates no
+        /// managed memory after the returned delegate has been created.</returns>
         public static Func<T, bool> Train<T>(
             T[] items, bool[] groundTruth,
             Func<double[], T[], bool[], Func<T, bool>> getNextWeakClassifier,
             int iterations,
             Func<Func<T, bool>, bool> onIteration = null,
-            double stopIfWeakClassifierHasLessImportanceThan = 0.0
-            )
+            double stopIfWeakClassifierHasLessImportanceThan = 0.0)
         {
             var count = items.Length;
-            var ws = new double[count].Set(1.0 / count);
-            var classifiers = new List<Func<T, bool>>();
-            var alphas = new List<double>();
+            var weights = new double[count].Set(1.0 / count);
+            var predictions = new bool[count];
+            var weakClassifiers = new List<WeakClassifier<T>>();
 
             while (iterations-- > 0)
             {
                 try
                 {
-                    // get next weak classifier (based on examples and weights)
-                    var classifier = getNextWeakClassifier(ws, items, groundTruth);
+                    // Get the next weak classifier based on the current sample weights.
+                    var classifier = getNextWeakClassifier(weights, items, groundTruth);
 
-                    // predict values with new classifier
-                    var predictions = items.Select(x => classifier(x)).ToArray();
-
-                    // compare predictions to reality (and compute error rate e)
-                    double e = 0.0;
-                    for (var j = 0; j < count; j++)
+                    // Evaluate once per item and retain predictions for the weight update.
+                    double error = 0.0;
+                    bool allCorrect = true;
+                    bool allWrong = count > 0;
+                    for (int i = 0; i < count; i++)
                     {
-                        e += ws[j] * (predictions[j] == groundTruth[j] ? 0 : 1);
+                        bool prediction = classifier(items[i]);
+                        predictions[i] = prediction;
+                        if (prediction == groundTruth[i])
+                        {
+                            allWrong = false;
+                        }
+                        else
+                        {
+                            allCorrect = false;
+                            error += weights[i];
+                        }
                     }
 
-                    if (Math.Abs(0.5 - e) < 0.02) { iterations++; continue; }
-
-                    if (e == 0.0) // we found a perfect classifier
+                    if (allCorrect)
                     {
-                        classifiers.Clear(); classifiers.Add(classifier);
-                        alphas.Clear(); alphas.Add(1.0);
+                        weakClassifiers.Clear();
+                        weakClassifiers.Add(new WeakClassifier<T>(1.0, classifier));
                         break;
                     }
 
-                    // compute importance for this classifier
-                    // (higher error rate gives less importance)
-                    var alpha = 0.5 * Math.Log((1 - e) / e);
+                    if (allWrong)
+                    {
+                        // The inverse is perfect; a finite negative vote performs that inversion.
+                        weakClassifiers.Clear();
+                        weakClassifiers.Add(new WeakClassifier<T>(-1.0, classifier));
+                        break;
+                    }
+
+                    // A random learner contributes no useful information. Do not refund the
+                    // iteration, since doing so can make a finite training budget non-terminating.
+                    if (Math.Abs(0.5 - error) < 0.02) break;
+
+                    // Higher error gives lower importance. Degenerate arithmetic terminates
+                    // instead of publishing non-finite votes or weights to another iteration.
+                    double alpha = 0.5 * Math.Log((1.0 - error) / error);
+                    if (double.IsNaN(alpha) || double.IsInfinity(alpha)) break;
                     if (Math.Abs(alpha) < stopIfWeakClassifierHasLessImportanceThan) break;
 
-                    // increase weights of incorrectly classified examples, and
-                    // decrease weights of correctly classified examples
-                    var up = Math.Exp(alpha);
-                    var down = Math.Exp(-alpha);
-                    for (var j = 0; j < count; j++)
+                    double up = Math.Exp(alpha);
+                    double down = Math.Exp(-alpha);
+                    double weightSum = 0.0;
+                    for (int i = 0; i < count; i++)
                     {
-                        ws[j] *= (predictions[j] == groundTruth[j]) ? down : up;
+                        weights[i] *= predictions[i] == groundTruth[i] ? down : up;
+                        weightSum += weights[i];
                     }
-                    var wnormf = 1.0 / ws.Sum(); // normalization factor for weights
-                    for (var j = 0; j < count; j++) ws[j] *= wnormf;
 
-                    // add classifier and its importance to list
-                    classifiers.Add(classifier);
-                    alphas.Add(alpha);
+                    if (!(weightSum > 0.0) || double.IsInfinity(weightSum)) break;
 
-                    // optional callback
+                    double normalization = 1.0 / weightSum;
+                    if (double.IsInfinity(normalization)) break;
+                    for (int i = 0; i < count; i++) weights[i] *= normalization;
+
+                    weakClassifiers.Add(new WeakClassifier<T>(alpha, classifier));
+
                     if (onIteration != null)
                     {
-                        var c = new Classifier<T>(
-                            Enumerable.Range(0, ws.Length).Select(i => new WeightedExample<T>(ws[i], items[i])),
-                            Enumerable.Range(0, alphas.Count).Select(i => new WeakClassifier<T>(alphas[i], classifiers[i]))
-                            );
-                        if (onIteration(c.Classify))
-                        {
-                            break;
-                        }
+                        var current = new Classifier<T>(weakClassifiers.ToArray());
+                        if (onIteration(current.Classify)) break;
                     }
                 }
-                catch /*(Exception e)*/
+                catch
                 {
                     Report.Warn("AdaBoost.Train");
                 }
             }
 
-            // create strong classifier from weak classifiers
-            return new Classifier<T>(
-                Enumerable.Range(0, ws.Length).Select(i => new WeightedExample<T>(ws[i], items[i])),
-                Enumerable.Range(0, alphas.Count).Select(i => new WeakClassifier<T>(alphas[i], classifiers[i]))
-                ).Classify;
+            return new Classifier<T>(weakClassifiers.ToArray()).Classify;
         }
 
-        private readonly struct Classifier<T>
+        private sealed class Classifier<T>
         {
-			private readonly WeakClassifier<T>[] m_weakClassifiers;
+            private readonly WeakClassifier<T>[] m_weakClassifiers;
 
-            public Classifier(
-                IEnumerable<WeightedExample<T>> examples,
-                IEnumerable<WeakClassifier<T>> weakClassifiers
-                )
+            public Classifier(WeakClassifier<T>[] weakClassifiers)
             {
-                m_weakClassifiers = weakClassifiers.ToArray();
+                m_weakClassifiers = weakClassifiers;
             }
 
-            public bool Classify(T x) => SumAlphaWeightedWeakClassifiers(x) > 0.0;
-
-            /// <summary>
-            /// Computes propability of positive classification given x.
-            /// </summary>
-            public double P(T x) => 1.0 / (1.0 + Math.Exp(-2.0 * SumAlphaWeightedWeakClassifiers(x)));
-
-            private double SumAlphaWeightedWeakClassifiers(T x)
-                => m_weakClassifiers.Sum(c => c.Alpha * (c.Classifier(x) ? +1 : -1));
-        }
-
-        private readonly struct WeightedExample<T>
-        {
-            public readonly double Weight;
-            public readonly T Example;
-
-            public WeightedExample(double weight, T example)
+            public bool Classify(T value)
             {
-                Weight = weight;
-                Example = example;
+                double sum = 0.0;
+                for (int i = 0; i < m_weakClassifiers.Length; i++)
+                {
+                    var weak = m_weakClassifiers[i];
+                    sum += weak.Alpha * (weak.Classifier(value) ? 1.0 : -1.0);
+                }
+                return sum > 0.0;
             }
         }
 
@@ -155,7 +157,7 @@ namespace Aardvark.Base
             public WeakClassifier(double alpha, Func<T, bool> classifier)
             {
                 Alpha = alpha;
-                Classifier = classifier ?? throw new ArgumentNullException("classifier");
+                Classifier = classifier ?? throw new ArgumentNullException(nameof(classifier));
             }
         }
     }
