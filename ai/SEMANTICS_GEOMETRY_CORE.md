@@ -54,6 +54,36 @@ normalization round-off before the square root. `BoundingBox3f` and `BoundingBox
 use these projection extents directly rather than bounding only four frame-cardinal
 points, so oblique-circle extrema are not underestimated; the properties do not allocate.
 
+## Sphere Ray Intersections
+
+`Ray3f.HitsSphere` and `Ray3d.HitsSphere` intersect finite rays with finite
+spheres. The radius must be finite and non-negative, and the ray direction must
+be finite and non-zero. A zero radius retains the center as a point sphere.
+Non-finite origins, directions, centers, or radii, zero directions, and empty or
+NaN parameter ranges report no hit.
+
+The supplied parameter interval is half-open: each candidate must be finite and
+lie in `[tmin, tmax)`. Roots are considered in increasing parameter order rather
+than by absolute distance, so the first permitted contact is returned even for
+negative intervals. Exact tangencies and zero-radius point contacts are closed
+hits. The lower root is a front-side contact and the upper root is a back-side
+contact; a repeated tangent root is reported as front-side. Every sphere `out t`
+miss writes NaN.
+
+The `ref RayHit3f`/`ref RayHit3d` overloads update `T`, `Point`, `Coord`, and
+`BackSide` only when the nearest permitted sphere contact is strictly closer
+than the existing `hit.T`. They preserve `Part` on success and leave every field
+unchanged on geometric, range, validity, or non-closer misses.
+
+Ordinary finite coefficients use a stable direct quadratic path that computes
+the second parameter root only when the first is outside the interval. A zero,
+subnormal, overflowing, or otherwise non-finite direction square or discriminant,
+including non-finite coefficient combinations, uses a normalized spatial fallback.
+The fallback scales position and direction
+independently and reconstructs only representable finite parameters, retaining
+hits when ordinary radius, distance, or direction squares, coefficient products,
+or discriminants overflow or underflow. Both paths are allocation-free.
+
 ## Circle Ray Intersections
 
 `Ray3f.HitsCircle` and `Ray3d.HitsCircle` intersect the ray with the circle's

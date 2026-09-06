@@ -618,151 +618,257 @@ namespace Aardvark.Base
         #region Ray-Sphere hit intersection
 
         /// <summary>
-        /// Returns true if the ray hits the sphere given by center and
-        /// radius within the supplied parameter interval and before the
-        /// parameter value contained in the supplied hit. Note that a
-        /// hit is only registered if the front or the backsurface is
-        /// encountered within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the sphere within the supplied half-open parameter
+        /// interval and strictly before the parameter already stored in <paramref name="hit"/>.
+        /// The radius must be finite and non-negative. The hit remains unchanged on failure.
         /// </summary>
         public readonly bool HitsSphere(
                 __v3t__ center, __ftype__ radius,
                 __ftype__ tmin, __ftype__ tmax,
                 ref __rayhit3t__ hit)
         {
-            __v3t__ originSubCenter = Origin - center;
-            __ftype__ a = Direction.LengthSquared;
-            __ftype__ b = Direction.Dot(originSubCenter);
-            __ftype__ c = originSubCenter.LengthSquared - radius * radius;
+            var side = GetSphereHit(center, radius, tmin, tmax, out var t);
+            if (side == 0 || !(t < hit.T))
+                return false;
 
-            // --------------------- quadric equation : a t^2  + 2b t + c = 0
-            __ftype__ d = b * b - a * c;           // factor 2 was eliminated
-
-            if (d < __ftype__.Epsilon)             // no root ?
-                return false;                   // then exit
-
-            if (b > 0)                        // stable way to calculate
-                d = -Fun.Sqrt(d) - b;           // the roots of a quadratic
-            else                                // equation
-                d = Fun.Sqrt(d) - b;
-
-            __ftype__ t1 = d / a;
-            __ftype__ t2 = c / d;  // Vieta : t1 * t2 == c/a
-
-            // typically two solutions, either both positive, both negative or mixed
-            // -> take closest (if valid) first
-            return t1.Abs() < t2.Abs()
-                    ? ProcessHits(t1, t2, tmin, tmax, ref hit)
-                    : ProcessHits(t2, t1, tmin, tmax, ref hit);
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = side == 2;
+            return true;
         }
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval and before the parameter value
-        /// contained in the supplied hit. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the supplied sphere within the half-open parameter
+        /// interval and strictly before the parameter already stored in <paramref name="hit"/>.
+        /// The hit remains unchanged on failure.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(__sphere3t__ sphere, __ftype__ tmin, __ftype__ tmax, ref __rayhit3t__ hit)
             => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, ref hit);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval and before the parameter value
-        /// contained in the supplied hit. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned. A hit with this overload is
-        /// considered for t in [0, __ftype__.MaxValue].
+        /// Returns true if the ray hits the supplied sphere strictly before the parameter
+        /// already stored in <paramref name="hit"/>. This overload considers t in
+        /// [0, __ftype__.MaxValue). The hit remains unchanged on failure.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(__sphere3t__ sphere, ref __rayhit3t__ hit)
             => HitsSphere(sphere.Center, sphere.Radius, 0, __ftype__.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the supplied sphere within the half-open parameter
+        /// interval. The nearest permitted root is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(__sphere3t__ sphere, __ftype__ tmin, __ftype__ tmax, out __ftype__ t)
             => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere. Note that a hit is
-        /// registered if the front or the backsurface is encountered. If there
-        /// are two valid solutions, the closest will be returned. A hit with this
-        /// overload is considered for t in [0, __ftype__.MaxValue].
+        /// Returns true if the ray hits the supplied sphere. The nearest root in
+        /// [0, __ftype__.MaxValue) is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(__sphere3t__ sphere, out __ftype__ t)
             => HitsSphere(sphere.Center, sphere.Radius, 0, __ftype__.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval.
-        /// Note that a hit is registered if the front or the backsurface is encountered within the
-        /// interval. If there are two valid solutions, the closest will be returned. A hit with this
-        /// overload is considered for t in [0, __ftype__.MaxValue].
+        /// Returns true if the ray hits the sphere given by center and radius. The nearest root in
+        /// [0, __ftype__.MaxValue) is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         public readonly bool HitsSphere(__v3t__ center, __ftype__ radius, out __ftype__ t)
             => HitsSphere(center, radius, 0, __ftype__.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval.
-        /// Note that a hit is registered if the front or the backsurface is encountered within the
-        /// interval. If there are two valid solutions, the closest will be returned.
+        /// Returns true if the ray hits the sphere given by center and radius within the half-open
+        /// parameter interval [<paramref name="tmin"/>, <paramref name="tmax"/>). The radius and
+        /// geometry must be finite, and the ray direction must be non-zero. Exact tangencies and
+        /// zero-radius point contacts count as hits. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         public readonly bool HitsSphere(__v3t__ center, __ftype__ radius, __ftype__ tmin, __ftype__ tmax, out __ftype__ t)
+            => GetSphereHit(center, radius, tmin, tmax, out t) != 0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly int GetSphereHit(
+            __v3t__ center, __ftype__ radius,
+            __ftype__ tmin, __ftype__ tmax,
+            out __ftype__ t)
         {
-            var originSubCenter = Origin - center;
+            var offset = Origin - center;
             var a = Direction.LengthSquared;
-            var b = Direction.Dot(originSubCenter);
-            var c = originSubCenter.LengthSquared - radius * radius;
+            var b = Direction.Dot(offset);
+            var c = offset.LengthSquared - radius * radius;
+            var discriminant = b * b - a * c;
 
-            // --------------------- quadric equation : a t^2  + 2b t + c = 0
-            var d = b * b - a * c;              // factor 2 was eliminated
+            // A normal negative discriminant is an unambiguous miss. A negative
+            // subnormal may be cancellation around a tangent and is rescaled.
+            if (discriminant <= -__minNormal__)
+                return NoSphereHit(out t);
 
-            if (d >= __ftype__.Epsilon)            // no root ? -> exit
+            // Normal finite coefficients retain the direct hot path. Tangencies
+            // and exceptional scales are handled by the cold normalized path.
+            if (!(a >= __minNormal__ && a <= __ftype__.MaxValue
+                && discriminant >= __minNormal__
+                && discriminant <= __ftype__.MaxValue))
+                return GetScaledSphereHit(center, radius, tmin, tmax, out t);
+
+            if (!(radius >= 0) || radius > __ftype__.MaxValue)
+                return NoSphereHit(out t);
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            __ftype__ root0;
+            __ftype__ root1;
+            if (b > 0)
             {
-                if (b > 0)                    // stable way to calculate
-                    d = -Fun.Sqrt(d) - b;       // the roots of a quadratic
-                else                            // equation
-                    d = Fun.Sqrt(d) - b;
-
-                var t1 = d / a;
-                var t2 = c / d;  // Vieta : t1 * t2 == c/a
-
-                // typically two solutions, either both positive, both negative or mixed
-                // -> take closest (if valid) first
-                if (t2.Abs() < t1.Abs())
-                    Fun.Swap(ref t1, ref t2);
-
-                if (t1 >= tmin)
+                var q = -b - sqrtDiscriminant;
+                root0 = q / a;
+                if (root0.IsFinite() && root0 >= tmin)
                 {
-                    if (t1 < tmax)
+                    if (root0 < tmax)
                     {
-                        t = t1;
-                        return true;
+                        t = root0;
+                        return 1;
                     }
-                    // return false
+                    return NoSphereHit(out t);
                 }
-                else if (t2 >= tmin)
+                root1 = c / q;
+            }
+            else
+            {
+                var q = -b + sqrtDiscriminant;
+                root0 = c / q;
+                if (root0.IsFinite() && root0 >= tmin)
                 {
-                    if (t2 < tmax)
+                    if (root0 < tmax)
                     {
-                        t = t2;
-                        return true;
+                        t = root0;
+                        return 1;
                     }
-                    // return false
+                    return NoSphereHit(out t);
                 }
+                root1 = q / a;
             }
 
+            if (root1 >= tmin && root1 < tmax && root1.IsFinite())
+            {
+                t = root1;
+                return 2;
+            }
+
+            return NoSphereHit(out t);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int NoSphereHit(out __ftype__ t)
+        {
             t = __ftype__.NaN;
-            return false;
+            return 0;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private readonly int GetScaledSphereHit(
+            __v3t__ center, __ftype__ radius,
+            __ftype__ tmin, __ftype__ tmax,
+            out __ftype__ t)
+        {
+            t = __ftype__.NaN;
+            if (!(radius >= 0) || radius > __ftype__.MaxValue || !(tmin < tmax)
+                || !Origin.AllFinite || !center.AllFinite || !Direction.AllFinite)
+                return 0;
+
+            var directionScale = Direction.NormMax;
+            if (!(directionScale > 0))
+                return 0;
+
+            var scaledDirection = Direction / directionScale;
+            var offset = Origin - center;
+            __ftype__ positionScale;
+            __v3t__ scaledOffset;
+
+            if (offset.AllFinite)
+            {
+                positionScale = Fun.Max(offset.NormMax, radius);
+                if (!(positionScale > 0))
+                {
+                    if (0 >= tmin && 0 < tmax)
+                    {
+                        t = 0;
+                        return 1;
+                    }
+                    return 0;
+                }
+
+                scaledOffset = offset / positionScale;
+            }
+            else
+            {
+                positionScale = Fun.Max(Origin.NormMax, center.NormMax, radius);
+                scaledOffset = Origin / positionScale - center / positionScale;
+            }
+
+            var scaledRadius = radius / positionScale;
+            var a = scaledDirection.LengthSquared;
+            var b = scaledDirection.Dot(scaledOffset);
+            var c = scaledOffset.LengthSquared - scaledRadius * scaledRadius;
+            var discriminant = b * b - a * c;
+            if (!(discriminant >= 0) || !discriminant.IsFinite())
+                return 0;
+
+            __ftype__ scaledRoot0;
+            __ftype__ scaledRoot1;
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                scaledRoot0 = -b / a;
+                scaledRoot1 = scaledRoot0;
+            }
+            else
+            {
+                var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+                scaledRoot0 = q / a;
+                scaledRoot1 = c / q;
+                if (scaledRoot1 < scaledRoot0)
+                    Fun.Swap(ref scaledRoot0, ref scaledRoot1);
+            }
+
+            var root0 = ScaleSphereRoot(scaledRoot0, positionScale, directionScale);
+            if (root0.IsFinite() && root0 >= tmin)
+            {
+                if (root0 < tmax)
+                {
+                    t = root0;
+                    return 1;
+                }
+                return 0;
+            }
+
+            var root1 = ScaleSphereRoot(scaledRoot1, positionScale, directionScale);
+            if (root1 >= tmin && root1 < tmax && root1.IsFinite())
+            {
+                t = root1;
+                return 2;
+            }
+
+            return 0;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static __ftype__ ScaleSphereRoot(
+            __ftype__ root, __ftype__ positionScale, __ftype__ directionScale)
+        {
+            if (root == 0)
+                return 0;
+
+            var result = root * positionScale / directionScale;
+            if (result.IsFinite() && result != 0)
+                return result;
+
+            result = root / directionScale * positionScale;
+            if (result.IsFinite() && result != 0)
+                return result;
+
+            result = positionScale / directionScale * root;
+            return result.IsFinite() && result != 0 ? result : __ftype__.NaN;
         }
 
         #endregion

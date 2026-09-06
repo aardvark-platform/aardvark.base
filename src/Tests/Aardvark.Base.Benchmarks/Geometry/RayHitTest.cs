@@ -17,13 +17,15 @@ namespace Aardvark.Base.Benchmarks
     [PlainExporter, MemoryDiagnoser]
     public class RayHitTest
     {
+        private const int RayCount = 100_000;
+
         public Ray3d[] rays;
 
         public RayHitTest()
         {
             var rnd = new RandomSystem(1);
             // generate random rays within box[-1, 1]
-            rays = new Ray3d[100000].SetByIndex(i => new Ray3d(rnd.UniformV3d() * 2 - 1, rnd.UniformV3dDirection()));
+            rays = new Ray3d[RayCount].SetByIndex(i => new Ray3d(rnd.UniformV3d() * 2 - 1, rnd.UniformV3dDirection()));
         }
         
         public V3d GetRaySphereHit(Ray3d ray, Sphere3d sphere)
@@ -41,7 +43,7 @@ namespace Aardvark.Base.Benchmarks
             return V3d.Zero;
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = RayCount)]
         public V3d RaySphereHit()
         {
             var a = rays;
@@ -52,7 +54,7 @@ namespace Aardvark.Base.Benchmarks
             return s;
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = RayCount)]
         public V3d RaySphereHit_V2()
         {
             var a = rays;
@@ -69,7 +71,7 @@ namespace Aardvark.Base.Benchmarks
             return s;
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = RayCount)]
         public V3d RaySphereHit_Slim()
         {
             var a = rays;
@@ -80,7 +82,7 @@ namespace Aardvark.Base.Benchmarks
             return s;
         }
 
-        [Benchmark]
+        [Benchmark(OperationsPerInvoke = RayCount)]
         public V3d RaySphereHit_Slim_V2()
         {
             var a = rays;
