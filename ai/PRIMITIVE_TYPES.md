@@ -30,6 +30,17 @@ Examples:
 - Core vector/matrix structs are mutable value types (`struct`), not uniformly `readonly struct`.
 - For matrix/vector math in 3D, prefer explicit methods (`TransformPos`, `TransformDir`) over ambiguous shorthand.
 
+## Complex Finite-Range Arithmetic
+
+`ComplexF` and `ComplexD` retain their mutable two-component value layout and IEEE-compatible special-value behavior while avoiding avoidable overflow and underflow for finite operands.
+
+- `Norm` uses direct sum-of-squares arithmetic for ordinary magnitudes and component scaling when the sum would overflow, underflow, or become subnormal. `NormSquared` intentionally remains the direct `Real * Real + Imag * Imag` operation and may therefore be zero or infinite for nonzero finite values.
+- `Reciprocal`, complex/complex division, and scalar/complex division use their direct coefficient paths when the denominator norm is normal. Exceptional finite denominators use independently normalized, allocation-free arithmetic, including guarded scale restoration for representable subnormal or large results.
+- `Sqrt` returns the principal square root. Its ordinary path uses the stable Cartesian formula; a component-scaled path handles extreme finite and subnormal values without overflowing intermediate norms or losing a representable root component.
+- Existing NaN, infinity, zero, signed-zero, and negative-real-axis branch-cut behavior is preserved. In particular, a negative real value with either sign of zero in `Imag` retains the existing positive-imaginary square-root branch.
+
+These operations allocate no managed memory. Results that are mathematically outside the selected precision still follow IEEE overflow and underflow behavior.
+
 ## Half Comparison and Collection Semantics
 
 `Aardvark.Base.Half` follows `System.Half` comparison conventions while retaining its existing conversion and arithmetic behavior.
@@ -173,6 +184,7 @@ var hit = box.Intersects(ray, out double t);
 
 ## Source Anchors
 
+- `src/Aardvark.Base/Math/Base/Complex_auto.cs` (`ComplexF`/`ComplexD` magnitude, reciprocal, division, and principal square-root semantics)
 - `src/Aardvark.Base/Math/Base/Half.cs` (`Half` comparison, equality, hashing, ordering, and extrema semantics)
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`, `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple`)
 - `src/Aardvark.Base/Math/Vectors/Vector_auto.cs` (`V3d`)
