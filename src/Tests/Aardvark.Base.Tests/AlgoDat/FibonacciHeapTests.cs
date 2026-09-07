@@ -32,7 +32,6 @@ namespace Aardvark.Tests
 
             public void Validate(Dictionary<int, (object Node, float Key)> expected)
             {
-                Assert.That((int)Field("_n"), Is.EqualTo(expected.Count), "Node count");
                 Assert.That((Array)Field("_degreeTable"), Has.All.Null, "Scratch storage must not retain nodes");
                 if (expected.Count == 0)
                 {

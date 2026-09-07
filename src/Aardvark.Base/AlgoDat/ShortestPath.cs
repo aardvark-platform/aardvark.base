@@ -433,7 +433,6 @@ namespace Aardvark.Base
         }
 
         private Node _min;
-        private int _n;
         private Node[] _degreeTable = Array.Empty<Node>();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -448,7 +447,6 @@ namespace Aardvark.Base
                 if (key < _min.Key)
                     _min = node;
             }
-            _n++;
             return node;
         }
 
@@ -471,7 +469,6 @@ namespace Aardvark.Base
                 min.Isolate();
             }
             _min = next == null || next.Right == next ? next : Consolidate(next);
-            _n--;
             return min.Value;
         }
 

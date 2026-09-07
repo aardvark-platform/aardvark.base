@@ -38,18 +38,19 @@ allocation count, but eliminate repeated consolidation scratch allocations.
 
 | Workload | Count | Baseline (µs) | Revised (µs) | Throughput change | Baseline bytes | Revised bytes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Insert/drain | 32 | 3.633 | 2.789 | +30.2% | 5,368 | 2,048 |
-| Insert/decrease/drain | 32 | 3.459 | 3.493 | -1.0% | 5,328 | 2,112 |
-| Sparse graph | 32 | 6.578 | 5.635 | +16.7% | 8,072 | 4,952 |
-| Grid graph | 32 | 4.588 | 3.537 | +29.7% | 5,864 | 3,336 |
-| Insert/drain | 4096 | 1296.112 | 1352.092 | **-4.1%** | 1,054,440 | 262,144 |
-| Insert/decrease/drain | 4096 | 747.560 | 796.808 | **-6.2%** | 1,003,504 | 262,208 |
-| Sparse graph | 4096 | 2215.660 | 2109.934 | +5.0% | 1,291,648 | 515,336 |
-| Grid graph | 4096 | 1070.752 | 883.695 | +21.2% | 914,208 | 304,168 |
+| Insert/drain | 32 | 3.689 | 2.769 | +33.2% | 5,368 | 2,048 |
+| Insert/decrease/drain | 32 | 3.595 | 3.617 | -0.6% | 5,328 | 2,112 |
+| Sparse graph | 32 | 6.501 | 5.711 | +13.8% | 8,072 | 4,944 |
+| Grid graph | 32 | 4.611 | 3.546 | +30.0% | 5,864 | 3,328 |
+| Insert/drain | 4096 | 1303.250 | 1352.298 | **-3.6%** | 1,054,440 | 262,144 |
+| Insert/decrease/drain | 4096 | 772.124 | 783.189 | -1.4% | 1,003,504 | 262,208 |
+| Sparse graph | 4096 | 2188.635 | 2075.169 | +5.5% | 1,291,648 | 515,328 |
+| Grid graph | 4096 | 1072.893 | 871.695 | +23.1% | 914,208 | 304,160 |
 
-Allocation reductions range from 38.7% to 75.1%. Small-heap decrease/drain is within
-measurement variation, but the larger heap-only regressions repeat across both
-passes. **The no-throughput-regression acceptance gate is not met.**
+Allocation reductions range from 38.7% to 75.1%. Removing obsolete heap-size
+bookkeeping brings decrease/drain much closer to parity, but the larger
+insertion/drain regression repeats across both passes.
+**The no-throughput-regression acceptance gate is not met.**
 
 An additional alternating, warmed comparison of the same fixture methods in one
 process found neutral or improved large-heap results. That does not override the
