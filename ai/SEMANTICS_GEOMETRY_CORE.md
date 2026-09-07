@@ -167,6 +167,27 @@ Semantics (`Ray3_auto.cs`, `FastRay3d.Intersects`):
 - On a miss, the segment-producing overload returns `false` and leaves its output at `default`. Ordinary crossing segments retain the established order from lower to higher Y, or lower to higher X for horizontal results.
 - The boolean overload tests the box's normal-projection interval directly and does not allocate a corner array.
 
+## Polygon Centroids
+
+`Polygon2f`/`Polygon2d` centroid accumulation uses signed fan triangles relative
+to the first vertex. Each triangle contributes its signed double-area and its
+centroid offset from that anchor. Dividing by the signed total makes clockwise
+and counter-clockwise outlines agree, while forming only coordinate differences
+before area products avoids cancellation caused solely by large translations.
+
+`Polygon3f`/`Polygon3d` first computes the polygon's complete double-area normal
+from the same anchor-relative fan. The dominant absolute normal component selects
+the most stable coordinate projection. Signed triangle weights in that projection
+then preserve reflex contributions, making the result independent of winding and
+cyclic vertex position, including when the first three vertices are collinear.
+The 3D outline is expected to be planar.
+
+Fewer than three vertices and zero signed total weight return `V2*.Zero` or
+`V3*.Zero`. Both implementations run in linear time and allocate no transient
+managed memory. On .NET 8 x86/x64, longer 2D outlines process adjacent fan
+triangles in packed SSE3/AVX2 lanes; unsupported targets use the equivalent
+scalar accumulation.
+
 ## Polyline Simplification
 
 `GeometryFun.Simplify` implements Ramer-Douglas-Peucker simplification for
@@ -238,6 +259,8 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, circle/capped-cylinder kernels, `RayHit3d`, `FastRay3d`)
 - `src/Aardvark.Base.FSharp/Datastructures/Geometry/Boundable.fs` (`RayPart` cylinder option/value-option delegation)
 - `src/Aardvark.Base/Geometry/Types/Circle/Circle3_auto.cs` (`Circle3f`/`Circle3d` frame, points, and bounds)
+- `src/Aardvark.Base/Geometry/Types/Polygon/Polygon2_auto.cs` (`Polygon2f`/`Polygon2d` signed centroid accumulation)
+- `src/Aardvark.Base/Geometry/Types/Polygon/Polygon3_auto.cs` (`Polygon3f`/`Polygon3d` dominant-projection centroid accumulation)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f`/`Line2d`/`Line3f`/`Line3d.ClipByPlane`)

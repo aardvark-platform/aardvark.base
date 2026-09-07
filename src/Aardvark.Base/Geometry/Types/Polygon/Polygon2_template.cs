@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+#if NET8_0_OR_GREATER
+using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
+using System.Runtime.Intrinsics.X86;
+#endif
 
 namespace Aardvark.Base
 {
@@ -57,28 +62,134 @@ namespace Aardvark.Base
         #region Geometric Properties
 
         /// <summary>
-        /// The geometric center of the polygon.
+        /// The geometric center of the polygon. Returns zero for fewer than
+        /// three points or zero signed area.
         /// </summary>
         public static __v2t__ ComputeCentroid(this __polygon2t__ polygon)
         {
             var pc = polygon.PointCount;
-            __ftype__ area = 0;
-            var centroid = __v2t__.Zero;
+            if (pc < 3) return __v2t__.Zero;
 
-            // signed area as weight for center of edge line
-            var p0 = polygon[pc - 1];
-            for (int i = 0; i < pc; i++)
+            var anchor = polygon[0];
+            if (pc < 16)
             {
-                var p1 = polygon[i];
-                var a = p0.X * p1.Y - p0.Y * p1.X;
-                area += a;
-                centroid += (p0 + p1) * a; // center point would be /2
-                p0 = p1;
+                var e0 = polygon[1] - anchor;
+                __ftype__ smallArea2 = 0;
+                var smallCentroidOffset = __v2t__.Zero;
+                for (int i = 2; i < pc; i++)
+                {
+                    var e1 = polygon[i] - anchor;
+                    var weight = e0.X * e1.Y - e0.Y * e1.X;
+                    smallArea2 += weight;
+                    smallCentroidOffset += (e0 + e1) * weight;
+                    e0 = e1;
+                }
+                return smallArea2 != 0
+                    ? anchor + smallCentroidOffset * (__constant__.OneThird / smallArea2)
+                    : __v2t__.Zero;
+            }
+#if NET8_0_OR_GREATER
+            //# if (isDouble) {
+            if (Avx2.IsSupported) return ComputeCentroidVectorized(polygon, anchor, pc);
+            //# } else {
+            if (Sse3.IsSupported) return ComputeCentroidVectorized(polygon, anchor, pc);
+            //# }
+#endif
+            var edge0 = polygon[1] - anchor;
+            __ftype__ signedArea2 = 0;
+            var centroidOffset = __v2t__.Zero;
+
+            for (int i = 2; i < pc; i++)
+            {
+                var edge1 = polygon[i] - anchor;
+                var weight = edge0.X * edge1.Y - edge0.Y * edge1.X;
+                signedArea2 += weight;
+                centroidOffset += (edge0 + edge1) * weight;
+                edge0 = edge1;
             }
 
-            area *= __half__; // /2 moved outside loop
-            return area > 0 ? centroid / (area * 6) : __v2t__.Zero; // normalization by area/6
+            return signedArea2 != 0
+                ? anchor + centroidOffset * (__constant__.OneThird / signedArea2)
+                : __v2t__.Zero;
         }
+
+#if NET8_0_OR_GREATER
+        //# if (isDouble) {
+        private static __v2t__ ComputeCentroidVectorized(__polygon2t__ polygon, __v2t__ anchor, int pc)
+        {
+            var coordinates = MemoryMarshal.Cast<__v2t__, __ftype__>(polygon.m_pointArray.AsSpan(0, pc));
+            ref var source = ref MemoryMarshal.GetReference(coordinates);
+            var anchorVector = Vector256.Create(anchor.X, anchor.Y, anchor.X, anchor.Y);
+            var areaVector = Vector256<__ftype__>.Zero;
+            var centroidVector = Vector256<__ftype__>.Zero;
+            int i = 1;
+            for (; i + 2 < pc; i += 2)
+            {
+                var e0 = Avx.Subtract(Vector256.LoadUnsafe(ref source, (nuint)(2 * i)), anchorVector);
+                var e1 = Avx.Subtract(Vector256.LoadUnsafe(ref source, (nuint)(2 * (i + 1))), anchorVector);
+                var products = Avx.Multiply(e0, Avx.Permute(e1, 0x5));
+                var weights = Avx.HorizontalSubtract(products, Vector256<__ftype__>.Zero);
+                var repeatedWeights = Avx2.Permute4x64(weights, 0xA0);
+                areaVector = Avx.Add(areaVector, weights);
+                centroidVector = Avx.Add(centroidVector, Avx.Multiply(Avx.Add(e0, e1), repeatedWeights));
+            }
+
+            var area2 = areaVector.GetElement(0) + areaVector.GetElement(2);
+            var centroidX = centroidVector.GetElement(0) + centroidVector.GetElement(2);
+            var centroidY = centroidVector.GetElement(1) + centroidVector.GetElement(3);
+            if (i + 1 < pc)
+            {
+                var e0 = polygon[i] - anchor;
+                var e1 = polygon[i + 1] - anchor;
+                var weight = e0.X * e1.Y - e0.Y * e1.X;
+                area2 += weight;
+                centroidX += (e0.X + e1.X) * weight;
+                centroidY += (e0.Y + e1.Y) * weight;
+            }
+
+            if (area2 == 0) return __v2t__.Zero;
+            var scale = __constant__.OneThird / area2;
+            return anchor + new __v2t__(centroidX * scale, centroidY * scale);
+        }
+        //# } else {
+        private static __v2t__ ComputeCentroidVectorized(__polygon2t__ polygon, __v2t__ anchor, int pc)
+        {
+            var coordinates = MemoryMarshal.Cast<__v2t__, __ftype__>(polygon.m_pointArray.AsSpan(0, pc));
+            ref var source = ref MemoryMarshal.GetReference(coordinates);
+            var anchorVector = Vector128.Create(anchor.X, anchor.Y, anchor.X, anchor.Y);
+            var areaVector = Vector128<__ftype__>.Zero;
+            var centroidVector = Vector128<__ftype__>.Zero;
+            int i = 1;
+            for (; i + 2 < pc; i += 2)
+            {
+                var e0 = Sse.Subtract(Vector128.LoadUnsafe(ref source, (nuint)(2 * i)), anchorVector);
+                var e1 = Sse.Subtract(Vector128.LoadUnsafe(ref source, (nuint)(2 * (i + 1))), anchorVector);
+                var products = Sse.Multiply(e0, Sse.Shuffle(e1, e1, 0xB1));
+                var weights = Sse3.HorizontalSubtract(products, Vector128<__ftype__>.Zero);
+                var repeatedWeights = Sse.Shuffle(weights, weights, 0x50);
+                areaVector = Sse.Add(areaVector, weights);
+                centroidVector = Sse.Add(centroidVector, Sse.Multiply(Sse.Add(e0, e1), repeatedWeights));
+            }
+
+            var area2 = areaVector.GetElement(0) + areaVector.GetElement(1);
+            var centroidX = centroidVector.GetElement(0) + centroidVector.GetElement(2);
+            var centroidY = centroidVector.GetElement(1) + centroidVector.GetElement(3);
+            if (i + 1 < pc)
+            {
+                var e0 = polygon[i] - anchor;
+                var e1 = polygon[i + 1] - anchor;
+                var weight = e0.X * e1.Y - e0.Y * e1.X;
+                area2 += weight;
+                centroidX += (e0.X + e1.X) * weight;
+                centroidY += (e0.Y + e1.Y) * weight;
+            }
+
+            if (area2 == 0) return __v2t__.Zero;
+            var scale = __constant__.OneThird / area2;
+            return anchor + new __v2t__(centroidX * scale, centroidY * scale);
+        }
+        //# }
+#endif
 
         /// <summary>
         /// Computes the area of the polygon according to

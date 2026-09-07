@@ -1,3 +1,4 @@
+- [Base] Corrected winding- and translation-stable 2D and 3D polygon centroids
 - [Base] Corrected complex magnitude, reciprocal, division, and square roots at extreme finite scales
 - [Base] Corrected robust ray-sphere intersections and closest-hit accumulation
 - [Base] Corrected robust ray-circle intersections and closest-hit accumulation

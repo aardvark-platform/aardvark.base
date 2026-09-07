@@ -50,36 +50,69 @@ namespace Aardvark.Base
             => polygon.ComputeDoubleAreaNormal().Normalized;
 
         /// <summary>
-        /// The geometric center of a 3-dimensional, flat polygon.
-        /// WARNING: UNTESTED!
+        /// The geometric center of a 3-dimensional, flat polygon. Returns
+        /// zero for fewer than three points or zero projected signed area.
         /// </summary>
         public static V3f ComputeCentroid(this Polygon3f polygon)
         {
             var pc = polygon.PointCount;
             if (pc < 3) return V3f.Zero;
-            V3f p0 = polygon[0], p1 = polygon[1];
-            V3f e0 = p1 - p0;
-            var p2 = polygon[2];
-            var e1 = p2 - p0;
-            var normal = e0.Cross(e1);
-            var area2 = normal.Length;
-            var centroid = area2 * (p0 + p1 + p2);
-            p1 = p2; e0 = e1;
-            for (int pi = 3; pi < pc; pi++)
+
+            var anchor = polygon[0];
+            var e0 = polygon[1] - anchor;
+            var normal = V3f.Zero;
+            for (int i = 2; i < pc; i++)
             {
-                p2 = polygon[pi]; e1 = p2 - p0;
-                var n = e0.Cross(e1);
-                var a2 = Fun.Sign(normal.Dot(n)) * n.Length;
-                area2 += a2;
-                centroid += a2 * (p0 + p1 + p2);
-                p1 = p2; e0 = e1;
+                var e1 = polygon[i] - anchor;
+                normal += e0.Cross(e1);
+                e0 = e1;
             }
-            if (area2 > Constant<float>.PositiveTinyValue)
-                return centroid * (ConstantF.OneThird / area2);
-            else if (area2 < Constant<float>.NegativeTinyValue)
-                return centroid * (-ConstantF.OneThird / area2);
+
+            var ax = Fun.Abs(normal.X);
+            var ay = Fun.Abs(normal.Y);
+            var az = Fun.Abs(normal.Z);
+            float area2;
+            var centroidOffset = V3f.Zero;
+            e0 = polygon[1] - anchor;
+
+            if (ax >= ay && ax >= az)
+            {
+                area2 = normal.X;
+                if (area2 == 0) return V3f.Zero;
+                for (int i = 2; i < pc; i++)
+                {
+                    var e1 = polygon[i] - anchor;
+                    var weight = e0.Y * e1.Z - e0.Z * e1.Y;
+                    centroidOffset += (e0 + e1) * weight;
+                    e0 = e1;
+                }
+            }
+            else if (ay >= az)
+            {
+                area2 = normal.Y;
+                if (area2 == 0) return V3f.Zero;
+                for (int i = 2; i < pc; i++)
+                {
+                    var e1 = polygon[i] - anchor;
+                    var weight = e0.Z * e1.X - e0.X * e1.Z;
+                    centroidOffset += (e0 + e1) * weight;
+                    e0 = e1;
+                }
+            }
             else
-                return V3f.Zero;
+            {
+                area2 = normal.Z;
+                if (area2 == 0) return V3f.Zero;
+                for (int i = 2; i < pc; i++)
+                {
+                    var e1 = polygon[i] - anchor;
+                    var weight = e0.X * e1.Y - e0.Y * e1.X;
+                    centroidOffset += (e0 + e1) * weight;
+                    e0 = e1;
+                }
+            }
+
+            return anchor + centroidOffset * (ConstantF.OneThird / area2);
         }
 
         /// <summary>
@@ -354,36 +387,69 @@ namespace Aardvark.Base
             => polygon.ComputeDoubleAreaNormal().Normalized;
 
         /// <summary>
-        /// The geometric center of a 3-dimensional, flat polygon.
-        /// WARNING: UNTESTED!
+        /// The geometric center of a 3-dimensional, flat polygon. Returns
+        /// zero for fewer than three points or zero projected signed area.
         /// </summary>
         public static V3d ComputeCentroid(this Polygon3d polygon)
         {
             var pc = polygon.PointCount;
             if (pc < 3) return V3d.Zero;
-            V3d p0 = polygon[0], p1 = polygon[1];
-            V3d e0 = p1 - p0;
-            var p2 = polygon[2];
-            var e1 = p2 - p0;
-            var normal = e0.Cross(e1);
-            var area2 = normal.Length;
-            var centroid = area2 * (p0 + p1 + p2);
-            p1 = p2; e0 = e1;
-            for (int pi = 3; pi < pc; pi++)
+
+            var anchor = polygon[0];
+            var e0 = polygon[1] - anchor;
+            var normal = V3d.Zero;
+            for (int i = 2; i < pc; i++)
             {
-                p2 = polygon[pi]; e1 = p2 - p0;
-                var n = e0.Cross(e1);
-                var a2 = Fun.Sign(normal.Dot(n)) * n.Length;
-                area2 += a2;
-                centroid += a2 * (p0 + p1 + p2);
-                p1 = p2; e0 = e1;
+                var e1 = polygon[i] - anchor;
+                normal += e0.Cross(e1);
+                e0 = e1;
             }
-            if (area2 > Constant<double>.PositiveTinyValue)
-                return centroid * (Constant.OneThird / area2);
-            else if (area2 < Constant<double>.NegativeTinyValue)
-                return centroid * (-Constant.OneThird / area2);
+
+            var ax = Fun.Abs(normal.X);
+            var ay = Fun.Abs(normal.Y);
+            var az = Fun.Abs(normal.Z);
+            double area2;
+            var centroidOffset = V3d.Zero;
+            e0 = polygon[1] - anchor;
+
+            if (ax >= ay && ax >= az)
+            {
+                area2 = normal.X;
+                if (area2 == 0) return V3d.Zero;
+                for (int i = 2; i < pc; i++)
+                {
+                    var e1 = polygon[i] - anchor;
+                    var weight = e0.Y * e1.Z - e0.Z * e1.Y;
+                    centroidOffset += (e0 + e1) * weight;
+                    e0 = e1;
+                }
+            }
+            else if (ay >= az)
+            {
+                area2 = normal.Y;
+                if (area2 == 0) return V3d.Zero;
+                for (int i = 2; i < pc; i++)
+                {
+                    var e1 = polygon[i] - anchor;
+                    var weight = e0.Z * e1.X - e0.X * e1.Z;
+                    centroidOffset += (e0 + e1) * weight;
+                    e0 = e1;
+                }
+            }
             else
-                return V3d.Zero;
+            {
+                area2 = normal.Z;
+                if (area2 == 0) return V3d.Zero;
+                for (int i = 2; i < pc; i++)
+                {
+                    var e1 = polygon[i] - anchor;
+                    var weight = e0.X * e1.Y - e0.Y * e1.X;
+                    centroidOffset += (e0 + e1) * weight;
+                    e0 = e1;
+                }
+            }
+
+            return anchor + centroidOffset * (Constant.OneThird / area2);
         }
 
         /// <summary>
