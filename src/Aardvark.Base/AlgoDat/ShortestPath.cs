@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +22,8 @@ namespace Aardvark.Base
     /// <remarks>
     /// Starting a calculation cancels and replaces the current calculation. Path queries are
     /// thread-safe and use the last fully completed result until the replacement completes.
+    /// Costs must be finite and non-negative, with finite accumulated path costs. The frontier
+    /// expands a node of minimum tentative cost, including after decreasing an active node's cost.
     /// </remarks>
     public class ShortestPath<T> : IShortestPath<T>
     {
@@ -276,6 +279,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Gets the path from the indexed target toward the seed using one completed result snapshot.
+        /// Reachable paths exclude the seed; the seed path is empty. Unreachable targets return [target, seed].
         /// </summary>
         public List<T> GetMinimalPathByIndex(int endIndex)
         {
@@ -307,315 +311,260 @@ namespace Aardvark.Base
         }
     }
 
+    /// <summary>
+    /// Internal minimum-priority frontier. Insert and decrease-key take O(1) amortized time;
+    /// extraction takes O(log n) amortized time. Keys must not be NaN and decreases must not increase a key.
+    /// </summary>
     class FibonacciHeap<T>
     {
-        public class Node
+        public sealed class Node
         {
-            private readonly T _item;
             private Node _parent;
             private Node _left;
             private Node _right;
             private Node _child;
-            private float _key = 0;
-            private int _degree = 0;
-            private bool _marked = false;
+            private int _degree;
 
             public Node(float key, T item)
             {
-                _key = key;
-                _item = item;
-                _left = this;
-                _right = this;
+                Key = key;
+                Value = item;
+                _left = _right = this;
             }
 
-            public T Value => _item;
-
-            public Node Right
-            {
-                get { return _right; }
-                set
-                {
-                    _right = value;
-                    value._left = this;
-                }
-            }
-
-            public Node Left
-            {
-                get { return _left; }
-                set
-                {
-                    _left = value;
-                    value._right = this;
-                }
-            }
-
-            public Node Parent =>_parent; 
-
-            public Node Child => _child; 
-
-            public void AddChild(Node node)
-            {
-                _degree++;
-                node._parent = this;
-
-                if (_child == null)
-                    _child = node;
-                else
-                    _child.InsertOneBefore(node);
-            }
-
-            public void RemoveChild(Node node)
-            {
-                if (_child != null)
-                {
-                    if (_degree == 1)
-                    {
-                        _child = null;
-                        _degree = 0;
-                        node._parent = null;
-                    }
-                    else
-                    {
-                        if (_child == node)
-                            _child = _child.Left;
-                        node.Isolate();
-                        _degree--;
-                        node._parent = null;
-                    }
-                }
-            }
-
-            public void RemoveAllChildren()
-            {
-                if (_child != null)
-                {
-                    foreach (var child in _child.AllSiblings)
-                        child._parent = null;
-                    _degree = 0;
-                    _child = null;
-                }
-            }
-
-            public void InsertOneBefore(Node node)
-            {
-                var right = Right;
-                Right = node;
-                right.Left = node;
-            }
-
-            public void InsertGroupBefore(Node node)
-            {
-                var start = node;
-                var end = start.Left;
-
-                var right = Right;
-                Right = start;
-                right.Left = end;
-            }
-
-            public void Isolate()
-            {
-                var left = Left;
-                var right = Right;
-                left.Right = right;
-                Left = this;
-            }
-
-            public float Key
-            {
-                get { return _key; }
-                set { _key = value; }
-            }
-
+            public T Value { get; }
+            public Node Parent => _parent;
+            public Node Left => _left;
+            public Node Right => _right;
+            public Node Child => _child;
+            public float Key { get; set; }
             public int Degree => _degree;
+            public bool Marked { get; set; }
 
-            public bool Marked
+            // Move directly between rings, avoiding redundant self-links before insertion.
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void AddChild(Node node, int degree)
             {
-                get { return _marked; }
-                set { _marked = value; }
-            }
-
-            public IEnumerable<Node> GetAllChildren()
-            {
-                if (_child == null)
-                    return Enumerable.Empty<Node>();
-                return _child.AllSiblings;
-            }
-
-            public IEnumerable<Node> AllSiblings
-            {
-                get
+                node.Unlink();
+                _degree = degree;
+                node._parent = this; // Both incoming roots are already unmarked.
+                if (degree == 1)
                 {
-                    var node = this;
+                    node._left = node._right = node;
+                    _child = node;
+                }
+                else
+                    _child.InsertAfter(node);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void CutChild(Node node, Node root)
+            {
+                if (_child == node)
+                    _child = _degree == 1 ? null : node._right;
+                _degree--;
+                node.Unlink();
+                node._parent = null;
+                node.Marked = false;
+                root.InsertBefore(node);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public Node RemoveAllChildren()
+            {
+                var first = _child;
+                if (first != null)
+                {
+                    var child = first;
                     do
                     {
-                        yield return node;
-                        node = node.Right;
-                    } while (node != this);
+                        child._parent = null;
+                        child.Marked = false;
+                        child = child._right;
+                    } while (child != first);
+                    _child = null;
+                    _degree = 0;
                 }
+                return first;
             }
 
-            public bool HasNoSiblings() => _left == this;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void InsertAfter(Node node)
+            {
+                node._left = this;
+                node._right = _right;
+                _right._left = node;
+                _right = node;
+            }
 
-            public bool HasMaxOneSibling() => _left._left == this;
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void InsertBefore(Node node)
+            {
+                node._right = this;
+                node._left = _left;
+                _left._right = node;
+                _left = node;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void ReplaceWithRing(Node first)
+            {
+                var last = first._left;
+                first._left = _left;
+                _left._right = first;
+                last._right = _right;
+                _right._left = last;
+                _left = _right = this;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private void Unlink()
+            {
+                _left._right = _right;
+                _right._left = _left;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void Isolate()
+            {
+                Unlink();
+                _left = _right = this;
+            }
         }
 
         private Node _min;
-        private int _n = 0;
+        private int _n;
+        private Node[] _degreeTable = Array.Empty<Node>();
 
-        public void Insert(Node node)
-        {
-            if (_min == null)
-            {
-                _min = node;
-            }
-            else
-            {
-                _min.InsertOneBefore(node);
-                if (node.Key < _min.Key)
-                    _min = node;
-            }
-            _n++;
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Node Insert(float key, T item)
         {
             var node = new Node(key, item);
-            Insert(node);
+            if (_min == null)
+                _min = node;
+            else
+            {
+                _min.InsertAfter(node);
+                if (key < _min.Key)
+                    _min = node;
+            }
+            _n++;
             return node;
         }
 
-        public T GetMin() => _min.Value;
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T DeleteMin()
         {
             var min = _min;
-            if (_min != null)
+            var children = min.RemoveAllChildren();
+            Node next;
+            if (min.Right == min)
+                next = children;
+            else if (children != null)
             {
-                if (_min.HasNoSiblings() && _min.Degree == 0)
-                {
-                    _min = null;
-                }
-                else
-                {
-                    if (_min.Degree > 0)
-                    {
-                        var child = _min.Child;
-                        _min.RemoveAllChildren();
-
-                        if (!_min.HasNoSiblings())
-                        {
-                            _min.InsertGroupBefore(child);
-                            _min.Isolate();
-                        }
-                        _min = child;
-                    }
-                    else
-                    {
-                        var left = _min.Left;
-                        _min.Isolate();
-                        _min = left;
-                    }
-                    Consolidate();
-                }
-                _n--;
+                next = children;
+                min.ReplaceWithRing(children);
             }
+            else
+            {
+                next = min.Right;
+                min.Isolate();
+            }
+            _min = next == null || next.Right == next ? next : Consolidate(next);
+            _n--;
             return min.Value;
         }
 
-        /*private static Node FindMinSibling(Node node)
-        {
-            var minNode = node;
-            foreach (var n in node.AllSiblings)
-            {
-                if (n.Key < minNode.Key)
-                {
-                    minNode = n;
-                }
-            }
-            return minNode;
-        }*/
-
-        public void Delete(Node node)
-        {
-            DecreaseKey(node, int.MinValue);
-            DeleteMin();
-        }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void DecreaseKey(Node node, float newKey)
         {
             node.Key = newKey;
-
-            if (node.Parent == null)
+            var parent = node.Parent;
+            if (parent != null && newKey < parent.Key)
             {
-                if (newKey < _min.Key)
-                    _min = node;
-            }
-            else if (node.Key < node.Parent.Key)
-            {
-                var parent = node.Parent;
-                parent.RemoveChild(node);
-                _min.InsertOneBefore(node);
-                if (!parent.Marked)
-                    parent.Marked = true;
-                else
+                parent.CutChild(node, _min);
+                while (parent.Parent != null)
                 {
-                    while (parent.Parent != null && parent.Marked)
+                    if (!parent.Marked)
                     {
-                        var pparent = parent.Parent;
-                        pparent.RemoveChild(parent);
-                        _min.InsertOneBefore(parent);
-                        parent.Marked = false;
-                        parent = pparent;
+                        // A non-root may lose one child; losing another cuts it as well.
+                        parent.Marked = true;
+                        break;
                     }
+                    var ancestor = parent.Parent;
+                    ancestor.CutChild(parent, _min);
+                    parent = ancestor;
                 }
             }
+            // A decreased child can become the global minimum just like a decreased root.
+            if (newKey < _min.Key)
+                _min = node;
         }
 
         public bool IsEmpty() => _min == null;
 
-        private void Consolidate()
+        private Node Consolidate(Node current)
         {
-            if (_min == null)
-                return;
+            var last = current.Left;
+            // A two-root frontier can be consolidated without scratch storage.
+            if (current.Right == last)
+            {
+                if (last.Key < current.Key)
+                    Fun.Swap(ref current, ref last);
+                if (current.Degree == last.Degree)
+                    current.AddChild(last, current.Degree + 1);
+                return current;
+            }
 
-            var lookup = new Node[2 * (int)(_n.Log() + 1)];
-            var last = _min;
-            var current = _min;
-            var newMin = _min;
-            bool stop = false;
+            var table = _degreeTable;
+            Node root;
+            bool isLast;
             do
             {
+                // Only previously processed roots enter the table. Until the final root,
+                // neither last nor next can be linked away. Test the boundary before linking.
+                isLast = current == last;
                 var next = current.Right;
-                while (lookup[current.Degree] != null)
+                root = current;
+                int degree = root.Degree;
+                while (degree < table.Length && table[degree] != null)
                 {
-                    var right = current.Right;
-                    var first = current;
-                    var second = lookup[current.Degree];
-
-                    if (second == right && right.Right != first)
-                        right = right.Right;
-
-                    lookup[current.Degree] = null;
-
-                    if (second.Key < first.Key)
-                        Fun.Swap(ref first, ref second);
-
-                    second.Isolate();
-                    first.AddChild(second);
-
-                    current = first;
-                    if (newMin.Key > first.Key || second == newMin)
-                        newMin = first;
-
-                    if (second == last)
-                        stop = true;
+                    var other = table[degree];
+                    table[degree] = null;
+                    if (other.Key < root.Key)
+                        Fun.Swap(ref root, ref other);
+                    degree++;
+                    root.AddChild(other, degree);
                 }
-                lookup[current.Degree] = current;
+
+                // Grow from actual degrees, not a rounded logarithmic estimate of the node count.
+                if (degree >= table.Length)
+                    table = GrowDegreeTable(degree);
+                table[degree] = root;
                 current = next;
-            } while (current != last && !stop);
-            _min = newMin;
+            } while (!isLast);
+
+            // The final winner is still a root. Inspect every surviving root, including
+            // those never linked, without retaining a minimum that may have become a child.
+            var minimum = root;
+            float minimumKey = root.Key;
+            table[root.Degree] = null;
+            for (var node = root.Right; node != root; node = node.Right)
+            {
+                table[node.Degree] = null; // Consumed slots were cleared when linking; clear the survivors too.
+                if (node.Key < minimumKey)
+                {
+                    minimum = node;
+                    minimumKey = node.Key;
+                }
+            }
+            return minimum;
+        }
+
+        private Node[] GrowDegreeTable(int degree)
+        {
+            Array.Resize(ref _degreeTable, Math.Max(degree + 1, Math.Max(8, _degreeTable.Length * 2)));
+            return _degreeTable;
         }
     }
 }
