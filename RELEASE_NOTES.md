@@ -23,6 +23,7 @@
 - [Base] Corrected LU singularity detection for final pivots and 1x1 matrices
 - [Base] Corrected integer GCD and LCM sign, zero, and overflow semantics
 - [Base] Corrected and accelerated integer primality checks
+- [Base] Corrected and accelerated Fibonacci-heap priority ordering and cascading cuts for shortest paths
 - [Geometry] Corrected `PolyRegion` containment for holes, nested contours, boundaries, and reversed orientations
 ### 5.3.28-prerelease0001
 - [Base] Corrected ray projection and closest-distance parameters for non-unit, degenerate, and extreme finite directions

@@ -12,6 +12,15 @@ so they continue to observe the last completed result while a replacement is run
 invalidates, cancels, and waits for the current run; expected cancellation is suppressed while
 worker failures are propagated.
 
+Costs must be finite and non-negative, and accumulated path costs must remain finite.
+The internal Fibonacci heap always expands a node of minimum tentative cost, including
+when a cheaper route decreases an active node's key. Consolidation visits each root once,
+and cascading cuts preserve heap order and amortized `O(1)` insert/decrease-key and
+`O(log V)` extraction. Its degree table grows as needed, is reused across extractions,
+and clears retained node references after consolidation. Equal-cost routes have no guaranteed
+tie order. Returned reachable paths run from target toward seed, excluding the seed; the
+seed path is empty, and an unreachable target returns `[target, seed]`.
+
 Key methods:
 
 - `CalculateShortestPaths(T seed)`
