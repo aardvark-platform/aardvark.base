@@ -23,8 +23,10 @@ dotnet run -c Release --project src/Tests/Aardvark.Base.Benchmarks -- \
 
 Reflection and delegate compilation, input generation, graph construction, and
 handle-array allocation occur only in global setup. The heap instance is reused
-between invocations, so retained degree storage is warmed. Node allocations remain
-inside the measured heap workloads. No reflection occurs in the timed methods.
+between heap-workload invocations, so retained degree, node-registry, and free-index
+storage is warmed. Node allocations remain inside the measured heap workloads.
+Graph workloads create their heap inside the calculation and include all of its
+storage. No reflection occurs in the timed methods.
 
 ## Baseline comparison
 
@@ -38,24 +40,18 @@ allocation count, but eliminate repeated consolidation scratch allocations.
 
 | Workload | Count | Baseline (µs) | Revised (µs) | Throughput change | Baseline bytes | Revised bytes |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Insert/drain | 32 | 3.689 | 2.769 | +33.2% | 5,368 | 2,048 |
-| Insert/decrease/drain | 32 | 3.595 | 3.617 | -0.6% | 5,328 | 2,112 |
-| Sparse graph | 32 | 6.501 | 5.711 | +13.8% | 8,072 | 4,944 |
-| Grid graph | 32 | 4.611 | 3.546 | +30.0% | 5,864 | 3,328 |
-| Insert/drain | 4096 | 1303.250 | 1352.298 | **-3.6%** | 1,054,440 | 262,144 |
-| Insert/decrease/drain | 4096 | 772.124 | 783.189 | -1.4% | 1,003,504 | 262,208 |
-| Sparse graph | 4096 | 2188.635 | 2075.169 | +5.5% | 1,291,648 | 515,328 |
-| Grid graph | 4096 | 1072.893 | 871.695 | +23.1% | 914,208 | 304,160 |
+| Insert/drain | 32 | 3.724 | 1.830 | +103.5% | 5,368 | 2,048 |
+| Insert/decrease/drain | 32 | 3.582 | 2.350 | +52.4% | 5,328 | 2,112 |
+| Sparse graph | 32 | 6.666 | 5.374 | +24.0% | 8,072 | 5,792 |
+| Grid graph | 32 | 4.755 | 3.155 | +50.7% | 5,864 | 3,504 |
+| Insert/drain | 4096 | 1312.584 | 1068.664 | +22.8% | 1,054,440 | 262,144 |
+| Insert/decrease/drain | 4096 | 769.705 | 660.887 | +16.5% | 1,003,504 | 262,208 |
+| Sparse graph | 4096 | 2277.810 | 2059.592 | +10.6% | 1,291,648 | 614,072 |
+| Grid graph | 4096 | 1107.959 | 821.209 | +34.9% | 914,208 | 307,412 |
 
-Allocation reductions range from 38.7% to 75.1%. Removing obsolete heap-size
-bookkeeping brings decrease/drain much closer to parity, but the larger
-insertion/drain regression repeats across both passes.
-**The no-throughput-regression acceptance gate is not met.**
-
-An additional alternating, warmed comparison of the same fixture methods in one
-process found neutral or improved large-heap results. That does not override the
-regressions in the isolated BenchmarkDotNet workloads above; sharing GC pressure
-between baseline and revised workloads changes the measurement environment.
+Allocation reductions range from 28.2% to 75.1%. Index-backed intrusive links
+avoid GC write barriers during ring mutation while the registry retains only active
+nodes. All matched workloads improve, so the throughput and allocation gates pass.
 
 The baseline is incorrect: these are matched inputs, not equivalent priority
 results. Its early-stop consolidation can leave most roots unlinked, doing fewer

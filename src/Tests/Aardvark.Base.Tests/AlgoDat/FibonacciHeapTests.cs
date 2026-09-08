@@ -33,9 +33,13 @@ namespace Aardvark.Tests
             public void Validate(Dictionary<int, (object Node, float Key)> expected)
             {
                 Assert.That((Array)Field("_degreeTable"), Has.All.Null, "Scratch storage must not retain nodes");
+                var registry = (Array)Field("_nodes");
+                Assert.That((int)Field("_freeCount") + expected.Count, Is.EqualTo((int)Field("_nextIndex")),
+                    "Every allocated registry slot must be active or reusable");
                 if (expected.Count == 0)
                 {
                     Assert.That(Min, Is.Null);
+                    Assert.That(registry, Has.All.Null, "Registry must release extracted nodes");
                     return;
                 }
 
@@ -78,6 +82,16 @@ namespace Aardvark.Tests
                         Assert.That(Get<int>(parent, "Degree"), Is.EqualTo(degree), "Child count");
                 }
                 Assert.That(seen.Count, Is.EqualTo(expected.Count), "Reachable node count");
+
+                int retained = 0;
+                foreach (object node in registry)
+                {
+                    if (node == null)
+                        continue;
+                    retained++;
+                    Assert.That(seen.Contains(node), Is.True, "Registry retained a non-active node");
+                }
+                Assert.That(retained, Is.EqualTo(expected.Count), "Registry node count");
             }
         }
 
@@ -211,6 +225,41 @@ namespace Aardvark.Tests
                 expected[Heap.Get<int>(node, "Value")] = (node, key);
                 heap.Validate(expected);
             }
+        }
+
+        [Test]
+        public void ReleasedHandlesStayIsolatedWhenRegistrySlotsAreReused()
+        {
+            var heap = new Heap();
+            var expected = new Dictionary<int, (object Node, float Key)>
+            {
+                [0] = (heap.Insert(0, 0), 0),
+                [1] = (heap.Insert(1, 1), 1)
+            };
+            var extracted = expected[0].Node;
+            ExtractMinimum(heap, expected);
+            AssertIsolated(extracted);
+
+            var replacement = heap.Insert(-1, 2);
+            expected.Add(2, (replacement, -1));
+            Assert.That(replacement, Is.Not.SameAs(extracted));
+            AssertIsolated(extracted);
+            heap.Validate(expected);
+
+            while (expected.Count > 0)
+                ExtractMinimum(heap, expected);
+            heap.Validate(expected);
+            AssertIsolated(extracted);
+        }
+
+        private static void AssertIsolated(object node)
+        {
+            Assert.That(Heap.Parent(node), Is.Null);
+            Assert.That(Heap.Get<object>(node, "Child"), Is.Null);
+            Assert.That(Heap.Get<object>(node, "Left"), Is.SameAs(node));
+            Assert.That(Heap.Get<object>(node, "Right"), Is.SameAs(node));
+            Assert.That(Heap.Get<int>(node, "Degree"), Is.Zero);
+            Assert.That(Heap.Get<bool>(node, "Marked"), Is.False);
         }
 
         [Test]

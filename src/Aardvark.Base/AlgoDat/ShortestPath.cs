@@ -313,58 +313,84 @@ namespace Aardvark.Base
 
     /// <summary>
     /// Internal minimum-priority frontier. Insert and decrease-key take O(1) amortized time;
-    /// extraction takes O(log n) amortized time. Keys must not be NaN and decreases must not increase a key.
+    /// extraction takes O(log n) amortized time. Keys must be finite and decreases must not increase a key.
     /// </summary>
     class FibonacciHeap<T>
     {
         public sealed class Node
         {
-            private Node _parent;
-            private Node _left;
-            private Node _right;
-            private Node _child;
+            // Intrusive links use registry indices so consolidation does not pay a GC
+            // write barrier for every sibling and parent update.
+            private FibonacciHeap<T> _heap;
+            internal readonly int _index;
+            private int _parent = -1;
+            private int _left;
+            private int _right;
+            private int _child = -1;
             private int _degree;
+            private bool _released;
 
-            public Node(float key, T item)
+            internal Node(FibonacciHeap<T> heap, int index, float key, T item)
             {
+                _heap = heap;
+                _index = index;
                 Key = key;
                 Value = item;
-                _left = _right = this;
+                _left = _right = index;
             }
 
             public T Value { get; }
-            public Node Parent => _parent;
-            public Node Left => _left;
-            public Node Right => _right;
-            public Node Child => _child;
+            public Node Parent => _parent < 0 ? null : _heap._nodes[_parent];
+            public Node Left => _released ? this : _heap._nodes[_left];
+            public Node Right => _released ? this : _heap._nodes[_right];
+            public Node Child => _child < 0 ? null : _heap._nodes[_child];
             public float Key { get; set; }
             public int Degree => _degree;
             public bool Marked { get; set; }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public static Node CreateAfter(Node anchor, float key, T item)
+            {
+                var heap = anchor._heap;
+                var node = heap.CreateNode(key, item);
+                int right = anchor._right;
+                node._left = anchor._index;
+                node._right = right;
+                heap._nodes[right]._left = node._index;
+                anchor._right = node._index;
+                return node;
+            }
 
             // Move directly between rings, avoiding redundant self-links before insertion.
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void AddChild(Node node, int degree)
             {
                 node.Unlink();
+                AddDetachedChild(node, degree);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void AddDetachedChild(Node node, int degree)
+            {
                 _degree = degree;
-                node._parent = this; // Both incoming roots are already unmarked.
+                node._parent = _index;
                 if (degree == 1)
                 {
-                    node._left = node._right = node;
-                    _child = node;
+                    node._left = node._right = node._index;
+                    _child = node._index;
                 }
                 else
-                    _child.InsertAfter(node);
+                    _heap._nodes[_child].InsertAfter(node);
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void CutChild(Node node, Node root)
             {
-                if (_child == node)
-                    _child = _degree == 1 ? null : node._right;
+                if (_child == node._index)
+                    _child = _degree == 1 ? -1 : node._right;
                 _degree--;
                 node.Unlink();
-                node._parent = null;
+                node._parent = -1;
                 node.Marked = false;
                 root.InsertBefore(node);
             }
@@ -372,82 +398,141 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public Node RemoveAllChildren()
             {
-                var first = _child;
-                if (first != null)
+                int first = _child;
+                if (first >= 0)
                 {
-                    var child = first;
-                    do
-                    {
-                        child._parent = null;
-                        child.Marked = false;
-                        child = child._right;
-                    } while (child != first);
-                    _child = null;
+                    _child = -1;
                     _degree = 0;
                 }
-                return first;
+                return first < 0 ? null : _heap._nodes[first];
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void MakeRoot()
+            {
+                if (_parent >= 0)
+                {
+                    _parent = -1;
+                    Marked = false;
+                }
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void InsertAfter(Node node)
             {
-                node._left = this;
+                node._left = _index;
                 node._right = _right;
-                _right._left = node;
-                _right = node;
+                _heap._nodes[_right]._left = node._index;
+                _right = node._index;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void InsertBefore(Node node)
             {
-                node._right = this;
+                node._right = _index;
                 node._left = _left;
-                _left._right = node;
-                _left = node;
+                _heap._nodes[_left]._right = node._index;
+                _left = node._index;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public void LinkNext(Node node)
+            {
+                _right = node._index;
+                node._left = _index;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void ReplaceWithRing(Node first)
             {
-                var last = first._left;
+                int last = first._left;
                 first._left = _left;
-                _left._right = first;
-                last._right = _right;
-                _right._left = last;
-                _left = _right = this;
+                _heap._nodes[_left]._right = first._index;
+                _heap._nodes[last]._right = _right;
+                _heap._nodes[_right]._left = last;
+                _left = _right = _index;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             private void Unlink()
             {
-                _left._right = _right;
-                _right._left = _left;
+                _heap._nodes[_left]._right = _right;
+                _heap._nodes[_right]._left = _left;
             }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public void Isolate()
             {
                 Unlink();
-                _left = _right = this;
+                _left = _right = _index;
+            }
+
+            public void Release()
+            {
+                _parent = _child = -1;
+                _left = _right = _index;
+                _degree = 0;
+                Marked = false;
+                _released = true;
+                _heap = null;
             }
         }
 
+        private Node[] _nodes = Array.Empty<Node>();
+        private int[] _freeIndices = Array.Empty<int>();
+        private int _nextIndex;
+        private int _freeCount;
         private Node _min;
         private Node[] _degreeTable = Array.Empty<Node>();
+        private bool _allRootsAreLeaves = true;
+        private bool _mayHaveMarkedNodes;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Node Insert(float key, T item)
         {
-            var node = new Node(key, item);
-            if (_min == null)
+            Node node;
+            var min = _min;
+            if (min == null)
+            {
+                node = CreateNode(key, item);
                 _min = node;
+            }
             else
             {
-                _min.InsertAfter(node);
-                if (key < _min.Key)
+                node = Node.CreateAfter(min, key, item);
+                if (key < min.Key)
                     _min = node;
             }
             return node;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private Node CreateNode(float key, T item)
+        {
+            int index;
+            if (_freeCount > 0)
+                index = _freeIndices[--_freeCount];
+            else
+            {
+                index = _nextIndex++;
+                if (index == _nodes.Length)
+                    Array.Resize(ref _nodes, Math.Max(8, index * 2));
+            }
+
+            var node = new Node(this, index, key, item);
+            _nodes[index] = node;
+            return node;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void ReleaseNode(Node node)
+        {
+            int index = node._index;
+            _nodes[index] = null;
+            if (_freeCount == _freeIndices.Length)
+                Array.Resize(ref _freeIndices, Math.Max(8, _freeCount * 2));
+            _freeIndices[_freeCount++] = index;
+            node.Release();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -455,6 +540,8 @@ namespace Aardvark.Base
         {
             var min = _min;
             var children = min.RemoveAllChildren();
+            if (_mayHaveMarkedNodes && children != null)
+                ClearMarks(children);
             Node next;
             if (min.Right == min)
                 next = children;
@@ -468,8 +555,33 @@ namespace Aardvark.Base
                 next = min.Right;
                 min.Isolate();
             }
-            _min = next == null || next.Right == next ? next : Consolidate(next);
-            return min.Value;
+            if (next == null)
+            {
+                _min = null;
+                _allRootsAreLeaves = true;
+                _mayHaveMarkedNodes = false;
+            }
+            else if (next.Right == next)
+            {
+                next.MakeRoot();
+                _min = next;
+            }
+            else
+                _min = Consolidate(next);
+            var value = min.Value;
+            ReleaseNode(min);
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ClearMarks(Node first)
+        {
+            var node = first;
+            do
+            {
+                node.Marked = false;
+                node = node.Right;
+            } while (node != first);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -486,6 +598,7 @@ namespace Aardvark.Base
                     {
                         // A non-root may lose one child; losing another cuts it as well.
                         parent.Marked = true;
+                        _mayHaveMarkedNodes = true;
                         break;
                     }
                     var ancestor = parent.Parent;
@@ -505,15 +618,18 @@ namespace Aardvark.Base
             var last = current.Left;
             // A two-root frontier can be consolidated without scratch storage.
             if (current.Right == last)
+                return ConsolidateTwo(current, last);
+
+            if (_allRootsAreLeaves)
             {
-                if (last.Key < current.Key)
-                    Fun.Swap(ref current, ref last);
-                if (current.Degree == last.Degree)
-                    current.AddChild(last, current.Degree + 1);
-                return current;
+                _allRootsAreLeaves = false;
+                return ConsolidateInitial(current, last);
             }
 
             var table = _degreeTable;
+            if (table.Length == 0)
+                table = GrowDegreeTable(0);
+
             Node root;
             bool isLast;
             do
@@ -524,31 +640,38 @@ namespace Aardvark.Base
                 var next = current.Right;
                 root = current;
                 int degree = root.Degree;
-                while (degree < table.Length && table[degree] != null)
+                while (table[degree] != null)
                 {
                     var other = table[degree];
                     table[degree] = null;
-                    if (other.Key < root.Key)
-                        Fun.Swap(ref root, ref other);
+                    float otherKey = other.Key;
+                    if (otherKey < root.Key)
+                    {
+                        var swap = root;
+                        root = other;
+                        other = swap;
+                    }
                     degree++;
                     root.AddChild(other, degree);
                 }
 
                 // Grow from actual degrees, not a rounded logarithmic estimate of the node count.
-                if (degree >= table.Length)
+                if (degree >= table.Length - 1)
                     table = GrowDegreeTable(degree);
                 table[degree] = root;
                 current = next;
             } while (!isLast);
 
-            // The final winner is still a root. Inspect every surviving root, including
-            // those never linked, without retaining a minimum that may have become a child.
+            // Inspect every surviving root, including those never linked, without
+            // retaining a minimum that may have become a child.
             var minimum = root;
             float minimumKey = root.Key;
+            root.MakeRoot();
             table[root.Degree] = null;
             for (var node = root.Right; node != root; node = node.Right)
             {
-                table[node.Degree] = null; // Consumed slots were cleared when linking; clear the survivors too.
+                node.MakeRoot();
+                table[node.Degree] = null;
                 if (node.Key < minimumKey)
                 {
                     minimum = node;
@@ -558,9 +681,95 @@ namespace Aardvark.Base
             return minimum;
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private Node ConsolidateTwo(Node current, Node last)
+        {
+            _allRootsAreLeaves = false;
+            if (last.Key < current.Key)
+            {
+                var swap = current;
+                current = last;
+                last = swap;
+            }
+            if (current.Degree == last.Degree)
+            {
+                int degree = current.Degree + 1;
+                if (degree >= _degreeTable.Length - 1)
+                    GrowDegreeTable(degree);
+                current.AddChild(last, degree);
+                current.MakeRoot();
+            }
+            else
+            {
+                current.MakeRoot();
+                last.MakeRoot();
+            }
+            return current;
+        }
+
+        private Node ConsolidateInitial(Node current, Node last)
+        {
+            var table = _degreeTable;
+            if (table.Length == 0)
+                table = GrowDegreeTable(0);
+
+            Node root;
+            bool isLast;
+            do
+            {
+                isLast = current == last;
+                var next = current.Right;
+                root = current;
+                int degree = 0;
+                while (table[degree] != null)
+                {
+                    var other = table[degree];
+                    table[degree] = null;
+                    float otherKey = other.Key;
+                    if (otherKey < root.Key)
+                    {
+                        var swap = root;
+                        root = other;
+                        other = swap;
+                    }
+                    degree++;
+                    root.AddDetachedChild(other, degree);
+                }
+
+                if (degree >= table.Length - 1)
+                    table = GrowDegreeTable(degree);
+                table[degree] = root;
+                current = next;
+            } while (!isLast);
+
+            Node first = null;
+            Node previous = null;
+            Node minimum = null;
+            float minimumKey = float.PositiveInfinity;
+            for (int degree = table.Length - 1; degree >= 0; degree--)
+            {
+                root = table[degree];
+                if (root == null)
+                    continue;
+                table[degree] = null;
+                if (first == null)
+                    first = root;
+                else
+                    previous.LinkNext(root);
+                previous = root;
+                if (root.Key < minimumKey)
+                {
+                    minimum = root;
+                    minimumKey = root.Key;
+                }
+            }
+            previous.LinkNext(first);
+            return minimum;
+        }
+
         private Node[] GrowDegreeTable(int degree)
         {
-            Array.Resize(ref _degreeTable, Math.Max(degree + 1, Math.Max(8, _degreeTable.Length * 2)));
+            Array.Resize(ref _degreeTable, Math.Max(degree + 2, Math.Max(8, _degreeTable.Length * 2)));
             return _degreeTable;
         }
     }
