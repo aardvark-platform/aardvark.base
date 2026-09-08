@@ -1,9 +1,5 @@
 # Aardvark.Base Serialization Reference
 
-AI-targeted reference for the ICoder serialization system - bidirectional read/write abstraction.
-
----
-
 ## ICoder Pattern
 
 The ICoder interface provides a unified API for both reading and writing. The same code handles both directions.
@@ -23,13 +19,9 @@ public partial interface ICoder
 }
 ```
 
-### Key Insight
-Same method signature for read and write:
-- **Writing**: reads value from `ref` parameter, writes to stream
-- **Reading**: reads from stream, assigns to `ref` parameter
+Reading assigns to the `ref` parameter; writing reads from it.
 
 ```csharp
-// This code works for BOTH reading and writing
 public void Serialize(ICoder coder)
 {
     coder.CodeInt(ref _x);
@@ -44,8 +36,6 @@ public void Serialize(ICoder coder)
 
 ### BinaryWritingCoder
 
-Writes objects to binary stream.
-
 ```csharp
 using (var coder = new BinaryWritingCoder(stream))
 {
@@ -55,8 +45,6 @@ using (var coder = new BinaryWritingCoder(stream))
 ```
 
 ### BinaryReadingCoder
-
-Reads objects from binary stream.
 
 ```csharp
 using (var coder = new BinaryReadingCoder(stream))
@@ -88,70 +76,17 @@ After construction and stream provisioning, these numeric scalar and aggregate o
 
 ## Type-Specific Methods
 
-### Primitive Types
-
-Method names use C# keyword style (`CodeInt`, `CodeLong`), NOT BCL type names (`CodeInt32`, `CodeInt64` do not exist):
+Primitive method names use C# keywords (`CodeInt`, `CodeLong`), not BCL names
+(`CodeInt32`, `CodeInt64`). Aardvark values use `Code<TypeName>`:
 
 ```csharp
-void CodeBool(ref bool value);
-void CodeByte(ref byte value);
-void CodeSByte(ref sbyte value);
-void CodeShort(ref short value);
-void CodeUShort(ref ushort value);
 void CodeInt(ref int value);
-void CodeUInt(ref uint value);
 void CodeLong(ref long value);
-void CodeULong(ref ulong value);
-void CodeFloat(ref float value);
-void CodeDouble(ref double value);
-void CodeChar(ref char value);
-void CodeString(ref string value);
-void CodeGuid(ref Guid value);
-void CodeType(ref Type value);
-void CodeSymbol(ref Symbol value);
-```
-
-### Aardvark Types
-```csharp
-// Vectors
-void CodeV2i(ref V2i value);
-void CodeV2f(ref V2f value);
-void CodeV2d(ref V2d value);
-void CodeV3i(ref V3i value);
-void CodeV3f(ref V3f value);
 void CodeV3d(ref V3d value);
-void CodeV4i(ref V4i value);
-void CodeV4f(ref V4f value);
-void CodeV4d(ref V4d value);
-
-// Matrices
-void CodeM22f(ref M22f value);
-void CodeM33f(ref M33f value);
-void CodeM44f(ref M44f value);
-void CodeM22d(ref M22d value);
-void CodeM33d(ref M33d value);
 void CodeM44d(ref M44d value);
-
-// Transformations
-void CodeTrafo2f(ref Trafo2f value);
-void CodeTrafo3f(ref Trafo3f value);
-void CodeTrafo2d(ref Trafo2d value);
-void CodeTrafo3d(ref Trafo3d value);
-
-// Colors
-void CodeC3b(ref C3b value);
-void CodeC4b(ref C4b value);
-void CodeC3f(ref C3f value);
-void CodeC4f(ref C4f value);
-
-// Geometric
-void CodeBox2i(ref Box2i value);
-void CodeBox3i(ref Box3i value);
-void CodeBox2f(ref Box2f value);
-void CodeBox3f(ref Box3f value);
-void CodeBox2d(ref Box2d value);
-void CodeBox3d(ref Box3d value);
 ```
+
+See [ICoder_auto.cs](../src/Aardvark.Base.IO/ICoder_auto.cs) for the full list.
 
 ### Collections
 ```csharp
@@ -214,7 +149,7 @@ coder.StreamVersion  // version in the stream being read
 coder.CoderVersion   // coder implementation version
 ```
 
-Use for backward compatibility:
+Guard fields by version; do not assume forward compatibility:
 ```csharp
 public void Serialize(ICoder coder)
 {
@@ -235,7 +170,7 @@ public void Serialize(ICoder coder)
 
 ## TypeInfo Registration
 
-Register custom types for polymorphic serialization:
+Register names and versions for custom types:
 
 ```csharp
 coder.Add(new TypeInfo[] {
@@ -244,74 +179,6 @@ coder.Add(new TypeInfo[] {
 });
 
 coder.Del(typeInfoArray);  // remove registration
-```
-
----
-
-## Usage Patterns
-
-### Basic Serialization
-```csharp
-// Write
-using (var stream = File.Create("data.bin"))
-using (var coder = new BinaryWritingCoder(stream))
-{
-    var position = new V3d(1, 2, 3);
-    var name = "test";
-    coder.CodeV3d(ref position);
-    coder.CodeString(ref name);
-}
-
-// Read
-using (var stream = File.OpenRead("data.bin"))
-using (var coder = new BinaryReadingCoder(stream))
-{
-    var position = default(V3d);
-    var name = default(string);
-    coder.CodeV3d(ref position);
-    coder.CodeString(ref name);
-}
-```
-
-### Unified Read/Write Method
-```csharp
-public class MyData
-{
-    private V3d _position;
-    private string _name;
-    private List<int> _values;
-
-    public void Code(ICoder coder)
-    {
-        coder.CodeV3d(ref _position);
-        coder.CodeString(ref _name);
-        coder.CodeList_of_T_(ref _values);
-    }
-}
-
-// Write
-myData.Code(writingCoder);
-
-// Read
-myData.Code(readingCoder);
-```
-
-### Conditional Coding
-```csharp
-public void Code(ICoder coder)
-{
-    coder.CodeInt(ref _count);
-
-    if (coder.IsWriting && _data != null)
-    {
-        coder.CodeTArray(ref _data);
-    }
-    else if (coder.IsReading)
-    {
-        _data = new float[_count];
-        coder.CodeTArray(ref _data);
-    }
-}
 ```
 
 ---
@@ -337,14 +204,6 @@ void CodeSymbolSet(ref SymbolSet v);
 ```csharp
 void CodeEnum(Type t, ref object value);
 ```
-
----
-
-## Gotchas
-
-1. **Unidirectional Reference Pattern**: The `ref` parameter pattern is elegant but *confusing* for debugging. Read-mode passes `null` into `ref`, write-mode reads from the ref. Always verify `IsReading`/`IsWriting` in conditional logic
-2. **Version Mismatch Silent Failures**: If code reads a newer format than `StreamVersion`, old fields stay at default values without warning. Use version guards explicitly; don't assume forward compatibility
-3. **Polymorphic Type Registration**: Polymorphic serialization requires exact `TypeInfo` registration. Missing a subclass? It silently serializes as the base type, causing silent data loss on read
 
 ---
 

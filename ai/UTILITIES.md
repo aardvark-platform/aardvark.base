@@ -64,25 +64,16 @@ synchronously outside internal synchronization.
 
 ## Ordered Hash Combination
 
-`HashCode.GetCombinedHashCode<T>` uses the same order-sensitive fold for arrays
-and `IEnumerable<T>` values. Empty inputs return zero, singletons return the
-element hash directly, and each later element hash is incorporated with
-`HashCode.UCombine`. The enumerable overload consumes the sequence once and
-disposes its enumerator, so the same ordered values hash identically regardless
-of whether the caller exposes them as an array, list, or lazy sequence.
+`HashCode.GetCombinedHashCode<T>` is order-sensitive. Arrays and `IEnumerable<T>`
+inputs with the same ordered values produce identical hashes. Empty inputs return
+zero; singletons return the element hash. The enumerable overload consumes the
+sequence once and disposes its enumerator.
 
 ## Introspection Method Queries
 
 `Introspection.GetAllMethodsWithAttribute<T>(Assembly)` scans public instance
 and static methods declared directly by each assembly type. Each matching
 `MethodInfo` is returned once together with all attached `T` attribute instances.
-
-Method queries use a versioned cache discriminator that includes the attribute's
-assembly-qualified name, keeping them separate from type queries and older method
-semantics. Cache files store one assembly-qualified name per declaring type in
-first-seen order. Reads deduplicate those lines and reject resolved types from any
-assembly other than the one being queried. Older cache keys are ignored and
-rebuilt on the next query.
 
 ## Random
 
@@ -99,19 +90,17 @@ double full = rnd.UniformDoubleFull();
 `UniformDoubleFull` and `FillUniformFull` produce 53-bit samples in the half-open
 interval `[0, 1)`. Generators whose `GeneratesFullDoubles` capability is true use
 one `UniformDouble` draw per sample. Other generators reconstruct each sample
-from two `UniformInt` draws. Bulk filling evaluates the capability once, is
-allocation-free, preserves the same draw order and values as repeated scalar
-`UniformDoubleFull` calls, and consumes no random values for an empty array.
+from two `UniformInt` draws. Bulk filling is allocation-free, preserves the draw
+order and values of repeated scalar `UniformDoubleFull` calls, and consumes no
+random values for an empty array.
 `CreateUniformDoubleFullArray` allocates the destination and then uses the same
 bulk semantics.
 
 `Prime.IsTrueFor(long)` has the same mathematical semantics as
 `Fun.IsPrime(long)`: values below two are not prime. `Prime.WithIndex(i)` returns
 the zero-based indexed prime (`WithIndex(0) == 2`), and
-`Prime.InverseWithIndex(i)` returns its exact computed reciprocal. Indexed prime
-and inverse tables expand lazily. Expansion is serialized and publishes only a
-complete matching prefix; already-cached lookups remain lock-free and
-allocation-free.
+`Prime.InverseWithIndex(i)` returns its reciprocal. Indexed lookups are thread-safe;
+already-cached lookups remain lock-free and allocation-free.
 
 ```csharp
 bool prime = Prime.IsTrueFor(104729);       // true
@@ -119,18 +108,15 @@ int p = Prime.WithIndex(9999);              // 104729
 double inverse = Prime.InverseWithIndex(9999); // 1.0 / 104729
 ```
 
-`Randomize` uses an allocation-free Fisher-Yates shuffle to uniformly permute
-arrays, lists, prefixes, and ranges in place. Elements outside a selected range
-are unchanged, and empty or singleton selections consume no random values.
-`CreatePermutationArray` and `CreatePermutationArrayLong` use the same shuffle.
+`Randomize` uniformly permutes arrays, lists, prefixes, and ranges in place without
+allocations. Elements outside a selected range are unchanged, and empty or singleton
+selections consume no random values. Use `CreatePermutationArray` or
+`CreatePermutationArrayLong` for a new array.
 Do not rely on an exact permutation for a given seed remaining stable across
 library versions.
 
 `PerlinNoise.InterpolateNoise` supports signed coordinates in one, two, and
-three dimensions. Each component selects its containing lattice cell using
-mathematical floor, so the interpolation fraction remains in `[0, 1)` and the
-result stays continuous across negative integer boundaries. Integer lattice
-nodes and nonnegative-coordinate results retain their established values.
+three dimensions and is continuous across integer lattice boundaries.
 Interpolation is allocation-free.
 
 Geometric sampling takes an `IRandomSeries` (e.g. `HaltonRandomSeries`), not an `IRandomUniform`:

@@ -1,7 +1,5 @@
 # Contributing to Aardvark.Base
 
-This guide is aligned with the current repository scripts and project layout.
-
 ## Prerequisites
 
 - .NET SDK from `global.json` (`8.0.100` with `rollForward: latestFeature`)
@@ -57,10 +55,8 @@ The standard test scripts restore tools/packages and then run only the maintaine
 - `src/Tests/Aardvark.Geometry.Tests/Aardvark.Geometry.Tests.fsproj`
 - `src/Tests/Aardvark.Base.FSharp.Tests/Aardvark.Base.FSharp.Tests.fsproj`
 
-The top-level `build.*` and `test.*` scripts stop on the first failing restore/build/test command and return a nonzero exit code immediately, so they are safe to use in CI and shell pipelines.
-
-The benchmark projects are intentionally excluded from the default `test.sh` / `test.cmd` path.
-The legacy incremental test project (`src/Tests/Aardvark.Base.Incremental.Tests/Aardvark.Base.Incremental.Tests.fsproj`) is also intentionally excluded for now. It still depends on an older adaptive test/helper surface and is tracked for explicit removal-or-migration in GitHub issue `#94`, rather than being silently treated as part of the normal green test suite.
+Build/test scripts stop at the first failure. Benchmarks and the deprecated
+`Aardvark.Base.Incremental.Tests` project (issue `#94`) are excluded from the test scripts.
 
 Run focused tests directly with `dotnet test`:
 
@@ -70,7 +66,7 @@ dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "F
 dotnet test src/Aardvark.sln --filter "FullyQualifiedName~Vector"
 ```
 
-Use the solution-level filtered form only for targeted discovery/debugging. The default all-tests path remains `./test.sh` / `.\test.cmd`, which skips benchmark projects.
+Use the solution-level filter only for targeted discovery/debugging.
 
 ## Code Generation
 
@@ -113,7 +109,6 @@ If a change needs a release-notes entry:
 - unreleased notes may appear above that first version section as plain text or bullet points
 - do not add a markdown heading such as `### Preliminary` above the first version section
 - do not place new unreleased entries inside an already released version block
-- if you add pending/preliminary notes, place them above the first version section instead of inside the previous released block
 
 ## Pull Request Checklist
 

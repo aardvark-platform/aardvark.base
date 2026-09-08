@@ -1,19 +1,17 @@
 # AI Agent Guide
 
-Repository-specific rules and verified operational facts for coding agents.
-
 Primary AI reference index: `ai/README.md`
 
 ## Supported Commands
 
-Use these commands for restore/build/test/codegen:
+Build/test scripts stop at the first failure.
 
 | Task | Command | Notes |
 |------|---------|-------|
-| Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + paket packages, auto-repairing missing Paket targets with `dotnet paket install`, and returns a nonzero exit code on the first failure |
-| Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` and stops on the first failing step |
+| Restore only | `./build.sh restore` or `.\build.cmd restore` | Restores dotnet tools + Paket packages |
+| Build all | `./build.sh` or `.\build.cmd` | Builds `src/Aardvark.sln` |
 | Build one project | `dotnet build src/Aardvark.Base/Aardvark.Base.csproj -c Debug` | Use explicit project path |
-| Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects, stopping on the first failing step; excludes benchmark projects and the deprecated incremental test project |
+| Test all | `./test.sh` or `.\test.cmd` | Runs the five maintained test projects; excludes benchmarks and the deprecated incremental test project |
 | Test one project | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj -c Debug` | Prefer this over whole-solution test |
 | Test with filter | `dotnet test src/Tests/Aardvark.Base.Tests/Aardvark.Base.Tests.csproj --filter "FullyQualifiedName~Vector"` | Works with NUnit adapter; use a concrete test project |
 | Codegen | `./generate.sh` or `.\generate.cmd` | Required after template changes |
@@ -32,10 +30,8 @@ This repo uses Paket, not `dotnet add package`.
 
 Rules:
 - Never edit `paket.lock` manually
-- Never use `dotnet add package` in this repo
 - Change constraints in `paket.dependencies`, then regenerate lock with Paket
 - Top-level `build.*` / `test.*` scripts auto-run `dotnet paket install` when `.paket/Paket.Restore.targets` is missing; otherwise they use `dotnet paket restore`
-- Top-level `build.*` / `test.*` scripts stop immediately on the first failing restore/build/test command and return that nonzero exit code
 
 ## Release Notes
 
@@ -81,7 +77,7 @@ Current project reality:
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| `dotnet paket restore` fails | Paket/tool state mismatch | `dotnet tool restore` then `dotnet paket restore`; if `.paket/Paket.Restore.targets` is missing or scripts are not being used, run `dotnet paket install` |
+| `dotnet paket restore` fails | Paket/tool state mismatch | Run `./build.sh restore` or `.\build.cmd restore` |
 | Compile errors in generated files | Template/output out of sync | Run `./generate.sh` or `.\generate.cmd` |
 | Build fails due framework mismatch | Running old SDK/runtime | Install .NET 8 SDK; verify `dotnet --info` and `global.json` |
 | Test filter returns zero tests | Wrong filter syntax | Use `FullyQualifiedName~...` pattern |
@@ -108,19 +104,6 @@ src/
 |- Demo/                         (sample apps)
 |- CodeGenerator/                (template/code generation tooling)
 ```
-
-## AI Reference Docs
-
-See `ai/README.md` for task-based lookup across:
-- primitive math/geometry types
-- linear algebra semantics (layout/interoperability)
-- geometry semantics (transform conventions)
-- piximage/tensor APIs
-- algorithms and collections
-- serialization
-- utilities
-- F# interop
-- incremental/adaptive system
 
 ## Agent Workflow Tips
 

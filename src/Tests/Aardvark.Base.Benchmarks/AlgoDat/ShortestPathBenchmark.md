@@ -2,8 +2,6 @@
 
 Tracking: [#131](https://github.com/aardvark-platform/aardvark.base/issues/131).
 
-Run the retained fixture without changing the benchmark dispatcher:
-
 ```sh
 dotnet run -c Release --project src/Tests/Aardvark.Base.Benchmarks -- \
   --filter '*ShortestPathBenchmark*' --inProcess \
@@ -48,10 +46,6 @@ allocation count, but eliminate repeated consolidation scratch allocations.
 | Insert/decrease/drain | 4096 | 769.705 | 660.887 | +16.5% | 1,003,504 | 262,208 |
 | Sparse graph | 4096 | 2277.810 | 2059.592 | +10.6% | 1,291,648 | 614,072 |
 | Grid graph | 4096 | 1107.959 | 821.209 | +34.9% | 914,208 | 307,412 |
-
-Allocation reductions range from 28.2% to 75.1%. Index-backed intrusive links
-avoid GC write barriers during ring mutation while the registry retains only active
-nodes. All matched workloads improve, so the throughput and allocation gates pass.
 
 The baseline is incorrect: these are matched inputs, not equivalent priority
 results. Its early-stop consolidation can leave most roots unlinked, doing fewer

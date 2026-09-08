@@ -38,21 +38,15 @@ bool hitsTri = ray.Hits(triangle, 0.0, double.MaxValue, ref hit);
 and `Radius`. Their tangent frame is deterministic and independent of radius:
 the first unit tangent is the normalized cross product of `Normal` with X, except
 that Y is used when the normal is nearly X-aligned; the second is the normalized
-cross product of the first tangent with `Normal`. `AxisU` and `AxisV` scale these
-unit tangents by `Radius` only after constructing the frame. This preserves the
-established orientation for ordinary normalized normals and keeps finite extreme
-radii from collapsing `AxisV` through intermediate normalization overflow or
-underflow. A zero radius produces two zero axes.
+cross product of the first tangent with `Normal`. `AxisU` and `AxisV` are these
+unit tangents scaled by `Radius`. A zero radius produces two zero axes.
 
 `Point` is `Center + AxisU` and equals `GetPoint(0)`. `GetPoint` and `Points`
-use the same oriented frame; `Points` constructs its scaled axes once per enumeration.
-These frame and point operations do not allocate.
+use the same oriented frame. These operations are allocation-free.
 
-For a normalized normal `n`, the exact axis-aligned bound extent in component `i`
-is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. The non-negative clamp handles
-normalization round-off before the square root. `BoundingBox3f` and `BoundingBox3d`
-use these projection extents directly rather than bounding only four frame-cardinal
-points, so oblique-circle extrema are not underestimated; the properties do not allocate.
+For a normalized normal `n`, the axis-aligned bound extent in component `i`
+is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. `BoundingBox3f` and `BoundingBox3d`
+use these extents and are allocation-free.
 
 ## Sphere Ray Intersections
 
@@ -75,14 +69,7 @@ The `ref RayHit3f`/`ref RayHit3d` overloads update `T`, `Point`, `Coord`, and
 than the existing `hit.T`. They preserve `Part` on success and leave every field
 unchanged on geometric, range, validity, or non-closer misses.
 
-Ordinary finite coefficients use a stable direct quadratic path that computes
-the second parameter root only when the first is outside the interval. A zero,
-subnormal, overflowing, or otherwise non-finite direction square or discriminant,
-including non-finite coefficient combinations, uses a normalized spatial fallback.
-The fallback scales position and direction
-independently and reconstructs only representable finite parameters, retaining
-hits when ordinary radius, distance, or direction squares, coefficient products,
-or discriminants overflow or underflow. Both paths are allocation-free.
+The queries are allocation-free.
 
 ## Circle Ray Intersections
 
@@ -101,20 +88,15 @@ The `ref RayHit3f`/`ref RayHit3d` overloads update `T`, `Point`, `Coord`, and
 than the existing `hit.T`. They preserve `Part` on success and leave every field unchanged
 on geometric, range, validity, or farther-candidate misses.
 
-Ordinary disk containment uses the direct squared-distance comparison. Radii
-whose square overflows or underflows, including zero-radius comparisons against
-nonzero subnormal-scale offsets, use the same component-scaled disk predicate as cylinder caps.
-Thus clearly inside and outside contacts remain distinguishable at extreme finite scales.
-Both paths are allocation-free.
+The queries are allocation-free.
 
 ## Capped-Cylinder Ray Intersections
 
 `Ray3f.HitsCylinder` and `Ray3d.HitsCylinder` intersect the finite capped surface
-whose axis runs from `p0` to `p1` and whose radius is non-negative. The candidate
-set consists of both roots of the perpendicular barrel quadratic, clipped to the
-closed axial extent, and both circular end caps. Endpoint order does not affect
-the geometry. Axis-parallel rays still test the caps, rays starting inside select
-their first permitted exit, and a tangent barrel contact counts as a hit. A zero
+whose axis runs from `p0` to `p1` and whose radius is non-negative. Both end caps
+are included. Endpoint order does not affect the geometry. Axis-parallel rays can
+hit the caps, rays starting inside select their first permitted exit, and a tangent
+barrel contact counts as a hit. A zero
 radius retains the degenerate axis segment; a zero-length axis, zero ray direction,
 negative/non-finite radius, non-finite geometry, or empty/NaN parameter interval
 reports no hit.
@@ -130,13 +112,10 @@ return true and update `T`, `Point`, `Coord`, and `BackSide` only when the neare
 valid cylinder candidate is also strictly closer than the existing `hit.T`.
 They preserve `Part`, and leave the entire hit unchanged on geometric misses,
 range misses, invalid input, and candidates hidden by an existing closer hit.
-A nonzero `distanceScale` retains the established distance-based effective-radius
-growth before candidates pass through the same finite capped-cylinder kernel.
+A nonzero `distanceScale` grows the effective radius with distance.
 
-The `RayPart` cylinder option and value-option forms in `Boundable.fs` delegate
-to the double-precision core, so they share the same cap, range, and finite-result
-semantics without constructing candidate arrays. The core and accumulator paths
-do not allocate.
+The `RayPart` cylinder option and value-option overloads in `Boundable.fs` share
+these semantics. The queries are allocation-free.
 
 ## FastRay Slab Test
 
@@ -175,28 +154,16 @@ cell, but not `Unit`. Other pairs involving `Invalid` use `BoundingBox.Intersect
 - Intersection is closed: edge and corner contact count as hits. Tangency returns a point segment, and line or point boxes are supported.
 - Scaling both `Normal` and `Distance` by the same non-zero factor, including a negative factor, preserves the result.
 - On a miss, the segment-producing overload returns `false` and leaves its output at `default`. Ordinary crossing segments retain the established order from lower to higher Y, or lower to higher X for horizontal results.
-- The boolean overload tests the box's normal-projection interval directly and does not allocate a corner array.
+- The boolean overload is allocation-free.
 
 ## Polygon Centroids
 
-`Polygon2f`/`Polygon2d` centroid accumulation uses signed fan triangles relative
-to the first vertex. Each triangle contributes its signed double-area and its
-centroid offset from that anchor. Dividing by the signed total makes clockwise
-and counter-clockwise outlines agree, while forming only coordinate differences
-before area products avoids cancellation caused solely by large translations.
+`Polygon2f`/`Polygon2d` and `Polygon3f`/`Polygon3d` centroids are independent of
+winding and cyclic vertex order. The 3D outline must be planar; collinear first
+vertices are allowed.
 
-`Polygon3f`/`Polygon3d` first computes the polygon's complete double-area normal
-from the same anchor-relative fan. The dominant absolute normal component selects
-the most stable coordinate projection. Signed triangle weights in that projection
-then preserve reflex contributions, making the result independent of winding and
-cyclic vertex position, including when the first three vertices are collinear.
-The 3D outline is expected to be planar.
-
-Fewer than three vertices and zero signed total weight return `V2*.Zero` or
-`V3*.Zero`. Both implementations run in linear time and allocate no transient
-managed memory. On .NET 8 x86/x64, longer 2D outlines process adjacent fan
-triangles in packed SSE3/AVX2 lanes; unsupported targets use the equivalent
-scalar accumulation.
+Fewer than three vertices or zero signed area return `V2*.Zero` or `V3*.Zero`.
+Computation is linear-time and allocation-free.
 
 ## Polyline Simplification
 
@@ -207,7 +174,7 @@ scalar accumulation.
 - Empty, singleton, and two-point inputs return `[]`, `[0]`, and `[0, 1]`, respectively. For every longer input the first and last indices are retained.
 - Error is measured from each source point to the current endpoint segment. A distance equal to `epsilon` is within tolerance and does not cause a split.
 - Equal farthest distances select the first source index, preserving deterministic left-to-right output.
-- A root segment already within tolerance allocates only its final two-index result. Inputs requiring splits use pooled, exception-safely returned iterative workspace and allocate only the final result after warmup; traversal does not consume call stack proportional to input size.
+- After warmup, queries allocate only the result array. Traversal does not consume call stack proportional to input size.
 
 ## Supporting-Line Distance And Parameters
 
@@ -217,7 +184,6 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - Ray-pair overloads return `t0` and `t1` in each input's original direction parameterization. Rescaling a direction therefore inversely rescales its parameter without changing the reconstructed closest point or distance.
 - Parallel and near-parallel pairs keep the established asymmetric convention: `t1` is zero, while `t0` projects the second origin onto the first supporting line. The angular threshold is independent of direction lengths.
 - A finite zero direction represents a point and receives parameter zero. If only one direction is zero, the other parameter projects that point onto the non-degenerate supporting line.
-- Extreme finite directions use component-scaled fallbacks only when raw squared norms or norm products underflow or overflow; ordinary finite magnitudes stay on the direct arithmetic path.
 - Segment (`Line2*`/`Line3*`) and line/ray callers apply their own `[0, 1]` bounds after obtaining these supporting-line parameters.
 
 ## Convex Polygon Line Clipping
@@ -225,8 +191,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 `Line2f.ClipWithConvex` and `Line2d.ClipWithConvex` clip a segment against a convex polygon whose points are ordered counter-clockwise:
 
 - Each non-zero polygon edge defines an inclusive left half-plane; duplicate consecutive points and other zero-length edges are ignored.
-- The default overload uses `Constant<float/double>.PositiveTinyValue` as an absolute point-distance tolerance. The explicit overload accepts a non-negative absolute epsilon. Internally, that distance is multiplied by each edge length before signed-cross-product comparisons.
-- If a non-zero finite edge's raw length underflows to zero or overflows to infinity, a component-scaled fallback preserves the same half-plane and point-distance tolerance.
+- The default overload uses `Constant<float/double>.PositiveTinyValue` as an absolute point-distance tolerance. The explicit overload accepts a non-negative absolute epsilon.
 - Boundary-collinear segments and single-point vertex contacts are retained.
 - The result keeps the input `P0`-to-`P1` direction. An endpoint that does not require clipping is returned bit-for-bit unchanged.
 - If the segment has no non-empty parameter interval inside the polygon, both result points are NaN.
@@ -236,7 +201,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 `Line2f`/`Line2d` and `Line3f`/`Line3d` provide `ClipByPlane` overloads for their matching plane types:
 
 - The retained region is the inclusive positive half-space. For a non-zero normal, a point is retained when `(Normal dot point - Distance) / |Normal| >= -absoluteEpsilon`.
-- The default overload uses `Constant<float/double>.PositiveTinyValue`; the explicit overload accepts a non-negative absolute point-distance tolerance. Scaling both a plane normal and its distance by the same positive factor does not change the result, including when a finite raw normal length underflows or overflows.
+- The default overload uses `Constant<float/double>.PositiveTinyValue`; the explicit overload accepts a non-negative absolute point-distance tolerance. Scaling both a plane normal and its distance by the same positive factor does not change the result.
 - Results preserve the input `P0`-to-`P1` order. Endpoints that do not require clipping are returned bit-for-bit unchanged, and a single boundary contact is returned as a point segment.
 - Fully rejected segments use NaN for both result points. A plane with a zero normal is treated as a no-op, including `Plane2f.Invalid`/`Plane2d.Invalid` and `Plane3f.Invalid`/`Plane3d.Invalid`.
 
@@ -247,7 +212,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - Contour orientation does not affect containment. Clockwise holes, reversed contours, and contours transformed by a negative determinant retain their geometric meaning.
 - Each contour crossing toggles containment, so holes are excluded and nested islands are included.
 - Points on contour edges or vertices are contained. Contours with fewer than three vertices do not contribute.
-- Containment scans contour edges directly without tessellation or per-query allocation.
+- `Contains` is allocation-free.
 
 ## Attributed Polygon Regions
 
@@ -258,7 +223,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `Union` uses positive winding. `Difference` uses positive winding after reversing the right operand's contours and attributes. `Intersection` retains winding magnitude greater than one, while `Xor` uses even-odd winding.
 - Boolean results retain LibTess boundary orientation, including clockwise hole contours. `Triangulate` uses even-odd winding.
 - Every boolean method and `Triangulate` requires `float[] -> 'a[] -> 'a`. LibTess calls it when an edge crossing or tessellation step invents a vertex; the weights and contributing attributes determine that vertex's attribute.
-- Attributed boolean operations intentionally have no operators, so call sites cannot conceal the interpolation policy.
+- Attributed boolean operations have no operators.
 
 ## Source Anchors
 
@@ -271,8 +236,8 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Geometry/Types/Ray/Ray3_auto.cs` (`Ray3d.Hits` overloads, circle/capped-cylinder kernels, `RayHit3d`, `FastRay3d`)
 - `src/Aardvark.Base.FSharp/Datastructures/Geometry/Boundable.fs` (`RayPart` cylinder option/value-option delegation)
 - `src/Aardvark.Base/Geometry/Types/Circle/Circle3_auto.cs` (`Circle3f`/`Circle3d` frame, points, and bounds)
-- `src/Aardvark.Base/Geometry/Types/Polygon/Polygon2_auto.cs` (`Polygon2f`/`Polygon2d` signed centroid accumulation)
-- `src/Aardvark.Base/Geometry/Types/Polygon/Polygon3_auto.cs` (`Polygon3f`/`Polygon3d` dominant-projection centroid accumulation)
+- `src/Aardvark.Base/Geometry/Types/Polygon/Polygon2_auto.cs` (`Polygon2f`/`Polygon2d` centroids)
+- `src/Aardvark.Base/Geometry/Types/Polygon/Polygon3_auto.cs` (`Polygon3f`/`Polygon3d` centroids)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f`/`Line2d`/`Line3f`/`Line3d.ClipByPlane`)

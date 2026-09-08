@@ -1,7 +1,5 @@
 # Aardvark.Base Collections Reference
 
-Source-verified reference for custom collection and symbol infrastructure.
-
 ## Symbol and TypedSymbol
 
 `Symbol` is interned and integer-backed.

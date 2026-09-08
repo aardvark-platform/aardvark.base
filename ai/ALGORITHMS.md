@@ -1,25 +1,18 @@
 # Aardvark.Base Algorithms Reference
 
-Source-verified map of key algorithm types and entry points.
-
 ## ShortestPath<T>
 
 `ShortestPath<T>` implements `IShortestPath<T>` and runs asynchronous shortest-path computation.
 Starting a calculation validates its seed synchronously, then atomically replaces and cancels
-the previous calculation. Each run owns its cancellation state and working arrays, and only a
-successfully completed current run publishes a result. Path queries use one immutable snapshot,
-so they continue to observe the last completed result while a replacement is running. `Cancel()`
+the previous calculation. Only a successfully completed current run publishes a result.
+Path queries observe the last completed result while a replacement is running. `Cancel()`
 invalidates, cancels, and waits for the current run; expected cancellation is suppressed while
 worker failures are propagated.
 
 Costs must be finite and non-negative, and accumulated path costs must remain finite.
-The internal Fibonacci heap always expands a node of minimum tentative cost, including
-when a cheaper route decreases an active node's key. Consolidation visits each root once,
-and cascading cuts preserve heap order and amortized `O(1)` insert/decrease-key and
-`O(log V)` extraction. Its degree table grows as needed, is reused across extractions,
-and clears retained node references after consolidation. Equal-cost routes have no guaranteed
-tie order. Returned reachable paths run from target toward seed, excluding the seed; the
-seed path is empty, and an unreachable target returns `[target, seed]`.
+Equal-cost routes have no guaranteed tie order. Returned reachable paths run from target
+toward seed, excluding the seed; the seed path is empty, and an unreachable target
+returns `[target, seed]`.
 
 Key methods:
 
@@ -38,10 +31,9 @@ new ShortestPath<T>(T[] nodes, List<int>[] neighbors, Func<T,T,float> getCost);
 
 ## Dense Graph Minimum-Spanning Trees
 
-`DenseGraph<TVertex, TCost>.BuildMinimumSpanningTreePrim()` implements canonical
-dense `O(V^2)` Prim traversal rooted at vertex index zero. It tracks the cheapest
-edge from the visited set to every unvisited vertex. Equal costs select the lowest
-vertex index and then the lowest parent index, making the result deterministic.
+`DenseGraph<TVertex, TCost>.BuildMinimumSpanningTreePrim()` builds a tree rooted at
+vertex index zero in `O(V^2)` time. Equal costs select the lowest vertex index and
+then the lowest parent index.
 Empty and singleton graphs produce trees with no edges.
 
 `AbstractGraph<TVertex, TCost>.Tree.Traverse` visits every reachable vertex once
@@ -64,9 +56,7 @@ input produces exactly `V - 1` edges of minimum total weight. Input describing t
 more disconnected components throws `InvalidOperationException`; the API defines a
 single tree rather than a spanning forest.
 
-The implementation materializes one source pass into compact indexed adjacency storage
-and uses one global binary-heap frontier. Each non-loop edge is enqueued at most once,
-for `O(E log E)` time and `O(V + E)` auxiliary memory.
+Complexity is `O(E log E)` time and `O(V + E)` auxiliary memory.
 
 ## AdaBoost
 
@@ -75,7 +65,7 @@ factory invocations. Every ordinary accepted learner updates the sample weights 
 invokes the optional callback with a stable snapshot of the current ensemble. A callback
 result of `true` stops training.
 
-A learner whose weighted error is within the existing open band of 0.02 around 0.5
+A learner whose weighted error is within the open band of 0.02 around 0.5
 terminates training without being retained. A learner that is correct for all samples
 replaces the ensemble with one positive finite vote. An all-wrong learner is a perfect inverse
 and replaces it with one negative finite vote. Both perfect cases stop immediately and do not
@@ -83,10 +73,8 @@ invoke the ordinary-iteration callback. Degenerate non-finite importance or norm
 also terminates before another factory invocation receives invalid weights.
 
 Excluding work performed by the supplied factory, `I` attempted iterations over `N`
-training items take `O(I * N)` time. Training retains `O(N + K)` auxiliary state for one
-sample-weight array, one reusable prediction buffer, and `K` accepted learner/weight pairs.
-A returned classifier evaluates its `K` retained learners with a direct loop. Inference takes
-`O(K)` time and allocates no managed memory per call after warmup.
+training items take `O(I * N)` time and `O(N + K)` auxiliary memory for `K` retained
+learners. Inference takes `O(K)` time and allocates no managed memory per call after warmup.
 
 ## BbTree
 
@@ -127,18 +115,12 @@ for the same singular condition. Fixed-size `LuInvert` returns `false` without c
 while `LuInverse` returns the corresponding zero matrix.
 
 `QrFactorize` stores normalized Householder vectors in place and returns the diagonal of the
-triangular factor. For every active row or column, the Householder coefficient has the active
-vector's norm and the stable sign opposite a non-zero pivot. If either signed zero is the pivot
-but the active norm is non-zero, the coefficient deterministically uses the negative norm; this
-keeps full-rank permutation, tall, and wide matrices finite. A zero active norm remains subject
-to the existing rank-deficient behavior. Managed and offset/strided row and column paths share
-these semantics. Wide strided `QrSolve` applies each row reflector starting at the matching
-solution index, including when the solution has a non-zero offset or non-unit stride.
+triangular factor. It supports tall and wide matrices, including offset/strided data.
+Rank-deficient input may produce non-finite factors.
 
 ## Rolling Median Window
 
-`MedianWindow` retains the latest values in a fixed-size ring and maintains the
-sorted active ring-slot indices incrementally without transient allocations.
+`MedianWindow` retains the latest values in a fixed-size window without transient allocations.
 Before the window is full, `Insert` returns the upper median of all values seen
 so far; afterward it returns the upper median of the latest window. For an even
 active count, the upper of the two middle values is selected. Equal values,
@@ -191,24 +173,13 @@ Examples:
 
 Polynomial coefficient arrays are stored in ascending degree order.
 `RealRoots` and `RealRootsNormed` return only finite real roots, sorted ascending.
-Fixed-width tuple APIs place any unused entries at the end as `NaN`. For cubic solvers, a negative
-Cardano discriminant produces three ascending real roots, a zero discriminant
-preserves repeated double or triple roots, and a positive discriminant produces one
-finite root followed by two `NaN` values. Near a repeated root, the solver checks the
-equivalent cubic discriminant with a compensated sum and an operation-error bound so
-round-off from depressing a normalized cubic does not invent a complex pair.
-
-Trailing `NaN` entries are part of the tuple contract: array conversion drops them,
-and the quartic zero-factor path merges only the finite prefix with its additional
-real root.
+Fixed-width tuple APIs fill unused trailing entries with `NaN`. Cubic solvers preserve
+repeated roots. Array conversion drops trailing `NaN` entries.
 
 ## Cubic Curve Evaluation
 
 `Ipol.CubicHermite.Eval`, `EvalD1`, `EvalD2`, and `EvalD3` evaluate scalar, `V2d`,
-and `V3d` cubic Hermite segments. They form the four basis coefficients in scalar locals
-and allocate no managed memory per call after warmup. The value basis remains
-`(2t^3 - 3t^2 + 1, t^3 - 2t^2 + t, t^3 - t^2, -2t^3 + 3t^2)` for
-`(a, tangentIn, tangentOut, b)`, with the corresponding analytical derivatives.
+and `V3d` cubic Hermite segments.
 
 Parameters are not clamped: values outside `[0, 1]` extrapolate the same cubic polynomial.
 At `t = 0` and `t = 1`, `Eval` returns `a` and `b`, while `EvalD1` returns the respective
@@ -216,24 +187,16 @@ incoming and outgoing tangent. `EvalD3` is the constant
 `12a + 6tangentIn + 6tangentOut - 12b` and is independent of `t`, including for non-finite
 parameter values.
 
-`Ipol.CatmullRom` and `Ipol.KochanekBartels` derive their tangents and delegate all four
-value/derivative orders to the same Hermite kernels. Their scalar, `V2d`, and `V3d`
-evaluation paths are therefore likewise constant-time and allocation-free after warmup.
+`Ipol.CatmullRom` and `Ipol.KochanekBartels` provide the same value/derivative orders.
+All three families evaluate in constant time and are allocation-free after warmup.
 
 ## Enumerable Population Variance
 
 `Fun.Variance` and `Fun.StandardDeviation` enumerate `IEnumerable<int>`,
 `IEnumerable<long>`, `IEnumerable<float>`, and `IEnumerable<double>` inputs once.
-The selector overloads likewise invoke the selector exactly once per element. Variance
-is the population moment: deviations from the first selected value and their squares
-are accumulated in compensated `KahanSum` values, then centered and divided by the
-`long` element count. `StandardDeviation` is the square root of that result.
-
-Empty or non-finite inputs return `NaN`; singleton and all-equal finite inputs return
-zero. Signed `long` differences are formed before conversion without overflowing, so
-equal and adjacent values remain distinct even near `long.MinValue` and
-`long.MaxValue`. Only finite negative centered residuals caused by round-off are
-clamped to zero.
+The selector overloads likewise invoke the selector exactly once per element.
+Variance uses the population divisor `N`, not `N - 1`. `StandardDeviation` is its square root.
+Empty or non-finite inputs return `NaN`; singleton and all-equal finite inputs return zero.
 
 ## Compositional Statistics
 
