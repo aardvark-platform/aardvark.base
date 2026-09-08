@@ -560,6 +560,39 @@ namespace Aardvark.Tests
 
         #endregion
 
+        #region exact intersections
+
+        private static IEnumerable<TestCaseData> ExactIntersectionCases => CellIntersectionTestData.Cases(3);
+        private static IEnumerable<TestCaseData> InvalidIntersectionCases => CellIntersectionTestData.InvalidCases(3);
+
+        [TestCaseSource(nameof(ExactIntersectionCases))]
+        public void IntersectsExactly(Cell a, Cell b, bool expected)
+        {
+            Assert.That(a.IsValid && b.IsValid, Is.True, "Exact semantics apply to valid cells");
+            Assert.That(a.Intersects(b), Is.EqualTo(expected), $"{a} versus {b}");
+            Assert.That(b.Intersects(a), Is.EqualTo(expected), "Symmetry");
+            Assert.That(a.Intersects(a), Is.True, "Self-intersection");
+            Assert.That(b.Intersects(b), Is.True, "Self-intersection");
+        }
+
+        [TestCase(7)]
+        [TestCase(31)]
+        [TestCase(2027)]
+        public void IntersectsMatchesBigIntegerIntervals(int seed)
+            => CellIntersectionTestData.CompareRandomPairs(3, seed);
+
+        [TestCaseSource(nameof(InvalidIntersectionCases))]
+        public void IntersectsPreservesInvalidCompatibility(Cell other, bool expected)
+        {
+            var invalid = Cell.Invalid;
+            bool legacy = invalid == other || invalid.BoundingBox.Intersects(other.BoundingBox);
+            Assert.That(legacy, Is.EqualTo(expected), "Characterized legacy sentinel behavior");
+            Assert.That(invalid.Intersects(other), Is.EqualTo(expected));
+            Assert.That(other.Intersects(invalid), Is.EqualTo(expected));
+        }
+
+        #endregion
+
         #region contains/intersects
 
         [Test]

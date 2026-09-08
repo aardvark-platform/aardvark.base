@@ -90,6 +90,9 @@ internal sealed class DocsRules
                 new("ai/SERIALIZATION.md", "`NetworkOrderBinaryReader` and `NetworkOrderBinaryWriter`", "Serialization docs should define network-order primitive stream semantics."),
                 new("ai/SERIALIZATION.md", "these numeric scalar and aggregate operations are allocation-free", "Serialization docs should record network-order allocation behavior."),
                 new("ai/INCREMENTAL.md", "CSharp.Data.Adaptive", "C# adaptive examples require the CSharp.Data.Adaptive namespace/package."),
+                new("ai/SEMANTICS_GEOMETRY_CORE.md", "`Cell.Intersects(Cell)` and `Cell2d.Intersects(Cell2d)`", "Geometry semantics should define exact valid-cell intersections."),
+                new("ai/SEMANTICS_GEOMETRY_CORE.md", "Face-, edge-, and corner-only contacts are excluded", "Cell intersection docs should distinguish positive-measure overlap from boundary contacts."),
+                new("ai/SEMANTICS_GEOMETRY_CORE.md", "Other Invalid-sentinel pairs retain the previous bounding-box behavior", "Cell intersection docs should preserve sentinel compatibility."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "`Box2f`/`Box2d` plane intersections", "Geometry semantics should cover closed, scale-invariant box/plane intersections."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "FastRay", "Geometry semantics should cover FastRay slab-test conventions."),
                 new("ai/SEMANTICS_GEOMETRY_CORE.md", "`Circle3f` and `Circle3d` represent a circle", "Geometry semantics should define Circle3 frame and bound conventions."),
@@ -130,6 +133,12 @@ internal sealed class DocsRules
             ],
             SourceAnchors =
             [
+                new("src/Aardvark.Base/Math/RangesBoxes/Cell.cs", "public bool Intersects(Cell other)"),
+                new("src/Aardvark.Base/Math/RangesBoxes/Cell.cs", "long delta = (long)Exponent - other.Exponent;"),
+                new("src/Aardvark.Base/Math/RangesBoxes/Cell.cs", "private bool IntersectsInvalid(Cell other) => BoundingBox.Intersects(other.BoundingBox);"),
+                new("src/Aardvark.Base/Math/RangesBoxes/Cell2d.cs", "public bool Intersects(Cell2d other)"),
+                new("src/Aardvark.Base/Math/RangesBoxes/Cell2d.cs", "long delta = (long)centeredExponent - ordinary.Exponent - 1;"),
+                new("src/Aardvark.Base/Math/RangesBoxes/Cell2d.cs", "private bool IntersectsInvalid(Cell2d other) => BoundingBox.Intersects(other.BoundingBox);"),
                 new("src/Aardvark.Base/Math/Trafos/Matrix_auto.cs", "public partial struct M44d"),
                 new("src/Aardvark.Base/Math/Trafos/Matrix_auto.cs", "public static M44d FromCols(V4d col0, V4d col1, V4d col2, V4d col3)"),
                 new("src/Aardvark.Base/Math/Trafos/Matrix_auto.cs", "public static V4d operator *(M44d m, V4d v)"),
