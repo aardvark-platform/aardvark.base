@@ -124,9 +124,8 @@ See `ai/README.md` for task-based lookup across:
 
 ## Agent Workflow Tips
 
-1. Read only the doc needed for your task, not all docs
-2. Verify API names with `rg` before using examples from docs
-3. Prefer local source as the final truth if docs and code disagree
-4. Run focused tests for touched modules before broad test runs
-5. When changing templates, regenerate before building
-6. When changing docs, run `./check-docs.sh` or `.\check-docs.cmd`; drift risk concentrates in docs without rules in `tools/DocsChecker/DocsRules.cs`, so add rules when documenting new API surface
+1. Before adding, try removing or simplifying. You are done when nothing more can be taken away without losing required behavior, clarity, or verification.
+2. Read only relevant docs; verify API names with `rg`. Source is truth.
+3. Run focused tests for touched modules before broad test runs
+4. When changing templates, regenerate before building
+5. When changing docs, run `./check-docs.sh` or `.\check-docs.cmd`

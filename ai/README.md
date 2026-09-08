@@ -2,13 +2,12 @@
 
 Task-first docs for coding agents.
 
-Goal: open one focused document, not the whole `ai/` folder.
-
 ## Fast Path
 
 1. Find symbols in [SYMBOL_INDEX.md](SYMBOL_INDEX.md).
 2. Open one task doc from the table below.
-3. Verify critical names in source with `rg`.
+3. Verify APIs and examples in source with `rg`; source is truth.
+4. Correct stale docs in the same change and run `./check-docs.sh` or `.\check-docs.cmd`.
 
 ## Task Docs
 
@@ -25,16 +24,3 @@ Goal: open one focused document, not the whole `ai/` folder.
 | Serialization/coder APIs | [SERIALIZATION.md](SERIALIZATION.md) |
 | F# wrappers and idioms | [FSHARP_INTEROP.md](FSHARP_INTEROP.md) |
 | Incremental/adaptive system | [INCREMENTAL.md](INCREMENTAL.md) |
-
-## Meta Docs
-
-| Need | Read |
-|------|------|
-| Symbol-to-doc lookup | [SYMBOL_INDEX.md](SYMBOL_INDEX.md) |
-
-## Accuracy Contract
-
-- Docs are orientation, source is truth.
-- If a method/type matters, verify with `rg` before coding.
-- If docs and code differ, fix docs in the same change and run `./check-docs.sh` or `.\check-docs.cmd`.
-- Prefer examples that reflect current scripts and project targets.

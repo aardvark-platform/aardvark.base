@@ -8,8 +8,6 @@ namespace Aardvark.Tests
 {
     internal static class CellIntersectionTestData
     {
-        // Cell is also a convenient input carrier for the 2D cases; only X and Y
-        // participate there. Axis-specific cases are generated for the requested dimension.
         public static IEnumerable<TestCaseData> Cases(int dimensions)
         {
             foreach (var (name, a, b, expected) in Pairs(dimensions))
@@ -89,7 +87,7 @@ namespace Aardvark.Tests
 
             foreach (int exponent in new[] { int.MinValue, -1100, 0, 1100, int.MaxValue })
             {
-                // Every nonempty subset of axes: faces, edges, and corners. No coordinate+1 in production.
+                // Every nonempty subset of axes: faces, edges, and corners.
                 for (int axes = 1; axes < (1 << dimensions); axes++)
                 {
                     var neighbor = new Cell(axes & 1, (axes >> 1) & 1, (axes >> 2) & 1, exponent);
@@ -157,8 +155,7 @@ namespace Aardvark.Tests
             }
         }
 
-        // Independent interval oracle: use an exact common unit, form both endpoints
-        // in BigInteger (including coordinate+1 beyond Int64.MaxValue), then compare them.
+        // BigInteger endpoints provide an independent interval oracle.
         private static bool AxisOverlap(long a, int ae, bool ac, long b, int be, bool bc)
         {
             int unitExponent = Math.Min(ae, be) - 1; // Random test exponents are bounded to [-1200, 1200].

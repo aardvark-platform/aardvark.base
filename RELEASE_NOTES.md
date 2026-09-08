@@ -1,4 +1,4 @@
-- [Base] Made hierarchical cell intersections exact across coordinate and exponent ranges
+- [Base] Fixed `Cell.Intersects` and `Cell2d.Intersects`
 - [Base] Corrected winding- and translation-stable 2D and 3D polygon centroids
 - [Base] Corrected complex magnitude, reciprocal, division, and square roots at extreme finite scales
 - [Base] Corrected robust ray-sphere intersections and closest-hit accumulation

@@ -71,7 +71,6 @@ namespace Aardvark.Base.Benchmarks.Geometry
                     default:
                         throw new InvalidOperationException("Unknown benchmark case.");
                 }
-                // Exercise both receiver directions on exactly the same prebuilt pairs.
                 if ((i & 1) != 0) (a, b) = (b, a);
                 _a3[i] = a;
                 _b3[i] = b;
@@ -116,8 +115,7 @@ namespace Aardvark.Base.Benchmarks.Geometry
             return hits;
         }
 
-        // Previous instance-method bodies at d1e00e27. The readonly by-reference
-        // first argument matches the original receiver; BoundingBox is unchanged.
+        // Baseline from d1e00e27; in matches the readonly instance receiver.
         private static bool Previous(in Cell a, Cell b)
         {
             if (a.X == b.X && a.Y == b.Y && a.Z == b.Z && a.Exponent == b.Exponent) return true;

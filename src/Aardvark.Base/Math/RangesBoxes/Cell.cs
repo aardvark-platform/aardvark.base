@@ -258,14 +258,10 @@ public readonly partial struct Cell : IEquatable<Cell>
     }
 
     /// <summary>
-    /// Returns true if valid cells have positive-volume overlap, including containment.
-    /// Uses exact integer grid coordinates and exponents, even beyond floating-point range or precision.
-    /// Face-, edge-, and corner-only contacts do not intersect. Every cell intersects itself.
+    /// Returns true if two cells intersect each other (or one contains the other).
+    /// Cells DO NOT intersect if only touching from the outside.
+    /// A cell intersects itself.
     /// </summary>
-    /// <remarks>
-    /// Centered-origin cells overlap each other and may partially overlap ordinary grid cells.
-    /// Invalid-sentinel pairs retain the legacy bounding-box behavior, including Invalid intersecting itself.
-    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Intersects(Cell other)
     {
@@ -281,8 +277,8 @@ public readonly partial struct Cell : IEquatable<Cell>
         if (other.IsCenteredAtOrigin)
             return IntersectsCentered(other.Exponent, this);
 
-        // Ordinary grid cells either nest or have disjoint interiors. Align the smaller
-        // cell to the coarser grid. Widen before subtraction and saturate instead of masking.
+        // Ordinary grid cells either nest or have disjoint interiors.
+        // Clamp shifts: C# masks long shift counts to six bits.
         long delta = (long)Exponent - other.Exponent;
         if (delta >= 0)
         {
@@ -299,15 +295,14 @@ public readonly partial struct Cell : IEquatable<Cell>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool IntersectsCentered(int centeredExponent, Cell ordinary)
     {
-        // The centered cell extends half its size to either side of zero. When it is
-        // smaller, only origin-adjacent ordinary cells can overlap it (possibly partially).
+        // Centered cells extend half their size on either side of zero.
         long delta = (long)centeredExponent - ordinary.Exponent - 1;
         int shift = delta <= 0 ? 0 : delta >= 63 ? 63 : (int)delta;
         long x = ordinary.X >> shift, y = ordinary.Y >> shift, z = ordinary.Z >> shift;
         return x >= -1 && x <= 0 && y >= -1 && y <= 0 && z >= -1 && z <= 0;
     }
 
-    // Keep legacy sentinel semantics, including degenerate/NaN bounds, off the valid-cell path.
+    // Preserve Invalid's existing intersection behavior.
     [MethodImpl(MethodImplOptions.NoInlining)]
     private bool IntersectsInvalid(Cell other) => BoundingBox.Intersects(other.BoundingBox);
 

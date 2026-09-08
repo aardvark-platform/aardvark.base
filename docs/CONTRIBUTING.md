@@ -120,8 +120,7 @@ If a change needs a release-notes entry:
 1. Build succeeds (`./build.sh` or `.\build.cmd`)
 2. Relevant tests pass (prefer targeted `dotnet test ...`)
 3. Codegen rerun when templates changed
-4. Docs updated if behavior/API changed
-5. If docs changed, run `./check-docs.sh` or `.\check-docs.cmd`
+4. Unnecessary additions removed; necessary docs updated and checked (`./check-docs.sh` or `.\check-docs.cmd`)
 
 ## Docs Checker Failure Classes
 

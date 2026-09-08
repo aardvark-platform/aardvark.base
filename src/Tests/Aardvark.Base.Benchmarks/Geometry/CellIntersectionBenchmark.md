@@ -1,4 +1,4 @@
-# Exact cell-intersection benchmarks
+# Cell-intersection benchmarks
 
 Tracking: [#133](https://github.com/aardvark-platform/aardvark.base/issues/133).
 
@@ -8,24 +8,20 @@ dotnet run -c Release --project src/Tests/Aardvark.Base.Benchmarks -- \
   --warmupCount 8 --iterationCount 20 --iterationTime 1000 --buildTimeout 600
 ```
 
-The fixture compares the previous `Intersects` bodies at `d1e00e27` with the
-integer implementation. Baseline receivers are passed by readonly reference,
-matching the original instance methods; `BoundingBox` is unchanged. Each
-invocation processes the same 1,024 prebuilt pairs, alternating receiver order.
-Input generation and array allocation are outside timing. Reported time and
-allocations are per pair, not per batch.
+Baseline: `Intersects` at `d1e00e27`, with readonly-reference receivers matching
+the original instance methods. Both versions process the same 1,024 prebuilt pairs
+per invocation, alternating receiver order. Input generation and allocation are
+outside timing; results are per pair.
 
 - **Equal:** ordinary and centered self-intersections.
-- **Overlapping:** ordinary parents and children at ordinary representable scales.
+- **Overlapping:** ordinary parents and children at representable scales.
 - **Disjoint:** separated ordinary cells at the same exponent.
 - **Centered:** centered/centered and centered/ordinary hits and misses, including partial overlap.
-- **MixedScale:** large coordinates, underflow, overflow, saturated shifts and full-int-range exponent differences.
+- **MixedScale:** extreme coordinates and exponents.
 
-Mixed-scale answers intentionally differ where the previous floating-point
-implementation was incorrect. Correctness is checked independently by regression
-and BigInteger interval-oracle tests, not by requiring the two benchmark hit
-counts to agree. All benchmark pairs are valid cells; Invalid compatibility has
-separate characterization tests.
+`MixedScale` includes cases where the baseline is incorrect, so hit counts can
+differ. Correctness is checked by regression tests, not benchmark comparisons.
+All benchmark pairs are valid cells.
 
 ## Results
 
@@ -45,8 +41,4 @@ affinity, eight warmup iterations and twenty one-second target iterations:
 | Cell2d | Centered | 24.824 | 4.292 | 5.78x | 0 |
 | Cell2d | MixedScale | 24.150 | 3.464 | 6.97x | 0 |
 
-Non-equal queries improve 5.2–8.6x. Equality retains its fast path without a
-measured regression; its tiny differences should not be treated as substantial
-speedups. Every measured workload remains allocation-free. The final isolated
-run completed without BenchmarkDotNet warnings; shorter preliminary in-process
-iterations were insufficient for reliable equality-path comparisons.
+Small equality-case differences should not be interpreted as speedups.

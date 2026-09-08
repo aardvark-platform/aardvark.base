@@ -159,33 +159,13 @@ Semantics (`Ray3_auto.cs`, `FastRay3d.Intersects`):
 
 ## Hierarchical Cell Intersections
 
-`Cell.Intersects(Cell)` and `Cell2d.Intersects(Cell2d)` compare valid hierarchical
-cells exactly using integer grid coordinates and exponents. They do not convert
-valid cells to floating-point boxes, allocate memory, or add one to an Int64
-coordinate. The result remains exact across the full coordinate and exponent
-ranges, including sizes and locations outside double precision or range.
+`Cell.Intersects(Cell)` and `Cell2d.Intersects(Cell2d)` require positive volume
+or area overlap. Boundary-only contact does not count; a cell intersects itself.
 
-- An ordinary axis interval is mathematically `[i * 2^e, (i + 1) * 2^e)`;
-  centered-origin cells use `[-2^(e-1), 2^(e-1))` on every axis.
-- Intersection requires positive volume (`Cell`) or positive area (`Cell2d`).
-  Face-, edge-, and corner-only contacts are excluded. The query is symmetric,
-  and a cell intersects itself.
-- Ordinary grid cells either nest or have disjoint interiors. Align the smaller
-  cell to the larger exponent with arithmetic right shifts, then compare grid
-  coordinates. Exponent subtraction is widened before arithmetic, and shift
-  counts saturate at 63 rather than wrapping through C# shift masking.
-- Two centered-origin cells always overlap. A centered cell `C` overlaps an
-  ordinary cell `O` exactly when every coordinate of `O`, shifted right by
-  `clamp((long)C.Exponent - O.Exponent - 1, 0, 63)`, is either `-1` or `0`.
-  This includes partial overlap when neither cell contains the other.
-- The equality fast path includes `Invalid.Intersects(Invalid) == true`.
-  Other Invalid-sentinel pairs retain the previous bounding-box behavior through
-  a compatibility path, including degenerate and NaN bounds; Invalid is not
-  redefined as an empty cell. For example, it intersects a unit-size centered
-  cell but not the ordinary `Unit` cell.
+Centered-origin cells can intersect ordinary cells without either containing the other.
 
-This exactness guarantee is specific to `Intersects`. `Contains`, `BoundingBox`,
-constructors, and hierarchy operations retain their existing behavior.
+`Invalid` is not an empty cell: it intersects itself and a unit-size centered
+cell, but not `Unit`. Other pairs involving `Invalid` use `BoundingBox.Intersects`.
 
 ## Box/Plane Intersection
 
@@ -282,8 +262,8 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 
 ## Source Anchors
 
-- `src/Aardvark.Base/Math/RangesBoxes/Cell.cs` (`Cell.Intersects`, exact integer-grid overlap and Invalid compatibility)
-- `src/Aardvark.Base/Math/RangesBoxes/Cell2d.cs` (`Cell2d.Intersects`, exact integer-grid overlap and Invalid compatibility)
+- `src/Aardvark.Base/Math/RangesBoxes/Cell.cs` (`Cell.Intersects`)
+- `src/Aardvark.Base/Math/RangesBoxes/Cell2d.cs` (`Cell2d.Intersects`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`TransformPos`, `TransformDir`, `TransformPosProj`)
 - `src/Aardvark.Base/Math/Trafos/Trafo_auto.cs` (`Trafo3d`, `Forward`, `Backward`)
 - `src/Aardvark.Base/Geometry/IntersectionTests_auto.cs` (`Box3d.Intersects(Ray3d, out t)`, `Box2f`/`Box2d` plane intersections)
