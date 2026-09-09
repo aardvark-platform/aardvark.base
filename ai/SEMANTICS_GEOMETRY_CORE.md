@@ -14,6 +14,20 @@ For `M44d` and `Trafo3d`:
 
 Layout, multiplication side, interop conversion, and `Trafo3d` composition order are covered in `SEMANTICS_LINEAR_ALGEBRA.md`.
 
+## Linear Combinations
+
+For `V3f` and `V3d`, `IsLinearCombinationOf` treats zero bases as spanning only
+zero, and dependent nonzero bases as spanning their common line within the default
+parallelism tolerance. Coefficient queries return finite coefficients, or `false`
+with both outputs NaN. Dependent bases use the basis with the largest absolute
+component (first on ties), with the unused coefficient zero; two zero bases give
+zero coefficients for a zero target.
+
+For independent bases, the predicate tests whether `(u.Cross(v)).Dot(x)` is tiny.
+The coefficient overload instead tests whether the coefficient along `u.Cross(v)`
+is tiny. These scale-dependent tolerance checks are not interchangeable.
+All overloads are allocation-free.
+
 ## Intersection Receiver Conventions
 
 Which type carries the intersection method is fixed and not symmetric:
@@ -226,6 +240,8 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - Attributed boolean operations have no operators.
 
 ## Source Anchors
+
+- `src/Aardvark.Base/Geometry/Relations/LinearCombination_template.cs` / `LinearCombination_auto.cs` (`LinearCombination.IsLinearCombinationOf`)
 
 - `src/Aardvark.Base/Math/RangesBoxes/Cell.cs` (`Cell.Intersects`)
 - `src/Aardvark.Base/Math/RangesBoxes/Cell2d.cs` (`Cell2d.Intersects`)
