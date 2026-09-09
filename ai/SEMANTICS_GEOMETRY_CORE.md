@@ -32,6 +32,16 @@ var hit = RayHit3d.MaxRange;
 bool hitsTri = ray.Hits(triangle, 0.0, double.MaxValue, ref hit);
 ```
 
+## Triangle Bounding Volumes
+
+`Triangle2f`/`Triangle2d` bounding circles and `Triangle3f`/`Triangle3d` bounding
+spheres are smallest enclosing bounds, up to floating-point rounding. Right,
+obtuse and collinear triangles use a longest-edge diameter; coincident points
+have zero radius. Non-finite vertices return the matching `Invalid` sentinel.
+The radius accounts for the returned center's rounding so translated bounds
+still enclose their vertices. These properties are allocation-free and do not
+change the separate `CircumCircle` APIs.
+
 ## Circle3 Frame And Bounds
 
 `Circle3f` and `Circle3d` represent a circle by `Center`, a normalized `Normal`,
@@ -226,6 +236,9 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - Attributed boolean operations have no operators.
 
 ## Source Anchors
+
+- `src/Aardvark.Base/Geometry/Types/Triangle/Triangle2_template.cs` (`BoundingCircle2f`, `BoundingCircle2d` after generation)
+- `src/Aardvark.Base/Geometry/Types/Triangle/Triangle3_template.cs` (`BoundingSphere3f`, `BoundingSphere3d` after generation)
 
 - `src/Aardvark.Base/Math/RangesBoxes/Cell.cs` (`Cell.Intersects`)
 - `src/Aardvark.Base/Math/RangesBoxes/Cell2d.cs` (`Cell2d.Intersects`)
