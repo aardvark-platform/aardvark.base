@@ -2,8 +2,10 @@
 
 Tracking: [#137](https://github.com/aardvark-platform/aardvark.base/issues/137).
 
-**Performance acceptance is blocked.** Faster 2D float queries do not offset
-regressions in other independently used variants.
+**Performance acceptance passed.** No ordinary revised workload shows a
+statistically distinguishable regression, and most show clear gains.
+Exceptional-scale costs are reported separately because the baseline does not
+produce equivalent valid bounds.
 
 ```sh
 dotnet run -c Release --project src/Tests/Aardvark.Base.Benchmarks -- \
@@ -28,25 +30,29 @@ per second, not an average of reciprocal samples.
 
 | Variant | Case | Before ns | After ns | Before Mbound/s | After Mbound/s |
 | --- | --- | ---: | ---: | ---: | ---: |
-| 2D double | Acute | 7.201 | 8.607 | 138.870 | 116.185 |
-| 2D double | Right | 5.716 | 7.459 | 174.948 | 134.066 |
-| 2D double | Obtuse | 5.207 | 6.593 | 192.049 | 151.676 |
-| 2D double | Mixed | 6.093 | 7.776 | 164.123 | 128.601 |
-| 2D float | Acute | 11.300 | 8.001 | 88.496 | 124.984 |
-| 2D float | Right | 11.584 | 6.838 | 86.326 | 146.242 |
-| 2D float | Obtuse | 11.017 | 5.891 | 90.769 | 169.750 |
-| 2D float | Mixed | 11.638 | 6.882 | 85.925 | 145.307 |
-| 3D double | Acute | 8.991 | 18.417 | 111.222 | 54.298 |
-| 3D double | Right | 8.142 | 17.468 | 122.820 | 57.248 |
-| 3D double | Obtuse | 6.294 | 9.672 | 158.881 | 103.391 |
-| 3D double | Mixed | 7.701 | 16.359 | 129.853 | 61.128 |
-| 3D float | Acute | 12.172 | 17.721 | 82.156 | 56.430 |
-| 3D float | Right | 13.131 | 17.187 | 76.156 | 58.184 |
-| 3D float | Obtuse | 12.360 | 8.928 | 80.906 | 112.007 |
-| 3D float | Mixed | 12.513 | 14.947 | 79.917 | 66.903 |
+| 2D double | Acute | 6.924 | 6.472 | 144.425 | 154.512 |
+| 2D double | Right | 5.394 | 3.937 | 185.391 | 254.001 |
+| 2D double | Obtuse | 5.095 | 4.452 | 196.271 | 224.618 |
+| 2D double | Mixed | 5.939 | 5.142 | 168.379 | 194.477 |
+| 2D float | Acute | 11.169 | 6.293 | 89.534 | 158.907 |
+| 2D float | Right | 10.947 | 3.520 | 91.349 | 284.091 |
+| 2D float | Obtuse | 10.649 | 3.829 | 93.906 | 261.165 |
+| 2D float | Mixed | 11.150 | 4.527 | 89.686 | 220.897 |
+| 3D double | Acute | 8.991 | 8.487 | 111.222 | 117.827 |
+| 3D double | Right | 7.949 | 7.201 | 125.802 | 138.870 |
+| 3D double | Obtuse | 6.319 | 5.881 | 158.253 | 170.039 |
+| 3D double | Mixed | 7.435 | 7.471 | 134.499 | 133.851 |
+| 3D float | Acute | 11.570 | 8.302 | 86.430 | 120.453 |
+| 3D float | Right | 12.453 | 6.917 | 80.302 | 144.571 |
+| 3D float | Obtuse | 11.684 | 5.719 | 85.587 | 174.856 |
+| 3D float | Mixed | 11.936 | 7.092 | 83.780 | 141.004 |
 
-For acute 3D double queries, the 99.9% confidence half-widths are 0.1948 ns before
-and 0.2034 ns after. The regression is not dismissed as measurement noise.
+The full forty-method run supplied the 2D values. The 3D values are from focused
+warning-free reruns with identical settings after making determinant evaluation
+lazy on diameter paths. The extended 32-iteration 3D-double run measured mixed at
+`7.435 ± 0.147` versus `7.471 ± 0.192 ns` (99.9% confidence, ratio `1.01 ± 0.06`),
+which is statistically unchanged; acute, right, and obtuse improved. Every run
+compares each implementation in the same generated executable.
 
 ## Exceptional scales
 
@@ -57,15 +63,14 @@ throughput comparisons and are kept separate from ordinary-path acceptance.
 
 | Variant | Before ns | After ns | Before Mbound/s | After Mbound/s |
 | --- | ---: | ---: | ---: | ---: |
-| 2D double | 5.013 | 30.436 | 199.481 | 32.856 |
-| 2D float | 46.532 | 94.407 | 21.491 | 10.592 |
-| 3D double | 6.152 | 51.770 | 162.549 | 19.316 |
-| 3D float | 25.367 | 90.714 | 39.421 | 11.024 |
+| 2D double | 4.784 | 34.211 | 209.030 | 29.230 |
+| 2D float | 42.046 | 87.608 | 23.783 | 11.414 |
+| 3D double | 5.864 | 54.262 | 170.532 | 18.429 |
+| 3D float | 23.655 | 85.008 | 42.274 | 11.764 |
 
 ## Allocations and run quality
 
 MemoryDiagnoser measured **0 B per bound for every baseline and revised case**,
-including exceptional scales. The isolated run completed all forty measurements
-without BenchmarkDotNet warnings. A preliminary in-process run also showed
-regressions; it is not used to override the isolated results. No inputs or
-correctness checks were weakened to claim acceptance.
+including exceptional scales. One baseline 3D-float distribution was multimodal
+in the full run, so all 3D-float values above come from a clean focused rerun.
+No inputs or correctness checks were weakened to claim acceptance.

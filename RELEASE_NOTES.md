@@ -1,3 +1,4 @@
+- [Base] Corrected and accelerated scale-safe minimum triangle bounding circles and spheres
 - [Base] Fixed `Cell.Intersects` and `Cell2d.Intersects`
 - [Base] Corrected winding- and translation-stable 2D and 3D polygon centroids
 - [Base] Corrected complex magnitude, reciprocal, division, and square roots at extreme finite scales

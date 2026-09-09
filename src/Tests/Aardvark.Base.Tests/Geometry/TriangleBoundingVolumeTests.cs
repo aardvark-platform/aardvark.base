@@ -1,7 +1,6 @@
 using Aardvark.Base;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 
 namespace Aardvark.Tests.Geometry
 {
@@ -92,6 +91,31 @@ namespace Aardvark.Tests.Geometry
         }
 
         [TestCase(false, false), TestCase(false, true), TestCase(true, false), TestCase(true, true)]
+        public void RoundedTranslatedCentersEncloseEveryPermutation(bool three, bool single)
+        {
+            double origin = Math.Pow(2, single ? 23 : 52);
+            var shapes = new[]
+            {
+                new[] { V3d.Zero, V3d.Zero, V3d.XAxis },
+                new[] { V3d.Zero, V3d.YAxis, new V3d(3, 1, 0) },
+                new[] { V3d.Zero, new V3d(4, 0, 0), new V3d(2, 3, 0) }
+            };
+            var shift = new V3d(origin, origin, three ? origin : 0);
+            foreach (var shape in shapes)
+                foreach (var order in Permutations)
+                {
+                    var a = shift + shape[order[0]];
+                    var b = shift + shape[order[1]];
+                    var c = shift + shape[order[2]];
+                    var bound = Get(a, b, c, three, single);
+                    Assert.That(bound.Valid && bound.Center.IsFinite && double.IsFinite(bound.Radius), Is.True);
+                    ContainsAtTargetPrecision(bound, a, three, single);
+                    ContainsAtTargetPrecision(bound, b, three, single);
+                    ContainsAtTargetPrecision(bound, c, three, single);
+                }
+        }
+
+        [TestCase(false, false), TestCase(false, true), TestCase(true, false), TestCase(true, true)]
         public void NonFiniteInputsReturnInvalid(bool three, bool single)
         {
             foreach (double bad in new[] { double.NaN, double.PositiveInfinity, double.NegativeInfinity })
@@ -161,6 +185,9 @@ namespace Aardvark.Tests.Geometry
             Contains(result, a, scale, tolerance);
             Contains(result, b, scale, tolerance);
             Contains(result, c, scale, tolerance);
+            ContainsAtTargetPrecision(result, a, three, single);
+            ContainsAtTargetPrecision(result, b, three, single);
+            ContainsAtTargetPrecision(result, c, three, single);
         }
 
         private static void Contains((V3d Center, double Radius, bool Valid) bound, V3d point, double scale, double tolerance)
@@ -168,6 +195,22 @@ namespace Aardvark.Tests.Geometry
             var delta = point / scale - bound.Center / scale;
             Assert.That(Math.Sqrt(delta.X * delta.X + delta.Y * delta.Y + delta.Z * delta.Z),
                 Is.LessThanOrEqualTo(bound.Radius / scale + tolerance));
+        }
+
+        private static void ContainsAtTargetPrecision((V3d Center, double Radius, bool Valid) bound, V3d point, bool three, bool single)
+        {
+            double distance;
+            if (single)
+            {
+                var delta = (V3f)point - (V3f)bound.Center;
+                distance = three ? delta.Length : delta.XY.Length;
+            }
+            else
+            {
+                var delta = point - bound.Center;
+                distance = three ? delta.Length : delta.XY.Length;
+            }
+            if (double.IsFinite(distance)) Assert.That(distance, Is.LessThanOrEqualTo(bound.Radius));
         }
 
         // Bounded integer inputs only: enumerate diameter candidates, then solve the absolute

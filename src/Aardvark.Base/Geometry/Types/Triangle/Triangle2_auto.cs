@@ -136,27 +136,50 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var a = P1 - P0; var b = P2 - P0; var c = P2 - P1;
-                var aa = a.LengthSquared; var bb = b.LengthSquared; var cc = c.LengthSquared;
-                var sum = aa + bb + cc;
+                var a = P1 - P0; var b = P2 - P0;
+                var aa = BoundsDot(a, a); var ab = BoundsDot(a, b); var bb = BoundsDot(b, b);
+                var sum = aa + bb;
                 if (!(sum >= 1e-10f && sum <= 1e10f)) return BoundingCircleScaled();
-                var origin = P0; var d = a; var e = b; var f = c;
-                bool useE = bb <= cc;
-                if (bb > aa && bb >= cc) { d = b; e = a; f = -c; useE = aa <= cc; }
-                else if (cc > aa && cc > bb) { origin = P1; d = c; e = -a; f = -b; useE = aa <= bb; }
-                var offset = 0.5f * d;
-                var dot = e.Dot(f);
-                if (dot > 0)
+                // Large translations need exact radius reconstruction after center rounding.
+                if (BoundsDot(P0, P0) > 96 * sum) return BoundingCircleScaled();
+                if (ab <= 0) return BoundingCircleDiameter(P1, b - a);
+                else if (ab >= aa)
                 {
-                    var relative = useE ? e : f;
-                    var area = d.X * relative.Y - d.Y * relative.X;
-                    var t = dot / (2 * area);
-                    offset += new V2f(-d.Y * t, d.X * t);
+                    if (!(ab - aa <= 2e-6f * sum && (P0 - P1).Dot(P2 - P1) > 0))
+                        return BoundingCircleDiameter(P0, b);
                 }
-                var center = origin + offset;
-                var r2 = Fun.Max((center - P0).LengthSquared, (center - P1).LengthSquared, (center - P2).LengthSquared);
-                return new Circle2f(center, r2.Sqrt());
+                else if (ab >= bb)
+                {
+                    if (!(ab - bb <= 2e-6f * sum && (P0 - P2).Dot(P1 - P2) > 0))
+                        return BoundingCircleDiameter(P0, a);
+                }
+                var determinant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                if (!(determinant >= 0.1f * aa * bb)) return BoundingCircleScaled();
+                var scale = 0.5f / determinant;
+                var s = bb * (aa - ab) * scale;
+                var t = aa * (bb - ab) * scale;
+                var offset = new V2f(
+                    Fun.MultiplyAdd(t, b.X, s * a.X),
+                    Fun.MultiplyAdd(t, b.Y, s * a.Y));
+                var center = P0 + offset;
+                var roundedOffset = center - P0;
+                var radius = BoundsDot(roundedOffset, roundedOffset).Sqrt();
+                // The conditioned solve and translation guard bound roundoff; round the radius outward.
+                return new Circle2f(center, radius * 1.0000076f);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float BoundsDot(V2f a, V2f b)
+            => Fun.MultiplyAdd(a.X, b.X, a.Y * b.Y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Circle2f BoundingCircleDiameter(V2f origin, V2f edge)
+        {
+            var offset = 0.5f * edge;
+            var center = origin + offset;
+            var roundedOffset = center - origin;
+            return new Circle2f(center, BoundsDot(roundedOffset, roundedOffset).Sqrt() * 1.0000076f);
         }
 
         private readonly Circle2f BoundingCircleScaled()
@@ -198,7 +221,10 @@ namespace Aardvark.Base
             center.Y = Fun.Clamp(center.Y, Fun.Min(P0.Y, P1.Y, P2.Y), Fun.Max(P0.Y, P1.Y, P2.Y));
             var rounded = (V2f)center;
             double radius = Fun.Max(BoundsDistance((V2d)rounded, (V2d)P0), BoundsDistance((V2d)rounded, (V2d)P1), BoundsDistance((V2d)rounded, (V2d)P2));
-            return new Circle2f(rounded, (float)radius);
+            var resultRadius = (float)radius;
+            var directRadius = Fun.Max((rounded - P0).Length, (rounded - P1).Length, (rounded - P2).Length);
+            if (directRadius.IsFinite()) resultRadius = Fun.Max(resultRadius, directRadius);
+            return new Circle2f(rounded, resultRadius);
         }
 
         private static V2d DivideForBounds(V2d p, double scale)
@@ -428,27 +454,50 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var a = P1 - P0; var b = P2 - P0; var c = P2 - P1;
-                var aa = a.LengthSquared; var bb = b.LengthSquared; var cc = c.LengthSquared;
-                var sum = aa + bb + cc;
+                var a = P1 - P0; var b = P2 - P0;
+                var aa = BoundsDot(a, a); var ab = BoundsDot(a, b); var bb = BoundsDot(b, b);
+                var sum = aa + bb;
                 if (!(sum >= 1e-100 && sum <= 1e100)) return BoundingCircleScaled();
-                var origin = P0; var d = a; var e = b; var f = c;
-                bool useE = bb <= cc;
-                if (bb > aa && bb >= cc) { d = b; e = a; f = -c; useE = aa <= cc; }
-                else if (cc > aa && cc > bb) { origin = P1; d = c; e = -a; f = -b; useE = aa <= bb; }
-                var offset = 0.5 * d;
-                var dot = e.Dot(f);
-                if (dot > 0)
+                // Large translations need exact radius reconstruction after center rounding.
+                if (BoundsDot(P0, P0) > 96 * sum) return BoundingCircleScaled();
+                if (ab <= 0) return BoundingCircleDiameter(P1, b - a);
+                else if (ab >= aa)
                 {
-                    var relative = useE ? e : f;
-                    var area = d.X * relative.Y - d.Y * relative.X;
-                    var t = dot / (2 * area);
-                    offset += new V2d(-d.Y * t, d.X * t);
+                    if (!(ab - aa <= 4e-15 * sum && (P0 - P1).Dot(P2 - P1) > 0))
+                        return BoundingCircleDiameter(P0, b);
                 }
-                var center = origin + offset;
-                var r2 = Fun.Max((center - P0).LengthSquared, (center - P1).LengthSquared, (center - P2).LengthSquared);
-                return new Circle2d(center, r2.Sqrt());
+                else if (ab >= bb)
+                {
+                    if (!(ab - bb <= 4e-15 * sum && (P0 - P2).Dot(P1 - P2) > 0))
+                        return BoundingCircleDiameter(P0, a);
+                }
+                var determinant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                if (!(determinant >= 0.1 * aa * bb)) return BoundingCircleScaled();
+                var scale = 0.5 / determinant;
+                var s = bb * (aa - ab) * scale;
+                var t = aa * (bb - ab) * scale;
+                var offset = new V2d(
+                    Fun.MultiplyAdd(t, b.X, s * a.X),
+                    Fun.MultiplyAdd(t, b.Y, s * a.Y));
+                var center = P0 + offset;
+                var roundedOffset = center - P0;
+                var radius = BoundsDot(roundedOffset, roundedOffset).Sqrt();
+                // The conditioned solve and translation guard bound roundoff; round the radius outward.
+                return new Circle2d(center, radius * 1.0000000000000142);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double BoundsDot(V2d a, V2d b)
+            => Fun.MultiplyAdd(a.X, b.X, a.Y * b.Y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Circle2d BoundingCircleDiameter(V2d origin, V2d edge)
+        {
+            var offset = 0.5 * edge;
+            var center = origin + offset;
+            var roundedOffset = center - origin;
+            return new Circle2d(center, BoundsDot(roundedOffset, roundedOffset).Sqrt() * 1.0000000000000142);
         }
 
         private readonly Circle2d BoundingCircleScaled()
@@ -490,7 +539,10 @@ namespace Aardvark.Base
             center.Y = Fun.Clamp(center.Y, Fun.Min(P0.Y, P1.Y, P2.Y), Fun.Max(P0.Y, P1.Y, P2.Y));
             var rounded = (V2d)center;
             double radius = Fun.Max(BoundsDistance((V2d)rounded, (V2d)P0), BoundsDistance((V2d)rounded, (V2d)P1), BoundsDistance((V2d)rounded, (V2d)P2));
-            return new Circle2d(rounded, (double)radius);
+            var resultRadius = (double)radius;
+            var directRadius = Fun.Max((rounded - P0).Length, (rounded - P1).Length, (rounded - P2).Length);
+            if (directRadius.IsFinite()) resultRadius = Fun.Max(resultRadius, directRadius);
+            return new Circle2d(rounded, resultRadius);
         }
 
         private static V2d DivideForBounds(V2d p, double scale)
