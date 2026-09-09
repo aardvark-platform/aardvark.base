@@ -126,35 +126,117 @@ namespace Aardvark.Base
 
         #region IBoundingCircle2f Members
 
+        /// <summary>
+        /// Returns the smallest enclosing circle, using a longest-edge diameter for right,
+        /// obtuse or collinear triangles and zero radius for coincident points.
+        /// Non-finite points return Invalid. The radius accounts for rounding of the center.
+        /// </summary>
         public readonly Circle2f BoundingCircle2f
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var edge01 = P1 - P0;
-                var edge02 = P2 - P0;
-                float dot0101 = Vec.Dot(edge01, edge01);
-                float dot0102 = Vec.Dot(edge01, edge02);
-                float dot0202 = Vec.Dot(edge02, edge02);
-                float d = 2 * (dot0101 * dot0202 - dot0102 * dot0102);
-                if (d.Abs() <= 1e-4f) return Circle2f.Invalid;
-                float s = (dot0101 * dot0202 - dot0202 * dot0102) / d;
-                float t = (dot0202 * dot0101 - dot0101 * dot0102) / d;
-                var p = P0;
-                var cir = new Circle2f();
-                if (s <= 0)
-                    cir.Center = 0.5f * (P0 + P2);
-                else if (t <= 0)
-                    cir.Center = 0.5f * (P0 + P1);
-                else if (s + t >= 1)
+                var a = P1 - P0; var b = P2 - P0;
+                var aa = BoundsDot(a, a); var ab = BoundsDot(a, b); var bb = BoundsDot(b, b);
+                var sum = aa + bb;
+                if (!(sum >= 1e-10f && sum <= 1e10f)) return BoundingCircleScaled();
+                // Large translations need exact radius reconstruction after center rounding.
+                if (BoundsDot(P0, P0) > 96 * sum) return BoundingCircleScaled();
+                if (ab <= 0) return BoundingCircleDiameter(P1, b - a);
+                else if (ab >= aa)
                 {
-                    cir.Center = 0.5f * (P1 + P2);
-                    p = P1;
+                    if (!(ab - aa <= 2e-6f * sum && (P0 - P1).Dot(P2 - P1) > 0))
+                        return BoundingCircleDiameter(P0, b);
                 }
-                else
-                    cir.Center = P0 + s * edge01 + t * edge02;
-                cir.Radius = (cir.Center - p).Length;
-                return cir;
+                else if (ab >= bb)
+                {
+                    if (!(ab - bb <= 2e-6f * sum && (P0 - P2).Dot(P1 - P2) > 0))
+                        return BoundingCircleDiameter(P0, a);
+                }
+                var determinant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                if (!(determinant >= 0.1f * aa * bb)) return BoundingCircleScaled();
+                var scale = 0.5f / determinant;
+                var s = bb * (aa - ab) * scale;
+                var t = aa * (bb - ab) * scale;
+                var offset = new V2f(
+                    Fun.MultiplyAdd(t, b.X, s * a.X),
+                    Fun.MultiplyAdd(t, b.Y, s * a.Y));
+                var center = P0 + offset;
+                var roundedOffset = center - P0;
+                var radius = BoundsDot(roundedOffset, roundedOffset).Sqrt();
+                // The conditioned solve and translation guard bound roundoff; round the radius outward.
+                return new Circle2f(center, radius * 1.0000076f);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float BoundsDot(V2f a, V2f b)
+            => Fun.MultiplyAdd(a.X, b.X, a.Y * b.Y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Circle2f BoundingCircleDiameter(V2f origin, V2f edge)
+        {
+            var offset = 0.5f * edge;
+            var center = origin + offset;
+            var roundedOffset = center - origin;
+            return new Circle2f(center, BoundsDot(roundedOffset, roundedOffset).Sqrt() * 1.0000076f);
+        }
+
+        private readonly Circle2f BoundingCircleScaled()
+        {
+            var p0 = (V2d)P0; var p1 = (V2d)P1; var p2 = (V2d)P2;
+            if (!p0.IsFinite || !p1.IsFinite || !p2.IsFinite) return Circle2f.Invalid;
+            var a = p1 - p0; var b = p2 - p0; var c = p2 - p1;
+            bool scaledPoints = !a.IsFinite || !b.IsFinite || !c.IsFinite;
+            double scale;
+            if (scaledPoints)
+            {
+                scale = Fun.Max(p0.NormMax, p1.NormMax, p2.NormMax);
+                p0 = DivideForBounds(p0, scale); p1 = DivideForBounds(p1, scale); p2 = DivideForBounds(p2, scale);
+                a = p1 - p0; b = p2 - p0; c = p2 - p1;
+            }
+            else
+            {
+                scale = Fun.Max(a.NormMax, b.NormMax, c.NormMax);
+                if (scale == 0) return new Circle2f(P0, 0);
+                a = DivideForBounds(a, scale); b = DivideForBounds(b, scale); c = DivideForBounds(c, scale);
+            }
+            var aa = a.LengthSquared; var bb = b.LengthSquared; var cc = c.LengthSquared;
+            var origin = p0; var d = a; var e = b; var f = c;
+            bool useE = bb <= cc;
+            if (bb > aa && bb >= cc) { d = b; e = a; f = -c; useE = aa <= cc; }
+            else if (cc > aa && cc > bb) { origin = p1; d = c; e = -a; f = -b; useE = aa <= bb; }
+            var offset = 0.5 * d;
+            double dot = e.Dot(f);
+            var relative = useE ? e : f;
+            double area = d.X * relative.Y - d.Y * relative.X;
+            if (dot > 0 && area != 0)
+            {
+                double t = dot / (2 * area);
+                offset += new V2d(-d.Y * t, d.X * t);
+            }
+            var center = scaledPoints ? (origin + offset) * scale : origin + offset * scale;
+            // The minimum center lies in the convex hull; clamp only reconstruction roundoff.
+            center.X = Fun.Clamp(center.X, Fun.Min(P0.X, P1.X, P2.X), Fun.Max(P0.X, P1.X, P2.X));
+            center.Y = Fun.Clamp(center.Y, Fun.Min(P0.Y, P1.Y, P2.Y), Fun.Max(P0.Y, P1.Y, P2.Y));
+            var rounded = (V2f)center;
+            double radius = Fun.Max(BoundsDistance((V2d)rounded, (V2d)P0), BoundsDistance((V2d)rounded, (V2d)P1), BoundsDistance((V2d)rounded, (V2d)P2));
+            var resultRadius = (float)radius;
+            var directRadius = Fun.Max((rounded - P0).Length, (rounded - P1).Length, (rounded - P2).Length);
+            if (directRadius.IsFinite()) resultRadius = Fun.Max(resultRadius, directRadius);
+            return new Circle2f(rounded, resultRadius);
+        }
+
+        private static V2d DivideForBounds(V2d p, double scale)
+            => new V2d(p.X / scale, p.Y / scale);
+
+        private static double BoundsDistance(V2d a, V2d b)
+        {
+            var d = a - b;
+            double scale = d.NormMax;
+            if (scale == 0 || double.IsPositiveInfinity(scale)) return scale;
+            d = DivideForBounds(d, scale);
+            return scale * d.Length;
         }
 
         #endregion
@@ -362,35 +444,117 @@ namespace Aardvark.Base
 
         #region IBoundingCircle2d Members
 
+        /// <summary>
+        /// Returns the smallest enclosing circle, using a longest-edge diameter for right,
+        /// obtuse or collinear triangles and zero radius for coincident points.
+        /// Non-finite points return Invalid. The radius accounts for rounding of the center.
+        /// </summary>
         public readonly Circle2d BoundingCircle2d
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var edge01 = P1 - P0;
-                var edge02 = P2 - P0;
-                double dot0101 = Vec.Dot(edge01, edge01);
-                double dot0102 = Vec.Dot(edge01, edge02);
-                double dot0202 = Vec.Dot(edge02, edge02);
-                double d = 2 * (dot0101 * dot0202 - dot0102 * dot0102);
-                if (d.Abs() <= 1e-6) return Circle2d.Invalid;
-                double s = (dot0101 * dot0202 - dot0202 * dot0102) / d;
-                double t = (dot0202 * dot0101 - dot0101 * dot0102) / d;
-                var p = P0;
-                var cir = new Circle2d();
-                if (s <= 0)
-                    cir.Center = 0.5 * (P0 + P2);
-                else if (t <= 0)
-                    cir.Center = 0.5 * (P0 + P1);
-                else if (s + t >= 1)
+                var a = P1 - P0; var b = P2 - P0;
+                var aa = BoundsDot(a, a); var ab = BoundsDot(a, b); var bb = BoundsDot(b, b);
+                var sum = aa + bb;
+                if (!(sum >= 1e-100 && sum <= 1e100)) return BoundingCircleScaled();
+                // Large translations need exact radius reconstruction after center rounding.
+                if (BoundsDot(P0, P0) > 96 * sum) return BoundingCircleScaled();
+                if (ab <= 0) return BoundingCircleDiameter(P1, b - a);
+                else if (ab >= aa)
                 {
-                    cir.Center = 0.5 * (P1 + P2);
-                    p = P1;
+                    if (!(ab - aa <= 4e-15 * sum && (P0 - P1).Dot(P2 - P1) > 0))
+                        return BoundingCircleDiameter(P0, b);
                 }
-                else
-                    cir.Center = P0 + s * edge01 + t * edge02;
-                cir.Radius = (cir.Center - p).Length;
-                return cir;
+                else if (ab >= bb)
+                {
+                    if (!(ab - bb <= 4e-15 * sum && (P0 - P2).Dot(P1 - P2) > 0))
+                        return BoundingCircleDiameter(P0, a);
+                }
+                var determinant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                if (!(determinant >= 0.1 * aa * bb)) return BoundingCircleScaled();
+                var scale = 0.5 / determinant;
+                var s = bb * (aa - ab) * scale;
+                var t = aa * (bb - ab) * scale;
+                var offset = new V2d(
+                    Fun.MultiplyAdd(t, b.X, s * a.X),
+                    Fun.MultiplyAdd(t, b.Y, s * a.Y));
+                var center = P0 + offset;
+                var roundedOffset = center - P0;
+                var radius = BoundsDot(roundedOffset, roundedOffset).Sqrt();
+                // The conditioned solve and translation guard bound roundoff; round the radius outward.
+                return new Circle2d(center, radius * 1.0000000000000142);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double BoundsDot(V2d a, V2d b)
+            => Fun.MultiplyAdd(a.X, b.X, a.Y * b.Y);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Circle2d BoundingCircleDiameter(V2d origin, V2d edge)
+        {
+            var offset = 0.5 * edge;
+            var center = origin + offset;
+            var roundedOffset = center - origin;
+            return new Circle2d(center, BoundsDot(roundedOffset, roundedOffset).Sqrt() * 1.0000000000000142);
+        }
+
+        private readonly Circle2d BoundingCircleScaled()
+        {
+            var p0 = (V2d)P0; var p1 = (V2d)P1; var p2 = (V2d)P2;
+            if (!p0.IsFinite || !p1.IsFinite || !p2.IsFinite) return Circle2d.Invalid;
+            var a = p1 - p0; var b = p2 - p0; var c = p2 - p1;
+            bool scaledPoints = !a.IsFinite || !b.IsFinite || !c.IsFinite;
+            double scale;
+            if (scaledPoints)
+            {
+                scale = Fun.Max(p0.NormMax, p1.NormMax, p2.NormMax);
+                p0 = DivideForBounds(p0, scale); p1 = DivideForBounds(p1, scale); p2 = DivideForBounds(p2, scale);
+                a = p1 - p0; b = p2 - p0; c = p2 - p1;
+            }
+            else
+            {
+                scale = Fun.Max(a.NormMax, b.NormMax, c.NormMax);
+                if (scale == 0) return new Circle2d(P0, 0);
+                a = DivideForBounds(a, scale); b = DivideForBounds(b, scale); c = DivideForBounds(c, scale);
+            }
+            var aa = a.LengthSquared; var bb = b.LengthSquared; var cc = c.LengthSquared;
+            var origin = p0; var d = a; var e = b; var f = c;
+            bool useE = bb <= cc;
+            if (bb > aa && bb >= cc) { d = b; e = a; f = -c; useE = aa <= cc; }
+            else if (cc > aa && cc > bb) { origin = p1; d = c; e = -a; f = -b; useE = aa <= bb; }
+            var offset = 0.5 * d;
+            double dot = e.Dot(f);
+            var relative = useE ? e : f;
+            double area = d.X * relative.Y - d.Y * relative.X;
+            if (dot > 0 && area != 0)
+            {
+                double t = dot / (2 * area);
+                offset += new V2d(-d.Y * t, d.X * t);
+            }
+            var center = scaledPoints ? (origin + offset) * scale : origin + offset * scale;
+            // The minimum center lies in the convex hull; clamp only reconstruction roundoff.
+            center.X = Fun.Clamp(center.X, Fun.Min(P0.X, P1.X, P2.X), Fun.Max(P0.X, P1.X, P2.X));
+            center.Y = Fun.Clamp(center.Y, Fun.Min(P0.Y, P1.Y, P2.Y), Fun.Max(P0.Y, P1.Y, P2.Y));
+            var rounded = (V2d)center;
+            double radius = Fun.Max(BoundsDistance((V2d)rounded, (V2d)P0), BoundsDistance((V2d)rounded, (V2d)P1), BoundsDistance((V2d)rounded, (V2d)P2));
+            var resultRadius = (double)radius;
+            var directRadius = Fun.Max((rounded - P0).Length, (rounded - P1).Length, (rounded - P2).Length);
+            if (directRadius.IsFinite()) resultRadius = Fun.Max(resultRadius, directRadius);
+            return new Circle2d(rounded, resultRadius);
+        }
+
+        private static V2d DivideForBounds(V2d p, double scale)
+            => new V2d(p.X / scale, p.Y / scale);
+
+        private static double BoundsDistance(V2d a, V2d b)
+        {
+            var d = a - b;
+            double scale = d.NormMax;
+            if (scale == 0 || double.IsPositiveInfinity(scale)) return scale;
+            d = DivideForBounds(d, scale);
+            return scale * d.Length;
         }
 
         #endregion

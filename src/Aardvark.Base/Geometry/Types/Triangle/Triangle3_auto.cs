@@ -54,37 +54,129 @@ namespace Aardvark.Base
         #region IBoundingSphere3f Members
 
         /// <summary>
-        /// Returns the bounding sphere of the triangle.
+        /// Returns the smallest enclosing sphere, using a longest-edge diameter for right,
+        /// obtuse or collinear triangles and zero radius for coincident points.
+        /// Non-finite points return Invalid. The radius accounts for rounding of the center.
         /// </summary>
         public readonly Sphere3f BoundingSphere3f
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var edge01 = Edge01;
-                var edge02 = Edge02;
-                float dot0101 = Vec.Dot(edge01, edge01);
-                float dot0102 = Vec.Dot(edge01, edge02);
-                float dot0202 = Vec.Dot(edge02, edge02);
-                float d = 2 * (dot0101 * dot0202 - dot0102 * dot0102);
-                if (d.Abs() <= 1e-5f) return Sphere3f.Invalid;
-                float s = (dot0101 * dot0202 - dot0202 * dot0102) / d;
-                float t = (dot0202 * dot0101 - dot0101 * dot0102) / d;
-                var p = P0;
-                var sph = new Sphere3f();
-                if (s <= 0)
-                    sph.Center = 0.5f * (P0 + P2);
-                else if (t <= 0)
-                    sph.Center = 0.5f * (P0 + P1);
-                else if (s + t >= 1)
+                var a = P1 - P0; var b = P2 - P0;
+                var aa = a.LengthSquared; var ab = a.Dot(b); var bb = b.LengthSquared;
+                var sum = aa + bb;
+                if (!(sum >= 1e-10f && sum <= 1e10f)) return BoundingSphereScaled();
+                // Large translations need exact radius reconstruction after center rounding.
+                if (P0.LengthSquared > 96 * sum) return BoundingSphereScaled();
+                // A thin acute angle may round to right in the local dot products.
+                if (ab <= 0) return BoundingSphereDiameter(P1, b - a);
+                else if (ab >= aa)
                 {
-                    sph.Center = 0.5f * (P1 + P2);
-                    p = P1;
+                    if (ab - aa <= 2e-6f * sum)
+                    {
+                        var ambiguousDeterminant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                        if (!(ambiguousDeterminant >= 0.1f * aa * bb)) return BoundingSphereScaled();
+                    }
+                    return BoundingSphereDiameter(P0, b);
                 }
-                else
-                    sph.Center = P0 + s * edge01 + t * edge02;
-                sph.Radius = (sph.Center - p).Length;
-                return sph;
+                else if (ab >= bb)
+                {
+                    if (ab - bb <= 2e-6f * sum)
+                    {
+                        var ambiguousDeterminant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                        if (!(ambiguousDeterminant >= 0.1f * aa * bb)) return BoundingSphereScaled();
+                    }
+                    return BoundingSphereDiameter(P0, a);
+                }
+                var determinant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                if (!(determinant >= 0.1f * aa * bb)) return BoundingSphereScaled();
+                var scale = 0.5f / determinant;
+                var s = bb * (aa - ab) * scale;
+                var t = aa * (bb - ab) * scale;
+                var offset = new V3f(
+                    Fun.MultiplyAdd(t, b.X, s * a.X),
+                    Fun.MultiplyAdd(t, b.Y, s * a.Y),
+                    Fun.MultiplyAdd(t, b.Z, s * a.Z));
+                var center = P0 + offset;
+                var roundedOffset = center - P0;
+                var radius = roundedOffset.Length;
+                // The conditioned solve and translation guard bound roundoff; round the radius outward.
+                return new Sphere3f(center, radius * 1.0000076f);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Sphere3f BoundingSphereDiameter(V3f origin, V3f edge)
+        {
+            var offset = 0.5f * edge;
+            var center = origin + offset;
+            var roundedOffset = center - origin;
+            return new Sphere3f(center, roundedOffset.Length * 1.0000076f);
+        }
+
+        private readonly Sphere3f BoundingSphereScaled()
+        {
+            var p0 = (V3d)P0; var p1 = (V3d)P1; var p2 = (V3d)P2;
+            if (!p0.IsFinite || !p1.IsFinite || !p2.IsFinite) return Sphere3f.Invalid;
+            var a = p1 - p0; var b = p2 - p0; var c = p2 - p1;
+            bool scaledPoints = !a.IsFinite || !b.IsFinite || !c.IsFinite;
+            double scale;
+            if (scaledPoints)
+            {
+                scale = Fun.Max(p0.NormMax, p1.NormMax, p2.NormMax);
+                p0 = DivideForBounds(p0, scale); p1 = DivideForBounds(p1, scale); p2 = DivideForBounds(p2, scale);
+                a = p1 - p0; b = p2 - p0; c = p2 - p1;
+            }
+            else
+            {
+                scale = Fun.Max(a.NormMax, b.NormMax, c.NormMax);
+                if (scale == 0) return new Sphere3f(P0, 0);
+                a = DivideForBounds(a, scale); b = DivideForBounds(b, scale); c = DivideForBounds(c, scale);
+            }
+            var aa = a.LengthSquared; var bb = b.LengthSquared; var cc = c.LengthSquared;
+            var origin = p0; var d = a; var e = b; var f = c;
+            bool useE = bb <= cc;
+            if (bb > aa && bb >= cc) { d = b; e = a; f = -c; useE = aa <= cc; }
+            else if (cc > aa && cc > bb) { origin = p1; d = c; e = -a; f = -b; useE = aa <= bb; }
+            var offset = 0.5 * d;
+            double dot = e.Dot(f);
+            if (dot > 0)
+            {
+                var relative = useE ? e : f;
+                var n = d.Cross(relative);
+                double nm = n.NormMax;
+                if (nm > 0)
+                {
+                    // Normalize before the second cross product, avoiding a squared tiny normal.
+                    var perpendicular = DivideForBounds(n, nm).Cross(d);
+                    double denominator = 2 * perpendicular.Dot(relative);
+                    if (denominator != 0) offset += perpendicular * (dot / denominator);
+                }
+            }
+            var center = scaledPoints ? (origin + offset) * scale : origin + offset * scale;
+            // The minimum center lies in the convex hull; clamp only reconstruction roundoff.
+            center.X = Fun.Clamp(center.X, Fun.Min(P0.X, P1.X, P2.X), Fun.Max(P0.X, P1.X, P2.X));
+            center.Y = Fun.Clamp(center.Y, Fun.Min(P0.Y, P1.Y, P2.Y), Fun.Max(P0.Y, P1.Y, P2.Y));
+            center.Z = Fun.Clamp(center.Z, Fun.Min(P0.Z, P1.Z, P2.Z), Fun.Max(P0.Z, P1.Z, P2.Z));
+            var rounded = (V3f)center;
+            double radius = Fun.Max(BoundsDistance((V3d)rounded, (V3d)P0), BoundsDistance((V3d)rounded, (V3d)P1), BoundsDistance((V3d)rounded, (V3d)P2));
+            var resultRadius = (float)radius;
+            var directRadius = Fun.Max((rounded - P0).Length, (rounded - P1).Length, (rounded - P2).Length);
+            if (directRadius.IsFinite()) resultRadius = Fun.Max(resultRadius, directRadius);
+            return new Sphere3f(rounded, resultRadius);
+        }
+
+        private static V3d DivideForBounds(V3d p, double scale)
+            => new V3d(p.X / scale, p.Y / scale, p.Z / scale);
+
+        private static double BoundsDistance(V3d a, V3d b)
+        {
+            var d = a - b;
+            double scale = d.NormMax;
+            if (scale == 0 || double.IsPositiveInfinity(scale)) return scale;
+            d = DivideForBounds(d, scale);
+            return scale * d.Length;
         }
 
         #endregion
@@ -283,37 +375,129 @@ namespace Aardvark.Base
         #region IBoundingSphere3d Members
 
         /// <summary>
-        /// Returns the bounding sphere of the triangle.
+        /// Returns the smallest enclosing sphere, using a longest-edge diameter for right,
+        /// obtuse or collinear triangles and zero radius for coincident points.
+        /// Non-finite points return Invalid. The radius accounts for rounding of the center.
         /// </summary>
         public readonly Sphere3d BoundingSphere3d
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var edge01 = Edge01;
-                var edge02 = Edge02;
-                double dot0101 = Vec.Dot(edge01, edge01);
-                double dot0102 = Vec.Dot(edge01, edge02);
-                double dot0202 = Vec.Dot(edge02, edge02);
-                double d = 2 * (dot0101 * dot0202 - dot0102 * dot0102);
-                if (d.Abs() <= 1e-9) return Sphere3d.Invalid;
-                double s = (dot0101 * dot0202 - dot0202 * dot0102) / d;
-                double t = (dot0202 * dot0101 - dot0101 * dot0102) / d;
-                var p = P0;
-                var sph = new Sphere3d();
-                if (s <= 0)
-                    sph.Center = 0.5 * (P0 + P2);
-                else if (t <= 0)
-                    sph.Center = 0.5 * (P0 + P1);
-                else if (s + t >= 1)
+                var a = P1 - P0; var b = P2 - P0;
+                var aa = a.LengthSquared; var ab = a.Dot(b); var bb = b.LengthSquared;
+                var sum = aa + bb;
+                if (!(sum >= 1e-100 && sum <= 1e100)) return BoundingSphereScaled();
+                // Large translations need exact radius reconstruction after center rounding.
+                if (P0.LengthSquared > 96 * sum) return BoundingSphereScaled();
+                // A thin acute angle may round to right in the local dot products.
+                if (ab <= 0) return BoundingSphereDiameter(P1, b - a);
+                else if (ab >= aa)
                 {
-                    sph.Center = 0.5 * (P1 + P2);
-                    p = P1;
+                    if (ab - aa <= 4e-15 * sum)
+                    {
+                        var ambiguousDeterminant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                        if (!(ambiguousDeterminant >= 0.1 * aa * bb)) return BoundingSphereScaled();
+                    }
+                    return BoundingSphereDiameter(P0, b);
                 }
-                else
-                    sph.Center = P0 + s * edge01 + t * edge02;
-                sph.Radius = (sph.Center - p).Length;
-                return sph;
+                else if (ab >= bb)
+                {
+                    if (ab - bb <= 4e-15 * sum)
+                    {
+                        var ambiguousDeterminant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                        if (!(ambiguousDeterminant >= 0.1 * aa * bb)) return BoundingSphereScaled();
+                    }
+                    return BoundingSphereDiameter(P0, a);
+                }
+                var determinant = Fun.MultiplyAdd(aa, bb, -ab * ab);
+                if (!(determinant >= 0.1 * aa * bb)) return BoundingSphereScaled();
+                var scale = 0.5 / determinant;
+                var s = bb * (aa - ab) * scale;
+                var t = aa * (bb - ab) * scale;
+                var offset = new V3d(
+                    Fun.MultiplyAdd(t, b.X, s * a.X),
+                    Fun.MultiplyAdd(t, b.Y, s * a.Y),
+                    Fun.MultiplyAdd(t, b.Z, s * a.Z));
+                var center = P0 + offset;
+                var roundedOffset = center - P0;
+                var radius = roundedOffset.Length;
+                // The conditioned solve and translation guard bound roundoff; round the radius outward.
+                return new Sphere3d(center, radius * 1.0000000000000142);
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Sphere3d BoundingSphereDiameter(V3d origin, V3d edge)
+        {
+            var offset = 0.5 * edge;
+            var center = origin + offset;
+            var roundedOffset = center - origin;
+            return new Sphere3d(center, roundedOffset.Length * 1.0000000000000142);
+        }
+
+        private readonly Sphere3d BoundingSphereScaled()
+        {
+            var p0 = (V3d)P0; var p1 = (V3d)P1; var p2 = (V3d)P2;
+            if (!p0.IsFinite || !p1.IsFinite || !p2.IsFinite) return Sphere3d.Invalid;
+            var a = p1 - p0; var b = p2 - p0; var c = p2 - p1;
+            bool scaledPoints = !a.IsFinite || !b.IsFinite || !c.IsFinite;
+            double scale;
+            if (scaledPoints)
+            {
+                scale = Fun.Max(p0.NormMax, p1.NormMax, p2.NormMax);
+                p0 = DivideForBounds(p0, scale); p1 = DivideForBounds(p1, scale); p2 = DivideForBounds(p2, scale);
+                a = p1 - p0; b = p2 - p0; c = p2 - p1;
+            }
+            else
+            {
+                scale = Fun.Max(a.NormMax, b.NormMax, c.NormMax);
+                if (scale == 0) return new Sphere3d(P0, 0);
+                a = DivideForBounds(a, scale); b = DivideForBounds(b, scale); c = DivideForBounds(c, scale);
+            }
+            var aa = a.LengthSquared; var bb = b.LengthSquared; var cc = c.LengthSquared;
+            var origin = p0; var d = a; var e = b; var f = c;
+            bool useE = bb <= cc;
+            if (bb > aa && bb >= cc) { d = b; e = a; f = -c; useE = aa <= cc; }
+            else if (cc > aa && cc > bb) { origin = p1; d = c; e = -a; f = -b; useE = aa <= bb; }
+            var offset = 0.5 * d;
+            double dot = e.Dot(f);
+            if (dot > 0)
+            {
+                var relative = useE ? e : f;
+                var n = d.Cross(relative);
+                double nm = n.NormMax;
+                if (nm > 0)
+                {
+                    // Normalize before the second cross product, avoiding a squared tiny normal.
+                    var perpendicular = DivideForBounds(n, nm).Cross(d);
+                    double denominator = 2 * perpendicular.Dot(relative);
+                    if (denominator != 0) offset += perpendicular * (dot / denominator);
+                }
+            }
+            var center = scaledPoints ? (origin + offset) * scale : origin + offset * scale;
+            // The minimum center lies in the convex hull; clamp only reconstruction roundoff.
+            center.X = Fun.Clamp(center.X, Fun.Min(P0.X, P1.X, P2.X), Fun.Max(P0.X, P1.X, P2.X));
+            center.Y = Fun.Clamp(center.Y, Fun.Min(P0.Y, P1.Y, P2.Y), Fun.Max(P0.Y, P1.Y, P2.Y));
+            center.Z = Fun.Clamp(center.Z, Fun.Min(P0.Z, P1.Z, P2.Z), Fun.Max(P0.Z, P1.Z, P2.Z));
+            var rounded = (V3d)center;
+            double radius = Fun.Max(BoundsDistance((V3d)rounded, (V3d)P0), BoundsDistance((V3d)rounded, (V3d)P1), BoundsDistance((V3d)rounded, (V3d)P2));
+            var resultRadius = (double)radius;
+            var directRadius = Fun.Max((rounded - P0).Length, (rounded - P1).Length, (rounded - P2).Length);
+            if (directRadius.IsFinite()) resultRadius = Fun.Max(resultRadius, directRadius);
+            return new Sphere3d(rounded, resultRadius);
+        }
+
+        private static V3d DivideForBounds(V3d p, double scale)
+            => new V3d(p.X / scale, p.Y / scale, p.Z / scale);
+
+        private static double BoundsDistance(V3d a, V3d b)
+        {
+            var d = a - b;
+            double scale = d.NormMax;
+            if (scale == 0 || double.IsPositiveInfinity(scale)) return scale;
+            d = DivideForBounds(d, scale);
+            return scale * d.Length;
         }
 
         #endregion
