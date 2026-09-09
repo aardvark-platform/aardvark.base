@@ -2378,7 +2378,7 @@ namespace Aardvark.Base
 
         //# if (d == 2) {
         /// <summary>
-        /// Computes the signed angle between two given vectors in radians. The input vectors have to be normalized.
+        /// Computes the signed angle between two given vectors in radians. The input vectors do not have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ctype__ AngleBetweenSigned(this __vtype__ x, __vtype__ y)

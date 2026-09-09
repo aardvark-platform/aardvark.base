@@ -240,7 +240,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the signed angle between this and the given <see cref="__ray2t__"/> in radians.
-        /// The direction vectors of the input rays have to be normalized.
+        /// The direction vectors of the input rays do not have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ftype__ AngleBetweenSigned(__ray2t__ r)
