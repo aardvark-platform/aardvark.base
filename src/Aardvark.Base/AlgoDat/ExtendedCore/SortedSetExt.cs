@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -1944,8 +1945,8 @@ namespace Aardvark.Base
 
 
         /// <summary>
-        /// Returns a subset of this tree ranging from values lBound to uBound
-        /// Any changes made to the subset reflect in the actual tree
+        /// Returns a live view between the inclusive bounds in comparer order.
+        /// Changes to either the view or its underlying set are reflected in the other.
         /// </summary>
         /// <param name="lowerValue">Lowest Value allowed in the subset</param>
         /// <param name="upperValue">Highest Value allowed in the subset</param>        
@@ -1958,6 +1959,10 @@ namespace Aardvark.Base
             return new TreeSubSet(this, lowerValue, upperValue, true, true);
         }
 
+        /// <summary>
+        /// Finds the strict successor in comparer order, restricted to the current view bounds.
+        /// Reflects parent-set mutations; returns false and default(T) when absent.
+        /// </summary>
         public bool TryFindGreater(T lowerValue, out T result)
         {
             var tup = FindNeighbours(lowerValue);
@@ -1973,6 +1978,10 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Finds the strict predecessor in comparer order, restricted to the current view bounds.
+        /// Reflects parent-set mutations; returns false and default(T) when absent.
+        /// </summary>
         public bool TryFindSmaller(T upperValue, out T result)
         {
             var tup = FindNeighbours(upperValue);
@@ -1988,6 +1997,10 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Finds the strict predecessor, stored comparer-equal value and strict successor in comparer order.
+        /// View bounds are inclusive and reflect parent-set mutations; absent results are None.
+        /// </summary>
         public void FindNeighbours(T value, out Optional<T> lower, out Optional<T> self, out Optional<T> upper)
         {
             var tup = FindNeighbours(value);
@@ -2003,8 +2016,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Find the neighbours of the given value
-        /// returns (hasLower, hasValue, hasUpper) and the corresponding values in the out p
+        /// Finds the strict predecessor, stored comparer-equal value and strict successor in comparer order.
+        /// Returns their presence flags and values, using default(T) for absent results.
+        /// View bounds are inclusive and reflect parent-set mutations without recounting the view.
         /// </summary>
         public (bool, bool, bool) FindNeighboursV(T value, out T lower, out T self, out T upper)
         {
@@ -2055,6 +2069,8 @@ namespace Aardvark.Base
             //anything <=10 is added, but there is no upperbound. These features Head(), Tail(), were punted
             //in the spec, and are not available, but the framework is there to make them available at some point.
             private readonly bool _lBoundActive, _uBoundActive;
+            // Valid only while this view's version matches the underlying set.
+            private Node _firstInView, _lastInView;
             //used to see if the count is out of date            
 
 
@@ -2139,6 +2155,8 @@ namespace Aardvark.Base
                     toRemove.RemoveAt(toRemove.Count - 1);
                 }
                 _root = null;
+                _firstInView = null;
+                _lastInView = null;
                 _count = 0;
                 _version = _underlying._version;
             }
@@ -2250,6 +2268,112 @@ namespace Aardvark.Base
                 return true;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            internal override (Node, Node, Node) FindNeighbours(T item)
+            {
+                // Stale views search the live parent tree without triggering VersionCheck's recount.
+                int minOrder = _lBoundActive ? _comparer.Compare(item, _min) : 1;
+                if (minOrder < 0)
+                {
+                    Node first = _version == _underlying._version ? _firstInView : FindFirstInView();
+                    return (null, null, first);
+                }
+
+                int maxOrder = _uBoundActive ? _comparer.Compare(item, _max) : -1;
+                if (maxOrder > 0)
+                {
+                    Node last = _version == _underlying._version ? _lastInView : FindLastInView();
+                    return (last, null, null);
+                }
+
+                Node current = _underlying._root;
+                Node lower = null, self = null, upper = null;
+                while (current != null)
+                {
+                    int order = _comparer.Compare(item, current.Item);
+                    if (order != 0)
+                    {
+                        if (order > 0)
+                        {
+                            lower = current;
+                            current = current.Right;
+                        }
+                        else
+                        {
+                            upper = current;
+                            current = current.Left;
+                        }
+                    }
+                    else
+                    {
+                        self = current;
+                        if (minOrder > 0 && current.Left != null)
+                        {
+                            lower = current.Left;
+                            while (lower.Right != null) lower = lower.Right;
+                        }
+                        if (maxOrder < 0 && current.Right != null)
+                        {
+                            upper = current.Right;
+                            while (upper.Left != null) upper = upper.Left;
+                        }
+                        break;
+                    }
+                }
+
+                if (minOrder <= 0) lower = null;
+                else if (lower != null && _lBoundActive && _comparer.Compare(lower.Item, _min) < 0) lower = null;
+                if (maxOrder >= 0) upper = null;
+                else if (upper != null && _uBoundActive && _comparer.Compare(upper.Item, _max) > 0) upper = null;
+                return (lower, self, upper);
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private Node FindFirstInView()
+            {
+                Node current = _underlying._root;
+                Node first = null;
+                while (current != null)
+                {
+                    int order = _comparer.Compare(_min, current.Item);
+                    if (order == 0) return current;
+                    if (order < 0)
+                    {
+                        first = current;
+                        current = current.Left;
+                    }
+                    else
+                    {
+                        current = current.Right;
+                    }
+                }
+
+                return first != null && (!_uBoundActive || _comparer.Compare(first.Item, _max) <= 0) ? first : null;
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private Node FindLastInView()
+            {
+                Node current = _underlying._root;
+                Node last = null;
+                while (current != null)
+                {
+                    int order = _comparer.Compare(_max, current.Item);
+                    if (order == 0) return current;
+                    if (order > 0)
+                    {
+                        last = current;
+                        current = current.Right;
+                    }
+                    else
+                    {
+                        current = current.Left;
+                    }
+                }
+
+                return last != null && (!_lBoundActive || _comparer.Compare(last.Item, _min) >= 0) ? last : null;
+            }
+
             internal override SortedSetExt<T>.Node FindNode(T item)
             {
                 if (!IsWithinRange(item))
@@ -2295,7 +2419,15 @@ namespace Aardvark.Base
                     _root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive);
                     _version = _underlying._version;
                     _count = 0;
-                    InOrderTreeWalk(delegate (Node n) { _count++; return true; });
+                    _firstInView = null;
+                    _lastInView = null;
+                    InOrderTreeWalk(delegate (Node n)
+                    {
+                        if (_firstInView == null) _firstInView = n;
+                        _lastInView = n;
+                        _count++;
+                        return true;
+                    });
                 }
             }
 

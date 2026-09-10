@@ -95,11 +95,29 @@ set.Clear();
 set.UnionWith(other);
 ```
 
+## SortedSetExt<T> Neighbours
+
+Neighbour order follows the configured comparer, including descending comparers.
+`FindNeighbours` and `FindNeighboursV` return the strict predecessor, the actual
+stored comparer-equal value, and the strict successor. `TryFindSmaller` and
+`TryFindGreater` use the same lookup. Absent value outputs are `default(T)`;
+optional outputs are `None`.
+
+`GetViewBetween` has inclusive bounds. Neighbour queries see current parent-set
+contents, even after parent mutations, and queries outside the view return its
+nearest boundary-side element rather than an element outside the view. Lookup
+is logarithmic in parent-tree size and does not recount or enumerate the view.
+The value/try APIs allocate no managed memory. F# `SortedSet.neighbourhood`
+exposes the same results as options.
+
 ## SingleEntryDict
 
 `SingleEntryDict<TKey, TValue>` exists in `Symbol/Dicts.cs` and is optimized for one optional key/value entry. It supports normal `IDict<TKey, TValue>` lookup, removal, and re-adding the configured key after removal.
 
 ## Source Anchors
+
+- `src/Aardvark.Base/AlgoDat/ExtendedCore/SortedSetExt.cs`
+- `src/Aardvark.Base.FSharp/Utilities/Interop/SortedSet.fs`
 
 - `src/Aardvark.Base/Symbol/Symbol.cs`
 - `src/Aardvark.Base/Symbol/Dict_auto.cs`

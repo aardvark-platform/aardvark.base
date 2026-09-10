@@ -11,7 +11,35 @@ open System.Collections.Generic
 
 
 module SortedSetNeighbours =
-    
+
+    [<TestCase(false)>]
+    [<TestCase(true)>]
+    let ``[SortedSet] live bounded neighbourhood`` (descending : bool) =
+        let comparer = Comparer<int>.Create(fun a b -> if descending then compare b a else compare a b)
+        let parent = SortedSetExt<int>(seq { 1 .. 7 }, comparer)
+        let view = parent.GetViewBetween((if descending then 5 else 3), (if descending then 3 else 5))
+        let nested = view.GetViewBetween(4, 4)
+        let check query expected = SortedSet.neighbourhood query view |> should equal expected
+        if descending then
+            check 0 (Some 3, None, None)
+            check 3 (Some 4, Some 3, None)
+            check 5 (None, Some 5, Some 4)
+            check 8 (None, None, Some 5)
+        else
+            check 0 (None, None, Some 3)
+            check 3 (None, Some 3, Some 4)
+            check 5 (Some 4, Some 5, None)
+            check 8 (Some 5, None, None)
+        parent.Clear()
+        check 4 (None, None, None)
+        SortedSet.neighbourhood 4 nested |> should equal (None, None, None)
+        parent.Add 4 |> ignore
+        parent.Add 3 |> ignore
+        parent.Add 5 |> ignore
+        check 4 (Some (if descending then 5 else 3), Some 4, Some (if descending then 3 else 5))
+        SortedSet.neighbourhood 4 nested |> should equal (None, Some 4, None)
+        parent.Remove 4 |> ignore
+        SortedSet.neighbourhood 4 nested |> should equal (None, None, None)
 
     [<Test>]
     let ``[SortedDict] neighbours``() =
