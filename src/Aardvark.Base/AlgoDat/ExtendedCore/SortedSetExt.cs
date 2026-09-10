@@ -2069,6 +2069,8 @@ namespace Aardvark.Base
             //anything <=10 is added, but there is no upperbound. These features Head(), Tail(), were punted
             //in the spec, and are not available, but the framework is there to make them available at some point.
             private readonly bool _lBoundActive, _uBoundActive;
+            // Valid only while this view's version matches the underlying set.
+            private Node _firstInView, _lastInView;
             //used to see if the count is out of date            
 
 
@@ -2153,6 +2155,8 @@ namespace Aardvark.Base
                     toRemove.RemoveAt(toRemove.Count - 1);
                 }
                 _root = null;
+                _firstInView = null;
+                _lastInView = null;
                 _count = 0;
                 _version = _underlying._version;
             }
@@ -2267,30 +2271,41 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             internal override (Node, Node, Node) FindNeighbours(T item)
             {
-                // VersionCheck refreshes and recounts the view. Neighbours need only the live parent tree.
+                // Stale views search the live parent tree without triggering VersionCheck's recount.
                 int minOrder = _lBoundActive ? _comparer.Compare(item, _min) : 1;
-                int maxOrder = minOrder >= 0 && _uBoundActive ? _comparer.Compare(item, _max) : -1;
-                T key = minOrder < 0 ? _min : maxOrder > 0 ? _max : item;
+                if (minOrder < 0)
+                {
+                    Node first = _version == _underlying._version ? _firstInView : FindFirstInView();
+                    return (null, null, first);
+                }
+
+                int maxOrder = _uBoundActive ? _comparer.Compare(item, _max) : -1;
+                if (maxOrder > 0)
+                {
+                    Node last = _version == _underlying._version ? _lastInView : FindLastInView();
+                    return (last, null, null);
+                }
+
                 Node current = _underlying._root;
                 Node lower = null, self = null, upper = null;
                 while (current != null)
                 {
-                    int order = _comparer.Compare(key, current.Item);
-                    if (order < 0)
+                    int order = _comparer.Compare(item, current.Item);
+                    if (order != 0)
                     {
-                        upper = current;
-                        current = current.Left;
-                    }
-                    else if (order > 0)
-                    {
-                        lower = current;
-                        current = current.Right;
+                        if (order > 0)
+                        {
+                            lower = current;
+                            current = current.Right;
+                        }
+                        else
+                        {
+                            upper = current;
+                            current = current.Left;
+                        }
                     }
                     else
                     {
-                        // An inclusive boundary match already answers an outside query.
-                        if (minOrder < 0) return (null, null, current);
-                        if (maxOrder > 0) return (current, null, null);
                         self = current;
                         if (minOrder > 0 && current.Left != null)
                         {
@@ -2305,11 +2320,58 @@ namespace Aardvark.Base
                         break;
                     }
                 }
+
                 if (minOrder <= 0) lower = null;
+                else if (lower != null && _lBoundActive && _comparer.Compare(lower.Item, _min) < 0) lower = null;
                 if (maxOrder >= 0) upper = null;
-                if (lower != null && _lBoundActive && _comparer.Compare(lower.Item, _min) < 0) lower = null;
-                if (upper != null && _uBoundActive && _comparer.Compare(upper.Item, _max) > 0) upper = null;
+                else if (upper != null && _uBoundActive && _comparer.Compare(upper.Item, _max) > 0) upper = null;
                 return (lower, self, upper);
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private Node FindFirstInView()
+            {
+                Node current = _underlying._root;
+                Node first = null;
+                while (current != null)
+                {
+                    int order = _comparer.Compare(_min, current.Item);
+                    if (order == 0) return current;
+                    if (order < 0)
+                    {
+                        first = current;
+                        current = current.Left;
+                    }
+                    else
+                    {
+                        current = current.Right;
+                    }
+                }
+
+                return first != null && (!_uBoundActive || _comparer.Compare(first.Item, _max) <= 0) ? first : null;
+            }
+
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            private Node FindLastInView()
+            {
+                Node current = _underlying._root;
+                Node last = null;
+                while (current != null)
+                {
+                    int order = _comparer.Compare(_max, current.Item);
+                    if (order == 0) return current;
+                    if (order > 0)
+                    {
+                        last = current;
+                        current = current.Right;
+                    }
+                    else
+                    {
+                        current = current.Left;
+                    }
+                }
+
+                return last != null && (!_lBoundActive || _comparer.Compare(last.Item, _min) >= 0) ? last : null;
             }
 
             internal override SortedSetExt<T>.Node FindNode(T item)
@@ -2357,7 +2419,15 @@ namespace Aardvark.Base
                     _root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive);
                     _version = _underlying._version;
                     _count = 0;
-                    InOrderTreeWalk(delegate (Node n) { _count++; return true; });
+                    _firstInView = null;
+                    _lastInView = null;
+                    InOrderTreeWalk(delegate (Node n)
+                    {
+                        if (_firstInView == null) _firstInView = n;
+                        _lastInView = n;
+                        _count++;
+                        return true;
+                    });
                 }
             }
 

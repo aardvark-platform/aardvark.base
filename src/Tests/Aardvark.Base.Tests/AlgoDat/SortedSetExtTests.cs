@@ -59,6 +59,27 @@ namespace Aardvark.Tests.AlgoDat
             parent.UnionWith(new[] { 0, 3, 5, 8 }); Verify(3, 5);
         }
 
+        [TestCase(false), TestCase(true)]
+        public void RefreshedBoundaryCacheTracksParentChanges(bool descending)
+        {
+            var comparer = Order(descending);
+            var parent = new SortedSetExt<int>(Enumerable.Range(1, 7), comparer);
+            var view = parent.GetViewBetween(descending ? 5 : 3, descending ? 3 : 5);
+
+            parent.Remove(3);
+            parent.Remove(5);
+            Assert.That(view.Count, Is.EqualTo(1));
+            foreach (int query in new[] { 0, 4, 8 }) CheckReference(view, query, new[] { 4 }, comparer);
+
+            parent.Clear();
+            Assert.That(view.Count, Is.Zero);
+            foreach (int query in new[] { 0, 4, 8 }) CheckReference(view, query, Array.Empty<int>(), comparer);
+
+            parent.UnionWith(new[] { 3, 5 });
+            Assert.That(view.Count, Is.EqualTo(2));
+            foreach (int query in new[] { 0, 3, 4, 5, 8 }) CheckReference(view, query, new[] { 3, 5 }, comparer);
+        }
+
         private sealed class Item
         {
             public readonly int Key;
