@@ -401,47 +401,53 @@ module RangeSet1i =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1i) = set.Range
 
-    let inline private getHalfRanges (r : Range1i) =
-        [ struct (r.Min, HalfRangeKind.Left)
-          if r.Max < Int32.MaxValue then struct (r.Max + 1, HalfRangeKind.Right) ]
-
-    let inline private ofRange (r : Range1i) =
-        RangeSet1i(MapExt.ofListV <| getHalfRanges r)
-
-    let private ofRanges (ranges : seq<Range1i>) =
-        let halves =
-            ranges
-            |> Seq.toList
-            |> List.collect getHalfRanges
-            |> List.sortBy fstv
-
-        let mutable level = 0
-        let result = ResizeArray()
-
-        for (struct (i, k) as h) in halves do
-            if k = HalfRangeKind.Left then
-                if level = 0 then result.Add h
-                level <- level + 1
+    let private ofRange (r : Range1i) =
+        if r.Max < r.Min then empty
+        else
+            let store = MapExt.singleton r.Min HalfRangeKind.Left
+            if r.Max < Int32.MaxValue then
+                RangeSet1i(MapExt.add (r.Max + 1) HalfRangeKind.Right store)
             else
-                level <- level - 1
-                if level = 0 then result.Add h
+                RangeSet1i(store)
 
-        RangeSet1i(MapExt.ofSeqV result)
+    // The buffer is owned by this constructor; never sort caller storage in place.
+    let private ofRanges (ranges : Range1i[]) =
+        Array.sortInPlaceWith (fun (l : Range1i) (r : Range1i) -> compare l.Min r.Min) ranges
+        let mutable store = MapExt.empty
+        let mutable hasRange = false
+        let mutable max = Int32.MinValue
 
-    /// Builds a range set of the given list of ranges.
+        for r in ranges do
+            if r.Max >= r.Min then
+                if hasRange && (r.Min <= max || (max < Int32.MaxValue && r.Min = max + 1)) then
+                    if r.Max > max then max <- r.Max
+                else
+                    // A disjoint next interval implies max < MaxValue and a unique right boundary.
+                    if hasRange then store <- MapExt.add (max + 1) HalfRangeKind.Right store
+                    store <- MapExt.add r.Min HalfRangeKind.Left store
+                    max <- r.Max
+                    hasRange <- true
+
+        if not hasRange then empty
+        else
+            // A missing final right boundary represents the closed endpoint MaxValue.
+            if max < Int32.MaxValue then store <- MapExt.add (max + 1) HalfRangeKind.Right store
+            RangeSet1i(store)
+
+    /// Builds the union of closed ranges, ignoring inverted ranges and coalescing overlap and adjacency.
     let ofList (ranges : Range1i list) =
         match ranges with
         | [] -> empty
         | [r] -> ofRange r
-        | _ -> ofRanges ranges
+        | _ -> ofRanges (List.toArray ranges)
 
-    /// Builds a range set of the given array of ranges.
+    /// Builds the union of closed ranges without modifying the array; inverted ranges are ignored.
     let ofArray (ranges : Range1i[]) =
         if ranges.Length = 0 then empty
         elif ranges.Length = 1 then ofRange ranges.[0]
-        else ofRanges ranges
+        else ofRanges (Array.copy ranges)
 
-    /// Builds a range set of the given sequence of ranges.
+    /// Enumerates the input once and builds its closed-interval union, ignoring inverted ranges.
     let inline ofSeq (ranges : seq<Range1i>) =
         ofList <| Seq.toList ranges
 
@@ -848,47 +854,53 @@ module RangeSet1ui =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1ui) = set.Range
 
-    let inline private getHalfRanges (r : Range1ui) =
-        [ struct (r.Min, HalfRangeKind.Left)
-          if r.Max < UInt32.MaxValue then struct (r.Max + 1u, HalfRangeKind.Right) ]
-
-    let inline private ofRange (r : Range1ui) =
-        RangeSet1ui(MapExt.ofListV <| getHalfRanges r)
-
-    let private ofRanges (ranges : seq<Range1ui>) =
-        let halves =
-            ranges
-            |> Seq.toList
-            |> List.collect getHalfRanges
-            |> List.sortBy fstv
-
-        let mutable level = 0
-        let result = ResizeArray()
-
-        for (struct (i, k) as h) in halves do
-            if k = HalfRangeKind.Left then
-                if level = 0 then result.Add h
-                level <- level + 1
+    let private ofRange (r : Range1ui) =
+        if r.Max < r.Min then empty
+        else
+            let store = MapExt.singleton r.Min HalfRangeKind.Left
+            if r.Max < UInt32.MaxValue then
+                RangeSet1ui(MapExt.add (r.Max + 1u) HalfRangeKind.Right store)
             else
-                level <- level - 1
-                if level = 0 then result.Add h
+                RangeSet1ui(store)
 
-        RangeSet1ui(MapExt.ofSeqV result)
+    // The buffer is owned by this constructor; never sort caller storage in place.
+    let private ofRanges (ranges : Range1ui[]) =
+        Array.sortInPlaceWith (fun (l : Range1ui) (r : Range1ui) -> compare l.Min r.Min) ranges
+        let mutable store = MapExt.empty
+        let mutable hasRange = false
+        let mutable max = UInt32.MinValue
 
-    /// Builds a range set of the given list of ranges.
+        for r in ranges do
+            if r.Max >= r.Min then
+                if hasRange && (r.Min <= max || (max < UInt32.MaxValue && r.Min = max + 1u)) then
+                    if r.Max > max then max <- r.Max
+                else
+                    // A disjoint next interval implies max < MaxValue and a unique right boundary.
+                    if hasRange then store <- MapExt.add (max + 1u) HalfRangeKind.Right store
+                    store <- MapExt.add r.Min HalfRangeKind.Left store
+                    max <- r.Max
+                    hasRange <- true
+
+        if not hasRange then empty
+        else
+            // A missing final right boundary represents the closed endpoint MaxValue.
+            if max < UInt32.MaxValue then store <- MapExt.add (max + 1u) HalfRangeKind.Right store
+            RangeSet1ui(store)
+
+    /// Builds the union of closed ranges, ignoring inverted ranges and coalescing overlap and adjacency.
     let ofList (ranges : Range1ui list) =
         match ranges with
         | [] -> empty
         | [r] -> ofRange r
-        | _ -> ofRanges ranges
+        | _ -> ofRanges (List.toArray ranges)
 
-    /// Builds a range set of the given array of ranges.
+    /// Builds the union of closed ranges without modifying the array; inverted ranges are ignored.
     let ofArray (ranges : Range1ui[]) =
         if ranges.Length = 0 then empty
         elif ranges.Length = 1 then ofRange ranges.[0]
-        else ofRanges ranges
+        else ofRanges (Array.copy ranges)
 
-    /// Builds a range set of the given sequence of ranges.
+    /// Enumerates the input once and builds its closed-interval union, ignoring inverted ranges.
     let inline ofSeq (ranges : seq<Range1ui>) =
         ofList <| Seq.toList ranges
 
@@ -1295,47 +1307,53 @@ module RangeSet1l =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1l) = set.Range
 
-    let inline private getHalfRanges (r : Range1l) =
-        [ struct (r.Min, HalfRangeKind.Left)
-          if r.Max < Int64.MaxValue then struct (r.Max + 1L, HalfRangeKind.Right) ]
-
-    let inline private ofRange (r : Range1l) =
-        RangeSet1l(MapExt.ofListV <| getHalfRanges r)
-
-    let private ofRanges (ranges : seq<Range1l>) =
-        let halves =
-            ranges
-            |> Seq.toList
-            |> List.collect getHalfRanges
-            |> List.sortBy fstv
-
-        let mutable level = 0
-        let result = ResizeArray()
-
-        for (struct (i, k) as h) in halves do
-            if k = HalfRangeKind.Left then
-                if level = 0 then result.Add h
-                level <- level + 1
+    let private ofRange (r : Range1l) =
+        if r.Max < r.Min then empty
+        else
+            let store = MapExt.singleton r.Min HalfRangeKind.Left
+            if r.Max < Int64.MaxValue then
+                RangeSet1l(MapExt.add (r.Max + 1L) HalfRangeKind.Right store)
             else
-                level <- level - 1
-                if level = 0 then result.Add h
+                RangeSet1l(store)
 
-        RangeSet1l(MapExt.ofSeqV result)
+    // The buffer is owned by this constructor; never sort caller storage in place.
+    let private ofRanges (ranges : Range1l[]) =
+        Array.sortInPlaceWith (fun (l : Range1l) (r : Range1l) -> compare l.Min r.Min) ranges
+        let mutable store = MapExt.empty
+        let mutable hasRange = false
+        let mutable max = Int64.MinValue
 
-    /// Builds a range set of the given list of ranges.
+        for r in ranges do
+            if r.Max >= r.Min then
+                if hasRange && (r.Min <= max || (max < Int64.MaxValue && r.Min = max + 1L)) then
+                    if r.Max > max then max <- r.Max
+                else
+                    // A disjoint next interval implies max < MaxValue and a unique right boundary.
+                    if hasRange then store <- MapExt.add (max + 1L) HalfRangeKind.Right store
+                    store <- MapExt.add r.Min HalfRangeKind.Left store
+                    max <- r.Max
+                    hasRange <- true
+
+        if not hasRange then empty
+        else
+            // A missing final right boundary represents the closed endpoint MaxValue.
+            if max < Int64.MaxValue then store <- MapExt.add (max + 1L) HalfRangeKind.Right store
+            RangeSet1l(store)
+
+    /// Builds the union of closed ranges, ignoring inverted ranges and coalescing overlap and adjacency.
     let ofList (ranges : Range1l list) =
         match ranges with
         | [] -> empty
         | [r] -> ofRange r
-        | _ -> ofRanges ranges
+        | _ -> ofRanges (List.toArray ranges)
 
-    /// Builds a range set of the given array of ranges.
+    /// Builds the union of closed ranges without modifying the array; inverted ranges are ignored.
     let ofArray (ranges : Range1l[]) =
         if ranges.Length = 0 then empty
         elif ranges.Length = 1 then ofRange ranges.[0]
-        else ofRanges ranges
+        else ofRanges (Array.copy ranges)
 
-    /// Builds a range set of the given sequence of ranges.
+    /// Enumerates the input once and builds its closed-interval union, ignoring inverted ranges.
     let inline ofSeq (ranges : seq<Range1l>) =
         ofList <| Seq.toList ranges
 
@@ -1742,47 +1760,53 @@ module RangeSet1ul =
     /// Returns the total range spanned by the range set, i.e. [min, max].
     let inline range (set : RangeSet1ul) = set.Range
 
-    let inline private getHalfRanges (r : Range1ul) =
-        [ struct (r.Min, HalfRangeKind.Left)
-          if r.Max < UInt64.MaxValue then struct (r.Max + 1UL, HalfRangeKind.Right) ]
-
-    let inline private ofRange (r : Range1ul) =
-        RangeSet1ul(MapExt.ofListV <| getHalfRanges r)
-
-    let private ofRanges (ranges : seq<Range1ul>) =
-        let halves =
-            ranges
-            |> Seq.toList
-            |> List.collect getHalfRanges
-            |> List.sortBy fstv
-
-        let mutable level = 0
-        let result = ResizeArray()
-
-        for (struct (i, k) as h) in halves do
-            if k = HalfRangeKind.Left then
-                if level = 0 then result.Add h
-                level <- level + 1
+    let private ofRange (r : Range1ul) =
+        if r.Max < r.Min then empty
+        else
+            let store = MapExt.singleton r.Min HalfRangeKind.Left
+            if r.Max < UInt64.MaxValue then
+                RangeSet1ul(MapExt.add (r.Max + 1UL) HalfRangeKind.Right store)
             else
-                level <- level - 1
-                if level = 0 then result.Add h
+                RangeSet1ul(store)
 
-        RangeSet1ul(MapExt.ofSeqV result)
+    // The buffer is owned by this constructor; never sort caller storage in place.
+    let private ofRanges (ranges : Range1ul[]) =
+        Array.sortInPlaceWith (fun (l : Range1ul) (r : Range1ul) -> compare l.Min r.Min) ranges
+        let mutable store = MapExt.empty
+        let mutable hasRange = false
+        let mutable max = UInt64.MinValue
 
-    /// Builds a range set of the given list of ranges.
+        for r in ranges do
+            if r.Max >= r.Min then
+                if hasRange && (r.Min <= max || (max < UInt64.MaxValue && r.Min = max + 1UL)) then
+                    if r.Max > max then max <- r.Max
+                else
+                    // A disjoint next interval implies max < MaxValue and a unique right boundary.
+                    if hasRange then store <- MapExt.add (max + 1UL) HalfRangeKind.Right store
+                    store <- MapExt.add r.Min HalfRangeKind.Left store
+                    max <- r.Max
+                    hasRange <- true
+
+        if not hasRange then empty
+        else
+            // A missing final right boundary represents the closed endpoint MaxValue.
+            if max < UInt64.MaxValue then store <- MapExt.add (max + 1UL) HalfRangeKind.Right store
+            RangeSet1ul(store)
+
+    /// Builds the union of closed ranges, ignoring inverted ranges and coalescing overlap and adjacency.
     let ofList (ranges : Range1ul list) =
         match ranges with
         | [] -> empty
         | [r] -> ofRange r
-        | _ -> ofRanges ranges
+        | _ -> ofRanges (List.toArray ranges)
 
-    /// Builds a range set of the given array of ranges.
+    /// Builds the union of closed ranges without modifying the array; inverted ranges are ignored.
     let ofArray (ranges : Range1ul[]) =
         if ranges.Length = 0 then empty
         elif ranges.Length = 1 then ofRange ranges.[0]
-        else ofRanges ranges
+        else ofRanges (Array.copy ranges)
 
-    /// Builds a range set of the given sequence of ranges.
+    /// Enumerates the input once and builds its closed-interval union, ignoring inverted ranges.
     let inline ofSeq (ranges : seq<Range1ul>) =
         ofList <| Seq.toList ranges
 

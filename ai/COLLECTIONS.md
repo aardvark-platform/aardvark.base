@@ -95,6 +95,23 @@ set.Clear();
 set.UnionWith(other);
 ```
 
+## Integer Range Sets
+
+`RangeSet1i`, `RangeSet1ui`, `RangeSet1l`, and `RangeSet1ul` represent unions of
+closed integer intervals. `ofList`, `ofArray`, and `ofSeq` ignore intervals with
+`Max < Min`, including `Invalid`, and coalesce overlaps and adjacency regardless
+of input order. Duplicate and nested intervals do not add extra ranges.
+
+Construction owns its sorting buffer: caller arrays are never reordered or
+retained, and sequence inputs are enumerated once. Empty and singleton inputs
+retain fast paths. Bulk construction takes `O(n log n)` time and `O(n)` peak
+auxiliary space; it sorts intervals and emits unique alternating boundaries.
+A terminal `MaxValue` is represented implicitly, without computing `MaxValue + 1`.
+
+Enumeration, `ToArray`, and `ToList` return maximal disjoint intervals in ascending
+order. `Count` counts those intervals, not individual values. For an empty set,
+`Min` is the element type's `MaxValue` and `Max` is its `MinValue`.
+
 ## SortedSetExt<T> Neighbours
 
 Neighbour order follows the configured comparer, including descending comparers.
@@ -116,6 +133,8 @@ exposes the same results as options.
 
 ## Source Anchors
 
+- `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_template.fs`
+- `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_auto.fs`
 - `src/Aardvark.Base/AlgoDat/ExtendedCore/SortedSetExt.cs`
 - `src/Aardvark.Base.FSharp/Utilities/Interop/SortedSet.fs`
 

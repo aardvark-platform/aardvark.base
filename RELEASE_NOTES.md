@@ -1,3 +1,4 @@
+- [Base] Corrected and accelerated order-independent integer range-set construction
 - [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views
 - [Base] Corrected and accelerated scale-safe minimum triangle bounding circles and spheres
 - [Base] Fixed `Cell.Intersects` and `Cell2d.Intersects`
