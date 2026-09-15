@@ -714,21 +714,51 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a <see cref="Rot3f"/> transformation representing a rotation from one vector into another.
-        /// The input vectors have to be normalized.
+        /// Creates a <see cref="Rot3f"/> mapping one normalized vector into another by the shortest rotation.
+        /// Inputs must be normalized; they are not normalized or validated here.
+        /// Identical inputs yield the identity rotation. Exactly opposite inputs use
+        /// <c>from.AxisAlignedNormal()</c> as a deterministic half-turn axis; nearly
+        /// opposite inputs retain their nonzero deviation. No trigonometry or allocation is required.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3f RotateInto(V3f from, V3f into)
         {
+            if (from.X == -into.X && from.Y == -into.Y && from.Z == -into.Z)
+                return new Rot3f(0, from.AxisAlignedNormal());
+
             var d = Vec.Dot(from, into);
 
-            if (d.ApproximateEquals(-1))
-                return new Rot3f(0, from.AxisAlignedNormal());
-            else
-            {
-                QuaternionF q = new QuaternionF(d + 1, Vec.Cross(from, into));
-                return new Rot3f(q.Normalized);
-            }
+            if (d < -0.9f)
+                return RotateIntoNearOpposite(from, into, d);
+
+            QuaternionF q = new QuaternionF(d + 1, Vec.Cross(from, into));
+            return new Rot3f(q.Normalized);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Rot3f RotateIntoNearOpposite(V3f from, V3f into, float d)
+        {
+            // Cross through the small sum, not two nearly cancelling products of unit components.
+            var cross = Vec.Cross(from, from + into);
+            var squared = cross.LengthSquared;
+            if (squared < 1e-30f)
+                return RotateIntoNearOppositeScaled(from, cross, d);
+
+            // sin(theta)^2 / (1 - cos(theta)) = 1 + cos(theta), without cancellation.
+            // Normalize the proportional quaternion (squared, (1 - d) * cross), reusing squared.
+            var k = 1 - d;
+            var inverse = 1 / (squared * (squared + k * k)).Sqrt();
+            return new Rot3f(squared * inverse, cross * (k * inverse));
+        }
+
+        private static Rot3f RotateIntoNearOppositeScaled(V3f from, V3f cross, float d)
+        {
+            var scale = cross.NormMax;
+            if (scale == 0) return new Rot3f(0, from.AxisAlignedNormal());
+            // Divide components directly: the reciprocal of a subnormal scale can overflow.
+            cross = new V3f(cross.X / scale, cross.Y / scale, cross.Z / scale);
+            var scalar = scale * (cross.LengthSquared / (1 - d));
+            return new Rot3f(new QuaternionF(scalar, cross).Normalized);
         }
 
         /// <summary>
@@ -2008,21 +2038,51 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a <see cref="Rot3d"/> transformation representing a rotation from one vector into another.
-        /// The input vectors have to be normalized.
+        /// Creates a <see cref="Rot3d"/> mapping one normalized vector into another by the shortest rotation.
+        /// Inputs must be normalized; they are not normalized or validated here.
+        /// Identical inputs yield the identity rotation. Exactly opposite inputs use
+        /// <c>from.AxisAlignedNormal()</c> as a deterministic half-turn axis; nearly
+        /// opposite inputs retain their nonzero deviation. No trigonometry or allocation is required.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Rot3d RotateInto(V3d from, V3d into)
         {
+            if (from.X == -into.X && from.Y == -into.Y && from.Z == -into.Z)
+                return new Rot3d(0, from.AxisAlignedNormal());
+
             var d = Vec.Dot(from, into);
 
-            if (d.ApproximateEquals(-1))
-                return new Rot3d(0, from.AxisAlignedNormal());
-            else
-            {
-                QuaternionD q = new QuaternionD(d + 1, Vec.Cross(from, into));
-                return new Rot3d(q.Normalized);
-            }
+            if (d < -0.9)
+                return RotateIntoNearOpposite(from, into, d);
+
+            QuaternionD q = new QuaternionD(d + 1, Vec.Cross(from, into));
+            return new Rot3d(q.Normalized);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Rot3d RotateIntoNearOpposite(V3d from, V3d into, double d)
+        {
+            // Cross through the small sum, not two nearly cancelling products of unit components.
+            var cross = Vec.Cross(from, from + into);
+            var squared = cross.LengthSquared;
+            if (squared < 1e-200)
+                return RotateIntoNearOppositeScaled(from, cross, d);
+
+            // sin(theta)^2 / (1 - cos(theta)) = 1 + cos(theta), without cancellation.
+            // Normalize the proportional quaternion (squared, (1 - d) * cross), reusing squared.
+            var k = 1 - d;
+            var inverse = 1 / (squared * (squared + k * k)).Sqrt();
+            return new Rot3d(squared * inverse, cross * (k * inverse));
+        }
+
+        private static Rot3d RotateIntoNearOppositeScaled(V3d from, V3d cross, double d)
+        {
+            var scale = cross.NormMax;
+            if (scale == 0) return new Rot3d(0, from.AxisAlignedNormal());
+            // Divide components directly: the reciprocal of a subnormal scale can overflow.
+            cross = new V3d(cross.X / scale, cross.Y / scale, cross.Z / scale);
+            var scalar = scale * (cross.LengthSquared / (1 - d));
+            return new Rot3d(new QuaternionD(scalar, cross).Normalized);
         }
 
         /// <summary>

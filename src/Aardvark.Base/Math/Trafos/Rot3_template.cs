@@ -711,21 +711,53 @@ namespace Aardvark.Base
             => Rotation(normalizedAxis, angleInDegrees.RadiansFromDegrees());
 
         /// <summary>
-        /// Creates a <see cref="__type__"/> transformation representing a rotation from one vector into another.
-        /// The input vectors have to be normalized.
+        /// Creates a <see cref="__type__"/> mapping one normalized vector into another by the shortest rotation.
+        /// Inputs must be normalized; they are not normalized or validated here.
+        /// Identical inputs yield the identity rotation. Exactly opposite inputs use
+        /// <c>from.AxisAlignedNormal()</c> as a deterministic half-turn axis; nearly
+        /// opposite inputs retain their nonzero deviation. No trigonometry or allocation is required.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ RotateInto(__v3t__ from, __v3t__ into)
         {
+            if (from.X == -into.X && from.Y == -into.Y && from.Z == -into.Z)
+                return new __type__(0, from.AxisAlignedNormal());
+
             var d = Vec.Dot(from, into);
 
-            if (d.ApproximateEquals(-1))
-                return new __type__(0, from.AxisAlignedNormal());
-            else
-            {
-                __quatt__ q = new __quatt__(d + 1, Vec.Cross(from, into));
-                return new __type__(q.Normalized);
-            }
+            //# var oppositeThreshold = isDouble ? "-0.9" : "-0.9f";
+            if (d < __oppositeThreshold__)
+                return RotateIntoNearOpposite(from, into, d);
+
+            __quatt__ q = new __quatt__(d + 1, Vec.Cross(from, into));
+            return new __type__(q.Normalized);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __type__ RotateIntoNearOpposite(__v3t__ from, __v3t__ into, __ftype__ d)
+        {
+            // Cross through the small sum, not two nearly cancelling products of unit components.
+            var cross = Vec.Cross(from, from + into);
+            var squared = cross.LengthSquared;
+            //# var minSquared = isDouble ? "1e-200" : "1e-30f";
+            if (squared < __minSquared__)
+                return RotateIntoNearOppositeScaled(from, cross, d);
+
+            // sin(theta)^2 / (1 - cos(theta)) = 1 + cos(theta), without cancellation.
+            // Normalize the proportional quaternion (squared, (1 - d) * cross), reusing squared.
+            var k = 1 - d;
+            var inverse = 1 / (squared * (squared + k * k)).Sqrt();
+            return new __type__(squared * inverse, cross * (k * inverse));
+        }
+
+        private static __type__ RotateIntoNearOppositeScaled(__v3t__ from, __v3t__ cross, __ftype__ d)
+        {
+            var scale = cross.NormMax;
+            if (scale == 0) return new __type__(0, from.AxisAlignedNormal());
+            // Divide components directly: the reciprocal of a subnormal scale can overflow.
+            cross = new __v3t__(cross.X / scale, cross.Y / scale, cross.Z / scale);
+            var scalar = scale * (cross.LengthSquared / (1 - d));
+            return new __type__(new __quatt__(scalar, cross).Normalized);
         }
 
         /// <summary>
