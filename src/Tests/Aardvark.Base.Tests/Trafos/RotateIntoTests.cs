@@ -157,7 +157,19 @@ namespace Aardvark.Tests
             {
                 double cosine = -0.9 + sign * step;
                 var into = Unit(new V3d(cosine, Math.Sqrt(1 - cosine * cosine), 0));
-                var q = single ? new Rot3d(Check(V3f.XAxis, new V3f(into).Normalized)) : Check(V3d.XAxis, into);
+                // Widen components, not the rotation: a float quaternion need not satisfy
+                // the double rotation constructor's much tighter unit-norm assertion.
+                (double W, double X, double Y, double Z) q;
+                if (single)
+                {
+                    var rotation = Check(V3f.XAxis, new V3f(into).Normalized);
+                    q = (rotation.W, rotation.X, rotation.Y, rotation.Z);
+                }
+                else
+                {
+                    var rotation = Check(V3d.XAxis, into);
+                    q = (rotation.W, rotation.X, rotation.Y, rotation.Z);
+                }
                 double angle = Math.Atan2(into.Y, into.X);
                 double tolerance = single ? FloatTolerance : DoubleTolerance;
                 Assert.That(q.W, Is.EqualTo(Math.Cos(angle / 2)).Within(tolerance));
