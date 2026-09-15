@@ -83,6 +83,24 @@ var boundaryMatrix = m.Transposed;
 
 For one-off transforms, use `TransposedTransformDir` / `TransposedTransformPos` to avoid manual transpose logic.
 
+## RotateInto
+
+`Rot3f.RotateInto(from, into)` and `Rot3d.RotateInto(from, into)` require normalized
+input vectors. They do not normalize or validate inputs; zero/non-finite vectors
+are outside this contract. The returned unit quaternion represents the shortest
+rotation mapping `from` to `into`, up to floating-point precision.
+
+Identical inputs give the identity rotation. Exactly opposite inputs use
+`from.AxisAlignedNormal()` as the deterministic half-turn axis. Nearly opposite
+inputs are not snapped to that half-turn: a cross product through `from + into`
+and the well-conditioned `1 - dot(from, into)` relation retain the deviation.
+Tiny cross products use scaled normalization. The implementation is constant-time,
+allocation-free and uses no trigonometric functions.
+
+The 3D matrix, Euclidean, Similarity, Affine and `Trafo3` `RotateInto` factories
+inherit this normalized-input contract and mapping behavior. A `Trafo3` also
+provides the inverse mapping in its backward matrix.
+
 ## Trafo3d Composition Note
 
 `Trafo3d` multiplication order is intentionally reversed relative to raw `M44d` multiplication:
@@ -96,5 +114,7 @@ This is documented in `Trafo_auto.cs` and affects composition assumptions.
 
 ## Source Anchors
 
+- `src/Aardvark.Base/Math/Trafos/Rot3_template.cs` (`RotateInto`)
+- `src/Aardvark.Base/Math/Trafos/Rot3_auto.cs` (`Rot3f`, `Rot3d`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`M44d`, `FromRows`, `FromCols`, `operator*`, `TransformPos`, `TransposedTransformPos`)
 - `src/Aardvark.Base/Math/Trafos/Trafo_auto.cs` (`Trafo3d` operator `*` composition semantics)
