@@ -751,6 +751,8 @@ namespace Aardvark.Base
             return new Rot3f(squared * inverse, cross * (k * inverse));
         }
 
+        // Keep the underflow-only fallback out of the inlined ordinary path.
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static Rot3f RotateIntoNearOppositeScaled(V3f from, V3f cross, float d)
         {
             var scale = cross.NormMax;
@@ -2075,6 +2077,8 @@ namespace Aardvark.Base
             return new Rot3d(squared * inverse, cross * (k * inverse));
         }
 
+        // Keep the underflow-only fallback out of the inlined ordinary path.
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static Rot3d RotateIntoNearOppositeScaled(V3d from, V3d cross, double d)
         {
             var scale = cross.NormMax;

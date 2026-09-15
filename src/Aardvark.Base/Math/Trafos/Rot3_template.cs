@@ -750,6 +750,8 @@ namespace Aardvark.Base
             return new __type__(squared * inverse, cross * (k * inverse));
         }
 
+        // Keep the underflow-only fallback out of the inlined ordinary path.
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static __type__ RotateIntoNearOppositeScaled(__v3t__ from, __v3t__ cross, __ftype__ d)
         {
             var scale = cross.NormMax;
