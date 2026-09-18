@@ -12,156 +12,93 @@ namespace Aardvark.Base
     {
         #region Bresenham
 
+        //# foreach (var wide in new[] { false, true }) {
+        //# var scalar = wide ? "long" : "int";
+        //# var unsigned = wide ? "ulong" : "uint";
+        //# var vector = wide ? "V2l" : "V2i";
         /// <summary>
-        /// Iterates along Bresenham Discrete Line Raster from P0 to P1. 
-        /// Yields each integer position V2i.
+        /// Lazily rasterizes the directed line from <paramref name="p0"/> to <paramref name="p1"/>,
+        /// including both endpoints, across the complete signed <see cref="__scalar__"/> coordinate domain.
+        /// Half-step ties advance the minor coordinate toward <paramref name="p1"/>; reversing endpoints
+        /// can therefore choose different tied pixels. A zero-length line yields its endpoint once.
         /// </summary>
-        public static IEnumerable<V2i> BresenhamLineIterator(V2i p0, V2i p1)
+        /// <remarks>
+        /// Consecutive positions are 8-connected. Enumerating k positions takes O(k) time and O(1)
+        /// auxiliary space, with fixed-size iterator state and no per-position allocation.
+        /// </remarks>
+        public static IEnumerable<__vector__> BresenhamLineIterator(__vector__ p0, __vector__ p1)
         {
-            int x0 = p0.X, y0 = p0.Y, x1 = p1.X, y1 = p1.Y;
-            int dx, dy;
-            int incx, incy;
-            int balance;
+            __scalar__ x0 = p0.X, y0 = p0.Y, x1 = p1.X, y1 = p1.Y;
+            __unsigned__ dx, dy;
+            sbyte incx, incy; // Only -1 or +1; keep the hoisted iterator state compact.
+            __unsigned__ balance;
 
+            // Ordered unsigned subtraction gives the exact distance, even across the sign boundary.
             if (x1 >= x0)
             {
-                dx = x1 - x0;
+                dx = unchecked((__unsigned__)x1 - (__unsigned__)x0);
                 incx = 1;
             }
             else
             {
-                dx = x0 - x1;
+                dx = unchecked((__unsigned__)x0 - (__unsigned__)x1);
                 incx = -1;
             }
 
             if (y1 >= y0)
             {
-                dy = y1 - y0;
+                dy = unchecked((__unsigned__)y1 - (__unsigned__)y0);
                 incy = 1;
             }
             else
             {
-                dy = y0 - y1;
+                dy = unchecked((__unsigned__)y0 - (__unsigned__)y1);
                 incy = -1;
             }
 
             if (dx >= dy)
             {
-                dy <<= 1;
-                balance = dy - dx;
-                dx <<= 1;
+                // Remaining distance to a minor step, initially ceil(major / 2).
+                // For nonzero spans it stays in [1, major]; neither update can overflow.
+                balance = (dx >> 1) + (dx & 1);
+                dx -= dy; // wrap increment = major - minor
 
                 while (x0 != x1)
                 {
-                    yield return new V2i(x0, y0);
-                    if (balance >= 0)
+                    yield return new __vector__(x0, y0);
+                    if (balance <= dy)
                     {
                         y0 += incy;
-                        balance -= dx;
+                        balance += dx;
                     }
-                    balance += dy;
+                    else
+                        balance -= dy;
                     x0 += incx;
                 }
-
-                yield return new V2i(x0, y0);
             }
             else
             {
-                dx <<= 1;
-                balance = dx - dy;
-                dy <<= 1;
+                balance = (dy >> 1) + (dy & 1);
+                dy -= dx;
 
                 while (y0 != y1)
                 {
-                    yield return new V2i(x0, y0);
-                    if (balance >= 0)
+                    yield return new __vector__(x0, y0);
+                    if (balance <= dx)
                     {
                         x0 += incx;
-                        balance -= dy;
+                        balance += dy;
                     }
-                    balance += dx;
-                    y0 += incy;
-                }
-
-                yield return new V2i(x0, y0);
-            }
-        }
-
-        /// <summary>
-        /// Iterates along Bresenham discrete line raster from p0 to p1. 
-        /// Yields each integer position V2l.
-        /// </summary>
-        public static IEnumerable<V2l> BresenhamLineIterator(V2l p0, V2l p1)
-        {
-            long x0 = p0.X, y0 = p0.Y, x1 = p1.X, y1 = p1.Y;
-            long dx, dy;
-            long incx, incy;
-            long balance;
-
-            if (x1 >= x0)
-            {
-                dx = x1 - x0;
-                incx = 1;
-            }
-            else
-            {
-                dx = x0 - x1;
-                incx = -1;
-            }
-
-            if (y1 >= y0)
-            {
-                dy = y1 - y0;
-                incy = 1;
-            }
-            else
-            {
-                dy = y0 - y1;
-                incy = -1;
-            }
-
-            if (dx >= dy)
-            {
-                dy <<= 1;
-                balance = dy - dx;
-                dx <<= 1;
-
-                while (x0 != x1)
-                {
-                    yield return new V2l(x0, y0);
-                    if (balance >= 0)
-                    {
-                        y0 += incy;
+                    else
                         balance -= dx;
-                    }
-                    balance += dy;
-                    x0 += incx;
-                }
-
-                yield return new V2l(x0, y0);
-            }
-            else
-            {
-                dx <<= 1;
-                balance = dx - dy;
-                dy <<= 1;
-
-                while (y0 != y1)
-                {
-                    yield return new V2l(x0, y0);
-                    if (balance >= 0)
-                    {
-                        x0 += incx;
-                        balance -= dy;
-                    }
-                    balance += dx;
                     y0 += incy;
                 }
-
-                yield return new V2l(x0, y0);
             }
+
+            yield return new __vector__(x0, y0);
         }
 
+        //# }
         #endregion
 
         //# foreach (var isDouble in new[] { false, true }) {
