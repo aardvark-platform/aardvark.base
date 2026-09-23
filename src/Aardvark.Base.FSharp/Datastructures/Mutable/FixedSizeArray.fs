@@ -6,14 +6,28 @@ module Arrays =
     open System
     open System.Collections.Generic
 
+    /// A fixed-size array with owned storage, initialized from at most its capacity
+    /// of source elements in order. Short inputs are padded with default values;
+    /// excess elements are not consumed. Arrays are copied, never retained.
+    /// Other sources are enumerated once; their enumerators are disposed on
+    /// completion or failure. Zero capacity does not acquire an enumerator.
+    /// Null sources are rejected.
     [<StructuredFormatDisplay("{AsString}")>]
     type Arr<'d, 'a when 'd :> INatural>(elements : seq<'a>) =
         static let size = typeSize<'d>
         let data = Array.zeroCreate size
-        do let elements = elements |> Seq.toArray
-           let l = min elements.Length size
-           for i in 0..l-1 do
-           data.[i] <- elements.[i]
+        do
+            if isNull elements then nullArg "source"
+            if size > 0 then
+                match elements with
+                | :? ('a[]) as elements ->
+                    Array.Copy(elements, data, min elements.Length size)
+                | _ ->
+                    use iterator = elements.GetEnumerator()
+                    let mutable i = 0
+                    while i < size && iterator.MoveNext() do
+                        data.[i] <- iterator.Current
+                        i <- i + 1
 
         member x.Data = data
 
