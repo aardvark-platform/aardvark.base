@@ -1,27 +1,16 @@
 using Aardvark.Base;
 using System;
+using System.Buffers.Binary;
 using System.IO;
 using System.Text;
 
 namespace Aardvark.Base.Coder
 {
     /// <summary>
-    /// Wrapper for class BinaryReader.
-    /// The following methods are overriden in order to
-    /// return values stored in network byte order (big-endian)
-    /// in host byte order:
-    /// 
-    /// short ReadInt16()
-    /// ushort ReadUInt16()
-    /// int ReadInt32()
-    /// uint ReadUInt32()
-    /// long ReadInt64()
-    /// ulong ReadUInt64()
-    /// float ReadSingle()
-    /// double ReadDouble()
-    /// 
-    /// Additional methods have been added to read
-    /// vector and color values, e.g. V3f, C4f, etc.
+    /// Reads 16-, 32-, and 64-bit integer and IEEE 754 floating-point values in
+    /// network byte order (big-endian). Scalar numeric reads are allocation-free;
+    /// truncated values throw <see cref="EndOfStreamException"/>.
+    /// Additional methods read vectors and colors component by component in declaration order.
     /// </summary>
     public class NetworkOrderBinaryReader : BinaryReader
     {
@@ -54,76 +43,42 @@ namespace Aardvark.Base.Coder
 
         public override short ReadInt16()
         {
-            return (short)((base.ReadByte() << 8) | base.ReadByte());
+            return BinaryPrimitives.ReverseEndianness(base.ReadInt16());
         }
 
         public override ushort ReadUInt16()
         {
-            return (ushort)((base.ReadByte() << 8) | base.ReadByte());
+            return BinaryPrimitives.ReverseEndianness(base.ReadUInt16());
         }
 
         public override int ReadInt32()
         {
-            return (int)((base.ReadByte() << 24) | (base.ReadByte() << 16)
-                            | (base.ReadByte() << 8) | base.ReadByte());
+            return BinaryPrimitives.ReverseEndianness(base.ReadInt32());
         }
 
         public override uint ReadUInt32()
         {
-            return (uint)((base.ReadByte() << 24) | (base.ReadByte() << 16)
-                            | (base.ReadByte() << 8) | base.ReadByte());
+            return BinaryPrimitives.ReverseEndianness(base.ReadUInt32());
         }
 
         public override long ReadInt64()
         {
-            return (long)(((long)base.ReadByte() << 56)
-                         | ((long)base.ReadByte() << 48)
-                         | ((long)base.ReadByte() << 40)
-                         | ((long)base.ReadByte() << 32)
-                         | ((long)base.ReadByte() << 24)
-                         | ((long)base.ReadByte() << 16)
-                         | ((long)base.ReadByte() << 8)
-                         | base.ReadByte());
+            return BinaryPrimitives.ReverseEndianness(base.ReadInt64());
         }
 
         public override ulong ReadUInt64()
         {
-            return (ulong)(((long)base.ReadByte() << 56)
-                         | ((long)base.ReadByte() << 48)
-                         | ((long)base.ReadByte() << 40)
-                         | ((long)base.ReadByte() << 32)
-                         | ((long)base.ReadByte() << 24)
-                         | ((long)base.ReadByte() << 16)
-                         | ((long)base.ReadByte() << 8)
-                         | base.ReadByte());
+            return BinaryPrimitives.ReverseEndianness(base.ReadUInt64());
         }
 
         public override float ReadSingle()
         {
-            if (BitConverter.IsLittleEndian)
-            {
-                byte[] data = new byte[4];
-                for (int i = 3; i >= 0; i--) data[i] = base.ReadByte();
-                return BitConverter.ToSingle(data, 0);
-            }
-            else
-            {
-                return base.ReadSingle();
-            }
+            return Fun.FloatFromBits(BinaryPrimitives.ReverseEndianness(base.ReadInt32()));
         }
 
         public override double ReadDouble()
         {
-            if (BitConverter.IsLittleEndian)
-            {
-                byte[] data = new byte[8];
-                for (int i = 7; i >= 0; i--) data[i] = base.ReadByte();
-                return BitConverter.ToDouble(data, 0);
-            }
-            else
-            {
-                return base.ReadDouble();
-            }
+            return Fun.FloatFromBits(BinaryPrimitives.ReverseEndianness(base.ReadInt64()));
         }
 
         #endregion

@@ -45,6 +45,52 @@ namespace Aardvark.Tests
             Assert.IsTrue(cond, "{0} != {1}", a, b);
         }
 
+        private static void AssertClose(double expected, double actual, double relativeTolerance = 4e-15, double absoluteTolerance = 0.0)
+        {
+            if (expected.Equals(actual)) return;
+            double tolerance = Math.Max(absoluteTolerance, relativeTolerance * Math.Max(Math.Abs(expected), Math.Abs(actual)));
+            Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
+        }
+
+        private static void AssertClose(float expected, float actual, float relativeTolerance = 3e-6f, float absoluteTolerance = 0.0f)
+        {
+            if (expected.Equals(actual)) return;
+            float tolerance = Math.Max(absoluteTolerance, relativeTolerance * Math.Max(Math.Abs(expected), Math.Abs(actual)));
+            Assert.That(actual, Is.EqualTo(expected).Within(tolerance));
+        }
+
+        private static void AssertClose(ComplexD expected, ComplexD actual, double relativeTolerance = 4e-15, double absoluteTolerance = 0.0)
+        {
+            AssertClose(expected.Real, actual.Real, relativeTolerance, absoluteTolerance);
+            AssertClose(expected.Imag, actual.Imag, relativeTolerance, absoluteTolerance);
+        }
+
+        private static void AssertClose(ComplexF expected, ComplexF actual, float relativeTolerance = 3e-6f, float absoluteTolerance = 0.0f)
+        {
+            AssertClose(expected.Real, actual.Real, relativeTolerance, absoluteTolerance);
+            AssertClose(expected.Imag, actual.Imag, relativeTolerance, absoluteTolerance);
+        }
+
+        private static double ScaledNorm(double real, double imag)
+        {
+            double ar = Math.Abs(real);
+            double ai = Math.Abs(imag);
+            double max = Math.Max(ar, ai);
+            if (max == 0) return 0;
+            double ratio = Math.Min(ar, ai) / max;
+            return max * Math.Sqrt(1 + ratio * ratio);
+        }
+
+        private static float ScaledNorm(float real, float imag)
+        {
+            float ar = Math.Abs(real);
+            float ai = Math.Abs(imag);
+            float max = Math.Max(ar, ai);
+            if (max == 0) return 0;
+            float ratio = Math.Min(ar, ai) / max;
+            return max * MathF.Sqrt(1 + ratio * ratio);
+        }
+
         private static void GetRandomComplex(RandomSystem rnd, out Num.Complex c1, out ComplexD c2, bool withInf = true)
         {
             var type = rnd.UniformDouble();
@@ -546,6 +592,238 @@ namespace Aardvark.Tests
                     AreEqual(c, result);
                 }
             });
+
+        #endregion
+
+        #region Extreme finite range
+
+        [Test]
+        public static void ExtremeMagnitudeDouble()
+        {
+            var values = new[]
+            {
+                new ComplexD(1e308, 1e308),
+                new ComplexD(double.MaxValue, 1.0),
+                new ComplexD(1e-308, -1e-308),
+                new ComplexD(double.Epsilon, double.Epsilon),
+                new ComplexD(-3e200, 4e200),
+                new ComplexD(3e-250, -4e-250),
+            };
+
+            foreach (var value in values)
+            {
+                double expected = ScaledNorm(value.Real, value.Imag);
+                AssertClose(expected, value.Norm, absoluteTolerance: double.Epsilon);
+            }
+
+            Assert.That(new ComplexD(1e308, 1e308).NormSquared, Is.EqualTo(double.PositiveInfinity));
+            Assert.That(new ComplexD(1e-308, 1e-308).NormSquared, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public static void ExtremeMagnitudeFloat()
+        {
+            var values = new[]
+            {
+                new ComplexF(2e38f, 2e38f),
+                new ComplexF(float.MaxValue, 1.0f),
+                new ComplexF(1e-38f, -1e-38f),
+                new ComplexF(float.Epsilon, float.Epsilon),
+                new ComplexF(-3e20f, 4e20f),
+                new ComplexF(3e-30f, -4e-30f),
+            };
+
+            foreach (var value in values)
+            {
+                float expected = ScaledNorm(value.Real, value.Imag);
+                AssertClose(expected, value.Norm, absoluteTolerance: float.Epsilon);
+            }
+
+            Assert.That(new ComplexF(2e38f, 2e38f).NormSquared, Is.EqualTo(float.PositiveInfinity));
+            Assert.That(new ComplexF(1e-38f, 1e-38f).NormSquared, Is.EqualTo(0.0f));
+        }
+
+        [Test]
+        public static void ExtremeReciprocalAndDivisionDouble()
+        {
+            var large = new ComplexD(1e308, -1e308);
+            var tiny = new ComplexD(1e-308, -1e-308);
+            AssertClose(new ComplexD(5e-309, 5e-309), large.Reciprocal, absoluteTolerance: double.Epsilon);
+            AssertClose(new ComplexD(5e307, 5e307), tiny.Reciprocal);
+            AssertClose(ComplexD.One, large * large.Reciprocal);
+            AssertClose(ComplexD.One, tiny * tiny.Reciprocal);
+
+            var identities = new[]
+            {
+                large,
+                tiny,
+                new ComplexD(double.Epsilon, -double.Epsilon),
+                new ComplexD(double.MaxValue, 1e292),
+                new ComplexD(1e-200, -3e-210),
+            };
+            foreach (var value in identities)
+                AssertClose(ComplexD.One, value / value, absoluteTolerance: double.Epsilon);
+
+            AssertClose(new ComplexD(0.0, -1.0), new ComplexD(1e308, -1e308) / new ComplexD(1e308, 1e308));
+            AssertClose(new ComplexD(0.25, 0.05), new ComplexD(3e307, -2e307) / new ComplexD(1e308, -1e308));
+            AssertClose(new ComplexD(1e150, 1e-50), new ComplexD(1.0, 1e-200) / new ComplexD(1e-150, 0.0));
+            AssertClose(new ComplexD(1e-50, -2e-50), new ComplexD(1e-200, -2e-200) / new ComplexD(1e-150, 0.0));
+            AssertClose(new ComplexD(0.1, 0.1), 2e307 / new ComplexD(1e308, -1e308));
+            AssertClose(new ComplexD(1e-50, -1e-50), 2e-200 / new ComplexD(1e-150, 1e-150));
+        }
+
+        [Test]
+        public static void ExtremeReciprocalAndDivisionFloat()
+        {
+            var large = new ComplexF(2e38f, -2e38f);
+            var tiny = new ComplexF(1e-38f, -1e-38f);
+            AssertClose(new ComplexF(2.5e-39f, 2.5e-39f), large.Reciprocal, absoluteTolerance: float.Epsilon);
+            AssertClose(new ComplexF(5e37f, 5e37f), tiny.Reciprocal);
+            AssertClose(ComplexF.One, large * large.Reciprocal);
+            AssertClose(ComplexF.One, tiny * tiny.Reciprocal);
+
+            var identities = new[]
+            {
+                large,
+                tiny,
+                new ComplexF(float.Epsilon, -float.Epsilon),
+                new ComplexF(float.MaxValue, 1e31f),
+                new ComplexF(1e-25f, -3e-30f),
+            };
+            foreach (var value in identities)
+                AssertClose(ComplexF.One, value / value, absoluteTolerance: float.Epsilon);
+
+            AssertClose(new ComplexF(0.0f, -1.0f), new ComplexF(2e38f, -2e38f) / new ComplexF(2e38f, 2e38f));
+            AssertClose(new ComplexF(0.25f, 0.05f), new ComplexF(6e37f, -4e37f) / new ComplexF(2e38f, -2e38f));
+            AssertClose(new ComplexF(1e25f, 1e-5f), new ComplexF(1.0f, 1e-30f) / new ComplexF(1e-25f, 0.0f));
+            AssertClose(new ComplexF(1e-5f, -2e-5f), new ComplexF(1e-30f, -2e-30f) / new ComplexF(1e-25f, 0.0f));
+            AssertClose(new ComplexF(0.1f, 0.1f), 4e37f / new ComplexF(2e38f, -2e38f));
+            AssertClose(new ComplexF(1e-5f, -1e-5f), 2e-30f / new ComplexF(1e-25f, 1e-25f));
+        }
+
+        [Test]
+        public static void ExtremeSquareRootDouble()
+        {
+            double equalReal = Math.Sqrt(1e308) * Math.Sqrt((Math.Sqrt(2.0) + 1.0) * 0.5);
+            double equalImag = Math.Sqrt(1e308) * Math.Sqrt((Math.Sqrt(2.0) - 1.0) * 0.5);
+            AssertClose(new ComplexD(equalReal, equalImag), new ComplexD(1e308, 1e308).Sqrt());
+            AssertClose(new ComplexD(equalReal, -equalImag), new ComplexD(1e308, -1e308).Sqrt());
+
+            double tinyReal = Math.Sqrt(1e-308) * Math.Sqrt((Math.Sqrt(2.0) + 1.0) * 0.5);
+            double tinyImag = Math.Sqrt(1e-308) * Math.Sqrt((Math.Sqrt(2.0) - 1.0) * 0.5);
+            AssertClose(new ComplexD(tinyReal, tinyImag), new ComplexD(1e-308, 1e-308).Sqrt());
+
+            double subReal = Math.Sqrt(double.Epsilon) * Math.Sqrt((Math.Sqrt(2.0) + 1.0) * 0.5);
+            double subImag = Math.Sqrt(double.Epsilon) * Math.Sqrt((Math.Sqrt(2.0) - 1.0) * 0.5);
+            AssertClose(new ComplexD(subReal, subImag), new ComplexD(double.Epsilon, double.Epsilon).Sqrt());
+            AssertClose(new ComplexD(5e-301, 1.0), new ComplexD(-1.0, 1e-300).Sqrt());
+
+            var values = new[]
+            {
+                new ComplexD(1e308, 1e308),
+                new ComplexD(1e-308, -1e-308),
+                new ComplexD(double.Epsilon, double.Epsilon),
+                new ComplexD(-1.0, 1e-300),
+            };
+            foreach (var value in values)
+            {
+                ComplexD root = value.Sqrt();
+                AssertClose(value, root * root, relativeTolerance: 8e-15, absoluteTolerance: 2 * double.Epsilon);
+                AssertClose(root.Conjugated, value.Conjugated.Sqrt());
+            }
+        }
+
+        [Test]
+        public static void ExtremeSquareRootFloat()
+        {
+            float equalReal = MathF.Sqrt(2e38f) * MathF.Sqrt((MathF.Sqrt(2.0f) + 1.0f) * 0.5f);
+            float equalImag = MathF.Sqrt(2e38f) * MathF.Sqrt((MathF.Sqrt(2.0f) - 1.0f) * 0.5f);
+            AssertClose(new ComplexF(equalReal, equalImag), new ComplexF(2e38f, 2e38f).Sqrt());
+            AssertClose(new ComplexF(equalReal, -equalImag), new ComplexF(2e38f, -2e38f).Sqrt());
+
+            float tinyReal = MathF.Sqrt(1e-38f) * MathF.Sqrt((MathF.Sqrt(2.0f) + 1.0f) * 0.5f);
+            float tinyImag = MathF.Sqrt(1e-38f) * MathF.Sqrt((MathF.Sqrt(2.0f) - 1.0f) * 0.5f);
+            AssertClose(new ComplexF(tinyReal, tinyImag), new ComplexF(1e-38f, 1e-38f).Sqrt());
+
+            float subReal = MathF.Sqrt(float.Epsilon) * MathF.Sqrt((MathF.Sqrt(2.0f) + 1.0f) * 0.5f);
+            float subImag = MathF.Sqrt(float.Epsilon) * MathF.Sqrt((MathF.Sqrt(2.0f) - 1.0f) * 0.5f);
+            AssertClose(new ComplexF(subReal, subImag), new ComplexF(float.Epsilon, float.Epsilon).Sqrt());
+            AssertClose(new ComplexF(5e-31f, 1.0f), new ComplexF(-1.0f, 1e-30f).Sqrt());
+
+            var values = new[]
+            {
+                new ComplexF(2e38f, 2e38f),
+                new ComplexF(1e-38f, -1e-38f),
+                new ComplexF(float.Epsilon, float.Epsilon),
+                new ComplexF(-1.0f, 1e-30f),
+            };
+            foreach (var value in values)
+            {
+                ComplexF root = value.Sqrt();
+                AssertClose(value, root * root, relativeTolerance: 8e-6f, absoluteTolerance: 2 * float.Epsilon);
+                AssertClose(root.Conjugated, value.Conjugated.Sqrt());
+            }
+        }
+
+        [Test]
+        public static void SpecialValuesRemainCompatibleDouble()
+        {
+            Assert.That(new ComplexD(double.PositiveInfinity, double.NaN).Norm, Is.NaN);
+
+            var zeroReciprocal = ComplexD.Zero.Reciprocal;
+            Assert.That(zeroReciprocal.Real, Is.NaN);
+            Assert.That(zeroReciprocal.Imag, Is.NaN);
+            var zeroDivision = ComplexD.Zero / ComplexD.Zero;
+            Assert.That(zeroDivision.Real, Is.NaN);
+            Assert.That(zeroDivision.Imag, Is.NaN);
+
+            var negativeCut = new ComplexD(-4.0, -0.0).Sqrt();
+            Assert.That(BitConverter.DoubleToInt64Bits(negativeCut.Real), Is.EqualTo(0L));
+            Assert.That(negativeCut.Imag, Is.EqualTo(2.0));
+            Assert.That(BitConverter.DoubleToInt64Bits(new ComplexD(-0.0, 0.0).Sqrt().Real), Is.EqualTo(long.MinValue));
+            Assert.That(BitConverter.DoubleToInt64Bits(new ComplexD(-4.0, -0.0).Reciprocal.Imag), Is.EqualTo(0L));
+            Assert.That(BitConverter.DoubleToInt64Bits(new ComplexD(-4.0, 0.0).Reciprocal.Imag), Is.EqualTo(long.MinValue));
+
+            var realInfinityRoot = new ComplexD(double.PositiveInfinity, 0.0).Sqrt();
+            Assert.That(realInfinityRoot.Real, Is.EqualTo(double.PositiveInfinity));
+            Assert.That(realInfinityRoot.Imag, Is.EqualTo(0.0));
+            var imaginaryInfinityRoot = new ComplexD(0.0, double.PositiveInfinity).Sqrt();
+            Assert.That(imaginaryInfinityRoot.Real, Is.NaN);
+            Assert.That(imaginaryInfinityRoot.Imag, Is.NaN);
+            var nanRoot = new ComplexD(double.NaN, 0.0).Sqrt();
+            Assert.That(nanRoot.Real, Is.NaN);
+            Assert.That(nanRoot.Imag, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public static void SpecialValuesRemainCompatibleFloat()
+        {
+            Assert.That(new ComplexF(float.PositiveInfinity, float.NaN).Norm, Is.NaN);
+
+            var zeroReciprocal = ComplexF.Zero.Reciprocal;
+            Assert.That(zeroReciprocal.Real, Is.NaN);
+            Assert.That(zeroReciprocal.Imag, Is.NaN);
+            var zeroDivision = ComplexF.Zero / ComplexF.Zero;
+            Assert.That(zeroDivision.Real, Is.NaN);
+            Assert.That(zeroDivision.Imag, Is.NaN);
+
+            var negativeCut = new ComplexF(-4.0f, -0.0f).Sqrt();
+            Assert.That(BitConverter.SingleToInt32Bits(negativeCut.Real), Is.EqualTo(0));
+            Assert.That(negativeCut.Imag, Is.EqualTo(2.0f));
+            Assert.That(BitConverter.SingleToInt32Bits(new ComplexF(-0.0f, 0.0f).Sqrt().Real), Is.EqualTo(int.MinValue));
+            Assert.That(BitConverter.SingleToInt32Bits(new ComplexF(-4.0f, -0.0f).Reciprocal.Imag), Is.EqualTo(0));
+            Assert.That(BitConverter.SingleToInt32Bits(new ComplexF(-4.0f, 0.0f).Reciprocal.Imag), Is.EqualTo(int.MinValue));
+
+            var realInfinityRoot = new ComplexF(float.PositiveInfinity, 0.0f).Sqrt();
+            Assert.That(realInfinityRoot.Real, Is.EqualTo(float.PositiveInfinity));
+            Assert.That(realInfinityRoot.Imag, Is.EqualTo(0.0f));
+            var imaginaryInfinityRoot = new ComplexF(0.0f, float.PositiveInfinity).Sqrt();
+            Assert.That(imaginaryInfinityRoot.Real, Is.NaN);
+            Assert.That(imaginaryInfinityRoot.Imag, Is.NaN);
+            var nanRoot = new ComplexF(float.NaN, 0.0f).Sqrt();
+            Assert.That(nanRoot.Real, Is.NaN);
+            Assert.That(nanRoot.Imag, Is.EqualTo(0.0f));
+        }
 
         #endregion
     }

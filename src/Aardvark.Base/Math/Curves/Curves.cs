@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -23,90 +24,111 @@ namespace Aardvark.Base
 
             public static double Eval(double t, double a, double b, double tIn, double tOut)
             {
-                var w = Weights(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeights(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V2d Eval(double t, V2d a, V2d b, V2d tIn, V2d tOut)
             {
-                var w = Weights(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeights(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V3d Eval(double t, V3d a, V3d b, V3d tIn, V3d tOut)
             {
-                var w = Weights(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeights(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
 
             public static double EvalD1(double t, double a, double b, double tIn, double tOut)
             {
-                var w = WeightsD1(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD1(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V2d EvalD1(double t, V2d a, V2d b, V2d tIn, V2d tOut)
             {
-                var w = WeightsD1(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD1(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V3d EvalD1(double t, V3d a, V3d b, V3d tIn, V3d tOut)
             {
-                var w = WeightsD1(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD1(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
 
             public static double EvalD2(double t, double a, double b, double tIn, double tOut)
             {
-                var w = WeightsD2(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD2(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V2d EvalD2(double t, V2d a, V2d b, V2d tIn, V2d tOut)
             {
-                var w = WeightsD2(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD2(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V3d EvalD2(double t, V3d a, V3d b, V3d tIn, V3d tOut)
             {
-                var w = WeightsD2(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD2(t, out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
 
             public static double EvalD3(double t, double a, double b, double tIn, double tOut)
             {
-                var w = WeightsD3(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD3(out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V2d EvalD3(double t, V2d a, V2d b, V2d tIn, V2d tOut)
             {
-                var w = WeightsD3(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD3(out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
             public static V3d EvalD3(double t, V3d a, V3d b, V3d tIn, V3d tOut)
             {
-                var w = WeightsD3(t);
-                return w[0] * a + w[1] * tIn + w[2] * tOut + w[3] * b;
+                GetWeightsD3(out var w0, out var w1, out var w2, out var w3);
+                return w0 * a + w1 * tIn + w2 * tOut + w3 * b;
             }
 
-            internal static double[] Weights(double t)
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private static void GetWeights(
+                double t, out double w0, out double w1, out double w2, out double w3)
             {
                 var tt = t * t; var ttt = tt * t;
                 var tt3 = tt * 3; var ttt2 = ttt * 2;
-                return new double[]
-                { ttt2 - tt3 + 1, ttt - 2 * tt + t, ttt - tt, -ttt2 + tt3 };
+                w0 = ttt2 - tt3 + 1;
+                w1 = ttt - 2 * tt + t;
+                w2 = ttt - tt;
+                w3 = -ttt2 + tt3;
             }
-            internal static double[] WeightsD1(double t)
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private static void GetWeightsD1(
+                double t, out double w0, out double w1, out double w2, out double w3)
             {
                 var tt = t * t;
                 var tt6 = tt * 6; var tt3 = tt * 3; var t6 = t * 6;
-                return new double[]
-                { tt6 - t6, tt3 - 4 * t + 1, tt3 - 2 * t, -tt6 + t6 };
+                w0 = tt6 - t6;
+                w1 = tt3 - 4 * t + 1;
+                w2 = tt3 - 2 * t;
+                w3 = -tt6 + t6;
             }
-            internal static double[] WeightsD2(double t)
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private static void GetWeightsD2(
+                double t, out double w0, out double w1, out double w2, out double w3)
             {
                 var t12 = t * 12; var t6 = t * 6;
-                return new double[] { t12 - 6, t6 - 4, t6 - 2, -t12 + 6 };
+                w0 = t12 - 6;
+                w1 = t6 - 4;
+                w2 = t6 - 2;
+                w3 = -t12 + 6;
             }
-            internal static double[] WeightsD3(double t)
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            private static void GetWeightsD3(
+                out double w0, out double w1, out double w2, out double w3)
             {
-                return new double[] { 12, 6, 6, -12 };
+                w0 = 12;
+                w1 = 6;
+                w2 = 6;
+                w3 = -12;
             }
         }
 

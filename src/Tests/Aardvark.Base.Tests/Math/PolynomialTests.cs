@@ -91,6 +91,107 @@ namespace Aardvark.Tests
             Assert.That(roots, Is.Empty);
         }
 
+        [TestCase(0.0)]
+        [TestCase(1.0)]
+        public void RealRootsOfNormed_PositiveDiscriminantReturnsOneRealRoot(double constant)
+        {
+            var roots = Polynomial.RealRootsOfNormed(0.0, 1.0, constant);
+
+            AssertSingleRealCubicRoot(roots, 1.0, 0.0, 1.0, constant);
+        }
+
+        [TestCase(0.0)]
+        [TestCase(1.0)]
+        public void RealRootsOfDepressed_PositiveDiscriminantReturnsOneRealRoot(double constant)
+        {
+            var roots = Polynomial.RealRootsOfDepressed(1.0, constant);
+
+            AssertSingleRealCubicRoot(roots, 1.0, 0.0, 1.0, constant);
+        }
+
+        [TestCase(0.0)]
+        [TestCase(1.0)]
+        public void RealRootsOf_NonNormedPositiveDiscriminantReturnsOneRealRoot(double constant)
+        {
+            var roots = Polynomial.RealRootsOf(2.0, 0.0, 2.0, 2.0 * constant);
+
+            AssertSingleRealCubicRoot(roots, 2.0, 0.0, 2.0, 2.0 * constant);
+        }
+
+        [TestCase(0.0)]
+        [TestCase(1.0)]
+        public void RealRoots_CoefficientArraysContainOnlyRealRoots(double constant)
+        {
+            var coefficients = new[] { constant, 1.0, 0.0, 1.0 };
+            var normedCoefficients = new[] { constant, 1.0, 0.0 };
+
+            AssertSingleRealCubicRoot(coefficients.RealRoots(), coefficients);
+            AssertSingleRealCubicRoot(normedCoefficients.RealRootsNormed(), coefficients);
+        }
+
+        [Test]
+        public void RealRootsOfDepressed_NegativeDiscriminantReturnsThreeAscendingRoots()
+        {
+            var roots = Polynomial.RealRootsOfDepressed(-1.0, 0.0);
+
+            Assert.That(roots.Item1, Is.EqualTo(-1.0).Within(1e-12));
+            Assert.That(roots.Item2, Is.EqualTo(0.0).Within(1e-12));
+            Assert.That(roots.Item3, Is.EqualTo(1.0).Within(1e-12));
+        }
+
+        [Test]
+        public void RealRootsOfDepressed_ZeroDiscriminantPreservesMultiplicity()
+        {
+            var doubleRoot = Polynomial.RealRootsOfDepressed(-3.0, 2.0);
+            Assert.That(doubleRoot.Item1, Is.EqualTo(-2.0).Within(1e-12));
+            Assert.That(doubleRoot.Item2, Is.EqualTo(1.0).Within(1e-12));
+            Assert.That(doubleRoot.Item3, Is.EqualTo(1.0).Within(1e-12));
+
+            var tripleRoot = Polynomial.RealRootsOfDepressed(0.0, 0.0);
+            Assert.That(tripleRoot.Item1, Is.EqualTo(0.0));
+            Assert.That(tripleRoot.Item2, Is.EqualTo(0.0));
+            Assert.That(tripleRoot.Item3, Is.EqualTo(0.0));
+        }
+
+        [Test]
+        public void RealRootsOfNormed_RoundoffNearRepeatedRootPreservesThreeRoots()
+        {
+            // (x + 1)^2 (x + 0.96), whose depressed discriminant rounds positive.
+            var roots = Polynomial.RealRootsOfNormed(2.96, 2.92, 0.96);
+
+            Assert.That(roots.Item1, Is.EqualTo(-1.0).Within(1e-9));
+            Assert.That(roots.Item2, Is.EqualTo(-1.0).Within(1e-9));
+            Assert.That(roots.Item3, Is.EqualTo(-0.96).Within(1e-9));
+        }
+
+        [Test]
+        public void CubicRootSolvers_NaNDiscriminantsDoNotProduceFiniteRoots()
+        {
+            var normed = Polynomial.RealRootsOfNormed(double.NaN, 0.0, 0.0);
+            var depressed = Polynomial.RealRootsOfDepressed(double.NaN, 0.0);
+
+            Assert.That(double.IsNaN(normed.Item1), Is.True);
+            Assert.That(double.IsNaN(normed.Item2), Is.True);
+            Assert.That(double.IsNaN(normed.Item3), Is.True);
+            Assert.That(double.IsNaN(depressed.Item1), Is.True);
+            Assert.That(double.IsNaN(depressed.Item2), Is.True);
+            Assert.That(double.IsNaN(depressed.Item3), Is.True);
+        }
+
+        [Test]
+        public void RealRoots_QuarticWithPositiveDiscriminantCubicFactorContainsOnlyRealRoots()
+        {
+            // x (x^3 + x + 1) = x^4 + x^2 + x
+            var coefficients = new[] { 0.0, 1.0, 1.0, 0.0, 1.0 };
+            var roots = coefficients.RealRoots();
+
+            Assert.That(roots, Has.Length.EqualTo(2));
+            Assert.That(roots[0], Is.LessThan(0.0));
+            Assert.That(roots[1], Is.EqualTo(0.0).Within(1e-12));
+            foreach (double root in roots)
+                Assert.That(Math.Abs(coefficients.Evaluate(root)), Is.LessThan(1e-12));
+        }
+
         public void Run()
         {
             RootsTest3(0.01);
@@ -268,6 +369,25 @@ namespace Aardvark.Tests
             Report.Value("unique roots residual error", uniqueResidualStats);
             Report.Value("multiple residual error", multipleResidualStats);
             Test.End();
+        }
+
+        private static void AssertSingleRealCubicRoot(
+            (double, double, double) roots,
+            double c3, double c2, double c1, double c0)
+        {
+            Assert.That(double.IsFinite(roots.Item1), Is.True);
+            Assert.That(double.IsNaN(roots.Item2), Is.True);
+            Assert.That(double.IsNaN(roots.Item3), Is.True);
+
+            double residual = ((c3 * roots.Item1 + c2) * roots.Item1 + c1) * roots.Item1 + c0;
+            Assert.That(Math.Abs(residual), Is.LessThan(1e-12));
+        }
+
+        private static void AssertSingleRealCubicRoot(double[] roots, double[] coefficients)
+        {
+            Assert.That(roots, Has.Length.EqualTo(1));
+            Assert.That(double.IsFinite(roots[0]), Is.True);
+            Assert.That(Math.Abs(coefficients.Evaluate(roots[0])), Is.LessThan(1e-12));
         }
 
 #endif

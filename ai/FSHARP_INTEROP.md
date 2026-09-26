@@ -1,9 +1,5 @@
 # Aardvark.Base F# Interop Reference
 
-AI-targeted reference for using Aardvark.Base types from F#. Covers modules, extension functions, and idiomatic patterns.
-
----
-
 ## Namespace and Module Structure
 
 ### Common Open Statements
@@ -12,13 +8,6 @@ AI-targeted reference for using Aardvark.Base types from F#. Covers modules, ext
 open Aardvark.Base                // Core types: V3d, M44d, Box3d, etc.
 open Aardvark.Base.Sorting        // Sorting extension methods
 ```
-
-### Module Hierarchy
-
-| Namespace | Contents |
-|-----------|----------|
-| `Aardvark.Base` | All primitive types + F# modules |
-| `Aardvark.Base.Sorting` | Array sorting extensions |
 
 ---
 
@@ -115,15 +104,10 @@ Functional lenses for immutable state updates. Used extensively with Adaptify-ge
 
 ### Lens Type
 
-`Lens<'s,'a>` is a class with virtual defaults, not an interface — each member has a default implemented via the others, so an object expression may override any subset (e.g. only `Get` + `Set`, or only `Update`):
+`Lens<'s,'a>` is a class. Implement either `Get` and `Set`, or `Update`;
+the other members have defaults.
 
 ```fsharp
-type Lens<'s, 'a>() =
-    abstract member Get : 's -> 'a
-    abstract member Set : 's * 'a -> 's
-    abstract member Update : 's * ('a -> 'a) -> 's
-    // defaults: Get/Set via Update, Update via Get+Set
-
 let custom =
     { new Lens<int list, int>() with
         member x.Get s = List.head s
@@ -265,16 +249,6 @@ let result =
     |> Mat.transformDir (Trafo3d.RotationZ(Constant.Pi) |> Trafo.forward)
 ```
 
-### Lens-Based State Updates
-
-```fsharp
-// Update nested model immutably
-let model' =
-    model
-    |> (Model.camera_ |. Camera.position_).Set(V3d(0, 0, 10))
-    |> (Model.camera_ |. Camera.target_).Set(V3d.Zero)
-```
-
 ### Vector Comparisons in Conditionals
 
 ```fsharp
@@ -291,7 +265,7 @@ if Vec.allSmaller point boxMax && Vec.allGreater point boxMin then
 
 2. **Inline Functions**: Most `Vec` and `Mat` functions are `inline` with SRTP constraints. This means they work on any type with matching static members, but error messages can be cryptic if types don't match
 
-3. **Lens Composition Order**: `outer |. inner` reads left-to-right (outer first, then inner). This is opposite to function composition `>>`. Think of `|.` as "then focus on"
+3. **Lens Composition Order**: `outer |. inner` reads left-to-right (outer first, then inner).
 
 4. **Option Lenses**: `Map.Lens.item` returns `Lens<_, Option<_>>`. Use `|?` operator to provide a default, or handle `None` explicitly
 

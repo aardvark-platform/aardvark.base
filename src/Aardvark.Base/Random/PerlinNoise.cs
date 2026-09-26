@@ -1,4 +1,4 @@
-using System;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -14,13 +14,27 @@ namespace Aardvark.Base
 		private int m_maxX;
 		private int m_maxY;
 		// private int m_maxZ;
-		float[] m_lookup;
+		private float[] m_lookup;
 
-		private readonly Func<float,float,float,float> m_interpolate;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static int FloorToInt(float value)
+		{
+			int integer = (int)value;
+			if (value.FloatToBits() >= 0 || value == integer)
+				return integer;
+			return integer - 1;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static float Interpolate(float a, float b, float x)
+		{
+			x = (1 - (x * ConstantF.Pi).Cos()) * 0.5f;
+			return a * (1 - x) + b * x;
+		}
 
 		#region Constructors
 		/// <summary>
-		/// InitialintegerZes a new instance of the <see cref="PerlinNoise"/> class.
+		/// Initializes a new instance of the <see cref="PerlinNoise"/> class.
 		/// </summary>
 		public PerlinNoise()
 		{
@@ -31,12 +45,6 @@ namespace Aardvark.Base
 			m_maxX = 0;
 			m_maxY = 0;
 			// m_maxZ = 0;
-
-            m_interpolate = (a, b, x) =>
-            {
-                x = (1 - (x * ConstantF.Pi).Cos()) * 0.5f;
-                return a * (1 - x) + b * x;
-            };
 		}
 
 		#endregion
@@ -132,21 +140,21 @@ namespace Aardvark.Base
         
 		public float InterpolateNoise(float x)
 		{
-			int integerX = (int)x;
+			int integerX = FloorToInt(x);
 			float fracX  = x - (float)integerX;
 
 			float v1 = SmoothNoise(integerX);
 			float v2 = SmoothNoise(integerX + 1);
 
-			return m_interpolate(v1, v2, fracX);
+			return Interpolate(v1, v2, fracX);
 		}
 
 		public float InterpolateNoise(float x, float y)
 		{
-			int integerX = (int)x;
+			int integerX = FloorToInt(x);
 			float fracX  = x - (float)integerX;
 
-			int integerY = (int)y;
+			int integerY = FloorToInt(y);
 			float fracY  = y - (float)integerY;
 
 			float v1 = SmoothNoise(integerX   , integerY);
@@ -154,22 +162,22 @@ namespace Aardvark.Base
 			float v3 = SmoothNoise(integerX   , integerY+1);
 			float v4 = SmoothNoise(integerX+1 , integerY+1);
 
-			float i1 = m_interpolate(v1, v2, fracX);
-			float i2 = m_interpolate(v3, v4, fracX);
+			float i1 = Interpolate(v1, v2, fracX);
+			float i2 = Interpolate(v3, v4, fracX);
 
-			return m_interpolate(i1, i2, fracY);
+			return Interpolate(i1, i2, fracY);
 
 		}
 
 		public float InterpolateNoise(float x, float y, float z)
 		{
-			int integerX = (int)x;
+			int integerX = FloorToInt(x);
 			float fracX  = x - (float)integerX;
 
-			int integerY = (int)y;
+			int integerY = FloorToInt(y);
 			float fracY  = y - (float)integerY;
 			
-			int integerZ = (int)z;
+			int integerZ = FloorToInt(z);
 			float fracZ  = z - (float)integerZ;	
 
 			float v1 = SmoothNoise(integerX   , integerY   , integerZ);
@@ -181,15 +189,15 @@ namespace Aardvark.Base
 			float v7 = SmoothNoise(integerX   , integerY+1 , integerZ+1);
 			float v8 = SmoothNoise(integerX+1 , integerY+1 , integerZ+1);
 
-			float i1 = m_interpolate(v1, v2, fracX);
-			float i2 = m_interpolate(v3, v4, fracX);
-			float i3 = m_interpolate(v5, v6, fracX);
-			float i4 = m_interpolate(v7, v8, fracX);
+			float i1 = Interpolate(v1, v2, fracX);
+			float i2 = Interpolate(v3, v4, fracX);
+			float i3 = Interpolate(v5, v6, fracX);
+			float i4 = Interpolate(v7, v8, fracX);
 
-			float i5 = m_interpolate(i1, i2, fracY);
-			float i6 = m_interpolate(i3, i4, fracY);
+			float i5 = Interpolate(i1, i2, fracY);
+			float i6 = Interpolate(i3, i4, fracY);
 
-			return m_interpolate(i5, i6, fracZ);
+			return Interpolate(i5, i6, fracZ);
 		}
         
 		public float PerlinNoise1F(float x, float amplitude, float frequencyX)

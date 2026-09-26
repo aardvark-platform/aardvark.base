@@ -672,151 +672,257 @@ namespace Aardvark.Base
         #region Ray-Sphere hit intersection
 
         /// <summary>
-        /// Returns true if the ray hits the sphere given by center and
-        /// radius within the supplied parameter interval and before the
-        /// parameter value contained in the supplied hit. Note that a
-        /// hit is only registered if the front or the backsurface is
-        /// encountered within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the sphere within the supplied half-open parameter
+        /// interval and strictly before the parameter already stored in <paramref name="hit"/>.
+        /// The radius must be finite and non-negative. The hit remains unchanged on failure.
         /// </summary>
         public readonly bool HitsSphere(
                 V3f center, float radius,
                 float tmin, float tmax,
                 ref RayHit3f hit)
         {
-            V3f originSubCenter = Origin - center;
-            float a = Direction.LengthSquared;
-            float b = Direction.Dot(originSubCenter);
-            float c = originSubCenter.LengthSquared - radius * radius;
+            var side = GetSphereHit(center, radius, tmin, tmax, out var t);
+            if (side == 0 || !(t < hit.T))
+                return false;
 
-            // --------------------- quadric equation : a t^2  + 2b t + c = 0
-            float d = b * b - a * c;           // factor 2 was eliminated
-
-            if (d < float.Epsilon)             // no root ?
-                return false;                   // then exit
-
-            if (b > 0)                        // stable way to calculate
-                d = -Fun.Sqrt(d) - b;           // the roots of a quadratic
-            else                                // equation
-                d = Fun.Sqrt(d) - b;
-
-            float t1 = d / a;
-            float t2 = c / d;  // Vieta : t1 * t2 == c/a
-
-            // typically two solutions, either both positive, both negative or mixed
-            // -> take closest (if valid) first
-            return t1.Abs() < t2.Abs()
-                    ? ProcessHits(t1, t2, tmin, tmax, ref hit)
-                    : ProcessHits(t2, t1, tmin, tmax, ref hit);
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = side == 2;
+            return true;
         }
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval and before the parameter value
-        /// contained in the supplied hit. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the supplied sphere within the half-open parameter
+        /// interval and strictly before the parameter already stored in <paramref name="hit"/>.
+        /// The hit remains unchanged on failure.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3f sphere, float tmin, float tmax, ref RayHit3f hit)
             => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, ref hit);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval and before the parameter value
-        /// contained in the supplied hit. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned. A hit with this overload is
-        /// considered for t in [0, float.MaxValue].
+        /// Returns true if the ray hits the supplied sphere strictly before the parameter
+        /// already stored in <paramref name="hit"/>. This overload considers t in
+        /// [0, float.MaxValue). The hit remains unchanged on failure.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3f sphere, ref RayHit3f hit)
             => HitsSphere(sphere.Center, sphere.Radius, 0, float.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the supplied sphere within the half-open parameter
+        /// interval. The nearest permitted root is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3f sphere, float tmin, float tmax, out float t)
             => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere. Note that a hit is
-        /// registered if the front or the backsurface is encountered. If there
-        /// are two valid solutions, the closest will be returned. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray hits the supplied sphere. The nearest root in
+        /// [0, float.MaxValue) is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3f sphere, out float t)
             => HitsSphere(sphere.Center, sphere.Radius, 0, float.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval.
-        /// Note that a hit is registered if the front or the backsurface is encountered within the
-        /// interval. If there are two valid solutions, the closest will be returned. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray hits the sphere given by center and radius. The nearest root in
+        /// [0, float.MaxValue) is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         public readonly bool HitsSphere(V3f center, float radius, out float t)
             => HitsSphere(center, radius, 0, float.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval.
-        /// Note that a hit is registered if the front or the backsurface is encountered within the
-        /// interval. If there are two valid solutions, the closest will be returned.
+        /// Returns true if the ray hits the sphere given by center and radius within the half-open
+        /// parameter interval [<paramref name="tmin"/>, <paramref name="tmax"/>). The radius and
+        /// geometry must be finite, and the ray direction must be non-zero. Exact tangencies and
+        /// zero-radius point contacts count as hits. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         public readonly bool HitsSphere(V3f center, float radius, float tmin, float tmax, out float t)
+            => GetSphereHit(center, radius, tmin, tmax, out t) != 0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly int GetSphereHit(
+            V3f center, float radius,
+            float tmin, float tmax,
+            out float t)
         {
-            var originSubCenter = Origin - center;
+            var offset = Origin - center;
             var a = Direction.LengthSquared;
-            var b = Direction.Dot(originSubCenter);
-            var c = originSubCenter.LengthSquared - radius * radius;
+            var b = Direction.Dot(offset);
+            var c = offset.LengthSquared - radius * radius;
+            var discriminant = b * b - a * c;
 
-            // --------------------- quadric equation : a t^2  + 2b t + c = 0
-            var d = b * b - a * c;              // factor 2 was eliminated
+            // A normal negative discriminant is an unambiguous miss. A negative
+            // subnormal may be cancellation around a tangent and is rescaled.
+            if (discriminant <= -1.17549435e-38f)
+                return NoSphereHit(out t);
 
-            if (d >= float.Epsilon)            // no root ? -> exit
+            // Normal finite coefficients retain the direct hot path. Tangencies
+            // and exceptional scales are handled by the cold normalized path.
+            if (!(a >= 1.17549435e-38f && a <= float.MaxValue
+                && discriminant >= 1.17549435e-38f
+                && discriminant <= float.MaxValue))
+                return GetScaledSphereHit(center, radius, tmin, tmax, out t);
+
+            if (!(radius >= 0) || radius > float.MaxValue)
+                return NoSphereHit(out t);
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            float root0;
+            float root1;
+            if (b > 0)
             {
-                if (b > 0)                    // stable way to calculate
-                    d = -Fun.Sqrt(d) - b;       // the roots of a quadratic
-                else                            // equation
-                    d = Fun.Sqrt(d) - b;
-
-                var t1 = d / a;
-                var t2 = c / d;  // Vieta : t1 * t2 == c/a
-
-                // typically two solutions, either both positive, both negative or mixed
-                // -> take closest (if valid) first
-                if (t2.Abs() < t1.Abs())
-                    Fun.Swap(ref t1, ref t2);
-
-                if (t1 >= tmin)
+                var q = -b - sqrtDiscriminant;
+                root0 = q / a;
+                if (root0.IsFinite() && root0 >= tmin)
                 {
-                    if (t1 < tmax)
+                    if (root0 < tmax)
                     {
-                        t = t1;
-                        return true;
+                        t = root0;
+                        return 1;
                     }
-                    // return false
+                    return NoSphereHit(out t);
                 }
-                else if (t2 >= tmin)
+                root1 = c / q;
+            }
+            else
+            {
+                var q = -b + sqrtDiscriminant;
+                root0 = c / q;
+                if (root0.IsFinite() && root0 >= tmin)
                 {
-                    if (t2 < tmax)
+                    if (root0 < tmax)
                     {
-                        t = t2;
-                        return true;
+                        t = root0;
+                        return 1;
                     }
-                    // return false
+                    return NoSphereHit(out t);
                 }
+                root1 = q / a;
             }
 
+            if (root1 >= tmin && root1 < tmax && root1.IsFinite())
+            {
+                t = root1;
+                return 2;
+            }
+
+            return NoSphereHit(out t);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int NoSphereHit(out float t)
+        {
             t = float.NaN;
-            return false;
+            return 0;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private readonly int GetScaledSphereHit(
+            V3f center, float radius,
+            float tmin, float tmax,
+            out float t)
+        {
+            t = float.NaN;
+            if (!(radius >= 0) || radius > float.MaxValue || !(tmin < tmax)
+                || !Origin.AllFinite || !center.AllFinite || !Direction.AllFinite)
+                return 0;
+
+            var directionScale = Direction.NormMax;
+            if (!(directionScale > 0))
+                return 0;
+
+            var scaledDirection = Direction / directionScale;
+            var offset = Origin - center;
+            float positionScale;
+            V3f scaledOffset;
+
+            if (offset.AllFinite)
+            {
+                positionScale = Fun.Max(offset.NormMax, radius);
+                if (!(positionScale > 0))
+                {
+                    if (0 >= tmin && 0 < tmax)
+                    {
+                        t = 0;
+                        return 1;
+                    }
+                    return 0;
+                }
+
+                scaledOffset = offset / positionScale;
+            }
+            else
+            {
+                positionScale = Fun.Max(Origin.NormMax, center.NormMax, radius);
+                scaledOffset = Origin / positionScale - center / positionScale;
+            }
+
+            var scaledRadius = radius / positionScale;
+            var a = scaledDirection.LengthSquared;
+            var b = scaledDirection.Dot(scaledOffset);
+            var c = scaledOffset.LengthSquared - scaledRadius * scaledRadius;
+            var discriminant = b * b - a * c;
+            if (!(discriminant >= 0) || !discriminant.IsFinite())
+                return 0;
+
+            float scaledRoot0;
+            float scaledRoot1;
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                scaledRoot0 = -b / a;
+                scaledRoot1 = scaledRoot0;
+            }
+            else
+            {
+                var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+                scaledRoot0 = q / a;
+                scaledRoot1 = c / q;
+                if (scaledRoot1 < scaledRoot0)
+                    Fun.Swap(ref scaledRoot0, ref scaledRoot1);
+            }
+
+            var root0 = ScaleSphereRoot(scaledRoot0, positionScale, directionScale);
+            if (root0.IsFinite() && root0 >= tmin)
+            {
+                if (root0 < tmax)
+                {
+                    t = root0;
+                    return 1;
+                }
+                return 0;
+            }
+
+            var root1 = ScaleSphereRoot(scaledRoot1, positionScale, directionScale);
+            if (root1 >= tmin && root1 < tmax && root1.IsFinite())
+            {
+                t = root1;
+                return 2;
+            }
+
+            return 0;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static float ScaleSphereRoot(
+            float root, float positionScale, float directionScale)
+        {
+            if (root == 0)
+                return 0;
+
+            var result = root * positionScale / directionScale;
+            if (result.IsFinite() && result != 0)
+                return result;
+
+            result = root / directionScale * positionScale;
+            if (result.IsFinite() && result != 0)
+                return result;
+
+            result = positionScale / directionScale * root;
+            return result.IsFinite() && result != 0 ? result : float.NaN;
         }
 
         #endregion
@@ -873,166 +979,533 @@ namespace Aardvark.Base
         #region Ray-Circle hit intersection
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, float tmin, float tmax, ref RayHit3f hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, ref RayHit3f hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, float.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, ref RayHit3f hit)
             => HitsCircle(center, normal, radius, 0, float.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
+        /// The radius must be finite and non-negative. The hit remains unchanged on failure.
         /// </summary>
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, float tmin, float tmax, ref RayHit3f hit)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
+            if (!TryGetCircleHit(center, normal, radius, tmin, tmax, out var t)
+                || !(t < hit.T))
                 return false;
 
-            var t = dw / dc;
-            if (!ComputeHit(t, tmin, tmax, ref hit))
-                return false;
-
-            if (Vec.DistanceSquared(hit.Point, center) > radius * radius)
-            {
-                hit.Point = V3f.NaN;
-                hit.T = tmax;
-                return false;
-            }
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
             return true;
         }
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, float tmin, float tmax, out float t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3f circle, out float t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, float.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, float.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, float.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, out float t)
             => HitsCircle(center, normal, radius, 0, float.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the half-open parameter interval
+        /// [<paramref name="tmin"/>, <paramref name="tmax"/>). The radius must be finite
+        /// and non-negative. On failure, <paramref name="t"/> is NaN.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3f center, V3f normal, float radius, float tmin, float tmax, out float t)
+            => TryGetCircleHit(center, normal, radius, tmin, tmax, out t);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCircleHit(
+            V3f center, V3f normal, float radius,
+            float tmin, float tmax, out float t)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
-            {
-                t = float.NaN;
-                return false;
-            }
-
-            t = dw / dc;
-            if (t < tmin || t > tmax)
+            t = float.NaN;
+            if (!(radius >= 0) || radius > float.MaxValue || !(tmin < tmax))
                 return false;
 
-            var point = GetPointOnRay(t); // add point as out parameter?
-            return Vec.DistanceSquared(point, center) <= radius * radius;
+            var directionDotNormal = normal.Dot(Direction);
+            if (directionDotNormal == 0)
+                return false;
+
+            var candidate = normal.Dot(center - Origin) / directionDotNormal;
+            if (!(candidate >= tmin && candidate < tmax))
+                return false;
+
+            var point = GetPointOnRay(candidate);
+            if (!IsInsideDisk(point.X - center.X, point.Y - center.Y, point.Z - center.Z, radius))
+                return false;
+
+            t = candidate;
+            return true;
         }
 
         #endregion
 
         #region Ray-Cylinder hit intersection
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFiniteCylinderCandidate(float t, float tmin, float best)
+            => t >= tmin && t < best && t.IsFinite();
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool IsInsideScaledDisk(
+            float x, float y, float z, float radius)
+        {
+            var scale = Fun.Max(
+                Fun.Max(Fun.Abs(x), Fun.Abs(y)),
+                Fun.Max(Fun.Abs(z), radius));
+            if (!(scale > 0)) return scale == 0;
+            if (!scale.IsFinite()) return false;
+
+            x /= scale;
+            y /= scale;
+            z /= scale;
+            var scaledRadius = radius / scale;
+            return x * x + y * y + z * z <= scaledRadius * scaledRadius;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInsideDisk(
+            float x, float y, float z, float radius)
+        {
+            var radiusSquared = radius * radius;
+            // A normal finite radius square makes radial-square underflow/overflow decisive.
+            if (radiusSquared >= 1.17549435e-38f && radiusSquared <= float.MaxValue)
+                return x * x + y * y + z * z <= radiusSquared;
+
+            return IsInsideScaledDisk(x, y, z, radius);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInsideCylinderCap(
+            V3f originPerpendicular, V3f directionPerpendicular,
+            float t, float radius)
+        {
+            var radial = originPerpendicular + directionPerpendicular * t;
+            return IsInsideDisk(radial.X, radial.Y, radial.Z, radius);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void GetScaledCylinderBarrelRoots(
+            V3f directionPerpendicular, V3f originPerpendicular,
+            float radius, out float root0, out float root1)
+        {
+            root0 = float.NaN;
+            root1 = float.NaN;
+
+            var directionScale = directionPerpendicular.NormMax;
+            if (!(directionScale > 0) || !directionScale.IsFinite()) return;
+
+            var originScale = Fun.Max(originPerpendicular.NormMax, radius);
+            if (!(originScale > 0))
+            {
+                root0 = 0;
+                root1 = 0;
+                return;
+            }
+            if (!originScale.IsFinite()) return;
+
+            var scaledDirection = directionPerpendicular / directionScale;
+            var scaledOrigin = originPerpendicular / originScale;
+            var scaledRadius = radius / originScale;
+            var a = scaledDirection.LengthSquared;
+            var b = scaledDirection.Dot(scaledOrigin);
+            var c = scaledOrigin.LengthSquared - scaledRadius * scaledRadius;
+            var discriminant = b * b - a * c;
+            var rootScale = originScale / directionScale;
+
+            if (!(a > 0) || !discriminant.IsFinite() || !rootScale.IsFinite() || discriminant < 0)
+                return;
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                root0 = (-b / a) * rootScale;
+                root1 = root0;
+                return;
+            }
+
+            var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+            if (b > 0)
+            {
+                root0 = (q / a) * rootScale;
+                root1 = (c / q) * rootScale;
+            }
+            else
+            {
+                root0 = (c / q) * rootScale;
+                root1 = (q / a) * rootScale;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetCylinderBarrelRoots(
+            V3f directionPerpendicular, V3f originPerpendicular,
+            float radius, out float root0, out float root1)
+        {
+            var a = directionPerpendicular.LengthSquared;
+            var b = directionPerpendicular.Dot(originPerpendicular);
+            var c = originPerpendicular.LengthSquared - radius * radius;
+            var discriminant = b * b - a * c;
+
+            if (!(a > 0) || !discriminant.IsFinite())
+            {
+                GetScaledCylinderBarrelRoots(
+                    directionPerpendicular, originPerpendicular, radius, out root0, out root1);
+                return;
+            }
+
+            if (discriminant < 0)
+            {
+                root0 = float.NaN;
+                root1 = float.NaN;
+                return;
+            }
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                root0 = -b / a;
+                root1 = root0;
+                return;
+            }
+
+            var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+            if (b > 0)
+            {
+                root0 = q / a;
+                root1 = c / q;
+            }
+            else
+            {
+                root0 = c / q;
+                root1 = q / a;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCylinderHit(
+            V3f p0, V3f p1, float radius,
+            float tmin, float tmax, float distanceScale,
+            out float t)
+        {
+            if (distanceScale != 0)
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, distanceScale, out t);
+
+            return TryGetCylinderHitFast(p0, p1, radius, tmin, tmax, out t);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCylinderHitFast(
+            V3f p0, V3f p1, float radius,
+            float tmin, float tmax, out float t)
+        {
+            t = float.NaN;
+            if (!(radius >= 0) || radius > float.MaxValue || !(tmin < tmax))
+                return false;
+
+            var axis = p1 - p0;
+            var axisLengthSquared = axis.LengthSquared;
+            if (!(axisLengthSquared > 0) || !axisLengthSquared.IsFinite())
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+            var axisLength = Fun.Sqrt(axisLengthSquared);
+            var axisDirection = axis * (1 / axisLength);
+            var originOffset = Origin - p0;
+            var directionAlongAxis = Direction.Dot(axisDirection);
+            var originAlongAxis = originOffset.Dot(axisDirection);
+            var directionPerpendicular = Direction - directionAlongAxis * axisDirection;
+            var originPerpendicular = originOffset - originAlongAxis * axisDirection;
+            var radiusSquared = radius * radius;
+
+            var best = tmax;
+            var found = false;
+            if (directionPerpendicular != V3f.Zero)
+            {
+                var a = directionPerpendicular.LengthSquared;
+                var b = directionPerpendicular.Dot(originPerpendicular);
+                var c = originPerpendicular.LengthSquared - radiusSquared;
+                var discriminant = b * b - a * c;
+                if (!(a > 0) || !discriminant.IsFinite() || !radiusSquared.IsFinite())
+                    return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+                if (discriminant >= 0)
+                {
+                    var sqrtDiscriminant = Fun.Sqrt(discriminant);
+                    float root0;
+                    float root1;
+                    if (sqrtDiscriminant == 0)
+                    {
+                        root0 = -b / a;
+                        root1 = root0;
+                    }
+                    else
+                    {
+                        var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+                        if (b > 0)
+                        {
+                            root0 = q / a;
+                            root1 = c / q;
+                        }
+                        else
+                        {
+                            root0 = c / q;
+                            root1 = q / a;
+                        }
+                    }
+
+                    if (root0 >= tmin && root0 < best)
+                    {
+                        var axial = originAlongAxis + root0 * directionAlongAxis;
+                        if (axial >= 0 && axial <= axisLength)
+                        {
+                            best = root0;
+                            found = true;
+                        }
+                    }
+                    if (root1 >= tmin && root1 < best)
+                    {
+                        var axial = originAlongAxis + root1 * directionAlongAxis;
+                        if (axial >= 0 && axial <= axisLength)
+                        {
+                            best = root1;
+                            found = true;
+                        }
+                    }
+                }
+            }
+
+            if (directionAlongAxis != 0)
+            {
+                var cap0 = -originAlongAxis / directionAlongAxis;
+                if (cap0 >= tmin && cap0 < best)
+                {
+                    var radial = originPerpendicular + directionPerpendicular * cap0;
+                    var radialSquared = radial.LengthSquared;
+                    if (!radialSquared.IsFinite() || !radiusSquared.IsFinite())
+                        return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+                    if (radialSquared <= radiusSquared)
+                    {
+                        best = cap0;
+                        found = true;
+                    }
+                }
+
+                var cap1 = (axisLength - originAlongAxis) / directionAlongAxis;
+                if (cap1 >= tmin && cap1 < best)
+                {
+                    var radial = originPerpendicular + directionPerpendicular * cap1;
+                    var radialSquared = radial.LengthSquared;
+                    if (!radialSquared.IsFinite() || !radiusSquared.IsFinite())
+                        return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+                    if (radialSquared <= radiusSquared)
+                    {
+                        best = cap1;
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found || !best.IsFinite()) return false;
+            if (!(Origin + Direction * best).IsFinite)
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+            t = best;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private readonly bool TryGetCylinderHitRobust(
+            V3f p0, V3f p1, float radius,
+            float tmin, float tmax, float distanceScale,
+            out float t)
+        {
+            t = float.NaN;
+            if (!(radius >= 0) || radius > float.MaxValue || !(tmin < tmax))
+                return false;
+
+            var axis = p1 - p0;
+
+            V3f axisDirection;
+            var axisLengthSquared = axis.LengthSquared;
+            float axisLength;
+            if (axisLengthSquared > 0 && axisLengthSquared.IsFinite())
+            {
+                axisLength = Fun.Sqrt(axisLengthSquared);
+                axisDirection = axis * (1 / axisLength);
+            }
+            else
+            {
+                var axisScale = axis.NormMax;
+                if (!(axisScale > 0) || !axisScale.IsFinite()) return false;
+
+                var scaledAxis = axis / axisScale;
+                var scaledLength = scaledAxis.Length;
+                axisLength = axisScale * scaledLength;
+                axisDirection = scaledAxis * (1 / scaledLength);
+                if (!axisLength.IsFinite() || !axisDirection.IsFinite) return false;
+            }
+
+            var originOffset = Origin - p0;
+            var directionAlongAxis = Direction.Dot(axisDirection);
+            var originAlongAxis = originOffset.Dot(axisDirection);
+            var directionPerpendicular = Direction - directionAlongAxis * axisDirection;
+            var originPerpendicular = originOffset - originAlongAxis * axisDirection;
+
+            if (distanceScale != 0)
+            {
+                if (!distanceScale.IsFinite()) return false;
+                float closestParameter;
+                var perpendicularLengthSquared = directionPerpendicular.LengthSquared;
+                var perpendicularDot = directionPerpendicular.Dot(originPerpendicular);
+                if (perpendicularLengthSquared > 0 && perpendicularLengthSquared.IsFinite() && perpendicularDot.IsFinite())
+                {
+                    closestParameter = -perpendicularDot / perpendicularLengthSquared;
+                }
+                else if (directionPerpendicular != V3f.Zero)
+                {
+                    var directionScale = directionPerpendicular.NormMax;
+                    var originScale = originPerpendicular.NormMax;
+                    if (!(directionScale > 0) || !directionScale.IsFinite() || !originScale.IsFinite())
+                        return false;
+
+                    if (originScale > 0)
+                    {
+                        var scaledDirection = directionPerpendicular / directionScale;
+                        var scaledOrigin = originPerpendicular / originScale;
+                        closestParameter = -(originScale / directionScale)
+                            * scaledDirection.Dot(scaledOrigin) / scaledDirection.LengthSquared;
+                    }
+                    else
+                    {
+                        closestParameter = 0;
+                    }
+                }
+                else
+                {
+                    closestParameter = 0;
+                }
+
+                var directionLength = Direction.Length;
+                if (!(directionLength > 0) || !directionLength.IsFinite())
+                {
+                    var directionScale = Direction.NormMax;
+                    var scaledDirection = Direction / directionScale;
+                    directionLength = directionScale * scaledDirection.Length;
+                }
+
+                var distance = Fun.Abs(closestParameter) * directionLength;
+                radius = ((radius / distanceScale) * distance) * 2;
+                if (!radius.IsFinite() || radius < 0) return false;
+            }
+
+            var best = tmax;
+            var found = false;
+
+            if (directionPerpendicular != V3f.Zero)
+            {
+                GetCylinderBarrelRoots(directionPerpendicular, originPerpendicular, radius, out var root0, out var root1);
+                if (IsFiniteCylinderCandidate(root0, tmin, best))
+                {
+                    var axial = originAlongAxis + root0 * directionAlongAxis;
+                    if (axial >= 0 && axial <= axisLength)
+                    {
+                        best = root0;
+                        found = true;
+                    }
+                }
+                if (IsFiniteCylinderCandidate(root1, tmin, best))
+                {
+                    var axial = originAlongAxis + root1 * directionAlongAxis;
+                    if (axial >= 0 && axial <= axisLength)
+                    {
+                        best = root1;
+                        found = true;
+                    }
+                }
+            }
+
+            if (directionAlongAxis != 0)
+            {
+                var cap0 = -originAlongAxis / directionAlongAxis;
+                if (IsFiniteCylinderCandidate(cap0, tmin, best)
+                    && IsInsideCylinderCap(originPerpendicular, directionPerpendicular, cap0, radius))
+                {
+                    best = cap0;
+                    found = true;
+                }
+
+                var cap1 = (axisLength - originAlongAxis) / directionAlongAxis;
+                if (IsFiniteCylinderCandidate(cap1, tmin, best)
+                    && IsInsideCylinderCap(originPerpendicular, directionPerpendicular, cap1, radius))
+                {
+                    best = cap1;
+                    found = true;
+                }
+            }
+
+            if (!found || !(Origin + Direction * best).IsFinite) return false;
+            t = best;
+            return true;
+        }
+
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the finite capped cylinder within the supplied parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
         /// </summary>
         public readonly bool HitsCylinder(V3f p0, V3f p1, float radius,
                 float tmin, float tmax,
                 ref RayHit3f hit)
         {
-            var axis = new Line3f(p0, p1);
-            var axisDir = axis.Direction.Normalized;
+            if (!TryGetCylinderHit(p0, p1, radius, tmin, tmax, 0, out var t) || !(t < hit.T))
+                return false;
 
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - p0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            var t = -normal2.Dot(unitNormal) / normal.Length;
-
-            // between enitre rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                hit.T = t1;
-                hit.Point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new Plane3f(-axisDir, p0);
-                var topPlane = new Plane3f(axisDir, p1);
-                var heightBottom = bottomPlane.Height(hit.Point);
-                var heightTop = topPlane.Height(hit.Point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    hit.T = tmax;
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
-
-                    // hit still close enough to cylinder axis?
-                    var distance = axis.Ray3f.GetMinimalDistanceTo(hit.Point);
-
-                    if (distance <= radius && (bottomHit || topHit))
-                        return true;
-                }
-                else
-                    return true;
-            }
-
-            hit.T = tmax;
-            hit.Point = V3f.NaN;
-            return false;
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
+            return true;
         }
 
         /// <summary>
@@ -1043,71 +1516,15 @@ namespace Aardvark.Base
         public readonly bool HitsCylinder(V3f p0, V3f p1, float radius, ref RayHit3f hit)
             => HitsCylinder(p0, p1, radius, 0, float.MaxValue, ref hit);
 
+        /// <summary>
+        /// Returns true if the ray hits the finite capped cylinder within the half-open parameter
+        /// interval [<paramref name="tmin"/>, <paramref name="tmax"/>). On failure,
+        /// <paramref name="t"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCylinder(V3f p0, V3f p1, float radius,
                 float tmin, float tmax, out float t)
-        {
-            var axis = new Line3f(p0, p1);
-            var axisDir = axis.Direction.Normalized;
-
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - p0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            t = -normal2.Dot(unitNormal) / normal.Length;
-
-            // between entire rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                t = t1;
-                var point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new Plane3f(-axisDir, p0);
-                var topPlane = new Plane3f(axisDir, p1);
-                var heightBottom = bottomPlane.Height(point);
-                var heightTop = topPlane.Height(point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsCircle(p0, -axisDir, radius, tmin, tmax, out t);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsCircle(p1, axisDir, radius, tmin, tmax, out float ttop);
-
-                    if (topHit)
-                    {
-                        if (bottomHit)
-                        {
-                            if (ttop.Abs() < t)
-                                t = ttop;
-                        }
-                        else
-                            t = ttop;
-                    }
-
-                    return topHit || bottomHit;
-                }
-                else
-                    return true;
-            }
-
-            t = float.NaN;
-            return false;
-        }
+            => TryGetCylinderHit(p0, p1, radius, tmin, tmax, 0, out t);
 
         /// <summary>
         /// Returns true if the ray intersects with the primitive. A hit with this
@@ -1125,74 +1542,23 @@ namespace Aardvark.Base
             => Hits(cylinder, tmin, tmax, 0, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the finite capped cylinder within the supplied parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
+        /// A nonzero <paramref name="distanceScale"/> grows the effective radius with distance.
         /// </summary>
         public readonly bool Hits(Cylinder3f cylinder, float tmin, float tmax, float distanceScale, ref RayHit3f hit)
         {
-            var axisDir = cylinder.Axis.Direction.Normalized;
+            if (!TryGetCylinderHit(
+                    cylinder.P0, cylinder.P1, cylinder.Radius,
+                    tmin, tmax, distanceScale, out var t)
+                || !(t < hit.T))
+                return false;
 
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - cylinder.P0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            var t = -normal2.Dot(unitNormal) / normal.Length;
-
-            var radius = cylinder.Radius;
-            if (distanceScale != 0)
-            {   // cylinder gets bigger, the further away it is
-                var pnt = GetPointOnRay(t);
-
-                var dis = Vec.Distance(pnt, this.Origin);
-                radius = ((cylinder.Radius / distanceScale) * dis) * 2;
-            }
-
-            // between enitre rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                hit.T = t1;
-                hit.Point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new Plane3f(cylinder.Circle0.Normal, cylinder.Circle0.Center);
-                var topPlane = new Plane3f(cylinder.Circle1.Normal, cylinder.Circle1.Center);
-                var heightBottom = bottomPlane.Height(hit.Point);
-                var heightTop = topPlane.Height(hit.Point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    hit.T = tmax;
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
-
-                    // hit still close enough to cylinder axis?
-                    var distance = cylinder.Axis.Ray3f.GetMinimalDistanceTo(hit.Point);
-
-                    if (distance <= radius && (bottomHit || topHit))
-                        return true;
-                }
-                else
-                    return true;
-            }
-
-            hit.T = tmax;
-            hit.Point = V3f.NaN;
-            return false;
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
+            return true;
         }
 
         /// <summary>
@@ -2546,151 +2912,257 @@ namespace Aardvark.Base
         #region Ray-Sphere hit intersection
 
         /// <summary>
-        /// Returns true if the ray hits the sphere given by center and
-        /// radius within the supplied parameter interval and before the
-        /// parameter value contained in the supplied hit. Note that a
-        /// hit is only registered if the front or the backsurface is
-        /// encountered within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the sphere within the supplied half-open parameter
+        /// interval and strictly before the parameter already stored in <paramref name="hit"/>.
+        /// The radius must be finite and non-negative. The hit remains unchanged on failure.
         /// </summary>
         public readonly bool HitsSphere(
                 V3d center, double radius,
                 double tmin, double tmax,
                 ref RayHit3d hit)
         {
-            V3d originSubCenter = Origin - center;
-            double a = Direction.LengthSquared;
-            double b = Direction.Dot(originSubCenter);
-            double c = originSubCenter.LengthSquared - radius * radius;
+            var side = GetSphereHit(center, radius, tmin, tmax, out var t);
+            if (side == 0 || !(t < hit.T))
+                return false;
 
-            // --------------------- quadric equation : a t^2  + 2b t + c = 0
-            double d = b * b - a * c;           // factor 2 was eliminated
-
-            if (d < double.Epsilon)             // no root ?
-                return false;                   // then exit
-
-            if (b > 0)                        // stable way to calculate
-                d = -Fun.Sqrt(d) - b;           // the roots of a quadratic
-            else                                // equation
-                d = Fun.Sqrt(d) - b;
-
-            double t1 = d / a;
-            double t2 = c / d;  // Vieta : t1 * t2 == c/a
-
-            // typically two solutions, either both positive, both negative or mixed
-            // -> take closest (if valid) first
-            return t1.Abs() < t2.Abs()
-                    ? ProcessHits(t1, t2, tmin, tmax, ref hit)
-                    : ProcessHits(t2, t1, tmin, tmax, ref hit);
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = side == 2;
+            return true;
         }
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval and before the parameter value
-        /// contained in the supplied hit. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the supplied sphere within the half-open parameter
+        /// interval and strictly before the parameter already stored in <paramref name="hit"/>.
+        /// The hit remains unchanged on failure.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3d sphere, double tmin, double tmax, ref RayHit3d hit)
             => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, ref hit);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval and before the parameter value
-        /// contained in the supplied hit. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned. A hit with this overload is
-        /// considered for t in [0, double.MaxValue].
+        /// Returns true if the ray hits the supplied sphere strictly before the parameter
+        /// already stored in <paramref name="hit"/>. This overload considers t in
+        /// [0, double.MaxValue). The hit remains unchanged on failure.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3d sphere, ref RayHit3d hit)
             => HitsSphere(sphere.Center, sphere.Radius, 0, double.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the
-        /// supplied parameter interval. Note that a hit is only
-        /// registered if the front or the backsurface is encountered
-        /// within the interval. If there are two valid solutions, the
-        /// closest will be returned.
+        /// Returns true if the ray hits the supplied sphere within the half-open parameter
+        /// interval. The nearest permitted root is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3d sphere, double tmin, double tmax, out double t)
             => HitsSphere(sphere.Center, sphere.Radius, tmin, tmax, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere. Note that a hit is
-        /// registered if the front or the backsurface is encountered. If there
-        /// are two valid solutions, the closest will be returned. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray hits the supplied sphere. The nearest root in
+        /// [0, double.MaxValue) is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Sphere3d sphere, out double t)
             => HitsSphere(sphere.Center, sphere.Radius, 0, double.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval.
-        /// Note that a hit is registered if the front or the backsurface is encountered within the
-        /// interval. If there are two valid solutions, the closest will be returned. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray hits the sphere given by center and radius. The nearest root in
+        /// [0, double.MaxValue) is returned. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         public readonly bool HitsSphere(V3d center, double radius, out double t)
             => HitsSphere(center, radius, 0, double.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray hits the supplied sphere within the supplied parameter interval.
-        /// Note that a hit is registered if the front or the backsurface is encountered within the
-        /// interval. If there are two valid solutions, the closest will be returned.
+        /// Returns true if the ray hits the sphere given by center and radius within the half-open
+        /// parameter interval [<paramref name="tmin"/>, <paramref name="tmax"/>). The radius and
+        /// geometry must be finite, and the ray direction must be non-zero. Exact tangencies and
+        /// zero-radius point contacts count as hits. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         public readonly bool HitsSphere(V3d center, double radius, double tmin, double tmax, out double t)
+            => GetSphereHit(center, radius, tmin, tmax, out t) != 0;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly int GetSphereHit(
+            V3d center, double radius,
+            double tmin, double tmax,
+            out double t)
         {
-            var originSubCenter = Origin - center;
+            var offset = Origin - center;
             var a = Direction.LengthSquared;
-            var b = Direction.Dot(originSubCenter);
-            var c = originSubCenter.LengthSquared - radius * radius;
+            var b = Direction.Dot(offset);
+            var c = offset.LengthSquared - radius * radius;
+            var discriminant = b * b - a * c;
 
-            // --------------------- quadric equation : a t^2  + 2b t + c = 0
-            var d = b * b - a * c;              // factor 2 was eliminated
+            // A normal negative discriminant is an unambiguous miss. A negative
+            // subnormal may be cancellation around a tangent and is rescaled.
+            if (discriminant <= -2.2250738585072014e-308)
+                return NoSphereHit(out t);
 
-            if (d >= double.Epsilon)            // no root ? -> exit
+            // Normal finite coefficients retain the direct hot path. Tangencies
+            // and exceptional scales are handled by the cold normalized path.
+            if (!(a >= 2.2250738585072014e-308 && a <= double.MaxValue
+                && discriminant >= 2.2250738585072014e-308
+                && discriminant <= double.MaxValue))
+                return GetScaledSphereHit(center, radius, tmin, tmax, out t);
+
+            if (!(radius >= 0) || radius > double.MaxValue)
+                return NoSphereHit(out t);
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            double root0;
+            double root1;
+            if (b > 0)
             {
-                if (b > 0)                    // stable way to calculate
-                    d = -Fun.Sqrt(d) - b;       // the roots of a quadratic
-                else                            // equation
-                    d = Fun.Sqrt(d) - b;
-
-                var t1 = d / a;
-                var t2 = c / d;  // Vieta : t1 * t2 == c/a
-
-                // typically two solutions, either both positive, both negative or mixed
-                // -> take closest (if valid) first
-                if (t2.Abs() < t1.Abs())
-                    Fun.Swap(ref t1, ref t2);
-
-                if (t1 >= tmin)
+                var q = -b - sqrtDiscriminant;
+                root0 = q / a;
+                if (root0.IsFinite() && root0 >= tmin)
                 {
-                    if (t1 < tmax)
+                    if (root0 < tmax)
                     {
-                        t = t1;
-                        return true;
+                        t = root0;
+                        return 1;
                     }
-                    // return false
+                    return NoSphereHit(out t);
                 }
-                else if (t2 >= tmin)
+                root1 = c / q;
+            }
+            else
+            {
+                var q = -b + sqrtDiscriminant;
+                root0 = c / q;
+                if (root0.IsFinite() && root0 >= tmin)
                 {
-                    if (t2 < tmax)
+                    if (root0 < tmax)
                     {
-                        t = t2;
-                        return true;
+                        t = root0;
+                        return 1;
                     }
-                    // return false
+                    return NoSphereHit(out t);
                 }
+                root1 = q / a;
             }
 
+            if (root1 >= tmin && root1 < tmax && root1.IsFinite())
+            {
+                t = root1;
+                return 2;
+            }
+
+            return NoSphereHit(out t);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int NoSphereHit(out double t)
+        {
             t = double.NaN;
-            return false;
+            return 0;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private readonly int GetScaledSphereHit(
+            V3d center, double radius,
+            double tmin, double tmax,
+            out double t)
+        {
+            t = double.NaN;
+            if (!(radius >= 0) || radius > double.MaxValue || !(tmin < tmax)
+                || !Origin.AllFinite || !center.AllFinite || !Direction.AllFinite)
+                return 0;
+
+            var directionScale = Direction.NormMax;
+            if (!(directionScale > 0))
+                return 0;
+
+            var scaledDirection = Direction / directionScale;
+            var offset = Origin - center;
+            double positionScale;
+            V3d scaledOffset;
+
+            if (offset.AllFinite)
+            {
+                positionScale = Fun.Max(offset.NormMax, radius);
+                if (!(positionScale > 0))
+                {
+                    if (0 >= tmin && 0 < tmax)
+                    {
+                        t = 0;
+                        return 1;
+                    }
+                    return 0;
+                }
+
+                scaledOffset = offset / positionScale;
+            }
+            else
+            {
+                positionScale = Fun.Max(Origin.NormMax, center.NormMax, radius);
+                scaledOffset = Origin / positionScale - center / positionScale;
+            }
+
+            var scaledRadius = radius / positionScale;
+            var a = scaledDirection.LengthSquared;
+            var b = scaledDirection.Dot(scaledOffset);
+            var c = scaledOffset.LengthSquared - scaledRadius * scaledRadius;
+            var discriminant = b * b - a * c;
+            if (!(discriminant >= 0) || !discriminant.IsFinite())
+                return 0;
+
+            double scaledRoot0;
+            double scaledRoot1;
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                scaledRoot0 = -b / a;
+                scaledRoot1 = scaledRoot0;
+            }
+            else
+            {
+                var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+                scaledRoot0 = q / a;
+                scaledRoot1 = c / q;
+                if (scaledRoot1 < scaledRoot0)
+                    Fun.Swap(ref scaledRoot0, ref scaledRoot1);
+            }
+
+            var root0 = ScaleSphereRoot(scaledRoot0, positionScale, directionScale);
+            if (root0.IsFinite() && root0 >= tmin)
+            {
+                if (root0 < tmax)
+                {
+                    t = root0;
+                    return 1;
+                }
+                return 0;
+            }
+
+            var root1 = ScaleSphereRoot(scaledRoot1, positionScale, directionScale);
+            if (root1 >= tmin && root1 < tmax && root1.IsFinite())
+            {
+                t = root1;
+                return 2;
+            }
+
+            return 0;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static double ScaleSphereRoot(
+            double root, double positionScale, double directionScale)
+        {
+            if (root == 0)
+                return 0;
+
+            var result = root * positionScale / directionScale;
+            if (result.IsFinite() && result != 0)
+                return result;
+
+            result = root / directionScale * positionScale;
+            if (result.IsFinite() && result != 0)
+                return result;
+
+            result = positionScale / directionScale * root;
+            return result.IsFinite() && result != 0 ? result : double.NaN;
         }
 
         #endregion
@@ -2747,166 +3219,533 @@ namespace Aardvark.Base
         #region Ray-Circle hit intersection
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, double tmin, double tmax, ref RayHit3d hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, ref RayHit3d hit)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, double.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, ref RayHit3d hit)
             => HitsCircle(center, normal, radius, 0, double.MaxValue, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
+        /// The radius must be finite and non-negative. The hit remains unchanged on failure.
         /// </summary>
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, ref RayHit3d hit)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
+            if (!TryGetCircleHit(center, normal, radius, tmin, tmax, out var t)
+                || !(t < hit.T))
                 return false;
 
-            var t = dw / dc;
-            if (!ComputeHit(t, tmin, tmax, ref hit))
-                return false;
-
-            if (Vec.DistanceSquared(hit.Point, center) > radius * radius)
-            {
-                hit.Point = V3d.NaN;
-                hit.T = tmax;
-                return false;
-            }
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
             return true;
         }
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the supplied half-open parameter
+        /// interval. On failure, <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, double tmin, double tmax, out double t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, tmin, tmax, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool Hits(Circle3d circle, out double t)
             => HitsCircle(circle.Center, circle.Normal, circle.Radius, 0, double.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive. A hit with this
-        /// overload is considered for t in [0, double.MaxValue].
+        /// Returns true if the ray intersects with the circle. A hit with this
+        /// overload is considered for t in [0, double.MaxValue). On failure,
+        /// <paramref name="t"/> is NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, out double t)
             => HitsCircle(center, normal, radius, 0, double.MaxValue, out t);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the circle within the half-open parameter interval
+        /// [<paramref name="tmin"/>, <paramref name="tmax"/>). The radius must be finite
+        /// and non-negative. On failure, <paramref name="t"/> is NaN.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCircle(V3d center, V3d normal, double radius, double tmin, double tmax, out double t)
+            => TryGetCircleHit(center, normal, radius, tmin, tmax, out t);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCircleHit(
+            V3d center, V3d normal, double radius,
+            double tmin, double tmax, out double t)
         {
-            var dc = normal.Dot(Direction);
-            var dw = normal.Dot(center - Origin);
-
-            // If parallel to plane
-            if (dc == 0)
-            {
-                t = double.NaN;
-                return false;
-            }
-
-            t = dw / dc;
-            if (t < tmin || t > tmax)
+            t = double.NaN;
+            if (!(radius >= 0) || radius > double.MaxValue || !(tmin < tmax))
                 return false;
 
-            var point = GetPointOnRay(t); // add point as out parameter?
-            return Vec.DistanceSquared(point, center) <= radius * radius;
+            var directionDotNormal = normal.Dot(Direction);
+            if (directionDotNormal == 0)
+                return false;
+
+            var candidate = normal.Dot(center - Origin) / directionDotNormal;
+            if (!(candidate >= tmin && candidate < tmax))
+                return false;
+
+            var point = GetPointOnRay(candidate);
+            if (!IsInsideDisk(point.X - center.X, point.Y - center.Y, point.Z - center.Z, radius))
+                return false;
+
+            t = candidate;
+            return true;
         }
 
         #endregion
 
         #region Ray-Cylinder hit intersection
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFiniteCylinderCandidate(double t, double tmin, double best)
+            => t >= tmin && t < best && t.IsFinite();
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static bool IsInsideScaledDisk(
+            double x, double y, double z, double radius)
+        {
+            var scale = Fun.Max(
+                Fun.Max(Fun.Abs(x), Fun.Abs(y)),
+                Fun.Max(Fun.Abs(z), radius));
+            if (!(scale > 0)) return scale == 0;
+            if (!scale.IsFinite()) return false;
+
+            x /= scale;
+            y /= scale;
+            z /= scale;
+            var scaledRadius = radius / scale;
+            return x * x + y * y + z * z <= scaledRadius * scaledRadius;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInsideDisk(
+            double x, double y, double z, double radius)
+        {
+            var radiusSquared = radius * radius;
+            // A normal finite radius square makes radial-square underflow/overflow decisive.
+            if (radiusSquared >= 2.2250738585072014e-308 && radiusSquared <= double.MaxValue)
+                return x * x + y * y + z * z <= radiusSquared;
+
+            return IsInsideScaledDisk(x, y, z, radius);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsInsideCylinderCap(
+            V3d originPerpendicular, V3d directionPerpendicular,
+            double t, double radius)
+        {
+            var radial = originPerpendicular + directionPerpendicular * t;
+            return IsInsideDisk(radial.X, radial.Y, radial.Z, radius);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void GetScaledCylinderBarrelRoots(
+            V3d directionPerpendicular, V3d originPerpendicular,
+            double radius, out double root0, out double root1)
+        {
+            root0 = double.NaN;
+            root1 = double.NaN;
+
+            var directionScale = directionPerpendicular.NormMax;
+            if (!(directionScale > 0) || !directionScale.IsFinite()) return;
+
+            var originScale = Fun.Max(originPerpendicular.NormMax, radius);
+            if (!(originScale > 0))
+            {
+                root0 = 0;
+                root1 = 0;
+                return;
+            }
+            if (!originScale.IsFinite()) return;
+
+            var scaledDirection = directionPerpendicular / directionScale;
+            var scaledOrigin = originPerpendicular / originScale;
+            var scaledRadius = radius / originScale;
+            var a = scaledDirection.LengthSquared;
+            var b = scaledDirection.Dot(scaledOrigin);
+            var c = scaledOrigin.LengthSquared - scaledRadius * scaledRadius;
+            var discriminant = b * b - a * c;
+            var rootScale = originScale / directionScale;
+
+            if (!(a > 0) || !discriminant.IsFinite() || !rootScale.IsFinite() || discriminant < 0)
+                return;
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                root0 = (-b / a) * rootScale;
+                root1 = root0;
+                return;
+            }
+
+            var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+            if (b > 0)
+            {
+                root0 = (q / a) * rootScale;
+                root1 = (c / q) * rootScale;
+            }
+            else
+            {
+                root0 = (c / q) * rootScale;
+                root1 = (q / a) * rootScale;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void GetCylinderBarrelRoots(
+            V3d directionPerpendicular, V3d originPerpendicular,
+            double radius, out double root0, out double root1)
+        {
+            var a = directionPerpendicular.LengthSquared;
+            var b = directionPerpendicular.Dot(originPerpendicular);
+            var c = originPerpendicular.LengthSquared - radius * radius;
+            var discriminant = b * b - a * c;
+
+            if (!(a > 0) || !discriminant.IsFinite())
+            {
+                GetScaledCylinderBarrelRoots(
+                    directionPerpendicular, originPerpendicular, radius, out root0, out root1);
+                return;
+            }
+
+            if (discriminant < 0)
+            {
+                root0 = double.NaN;
+                root1 = double.NaN;
+                return;
+            }
+
+            var sqrtDiscriminant = Fun.Sqrt(discriminant);
+            if (sqrtDiscriminant == 0)
+            {
+                root0 = -b / a;
+                root1 = root0;
+                return;
+            }
+
+            var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+            if (b > 0)
+            {
+                root0 = q / a;
+                root1 = c / q;
+            }
+            else
+            {
+                root0 = c / q;
+                root1 = q / a;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCylinderHit(
+            V3d p0, V3d p1, double radius,
+            double tmin, double tmax, double distanceScale,
+            out double t)
+        {
+            if (distanceScale != 0)
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, distanceScale, out t);
+
+            return TryGetCylinderHitFast(p0, p1, radius, tmin, tmax, out t);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private readonly bool TryGetCylinderHitFast(
+            V3d p0, V3d p1, double radius,
+            double tmin, double tmax, out double t)
+        {
+            t = double.NaN;
+            if (!(radius >= 0) || radius > double.MaxValue || !(tmin < tmax))
+                return false;
+
+            var axis = p1 - p0;
+            var axisLengthSquared = axis.LengthSquared;
+            if (!(axisLengthSquared > 0) || !axisLengthSquared.IsFinite())
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+            var axisLength = Fun.Sqrt(axisLengthSquared);
+            var axisDirection = axis * (1 / axisLength);
+            var originOffset = Origin - p0;
+            var directionAlongAxis = Direction.Dot(axisDirection);
+            var originAlongAxis = originOffset.Dot(axisDirection);
+            var directionPerpendicular = Direction - directionAlongAxis * axisDirection;
+            var originPerpendicular = originOffset - originAlongAxis * axisDirection;
+            var radiusSquared = radius * radius;
+
+            var best = tmax;
+            var found = false;
+            if (directionPerpendicular != V3d.Zero)
+            {
+                var a = directionPerpendicular.LengthSquared;
+                var b = directionPerpendicular.Dot(originPerpendicular);
+                var c = originPerpendicular.LengthSquared - radiusSquared;
+                var discriminant = b * b - a * c;
+                if (!(a > 0) || !discriminant.IsFinite() || !radiusSquared.IsFinite())
+                    return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+                if (discriminant >= 0)
+                {
+                    var sqrtDiscriminant = Fun.Sqrt(discriminant);
+                    double root0;
+                    double root1;
+                    if (sqrtDiscriminant == 0)
+                    {
+                        root0 = -b / a;
+                        root1 = root0;
+                    }
+                    else
+                    {
+                        var q = b > 0 ? -b - sqrtDiscriminant : -b + sqrtDiscriminant;
+                        if (b > 0)
+                        {
+                            root0 = q / a;
+                            root1 = c / q;
+                        }
+                        else
+                        {
+                            root0 = c / q;
+                            root1 = q / a;
+                        }
+                    }
+
+                    if (root0 >= tmin && root0 < best)
+                    {
+                        var axial = originAlongAxis + root0 * directionAlongAxis;
+                        if (axial >= 0 && axial <= axisLength)
+                        {
+                            best = root0;
+                            found = true;
+                        }
+                    }
+                    if (root1 >= tmin && root1 < best)
+                    {
+                        var axial = originAlongAxis + root1 * directionAlongAxis;
+                        if (axial >= 0 && axial <= axisLength)
+                        {
+                            best = root1;
+                            found = true;
+                        }
+                    }
+                }
+            }
+
+            if (directionAlongAxis != 0)
+            {
+                var cap0 = -originAlongAxis / directionAlongAxis;
+                if (cap0 >= tmin && cap0 < best)
+                {
+                    var radial = originPerpendicular + directionPerpendicular * cap0;
+                    var radialSquared = radial.LengthSquared;
+                    if (!radialSquared.IsFinite() || !radiusSquared.IsFinite())
+                        return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+                    if (radialSquared <= radiusSquared)
+                    {
+                        best = cap0;
+                        found = true;
+                    }
+                }
+
+                var cap1 = (axisLength - originAlongAxis) / directionAlongAxis;
+                if (cap1 >= tmin && cap1 < best)
+                {
+                    var radial = originPerpendicular + directionPerpendicular * cap1;
+                    var radialSquared = radial.LengthSquared;
+                    if (!radialSquared.IsFinite() || !radiusSquared.IsFinite())
+                        return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+                    if (radialSquared <= radiusSquared)
+                    {
+                        best = cap1;
+                        found = true;
+                    }
+                }
+            }
+
+            if (!found || !best.IsFinite()) return false;
+            if (!(Origin + Direction * best).IsFinite)
+                return TryGetCylinderHitRobust(p0, p1, radius, tmin, tmax, 0, out t);
+
+            t = best;
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private readonly bool TryGetCylinderHitRobust(
+            V3d p0, V3d p1, double radius,
+            double tmin, double tmax, double distanceScale,
+            out double t)
+        {
+            t = double.NaN;
+            if (!(radius >= 0) || radius > double.MaxValue || !(tmin < tmax))
+                return false;
+
+            var axis = p1 - p0;
+
+            V3d axisDirection;
+            var axisLengthSquared = axis.LengthSquared;
+            double axisLength;
+            if (axisLengthSquared > 0 && axisLengthSquared.IsFinite())
+            {
+                axisLength = Fun.Sqrt(axisLengthSquared);
+                axisDirection = axis * (1 / axisLength);
+            }
+            else
+            {
+                var axisScale = axis.NormMax;
+                if (!(axisScale > 0) || !axisScale.IsFinite()) return false;
+
+                var scaledAxis = axis / axisScale;
+                var scaledLength = scaledAxis.Length;
+                axisLength = axisScale * scaledLength;
+                axisDirection = scaledAxis * (1 / scaledLength);
+                if (!axisLength.IsFinite() || !axisDirection.IsFinite) return false;
+            }
+
+            var originOffset = Origin - p0;
+            var directionAlongAxis = Direction.Dot(axisDirection);
+            var originAlongAxis = originOffset.Dot(axisDirection);
+            var directionPerpendicular = Direction - directionAlongAxis * axisDirection;
+            var originPerpendicular = originOffset - originAlongAxis * axisDirection;
+
+            if (distanceScale != 0)
+            {
+                if (!distanceScale.IsFinite()) return false;
+                double closestParameter;
+                var perpendicularLengthSquared = directionPerpendicular.LengthSquared;
+                var perpendicularDot = directionPerpendicular.Dot(originPerpendicular);
+                if (perpendicularLengthSquared > 0 && perpendicularLengthSquared.IsFinite() && perpendicularDot.IsFinite())
+                {
+                    closestParameter = -perpendicularDot / perpendicularLengthSquared;
+                }
+                else if (directionPerpendicular != V3d.Zero)
+                {
+                    var directionScale = directionPerpendicular.NormMax;
+                    var originScale = originPerpendicular.NormMax;
+                    if (!(directionScale > 0) || !directionScale.IsFinite() || !originScale.IsFinite())
+                        return false;
+
+                    if (originScale > 0)
+                    {
+                        var scaledDirection = directionPerpendicular / directionScale;
+                        var scaledOrigin = originPerpendicular / originScale;
+                        closestParameter = -(originScale / directionScale)
+                            * scaledDirection.Dot(scaledOrigin) / scaledDirection.LengthSquared;
+                    }
+                    else
+                    {
+                        closestParameter = 0;
+                    }
+                }
+                else
+                {
+                    closestParameter = 0;
+                }
+
+                var directionLength = Direction.Length;
+                if (!(directionLength > 0) || !directionLength.IsFinite())
+                {
+                    var directionScale = Direction.NormMax;
+                    var scaledDirection = Direction / directionScale;
+                    directionLength = directionScale * scaledDirection.Length;
+                }
+
+                var distance = Fun.Abs(closestParameter) * directionLength;
+                radius = ((radius / distanceScale) * distance) * 2;
+                if (!radius.IsFinite() || radius < 0) return false;
+            }
+
+            var best = tmax;
+            var found = false;
+
+            if (directionPerpendicular != V3d.Zero)
+            {
+                GetCylinderBarrelRoots(directionPerpendicular, originPerpendicular, radius, out var root0, out var root1);
+                if (IsFiniteCylinderCandidate(root0, tmin, best))
+                {
+                    var axial = originAlongAxis + root0 * directionAlongAxis;
+                    if (axial >= 0 && axial <= axisLength)
+                    {
+                        best = root0;
+                        found = true;
+                    }
+                }
+                if (IsFiniteCylinderCandidate(root1, tmin, best))
+                {
+                    var axial = originAlongAxis + root1 * directionAlongAxis;
+                    if (axial >= 0 && axial <= axisLength)
+                    {
+                        best = root1;
+                        found = true;
+                    }
+                }
+            }
+
+            if (directionAlongAxis != 0)
+            {
+                var cap0 = -originAlongAxis / directionAlongAxis;
+                if (IsFiniteCylinderCandidate(cap0, tmin, best)
+                    && IsInsideCylinderCap(originPerpendicular, directionPerpendicular, cap0, radius))
+                {
+                    best = cap0;
+                    found = true;
+                }
+
+                var cap1 = (axisLength - originAlongAxis) / directionAlongAxis;
+                if (IsFiniteCylinderCandidate(cap1, tmin, best)
+                    && IsInsideCylinderCap(originPerpendicular, directionPerpendicular, cap1, radius))
+                {
+                    best = cap1;
+                    found = true;
+                }
+            }
+
+            if (!found || !(Origin + Direction * best).IsFinite) return false;
+            t = best;
+            return true;
+        }
+
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the finite capped cylinder within the supplied parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
         /// </summary>
         public readonly bool HitsCylinder(V3d p0, V3d p1, double radius,
                 double tmin, double tmax,
                 ref RayHit3d hit)
         {
-            var axis = new Line3d(p0, p1);
-            var axisDir = axis.Direction.Normalized;
+            if (!TryGetCylinderHit(p0, p1, radius, tmin, tmax, 0, out var t) || !(t < hit.T))
+                return false;
 
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - p0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            var t = -normal2.Dot(unitNormal) / normal.Length;
-
-            // between enitre rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                hit.T = t1;
-                hit.Point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new Plane3d(-axisDir, p0);
-                var topPlane = new Plane3d(axisDir, p1);
-                var heightBottom = bottomPlane.Height(hit.Point);
-                var heightTop = topPlane.Height(hit.Point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    hit.T = tmax;
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
-
-                    // hit still close enough to cylinder axis?
-                    var distance = axis.Ray3d.GetMinimalDistanceTo(hit.Point);
-
-                    if (distance <= radius && (bottomHit || topHit))
-                        return true;
-                }
-                else
-                    return true;
-            }
-
-            hit.T = tmax;
-            hit.Point = V3d.NaN;
-            return false;
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
+            return true;
         }
 
         /// <summary>
@@ -2917,71 +3756,15 @@ namespace Aardvark.Base
         public readonly bool HitsCylinder(V3d p0, V3d p1, double radius, ref RayHit3d hit)
             => HitsCylinder(p0, p1, radius, 0, double.MaxValue, ref hit);
 
+        /// <summary>
+        /// Returns true if the ray hits the finite capped cylinder within the half-open parameter
+        /// interval [<paramref name="tmin"/>, <paramref name="tmax"/>). On failure,
+        /// <paramref name="t"/> is NaN.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly bool HitsCylinder(V3d p0, V3d p1, double radius,
                 double tmin, double tmax, out double t)
-        {
-            var axis = new Line3d(p0, p1);
-            var axisDir = axis.Direction.Normalized;
-
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - p0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            t = -normal2.Dot(unitNormal) / normal.Length;
-
-            // between entire rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                t = t1;
-                var point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new Plane3d(-axisDir, p0);
-                var topPlane = new Plane3d(axisDir, p1);
-                var heightBottom = bottomPlane.Height(point);
-                var heightTop = topPlane.Height(point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsCircle(p0, -axisDir, radius, tmin, tmax, out t);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsCircle(p1, axisDir, radius, tmin, tmax, out double ttop);
-
-                    if (topHit)
-                    {
-                        if (bottomHit)
-                        {
-                            if (ttop.Abs() < t)
-                                t = ttop;
-                        }
-                        else
-                            t = ttop;
-                    }
-
-                    return topHit || bottomHit;
-                }
-                else
-                    return true;
-            }
-
-            t = double.NaN;
-            return false;
-        }
+            => TryGetCylinderHit(p0, p1, radius, tmin, tmax, 0, out t);
 
         /// <summary>
         /// Returns true if the ray intersects with the primitive. A hit with this
@@ -2999,74 +3782,23 @@ namespace Aardvark.Base
             => Hits(cylinder, tmin, tmax, 0, ref hit);
 
         /// <summary>
-        /// Returns true if the ray intersects with the primitive.
+        /// Returns true if the ray hits the finite capped cylinder within the supplied parameter
+        /// interval and before the parameter value already stored in <paramref name="hit"/>.
+        /// A nonzero <paramref name="distanceScale"/> grows the effective radius with distance.
         /// </summary>
         public readonly bool Hits(Cylinder3d cylinder, double tmin, double tmax, double distanceScale, ref RayHit3d hit)
         {
-            var axisDir = cylinder.Axis.Direction.Normalized;
+            if (!TryGetCylinderHit(
+                    cylinder.P0, cylinder.P1, cylinder.Radius,
+                    tmin, tmax, distanceScale, out var t)
+                || !(t < hit.T))
+                return false;
 
-            // Vector Cyl.P0 -> Ray.Origin
-            var op = Origin - cylinder.P0;
-
-            // normal RayDirection - CylinderAxis
-            var normal = Direction.Cross(axisDir);
-            var unitNormal = normal.Normalized;
-
-            // normal (Vec Cyl.P0 -> Ray.Origin) - CylinderAxis
-            var normal2 = op.Cross(axisDir);
-            var t = -normal2.Dot(unitNormal) / normal.Length;
-
-            var radius = cylinder.Radius;
-            if (distanceScale != 0)
-            {   // cylinder gets bigger, the further away it is
-                var pnt = GetPointOnRay(t);
-
-                var dis = Vec.Distance(pnt, this.Origin);
-                radius = ((cylinder.Radius / distanceScale) * dis) * 2;
-            }
-
-            // between enitre rays (caps are ignored)
-            var shortestDistance = Fun.Abs(op.Dot(unitNormal));
-            if (shortestDistance <= radius)
-            {
-                var s = Fun.Abs(Fun.Sqrt(radius.Square() - shortestDistance.Square()) / Direction.Length);
-
-                var t1 = t - s; // first hit of Cylinder shell
-                var t2 = t + s; // second hit of Cylinder shell
-
-                if (t1 > tmin && t1 < tmax) tmin = t1;
-                if (t2 < tmax && t2 > tmin) tmax = t2;
-
-                hit.T = t1;
-                hit.Point = GetPointOnRay(t1);
-
-                // check if found point is outside of Cylinder Caps
-                var bottomPlane = new Plane3d(cylinder.Circle0.Normal, cylinder.Circle0.Center);
-                var topPlane = new Plane3d(cylinder.Circle1.Normal, cylinder.Circle1.Center);
-                var heightBottom = bottomPlane.Height(hit.Point);
-                var heightTop = topPlane.Height(hit.Point);
-                // t1 lies outside of caps => find closest cap hit
-                if (heightBottom > 0 || heightTop > 0)
-                {
-                    hit.T = tmax;
-                    // intersect with bottom Cylinder Cap
-                    var bottomHit = HitsPlane(bottomPlane, tmin, tmax, ref hit);
-                    // intersect with top Cylinder Cap
-                    var topHit = HitsPlane(topPlane, tmin, tmax, ref hit);
-
-                    // hit still close enough to cylinder axis?
-                    var distance = cylinder.Axis.Ray3d.GetMinimalDistanceTo(hit.Point);
-
-                    if (distance <= radius && (bottomHit || topHit))
-                        return true;
-                }
-                else
-                    return true;
-            }
-
-            hit.T = tmax;
-            hit.Point = V3d.NaN;
-            return false;
+            hit.T = t;
+            hit.Point = GetPointOnRay(t);
+            hit.Coord = V2d.NaN;
+            hit.BackSide = false;
+            return true;
         }
 
         /// <summary>

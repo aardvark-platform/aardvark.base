@@ -2,6 +2,7 @@ using Aardvark.Base.Sorting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Base
 {
@@ -189,6 +190,14 @@ namespace Aardvark.Base
 
         #region Random Floating Point Values
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double ReconstructUniformDoubleFull(IRandomUniform rnd)
+        {
+            long r = ((~0xfL & (long)rnd.UniformInt()) << 22)
+                      | ((long)rnd.UniformInt() >> 5);
+            return r * (1.0 / 9007199254740992.0);
+        }
+
         /// <summary>
         /// Returns a uniformly distributed double in the half-open interval
         /// [0.0, 1.0). Note, that two random values are used to make all 53
@@ -199,9 +208,7 @@ namespace Aardvark.Base
         public static double UniformDoubleFull(this IRandomUniform rnd)
         {
             if (rnd.GeneratesFullDoubles) return rnd.UniformDouble();
-            long r = ((~0xfL & (long)rnd.UniformInt()) << 22)
-                      | ((long)rnd.UniformInt() >> 5);
-            return r * (1.0 / 9007199254740992.0);
+            return ReconstructUniformDoubleFull(rnd);
         }
 
         /// <summary>
@@ -352,15 +359,16 @@ namespace Aardvark.Base
                 this IRandomUniform rnd, double[] array)
         {
             long count = array.LongLength;
-            if (rnd.GeneratesFullDoubles)
+            bool generatesFullDoubles = rnd.GeneratesFullDoubles;
+            if (generatesFullDoubles)
             {
                 for (long i = 0; i < count; i++)
-                    array[i] = rnd.UniformDoubleFull();
+                    array[i] = rnd.UniformDouble();
             }
             else
             {
                 for (long i = 0; i < count; i++)
-                    array[i] = rnd.UniformDouble();
+                    array[i] = ReconstructUniformDoubleFull(rnd);
             }
         }
 

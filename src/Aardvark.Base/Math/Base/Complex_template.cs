@@ -21,6 +21,7 @@ namespace Aardvark.Base
     //#   var ct2 = isDouble ? "ComplexF" : "ComplexD";
     //#   var constant = isDouble ? "Constant" : "ConstantF";
     //#   var half = isDouble ? "0.5" : "0.5f";
+    //#   var minNormal = isDouble ? "2.2250738585072014e-308" : "1.17549435e-38f";
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct __ct__ : IEquatable<__ct__>
@@ -150,8 +151,14 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                __ft__ t = 1 / NormSquared;
-                return new __ct__(Real * t, -Imag * t);
+                __ft__ normSquared = Fun.MultiplyAdd(Real, Real, Imag * Imag);
+                __ft__ t = 1 / normSquared;
+                var result = new __ct__(Real * t, -Imag * t);
+
+                if (IsNormalValue(normSquared))
+                    return result;
+
+                return GetScaledReciprocal(this, result);
             }
         }
 
@@ -171,7 +178,14 @@ namespace Aardvark.Base
         public __ft__ Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get { return Fun.Sqrt(Real * Real + Imag * Imag); }
+            readonly get
+            {
+                __ft__ squared = Fun.MultiplyAdd(Real, Real, Imag * Imag);
+                if (IsNormalValue(squared) || (squared == 0 && Real == 0 && Imag == 0))
+                    return Fun.Sqrt(squared);
+
+                return GetScaledNorm(Real, Imag, squared);
+            }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -179,6 +193,121 @@ namespace Aardvark.Base
                 Real = value * Real / r;
                 Imag = value * Imag / r;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFiniteValue(__ft__ value)
+        {
+        //# if (isDouble) {
+            ulong bits = (ulong)Fun.FloatToBits(value) & 0x7fffffffffffffffUL;
+            return bits < 0x7ff0000000000000UL;
+        //# } else {
+            uint bits = (uint)Fun.FloatToBits(value) & 0x7fffffffU;
+            return bits < 0x7f800000U;
+        //# }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsNormalValue(__ft__ value)
+        {
+        //# if (isDouble) {
+            ulong bits = (ulong)Fun.FloatToBits(value) & 0x7fffffffffffffffUL;
+            return bits - 0x0010000000000000UL < 0x7ff0000000000000UL - 0x0010000000000000UL;
+        //# } else {
+            uint bits = (uint)Fun.FloatToBits(value) & 0x7fffffffU;
+            return bits - 0x00800000U < 0x7f800000U - 0x00800000U;
+        //# }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __ft__ GetScaledNorm(__ft__ real, __ft__ imag, __ft__ squared)
+        {
+            if (!IsFiniteValue(real) || !IsFiniteValue(imag))
+                return Fun.Sqrt(squared);
+
+            __ft__ ar = Fun.Abs(real);
+            __ft__ ai = Fun.Abs(imag);
+            __ft__ max = Fun.Max(ar, ai);
+            __ft__ min = Fun.Min(ar, ai);
+            __ft__ ratio = min / max;
+            return max * Fun.Sqrt(1 + ratio * ratio);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __ct__ GetScaledReciprocal(__ct__ value, __ct__ direct)
+        {
+            if (!IsFiniteValue(value.Real) || !IsFiniteValue(value.Imag))
+                return direct;
+
+            __ft__ scale = Fun.Max(Fun.Abs(value.Real), Fun.Abs(value.Imag));
+            if (scale == 0)
+                return direct;
+
+            __ft__ real = value.Real / scale;
+            __ft__ imag = value.Imag / scale;
+            __ft__ denominator = real * real + imag * imag;
+            return new __ct__(
+                ScaleQuotient(real / denominator, 1, scale),
+                ScaleQuotient(-imag / denominator, 1, scale));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __ct__ GetScaledDivision(__ct__ numerator, __ct__ denominator, __ct__ direct)
+        {
+            if (!IsFiniteValue(numerator.Real) || !IsFiniteValue(numerator.Imag) ||
+                !IsFiniteValue(denominator.Real) || !IsFiniteValue(denominator.Imag))
+                return direct;
+
+            __ft__ numeratorScale = Fun.Max(Fun.Abs(numerator.Real), Fun.Abs(numerator.Imag));
+            __ft__ denominatorScale = Fun.Max(Fun.Abs(denominator.Real), Fun.Abs(denominator.Imag));
+            if (numeratorScale == 0 || denominatorScale == 0)
+                return direct;
+
+            __ft__ ar = numerator.Real / numeratorScale;
+            __ft__ ai = numerator.Imag / numeratorScale;
+            __ft__ br = denominator.Real / denominatorScale;
+            __ft__ bi = denominator.Imag / denominatorScale;
+            __ft__ scaledDenominator = br * br + bi * bi;
+            __ft__ real = (ar * br + ai * bi) / scaledDenominator;
+            __ft__ imag = (ai * br - ar * bi) / scaledDenominator;
+
+            return new __ct__(
+                ScaleQuotient(real, numeratorScale, denominatorScale),
+                ScaleQuotient(imag, numeratorScale, denominatorScale));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __ft__ ScaleQuotient(__ft__ value, __ft__ numeratorScale, __ft__ denominatorScale)
+        {
+            if (value == 0)
+                return value;
+
+            __ft__ product = value * numeratorScale;
+            if (product != 0 && IsFiniteValue(product))
+                return product / denominatorScale;
+
+            __ft__ quotient = value / denominatorScale;
+            if (quotient != 0 && IsFiniteValue(quotient))
+                return quotient * numeratorScale;
+
+            return value * (numeratorScale / denominatorScale);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static __ct__ GetScaledSquareRoot(__ct__ value, __ct__ direct)
+        {
+            if (!IsFiniteValue(value.Real) || !IsFiniteValue(value.Imag))
+                return direct;
+
+            __ft__ scale = Fun.Max(Fun.Abs(value.Real), Fun.Abs(value.Imag));
+            __ft__ real = value.Real / scale;
+            __ft__ imag = value.Imag / scale;
+            __ft__ norm = Fun.Sqrt(real * real + imag * imag);
+            __ft__ component = Fun.Sqrt((norm + Fun.Abs(real)) * __half__) * Fun.Sqrt(scale);
+
+            return value.Real >= 0
+                ? new __ct__(component, value.Imag / (2 * component))
+                : new __ct__(Fun.Abs(value.Imag) / (2 * component), Fun.CopySign(component, value.Imag));
         }
 
         /// <summary>
@@ -501,10 +630,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator /(__ct__ a, __ct__ b)
         {
-            __ft__ t = 1 / b.NormSquared;
-            return new __ct__(
-                t * (a.Real * b.Real + a.Imag * b.Imag),
-                t * (a.Imag * b.Real - a.Real * b.Imag));
+            __ft__ normSquared = Fun.MultiplyAdd(b.Real, b.Real, b.Imag * b.Imag);
+            __ft__ t = 1 / normSquared;
+            __ft__ real = b.Real * t;
+            __ft__ imag = b.Imag * t;
+            var result = new __ct__(
+                Fun.MultiplyAdd(a.Real, real, a.Imag * imag),
+                Fun.MultiplyAdd(a.Imag, real, -a.Real * imag));
+
+            if (IsNormalValue(normSquared))
+                return result;
+
+            return GetScaledDivision(a, b, result);
         }
 
         /// <summary>
@@ -520,10 +657,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ operator /(__ft__ a, __ct__ b)
         {
-            __ft__ t = 1 / b.NormSquared;
-            return new __ct__(
-                t * (a * b.Real),
-                t * (-a * b.Imag));
+            __ft__ normSquared = Fun.MultiplyAdd(b.Real, b.Real, b.Imag * b.Imag);
+            __ft__ t = 1 / normSquared;
+            var result = new __ct__(a * (b.Real * t), a * (-b.Imag * t));
+
+            if (IsNormalValue(normSquared))
+                return result;
+
+            return GetScaledDivision(new __ct__(a, 0), b, result);
         }
 
         /// <summary>
@@ -898,8 +1039,6 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the principal square root of the complex number <paramref name="x"/>.
         /// </summary>
-        // https://math.stackexchange.com/a/44500
-        // TODO: Check if this is actually better than the naive implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sqrt(this __ct__ x)
         {
@@ -910,12 +1049,21 @@ namespace Aardvark.Base
                 else
                     return new __ct__(Sqrt(x.Real), 0);
             }
-            else
+
+            __ft__ norm = x.Norm;
+            __ft__ halfSum = (norm + Abs(x.Real)) * __half__;
+            if (halfSum >= __minNormal__ && halfSum < __ft__.PositiveInfinity)
             {
-                var a = x.Norm;
-                var b = x + a;
-                return a.Sqrt() * (b / b.Norm);
+                __ft__ component = Sqrt(halfSum);
+                return x.Real >= 0
+                    ? new __ct__(component, x.Imag / (2 * component))
+                    : new __ct__(Abs(x.Imag) / (2 * component), CopySign(component, x.Imag));
             }
+
+            var a = norm;
+            var b = x + a;
+            var direct = a.Sqrt() * (b / b.Norm);
+            return __ct__.GetScaledSquareRoot(x, direct);
         }
 
         /// <summary>

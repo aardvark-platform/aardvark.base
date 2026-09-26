@@ -1,4 +1,35 @@
 - [Geometry] Added typed transform overloads for boxes, hulls, planes, rays, and PolyRegion inverse transforms. Existing transform semantics are preserved; recompiled calls can bind to more direct overloads and avoid unnecessary conversion/inversion work.
+- [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
+- [Base] Corrected and accelerated order-independent integer range-set construction
+- [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views
+- [Base] Corrected and accelerated scale-safe minimum triangle bounding circles and spheres
+- [Base] Fixed `Cell.Intersects` and `Cell2d.Intersects`
+- [Base] Corrected winding- and translation-stable 2D and 3D polygon centroids
+- [Base] Corrected complex magnitude, reciprocal, division, and square roots at extreme finite scales
+- [Base] Corrected robust ray-sphere intersections and closest-hit accumulation
+- [Base] Corrected robust ray-circle intersections and closest-hit accumulation
+- [Base] Made cubic Hermite and delegated spline evaluation allocation-free
+- [Base] Bounded AdaBoost training and made ensemble inference allocation-free
+- [Base] Corrected finite capped-cylinder ray intersections
+- [Base] Corrected 3D circle frames, representative points, and bounds
+- [Base] Made generic minimum-spanning trees deterministic and linearithmic
+- [Base] Corrected positive-discriminant cubic solvers to return only their real root
+- [Base] Corrected and accelerated single-pass enumerable population variance
+- [Base] Corrected exact `Fraction` comparison and special-value semantics
+- [IO] Made network-order primitive and aggregate I/O allocation-free
+- [Base] Corrected ECEF and Gauss-Krueger geodetic conversions
+- [Base] Corrected `Half` comparison and collection semantics
+- [Base] Corrected and reduced allocations in 2D polyline simplification
+- [Base] Repaired primality testing and concurrent indexed prime-table growth
+- [Base] Corrected Perlin interpolation across negative coordinates
+- [Base] Corrected and accelerated rolling median windows
+- [Base] Corrected full-precision bulk uniform double generation
+- [Base] Corrected QR zero-pivot factorization and wide strided solve indexing
+- [Base] Corrected and accelerated 2D box/plane intersections for scaled normals and boundary contact
+- [Base] Corrected LU singularity detection for final pivots and 1x1 matrices
+- [Base] Corrected integer GCD and LCM sign, zero, and overflow semantics
+- [Base] Corrected and accelerated integer primality checks
+- [Base] Corrected and accelerated Fibonacci-heap priority ordering and cascading cuts for shortest paths
 - [Geometry] Corrected `PolyRegion` containment for holes, nested contours, boundaries, and reversed orientations
 ### 5.3.28-prerelease0001
 - [Base] Corrected ray projection and closest-distance parameters for non-unit, degenerate, and extreme finite directions

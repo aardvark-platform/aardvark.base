@@ -216,6 +216,9 @@ public sealed class DocsAnalyzerTests
             Write("docs/CONTRIBUTING.md", "dotnet test src/Aardvark.sln --filter \"FullyQualifiedName~Vector\"\n");
             Write("docs/INTEROP.md", "Link target fixture for markdown link tests.\n");
 
+            foreach (var group in rules.RequiredPatterns.GroupBy(x => x.File))
+                Append(group.Key, "\n" + string.Join("\n", group.Select(x => x.Pattern)) + "\n");
+
             foreach (var group in rules.SourceAnchors.GroupBy(x => x.File))
             {
                 var content = string.Join("\n", group.Select(x => x.Snippet)) + "\n";

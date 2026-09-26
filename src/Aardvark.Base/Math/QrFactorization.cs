@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Aardvark.Base
 {
@@ -78,8 +74,8 @@ namespace Aardvark.Base
         {
             m0 += row * (mx + my);
             double p = 0.0;
-            for (long i = row, vi = v0, mi = m0; i < end; i++, vi += vd, mi += mx) p += 2.0 * vector[vi] * matrix[mi];
-            for (long i = row, vi = v0, mi = m0; i < end; i++, vi += vd, mi += mx) vector[vi] -= p * matrix[mi];
+            for (long i = row, vi = v0 + row * vd, mi = m0; i < end; i++, vi += vd, mi += mx) p += 2.0 * vector[vi] * matrix[mi];
+            for (long i = row, vi = v0 + row * vd, mi = m0; i < end; i++, vi += vd, mi += mx) vector[vi] -= p * matrix[mi];
         }
 
         #endregion
@@ -206,10 +202,12 @@ namespace Aardvark.Base
             {
                 for (int r = 0; r < rows; r++)
                 {
-                    double alpha = -System.Math.Sign(A[r, r]) * A.RowNorm2(r, r, cols);
-                    double norm_v = System.Math.Sqrt(-2.0 * alpha * (A[r, r] - alpha));
+                    double value = A[r, r];
+                    double norm = A.RowNorm2(r, r, cols);
+                    double alpha = value < 0.0 ? norm : -norm;
+                    double norm_v = System.Math.Sqrt(-2.0 * alpha * (value - alpha));
                     diagonal[r] = alpha;
-                    A[r, r] = (A[r, r] - alpha) / norm_v;
+                    A[r, r] = (value - alpha) / norm_v;
 
                     for (int c = r + 1; c < cols; c++)
                         A[r, c] /= norm_v;
@@ -225,10 +223,12 @@ namespace Aardvark.Base
             {
                 for (int c = 0; c < cols; c++)
                 {
-                    double alpha = -System.Math.Sign(A[c, c]) * A.ColNorm2(c, c, rows);
-                    double norm_v = System.Math.Sqrt(-2.0 * alpha * (A[c, c] - alpha));
+                    double value = A[c, c];
+                    double norm = A.ColNorm2(c, c, rows);
+                    double alpha = value < 0.0 ? norm : -norm;
+                    double norm_v = System.Math.Sqrt(-2.0 * alpha * (value - alpha));
                     diagonal[c] = alpha;
-                    A[c, c] = (A[c, c] - alpha) / norm_v;
+                    A[c, c] = (value - alpha) / norm_v;
 
                     for (int r = c + 1; r < rows; r++)
                         A[r, c] /= norm_v;
@@ -392,7 +392,8 @@ namespace Aardvark.Base
                 for (long r = 0, arr = a0; r < rows; r++, arr += ax + ay)
                 {
                     var value = aqr[arr];
-                    double alpha = -System.Math.Sign(value) * aqr.RowNorm2(a0, ax, ay, r, r, cols);
+                    double norm = aqr.RowNorm2(a0, ax, ay, r, r, cols);
+                    double alpha = value < 0.0 ? norm : -norm;
                     value -= alpha;
                     double norm_v = System.Math.Sqrt(-2.0 * alpha * value);
                     diagonal[r] = alpha;
@@ -413,7 +414,8 @@ namespace Aardvark.Base
                 for (long c = 0, acc = a0; c < cols; c++, acc += ax + ay)
                 {
                     var value = aqr[acc];
-                    double alpha = -System.Math.Sign(value) * aqr.ColNorm2(a0, ax, ay, c, c, rows);
+                    double norm = aqr.ColNorm2(a0, ax, ay, c, c, rows);
+                    double alpha = value < 0.0 ? norm : -norm;
                     value -= alpha;
                     double norm_v = System.Math.Sqrt(-2.0 * alpha * value);
                     diagonal[c] = alpha;

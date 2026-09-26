@@ -138,8 +138,14 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                float t = 1 / NormSquared;
-                return new ComplexF(Real * t, -Imag * t);
+                float normSquared = Fun.MultiplyAdd(Real, Real, Imag * Imag);
+                float t = 1 / normSquared;
+                var result = new ComplexF(Real * t, -Imag * t);
+
+                if (IsNormalValue(normSquared))
+                    return result;
+
+                return GetScaledReciprocal(this, result);
             }
         }
 
@@ -159,7 +165,14 @@ namespace Aardvark.Base
         public float Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get { return Fun.Sqrt(Real * Real + Imag * Imag); }
+            readonly get
+            {
+                float squared = Fun.MultiplyAdd(Real, Real, Imag * Imag);
+                if (IsNormalValue(squared) || (squared == 0 && Real == 0 && Imag == 0))
+                    return Fun.Sqrt(squared);
+
+                return GetScaledNorm(Real, Imag, squared);
+            }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -167,6 +180,111 @@ namespace Aardvark.Base
                 Real = value * Real / r;
                 Imag = value * Imag / r;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFiniteValue(float value)
+        {
+            uint bits = (uint)Fun.FloatToBits(value) & 0x7fffffffU;
+            return bits < 0x7f800000U;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsNormalValue(float value)
+        {
+            uint bits = (uint)Fun.FloatToBits(value) & 0x7fffffffU;
+            return bits - 0x00800000U < 0x7f800000U - 0x00800000U;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float GetScaledNorm(float real, float imag, float squared)
+        {
+            if (!IsFiniteValue(real) || !IsFiniteValue(imag))
+                return Fun.Sqrt(squared);
+
+            float ar = Fun.Abs(real);
+            float ai = Fun.Abs(imag);
+            float max = Fun.Max(ar, ai);
+            float min = Fun.Min(ar, ai);
+            float ratio = min / max;
+            return max * Fun.Sqrt(1 + ratio * ratio);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ComplexF GetScaledReciprocal(ComplexF value, ComplexF direct)
+        {
+            if (!IsFiniteValue(value.Real) || !IsFiniteValue(value.Imag))
+                return direct;
+
+            float scale = Fun.Max(Fun.Abs(value.Real), Fun.Abs(value.Imag));
+            if (scale == 0)
+                return direct;
+
+            float real = value.Real / scale;
+            float imag = value.Imag / scale;
+            float denominator = real * real + imag * imag;
+            return new ComplexF(
+                ScaleQuotient(real / denominator, 1, scale),
+                ScaleQuotient(-imag / denominator, 1, scale));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ComplexF GetScaledDivision(ComplexF numerator, ComplexF denominator, ComplexF direct)
+        {
+            if (!IsFiniteValue(numerator.Real) || !IsFiniteValue(numerator.Imag) ||
+                !IsFiniteValue(denominator.Real) || !IsFiniteValue(denominator.Imag))
+                return direct;
+
+            float numeratorScale = Fun.Max(Fun.Abs(numerator.Real), Fun.Abs(numerator.Imag));
+            float denominatorScale = Fun.Max(Fun.Abs(denominator.Real), Fun.Abs(denominator.Imag));
+            if (numeratorScale == 0 || denominatorScale == 0)
+                return direct;
+
+            float ar = numerator.Real / numeratorScale;
+            float ai = numerator.Imag / numeratorScale;
+            float br = denominator.Real / denominatorScale;
+            float bi = denominator.Imag / denominatorScale;
+            float scaledDenominator = br * br + bi * bi;
+            float real = (ar * br + ai * bi) / scaledDenominator;
+            float imag = (ai * br - ar * bi) / scaledDenominator;
+
+            return new ComplexF(
+                ScaleQuotient(real, numeratorScale, denominatorScale),
+                ScaleQuotient(imag, numeratorScale, denominatorScale));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float ScaleQuotient(float value, float numeratorScale, float denominatorScale)
+        {
+            if (value == 0)
+                return value;
+
+            float product = value * numeratorScale;
+            if (product != 0 && IsFiniteValue(product))
+                return product / denominatorScale;
+
+            float quotient = value / denominatorScale;
+            if (quotient != 0 && IsFiniteValue(quotient))
+                return quotient * numeratorScale;
+
+            return value * (numeratorScale / denominatorScale);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static ComplexF GetScaledSquareRoot(ComplexF value, ComplexF direct)
+        {
+            if (!IsFiniteValue(value.Real) || !IsFiniteValue(value.Imag))
+                return direct;
+
+            float scale = Fun.Max(Fun.Abs(value.Real), Fun.Abs(value.Imag));
+            float real = value.Real / scale;
+            float imag = value.Imag / scale;
+            float norm = Fun.Sqrt(real * real + imag * imag);
+            float component = Fun.Sqrt((norm + Fun.Abs(real)) * 0.5f) * Fun.Sqrt(scale);
+
+            return value.Real >= 0
+                ? new ComplexF(component, value.Imag / (2 * component))
+                : new ComplexF(Fun.Abs(value.Imag) / (2 * component), Fun.CopySign(component, value.Imag));
         }
 
         /// <summary>
@@ -489,10 +607,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator /(ComplexF a, ComplexF b)
         {
-            float t = 1 / b.NormSquared;
-            return new ComplexF(
-                t * (a.Real * b.Real + a.Imag * b.Imag),
-                t * (a.Imag * b.Real - a.Real * b.Imag));
+            float normSquared = Fun.MultiplyAdd(b.Real, b.Real, b.Imag * b.Imag);
+            float t = 1 / normSquared;
+            float real = b.Real * t;
+            float imag = b.Imag * t;
+            var result = new ComplexF(
+                Fun.MultiplyAdd(a.Real, real, a.Imag * imag),
+                Fun.MultiplyAdd(a.Imag, real, -a.Real * imag));
+
+            if (IsNormalValue(normSquared))
+                return result;
+
+            return GetScaledDivision(a, b, result);
         }
 
         /// <summary>
@@ -508,10 +634,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF operator /(float a, ComplexF b)
         {
-            float t = 1 / b.NormSquared;
-            return new ComplexF(
-                t * (a * b.Real),
-                t * (-a * b.Imag));
+            float normSquared = Fun.MultiplyAdd(b.Real, b.Real, b.Imag * b.Imag);
+            float t = 1 / normSquared;
+            var result = new ComplexF(a * (b.Real * t), a * (-b.Imag * t));
+
+            if (IsNormalValue(normSquared))
+                return result;
+
+            return GetScaledDivision(new ComplexF(a, 0), b, result);
         }
 
         /// <summary>
@@ -886,8 +1016,6 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the principal square root of the complex number <paramref name="x"/>.
         /// </summary>
-        // https://math.stackexchange.com/a/44500
-        // TODO: Check if this is actually better than the naive implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Sqrt(this ComplexF x)
         {
@@ -898,12 +1026,21 @@ namespace Aardvark.Base
                 else
                     return new ComplexF(Sqrt(x.Real), 0);
             }
-            else
+
+            float norm = x.Norm;
+            float halfSum = (norm + Abs(x.Real)) * 0.5f;
+            if (halfSum >= 1.17549435e-38f && halfSum < float.PositiveInfinity)
             {
-                var a = x.Norm;
-                var b = x + a;
-                return a.Sqrt() * (b / b.Norm);
+                float component = Sqrt(halfSum);
+                return x.Real >= 0
+                    ? new ComplexF(component, x.Imag / (2 * component))
+                    : new ComplexF(Abs(x.Imag) / (2 * component), CopySign(component, x.Imag));
             }
+
+            var a = norm;
+            var b = x + a;
+            var direct = a.Sqrt() * (b / b.Norm);
+            return ComplexF.GetScaledSquareRoot(x, direct);
         }
 
         /// <summary>
@@ -1156,8 +1293,14 @@ namespace Aardvark.Base
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                double t = 1 / NormSquared;
-                return new ComplexD(Real * t, -Imag * t);
+                double normSquared = Fun.MultiplyAdd(Real, Real, Imag * Imag);
+                double t = 1 / normSquared;
+                var result = new ComplexD(Real * t, -Imag * t);
+
+                if (IsNormalValue(normSquared))
+                    return result;
+
+                return GetScaledReciprocal(this, result);
             }
         }
 
@@ -1177,7 +1320,14 @@ namespace Aardvark.Base
         public double Norm
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            readonly get { return Fun.Sqrt(Real * Real + Imag * Imag); }
+            readonly get
+            {
+                double squared = Fun.MultiplyAdd(Real, Real, Imag * Imag);
+                if (IsNormalValue(squared) || (squared == 0 && Real == 0 && Imag == 0))
+                    return Fun.Sqrt(squared);
+
+                return GetScaledNorm(Real, Imag, squared);
+            }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set
             {
@@ -1185,6 +1335,111 @@ namespace Aardvark.Base
                 Real = value * Real / r;
                 Imag = value * Imag / r;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsFiniteValue(double value)
+        {
+            ulong bits = (ulong)Fun.FloatToBits(value) & 0x7fffffffffffffffUL;
+            return bits < 0x7ff0000000000000UL;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool IsNormalValue(double value)
+        {
+            ulong bits = (ulong)Fun.FloatToBits(value) & 0x7fffffffffffffffUL;
+            return bits - 0x0010000000000000UL < 0x7ff0000000000000UL - 0x0010000000000000UL;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double GetScaledNorm(double real, double imag, double squared)
+        {
+            if (!IsFiniteValue(real) || !IsFiniteValue(imag))
+                return Fun.Sqrt(squared);
+
+            double ar = Fun.Abs(real);
+            double ai = Fun.Abs(imag);
+            double max = Fun.Max(ar, ai);
+            double min = Fun.Min(ar, ai);
+            double ratio = min / max;
+            return max * Fun.Sqrt(1 + ratio * ratio);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ComplexD GetScaledReciprocal(ComplexD value, ComplexD direct)
+        {
+            if (!IsFiniteValue(value.Real) || !IsFiniteValue(value.Imag))
+                return direct;
+
+            double scale = Fun.Max(Fun.Abs(value.Real), Fun.Abs(value.Imag));
+            if (scale == 0)
+                return direct;
+
+            double real = value.Real / scale;
+            double imag = value.Imag / scale;
+            double denominator = real * real + imag * imag;
+            return new ComplexD(
+                ScaleQuotient(real / denominator, 1, scale),
+                ScaleQuotient(-imag / denominator, 1, scale));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ComplexD GetScaledDivision(ComplexD numerator, ComplexD denominator, ComplexD direct)
+        {
+            if (!IsFiniteValue(numerator.Real) || !IsFiniteValue(numerator.Imag) ||
+                !IsFiniteValue(denominator.Real) || !IsFiniteValue(denominator.Imag))
+                return direct;
+
+            double numeratorScale = Fun.Max(Fun.Abs(numerator.Real), Fun.Abs(numerator.Imag));
+            double denominatorScale = Fun.Max(Fun.Abs(denominator.Real), Fun.Abs(denominator.Imag));
+            if (numeratorScale == 0 || denominatorScale == 0)
+                return direct;
+
+            double ar = numerator.Real / numeratorScale;
+            double ai = numerator.Imag / numeratorScale;
+            double br = denominator.Real / denominatorScale;
+            double bi = denominator.Imag / denominatorScale;
+            double scaledDenominator = br * br + bi * bi;
+            double real = (ar * br + ai * bi) / scaledDenominator;
+            double imag = (ai * br - ar * bi) / scaledDenominator;
+
+            return new ComplexD(
+                ScaleQuotient(real, numeratorScale, denominatorScale),
+                ScaleQuotient(imag, numeratorScale, denominatorScale));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double ScaleQuotient(double value, double numeratorScale, double denominatorScale)
+        {
+            if (value == 0)
+                return value;
+
+            double product = value * numeratorScale;
+            if (product != 0 && IsFiniteValue(product))
+                return product / denominatorScale;
+
+            double quotient = value / denominatorScale;
+            if (quotient != 0 && IsFiniteValue(quotient))
+                return quotient * numeratorScale;
+
+            return value * (numeratorScale / denominatorScale);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        internal static ComplexD GetScaledSquareRoot(ComplexD value, ComplexD direct)
+        {
+            if (!IsFiniteValue(value.Real) || !IsFiniteValue(value.Imag))
+                return direct;
+
+            double scale = Fun.Max(Fun.Abs(value.Real), Fun.Abs(value.Imag));
+            double real = value.Real / scale;
+            double imag = value.Imag / scale;
+            double norm = Fun.Sqrt(real * real + imag * imag);
+            double component = Fun.Sqrt((norm + Fun.Abs(real)) * 0.5) * Fun.Sqrt(scale);
+
+            return value.Real >= 0
+                ? new ComplexD(component, value.Imag / (2 * component))
+                : new ComplexD(Fun.Abs(value.Imag) / (2 * component), Fun.CopySign(component, value.Imag));
         }
 
         /// <summary>
@@ -1507,10 +1762,18 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator /(ComplexD a, ComplexD b)
         {
-            double t = 1 / b.NormSquared;
-            return new ComplexD(
-                t * (a.Real * b.Real + a.Imag * b.Imag),
-                t * (a.Imag * b.Real - a.Real * b.Imag));
+            double normSquared = Fun.MultiplyAdd(b.Real, b.Real, b.Imag * b.Imag);
+            double t = 1 / normSquared;
+            double real = b.Real * t;
+            double imag = b.Imag * t;
+            var result = new ComplexD(
+                Fun.MultiplyAdd(a.Real, real, a.Imag * imag),
+                Fun.MultiplyAdd(a.Imag, real, -a.Real * imag));
+
+            if (IsNormalValue(normSquared))
+                return result;
+
+            return GetScaledDivision(a, b, result);
         }
 
         /// <summary>
@@ -1526,10 +1789,14 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD operator /(double a, ComplexD b)
         {
-            double t = 1 / b.NormSquared;
-            return new ComplexD(
-                t * (a * b.Real),
-                t * (-a * b.Imag));
+            double normSquared = Fun.MultiplyAdd(b.Real, b.Real, b.Imag * b.Imag);
+            double t = 1 / normSquared;
+            var result = new ComplexD(a * (b.Real * t), a * (-b.Imag * t));
+
+            if (IsNormalValue(normSquared))
+                return result;
+
+            return GetScaledDivision(new ComplexD(a, 0), b, result);
         }
 
         /// <summary>
@@ -1904,8 +2171,6 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the principal square root of the complex number <paramref name="x"/>.
         /// </summary>
-        // https://math.stackexchange.com/a/44500
-        // TODO: Check if this is actually better than the naive implementation
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Sqrt(this ComplexD x)
         {
@@ -1916,12 +2181,21 @@ namespace Aardvark.Base
                 else
                     return new ComplexD(Sqrt(x.Real), 0);
             }
-            else
+
+            double norm = x.Norm;
+            double halfSum = (norm + Abs(x.Real)) * 0.5;
+            if (halfSum >= 2.2250738585072014e-308 && halfSum < double.PositiveInfinity)
             {
-                var a = x.Norm;
-                var b = x + a;
-                return a.Sqrt() * (b / b.Norm);
+                double component = Sqrt(halfSum);
+                return x.Real >= 0
+                    ? new ComplexD(component, x.Imag / (2 * component))
+                    : new ComplexD(Abs(x.Imag) / (2 * component), CopySign(component, x.Imag));
             }
+
+            var a = norm;
+            var b = x + a;
+            var direct = a.Sqrt() * (b / b.Norm);
+            return ComplexD.GetScaledSquareRoot(x, direct);
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -299,6 +300,138 @@ namespace Aardvark.Tests
             var exception = Assert.Throws<InvalidOperationException>(() => shortestPath.Cancel());
             Assert.AreEqual("Cost calculation failed.", exception.Message);
             costEntered.Dispose();
+        }
+
+        [Test, Timeout(30000)]
+        public void DecreasedFrontierNodeIsExpandedBeforeMoreExpensivePaths()
+        {
+            var costs = new float[6, 6];
+            var edges = new List<(int, int)>();
+            foreach (var (a, b, cost) in new[]
+            {
+                (0, 1, 10), (0, 2, 20), (0, 3, 30), (0, 4, 40), (0, 5, 50),
+                (1, 3, 1), (3, 2, 1)
+            })
+            {
+                edges.Add((a, b));
+                SetCost(costs, a, b, cost);
+            }
+
+            var shortestPath = new ShortestPath<int>(Enumerable.Range(0, 6).ToList(), edges, (a, b) => costs[a, b]);
+            try
+            {
+                shortestPath.CalculateShortestPathsByIndex(0);
+                WaitForCalculation(shortestPath);
+                CollectionAssert.AreEqual(new[] { 2, 3, 1 }, shortestPath.GetMinimalPathByIndex(2));
+                Assert.That(PathCost(shortestPath.GetMinimalPathByIndex(2), 0, costs), Is.EqualTo(12));
+            }
+            finally
+            {
+                shortestPath.Cancel();
+            }
+        }
+
+        [TestCase(7, 16, false)]
+        [TestCase(31, 64, false)]
+        [TestCase(101, 128, false)]
+        [TestCase(7, 16, true)]
+        [TestCase(31, 64, true)]
+        [TestCase(101, 128, true)]
+        [Timeout(30000)]
+        public void SeededGraphsMatchReferenceDijkstra(int randomSeed, int count, bool directed)
+        {
+            var random = new Random(randomSeed);
+            var costs = new float[count, count];
+            var neighbors = Enumerable.Range(0, count).Select(_ => new List<int>()).ToArray();
+            for (int a = 0; a < count - 1; a++) // The last node is deliberately unreachable.
+            {
+                for (int b = directed ? 0 : a + 1; b < count - 1; b++)
+                {
+                    if (a == b || random.Next(5) != 0) continue;
+                    costs[a, b] = random.Next(0, 101); // Finite, non-negative, with ties and zero costs.
+                    neighbors[a].Add(b);
+                    if (!directed)
+                    {
+                        costs[b, a] = costs[a, b];
+                        neighbors[b].Add(a);
+                    }
+                }
+            }
+
+            var shortestPath = new ShortestPath<int>(Enumerable.Range(0, count).ToArray(), neighbors, (a, b) => costs[a, b]);
+            try
+            {
+                foreach (int seed in new[] { 0, count / 2, count - 1 })
+                {
+                    var expected = ReferenceDijkstra(neighbors, costs, seed);
+                    shortestPath.CalculateShortestPathsByIndex(seed);
+                    WaitForCalculation(shortestPath);
+                    for (int target = 0; target < count; target++)
+                    {
+                        var path = shortestPath.GetMinimalPathByIndex(target);
+                        if (target == seed)
+                            Assert.That(path, Is.Empty, "Seed paths exclude the seed");
+                        else if (float.IsPositiveInfinity(expected[target]))
+                            CollectionAssert.AreEqual(new[] { target, seed }, path, "Unreachable path convention");
+                        else
+                        {
+                            Assert.That(path[0], Is.EqualTo(target));
+                            Assert.That(path, Does.Not.Contain(seed));
+                            Assert.That(path.Distinct().Count(), Is.EqualTo(path.Count), "No predecessor cycle");
+                            int previous = seed;
+                            for (int i = path.Count - 1; i >= 0; i--)
+                            {
+                                Assert.That(neighbors[previous], Does.Contain(path[i]), "Path must follow graph edges");
+                                previous = path[i];
+                            }
+                            Assert.That(PathCost(path, seed, costs), Is.EqualTo(expected[target]), $"Seed {seed}, target {target}");
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                shortestPath.Cancel();
+            }
+        }
+
+        private static float[] ReferenceDijkstra(List<int>[] neighbors, float[,] costs, int seed)
+        {
+            var distances = Enumerable.Repeat(float.PositiveInfinity, neighbors.Length).ToArray();
+            var expanded = new bool[neighbors.Length];
+            distances[seed] = 0;
+            for (int i = 0; i < neighbors.Length; i++)
+            {
+                int next = -1;
+                for (int node = 0; node < neighbors.Length; node++)
+                    if (!expanded[node] && (next == -1 || distances[node] < distances[next])) next = node;
+                if (next == -1 || float.IsPositiveInfinity(distances[next])) break;
+                expanded[next] = true;
+                foreach (int neighbor in neighbors[next])
+                    distances[neighbor] = Math.Min(distances[neighbor], distances[next] + costs[next, neighbor]);
+            }
+            return distances;
+        }
+
+        private static float PathCost(List<int> path, int seed, float[,] costs)
+        {
+            float cost = 0;
+            int previous = seed;
+            for (int i = path.Count - 1; i >= 0; i--)
+            {
+                cost += costs[previous, path[i]];
+                previous = path[i];
+            }
+            return cost;
+        }
+
+        private static void WaitForCalculation(ShortestPath<int> shortestPath)
+        {
+            // Await the actual worker, not an expected path that could mask a failed calculation.
+            var run = typeof(ShortestPath<int>).GetField("m_currentRun", BindingFlags.Instance | BindingFlags.NonPublic)
+                .GetValue(shortestPath);
+            var task = (Task)run.GetType().GetProperty("Task").GetValue(run);
+            AssertTaskCompletes(task);
         }
 
         private static void SetCost(float[,] costs, int a, int b, float value)

@@ -6,6 +6,8 @@ Quick symbol-to-doc map for incremental discovery.
 
 | Symbol | Primary Doc |
 |--------|-------------|
+| `Half` comparison and collection semantics | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
+| `Fraction` exact comparison and special-value semantics | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `V2d`, `V3d`, `V4d` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `M22d..M44d` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `Rot3d`, `Trafo3d` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
@@ -29,13 +31,19 @@ Quick symbol-to-doc map for incremental discovery.
 
 | Symbol | Primary Doc |
 |--------|-------------|
+| `Fun.IsPrime(int)`, `Fun.IsPrime(long)` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
+| `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple` | [PRIMITIVE_TYPES.md](PRIMITIVE_TYPES.md) |
 | `ShortestPath<T>` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `BbTree` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `AliasTableF`, `AliasTableD` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `DistributionFunction` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Polynomial` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `Ipol.CubicHermite`, `Ipol.CatmullRom`, `Ipol.KochanekBartels` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `LuFactorize`, `LuSolve`, `QrFactorize` | [ALGORITHMS.md](ALGORITHMS.md) |
 | `Stats<T>`, `Histogram` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `Fun.Variance`, `Fun.StandardDeviation` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `MedianWindow` | [ALGORITHMS.md](ALGORITHMS.md) |
+| `GeometryFun.Simplify` | [SEMANTICS_GEOMETRY_CORE.md](SEMANTICS_GEOMETRY_CORE.md) |
 
 ## Collections / Infrastructure
 
@@ -49,6 +57,8 @@ Quick symbol-to-doc map for incremental discovery.
 | `Report` | [UTILITIES.md](UTILITIES.md) |
 | `Telemetry` | [UTILITIES.md](UTILITIES.md) |
 | `RandomSystem`, `RandomSample`, `HaltonRandomSeries`, `Quasi` | [UTILITIES.md](UTILITIES.md) |
+| `Prime` | [UTILITIES.md](UTILITIES.md) |
+| `PerlinNoise` | [UTILITIES.md](UTILITIES.md) |
 | `Geo`, `GeoEllipsoid` | [UTILITIES.md](UTILITIES.md) |
 | `Constant`, `ConstantF`, `INode` | [UTILITIES.md](UTILITIES.md) |
 | `Dir` (relative path utilities) | [UTILITIES.md](UTILITIES.md) |

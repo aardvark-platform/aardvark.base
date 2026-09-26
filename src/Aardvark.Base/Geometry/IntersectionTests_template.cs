@@ -1428,7 +1428,8 @@ namespace Aardvark.Base
         #region __box2t__ intersects __plane2t__
 
         /// <summary>
-        /// returns true if the box and the plane intersect
+        /// Returns true if the finite plane intersects the finite valid box.
+        /// Boundary contact counts as an intersection.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -1436,13 +1437,24 @@ namespace Aardvark.Base
             __plane2t__ plane
             )
         {
-            //UNTESTED
-            return plane.Divides(box.ComputeCorners());
+            __rtype__ xmin = box.Min.X, ymin = box.Min.Y;
+            __rtype__ xmax = box.Max.X, ymax = box.Max.Y;
+            __rtype__ nx = plane.Normal.X, ny = plane.Normal.Y, d = plane.Distance;
+
+            if (!xmin.IsFinite() || !ymin.IsFinite() || !xmax.IsFinite() || !ymax.IsFinite()
+                || !nx.IsFinite() || !ny.IsFinite() || !d.IsFinite()
+                || xmin > xmax || ymin > ymax || (nx == 0 && ny == 0))
+                return false;
+
+            __rtype__ min = nx * (nx < 0 ? xmax : xmin) + ny * (ny < 0 ? ymax : ymin);
+            __rtype__ max = nx * (nx < 0 ? xmin : xmax) + ny * (ny < 0 ? ymin : ymax);
+            return min <= d && d <= max;
         }
 
 
         /// <summary>
-        /// NOT TESTED YET.
+        /// Intersects the finite plane with the finite valid box using closed boundary semantics.
+        /// The result is a point segment for tangential contact and default on a miss.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -1450,75 +1462,152 @@ namespace Aardvark.Base
             __plane2t__ plane,
             out __line2t__ line)
         {
+            __v2t__ normal = plane.Normal;
+            if (normal.X == 0 && (normal.Y == 1 || normal.Y == -1))
+            {
+                __rtype__ y = normal.Y > 0 ? plane.Distance : -plane.Distance;
+                if (box.IsValid && box.Min.AllFinite && box.Max.AllFinite && y.IsFinite()
+                    && y >= box.Min.Y && y <= box.Max.Y)
+                {
+                    line = new __line2t__(new __v2t__(box.Min.X, y), new __v2t__(box.Max.X, y));
+                    return true;
+                }
+                line = default;
+                return false;
+            }
+
+            if (normal.Y == 0 && (normal.X == 1 || normal.X == -1))
+            {
+                __rtype__ x = normal.X > 0 ? plane.Distance : -plane.Distance;
+                if (box.IsValid && box.Min.AllFinite && box.Max.AllFinite && x.IsFinite()
+                    && x >= box.Min.X && x <= box.Max.X)
+                {
+                    line = new __line2t__(new __v2t__(x, box.Min.Y), new __v2t__(x, box.Max.Y));
+                    return true;
+                }
+                line = default;
+                return false;
+            }
+
             return Intersects(
-                    plane.Normal.X, plane.Normal.Y, plane.Distance,
+                    normal.X, normal.Y, plane.Distance,
                     box.Min.X, box.Min.Y, box.Max.X, box.Max.Y,
                     out line);
         }
 
         /// <summary>
-        /// Intersects an infinite line given by its normal vector [nx, ny]
-        /// and its distance to the origin d, with an axis aligned box given
-        /// by it minimal point [xmin, ymin] and its maximal point
-        /// [xmax, ymax]. Returns true if there is an intersection and computes
-        /// the actual intersection line.
-        /// NOT TESTED YET.
+        /// Intersects the infinite line <c>nx*x + ny*y = d</c> with the finite valid
+        /// axis-aligned box. Boundary contact counts as an intersection. The result is
+        /// a point segment for tangency and default on a miss.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
                 __rtype__ nx, __rtype__ ny, __rtype__ d,
                 __rtype__ xmin, __rtype__ ymin, __rtype__ xmax, __rtype__ ymax,
                 out __line2t__ line)
         {
-            if (nx.IsTiny()) // horizontal
+            line = default;
+            if (!xmin.IsFinite() || !ymin.IsFinite() || !xmax.IsFinite() || !ymax.IsFinite()
+                || !nx.IsFinite() || !ny.IsFinite() || !d.IsFinite()
+                || xmin > xmax || ymin > ymax || (nx == 0 && ny == 0))
+                return false;
+
+            if (nx == 0) // horizontal
             {
-                if (d <= ymin || d >= ymax) { line = default; return false; }
-                line = new __line2t__(new __v2t__(xmin, d), new __v2t__(xmax, d));
+                __rtype__ y = ny == 1 ? d : ny == -1 ? -d : d / ny;
+                if (!y.IsFinite() || y < ymin || y > ymax) return false;
+                line = new __line2t__(new __v2t__(xmin, y), new __v2t__(xmax, y));
                 return true;
             }
 
-            if (ny.IsTiny()) // vertical
+            if (ny == 0) // vertical
             {
-                if (d <= xmin || d >= xmax) { line = default; return false; }
-                line = new __line2t__(new __v2t__(d, ymin), new __v2t__(d, ymax));
+                __rtype__ x = nx == 1 ? d : nx == -1 ? -d : d / nx;
+                if (!x.IsFinite() || x < xmin || x > xmax) return false;
+                line = new __line2t__(new __v2t__(x, ymin), new __v2t__(x, ymax));
                 return true;
             }
 
-            if (nx.Sign() != ny.Sign())
+            if (Fun.Abs(nx) >= Fun.Abs(ny))
             {
                 __rtype__ x0 = (d - ny * ymin) / nx;
-                if (x0 >= xmax) { line = default; return false; }
-                if (x0 > xmin) xmin = x0;
                 __rtype__ x1 = (d - ny * ymax) / nx;
-                if (x1 <= xmin) { line = default; return false; }
-                if (x1 < xmax) xmax = x1;
+                if (!x0.IsFinite() || !x1.IsFinite()) return false;
 
-                __rtype__ y0 = (d - nx * xmin) / ny;
-                if (y0 >= ymax) { line = default; return false; }
-                if (y0 > ymin) ymin = y0;
-                __rtype__ y1 = (d - nx * xmax) / ny;
-                if (y1 <= ymin) { line = default; return false; }
-                if (y1 < ymax) ymax = y1;
+                if (x0 >= xmin && x0 <= xmax && x1 >= xmin && x1 <= xmax)
+                {
+                    line = new __line2t__(new __v2t__(x0, ymin), new __v2t__(x1, ymax));
+                    return true;
+                }
 
-                line = new __line2t__(new __v2t__(xmin, ymin), new __v2t__(xmax, ymax));
+                __rtype__ dx = x1 - x0;
+                __rtype__ t0 = 0, t1 = 1;
+                if (dx > 0)
+                {
+                    t0 = (xmin - x0) / dx;
+                    t1 = (xmax - x0) / dx;
+                }
+                else if (dx < 0)
+                {
+                    t0 = (xmax - x0) / dx;
+                    t1 = (xmin - x0) / dx;
+                }
+                else if (x0 < xmin || x0 > xmax)
+                {
+                    return false;
+                }
+
+                if (t0 < 0) t0 = 0;
+                if (t1 > 1) t1 = 1;
+                if (t0 > t1) return false;
+
+                __rtype__ sy = ymax - ymin;
+                line = new __line2t__(
+                    new __v2t__(x0 + dx * t0, ymin + sy * t0),
+                    new __v2t__(x0 + dx * t1, ymin + sy * t1));
+                return true;
             }
             else
             {
-                __rtype__ x0 = (d - ny * ymax) / nx;
-                if (x0 >= xmax) { line = default; return false; }
-                if (x0 > xmin) xmin = x0;
-                __rtype__ x1 = (d - ny * ymin) / nx;
-                if (x1 <= xmin) { line = default; return false; }
-                if (x1 < xmax) xmax = x1;
-                __rtype__ y0 = (d - nx * xmax) / ny;
-                if (y0 >= ymax) { line = default; return false; }
-                if (y0 > ymin) ymin = y0;
-                __rtype__ y1 = (d - nx * xmin) / ny;
-                if (y1 <= ymin) { line = default; return false; }
-                if (y1 < ymax) ymax = y1;
+                __rtype__ y0 = (d - nx * xmin) / ny;
+                __rtype__ y1 = (d - nx * xmax) / ny;
+                if (!y0.IsFinite() || !y1.IsFinite()) return false;
 
-                line = new __line2t__(new __v2t__(xmax, ymin), new __v2t__(xmin, ymax));
+                if (y0 >= ymin && y0 <= ymax && y1 >= ymin && y1 <= ymax)
+                {
+                    __v2t__ q0 = new __v2t__(xmin, y0);
+                    __v2t__ q1 = new __v2t__(xmax, y1);
+                    line = y0 <= y1 ? new __line2t__(q0, q1) : new __line2t__(q1, q0);
+                    return true;
+                }
+
+                __rtype__ dy = y1 - y0;
+                __rtype__ t0 = 0, t1 = 1;
+                if (dy > 0)
+                {
+                    t0 = (ymin - y0) / dy;
+                    t1 = (ymax - y0) / dy;
+                }
+                else if (dy < 0)
+                {
+                    t0 = (ymax - y0) / dy;
+                    t1 = (ymin - y0) / dy;
+                }
+                else if (y0 < ymin || y0 > ymax)
+                {
+                    return false;
+                }
+
+                if (t0 < 0) t0 = 0;
+                if (t1 > 1) t1 = 1;
+                if (t0 > t1) return false;
+
+                __rtype__ sx = xmax - xmin;
+                __v2t__ p0 = new __v2t__(xmin + sx * t0, y0 + dy * t0);
+                __v2t__ p1 = new __v2t__(xmin + sx * t1, y0 + dy * t1);
+                line = p0.Y <= p1.Y ? new __line2t__(p0, p1) : new __line2t__(p1, p0);
+                return true;
             }
-            return true;
         }
 
         #endregion

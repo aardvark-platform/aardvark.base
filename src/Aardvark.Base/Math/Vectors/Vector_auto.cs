@@ -20278,7 +20278,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Computes the signed angle between two given vectors in radians. The input vectors have to be normalized.
+        /// Computes the signed angle between two given vectors in radians. The input vectors do not have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AngleBetweenSigned(this V2f x, V2f y)
@@ -26493,7 +26493,7 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Computes the signed angle between two given vectors in radians. The input vectors have to be normalized.
+        /// Computes the signed angle between two given vectors in radians. The input vectors do not have to be normalized.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngleBetweenSigned(this V2d x, V2d y)

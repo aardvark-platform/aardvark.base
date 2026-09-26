@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Aardvark.Base
 {
     public static class MinimumSpanningTree
     {
         /// <summary>
-        /// Creates a minimum spanning tree from a set of weighted edges.
-        /// The input are edges ((TVertex, TVertex), TWeight) of a graph.
-        /// The output are a subset of these edges which form a minimum spanning tree.
-        /// The type of the weight (TWeight) needs to be IComparable.
+        /// Creates a minimum spanning tree from a sequence of weighted undirected edges.
+        /// Vertices are discovered in source order, and equal-weight candidates are
+        /// selected in source edge order. Empty and single-vertex graphs return no edges;
+        /// disconnected graphs throw <see cref="InvalidOperationException"/>.
         /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="edges"/> is null.</exception>
+        /// <exception cref="InvalidOperationException">The graph is disconnected.</exception>
         public static IEnumerable<((TVertex, TVertex), TWeight)> Create<TVertex, TWeight>(
             IEnumerable<((TVertex, TVertex), TWeight)> edges
             )
@@ -28,99 +28,156 @@ namespace Aardvark.Base
             )
             where TWeight : IComparable<TWeight>
         {
-            var edgeList = edges as IReadOnlyList<((TVertex, TVertex), TWeight)> ?? edges.ToList();
+            int capacity = edges is ICollection<((TVertex, TVertex), TWeight)> collection
+                ? collection.Count
+                : edges is IReadOnlyCollection<((TVertex, TVertex), TWeight)> readOnlyCollection
+                    ? readOnlyCollection.Count
+                    : 0;
 
-            Report.BeginTimed("create vertex set");
-            var vertexSet = new HashSet<TVertex>();
-            for (var i = 0; i < edgeList.Count; i++)
+            var edgeList = new List<(int V0, int V1, TWeight Weight)>(capacity);
+            var vertices = new List<TVertex>(capacity);
+            var vertexIndices = new Dictionary<TVertex, int>(capacity);
+
+            int GetVertexIndex(TVertex vertex)
             {
-                var edge = edgeList[i].Item1;
-                vertexSet.Add(edge.Item1);
-                vertexSet.Add(edge.Item2);
-            }
-            Report.End();
-            if (vertexSet.Count < 2) yield break;
-
-            //compare function
-            int compare(KeyValuePair<TWeight, TVertex> kvp0, KeyValuePair<TWeight, TVertex> kvp1) => kvp0.Key.CompareTo(kvp1.Key);
-
-            // init per-vertex edge priority queues
-            Report.BeginTimed("init per-vertex edge priority queues");
-            var v2es = new Dictionary<TVertex, List<KeyValuePair<TWeight, TVertex>>>();
-            vertexSet.ForEach(v => v2es[v] = new List<KeyValuePair<TWeight, TVertex>>());
-            for (var i = 0; i < edgeList.Count; i++)
-            {
-                var e = edgeList[i];
-                v2es[e.Item1.Item1].HeapEnqueue(compare, new KeyValuePair<TWeight, TVertex>(e.Item2, e.Item1.Item2));
-                v2es[e.Item1.Item2].HeapEnqueue(compare, new KeyValuePair<TWeight, TVertex>(e.Item2, e.Item1.Item1));
-            }
-            Report.End();
-
-            // mst
-            var mst = new HashSet<TVertex>();
-            void move(TVertex v) { vertexSet.Remove(v); mst.Add(v); }
-
-            // build minimum spanning tree using Prim's algorithm
-            Report.BeginTimed("build mst");
-            move(vertexSet.First());
-            while (vertexSet.Count > 0)
-            {
-                var candidateQueues = mst
-                    .Where(v => v2es.ContainsKey(v))
-                    .Select(v => (v, v2es[v])).Where(q => !q.Item2.IsEmptyOrNull())
-                    ;
-                foreach (var q in candidateQueues)
+                if (!vertexIndices.TryGetValue(vertex, out int index))
                 {
-                    while (!q.Item2.IsEmptyOrNull() && mst.Contains(q.Item2[0].Value))
-                        q.Item2.HeapDequeue(compare);
-                    if (q.Item2.IsEmptyOrNull()) v2es.Remove(q.Item1);
+                    index = vertices.Count;
+                    vertexIndices.Add(vertex, index);
+                    vertices.Add(vertex);
                 }
-                var best = candidateQueues
-                    .Select(q => (q.Item1, q.Item2[0]))
-                    .Min((a, b) => a.Item2.Key.CompareTo(b.Item2.Key) < 0)
-                    ;
-                v2es[best.Item1].HeapDequeue(compare);
-                move(best.Item2.Value);
-                yield return ((best.Item1, best.Item2.Value), best.Item2.Key);
+                return index;
             }
-            Report.End();
-        }
-    }
 
-    public static class MinimumSpanningTreeTest
-    {
-        public static void Test()
-        {
-            var r = new Random();
-            var es = from a in Enumerable.Range(1, 1000)
-                     from b in Enumerable.Range(a + 1, 1000 - a - 1)
-                     let w = r.NextDouble() + 1
-                     select ((a, b), w)
-                     ;
-            Report.Line("number of edges: {0}", es.Count());
-
-            /* unused variable error under mono:
-            var edges = new Tup<(string ,string), int>[]
+            foreach (var sourceEdge in edges)
             {
-                (("A", "B"), 7),
-                (("A", "D"), 5),
-                (("D", "B"), 9),
-                (("B", "C"), 8),
-                (("B", "E"), 7),
-                (("C", "E"), 5),
-                (("E", "D"), 15),
-                (("F", "D"), 6),
-                (("E", "F"), 8),
-                (("F", "G"), 11),
-                (("E", "G"), 9),
-            };
-            */
+                var endpoints = sourceEdge.Item1;
+                int v0 = GetVertexIndex(endpoints.Item1);
+                int v1 = GetVertexIndex(endpoints.Item2);
+                edgeList.Add((v0, v1, sourceEdge.Item2));
+            }
 
-            Report.BeginTimed("building mst");
-            var mst = MinimumSpanningTree.Create(es).ToArray();
-            Report.End();
+            int vertexCount = vertices.Count;
+            if (vertexCount < 2) yield break;
 
-            Report.Line("#edges in mst: {0}", mst.Length);
+            // Store incident edge indices compactly. Self-loops establish vertices but
+            // never enter the frontier because they cannot connect a new vertex.
+            var offsets = new int[vertexCount + 1];
+            for (int i = 0; i < edgeList.Count; i++)
+            {
+                var edge = edgeList[i];
+                if (edge.V0 == edge.V1) continue;
+                offsets[edge.V0 + 1]++;
+                offsets[edge.V1 + 1]++;
+            }
+            for (int i = 1; i < offsets.Length; i++)
+                offsets[i] += offsets[i - 1];
+
+            var incidentEdges = new int[offsets[vertexCount]];
+            var nextIncident = new int[vertexCount];
+            Array.Copy(offsets, nextIncident, vertexCount);
+            for (int i = 0; i < edgeList.Count; i++)
+            {
+                var edge = edgeList[i];
+                if (edge.V0 == edge.V1) continue;
+                incidentEdges[nextIncident[edge.V0]++] = i;
+                incidentEdges[nextIncident[edge.V1]++] = i;
+            }
+
+            // A source edge is enqueued when its first endpoint becomes visited, so a
+            // fixed E-slot array is sufficient for the global binary-heap frontier.
+            var visited = new bool[vertexCount];
+            var frontier = new int[incidentEdges.Length / 2];
+            int frontierCount = 0;
+
+            bool Precedes(int leftIndex, int rightIndex)
+            {
+                int order = edgeList[leftIndex].Weight.CompareTo(edgeList[rightIndex].Weight);
+                return order < 0 || (order == 0 && leftIndex < rightIndex);
+            }
+
+            void Enqueue(int edgeIndex)
+            {
+                int index = frontierCount++;
+                while (index > 0)
+                {
+                    int parent = (index - 1) >> 1;
+                    int parentEdge = frontier[parent];
+                    if (!Precedes(edgeIndex, parentEdge)) break;
+                    frontier[index] = parentEdge;
+                    index = parent;
+                }
+                frontier[index] = edgeIndex;
+            }
+
+            int Dequeue()
+            {
+                int result = frontier[0];
+                int last = frontier[--frontierCount];
+                if (frontierCount == 0) return result;
+
+                int index = 0;
+                while (true)
+                {
+                    int child = (index << 1) + 1;
+                    if (child >= frontierCount) break;
+                    int right = child + 1;
+                    if (right < frontierCount && Precedes(frontier[right], frontier[child]))
+                        child = right;
+
+                    int childEdge = frontier[child];
+                    if (!Precedes(childEdge, last)) break;
+                    frontier[index] = childEdge;
+                    index = child;
+                }
+                frontier[index] = last;
+                return result;
+            }
+
+            void AddFrontier(int vertex)
+            {
+                for (int i = offsets[vertex]; i < offsets[vertex + 1]; i++)
+                {
+                    int edgeIndex = incidentEdges[i];
+                    var edge = edgeList[edgeIndex];
+                    int other = edge.V0 == vertex ? edge.V1 : edge.V0;
+                    if (!visited[other]) Enqueue(edgeIndex);
+                }
+            }
+
+            visited[0] = true;
+            int visitedCount = 1;
+            AddFrontier(0);
+
+            while (visitedCount < vertexCount)
+            {
+                int edgeIndex;
+                int previous;
+                int next;
+                while (true)
+                {
+                    if (frontierCount == 0)
+                        throw new InvalidOperationException(
+                            "The graph is disconnected and cannot produce a spanning tree.");
+
+                    edgeIndex = Dequeue();
+                    var candidate = edgeList[edgeIndex];
+                    bool visited0 = visited[candidate.V0];
+                    bool visited1 = visited[candidate.V1];
+                    if (visited0 == visited1) continue;
+
+                    previous = visited0 ? candidate.V0 : candidate.V1;
+                    next = visited0 ? candidate.V1 : candidate.V0;
+                    break;
+                }
+
+                visited[next] = true;
+                visitedCount++;
+                AddFrontier(next);
+
+                var edge = edgeList[edgeIndex];
+                yield return ((vertices[previous], vertices[next]), edge.Weight);
+            }
         }
     }
 }
