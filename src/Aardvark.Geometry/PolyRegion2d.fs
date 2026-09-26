@@ -644,6 +644,21 @@ type PolyRegion private(polygons : list<Polygon2d>) =
     member x.Transformed(s : Scale2d) =
         PolyRegion (polygons |> List.map (fun p -> p.Transformed s))
 
+    member x.InvTransformed(e : Euclidean2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed e))
+
+    member x.InvTransformed(s : Similarity2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed s))
+
+    member x.InvTransformed(s : Shift2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed s))
+
+    member x.InvTransformed(r : Rot2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed r))
+
+    member x.InvTransformed(s : Scale2d) =
+        PolyRegion (polygons |> List.map (fun p -> p.InvTransformed s))
+
     /// Returns a copy of the PolyRegion with the vertex order of all polygons reversed.
     member x.Reversed =
         PolyRegion (polygons |> List.map (fun p -> p.Reversed))

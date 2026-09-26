@@ -1,3 +1,4 @@
+- [Geometry] Added typed transform overloads for boxes, hulls, planes, rays, and PolyRegion inverse transforms. Existing transform semantics are preserved; recompiled calls can bind to more direct overloads and avoid unnecessary conversion/inversion work.
 - [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
 - [Base] Corrected and accelerated order-independent integer range-set construction
 - [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views

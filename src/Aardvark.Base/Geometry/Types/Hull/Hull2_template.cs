@@ -19,6 +19,13 @@ namespace Aardvark.Base
     //#   var box2t = "Box2" + tc;
     //#   var plane2t = "Plane2" + tc;
     //#   var plane2t2 = "Plane2" + tc2;
+    //#   var affine2t = "Affine2" + tc;
+    //#   var euclidean2t = "Euclidean2" + tc;
+    //#   var rot2t = "Rot2" + tc;
+    //#   var scale2t = "Scale2" + tc;
+    //#   var shift2t = "Shift2" + tc;
+    //#   var similarity2t = "Similarity2" + tc;
+    //#   var m22t = "M22" + tc;
     //#   var trafo2t = "Trafo2" + tc;
     //#   var iboundingbox = "IBoundingBox2" + tc;
     //#   var half = isDouble ? "0.5" : "0.5f";
@@ -182,6 +189,151 @@ namespace Aardvark.Base
                     = new __plane2t__(
                             invTr.TransformDir(PlaneArray[i].Normal).Normalized,
                             trafo.Forward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static __plane2t__ TransformPlaneNormalized(__plane2t__ plane, __v2t__ rawNormal, __v2t__ translation)
+        {
+            var inverseLength = 1 / rawNormal.Length;
+            var normal = rawNormal * inverseLength;
+            return new __plane2t__(normal, plane.Distance * inverseLength + translation.Dot(normal));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__euclidean2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__similarity2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.Transform(PlaneArray[i].Normal) / trafo.Scale, trafo.Trans);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__affine2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            var inverse = trafo.Inverse.Linear;
+            var normalMatrix = new __m22t__(inverse.M00, inverse.M10, inverse.M01, inverse.M11);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], normalMatrix.Transform(PlaneArray[i].Normal), trafo.Trans);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__shift2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new __plane2t__(plane.Normal, plane.Distance + trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__rot2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), __v2t__.Zero);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ Transformed(__scale2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                var normal = plane.Normal;
+                hull.PlaneArray[i] = TransformPlaneNormalized(plane, new __v2t__(normal.X / trafo.X, normal.Y / trafo.Y), __v2t__.Zero);
+            }
+            return hull;
+        }
+
+        public readonly __type__ InvTransformed(__trafo2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            var invTr = trafo.Forward.Transposed;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i]
+                    = new __plane2t__(
+                            invTr.TransformDir(PlaneArray[i].Normal).Normalized,
+                            trafo.Backward.TransformPos(PlaneArray[i].Point));
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__euclidean2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            var translation = -trafo.Rot.InvTransform(trafo.Trans);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.InvTransform(PlaneArray[i].Normal), translation);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__similarity2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            var translation = -trafo.Rot.InvTransform(trafo.Trans) / trafo.Scale;
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Rot.InvTransform(PlaneArray[i].Normal) * trafo.Scale, translation);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__shift2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+            {
+                var plane = PlaneArray[i];
+                hull.PlaneArray[i] = new __plane2t__(plane.Normal, plane.Distance - trafo.V.Dot(plane.Normal));
+            }
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__rot2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.InvTransform(PlaneArray[i].Normal), __v2t__.Zero);
+            return hull;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public readonly __type__ InvTransformed(__scale2t__ trafo)
+        {
+            int count = PlaneCount;
+            var hull = new __type__(new __plane2t__[count]);
+            for (int i = 0; i < count; i++)
+                hull.PlaneArray[i] = TransformPlaneNormalized(PlaneArray[i], trafo.Transform(PlaneArray[i].Normal), __v2t__.Zero);
             return hull;
         }
 

@@ -1,5 +1,4 @@
 group Test
-
 FsCheck
 FsCheck.NUnit
 FSharp.Core
