@@ -69,11 +69,30 @@ inputs with the same ordered values produce identical hashes. Empty inputs retur
 zero; singletons return the element hash. The enumerable overload consumes the
 sequence once and disposes its enumerator.
 
-## Introspection Method Queries
+## Introspection Queries
 
 `Introspection.GetAllMethodsWithAttribute<T>(Assembly)` scans public instance
 and static methods declared directly by each assembly type. Each matching
 `MethodInfo` is returned once together with all attached `T` attribute instances.
+
+Method queries use the `public-declared-v2` discriminator plus the attribute's
+`AssemblyQualifiedName`, independently of type-query caches. The version-1 file
+format stores one assembly-qualified name per declaring type in first-seen order.
+Reads deduplicate those names and ignore resolved types from other assemblies
+before enumerating methods or constructing attributes. Foreign entries alone are
+not failures and do not force a live retry. Other query families retain their
+existing assembly-filtering semantics.
+
+Introspection queries retain successful matches when loading types, enumerating
+methods, or constructing attributes fails. Reflection failures are reported once
+per assembly and query as a bounded summary with deduplicated examples; full
+exception stacks and repeated per-member messages are not emitted.
+
+Only complete live scans are cached. An incomplete cache decode is discarded and
+retried against the live assembly, while an incomplete live scan leaves no cache
+entry. A later complete scan can therefore repopulate the same version-1 cache
+after a transient type-resolution, method-enumeration, or attribute-construction
+failure.
 
 ## Random
 
