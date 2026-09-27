@@ -132,6 +132,50 @@ namespace Aardvark.Tests.Geometry
         }
 
         [Test]
+        public void AbsoluteToleranceSurvivesFiniteNormalLengthOverflowAndUnderflow()
+        {
+            var line2d = new Line2d(new V2d(0.0, 1.0), new V2d(4.0, 3.0));
+            var expected2d = line2d.ClipByPlane(new Plane2d(V2d.XAxis, 2.0), 0.125);
+            foreach (var scale in new[] { 1e-200, 1e200 })
+            {
+                Assert.That(
+                    line2d.ClipByPlane(new Plane2d(scale * V2d.XAxis, scale * 2.0), 0.125),
+                    Is.EqualTo(expected2d)
+                );
+            }
+
+            var line3d = new Line3d(new V3d(0.0, 1.0, 2.0), new V3d(4.0, 3.0, 4.0));
+            var expected3d = line3d.ClipByPlane(new Plane3d(V3d.XAxis, 2.0), 0.125);
+            foreach (var scale in new[] { 1e-200, 1e200 })
+            {
+                Assert.That(
+                    line3d.ClipByPlane(new Plane3d(scale * V3d.XAxis, scale * 2.0), 0.125),
+                    Is.EqualTo(expected3d)
+                );
+            }
+
+            var line2f = new Line2f(new V2f(0.0f, 1.0f), new V2f(4.0f, 3.0f));
+            var expected2f = line2f.ClipByPlane(new Plane2f(V2f.XAxis, 2.0f), 0.125f);
+            foreach (var scale in new[] { 1e-20f, 1e20f })
+            {
+                AssertLineNear(
+                    line2f.ClipByPlane(new Plane2f(scale * V2f.XAxis, scale * 2.0f), 0.125f),
+                    expected2f
+                );
+            }
+
+            var line3f = new Line3f(new V3f(0.0f, 1.0f, 2.0f), new V3f(4.0f, 3.0f, 4.0f));
+            var expected3f = line3f.ClipByPlane(new Plane3f(V3f.XAxis, 2.0f), 0.125f);
+            foreach (var scale in new[] { 1e-20f, 1e20f })
+            {
+                AssertLineNear(
+                    line3f.ClipByPlane(new Plane3f(scale * V3f.XAxis, scale * 2.0f), 0.125f),
+                    expected3f
+                );
+            }
+        }
+
+        [Test]
         public void ZeroLengthSegmentsAreRetainedOrRejectedByPosition()
         {
             var inside2d = new Line2d(new V2d(1.0, 2.0), new V2d(1.0, 2.0));
@@ -189,6 +233,18 @@ namespace Aardvark.Tests.Geometry
         {
             Assert.That(actual.P0, Is.EqualTo(p0));
             Assert.That(actual.P1, Is.EqualTo(p1));
+        }
+
+        private static void AssertLineNear(Line2f actual, Line2f expected)
+        {
+            Assert.That((actual.P0 - expected.P0).Length, Is.LessThan(1e-5f));
+            Assert.That((actual.P1 - expected.P1).Length, Is.LessThan(1e-5f));
+        }
+
+        private static void AssertLineNear(Line3f actual, Line3f expected)
+        {
+            Assert.That((actual.P0 - expected.P0).Length, Is.LessThan(1e-5f));
+            Assert.That((actual.P1 - expected.P1).Length, Is.LessThan(1e-5f));
         }
 
         private static void AssertRejected(Line2d actual)

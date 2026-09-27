@@ -45,7 +45,7 @@ namespace Aardvark.Tests
         }
 
         [Test]
-        public void LegacyMethodAttributeCacheLinesAreDeduplicated()
+        public void CurrentMethodAttributeCacheLinesAreDeduplicated()
         {
             WithFreshCache<MethodCacheTestAttribute>(() =>
             {
@@ -71,6 +71,148 @@ namespace Aardvark.Tests
                 CollectionAssert.AreEqual(MethodKeys(miss), MethodKeys(hit));
             });
         }
+
+        [Test]
+        public void LegacyMethodCacheIsInvalidated()
+        {
+            WithFreshCache<MethodCacheTestAttribute>(() =>
+            {
+                AssertExpectedMethods(Query());
+                var currentFile = GetSingleCacheFile<MethodCacheTestAttribute>();
+                var header = File.ReadLines(currentFile).First();
+                File.Delete(currentFile);
+
+                var currentGuid = GetMethodCacheDiscriminator(typeof(MethodCacheTestAttribute)).ToGuid();
+                var legacyGuid = typeof(MethodCacheTestAttribute).FullName.ToGuid();
+                File.WriteAllLines(currentFile.Replace(currentGuid.ToString(), legacyGuid.ToString()), new[] { header });
+
+                AssertExpectedMethods(Query());
+                Assert.That(GetCacheFiles<MethodCacheTestAttribute>(methods: true), Has.Length.EqualTo(1));
+            });
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void TypeAndMethodAttributeQueriesUseIndependentCaches(bool methodsFirst)
+        {
+            WithFreshCache<MixedCacheTestAttribute>(() =>
+            {
+                void CheckTypes() => CollectionAssert.AreEquivalent(
+                    new[] { typeof(MixedCacheFixture), typeof(MixedTypeOnlyFixture) },
+                    Introspection.GetAllTypesWithAttribute<MixedCacheTestAttribute>(s_assembly)
+                        .Select(x => x.Item1).ToArray());
+                void CheckMethods() => CollectionAssert.AreEquivalent(
+                    new[] { nameof(MixedCacheFixture.Marked), nameof(MixedMethodOnlyFixture.MarkedMethodOnly) },
+                    Introspection.GetAllMethodsWithAttribute<MixedCacheTestAttribute>(s_assembly)
+                        .Select(x => x.Item1.Name).ToArray());
+
+                if (methodsFirst) { CheckMethods(); CheckTypes(); }
+                else { CheckTypes(); CheckMethods(); }
+
+                var typeFile = GetCacheFiles<MixedCacheTestAttribute>().Single();
+                var methodFile = GetSingleCacheFile<MixedCacheTestAttribute>();
+                Assert.AreNotEqual(typeFile, methodFile);
+                var typeContents = File.ReadAllText(typeFile);
+                var methodContents = File.ReadAllText(methodFile);
+                var (_, report) = CaptureReport(() => { CheckMethods(); CheckTypes(); return 0; });
+                Assert.AreEqual(2, CountOccurrences(report, "[cache hit ]"));
+                StringAssert.DoesNotContain("[cache miss]", report);
+                Assert.AreEqual(typeContents, File.ReadAllText(typeFile));
+                Assert.AreEqual(methodContents, File.ReadAllText(methodFile));
+            });
+        }
+
+        [Test]
+        public void ForeignAssemblyTypesInCurrentMethodCacheAreIgnored()
+        {
+            WithFreshCache<ObsoleteAttribute>(() =>
+            {
+                var miss = Introspection.GetAllMethodsWithAttribute<ObsoleteAttribute>(s_assembly);
+                var cacheFile = GetSingleCacheFile<ObsoleteAttribute>();
+                File.AppendAllLines(cacheFile, new[] { typeof(Introspection).AssemblyQualifiedName });
+
+                var hit = Introspection.GetAllMethodsWithAttribute<ObsoleteAttribute>(s_assembly);
+                CollectionAssert.AreEqual(MethodKeys(miss), MethodKeys(hit));
+                Assert.That(hit.All(x => x.Item1.DeclaringType.Assembly == s_assembly), Is.True);
+            });
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void ForeignCacheEntriesAreNotInspectedEvenWhenResolutionFails(bool unresolvedEntry)
+        {
+            WithFreshCache<RecoverableMethodAttribute>(() =>
+            {
+                var assembly = typeof(Introspection).Assembly;
+                Assert.That(Introspection.GetAllMethodsWithAttribute<RecoverableMethodAttribute>(assembly), Is.Empty);
+                var cacheFile = GetSingleCacheFile<RecoverableMethodAttribute>();
+                File.AppendAllLines(cacheFile, new[]
+                {
+                    typeof(RecoverableMethodFixture).AssemblyQualifiedName,
+                    typeof(RecoverableMethodFixture).AssemblyQualifiedName,
+                });
+                if (unresolvedEntry) File.AppendAllLines(cacheFile, new[] { MissingTypeName });
+
+                RecoverableMethodAttribute.ConstructionCount = 0;
+                RecoverableMethodAttribute.ThrowOnBad = true;
+                var (result, report) = CaptureReport(() =>
+                    Introspection.GetAllMethodsWithAttribute<RecoverableMethodAttribute>(assembly));
+                Assert.That(result, Is.Empty);
+                Assert.AreEqual(0, RecoverableMethodAttribute.ConstructionCount);
+                StringAssert.DoesNotContain("method attribute construction", report);
+                StringAssert.DoesNotContain("method enumeration", report);
+                if (unresolvedEntry)
+                {
+                    StringAssert.Contains("cached type resolution: 1 failure(s)", report);
+                    StringAssert.Contains("Retrying incomplete cache query live", report);
+                    Assert.That(File.ReadAllLines(cacheFile), Has.Length.EqualTo(1));
+                }
+                else
+                {
+                    StringAssert.DoesNotContain("Retrying incomplete", report);
+                    StringAssert.DoesNotContain("failure(s)", report);
+                }
+
+                var (hit, hitReport) = CaptureReport(() =>
+                    Introspection.GetAllMethodsWithAttribute<RecoverableMethodAttribute>(assembly));
+                Assert.That(hit, Is.Empty);
+                StringAssert.Contains("[cache hit ]", hitReport);
+                StringAssert.DoesNotContain("[cache miss]", hitReport);
+                Assert.AreEqual(0, RecoverableMethodAttribute.ConstructionCount);
+            }, () => RecoverableMethodAttribute.ThrowOnBad = false);
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void FailedTypeResolutionRetriesLiveAndRepopulatesTheMethodCache(bool throws)
+        {
+            WithFreshCache<MethodCacheTestAttribute>(() =>
+            {
+                AssertExpectedMethods(Query());
+                var cacheFile = GetSingleCacheFile<MethodCacheTestAttribute>();
+                var original = File.ReadAllLines(cacheFile);
+                var unresolved = throws
+                    ? $"Missing.IntrospectionFixture, {s_assembly.GetName().Name}, Version=not-a-version"
+                    : MissingTypeName;
+                if (throws) Assert.That(() => Introspection.GetType(unresolved), Throws.Exception);
+                else Assert.IsNull(Introspection.GetType(unresolved));
+                File.AppendAllLines(cacheFile, new[] { unresolved, unresolved });
+
+                var (recovered, report) = CaptureReport(Query);
+                AssertExpectedMethods(recovered);
+                StringAssert.Contains("cached type resolution: 1 failure(s)", report);
+                StringAssert.Contains("Retrying incomplete cache query live", report);
+                CollectionAssert.AreEqual(original, File.ReadAllLines(cacheFile));
+
+                var (hit, hitReport) = CaptureReport(Query);
+                AssertExpectedMethods(hit);
+                StringAssert.Contains("[cache hit ]", hitReport);
+                StringAssert.DoesNotContain("[cache miss]", hitReport);
+                StringAssert.DoesNotContain("failure(s)", hitReport);
+            });
+        }
+
+        private static string MissingTypeName => $"Missing.IntrospectionFixture, {s_assembly.FullName}";
 
         [Test]
         public void TypeAttributeFailuresPreservePartialResultsWithoutCaching()
@@ -100,15 +242,25 @@ namespace Aardvark.Tests
             }, () => RecoverableTypeAttribute.ThrowOnBad = false);
         }
 
-        [Test]
-        public void MethodAttributeCacheFailuresRetryLiveAndRecover()
+        [TestCase(false)]
+        [TestCase(true)]
+        public void MethodAttributeCacheFailuresRetryLiveAndRecover(bool poisonCache)
         {
             WithFreshCache<RecoverableMethodAttribute>(() =>
             {
                 RecoverableMethodAttribute.ThrowOnBad = false;
                 var initial = Introspection.GetAllMethodsWithAttribute<RecoverableMethodAttribute>(s_assembly);
                 Assert.AreEqual(6, initial.Length);
-                Assert.That(GetCacheFiles<RecoverableMethodAttribute>(), Has.Length.EqualTo(1));
+                var cacheFile = GetSingleCacheFile<RecoverableMethodAttribute>();
+                if (poisonCache)
+                {
+                    File.AppendAllLines(cacheFile, new[]
+                    {
+                        typeof(Introspection).AssemblyQualifiedName,
+                        MissingTypeName,
+                        typeof(RecoverableMethodFixture).AssemblyQualifiedName,
+                    });
+                }
 
                 RecoverableMethodAttribute.ThrowOnBad = true;
                 var (partial, report) = CaptureReport(() =>
@@ -120,15 +272,19 @@ namespace Aardvark.Tests
                 StringAssert.Contains("Retrying incomplete cache query live", report);
                 StringAssert.Contains("method attribute construction: 10 failure(s), 1 unique diagnostic(s)", report);
                 Assert.AreEqual(1, CountOccurrences(report, RecoverableMethodAttribute.FailureMessage));
-                Assert.That(GetCacheFiles<RecoverableMethodAttribute>(), Is.Empty);
+                Assert.That(GetCacheFiles<RecoverableMethodAttribute>(methods: true), Is.Empty);
+                if (poisonCache) StringAssert.Contains("cached type resolution: 1 failure(s)", report);
 
                 RecoverableMethodAttribute.ThrowOnBad = false;
                 var recovered = Introspection.GetAllMethodsWithAttribute<RecoverableMethodAttribute>(s_assembly);
                 Assert.AreEqual(6, recovered.Length);
-                Assert.That(GetCacheFiles<RecoverableMethodAttribute>(), Has.Length.EqualTo(1));
+                Assert.That(GetCacheFiles<RecoverableMethodAttribute>(methods: true), Has.Length.EqualTo(1));
 
-                var hit = Introspection.GetAllMethodsWithAttribute<RecoverableMethodAttribute>(s_assembly);
+                var (hit, hitReport) = CaptureReport(() =>
+                    Introspection.GetAllMethodsWithAttribute<RecoverableMethodAttribute>(s_assembly));
                 CollectionAssert.AreEqual(MethodKeys(recovered), MethodKeys(hit));
+                StringAssert.Contains("[cache hit ]", hitReport);
+                StringAssert.DoesNotContain("[cache miss]", hitReport);
             }, () => RecoverableMethodAttribute.ThrowOnBad = false);
         }
 
@@ -183,13 +339,12 @@ namespace Aardvark.Tests
         {
             WithFreshCache<MethodEnumerationAttribute>(() =>
             {
-                var failingType = new RecoverableMethodsType(typeof(MethodEnumerationFailingFixture));
+                var failingType = new FailingMethodsType(typeof(MethodEnumerationFailingFixture));
                 var assembly = new ControllableAssembly(
-                    "IntrospectionMethodEnumerationFixture",
+                    s_assembly.GetName(),
                     new Type[] { typeof(MethodEnumerationGoodFixture), failingType },
                     Array.Empty<Exception>());
 
-                failingType.ThrowOnGetMethods = true;
                 var (partial, report) = CaptureReport(() =>
                     Introspection.GetAllMethodsWithAttribute<MethodEnumerationAttribute>(assembly));
 
@@ -197,10 +352,11 @@ namespace Aardvark.Tests
                     new[] { nameof(MethodEnumerationGoodFixture.Good) },
                     partial.Select(result => result.Item1.Name).ToArray());
                 StringAssert.Contains("method enumeration: 1 failure(s), 1 unique diagnostic(s)", report);
-                Assert.That(GetCacheFiles<MethodEnumerationAttribute>(), Is.Empty);
+                Assert.That(GetCacheFiles<MethodEnumerationAttribute>(methods: true), Is.Empty);
 
-                failingType.ThrowOnGetMethods = false;
-                var recovered = Introspection.GetAllMethodsWithAttribute<MethodEnumerationAttribute>(assembly);
+                // The facade injects the live reflection failure only. Recovery and cache
+                // decoding must query the actual assembly that owns the declaring types.
+                var recovered = Introspection.GetAllMethodsWithAttribute<MethodEnumerationAttribute>(s_assembly);
                 CollectionAssert.AreEquivalent(
                     new[]
                     {
@@ -208,10 +364,14 @@ namespace Aardvark.Tests
                         nameof(MethodEnumerationFailingFixture.Recovered),
                     },
                     recovered.Select(result => result.Item1.Name).ToArray());
-                Assert.That(GetCacheFiles<MethodEnumerationAttribute>(), Has.Length.EqualTo(1));
+                Assert.That(GetCacheFiles<MethodEnumerationAttribute>(methods: true), Has.Length.EqualTo(1));
 
-                var hit = Introspection.GetAllMethodsWithAttribute<MethodEnumerationAttribute>(assembly);
+                var (hit, hitReport) = CaptureReport(() =>
+                    Introspection.GetAllMethodsWithAttribute<MethodEnumerationAttribute>(s_assembly));
                 CollectionAssert.AreEqual(MethodKeys(recovered), MethodKeys(hit));
+                Assert.That(hit.All(x => x.Item1.DeclaringType.Assembly == s_assembly), Is.True);
+                StringAssert.Contains("[cache hit ]", hitReport);
+                StringAssert.DoesNotContain("[cache miss]", hitReport);
             });
         }
 
@@ -253,16 +413,19 @@ namespace Aardvark.Tests
 
         private static string GetSingleCacheFile<TAttribute>()
         {
-            var files = GetCacheFiles<TAttribute>();
+            var files = GetCacheFiles<TAttribute>(methods: true);
             Assert.AreEqual(1, files.Length);
             return files[0];
         }
 
-        private static string[] GetCacheFiles<TAttribute>()
+        private static string GetMethodCacheDiscriminator(Type attributeType)
+            => $"public-declared-v2|{attributeType.AssemblyQualifiedName}";
+
+        private static string[] GetCacheFiles<TAttribute>(bool methods = false)
         {
             if (!Directory.Exists(Introspection.CacheDirectory)) return Array.Empty<string>();
 
-            var guid = typeof(TAttribute).FullName.ToGuid();
+            var guid = (methods ? GetMethodCacheDiscriminator(typeof(TAttribute)) : typeof(TAttribute).FullName).ToGuid();
             return Directory.GetFiles(
                 Introspection.CacheDirectory,
                 $"*_{guid}.query",
@@ -271,7 +434,8 @@ namespace Aardvark.Tests
 
         private static void DeleteCacheFiles<TAttribute>()
         {
-            foreach (var file in GetCacheFiles<TAttribute>()) File.Delete(file);
+            foreach (var file in GetCacheFiles<TAttribute>().Concat(GetCacheFiles<TAttribute>(methods: true)))
+                File.Delete(file);
         }
 
         private static (T Result, string Report) CaptureReport<T>(Func<T> action)
@@ -373,9 +537,11 @@ namespace Aardvark.Tests
         {
             public const string FailureMessage = "recoverable method attribute failure";
             public static bool ThrowOnBad;
+            public static int ConstructionCount;
 
             public RecoverableMethodAttribute(string value)
             {
+                ConstructionCount++;
                 if (ThrowOnBad && value == "bad")
                     throw new InvalidOperationException(FailureMessage);
             }
@@ -423,21 +589,31 @@ namespace Aardvark.Tests
             public void Recovered() { }
         }
 
-        private sealed class RecoverableMethodsType : TypeDelegator
-        {
-            public bool ThrowOnGetMethods { get; set; }
+        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false)]
+        private sealed class MixedCacheTestAttribute : Attribute { }
 
-            public RecoverableMethodsType(Type delegatingType)
-                : base(delegatingType)
-            {
-            }
+        [MixedCacheTest]
+        private sealed class MixedCacheFixture
+        {
+            [MixedCacheTest]
+            public void Marked() { }
+        }
+
+        [MixedCacheTest]
+        private sealed class MixedTypeOnlyFixture { }
+
+        private sealed class MixedMethodOnlyFixture
+        {
+            [MixedCacheTest]
+            public void MarkedMethodOnly() { }
+        }
+
+        private sealed class FailingMethodsType : TypeDelegator
+        {
+            public FailingMethodsType(Type delegatingType) : base(delegatingType) { }
 
             public override MethodInfo[] GetMethods(BindingFlags bindingAttr)
-            {
-                if (ThrowOnGetMethods)
-                    throw new InvalidOperationException("recoverable method enumeration failure");
-                return base.GetMethods(bindingAttr);
-            }
+                => throw new InvalidOperationException("recoverable method enumeration failure");
         }
 
         private sealed class ControllableAssembly : Assembly
@@ -449,8 +625,13 @@ namespace Aardvark.Tests
             public bool ThrowTypeLoadException { get; set; }
 
             public ControllableAssembly(string name, Type[] types, Exception[] loaderExceptions)
+                : this(new AssemblyName(name) { Version = new Version(1, 0, 0, 0) }, types, loaderExceptions)
             {
-                m_name = new AssemblyName(name) { Version = new Version(1, 0, 0, 0) };
+            }
+
+            public ControllableAssembly(AssemblyName name, Type[] types, Exception[] loaderExceptions)
+            {
+                m_name = name;
                 m_types = types;
                 m_loaderExceptions = loaderExceptions;
             }

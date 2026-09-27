@@ -209,6 +209,85 @@ namespace Aardvark.Tests.Geometry
         }
 
         [Test]
+        public void OutputFaceFlagsAccumulateTiedCornerFaces()
+        {
+            var box2d = new Box2d(V2d.Zero, V2d.II);
+            var tmin2d = 0.0;
+            var tmax2d = double.MaxValue;
+            Assert.That(
+                new FastRay2d(new V2d(-1.0, -1.0), V2d.II).Intersects(
+                    box2d, ref tmin2d, ref tmax2d, out var tminFlags2d, out var tmaxFlags2d
+                ),
+                Is.True
+            );
+            Assert.That(tminFlags2d, Is.EqualTo(Box.Flags.MinX | Box.Flags.MinY));
+            Assert.That(tmaxFlags2d, Is.EqualTo(Box.Flags.MaxX | Box.Flags.MaxY));
+
+            var box2f = new Box2f(V2f.Zero, V2f.II);
+            var tmin2f = 0.0f;
+            var tmax2f = float.MaxValue;
+            Assert.That(
+                new FastRay2f(new V2f(-1.0f, -1.0f), V2f.II).Intersects(
+                    box2f, ref tmin2f, ref tmax2f, out var tminFlags2f, out var tmaxFlags2f
+                ),
+                Is.True
+            );
+            Assert.That(tminFlags2f, Is.EqualTo(Box.Flags.MinX | Box.Flags.MinY));
+            Assert.That(tmaxFlags2f, Is.EqualTo(Box.Flags.MaxX | Box.Flags.MaxY));
+
+            var box3d = new Box3d(V3d.Zero, V3d.III);
+            var tmin3d = 0.0;
+            var tmax3d = double.MaxValue;
+            var ray3d = new FastRay3d(new V3d(-1.0, -1.0, -1.0), V3d.III);
+            Assert.That(
+                ray3d.Intersects(
+                    box3d, ref tmin3d, ref tmax3d, out var tminFlags3d, out var tmaxFlags3d
+                ),
+                Is.True
+            );
+            Assert.That(tminFlags3d, Is.EqualTo(Box.Flags.Min));
+            Assert.That(tmaxFlags3d, Is.EqualTo(Box.Flags.Max));
+
+            var box3f = new Box3f(V3f.Zero, V3f.III);
+            var tmin3f = 0.0f;
+            var tmax3f = float.MaxValue;
+            var ray3f = new FastRay3f(new V3f(-1.0f, -1.0f, -1.0f), V3f.III);
+            Assert.That(
+                ray3f.Intersects(
+                    box3f, ref tmin3f, ref tmax3f, out var tminFlags3f, out var tmaxFlags3f
+                ),
+                Is.True
+            );
+            Assert.That(tminFlags3f, Is.EqualTo(Box.Flags.Min));
+            Assert.That(tmaxFlags3f, Is.EqualTo(Box.Flags.Max));
+
+            tmin3d = 0.0;
+            tmax3d = double.MaxValue;
+            Assert.That(
+                new FastRay3d(new V3d(-1.0, -1.0, -1.0), V3d.III).Intersects(
+                    new Box3d(V3d.Zero, V3d.Zero), ref tmin3d, ref tmax3d,
+                    out tminFlags3d, out tmaxFlags3d
+                ),
+                Is.True
+            );
+            Assert.That(tminFlags3d, Is.EqualTo(Box.Flags.Min));
+            Assert.That(tmaxFlags3d, Is.EqualTo(Box.Flags.Max));
+
+            tmin3d = 0.0;
+            tmax3d = double.MaxValue;
+            var xyFaces = Box.Flags.X | Box.Flags.Y;
+            Assert.That(
+                ray3d.Intersects(
+                    box3d, xyFaces, ref tmin3d, ref tmax3d,
+                    out tminFlags3d, out tmaxFlags3d
+                ),
+                Is.True
+            );
+            Assert.That(tminFlags3d, Is.EqualTo(Box.Flags.MinX | Box.Flags.MinY));
+            Assert.That(tmaxFlags3d, Is.EqualTo(Box.Flags.MaxX | Box.Flags.MaxY));
+        }
+
+        [Test]
         public void MaskedOverloadsSupportCollapsedHitsAndOutputFlags()
         {
             var boxD = new Box3d(new V3d(0.0, -1.0, -1.0), new V3d(0.0, 1.0, 1.0));

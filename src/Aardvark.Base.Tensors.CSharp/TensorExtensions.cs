@@ -255,6 +255,57 @@ namespace Aardvark.Base
 
         #region Scaling
 
+        internal readonly struct AreaSpan
+        {
+            public readonly long First;
+            public readonly long Last;
+            public readonly double FirstWeight;
+            public readonly double LastWeight;
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public AreaSpan(long first, long last, double firstWeight, double lastWeight)
+            {
+                First = first;
+                Last = last;
+                FirstWeight = firstWeight;
+                LastWeight = lastWeight;
+            }
+        }
+
+        private static AreaSpan[] CreateAreaSpans(long sourceSize, long targetSize)
+        {
+            var spans = new AreaSpan[targetSize];
+            long step = sourceSize / targetSize;
+            long remainderStep = sourceSize % targetSize;
+            long start = 0;
+            long startRemainder = 0;
+
+            for (long i = 0; i < targetSize; i++)
+            {
+                long end = start + step;
+                long endRemainder = startRemainder + remainderStep;
+                if (endRemainder >= targetSize)
+                {
+                    end++;
+                    endRemainder -= targetSize;
+                }
+
+                long last = endRemainder == 0 ? end - 1 : end;
+                double firstWeight = startRemainder == 0
+                    ? 1.0
+                    : 1.0 - (double)startRemainder / targetSize;
+                double lastWeight = endRemainder == 0
+                    ? 1.0
+                    : (double)endRemainder / targetSize;
+
+                spans[i] = new AreaSpan(start, last, firstWeight, lastWeight);
+                start = end;
+                startRemainder = endRemainder;
+            }
+
+            return spans;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static Half LerpHalf(double t, Half x, Half y) => Fun.Lerp((Half)t, x, y);
 
@@ -305,6 +356,21 @@ namespace Aardvark.Base
                 {typeof(double), (src, dst) => ((Matrix<double>)dst).SetScaledLanczos((Matrix<double>)src)}
             };
 
+        private delegate void SetScaledSuperSampleAction(
+            object source, object target, AreaSpan[] xSpans, AreaSpan[] ySpans, double[] workspace
+        );
+
+        private static readonly Dictionary<Type, SetScaledSuperSampleAction> scaleSuperSampleTable =
+            new Dictionary<Type, SetScaledSuperSampleAction>()
+            {
+                {typeof(byte),   (src, dst, xs, ys, tmp) => ((Volume<byte>)dst).SetScaledSuperSample((Volume<byte>)src, xs, ys, tmp)},
+                {typeof(ushort), (src, dst, xs, ys, tmp) => ((Volume<ushort>)dst).SetScaledSuperSample((Volume<ushort>)src, xs, ys, tmp)},
+                {typeof(uint),   (src, dst, xs, ys, tmp) => ((Volume<uint>)dst).SetScaledSuperSample((Volume<uint>)src, xs, ys, tmp)},
+                {typeof(Half),   (src, dst, xs, ys, tmp) => ((Volume<Half>)dst).SetScaledSuperSample((Volume<Half>)src, xs, ys, tmp)},
+                {typeof(float),  (src, dst, xs, ys, tmp) => ((Volume<float>)dst).SetScaledSuperSample((Volume<float>)src, xs, ys, tmp)},
+                {typeof(double), (src, dst, xs, ys, tmp) => ((Volume<double>)dst).SetScaledSuperSample((Volume<double>)src, xs, ys, tmp)}
+            };
+
         private static void SetScaled<T>(Dictionary<Type, Action<object, object>> table, Matrix<T> src, Matrix<T> dst)
         {
             if (table.TryGetValue(typeof(T), out var setScaled))
@@ -317,11 +383,41 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Returns a scaled image volume using the requested interpolation. <see cref="ImageInterpolation.SuperSample"/>
+        /// computes exact source-pixel area averages while both axes are unchanged or reduced, and falls back to
+        /// <see cref="ImageInterpolation.Cubic"/> whenever either requested scale factor enlarges an axis.
+        /// </summary>
         public static Volume<T> Scaled<T>(this Volume<T> source, V2d scaleFactor, ImageInterpolation interpolation)
         {
             if (scaleFactor.AnySmaller(0.0))
             {
                 throw new ArgumentException("Scale factor cannot be negative");
+            }
+
+            if (interpolation == ImageInterpolation.SuperSample && scaleFactor.AnyGreater(1.0))
+                interpolation = ImageInterpolation.Cubic;
+
+            var size = (V2d.Half + scaleFactor * (V2d)source.Size.XY).ToV2l();
+            var channels = source.Size.Z;
+            var target = ImageTensors.CreateImageVolume<T>(new V3l(size.XY, channels));
+
+            if (interpolation == ImageInterpolation.SuperSample)
+            {
+                if (!scaleSuperSampleTable.TryGetValue(typeof(T), out var setScaled))
+                    throw new InvalidOperationException($"Cannot invoke Scaled() for Matrix<{typeof(T).Name}>");
+
+                if (size.X == 0 || size.Y == 0 || channels == 0)
+                    return target;
+
+                var xSpans = size.X < source.Size.X ? CreateAreaSpans(source.Size.X, size.X) : null;
+                var ySpans = size.Y < source.Size.Y ? CreateAreaSpans(source.Size.Y, size.Y) : null;
+                var workspace = size.X < source.Size.X && size.Y < source.Size.Y
+                    ? new double[checked(size.X * source.Size.Y)]
+                    : null;
+
+                setScaled(source, target, xSpans, ySpans, workspace);
+                return target;
             }
 
             var table =
@@ -333,10 +429,6 @@ namespace Aardvark.Base
                     ImageInterpolation.Lanczos => scaleLanczosTable,
                     _ => throw new NotImplementedException($"{interpolation} filter not supported.")
                 };
-
-            var size = (V2d.Half + scaleFactor * (V2d)source.Size.XY).ToV2l();
-            var channels = source.Size.Z;
-            var target = ImageTensors.CreateImageVolume<T>(new V3l(size.XY, channels));
 
             for (int c = 0; c < channels; c++)
             {

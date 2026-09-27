@@ -85,7 +85,7 @@ public static class Introspection
     /// </summary>
     public static Type[] GetAllClassesImplementingInterface(Assembly assembly, Type interfaceType)
         => GetAll___(assembly, interfaceType.FullName,
-            (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
+            (IEnumerable<string> lines, Assembly _, ref QueryDiagnostics diagnostics) =>
                 ResolveTypes(lines, false, ref diagnostics),
             (Type[] types, ref QueryDiagnostics diagnostics) =>
                 FilterTypes(types,
@@ -101,7 +101,7 @@ public static class Introspection
     /// </summary>
     public static Type[] GetAllClassesInheritingFrom(Assembly assembly, Type baseType)
         => GetAll___(assembly, baseType.FullName,
-            (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
+            (IEnumerable<string> lines, Assembly _, ref QueryDiagnostics diagnostics) =>
                 ResolveTypes(lines, false, ref diagnostics),
             (Type[] types, ref QueryDiagnostics diagnostics) =>
                 FilterTypes(types, t => t.IsSubclassOf(baseType), ref diagnostics),
@@ -116,7 +116,7 @@ public static class Introspection
     /// </summary>
     public static (Type, T[])[] GetAllTypesWithAttribute<T>(Assembly assembly)
         => GetAll___<(Type, T[])>(assembly, typeof(T).FullName,
-           (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
+           (IEnumerable<string> lines, Assembly _, ref QueryDiagnostics diagnostics) =>
                 DecodeTypesWithAttribute<T>(lines, ref diagnostics),
            (Type[] types, ref QueryDiagnostics diagnostics) =>
                 GetTypesWithAttribute<T>(types, ref diagnostics),
@@ -155,6 +155,16 @@ public static class Introspection
     private const BindingFlags PublicDeclaredMethods =
         BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.DeclaredOnly;
 
+    private const string MethodQueryCacheVersion = "public-declared-v2";
+
+    private static class MethodQueryCache<T>
+    {
+        public static readonly string Discriminator = $"{MethodQueryCacheVersion}|{typeof(T).AssemblyQualifiedName}";
+        // Evaluate inside guarded cache access; a failed hash remains retryable.
+        public static readonly Lazy<Guid> Id = new(
+            () => Discriminator.ToGuid(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
+    }
+
     private static ScanResult<(MethodInfo, T[])> GetMethodsWithAttribute<T>(
         Type[] types, ref QueryDiagnostics diagnostics
     )
@@ -191,7 +201,8 @@ public static class Introspection
     }
 
     private static ScanResult<Type> ResolveTypes(
-        IEnumerable<string> lines, bool unique, ref QueryDiagnostics diagnostics
+        IEnumerable<string> lines, bool unique, ref QueryDiagnostics diagnostics,
+        Assembly assembly = null
     )
     {
         var initialFailureCount = GetFailureCount(diagnostics);
@@ -218,7 +229,9 @@ public static class Introspection
                 var type = GetType(line);
                 if (type != null)
                 {
-                    result.Add(type);
+                    // Only method caches restrict declaring types to the queried assembly.
+                    // A resolved foreign type is irrelevant, not a failed resolution.
+                    if (assembly == null || type.Assembly == assembly) result.Add(type);
                 }
                 else
                 {
@@ -294,10 +307,10 @@ public static class Introspection
     }
 
     private static ScanResult<(MethodInfo, T[])> DecodeMethodsWithAttribute<T>(
-        IEnumerable<string> lines, ref QueryDiagnostics diagnostics
+        IEnumerable<string> lines, Assembly assembly, ref QueryDiagnostics diagnostics
     )
     {
-        var resolved = ResolveTypes(lines, true, ref diagnostics);
+        var resolved = ResolveTypes(lines, true, ref diagnostics, assembly);
         var result = GetMethodsWithAttribute<T>(resolved.Items, ref diagnostics);
         return new ScanResult<(MethodInfo, T[])>(result.Items, resolved.Incomplete || result.Incomplete);
     }
@@ -330,17 +343,19 @@ public static class Introspection
     /// Enumerates public instance and static methods declared by types in the specified
     /// assembly and decorated with attribute T. Each method is returned once together
     /// with all of its T-attribute instances. The query cache stores each declaring type
-    /// once and ignores repeated declaring-type lines in legacy cache files. Successful
+    /// once, ignores repeated declaring-type lines, and rejects cached types from other
+    /// assemblies before inspecting their methods. Method and type queries use separate
+    /// cache keys; method keys include the attribute's assembly-qualified name. Successful
     /// matches are retained when other reflection operations fail; incomplete cache
     /// entries are retried live and incomplete live scans are not cached.
     /// </summary>
     public static (MethodInfo, T[])[] GetAllMethodsWithAttribute<T>(Assembly assembly)
-        => GetAll___<(MethodInfo, T[])>(assembly, typeof(T).FullName,
-              (IEnumerable<string> lines, ref QueryDiagnostics diagnostics) =>
-                  DecodeMethodsWithAttribute<T>(lines, ref diagnostics),
+        => GetAll___<(MethodInfo, T[])>(assembly, MethodQueryCache<T>.Discriminator,
+              DecodeMethodsWithAttribute<T>,
               (Type[] types, ref QueryDiagnostics diagnostics) =>
                   GetMethodsWithAttribute<T>(types, ref diagnostics),
-              GetUniqueDeclaringTypeNames
+              GetUniqueDeclaringTypeNames,
+              MethodQueryCache<T>.Id
         );
 
 #if NET8_0_OR_GREATER
@@ -626,7 +641,7 @@ public static class Introspection
     }
 
     private delegate ScanResult<T> DecodeQuery<T>(
-        IEnumerable<string> lines, ref QueryDiagnostics diagnostics
+        IEnumerable<string> lines, Assembly assembly, ref QueryDiagnostics diagnostics
     );
 
     private delegate ScanResult<T> ScanTypes<T>(
@@ -765,7 +780,8 @@ public static class Introspection
         Assembly a, string discriminator,
         DecodeQuery<T> decode,
         ScanTypes<T> createResult,
-        Func<T[], IEnumerable<string>> encode
+        Func<T[], IEnumerable<string>> encode,
+        Lazy<Guid> queryId = null
         )
     {
         var cacheFileName = "";
@@ -775,7 +791,7 @@ public static class Introspection
         // whatever happens, don't halt just because of caching... this actually happens for self-contained deployments https://github.com/aardvark-platform/aardvark.base/issues/65
         try
         {
-            cacheFileName = GetQueryCacheFilename(a, discriminator.ToGuid());
+            cacheFileName = GetQueryCacheFilename(a, queryId?.Value ?? discriminator.ToGuid());
             assemblyTimeStamp = a.GetLastWriteTimeSafe();
 
             // for standalone deployments cacheFileNames cannot be retrieved robustly - we skip those
@@ -789,7 +805,7 @@ public static class Introspection
                     ScanResult<T> cached;
                     try
                     {
-                        cached = decode(lines.Skip(1), ref diagnostics);
+                        cached = decode(lines.Skip(1), a, ref diagnostics);
                     }
                     catch (Exception e)
                     {

@@ -31,7 +31,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Creates a circle from it's center, a normal vector (normalized) and a radius.
+        /// Creates a circle from its center, a normalized normal vector, and a radius.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Circle3f(V3f center, V3f normal, float radius)
@@ -115,60 +115,69 @@ namespace Aardvark.Base
             get => Radius < 0;
         }
 
-        /// <summary>
-        /// Returns a point on the circumference (AxisU).
-        /// </summary>
-        public readonly V3f Point
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Center + AxisU * Radius;
-        }
-
-        /// <summary>
-        /// Returns an axis aligned vector pointing from the center to the circumference.
-        /// </summary>
-        public readonly V3f AxisU
+        private readonly V3f UnitTangent
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                V3f dir = Normal.Dot(V3f.XAxis).Abs() > 0.9f ? V3f.YAxis : V3f.XAxis;
-                var pdir = Normal.Cross(dir);
-                return pdir.Normalized * Radius;
+                V3f reference = Normal.Dot(V3f.XAxis).Abs() > 0.9f
+                    ? V3f.YAxis
+                    : V3f.XAxis;
+                return Normal.Cross(reference).Normalized;
             }
         }
 
         /// <summary>
-        /// Returns an axis aligned vector pointing from the center to the circumference.
+        /// Returns the deterministic representative point <see cref="GetPoint(float)"/>(0)
+        /// on the circumference.
+        /// </summary>
+        public readonly V3f Point
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Center + AxisU;
+        }
+
+        /// <summary>
+        /// Returns the radius-length first tangent axis, orthogonal to <see cref="Normal"/>.
+        /// </summary>
+        public readonly V3f AxisU
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => UnitTangent * Radius;
+        }
+
+        /// <summary>
+        /// Returns the radius-length second tangent axis, orthogonal to
+        /// <see cref="Normal"/> and <see cref="AxisU"/>.
         /// </summary>
         public readonly V3f AxisV
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var axisU = AxisU;
-                return AxisU.Cross(Normal).Normalized * Radius;
+                var unitTangent = UnitTangent;
+                return unitTangent.Cross(Normal).Normalized * Radius;
             }
         }
 
         /// <summary>
-        /// Return an IEnumerable of points on the circle's circumference, optionally repeating the first point as the last.
+        /// Generates points on the circumference, optionally repeating the first point last.
         /// </summary>
-        /// <param name="tesselation">number of distinct points to generate. the actual number of points returned depends on the <para>duplicateClosePoint</para> parameter. must be 3 or larger.</param>
-        /// <param name="duplicateClosePoint">if true, the first point is repeated as the last</param>
-        /// <returns>IEnumerable of points on the circle's circumference. if diplicateClosePoint is true, <para>tesselation</para>+1 points are returned.</returns>
+        /// <param name="tesselation">The number of distinct points to generate; must be at least three.</param>
+        /// <param name="duplicateClosePoint">Whether to repeat the first point after the distinct points.</param>
+        /// <returns>The generated circumference points in increasing angular order.</returns>
         public readonly IEnumerable<V3f> Points(int tesselation, bool duplicateClosePoint = false)
 		{
 			if (tesselation < 3)
 				throw new ArgumentOutOfRangeException("tesselation", "tesselation must be at least 3.");
 
-			var off = 0;
-			if (duplicateClosePoint)
-				off = 1;
+            var axisU = AxisU;
+            var axisV = AxisV;
+			var off = duplicateClosePoint ? 1 : 0;
 			for (int i = 0; i < tesselation + off; i++)
 			{
 				var angle = ((float)i) / tesselation * ConstantF.PiTimesTwo;
-				yield return Center + AxisU * Fun.Cos(angle) + AxisV * Fun.Sin(angle);
+				yield return Center + axisU * Fun.Cos(angle) + axisV * Fun.Sin(angle);
 			}
 		}
 
@@ -178,9 +187,17 @@ namespace Aardvark.Base
             get => new Plane3f(Normal, Center);
         }
 
+        /// <summary>
+        /// Returns the circumference point at the given angle in radians.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3f GetPoint(float angle)
-            => Center + AxisU * angle.Cos() + AxisV * angle.Sin();
+        {
+            var unitTangent = UnitTangent;
+            var axisU = unitTangent * Radius;
+            var axisV = unitTangent.Cross(Normal).Normalized * Radius;
+            return Center + axisU * angle.Cos() + axisV * angle.Sin();
+        }
 
         #endregion
 
@@ -224,13 +241,19 @@ namespace Aardvark.Base
 
         #region IBoundingBox3f Members
 
+        /// <summary>
+        /// Returns the exact axis-aligned bounds for the normalized-normal representation.
+        /// </summary>
         public readonly Box3f BoundingBox3f
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var u = AxisU; var v = AxisV;
-                return new Box3f(Center + u, Center - u, Center + v, Center - v);
+                var extent = new V3f(
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.X * Normal.X)),
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Y * Normal.Y)),
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Z * Normal.Z)));
+                return new Box3f(Center - extent, Center + extent);
             }
         }
 
@@ -280,7 +303,7 @@ namespace Aardvark.Base
         #region Constructors
 
         /// <summary>
-        /// Creates a circle from it's center, a normal vector (normalized) and a radius.
+        /// Creates a circle from its center, a normalized normal vector, and a radius.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Circle3d(V3d center, V3d normal, double radius)
@@ -364,60 +387,69 @@ namespace Aardvark.Base
             get => Radius < 0;
         }
 
-        /// <summary>
-        /// Returns a point on the circumference (AxisU).
-        /// </summary>
-        public readonly V3d Point
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => Center + AxisU * Radius;
-        }
-
-        /// <summary>
-        /// Returns an axis aligned vector pointing from the center to the circumference.
-        /// </summary>
-        public readonly V3d AxisU
+        private readonly V3d UnitTangent
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                V3d dir = Normal.Dot(V3d.XAxis).Abs() > 0.9 ? V3d.YAxis : V3d.XAxis;
-                var pdir = Normal.Cross(dir);
-                return pdir.Normalized * Radius;
+                V3d reference = Normal.Dot(V3d.XAxis).Abs() > 0.9
+                    ? V3d.YAxis
+                    : V3d.XAxis;
+                return Normal.Cross(reference).Normalized;
             }
         }
 
         /// <summary>
-        /// Returns an axis aligned vector pointing from the center to the circumference.
+        /// Returns the deterministic representative point <see cref="GetPoint(double)"/>(0)
+        /// on the circumference.
+        /// </summary>
+        public readonly V3d Point
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => Center + AxisU;
+        }
+
+        /// <summary>
+        /// Returns the radius-length first tangent axis, orthogonal to <see cref="Normal"/>.
+        /// </summary>
+        public readonly V3d AxisU
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => UnitTangent * Radius;
+        }
+
+        /// <summary>
+        /// Returns the radius-length second tangent axis, orthogonal to
+        /// <see cref="Normal"/> and <see cref="AxisU"/>.
         /// </summary>
         public readonly V3d AxisV
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var axisU = AxisU;
-                return AxisU.Cross(Normal).Normalized * Radius;
+                var unitTangent = UnitTangent;
+                return unitTangent.Cross(Normal).Normalized * Radius;
             }
         }
 
         /// <summary>
-        /// Return an IEnumerable of points on the circle's circumference, optionally repeating the first point as the last.
+        /// Generates points on the circumference, optionally repeating the first point last.
         /// </summary>
-        /// <param name="tesselation">number of distinct points to generate. the actual number of points returned depends on the <para>duplicateClosePoint</para> parameter. must be 3 or larger.</param>
-        /// <param name="duplicateClosePoint">if true, the first point is repeated as the last</param>
-        /// <returns>IEnumerable of points on the circle's circumference. if diplicateClosePoint is true, <para>tesselation</para>+1 points are returned.</returns>
+        /// <param name="tesselation">The number of distinct points to generate; must be at least three.</param>
+        /// <param name="duplicateClosePoint">Whether to repeat the first point after the distinct points.</param>
+        /// <returns>The generated circumference points in increasing angular order.</returns>
         public readonly IEnumerable<V3d> Points(int tesselation, bool duplicateClosePoint = false)
 		{
 			if (tesselation < 3)
 				throw new ArgumentOutOfRangeException("tesselation", "tesselation must be at least 3.");
 
-			var off = 0;
-			if (duplicateClosePoint)
-				off = 1;
+            var axisU = AxisU;
+            var axisV = AxisV;
+			var off = duplicateClosePoint ? 1 : 0;
 			for (int i = 0; i < tesselation + off; i++)
 			{
 				var angle = ((double)i) / tesselation * Constant.PiTimesTwo;
-				yield return Center + AxisU * Fun.Cos(angle) + AxisV * Fun.Sin(angle);
+				yield return Center + axisU * Fun.Cos(angle) + axisV * Fun.Sin(angle);
 			}
 		}
 
@@ -427,9 +459,17 @@ namespace Aardvark.Base
             get => new Plane3d(Normal, Center);
         }
 
+        /// <summary>
+        /// Returns the circumference point at the given angle in radians.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly V3d GetPoint(double angle)
-            => Center + AxisU * angle.Cos() + AxisV * angle.Sin();
+        {
+            var unitTangent = UnitTangent;
+            var axisU = unitTangent * Radius;
+            var axisV = unitTangent.Cross(Normal).Normalized * Radius;
+            return Center + axisU * angle.Cos() + axisV * angle.Sin();
+        }
 
         #endregion
 
@@ -473,13 +513,19 @@ namespace Aardvark.Base
 
         #region IBoundingBox3d Members
 
+        /// <summary>
+        /// Returns the exact axis-aligned bounds for the normalized-normal representation.
+        /// </summary>
         public readonly Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
-                var u = AxisU; var v = AxisV;
-                return new Box3d(Center + u, Center - u, Center + v, Center - v);
+                var extent = new V3d(
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.X * Normal.X)),
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Y * Normal.Y)),
+                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Z * Normal.Z)));
+                return new Box3d(Center - extent, Center + extent);
             }
         }
 

@@ -64,12 +64,10 @@ synchronously outside internal synchronization.
 
 ## Ordered Hash Combination
 
-`HashCode.GetCombinedHashCode<T>` uses the same order-sensitive fold for arrays
-and `IEnumerable<T>` values. Empty inputs return zero, singletons return the
-element hash directly, and each later element hash is incorporated with
-`HashCode.UCombine`. The enumerable overload consumes the sequence once and
-disposes its enumerator, so the same ordered values hash identically regardless
-of whether the caller exposes them as an array, list, or lazy sequence.
+`HashCode.GetCombinedHashCode<T>` is order-sensitive. Arrays and `IEnumerable<T>`
+inputs with the same ordered values produce identical hashes. Empty inputs return
+zero; singletons return the element hash. The enumerable overload consumes the
+sequence once and disposes its enumerator.
 
 ## Introspection Queries
 
@@ -77,10 +75,13 @@ of whether the caller exposes them as an array, list, or lazy sequence.
 and static methods declared directly by each assembly type. Each matching
 `MethodInfo` is returned once together with all attached `T` attribute instances.
 
-The version-1 query cache stores one assembly-qualified name per declaring type
-in first-seen order. Cache reads deduplicate declaring-type lines before resolving
-and scanning them, so legacy files containing repeated lines produce the same
-method sequence and count as a cache miss.
+Method queries use the `public-declared-v2` discriminator plus the attribute's
+`AssemblyQualifiedName`, independently of type-query caches. The version-1 file
+format stores one assembly-qualified name per declaring type in first-seen order.
+Reads deduplicate those names and ignore resolved types from other assemblies
+before enumerating methods or constructing attributes. Foreign entries alone are
+not failures and do not force a live retry. Other query families retain their
+existing assembly-filtering semantics.
 
 Introspection queries retain successful matches when loading types, enumerating
 methods, or constructing attributes fails. Reflection failures are reported once
@@ -90,7 +91,8 @@ exception stacks and repeated per-member messages are not emitted.
 Only complete live scans are cached. An incomplete cache decode is discarded and
 retried against the live assembly, while an incomplete live scan leaves no cache
 entry. A later complete scan can therefore repopulate the same version-1 cache
-after a transient dependency or attribute-construction failure.
+after a transient type-resolution, method-enumeration, or attribute-construction
+failure.
 
 ## Random
 
@@ -101,14 +103,40 @@ var rnd = new RandomSystem(1);
 int raw = rnd.UniformInt();
 int bounded = rnd.UniformInt(100);   // extension method on IRandomUniform
 double u = rnd.UniformDouble();
+double full = rnd.UniformDoubleFull();
 ```
 
-`Randomize` uses an allocation-free Fisher-Yates shuffle to uniformly permute
-arrays, lists, prefixes, and ranges in place. Elements outside a selected range
-are unchanged, and empty or singleton selections consume no random values.
-`CreatePermutationArray` and `CreatePermutationArrayLong` use the same shuffle.
+`UniformDoubleFull` and `FillUniformFull` produce 53-bit samples in the half-open
+interval `[0, 1)`. Generators whose `GeneratesFullDoubles` capability is true use
+one `UniformDouble` draw per sample. Other generators reconstruct each sample
+from two `UniformInt` draws. Bulk filling is allocation-free, preserves the draw
+order and values of repeated scalar `UniformDoubleFull` calls, and consumes no
+random values for an empty array.
+`CreateUniformDoubleFullArray` allocates the destination and then uses the same
+bulk semantics.
+
+`Prime.IsTrueFor(long)` has the same mathematical semantics as
+`Fun.IsPrime(long)`: values below two are not prime. `Prime.WithIndex(i)` returns
+the zero-based indexed prime (`WithIndex(0) == 2`), and
+`Prime.InverseWithIndex(i)` returns its reciprocal. Indexed lookups are thread-safe;
+already-cached lookups remain lock-free and allocation-free.
+
+```csharp
+bool prime = Prime.IsTrueFor(104729);       // true
+int p = Prime.WithIndex(9999);              // 104729
+double inverse = Prime.InverseWithIndex(9999); // 1.0 / 104729
+```
+
+`Randomize` uniformly permutes arrays, lists, prefixes, and ranges in place without
+allocations. Elements outside a selected range are unchanged, and empty or singleton
+selections consume no random values. Use `CreatePermutationArray` or
+`CreatePermutationArrayLong` for a new array.
 Do not rely on an exact permutation for a given seed remaining stable across
 library versions.
+
+`PerlinNoise.InterpolateNoise` supports signed coordinates in one, two, and
+three dimensions and is continuous across integer lattice boundaries.
+Interpolation is allocation-free.
 
 Geometric sampling takes an `IRandomSeries` (e.g. `HaltonRandomSeries`), not an `IRandomUniform`:
 
@@ -157,14 +185,29 @@ path or empty fallback.
 
 ## Geodesy
 
-Main conversions:
+Geodetic vectors use `V3d(longitude, latitude, ellipsoidalHeight)`: angles are degrees and height is meters. Geocentric ECEF vectors use XYZ meters.
 
 ```csharp
 var xyz = Geo.XyzFromLonLatHeight(new V3d(lonDeg, latDeg, hMeters), GeoEllipsoid.Wgs84);
 var llh = Geo.LonLatHeightFromXyz(xyz, GeoEllipsoid.Wgs84);
 ```
 
-`GeoEllipsoid` presets include `Wgs84`, `Grs80`, `Bessel1841`.
+`LonLatHeightFromXyz` returns longitude in `[-180, 180]` degrees. On the nonzero polar axis it returns longitude zero, latitude `+90` or `-90` degrees, and height `abs(z) - ellipsoid.B`. The ellipsoid center has no defined longitude/latitude and returns NaNs.
+
+Gauss-Krueger methods use a central meridian in degrees east of Greenwich:
+
+```csharp
+var plane = Geo.GaussKruegerEllipsoidToPlane(
+    lonLatHeight, GeoEllipsoid.Bessel1841, GeoConstant.AustriaM31
+);
+var restored = Geo.GaussKruegerPlaneToEllipsoid(
+    plane, GeoEllipsoid.Bessel1841, GeoConstant.AustriaM31
+);
+```
+
+`GaussKruegerEllipsoidToPlane` returns `V3d(easting, northing - 5_000_000, height)`. Easting is relative to the supplied central meridian without a false-easting prefix; the five-million-meter shift applies only to northing. The inverse expects the same component ordering and preserves height unchanged.
+
+`GeoEllipsoid` presets include `Wgs84`, `Grs80`, and `Bessel1841`. Austrian central-meridian constants `AustriaM28`, `AustriaM31`, and `AustriaM34` are Greenwich longitudes despite their historical Ferro names.
 
 ## Constants
 
@@ -187,6 +230,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base/Introspection/Introspection.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
 - `src/Aardvark.Base/Random/IRandomUniform.cs`
+- `src/Aardvark.Base/Random/PerlinNoise.cs`
 - `src/Aardvark.Base/Random/RandomSample.cs`
 - `src/Aardvark.Base/Random/HaltonRandomSeries.cs`
 - `src/Aardvark.Base/Random/Quasi.cs`

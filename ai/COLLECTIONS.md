@@ -1,7 +1,5 @@
 # Aardvark.Base Collections Reference
 
-Source-verified reference for custom collection and symbol infrastructure.
-
 ## Symbol and TypedSymbol
 
 `Symbol` is interned and integer-backed.
@@ -97,11 +95,48 @@ set.Clear();
 set.UnionWith(other);
 ```
 
+## Integer Range Sets
+
+`RangeSet1i`, `RangeSet1ui`, `RangeSet1l`, and `RangeSet1ul` represent unions of
+closed integer intervals. `ofList`, `ofArray`, and `ofSeq` ignore intervals with
+`Max < Min`, including `Invalid`, and coalesce overlaps and adjacency regardless
+of input order. Duplicate and nested intervals do not add extra ranges.
+
+Construction owns its sorting buffer: caller arrays are never reordered or
+retained, and sequence inputs are enumerated once. Empty and singleton inputs
+retain fast paths. Bulk construction takes `O(n log n)` time and `O(n)` peak
+auxiliary space; it sorts intervals and emits unique alternating boundaries.
+A terminal `MaxValue` is represented implicitly, without computing `MaxValue + 1`.
+
+Enumeration, `ToArray`, and `ToList` return maximal disjoint intervals in ascending
+order. `Count` counts those intervals, not individual values. For an empty set,
+`Min` is the element type's `MaxValue` and `Max` is its `MinValue`.
+
+## SortedSetExt<T> Neighbours
+
+Neighbour order follows the configured comparer, including descending comparers.
+`FindNeighbours` and `FindNeighboursV` return the strict predecessor, the actual
+stored comparer-equal value, and the strict successor. `TryFindSmaller` and
+`TryFindGreater` use the same lookup. Absent value outputs are `default(T)`;
+optional outputs are `None`.
+
+`GetViewBetween` has inclusive bounds. Neighbour queries see current parent-set
+contents, even after parent mutations, and queries outside the view return its
+nearest boundary-side element rather than an element outside the view. Lookup
+is logarithmic in parent-tree size and does not recount or enumerate the view.
+The value/try APIs allocate no managed memory. F# `SortedSet.neighbourhood`
+exposes the same results as options.
+
 ## SingleEntryDict
 
 `SingleEntryDict<TKey, TValue>` exists in `Symbol/Dicts.cs` and is optimized for one optional key/value entry. It supports normal `IDict<TKey, TValue>` lookup, removal, and re-adding the configured key after removal.
 
 ## Source Anchors
+
+- `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_template.fs`
+- `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_auto.fs`
+- `src/Aardvark.Base/AlgoDat/ExtendedCore/SortedSetExt.cs`
+- `src/Aardvark.Base.FSharp/Utilities/Interop/SortedSet.fs`
 
 - `src/Aardvark.Base/Symbol/Symbol.cs`
 - `src/Aardvark.Base/Symbol/Dict_auto.cs`

@@ -193,6 +193,52 @@ namespace Aardvark.Tests.Geometry
         }
 
         [Test]
+        public void ExtremeFiniteEdgeScalesPreserveHalfSpaces()
+        {
+            foreach (var width in new[] { 1e-200, 1e200 })
+            {
+                var polygon = new Polygon2d(
+                    V2d.Zero,
+                    new V2d(width, 0.0),
+                    new V2d(width, 1.0),
+                    V2d.YAxis
+                );
+                var x = 0.5 * width;
+                var inside = new Line2d(new V2d(x, 0.25), new V2d(x, 0.75));
+                Assert.That(inside.ClipWithConvex(polygon, 0.0), Is.EqualTo(inside));
+
+                var nearBoundary = new Line2d(new V2d(x, -0.05), new V2d(x, -0.025));
+                Assert.That(nearBoundary.ClipWithConvex(polygon, 0.1), Is.EqualTo(nearBoundary));
+                AssertRejected(nearBoundary.ClipWithConvex(polygon, 0.01));
+                AssertRejected(
+                    new Line2d(new V2d(x, -1.0), new V2d(x, -0.5))
+                        .ClipWithConvex(polygon, 0.0)
+                );
+            }
+
+            foreach (var width in new[] { 1e-30f, 1e20f })
+            {
+                var polygon = new Polygon2f(
+                    V2f.Zero,
+                    new V2f(width, 0.0f),
+                    new V2f(width, 1.0f),
+                    V2f.YAxis
+                );
+                var x = 0.5f * width;
+                var inside = new Line2f(new V2f(x, 0.25f), new V2f(x, 0.75f));
+                Assert.That(inside.ClipWithConvex(polygon, 0.0f), Is.EqualTo(inside));
+
+                var nearBoundary = new Line2f(new V2f(x, -0.05f), new V2f(x, -0.025f));
+                Assert.That(nearBoundary.ClipWithConvex(polygon, 0.1f), Is.EqualTo(nearBoundary));
+                AssertRejected(nearBoundary.ClipWithConvex(polygon, 0.01f));
+                AssertRejected(
+                    new Line2f(new V2f(x, -1.0f), new V2f(x, -0.5f))
+                        .ClipWithConvex(polygon, 0.0f)
+                );
+            }
+        }
+
+        [Test]
         public void TestConvexClipped()
         {
             var points = new[] { V3d.OOO, V3d.IOO, V3d.OIO };

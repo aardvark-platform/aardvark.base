@@ -26,7 +26,8 @@ namespace Aardvark.Base
         /// </summary>
         Cubic = 4,
         /// <summary>
-        /// IPPI_INTER_SUPER
+        /// Exact area-weighted supersampling for downscaling. If either axis is enlarged,
+        /// built-in scaling falls back to <see cref="Cubic"/> interpolation.
         /// </summary>
         SuperSample = 8,
         /// <summary>

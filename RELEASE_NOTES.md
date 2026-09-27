@@ -1,11 +1,47 @@
-- [Base] Bounded introspection failure diagnostics and prevented caching incomplete scans
-- [Tests] Benchmarked actual float/double 2D/3D plane-clipping overloads without duplicated baselines
-- [Base] Added allocation-free 2D/3D line-segment clipping against plane half-spaces
-- [Base] Fixed duplicate introspection method-query cache entries
+- [Base] Bounded introspection failure diagnostics and preserved partial-scan recovery without weakening method-cache isolation
+- [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
+- [Base] Corrected and accelerated order-independent integer range-set construction
+- [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views
+- [Base] Corrected and accelerated scale-safe minimum triangle bounding circles and spheres
+- [Base] Fixed `Cell.Intersects` and `Cell2d.Intersects`
+- [Base] Corrected winding- and translation-stable 2D and 3D polygon centroids
+- [Base] Corrected complex magnitude, reciprocal, division, and square roots at extreme finite scales
+- [Base] Corrected robust ray-sphere intersections and closest-hit accumulation
+- [Base] Corrected robust ray-circle intersections and closest-hit accumulation
+- [Base] Made cubic Hermite and delegated spline evaluation allocation-free
+- [Base] Bounded AdaBoost training and made ensemble inference allocation-free
+- [Base] Corrected finite capped-cylinder ray intersections
+- [Base] Corrected 3D circle frames, representative points, and bounds
+- [Base] Made generic minimum-spanning trees deterministic and linearithmic
+- [Base] Corrected positive-discriminant cubic solvers to return only their real root
+- [Base] Corrected and accelerated single-pass enumerable population variance
+- [Base] Corrected exact `Fraction` comparison and special-value semantics
+- [IO] Made network-order primitive and aggregate I/O allocation-free
+- [Base] Corrected ECEF and Gauss-Krueger geodetic conversions
+- [Base] Corrected `Half` comparison and collection semantics
+- [Base] Corrected and reduced allocations in 2D polyline simplification
+- [Base] Repaired primality testing and concurrent indexed prime-table growth
+- [Base] Corrected Perlin interpolation across negative coordinates
+- [Base] Corrected and accelerated rolling median windows
+- [Base] Corrected full-precision bulk uniform double generation
+- [Base] Corrected QR zero-pivot factorization and wide strided solve indexing
+- [Base] Corrected and accelerated 2D box/plane intersections for scaled normals and boundary contact
+- [Base] Corrected LU singularity detection for final pivots and 1x1 matrices
+- [Base] Corrected integer GCD and LCM sign, zero, and overflow semantics
+- [Base] Corrected and accelerated integer primality checks
+- [Base] Corrected and accelerated Fibonacci-heap priority ordering and cascading cuts for shortest paths
+- [Geometry] Corrected `PolyRegion` containment for holes, nested contours, boundaries, and reversed orientations
+### 5.3.28-prerelease0001
+- [Base] Corrected ray projection and closest-distance parameters for non-unit, degenerate, and extreme finite directions
+- [Geometry] Added attributed `PolyRegion` boolean operations and triangulation with explicit interpolation
+- [Tensors] Added built-in exact area-weighted `SuperSample` image downscaling
+- [Tests] Benchmarked ray-distance, plane/polygon clipping, and flag-returning `FastRay` overloads
+- [Base] Added allocation-free 2D/3D line-segment clipping against plane half-spaces with robust extreme finite normals
+- [Base] Fixed duplicate, stale, cross-query, and foreign-assembly introspection method-cache results
 - [Base] Corrected DenseGraph minimum-spanning trees and single-edge traversal accounting
 - [Base] Fixed enumerable combined hash codes to match ordered array semantics
-- [Base] Fixed tolerant convex polygon line clipping and removed per-call allocations
-- [Base] Fixed `FastRay` closed box intersections for endpoint, grazing, and degenerate-box hits
+- [Base] Fixed tolerant convex polygon line clipping for extreme finite edges and removed per-call allocations
+- [Base] Fixed `FastRay` closed box intersections and accumulated all tied face flags for corner and point-box hits
 - [Base] Replaced biased randomization with allocation-free Fisher-Yates shuffling
 - [Base] Fixed `SampleGrid2d.SampleRegular` region callback Y endpoints
 - [Base] Made `LruCache` eviction bookkeeping exception-safe when cleanup callbacks throw

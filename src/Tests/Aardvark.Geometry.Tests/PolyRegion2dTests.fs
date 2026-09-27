@@ -7,6 +7,70 @@ open Aardvark.Base
 open Aardvark.Geometry
 
 module PolyRegion2dTests =
+
+    let private box (minX : float) (minY : float) (maxX : float) (maxY : float) =
+        PolyRegion.ofArray [|
+            V2d(maxX, maxY)
+            V2d(minX, maxY)
+            V2d(minX, minY)
+            V2d(maxX, minY)
+        |]
+
+    let private assertContains expected (point : V2d) (region : PolyRegion) =
+        Assert.That(region.Contains point, Is.EqualTo expected, $"Unexpected containment for {point}")
+
+    [<Test>]
+    let ``Contains applies even-odd parity to holes`` () =
+        let region = box -5.0 -5.0 5.0 5.0 - box -2.0 -2.0 2.0 2.0
+
+        region |> assertContains true (V2d(4.0, 0.0))
+        region |> assertContains false V2d.Zero
+        region |> assertContains false (V2d(6.0, 0.0))
+
+    [<Test>]
+    let ``Contains handles disjoint components and nested islands`` () =
+        let left = box -8.0 -2.0 -4.0 2.0
+        let right = box 4.0 -2.0 8.0 2.0
+        let disjoint = left + right
+
+        disjoint |> assertContains true (V2d(-6.0, 0.0))
+        disjoint |> assertContains true (V2d(6.0, 0.0))
+        disjoint |> assertContains false V2d.Zero
+
+        let outer = box -6.0 -6.0 6.0 6.0
+        let hole = box -3.0 -3.0 3.0 3.0
+        let island = box -1.0 -1.0 1.0 1.0
+        let nested = outer - hole + island
+
+        nested |> assertContains true (V2d(5.0, 0.0))
+        nested |> assertContains false (V2d(2.0, 0.0))
+        nested |> assertContains true V2d.Zero
+
+    [<Test>]
+    let ``Contains is independent of contour orientation`` () =
+        let region = box -5.0 -5.0 5.0 5.0 - box -2.0 -2.0 2.0 2.0
+        let reversed = region.Reversed
+        let reflected = region.Transformed(Scale2d(-1.0, 1.0))
+
+        for candidate in [region; reversed; reflected] do
+            candidate |> assertContains true (V2d(4.0, 0.0))
+            candidate |> assertContains false V2d.Zero
+            candidate |> assertContains false (V2d(7.0, 0.0))
+
+    [<Test>]
+    let ``Contains includes contour edges and vertices`` () =
+        let region = box -5.0 -5.0 5.0 5.0 - box -2.0 -2.0 2.0 2.0
+
+        region |> assertContains true (V2d(5.0, 1.0))
+        region |> assertContains true (V2d(5.0, 5.0))
+        region |> assertContains true (V2d(2.0, 0.0))
+        region |> assertContains true (V2d(2.0, 2.0))
+
+    [<Test>]
+    let ``Contains ignores empty and degenerate contours`` () =
+        PolyRegion.Empty |> assertContains false V2d.Zero
+        PolyRegion(Polygon2d [| V2d.Zero |]) |> assertContains false V2d.Zero
+        PolyRegion(Polygon2d [| V2d.Zero; V2d.II |]) |> assertContains false (V2d(0.5, 0.5))
     
     [<Test>]
     let ``Subtract small from large PolyRegion``() =

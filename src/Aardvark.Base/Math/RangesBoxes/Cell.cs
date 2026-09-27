@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -261,11 +262,49 @@ public readonly partial struct Cell : IEquatable<Cell>
     /// Cells DO NOT intersect if only touching from the outside.
     /// A cell intersects itself.
     /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Intersects(Cell other)
     {
         if (X == other.X && Y == other.Y && Z == other.Z && Exponent == other.Exponent) return true;
-        return BoundingBox.Intersects(other.BoundingBox);
+        return IntersectsUnequal(other);
     }
+
+    private bool IntersectsUnequal(Cell other)
+    {
+        if (IsInvalid || other.IsInvalid) return IntersectsInvalid(other);
+        if (IsCenteredAtOrigin)
+            return other.IsCenteredAtOrigin || IntersectsCentered(Exponent, other);
+        if (other.IsCenteredAtOrigin)
+            return IntersectsCentered(other.Exponent, this);
+
+        // Ordinary grid cells either nest or have disjoint interiors.
+        // Clamp shifts: C# masks long shift counts to six bits.
+        long delta = (long)Exponent - other.Exponent;
+        if (delta >= 0)
+        {
+            int shift = (int)Math.Min(delta, 63);
+            return X == (other.X >> shift) && Y == (other.Y >> shift) && Z == (other.Z >> shift);
+        }
+        else
+        {
+            int shift = (int)Math.Min(-delta, 63);
+            return (X >> shift) == other.X && (Y >> shift) == other.Y && (Z >> shift) == other.Z;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IntersectsCentered(int centeredExponent, Cell ordinary)
+    {
+        // Centered cells extend half their size on either side of zero.
+        long delta = (long)centeredExponent - ordinary.Exponent - 1;
+        int shift = delta <= 0 ? 0 : delta >= 63 ? 63 : (int)delta;
+        long x = ordinary.X >> shift, y = ordinary.Y >> shift, z = ordinary.Z >> shift;
+        return x >= -1 && x <= 0 && y >= -1 && y <= 0 && z >= -1 && z <= 0;
+    }
+
+    // Preserve Invalid's existing intersection behavior.
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private bool IntersectsInvalid(Cell other) => BoundingBox.Intersects(other.BoundingBox);
 
     /// <summary>
     /// The 8 subcells created by splitting each axis in half.

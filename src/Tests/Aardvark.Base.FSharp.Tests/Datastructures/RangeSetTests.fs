@@ -178,3 +178,161 @@ module RangeSetTests =
         set |> RangeSet1l.containsRange (Range1l(-2L, 3L)) |> should be False
 
         set |> RangeSet1l.containsRange (Range1l(20L, Int64.MaxValue)) |> should equal maxValue
+
+module RangeSetConstructionTests =
+    open NUnit.Framework
+
+    // The oracle enumerates individual values; it does not sort interval endpoints.
+    let private smallUnion (ranges : (bigint * bigint)[]) =
+        let values = ranges |> Seq.collect (fun (l, r) -> seq { l .. r }) |> Set.ofSeq
+        let result = ResizeArray<bigint * bigint>()
+        for value in values do
+            if result.Count > 0 && snd result.[result.Count - 1] + 1I = value then
+                let l, _ = result.[result.Count - 1]
+                result.[result.Count - 1] <- (l, value)
+            else
+                result.Add(value, value)
+        result.ToArray()
+
+    let inline private verify minimum maximum toValue toRange fromRange (empty : ^S)
+                              ofList ofArray ofSeq constructor (pairs : (bigint * bigint)[]) (expected : (bigint * bigint)[]) =
+        let ranges : ^R[] = Array.map toRange pairs
+        let original = Array.copy ranges
+        let mutable enumerations = 0
+        let mutable disposals = 0
+        let input = seq {
+            enumerations <- enumerations + 1
+            if enumerations <> 1 then failwith "sequence was enumerated twice"
+            try yield! ranges
+            finally disposals <- disposals + 1
+        }
+        let actual : ^S =
+            match constructor with
+            | "list" -> ofList (Array.toList ranges)
+            | "array" -> ofArray ranges
+            | "seq" -> ofSeq input
+            | _ -> failwith "unknown constructor"
+        if constructor = "seq" then
+            Assert.That(enumerations, Is.EqualTo(1))
+            Assert.That(disposals, Is.EqualTo(1))
+        Assert.That(ranges, Is.EqualTo(original), "caller array changed")
+        let added = original |> Array.fold (fun (s : ^S) r -> (^S : (member Add : ^R -> ^S) (s, r))) empty
+        Assert.That(actual, Is.EqualTo(added), "bulk versus repeated Add")
+        Assert.That(actual.GetHashCode(), Is.EqualTo(added.GetHashCode()))
+        // Mutating caller storage after construction must not affect the immutable set either.
+        if ranges.Length > 0 then ranges.[0] <- toRange (maximum, minimum)
+        let array = (^S : (member ToArray : unit -> ^R[]) actual) |> Array.map fromRange
+        let list = (^S : (member ToList : unit -> ^R list) actual) |> List.map fromRange |> List.toArray
+        let enumerated = (actual :> seq<^R>) |> Seq.map fromRange |> Seq.toArray
+        Assert.That(array, Is.EqualTo(expected), "ToArray")
+        Assert.That(list, Is.EqualTo(expected), "ToList")
+        Assert.That(enumerated, Is.EqualTo(expected), "enumeration")
+        Assert.That((^S : (member Count : int) actual), Is.EqualTo(expected.Length))
+        Assert.That((^S : (member IsEmpty : bool) actual), Is.EqualTo(expected.Length = 0))
+        let expectedMin = if expected.Length = 0 then maximum else fst expected.[0]
+        let expectedMax = if expected.Length = 0 then minimum else snd expected.[expected.Length - 1]
+        Assert.That((^S : (member Min : ^V) actual), Is.EqualTo(toValue expectedMin))
+        Assert.That((^S : (member Max : ^V) actual), Is.EqualTo(toValue expectedMax))
+        let probes =
+            seq {
+                yield minimum; yield maximum
+                yield! seq { 0I .. 35I }
+                for l, r in pairs do
+                    yield l; yield r
+                    if l > minimum then yield l - 1I
+                    if r < maximum then yield r + 1I
+            }
+        for p in probes do
+            if p >= minimum && p <= maximum then
+                let contains = expected |> Array.exists (fun (l, r) -> l <= p && p <= r)
+                Assert.That((^S : (member Contains : ^V -> bool) (actual, toValue p)), Is.EqualTo(contains), string p)
+
+    let private check kind constructor pairs expected =
+        match kind with
+        | "i" ->
+            verify (bigint Int32.MinValue) (bigint Int32.MaxValue) int
+                (fun (l, r) -> Range1i(int l, int r)) (fun (r : Range1i) -> bigint r.Min, bigint r.Max)
+                RangeSet1i.empty RangeSet1i.ofList RangeSet1i.ofArray RangeSet1i.ofSeq constructor pairs expected
+        | "ui" ->
+            verify 0I (bigint UInt32.MaxValue) uint32
+                (fun (l, r) -> Range1ui(uint32 l, uint32 r)) (fun (r : Range1ui) -> bigint r.Min, bigint r.Max)
+                RangeSet1ui.empty RangeSet1ui.ofList RangeSet1ui.ofArray RangeSet1ui.ofSeq constructor pairs expected
+        | "l" ->
+            verify (bigint Int64.MinValue) (bigint Int64.MaxValue) int64
+                (fun (l, r) -> Range1l(int64 l, int64 r)) (fun (r : Range1l) -> bigint r.Min, bigint r.Max)
+                RangeSet1l.empty RangeSet1l.ofList RangeSet1l.ofArray RangeSet1l.ofSeq constructor pairs expected
+        | "ul" ->
+            verify 0I (bigint UInt64.MaxValue) uint64
+                (fun (l, r) -> Range1ul(uint64 l, uint64 r)) (fun (r : Range1ul) -> bigint r.Min, bigint r.Max)
+                RangeSet1ul.empty RangeSet1ul.ofList RangeSet1ul.ofArray RangeSet1ul.ofSeq constructor pairs expected
+        | _ -> failwith "unknown type"
+
+    let private limits kind =
+        match kind with
+        | "i" -> bigint Int32.MinValue, bigint Int32.MaxValue
+        | "ui" -> 0I, bigint UInt32.MaxValue
+        | "l" -> bigint Int64.MinValue, bigint Int64.MaxValue
+        | "ul" -> 0I, bigint UInt64.MaxValue
+        | _ -> failwith "unknown type"
+
+    [<Test>]
+    let ``Empty and singleton construction`` ([<Values("i", "ui", "l", "ul")>] kind) ([<Values("list", "array", "seq")>] constructor) =
+        check kind constructor [||] [||]
+        check kind constructor [| 0I, 0I |] [| 0I, 0I |]
+        check kind constructor [| 4I, 9I |] [| 4I, 9I |]
+
+    [<Test>]
+    let ``Inverted and Invalid construction`` ([<Values("i", "ui", "l", "ul")>] kind) ([<Values("list", "array", "seq")>] constructor) =
+        let low, high = limits kind
+        for invalid in [| high, low; 3I, 2I |] do
+            check kind constructor [| invalid |] [||]
+            check kind constructor [| invalid; invalid |] [||]
+            check kind constructor [| invalid; 0I, 1I; invalid |] [| 0I, 1I |]
+
+    [<Test>]
+    let ``Order-independent closed interval union`` ([<Values("i", "ui", "l", "ul")>] kind) ([<Values("list", "array", "seq")>] constructor) =
+        let cases = [|
+            [| 0I, 0I; 1I, 1I |]
+            [| 0I, 0I; 1I, 1I; 2I, 3I; 4I, 4I |]
+            [| 2I, 7I; 2I, 7I; 2I, 7I |]
+            [| 0I, 12I; 2I, 4I; 6I, 10I |]
+            [| 0I, 2I; 7I, 10I; 14I, 15I |]
+            [| 0I, 3I; 2I, 8I; 8I, 10I; 12I, 15I |]
+            [| 2I, 1I; 4I, 3I; 0I, 0I; 1I, 1I |]
+        |]
+        for input in cases do
+            let expected = smallUnion input
+            check kind constructor input expected
+            check kind constructor (Array.rev input) expected
+            for shift in 1 .. input.Length - 1 do
+                check kind constructor (Array.append input.[shift..] input.[..shift-1]) expected
+
+    [<Test>]
+    let ``Extreme endpoints and terminal adjacency`` ([<Values("i", "ui", "l", "ul")>] kind) ([<Values("list", "array", "seq")>] constructor) =
+        let low, high = limits kind
+        let cases = [|
+            [| high, high |], [| high, high |]
+            [| low, low |], [| low, low |]
+            [| low, high |], [| low, high |]
+            [| low, low; low + 1I, low + 1I |], [| low, low + 1I |]
+            [| high - 1I, high - 1I; high, high |], [| high - 1I, high |]
+            [| high - 4I, high - 3I; high - 2I, high - 1I; high, high |], [| high - 4I, high |]
+            [| high, high; high, high |], [| high, high |]
+            [| 0I, 0I; high - 2I, high - 1I; high, high |], [| 0I, 0I; high - 2I, high |]
+            [| low, low; high, high |], [| low, low; high, high |]
+            [| low, high; high, high; high, low |], [| low, high |]
+        |]
+        for input, expected in cases do
+            check kind constructor input expected
+            check kind constructor (Array.rev input) expected
+
+    [<Test>]
+    let ``Seeded small-domain union oracle`` ([<Values("i", "ui", "l", "ul")>] kind) ([<Values("list", "array", "seq")>] constructor) =
+        let low, _ = limits kind
+        let random = Random(591273)
+        for iteration in 0 .. 299 do
+            let shift = if low < 0I then -16I else 0I
+            let input = Array.init (random.Next(0, 30)) (fun _ -> bigint (random.Next(32)) + shift, bigint (random.Next(32)) + shift)
+            let expected = smallUnion input
+            check kind constructor input expected
+            check kind constructor (Array.rev input) expected

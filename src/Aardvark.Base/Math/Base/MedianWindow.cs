@@ -1,5 +1,4 @@
-﻿using Aardvark.Base.Sorting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Aardvark.Base
@@ -10,71 +9,97 @@ namespace Aardvark.Base
     /// </summary>
     public class MedianWindow
     {
-        double m_median = 0;
-        int m_write = -1;
-        int m_count = 0; // for case when buffer is not fully filled
-        readonly double[] m_buffer;
-        readonly int[] m_indices;
+        private double m_median;
+        private int m_write = -1;
+        private int m_count;
+        private readonly double[] m_buffer;
+        private readonly int[] m_indices;
 
         public MedianWindow(int count)
         {
             if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
 
             m_buffer = new double[count];
-            m_indices = new int[count].SetByIndex(i => i);
+            m_indices = new int[count];
         }
 
+        /// <summary>
+        /// Inserts a value and returns the median of the active window. For an
+        /// even number of active values, the upper of the two middle values is returned.
+        /// </summary>
         public double Insert(double value)
         {
+            int slot = m_write + 1;
+            if (slot == m_buffer.Length)
+                slot = 0;
+            m_write = slot;
+
+            int sortedIndex;
             if (m_count < m_buffer.Length)
+            {
+                sortedIndex = m_count;
                 m_count++;
-
-            if (m_write > m_buffer.Length - 2)
-                m_write = 0;
+            }
             else
-                m_write++;
+            {
+                sortedIndex = 0;
+                while (m_indices[sortedIndex] != slot)
+                    sortedIndex++;
+            }
 
-            m_buffer[m_write] = value;
+            m_buffer[slot] = value;
 
-            // NOTE: indices are still sorted from last insert
-            m_indices.PermutationQuickSortAscending(m_buffer, 0, m_count);
+            if (sortedIndex > 0 && value < m_buffer[m_indices[sortedIndex - 1]])
+            {
+                do
+                {
+                    m_indices[sortedIndex] = m_indices[sortedIndex - 1];
+                    sortedIndex--;
+                }
+                while (sortedIndex > 0 && value < m_buffer[m_indices[sortedIndex - 1]]);
+            }
+            else
+            {
+                int last = m_count - 1;
+                while (sortedIndex < last && value > m_buffer[m_indices[sortedIndex + 1]])
+                {
+                    m_indices[sortedIndex] = m_indices[sortedIndex + 1];
+                    sortedIndex++;
+                }
+            }
+
+            m_indices[sortedIndex] = slot;
             m_median = m_buffer[m_indices[m_count >> 1]];
-
             return m_median;
         }
 
         /// <summary>
-        /// Returns the history buffer. Contains zeroes if less elements than the window size have been inserted.
+        /// Returns the fixed-size ring history buffer. Unwritten slots are initially
+        /// zero and retain their previous contents across <see cref="Reset"/>.
         /// </summary>
         public IReadOnlyList<double> History { get { return m_buffer; } }
 
+        /// <summary>
+        /// Returns the current median, or 0.0 when the window is empty. For an
+        /// even number of active values, this is the upper of the two middle values.
+        /// </summary>
         public double Value { get { return m_median; } }
 
         /// <summary>
-        /// Returns the last inserted valued.
-        /// In case no value has been inserted yet, 0 is returned.
+        /// Returns the last inserted value, or 0.0 before the first insertion
+        /// and after <see cref="Reset"/>.
         /// </summary>
-        public double Last
-        {
-            get
-            {
-                // in the case that last is queried before any insert return 0
-                if (m_write >= m_count)
-                    return 0;
-
-                return m_buffer[m_write];
-            }
-        }
+        public double Last { get { return m_count == 0 ? 0.0 : m_buffer[m_write]; } }
 
         /// <summary>
-        /// Resets the median window.
+        /// Resets the active median window in constant time without clearing
+        /// the <see cref="History"/> buffer.
         /// </summary>
         public void Reset()
         {
-            m_median = 0;
+            m_median = 0.0;
             m_write = -1;
             m_count = 0;
-            m_indices.SetByIndex(i => i);
         }
     }
 }

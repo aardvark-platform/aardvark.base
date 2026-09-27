@@ -126,6 +126,153 @@ namespace Aardvark.Base
         }
 
         //# }); // configs
+
+        //# intConfigs.Take(6).ForEach((dtype, ftype, ct, fct) => {
+        //#     var dt = dtype.Name;
+        //#     var convert = dt == "byte" ? "Col.ByteInDoubleToByteClamped(value)"
+        //#                 : dt == "ushort" ? "Col.UShortInDoubleToUShortClamped(value)"
+        //#                 : dt == "uint" ? "Col.UIntInDoubleToUIntClamped(value)"
+        //#                 : dt == "double" ? "value"
+        //#                 : "(" + dt + ")value";
+        /// <summary>
+        /// Scales the source into the target using exact area-weighted supersampling when both target axes are
+        /// unchanged or smaller. If either target axis is larger, this method uses cubic interpolation instead.
+        /// Tensor windows and positive, non-canonical strides are supported.
+        /// </summary>
+        public static void SetScaledSuperSample(this Matrix<__dt__> targetMat, Matrix<__dt__> sourceMat)
+        {
+            if (targetMat.SX == 0 || targetMat.SY == 0)
+                return;
+
+            if (targetMat.SX > sourceMat.SX || targetMat.SY > sourceMat.SY)
+            {
+                targetMat.SetScaledCubic(sourceMat);
+                return;
+            }
+
+            if (targetMat.Size == sourceMat.Size)
+            {
+                targetMat.Set(sourceMat);
+                return;
+            }
+
+            var xSpans = targetMat.SX < sourceMat.SX ? CreateAreaSpans(sourceMat.SX, targetMat.SX) : null;
+            var ySpans = targetMat.SY < sourceMat.SY ? CreateAreaSpans(sourceMat.SY, targetMat.SY) : null;
+            var workspace = targetMat.SX < sourceMat.SX && targetMat.SY < sourceMat.SY
+                ? new double[checked(targetMat.SX * sourceMat.SY)]
+                : null;
+            targetMat.SetScaledSuperSample(sourceMat, xSpans, ySpans, workspace);
+        }
+
+        internal static void SetScaledSuperSample(
+            this Volume<__dt__> target, Volume<__dt__> source,
+            AreaSpan[] xSpans, AreaSpan[] ySpans, double[] workspace)
+        {
+            for (long c = 0; c < source.SZ; c++)
+                target.SubXYMatrixWindow(c).SetScaledSuperSample(source.SubXYMatrixWindow(c), xSpans, ySpans, workspace);
+        }
+
+        internal static void SetScaledSuperSample(
+            this Matrix<__dt__> targetMat, Matrix<__dt__> sourceMat,
+            AreaSpan[] xSpans, AreaSpan[] ySpans, double[] workspace)
+        {
+            var source = sourceMat.Data;
+            var target = targetMat.Data;
+            long sourceFirst = sourceMat.FirstIndex;
+            long targetFirst = targetMat.FirstIndex;
+            long sourceDx = sourceMat.DX;
+            long sourceDy = sourceMat.DY;
+            long targetDx = targetMat.DX;
+            long targetDy = targetMat.DY;
+            long sourceSx = sourceMat.SX;
+            long sourceSy = sourceMat.SY;
+            long targetSx = targetMat.SX;
+            long targetSy = targetMat.SY;
+            bool scaleX = sourceSx != targetSx;
+            bool scaleY = sourceSy != targetSy;
+
+            if (!scaleX && !scaleY)
+            {
+                targetMat.Set(sourceMat);
+                return;
+            }
+
+            if (scaleX && !scaleY)
+            {
+                double normalization = (double)targetSx / sourceSx;
+                for (long y = 0; y < targetSy; y++)
+                {
+                    long sourceRow = sourceFirst + y * sourceDy;
+                    long targetRow = targetFirst + y * targetDy;
+                    for (long x = 0; x < targetSx; x++)
+                    {
+                        var span = xSpans[x];
+                        double sum = source[sourceRow + span.First * sourceDx] * span.FirstWeight;
+                        for (long sx = span.First + 1; sx < span.Last; sx++)
+                            sum += source[sourceRow + sx * sourceDx];
+                        sum += source[sourceRow + span.Last * sourceDx] * span.LastWeight;
+                        double value = sum * normalization;
+                        target[targetRow + x * targetDx] = __convert__;
+                    }
+                }
+                return;
+            }
+
+            if (!scaleX)
+            {
+                double normalization = (double)targetSy / sourceSy;
+                for (long y = 0; y < targetSy; y++)
+                {
+                    var span = ySpans[y];
+                    long targetRow = targetFirst + y * targetDy;
+                    for (long x = 0; x < targetSx; x++)
+                    {
+                        long sourceColumn = sourceFirst + x * sourceDx;
+                        double sum = source[sourceColumn + span.First * sourceDy] * span.FirstWeight;
+                        for (long sy = span.First + 1; sy < span.Last; sy++)
+                            sum += source[sourceColumn + sy * sourceDy];
+                        sum += source[sourceColumn + span.Last * sourceDy] * span.LastWeight;
+                        double value = sum * normalization;
+                        target[targetRow + x * targetDx] = __convert__;
+                    }
+                }
+                return;
+            }
+
+            double xNormalization = (double)targetSx / sourceSx;
+            long workspaceIndex = 0;
+            for (long y = 0; y < sourceSy; y++)
+            {
+                long sourceRow = sourceFirst + y * sourceDy;
+                for (long x = 0; x < targetSx; x++)
+                {
+                    var span = xSpans[x];
+                    double sum = source[sourceRow + span.First * sourceDx] * span.FirstWeight;
+                    for (long sx = span.First + 1; sx < span.Last; sx++)
+                        sum += source[sourceRow + sx * sourceDx];
+                    sum += source[sourceRow + span.Last * sourceDx] * span.LastWeight;
+                    workspace[workspaceIndex++] = sum * xNormalization;
+                }
+            }
+
+            double yNormalization = (double)targetSy / sourceSy;
+            for (long y = 0; y < targetSy; y++)
+            {
+                var span = ySpans[y];
+                long targetRow = targetFirst + y * targetDy;
+                for (long x = 0; x < targetSx; x++)
+                {
+                    double sum = workspace[span.First * targetSx + x] * span.FirstWeight;
+                    for (long sy = span.First + 1; sy < span.Last; sy++)
+                        sum += workspace[sy * targetSx + x];
+                    sum += workspace[span.Last * targetSx + x] * span.LastWeight;
+                    double value = sum * yNormalization;
+                    target[targetRow + x * targetDx] = __convert__;
+                }
+            }
+        }
+
+        //# }); // scalar configs
         #endregion
     }
 }

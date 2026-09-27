@@ -6595,108 +6595,237 @@ namespace Aardvark.Base
 
         #region Variance & Standard Deviation
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double VarianceDifference(long value, long origin)
+        {
+            if ((value < 0) == (origin < 0))
+                return (double)(value - origin);
+
+            if (value >= 0)
+                return (double)value + (double)(-(origin + 1)) + 1.0;
+
+            return -((double)origin + (double)(-(value + 1)) + 1.0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static double FinalizeVariance(long count, KahanSum deviationSum, KahanSum squaredDeviationSum)
+        {
+            double sum = deviationSum.Value;
+            double centered = squaredDeviationSum.Value - sum * sum / count;
+            if (centered < 0.0 && !double.IsInfinity(centered)) centered = 0.0;
+            return centered / count;
+        }
+
         /// <summary>
-        /// Calculates the variance of given elements.
+        /// Calculates the population variance in a single enumeration.
         /// </summary>
         [Pure]
         public static double Variance(this IEnumerable<int> data)
         {
-            int count = 0;
-            double sum = 0, mean = data.Mean();
+            int origin = default;
+            bool hasOrigin = false;
+            long count = 0;
+            var deviationSum = KahanSum.Zero;
+            var squaredDeviationSum = KahanSum.Zero;
 
-            foreach (var x in data)
+            if (data is int[] array)
             {
-                sum += (x - mean).Square();
-                count++;
+                if (array.Length > 0) origin = array[0];
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var x = array[i];
+                    double deviation = (double)x - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
+            }
+            else
+            {
+                foreach (var x in data)
+                {
+                    if (!hasOrigin)
+                    {
+                        origin = x;
+                        hasOrigin = true;
+                    }
+
+                    double deviation = (double)x - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
             }
 
-            return sum / count;
+            return FinalizeVariance(count, deviationSum, squaredDeviationSum);
         }
 
         /// <summary>
-        /// Calculates the standard deviation of given elements.
+        /// Calculates the population standard deviation in a single enumeration.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double StandardDeviation(this IEnumerable<int> data) => data.Variance().Sqrt();
 
         /// <summary>
-        /// Calculates the variance of given elements.
+        /// Calculates the population variance in a single enumeration.
         /// </summary>
         [Pure]
         public static double Variance(this IEnumerable<long> data)
         {
-            int count = 0;
-            double sum = 0, mean = data.Mean();
+            long origin = default;
+            bool hasOrigin = false;
+            long count = 0;
+            var deviationSum = KahanSum.Zero;
+            var squaredDeviationSum = KahanSum.Zero;
 
-            foreach (var x in data)
+            if (data is long[] array)
             {
-                sum += (x - mean).Square();
-                count++;
+                if (array.Length > 0) origin = array[0];
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var x = array[i];
+                    double deviation = VarianceDifference(x, origin);
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
+            }
+            else
+            {
+                foreach (var x in data)
+                {
+                    if (!hasOrigin)
+                    {
+                        origin = x;
+                        hasOrigin = true;
+                    }
+
+                    double deviation = VarianceDifference(x, origin);
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
             }
 
-            return sum / count;
+            return FinalizeVariance(count, deviationSum, squaredDeviationSum);
         }
 
         /// <summary>
-        /// Calculates the standard deviation of given elements.
+        /// Calculates the population standard deviation in a single enumeration.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double StandardDeviation(this IEnumerable<long> data) => data.Variance().Sqrt();
 
         /// <summary>
-        /// Calculates the variance of given elements.
+        /// Calculates the population variance in a single enumeration.
         /// </summary>
         [Pure]
         public static double Variance(this IEnumerable<float> data)
         {
-            int count = 0;
-            double sum = 0, mean = data.Mean();
+            float origin = default;
+            bool hasOrigin = false;
+            long count = 0;
+            var deviationSum = KahanSum.Zero;
+            var squaredDeviationSum = KahanSum.Zero;
 
-            foreach (var x in data)
+            if (data is float[] array)
             {
-                sum += (x - mean).Square();
-                count++;
+                if (array.Length > 0) origin = array[0];
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var x = array[i];
+                    double deviation = (double)x - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
+            }
+            else
+            {
+                foreach (var x in data)
+                {
+                    if (!hasOrigin)
+                    {
+                        origin = x;
+                        hasOrigin = true;
+                    }
+
+                    double deviation = (double)x - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
             }
 
-            return sum / count;
+            return FinalizeVariance(count, deviationSum, squaredDeviationSum);
         }
 
         /// <summary>
-        /// Calculates the standard deviation of given elements.
+        /// Calculates the population standard deviation in a single enumeration.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double StandardDeviation(this IEnumerable<float> data) => data.Variance().Sqrt();
 
         /// <summary>
-        /// Calculates the variance of given elements.
+        /// Calculates the population variance in a single enumeration.
         /// </summary>
         [Pure]
         public static double Variance(this IEnumerable<double> data)
         {
-            int count = 0;
-            double sum = 0, mean = data.Mean();
+            double origin = default;
+            bool hasOrigin = false;
+            long count = 0;
+            var deviationSum = KahanSum.Zero;
+            var squaredDeviationSum = KahanSum.Zero;
 
-            foreach (var x in data)
+            if (data is double[] array)
             {
-                sum += (x - mean).Square();
-                count++;
+                if (array.Length > 0) origin = array[0];
+
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var x = array[i];
+                    double deviation = (double)x - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
+            }
+            else
+            {
+                foreach (var x in data)
+                {
+                    if (!hasOrigin)
+                    {
+                        origin = x;
+                        hasOrigin = true;
+                    }
+
+                    double deviation = (double)x - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
             }
 
-            return sum / count;
+            return FinalizeVariance(count, deviationSum, squaredDeviationSum);
         }
 
         /// <summary>
-        /// Calculates the standard deviation of given elements.
+        /// Calculates the population standard deviation in a single enumeration.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double StandardDeviation(this IEnumerable<double> data) => data.Variance().Sqrt();
 
         /// <summary>
-        /// Calculates the variance of given elements.
+        /// Calculates the population variance in a single enumeration, invoking <paramref name="selector"/> once per element.
         /// </summary>
         [Pure]
         public static double Variance<T>(
@@ -6704,20 +6833,54 @@ namespace Aardvark.Base
             Func<T, double> selector
             )
         {
-            int count = 0;
-            double sum = 0, mean = data.Mean(selector);
+            double origin = 0.0;
+            bool hasOrigin = false;
+            long count = 0;
+            var deviationSum = KahanSum.Zero;
+            var squaredDeviationSum = KahanSum.Zero;
 
-            foreach (var x in data)
+            if (data is T[] array)
             {
-                sum += (selector(x) - mean).Square();
-                count++;
+                if (array.Length > 0)
+                {
+                    origin = selector(array[0]);
+                    double firstDeviation = origin - origin;
+                    deviationSum.Add(firstDeviation);
+                    squaredDeviationSum.Add(firstDeviation * firstDeviation);
+                    count++;
+
+                    for (int i = 1; i < array.Length; i++)
+                    {
+                        double deviation = selector(array[i]) - origin;
+                        deviationSum.Add(deviation);
+                        squaredDeviationSum.Add(deviation * deviation);
+                        count++;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var x in data)
+                {
+                    double value = selector(x);
+                    if (!hasOrigin)
+                    {
+                        origin = value;
+                        hasOrigin = true;
+                    }
+
+                    double deviation = value - origin;
+                    deviationSum.Add(deviation);
+                    squaredDeviationSum.Add(deviation * deviation);
+                    count++;
+                }
             }
 
-            return sum / count;
+            return FinalizeVariance(count, deviationSum, squaredDeviationSum);
         }
 
         /// <summary>
-        /// Calculates the standard deviation of given elements.
+        /// Calculates the population standard deviation in a single enumeration, invoking <paramref name="selector"/> once per element.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6899,10 +7062,17 @@ namespace Aardvark.Base
         [Pure]
         public static bool IsPrime(this int value)
         {
+            if (value < 2) return false;
+            if (value == 2 || value == 3 || value == 5) return true;
+            if (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) return false;
+
             int imax = (int)Sqrt(value);
 
-            for (int i = 2; i <= imax; i++)
-                if (value % i == 0) return false;
+            for (int i = 7; i <= imax; i += 30)
+                if (value % i == 0 || value % (i + 4) == 0 ||
+                    value % (i + 6) == 0 || value % (i + 10) == 0 ||
+                    value % (i + 12) == 0 || value % (i + 16) == 0 ||
+                    value % (i + 22) == 0 || value % (i + 24) == 0) return false;
 
             return true;
         }
@@ -6915,10 +7085,17 @@ namespace Aardvark.Base
         [Pure]
         public static bool IsPrime(this long value)
         {
+            if (value < 2) return false;
+            if (value == 2 || value == 3 || value == 5) return true;
+            if (value % 2 == 0 || value % 3 == 0 || value % 5 == 0) return false;
+
             long imax = (long)Sqrt(value);
 
-            for (long i = 2; i <= imax; i++)
-                if (value % i == 0) return false;
+            for (long i = 7; i <= imax; i += 30)
+                if (value % i == 0 || value % (i + 4) == 0 ||
+                    value % (i + 6) == 0 || value % (i + 10) == 0 ||
+                    value % (i + 12) == 0 || value % (i + 16) == 0 ||
+                    value % (i + 22) == 0 || value % (i + 24) == 0) return false;
 
             return true;
         }
@@ -6972,53 +7149,177 @@ namespace Aardvark.Base
 
         #region Common Divisor and Multiple
 
-        /// TODO: Handle negative inputs?
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint UnsignedMagnitude(int value)
+            => value < 0 ? unchecked(0u - (uint)value) : (uint)value;
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong UnsignedMagnitude(long value)
+            => value < 0 ? unchecked(0UL - (ulong)value) : (ulong)value;
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint GreatestCommonDivisorUnsigned(uint a, uint b)
+        {
+            while (b != 0)
+            {
+                uint remainder = a % b;
+                a = b;
+                b = remainder;
+            }
+
+            return a;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong GreatestCommonDivisorUnsigned(ulong a, ulong b)
+        {
+            while (b != 0)
+            {
+                ulong remainder = a % b;
+                a = b;
+                b = remainder;
+            }
+
+            return a;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint MultiplyWithLimit(uint a, uint b, uint maxValue)
+        {
+            ulong product = (ulong)a * b;
+            if (product > maxValue) throw new OverflowException();
+            return (uint)product;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong MultiplyWithLimit(ulong a, ulong b, ulong maxValue)
+        {
+            // Compute the full 128-bit product from 32-bit limbs.
+            ulong aLow = (uint)a;
+            ulong aHigh = a >> 32;
+            ulong bLow = (uint)b;
+            ulong bHigh = b >> 32;
+
+            ulong lowLow = aLow * bLow;
+            ulong lowHigh = aLow * bHigh;
+            ulong highLow = aHigh * bLow;
+            ulong high = aHigh * bHigh + (lowHigh >> 32) + (highLow >> 32);
+
+            ulong shifted = lowHigh << 32;
+            ulong low = lowLow + shifted;
+            if (low < shifted) high++;
+
+            shifted = highLow << 32;
+            low += shifted;
+            if (low < shifted) high++;
+
+            if (high != 0 || low > maxValue) throw new OverflowException();
+            return low;
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static uint LeastCommonMultipleUnsigned(uint a, uint b, uint maxValue)
+        {
+            if (a == 0 || b == 0) return 0;
+
+            uint reduced = a / GreatestCommonDivisorUnsigned(a, b);
+            return MultiplyWithLimit(reduced, b, maxValue);
+        }
+
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static ulong LeastCommonMultipleUnsigned(ulong a, ulong b, ulong maxValue)
+        {
+            if (a == 0 || b == 0) return 0;
+
+            ulong reduced = a / GreatestCommonDivisorUnsigned(a, b);
+            return MultiplyWithLimit(reduced, b, maxValue);
+        }
+
+        /// <summary>
+        /// Returns the non-negative greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="int.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GreatestCommonDivisor(this int a, int b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+        {
+            uint result = GreatestCommonDivisorUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b));
+            if (result > (uint)int.MaxValue) throw new OverflowException();
+            return (int)result;
+        }
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the non-negative least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="int.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int LeastCommonMultiple(this int a, int b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => (int)LeastCommonMultipleUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b), (uint)int.MaxValue);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the non-negative greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="long.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long GreatestCommonDivisor(this long a, long b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+        {
+            ulong result = GreatestCommonDivisorUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b));
+            if (result > (ulong)long.MaxValue) throw new OverflowException();
+            return (long)result;
+        }
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the non-negative least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="long.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long LeastCommonMultiple(this long a, long b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => (long)LeastCommonMultipleUnsigned(UnsignedMagnitude(a), UnsignedMagnitude(b), (ulong)long.MaxValue);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint GreatestCommonDivisor(this uint a, uint b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+            => GreatestCommonDivisorUnsigned(a, b);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="uint.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint LeastCommonMultiple(this uint a, uint b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => LeastCommonMultipleUnsigned(a, b, uint.MaxValue);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the greatest common divisor of two integers. The greatest common divisor of zero and zero is zero.
+        /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong GreatestCommonDivisor(this ulong a, ulong b)
-            => b == 0 ? a : GreatestCommonDivisor(b, a % b);
+            => GreatestCommonDivisorUnsigned(a, b);
 
-        /// TODO: Handle negative inputs?
+        /// <summary>
+        /// Returns the least common multiple of two integers, or zero if either value is zero.
+        /// </summary>
+        /// <exception cref="OverflowException">The result is greater than <see cref="ulong.MaxValue"/>.</exception>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ulong LeastCommonMultiple(this ulong a, ulong b)
-            => a * b / GreatestCommonDivisor(a, b);
+            => LeastCommonMultipleUnsigned(a, b, ulong.MaxValue);
 
         #endregion
 
