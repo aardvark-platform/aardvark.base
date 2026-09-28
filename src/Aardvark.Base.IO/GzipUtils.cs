@@ -6,14 +6,21 @@ namespace Aardvark.Base.Coder
 {
     public static class GzipUtils
     {
+        /// <summary>
+        /// Compress a file to its name plus .gz, replacing the entire destination.
+        /// </summary>
+        /// <remarks>
+        /// The input is opened before the destination is created or truncated.
+        /// Replacement is not atomic: a later failure may leave a partial destination.
+        /// </remarks>
         public static void GzipFile(string fileName)
         {
             Report.BeginTimed("compressing {0}", Path.GetFileName(fileName));
-            using (var ofs = new FileStream(
-                fileName + ".gz", FileMode.OpenOrCreate, FileAccess.Write
+            using (var ifs = new FileStream(
+                fileName, FileMode.Open, FileAccess.Read
                 ))
             {
-                using (var ifs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                using (var ofs = new FileStream(fileName + ".gz", FileMode.Create, FileAccess.Write))
                 {
                     using (var gzs = new GZipStream(ofs, CompressionMode.Compress))
                     {
@@ -30,19 +37,23 @@ namespace Aardvark.Base.Coder
         }
 
         /// <summary>
-        /// Uncompress gzipped file.
+        /// Uncompress a gzipped file, replacing the entire destination.
         /// </summary>
+        /// <remarks>
+        /// The input is opened before the destination is created or truncated.
+        /// Replacement is not atomic: a later failure may leave a partial destination.
+        /// </remarks>
         /// <param name="fileName">Path without .gz at end of file name.</param>
         public static void UnGzipFile(string fileName)
         {
-            using (var ofs = new FileStream(
-                fileName, FileMode.OpenOrCreate, FileAccess.Write
+            var srcFileName = fileName + ".gz";
+            Report.BeginTimed("decompressing {0}", Path.GetFileName(srcFileName));
+            using (var ifs = new FileStream(
+                srcFileName, FileMode.Open, FileAccess.Read
                 ))
             {
-                var srcFileName = fileName + ".gz";
-                Report.BeginTimed("decompressing {0}", Path.GetFileName(srcFileName));
-                using (var ifs = new FileStream(
-                    srcFileName, FileMode.Open, FileAccess.Read
+                using (var ofs = new FileStream(
+                    fileName, FileMode.Create, FileAccess.Write
                     ))
                 {
                     using (var gzs = new GZipStream(ifs, CompressionMode.Decompress))

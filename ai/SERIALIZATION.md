@@ -59,6 +59,15 @@ using (var coder = new BinaryReadingCoder(stream))
 
 `XmlWritingCoder` / `XmlReadingCoder` implement the same `ICoder` contract for XML streams.
 
+### Gzip files
+
+`GzipUtils.GzipFile(path)` compresses to `path + ".gz"`; `UnGzipFile(path)` reads
+that suffixed file and decompresses to `path`. Successful calls replace the entire
+destination, removing any previous trailing bytes or gzip members. The input is
+opened before creating or truncating the output, so a missing input leaves the
+destination untouched. Replacement is not atomic: a later failure may leave a
+partial output.
+
 ### Network-order primitive streams
 
 `NetworkOrderBinaryReader` and `NetworkOrderBinaryWriter` in `Aardvark.Base.Coder`
