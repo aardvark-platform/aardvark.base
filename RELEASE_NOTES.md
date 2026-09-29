@@ -1,3 +1,4 @@
+- [Base] Preserved runtime array types and lower bounds in untyped shallow copies while removing temporary allocations
 - [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
 - [Base] Corrected and accelerated order-independent integer range-set construction
 - [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views

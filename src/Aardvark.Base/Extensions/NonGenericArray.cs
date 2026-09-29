@@ -46,21 +46,13 @@ namespace Aardvark.Base
 			};
 
         /// <summary>
-        /// Creates a copy of the array.
+        /// Creates a shallow copy with independent array storage, preserving the runtime
+        /// type, rank, dimension lengths, and lower bounds. Referenced objects, including
+        /// inner arrays, are shared with the original array rather than cloned.
         /// </summary>
+        /// <exception cref="NullReferenceException"><paramref name="array"/> is null.</exception>
         public static Array Copy(this Array array)
-        {
-            var counts = new long[array.Rank];
-
-            for (int i = 0; i < counts.Length; i++)
-            {
-                counts[i] = array.GetLongLength(i);
-            }
-
-            var result = Array.CreateInstance(array.GetType().GetElementType(), counts);
-            Array.Copy(array, result, array.LongLength);
-            return result;
-        }
+            => (Array)array.Clone();
 
         [Obsolete]
         private static readonly Dictionary<Type, Func<Array, object, Array>> CopyFunFunMap =

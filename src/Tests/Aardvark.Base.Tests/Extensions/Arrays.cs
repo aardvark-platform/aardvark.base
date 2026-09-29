@@ -15,6 +15,136 @@ namespace Aardvark.Tests.Extensions
         }
 
         [Test]
+        public static void UntypedArrayCopyPreservesShapeValuesAndIndependentStorage()
+        {
+            void Check(Array source)
+            {
+                var value = 1;
+                ForEachArrayCoordinate(source, indices => source.SetValue(value++, indices));
+                var copy = AssertUntypedArrayCopy(source);
+                if (source.Length == 0) return;
+
+                var first = Enumerable.Range(0, source.Rank).Select(source.GetLowerBound).ToArray();
+                var context = ArrayShape(source);
+                source.SetValue(-37, first);
+                Assert.AreEqual(1, copy.GetValue(first), context + ": source mutation changed copy");
+                copy.SetValue(-73, first);
+                Assert.AreEqual(-37, source.GetValue(first), context + ": copy mutation changed source");
+            }
+
+            // Concrete regression: reflective reconstruction discarded these lower bounds.
+            Check(Array.CreateInstance(typeof(int), new[] { 2, 3 }, new[] { -2, 5 }));
+            foreach (var source in new Array[]
+            {
+                Array.Empty<int>(), new[] { 3, 7, 11 }, new int[2, 3], new int[2, 0], new int[1, 2, 3]
+            }) Check(source);
+
+            foreach (var lengths in new[]
+            {
+                new[] { 5 }, new[] { 2, 3 }, new[] { 2, 2, 3 }, new[] { 1, 2, 1, 3 },
+                new[] { 0 }, new[] { 0, 3 }, new[] { 2, 0 }, new[] { 0, 2, 3 },
+                new[] { 2, 0, 3 }, new[] { 2, 3, 0 }, new[] { 1, 0, 1, 3 }
+            })
+            foreach (var lowerBounds in new[]
+            {
+                new int[lengths.Length],
+                Enumerable.Range(1, lengths.Length).ToArray(),
+                Enumerable.Range(1, lengths.Length).Select(i => -i).ToArray(),
+                Enumerable.Range(0, lengths.Length).Select(i => i % 2 == 0 ? -2 : 5).ToArray()
+            }) Check(Array.CreateInstance(typeof(int), lengths, lowerBounds));
+        }
+
+        [Test]
+        public static void UntypedArrayCopyKeepsReferenceAndJaggedElementsShared()
+        {
+            var reference = new System.Text.StringBuilder("shared");
+            var inner = new[] { 17, 23 };
+            foreach (var source in new Array[]
+            {
+                new object[] { reference, null, reference },
+                new[] { new string('a', 2), null, "last" },
+                new[] { inner, null, inner },
+                Array.CreateInstance(typeof(object), new[] { 2, 2 }, new[] { 3, -2 }),
+                Array.CreateInstance(typeof(int[]), new[] { 2, 1, 2 }, new[] { -2, 3, 1 }),
+                Array.Empty<object>(), Array.Empty<int[]>(),
+                Array.CreateInstance(typeof(object), new[] { 0, 2 }, new[] { -1, 4 })
+            })
+            {
+                if (source.Rank > 1)
+                {
+                    object item = source.GetType().GetElementType() == typeof(int[]) ? inner : reference;
+                    var ordinal = 0;
+                    ForEachArrayCoordinate(source, indices => source.SetValue(ordinal++ % 2 == 0 ? item : null, indices));
+                }
+                var copy = AssertUntypedArrayCopy(source);
+                var context = ArrayShape(source);
+                ForEachArrayCoordinate(source, indices =>
+                    Assert.AreSame(source.GetValue(indices), copy.GetValue(indices), context + $": [{string.Join(",", indices)}]"));
+                if (source.Length == 0) continue;
+
+                var first = Enumerable.Range(0, source.Rank).Select(source.GetLowerBound).ToArray();
+                var original = source.GetValue(first);
+                if (original is System.Text.StringBuilder text)
+                {
+                    text.Append('!');
+                    Assert.AreEqual(text.ToString(), ((System.Text.StringBuilder)copy.GetValue(first)).ToString(), context);
+                }
+                else if (original is int[] nested)
+                {
+                    nested[0]++;
+                    Assert.AreEqual(nested[0], ((int[])copy.GetValue(first))[0], context);
+                }
+                copy.SetValue(null, first);
+                Assert.AreSame(original, source.GetValue(first), context + ": copy mutation changed source");
+                copy.SetValue(original, first);
+                source.SetValue(null, first);
+                Assert.AreSame(original, copy.GetValue(first), context + ": source mutation changed copy");
+            }
+        }
+
+        [Test]
+        public static void UntypedArrayCopyPreservesNullInputException()
+        {
+            Assert.Throws<NullReferenceException>(() => NonGenericArrayExtensions.Copy((Array)null));
+        }
+
+        private static string ArrayShape(Array array)
+            => $"{array.GetType()}, lengths=[{string.Join(",", Enumerable.Range(0, array.Rank).Select(array.GetLength))}], " +
+               $"lowerBounds=[{string.Join(",", Enumerable.Range(0, array.Rank).Select(array.GetLowerBound))}]";
+
+        private static Array AssertUntypedArrayCopy(Array source)
+        {
+            var context = ArrayShape(source);
+            var copy = NonGenericArrayExtensions.Copy(source);
+            Assert.AreNotSame(source, copy, context);
+            Assert.AreEqual(source.GetType(), copy.GetType(), context);
+            Assert.AreEqual(source.Rank, copy.Rank, context);
+            Assert.AreEqual(source.LongLength, copy.LongLength, context);
+            for (var dimension = 0; dimension < source.Rank; dimension++)
+            {
+                Assert.AreEqual(source.GetLength(dimension), copy.GetLength(dimension), context + $", dimension={dimension}");
+                Assert.AreEqual(source.GetLowerBound(dimension), copy.GetLowerBound(dimension), context + $", dimension={dimension}");
+            }
+            ForEachArrayCoordinate(source, indices =>
+                Assert.AreEqual(source.GetValue(indices), copy.GetValue(indices), context + $": [{string.Join(",", indices)}]"));
+            return copy;
+        }
+
+        private static void ForEachArrayCoordinate(Array array, Action<int[]> action)
+        {
+            var indices = Enumerable.Range(0, array.Rank).Select(array.GetLowerBound).ToArray();
+            for (var element = 0; element < array.Length; element++)
+            {
+                action(indices);
+                for (var dimension = array.Rank - 1; dimension >= 0; dimension--)
+                {
+                    if (++indices[dimension] <= array.GetUpperBound(dimension)) break;
+                    indices[dimension] = array.GetLowerBound(dimension);
+                }
+            }
+        }
+
+        [Test]
         public unsafe static void CopyArrayToNative()
         {
             var src = new ushort[] { 5, 3, 8, 12, 83 };
