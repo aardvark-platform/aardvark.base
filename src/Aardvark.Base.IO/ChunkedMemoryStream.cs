@@ -174,9 +174,23 @@ namespace Aardvark.Base.Coder
                 m_length = m_position;
         }
 
+        /// <summary>
+        /// Writes bytes at the current position and advances it by <paramref name="count"/>.
+        /// </summary>
+        /// <remarks>
+        /// A valid zero-count write beyond Length extends the stream to Position with a
+        /// zero-filled gap, without changing Position. At or before Length it is a no-op.
+        /// </remarks>
         public override void Write(byte[] buffer, int offset, int count)
         {
             ValidateReadWriteArguments(buffer, offset, count);
+
+            if (count == 0)
+            {
+                if (m_position > m_length)
+                    SetLength(m_position);
+                return;
+            }
 
             int done = 0;
             while (done < count)
