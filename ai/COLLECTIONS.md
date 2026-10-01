@@ -46,6 +46,18 @@ Common helpers:
 
 `SingleValueDict<TKey, TValue>` and `SingleValueSymbolDict<TValue>` associate every current key with one shared value. Their `Values` sequences contain that shared value once per key and are empty when the dictionaries have no keys.
 
+## DictionaryFun Copy and Combine
+
+All three `DictionaryFun.Copy` overloads preserve the source dictionary's key
+comparer, including for empty results, and allocate independent dictionary
+storage. The plain copy shares the original key and value objects. Value mapping
+does not change key equality. Function-map lookup still uses `funMap`'s own
+comparer; unmatched keys use `defaultFun`, or are omitted when it is null.
+
+`Combine` preserves the left dictionary's comparer. Entries from the right
+operand overwrite keys that compare equal under that left comparer, regardless
+of the right operand's comparer. Neither input dictionary is modified.
+
 ## EnumerableEx.ToDictionaryDistinct
 
 All `ToDictionaryDistinct` overloads evaluate the key and element selectors exactly once per source element. Duplicate keys are handled explicitly according to the selected policy:
@@ -145,3 +157,4 @@ exposes the same results as options.
 - `src/Aardvark.Base/AlgoDat/LruCache.cs`
 - `src/Aardvark.Base/AlgoDat/ConcurrentHashSet.cs`
 - `src/Aardvark.Base/Extensions/IEnumerableExtensions.cs`
+- `src/Aardvark.Base/Extensions/DictionaryExtensions.cs`

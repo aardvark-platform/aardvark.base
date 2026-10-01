@@ -9,31 +9,44 @@ namespace Aardvark.Base
 
     public static class DictionaryFun
     {
+        /// <summary>
+        /// Copies entries into independent dictionary storage using the source's key comparer.
+        /// </summary>
         public static Dictionary<Tk, Tv> Copy<Tk, Tv>(
             this Dictionary<Tk, Tv> self)
         {
-            var r = new Dictionary<Tk, Tv>(self.Count);
+            var r = new Dictionary<Tk, Tv>(self.Count, self.Comparer);
             foreach (var kvp in self)
                 r[kvp.Key] = kvp.Value;
             return r;
         }
 
+        /// <summary>
+        /// Copies keys and mapped values using the source's key comparer.
+        /// </summary>
         public static Dictionary<Tk, T1v> Copy<Tk, Tv, T1v>(
             this Dictionary<Tk, Tv> self,
             Func<Tv, T1v> fun)
         {
-            var r = new Dictionary<Tk, T1v>(self.Count);
+            var r = new Dictionary<Tk, T1v>(self.Count, self.Comparer);
             foreach (var kvp in self)
                 r[kvp.Key] = fun(kvp.Value);
             return r;
         }
 
+        /// <summary>
+        /// Copies mapped entries using the source's key comparer for the result.
+        /// </summary>
+        /// <remarks>
+        /// Function lookup uses funMap's own comparer. Unmatched keys use defaultFun,
+        /// or are omitted when defaultFun is null.
+        /// </remarks>
         public static Dictionary<Tk, T1v> Copy<Tk, Tv, T1v>(
             this Dictionary<Tk, Tv> self,
             Dictionary<Tk, Func<Tv, T1v>> funMap,
             Func<Tv, T1v> defaultFun)
         {
-            var r = new Dictionary<Tk, T1v>(self.Count);
+            var r = new Dictionary<Tk, T1v>(self.Count, self.Comparer);
             foreach (var kvp in self)
             {
                 if (funMap.TryGetValue(kvp.Key, out Func<Tv, T1v> fun))
@@ -45,8 +58,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Combines the dictionary with another one. Duplicate keys
-        /// are overwritten.
+        /// Combines the dictionary with another one using the left dictionary's key
+        /// comparer. Entries from the second dictionary overwrite keys that compare equal.
         /// </summary>
         public static Dictionary<Tk, Tv> Combine<Tk, Tv>(
             this Dictionary<Tk, Tv> self,
