@@ -185,14 +185,15 @@ type StableDict<'k, 'v>() =
                 false
 
     member x.GetOrAdd(k : 'k, f : 'k -> 'v) =
-        let isNew = ref false
+        let mutable created : Linked<'k * 'v> = null
         let node = 
             content.GetOrCreate(k, fun k ->
-                isNew := true
-                Linked((k, f k), last, null)
+                let node = Linked((k, f k), last, null)
+                created <- node
+                node
             )
         
-        if !isNew then
+        if obj.ReferenceEquals(node, created) then
             if isNull last then first <- node
             else last.Next <- node
 

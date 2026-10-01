@@ -46,6 +46,15 @@ Common helpers:
 
 `SingleValueDict<TKey, TValue>` and `SingleValueSymbolDict<TValue>` associate every current key with one shared value. Their `Values` sequences contain that shared value once per key and are empty when the dictionaries have no keys.
 
+## StableDict
+
+`StableDict<'k, 'v>` enumerates entries in insertion order. If a `GetOrAdd` factory
+reentrantly inserts the requested key (or an equal key), that stored value and
+insertion position win over the factory's return value; the entry is linked only
+once. If the key is absent when the factory returns, the outer call inserts its
+own value at the end. Factory exceptions propagate without rolling back
+changes already made by the callback. This does not provide thread safety.
+
 ## EnumerableEx.ToDictionaryDistinct
 
 All `ToDictionaryDistinct` overloads evaluate the key and element selectors exactly once per source element. Duplicate keys are handled explicitly according to the selected policy:
@@ -133,6 +142,7 @@ exposes the same results as options.
 
 ## Source Anchors
 
+- `src/Aardvark.Base.FSharp/Datastructures/Mutable/StableSet.fs`
 - `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_template.fs`
 - `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_auto.fs`
 - `src/Aardvark.Base/AlgoDat/ExtendedCore/SortedSetExt.cs`
