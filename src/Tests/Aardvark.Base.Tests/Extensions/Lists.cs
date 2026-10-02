@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Aardvark.Base;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Aardvark.Tests.Extensions
 {
@@ -12,6 +13,162 @@ namespace Aardvark.Tests.Extensions
         {
             var ex = Assert.Throws<TException>(code);
             Assert.AreEqual(paramName, ex.ParamName);
+        }
+
+        [Test]
+        public static void FindIndexCircularOrderAndFirstMatchesAgreeWithWideOracle()
+        {
+            IList<int> minimal = new[] { 0, 1, 2, 3, 4 };
+            foreach (var forward in new[] { true, false })
+            foreach (var tail in new[] { false, true })
+            {
+                var context = $"minimal: forward={forward}, tail={tail}";
+                Assert.AreEqual(4, SearchRange(minimal, 2, 3, forward, int.MinValue, tail, _ => true), context);
+                CheckCircularSearch(minimal, 2, 3, forward, int.MinValue, tail, context);
+            }
+
+            const int seed = 89017;
+            var random = new Random(seed);
+            for (var sample = 0; sample < 128; sample++)
+            {
+                var length = random.Next(1, 129);
+                var values = Enumerable.Range(0, length).ToArray();
+                IList<int> list = sample % 2 == 0 ? values : new List<int>(values);
+                var start = random.Next(length);
+                var count = random.Next(1, length - start + 1);
+                foreach (var tail in new[] { false, true })
+                foreach (var forward in new[] { true, false })
+                {
+                    var rangeCount = tail ? length - start : count;
+                    foreach (var search in new[]
+                    {
+                        int.MinValue, int.MinValue + 1, int.MaxValue, int.MaxValue - 1,
+                        -37, -1, start - 1, start, start + rangeCount - 1, start + rangeCount,
+                        (int)random.NextInt64(int.MinValue, (long)int.MaxValue + 1)
+                    }.Distinct())
+                    {
+                        var context = $"seed={seed}, sample={sample}, length={length}, start={start}, count={rangeCount}, search={search}, forward={forward}, tail={tail}";
+                        CheckCircularSearch(list, start, rangeCount, forward, search, tail, context);
+                    }
+                }
+            }
+        }
+
+        private static int SearchRange(IList<int> list, int start, int count, bool forward, int search, bool tail, Predicate<int> match)
+            => tail
+                ? IListExtensions.FindIndex(list, start, forward, search, match)
+                : IListExtensions.FindIndex(list, start, count, forward, search, match);
+
+        private static int[] CircularOrder(int start, int count, int search, bool forward)
+        {
+            // Rank each candidate by its nonnegative circular distance from the requested
+            // start, rather than normalizing a start index and reproducing the search loops.
+            return Enumerable.Range(start, count).OrderBy(index =>
+            {
+                var distance = forward ? (long)index - search : (long)search - index;
+                return (distance % count + count) % count;
+            }).ToArray();
+        }
+
+        private static void CheckCircularSearch(IList<int> list, int start, int count, bool forward, int search, bool tail, string context)
+        {
+            var order = CircularOrder(start, count, search, forward);
+            foreach (var mode in new[] { 0, 1, 2, 3 })
+            {
+                // No match, immediate match, multiple matches, and a last-visited match.
+                Predicate<int> accept = mode switch
+                {
+                    0 => _ => false,
+                    1 => _ => true,
+                    2 => value => value % 3 == 0,
+                    _ => value => value == order[order.Length - 1]
+                };
+                var expectedOffset = Array.FindIndex(order, accept);
+                var expectedIndex = expectedOffset < 0 ? -1 : order[expectedOffset];
+                var expectedCalls = expectedOffset < 0 ? order.Length : expectedOffset + 1;
+                var visited = new List<int>();
+                var actual = SearchRange(list, start, count, forward, search, tail, value =>
+                {
+                    visited.Add(value);
+                    return accept(value);
+                });
+                Assert.AreEqual(expectedIndex, actual, context + $", predicate={mode}");
+                CollectionAssert.AreEqual(order.Take(expectedCalls), visited, context + $", predicate={mode}: visitation");
+            }
+        }
+
+        [Test]
+        public static void FindIndexEmptyAndSingletonRangesPreservePredicateCalls()
+        {
+            foreach (var length in new[] { 0, 1, 5 })
+            foreach (var forward in new[] { true, false })
+            foreach (var search in new[] { int.MinValue, -1, 0, 17, int.MaxValue })
+            {
+                IList<int> list = Enumerable.Range(0, length).ToArray();
+                for (var start = 0; start <= length; start++)
+                {
+                    var context = $"length={length}, start={start}, search={search}, forward={forward}";
+                    Predicate<int> unused = _ => { Assert.Fail(context + ": empty range invoked predicate"); return true; };
+                    Assert.AreEqual(-1, IListExtensions.FindIndex(list, start, 0, forward, search, unused), context);
+                    if (start == length)
+                        Assert.AreEqual(-1, IListExtensions.FindIndex(list, start, forward, search, unused), context);
+                    else
+                    {
+                        CheckCircularSearch(list, start, 1, forward, search, false, context + ": singleton");
+                        if (start + 1 == length)
+                            CheckCircularSearch(list, start, 1, forward, search, true, context + ": singleton tail");
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public static void FindIndexPropagatesPredicateExceptionsWithoutFurtherCalls()
+        {
+            IList<int> list = new[] { 0, 1, 2, 3, 4, 5, 6 };
+            foreach (var tail in new[] { false, true })
+            foreach (var forward in new[] { true, false })
+            foreach (var search in new[] { int.MinValue, -37, 3, int.MaxValue })
+            {
+                var count = tail ? 5 : 3;
+                var order = CircularOrder(2, count, search, forward);
+                foreach (var throwAfter in new[] { 1, count })
+                {
+                    var context = $"tail={tail}, forward={forward}, search={search}, throwAfter={throwAfter}";
+                    var failure = new InvalidOperationException(context);
+                    var visited = new List<int>();
+                    var error = Assert.Throws<InvalidOperationException>(() => SearchRange(list, 2, count, forward, search, tail, value =>
+                    {
+                        visited.Add(value);
+                        if (visited.Count == throwAfter) throw failure;
+                        return false;
+                    }));
+                    Assert.AreSame(failure, error, context);
+                    CollectionAssert.AreEqual(order.Take(throwAfter), visited, context);
+                }
+            }
+        }
+
+        [Test]
+        public static void FindIndexRetainsValidationOrderBeforeEmptyRangeReturn()
+        {
+            IList<int> list = new[] { 0, 1, 2 };
+            foreach (var forward in new[] { true, false })
+            foreach (var search in new[] { int.MinValue, int.MaxValue })
+            {
+                AssertParamName<ArgumentNullException>("list", () => IListExtensions.FindIndex<int>(null, -1, -1, forward, search, null));
+                AssertParamName<ArgumentNullException>("list", () => IListExtensions.FindIndex<int>(null, -1, forward, search, null));
+                foreach (var start in new[] { -1, 4 })
+                {
+                    AssertParamName<ArgumentOutOfRangeException>("startIndex", () => IListExtensions.FindIndex(list, start, -1, forward, search, null));
+                    AssertParamName<ArgumentOutOfRangeException>("startIndex", () => IListExtensions.FindIndex(list, start, forward, search, null));
+                }
+                foreach (var count in new[] { -1, 4, int.MaxValue })
+                    AssertParamName<ArgumentOutOfRangeException>("count", () => IListExtensions.FindIndex(list, 0, count, forward, search, null));
+                AssertParamName<ArgumentNullException>("match", () => IListExtensions.FindIndex(list, 3, 0, forward, search, null));
+                AssertParamName<ArgumentNullException>("match", () => IListExtensions.FindIndex(list, 3, forward, search, null));
+                AssertParamName<ArgumentNullException>("match", () => IListExtensions.FindIndex(list, 0, 1, forward, search, null));
+            }
         }
 
         [Test]
