@@ -48,8 +48,9 @@ namespace Aardvark.Base
             int endIndex = startIndex + count;
             if ((startSearch < startIndex) || (startSearch >= endIndex))
             {
-                //wrap around startSearch to be in the interval [startIndex, startIndex+count-1]
-                startSearch = (startSearch - startIndex) % count;
+                // Wrap startSearch into [startIndex, startIndex+count-1]. Widen before
+                // subtraction: a valid signed start can overflow Int32 when offset by startIndex.
+                startSearch = (int)(((long)startSearch - startIndex) % count);
                 if (startSearch < 0)
                     startSearch += count; //this is the ModP implementation. Since Fun.ModP() is in Aardvark.Math it is not accessible here.
                 startSearch += startIndex;
