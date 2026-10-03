@@ -85,6 +85,13 @@ namespace Aardvark.Base
             return IndexOf(item) != -1;
         }
 
+        /// <summary>
+        /// Copies this range into the destination array. Overlap with an array source,
+        /// including through ordinary nested SubRange views, is handled as if the source
+        /// elements were read before any destination writes. Other IList sources retain
+        /// forward indexer reads; aliasing hidden by custom list implementations is not detected.
+        /// Reference elements are copied shallowly.
+        /// </summary>
         public void CopyTo(T[] array, int arrayIndex)
         {
             if (array == null) throw new ArgumentNullException(nameof(array));
@@ -92,6 +99,26 @@ namespace Aardvark.Base
             if (m_count > array.Length - arrayIndex)
                 throw new ArgumentException("The destination array has insufficient capacity.", nameof(array));
 
+            if (m_count == 0) return;
+
+            var source = m_base;
+            var sourceIndex = m_start;
+            // A derived SubRange can reimplement IList<T>; do not bypass its indexer.
+            while (source.GetType() == typeof(SubRange<T>))
+            {
+                var range = (SubRange<T>)source;
+                sourceIndex += range.m_start;
+                source = range.m_base;
+            }
+
+            if (source is Array sourceArray &&
+                (array.GetType() == typeof(T[]) || array.GetType() == sourceArray.GetType()))
+            {
+                Array.Copy(sourceArray, sourceIndex, array, arrayIndex, m_count);
+                return;
+            }
+
+            // Preserve element-wise compatibility checks for narrower covariant destinations.
             for (int i = 0; i < m_count; i++)
             {
                 array[arrayIndex + i] = m_base[m_start + i];
