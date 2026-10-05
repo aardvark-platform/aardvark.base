@@ -99,27 +99,27 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Set count elements starting at the supplied index to a function
-        /// of the element index.
+        /// Set up to count elements starting at the supplied index to a function
+        /// of the element index, clipping positive counts to the remaining array capacity.
         /// </summary>
         /// <returns>this</returns>
         public static T[] SetByIndex<T>(
                 this T[] self, int start, int count, Func<int, T> index_fun)
         {
-            int end = Math.Min(start + count, self.Length);
+            int end = start + Math.Min(count, self.Length - start);
             for (int i = start; i < end; i++) self[i] = index_fun(i);
             return self;
         }
 
         /// <summary>
-        /// Set count elements starting at the supplied index to a function
-        /// of the element index.
+        /// Set up to count elements starting at the supplied index to a function
+        /// of the element index, clipping positive counts to the remaining array capacity.
         /// </summary>
         /// <returns>this</returns>
         public static T[] SetByIndexLong<T>(
                 this T[] self, long start, long count, Func<long, T> index_fun)
         {
-            long end = Math.Min(start + count, self.LongLength);
+            long end = start + Math.Min(count, self.LongLength - start);
             for (long i = start; i < end; i++) self[i] = index_fun(i);
             return self;
         }
