@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Aardvark.Base;
 using System.Linq;
+using System.Numerics;
 
 namespace Aardvark.Tests.Extensions
 {
@@ -84,6 +85,22 @@ namespace Aardvark.Tests.Extensions
                     }
                 }
             }
+        }
+
+        private sealed class CountOnlyCollection : ICollection<int>
+        {
+            private readonly int m_count;
+            public CountOnlyCollection(int count) { m_count = count; }
+            public int CountReads { get; private set; }
+            public int Count { get { CountReads++; return m_count; } }
+            public bool IsReadOnly => true;
+            public IEnumerator<int> GetEnumerator() => throw new AssertionException("Count-only collection was enumerated.");
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+            public void CopyTo(int[] array, int index) => throw new AssertionException("Count-only collection was copied.");
+            public void Add(int item) => throw new NotSupportedException();
+            public void Clear() => throw new NotSupportedException();
+            public bool Contains(int item) => throw new NotSupportedException();
+            public bool Remove(int item) => throw new NotSupportedException();
         }
 
         private sealed class ThrowOnceHashKey
@@ -694,6 +711,112 @@ namespace Aardvark.Tests.Extensions
 
             Assert.AreEqual(1, left.EnumeratorCount);
             Assert.AreEqual(1, right.EnumeratorCount);
+        }
+
+        [Test]
+        public static void PairsCountMatchesEnumerationAndCountsPositionsNotDistinctValues()
+        {
+            foreach (var values in new[]
+            {
+                Array.Empty<int>(), new[] { 7 }, new[] { 7, 7 }, new[] { 1, 1, 2, 1 },
+                Enumerable.Range(0, 8).ToArray(), Enumerable.Range(0, 8).Select(i => i % 3).ToArray()
+            })
+            foreach (var source in new IEnumerable<int>[] { values, new List<int>(values) })
+            foreach (var excludeIdentical in new[] { false, true })
+            foreach (var excludeReverse in new[] { false, true })
+            {
+                var context = $"source={source.GetType().Name}, values=[{string.Join(",", values)}], excludeIdentical={excludeIdentical}, excludeReverse={excludeReverse}";
+                var enumerated = source.Pairs(excludeIdentical, excludeReverse).Count();
+                Assert.AreEqual(ExactPairsCount(values.Length, excludeIdentical, excludeReverse), (BigInteger)enumerated, context);
+                Assert.AreEqual(enumerated, source.PairsCount(excludeIdentical, excludeReverse), context);
+            }
+        }
+
+        private static BigInteger ExactPairsCount(int count, bool excludeIdentical, bool excludeReverse)
+        {
+            // Choose two different positions first; then account for direction and diagonals.
+            var offDiagonal = (BigInteger)count * (count - 1) / 2;
+            var result = excludeReverse ? offDiagonal : 2 * offDiagonal;
+            return excludeIdentical ? result : result + count;
+        }
+
+        private static void CheckPairsCountBoundary(int count, string context)
+        {
+            foreach (var excludeIdentical in new[] { false, true })
+            foreach (var excludeReverse in new[] { false, true })
+            {
+                var source = new CountOnlyCollection(count);
+                var expected = ExactPairsCount(count, excludeIdentical, excludeReverse);
+                var detail = context + $", count={count}, excludeIdentical={excludeIdentical}, excludeReverse={excludeReverse}, exact={expected}";
+                if (expected > int.MaxValue)
+                    Assert.Throws<OverflowException>(() => source.PairsCount(excludeIdentical, excludeReverse), detail);
+                else
+                    Assert.AreEqual((int)expected, source.PairsCount(excludeIdentical, excludeReverse), detail);
+                Assert.AreEqual(1, source.CountReads, detail + ": one collection count read");
+            }
+        }
+
+        [Test]
+        public static void PairsCountRejectsOnlyUnrepresentableFinalCounts()
+        {
+            Assert.Multiple(() =>
+            {
+                foreach (var count in new[] { 0, 1, 2, 46340, 46341, 46342, 50000, 65535, 65536, 65537, int.MaxValue - 1, int.MaxValue })
+                    CheckPairsCountBoundary(count, "exact boundary");
+
+                const int seed = 89473;
+                var random = new Random(seed);
+                for (var sample = 0; sample < 256; sample++)
+                {
+                    var center = sample % 2 == 0 ? 46341 : 65536;
+                    CheckPairsCountBoundary(center + random.Next(-128, 129), $"seed={seed}, sample={sample}, center={center}");
+                }
+            });
+        }
+
+        private static IEnumerable<int> ThrowAfterItems(int prefixCount, Exception failure)
+        {
+            for (var i = 0; i < prefixCount; i++) yield return i;
+            throw failure;
+        }
+
+        [Test]
+        public static void PairsCountConsumesSequencesOnceAndPreservesFailures()
+        {
+            foreach (var excludeIdentical in new[] { false, true })
+            foreach (var excludeReverse in new[] { false, true })
+            {
+                var context = $"excludeIdentical={excludeIdentical}, excludeReverse={excludeReverse}";
+                IEnumerable<int> nullSource = null;
+                var nullError = Assert.Throws<ArgumentNullException>(() => nullSource.PairsCount(excludeIdentical, excludeReverse), context);
+                Assert.AreEqual("self", nullError.ParamName, context);
+
+                foreach (var count in new[] { 0, 1, 4, 64, 46341, 50000 })
+                {
+                    var detail = context + $", count={count}";
+                    var tracked = new DisposeTrackingEnumerable<int>(Enumerable.Repeat(7, count));
+                    var source = new SingleUseEnumerable<int>(tracked);
+                    var expected = ExactPairsCount(count, excludeIdentical, excludeReverse);
+                    if (expected > int.MaxValue)
+                        Assert.Throws<OverflowException>(() => source.PairsCount(excludeIdentical, excludeReverse), detail);
+                    else
+                        Assert.AreEqual((int)expected, source.PairsCount(excludeIdentical, excludeReverse), detail);
+                    Assert.AreEqual(1, source.EnumeratorCount, detail + ": single-use enumeration");
+                    Assert.AreEqual(1, tracked.EnumeratorCount, detail + ": tracked enumeration");
+                    Assert.AreEqual(1, tracked.DisposeCount, detail + ": disposal");
+                }
+                foreach (var prefixCount in new[] { 0, 2, 5 })
+                {
+                    var detail = context + $", failure after {prefixCount} items";
+                    var failure = new InvalidOperationException(detail);
+                    var tracked = new DisposeTrackingEnumerable<int>(ThrowAfterItems(prefixCount, failure));
+                    var source = new SingleUseEnumerable<int>(tracked);
+                    Assert.AreSame(failure, Assert.Throws<InvalidOperationException>(() => source.PairsCount(excludeIdentical, excludeReverse), detail), detail);
+                    Assert.AreEqual(1, source.EnumeratorCount, detail + ": single-use enumeration");
+                    Assert.AreEqual(1, tracked.EnumeratorCount, detail + ": tracked enumeration");
+                    Assert.AreEqual(1, tracked.DisposeCount, detail + ": disposal on failure");
+                }
+            }
         }
 
         [Test]
