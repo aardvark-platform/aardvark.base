@@ -127,6 +127,14 @@ is logarithmic in parent-tree size and does not recount or enumerate the view.
 The value/try APIs allocate no managed memory. F# `SortedSet.neighbourhood`
 exposes the same results as options.
 
+## SkipList Removal
+
+`SkipList<'a>.RemoveAt(index)` and F# `SkipList.removeAt index list` remove the
+zero-based element in comparer order, including with a descending comparer.
+Indices outside `[0, Count)` return `false` before traversal, without changing
+Count, enumeration, or indexed contents. This also applies to lists emptied by
+removal or `Clear`; valid removals preserve the order of the remaining elements.
+
 ## SingleEntryDict
 
 `SingleEntryDict<TKey, TValue>` exists in `Symbol/Dicts.cs` and is optimized for one optional key/value entry. It supports normal `IDict<TKey, TValue>` lookup, removal, and re-adding the configured key after removal.
@@ -137,6 +145,7 @@ exposes the same results as options.
 - `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_auto.fs`
 - `src/Aardvark.Base/AlgoDat/ExtendedCore/SortedSetExt.cs`
 - `src/Aardvark.Base.FSharp/Utilities/Interop/SortedSet.fs`
+- `src/Aardvark.Base.FSharp/Datastructures/Mutable/SkipList.fs`
 
 - `src/Aardvark.Base/Symbol/Symbol.cs`
 - `src/Aardvark.Base/Symbol/Dict_auto.cs`
