@@ -59,6 +59,14 @@ using (var coder = new BinaryReadingCoder(stream))
 
 `XmlWritingCoder` / `XmlReadingCoder` implement the same `ICoder` contract for XML streams.
 
+`XmlLazyText.GetText` executes its callback once on every call, completes buffered
+writes, and reads the text from the beginning with the default encoding. It preserves
+Unicode, whitespace and newlines without XML escaping, releases its temporary
+resources, and preserves the original callback exception if cleanup also fails.
+`XmlItem.RequiredOnlySubText` and `RequiredOnlySubString` use this readback contract.
+
+Source: [XmlParser.cs](../src/Aardvark.Base.IO/XmlParser.cs).
+
 ### Network-order primitive streams
 
 `NetworkOrderBinaryReader` and `NetworkOrderBinaryWriter` in `Aardvark.Base.Coder`

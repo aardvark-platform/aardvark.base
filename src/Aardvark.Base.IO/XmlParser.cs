@@ -529,11 +529,26 @@ namespace Aardvark.Base
 
         #region IXmlText Members
 
+        /// <summary>
+        /// Executes WriteAct once per call and reads its complete buffered output
+        /// from the beginning using the default encoding. Temporary resources are
+        /// released, and callback exceptions propagate without being replaced by cleanup failures.
+        /// </summary>
         public Text GetText()
         {
-            var stream = new MemoryStream();
-            WriteAct(new StreamWriter(stream));
-            return new StreamReader(stream).ReadToEnd().ToText();
+            using var stream = new MemoryStream();
+            using var writer = new StreamWriter(stream);
+            try { WriteAct(writer); }
+            catch
+            {
+                try { writer.Dispose(); }
+                catch { } // Keep the callback failure if buffered cleanup also fails.
+                throw;
+            }
+            writer.Flush();
+            stream.Position = 0;
+            using var reader = new StreamReader(stream, Encoding.UTF8, true, 1024, leaveOpen: true);
+            return reader.ReadToEnd().ToText();
         }
 
         #endregion
