@@ -322,8 +322,10 @@ namespace Aardvark.Base
         }
         
         /// <summary>
-        /// Returns the text without the caracters at the start and at the
-        /// end, for which the supplied predicate is true.
+        /// Returns a view without leading and trailing characters for which
+        /// the supplied predicate is true. Nonempty results share the original
+        /// string, including single-character results; empty or fully trimmed
+        /// input returns Empty.
         /// </summary>
         /// <param name="trimIfTrue"></param>
         public readonly Text Trimmed(Func<char, bool> trimIfTrue)
@@ -331,11 +333,9 @@ namespace Aardvark.Base
             for (int s = Start, e = End; s < e; s++)
             {
                 if (trimIfTrue(String[s])) continue;
-                for (--e; s < e; e--) // String[s] already tested
-                {
-                    if (trimIfTrue(String[e])) continue;
-                    return new Text(s, 1 + e, String);
-                }
+                // String[s] is already known to survive.
+                while (--e > s && trimIfTrue(String[e])) { }
+                return new Text(s, 1 + e, String);
             }
             return Empty;
         }
