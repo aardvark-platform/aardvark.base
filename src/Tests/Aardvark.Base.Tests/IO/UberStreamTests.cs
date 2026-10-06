@@ -2,6 +2,8 @@ using Aardvark.Base.Coder;
 using NUnit.Framework;
 using System;
 using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Aardvark.Tests.IO
 {
@@ -57,6 +59,220 @@ namespace Aardvark.Tests.IO
                     m_inner.Dispose();
 
                 base.Dispose(disposing);
+            }
+        }
+
+        private sealed class VirtualStream : Stream
+        {
+            private long m_position;
+            private readonly long m_length;
+            private readonly int m_seed;
+            public readonly Dictionary<long, byte> Written = new Dictionary<long, byte>();
+            public readonly List<(long Position, int Offset, int Count)> Calls = new List<(long, int, int)>();
+            public Exception Failure;
+            public int DisposeCount;
+
+            public VirtualStream(long length, int seed) { m_length = length; m_seed = seed; }
+            public static byte ByteAt(long position, int seed) => (byte)((position % 251 + seed) % 251);
+            public override bool CanRead => true;
+            public override bool CanSeek => true;
+            public override bool CanWrite => true;
+            public override long Length => m_length;
+            public override long Position { get => m_position; set => m_position = value; }
+            public override void Flush() { }
+            public override void SetLength(long value) => throw new NotSupportedException();
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                return Position = checked((origin == SeekOrigin.Begin ? 0 : origin == SeekOrigin.Current ? Position : Length) + offset);
+            }
+            private void Record(byte[] buffer, int offset, int count)
+            {
+                if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+                if (offset < 0 || count < 0 || offset > buffer.Length - count)
+                    throw new ArgumentOutOfRangeException(nameof(count));
+                Calls.Add((Position, offset, count));
+                if (Failure != null) throw Failure;
+            }
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                Record(buffer, offset, count);
+                var actual = (int)Math.Min(count, Math.Max(0, Length - Position));
+                for (var i = 0; i < actual; i++)
+                    buffer[offset + i] = Written.TryGetValue(Position + i, out var value) ? value : ByteAt(Position + i, m_seed);
+                Position += actual;
+                return actual;
+            }
+            public override void Write(byte[] buffer, int offset, int count)
+            {
+                Record(buffer, offset, count);
+                if (count > Length - Position) throw new IOException("Write exceeds virtual storage.");
+                for (var i = 0; i < count; i++) Written[Position + i] = buffer[offset + i];
+                Position += count;
+            }
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing) DisposeCount++;
+                base.Dispose(disposing);
+            }
+        }
+
+        private static readonly long[] SliceLengths =
+        {
+            0, 1, 8, 31, int.MaxValue - 1L, int.MaxValue, int.MaxValue + 1L,
+            int.MaxValue + 2L, (1L << 32) - 1, 1L << 32, (1L << 32) + 1,
+            (1L << 32) + 7, (1L << 40) + 13, long.MaxValue / 4 + 17
+        };
+
+        private static UberStream CreateVirtualSlice(bool bundled, long size, long start, out VirtualStream[] sources)
+        {
+            sources = bundled
+                ? new[] { new VirtualStream(start + size, 11), new VirtualStream(size + 5, 67), new VirtualStream(7, 149) }
+                : new[] { new VirtualStream(start + size + 5, 11) };
+            return bundled
+                ? new UberStream(sources, start, 2 * size + 9)
+                : new UberStream(sources[0], start, size);
+        }
+
+        // Map one logical byte independently of the transfer loops and narrowing arithmetic.
+        private static (int Source, long Position, int Seed) Locate(bool bundled, long size, long start, long position)
+        {
+            if (!bundled || position < size) return (0, start + position, 11);
+            if (position < 2 * size + 5) return (1, position - size, 67);
+            return (2, position - (2 * size + 5), 149);
+        }
+
+        private static long[] TransferPositions(bool bundled, long size)
+        {
+            var length = bundled ? 2 * size + 9 : size;
+            return new[] { 0, Math.Min(1, length), size / 2, Math.Max(0, size - 3), size,
+                bundled ? Math.Max(0, 2 * size + 2) : 0, Math.Max(0, length - 3), length, length + 7 }.Distinct().ToArray();
+        }
+
+        [Test]
+        public static void ReadsOnLongSlicesPreserveContentsCountsAndPositions()
+        {
+            foreach (var bundled in new[] { false, true })
+            foreach (var size in SliceLengths)
+            foreach (var start in new long[] { 0, 3, 17 })
+            foreach (var position in TransferPositions(bundled, size))
+            foreach (var count in new[] { 0, 1, 8, 13 })
+            {
+                using (var stream = CreateVirtualSlice(bundled, size, start, out var sources))
+                {
+                    stream.Position = position;
+                    for (var repetition = 0; repetition < 3; repetition++)
+                    {
+                        var p = stream.Position;
+                        var expectedCount = (int)Math.Min(count, Math.Max(0, stream.Length - p));
+                        var buffer = Enumerable.Repeat((byte)255, 19).ToArray();
+                        var expected = (byte[])buffer.Clone();
+                        var expectedPositions = sources.Select(s => s.Position).ToArray();
+                        var previousRequested = sources.Sum(s => s.Calls.Sum(c => c.Count));
+                        for (var i = 0; i < expectedCount; i++)
+                        {
+                            var location = Locate(bundled, size, start, p + i);
+                            expected[2 + i] = VirtualStream.ByteAt(location.Position, location.Seed);
+                            expectedPositions[location.Source] = location.Position + 1;
+                        }
+                        var context = $"bundled={bundled}, size={size}, start={start}, position={p}, count={count}, repetition={repetition}";
+                        Assert.AreEqual(expectedCount, stream.Read(buffer, 2, count), context);
+                        CollectionAssert.AreEqual(expected, buffer, context);
+                        Assert.AreEqual(p + expectedCount, stream.Position, context);
+                        Assert.AreEqual(previousRequested + expectedCount, sources.Sum(s => s.Calls.Sum(c => c.Count)), context);
+                        for (var i = 0; i < sources.Length; i++)
+                        {
+                            Assert.AreEqual(0, sources[i].DisposeCount, context);
+                            Assert.AreEqual(expectedPositions[i], sources[i].Position, context);
+                        }
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public static void WritesOnLongSlicesPreserveContentsCountsAndPositions()
+        {
+            foreach (var bundled in new[] { false, true })
+            foreach (var size in SliceLengths)
+            foreach (var start in new long[] { 0, 3, 17 })
+            foreach (var position in TransferPositions(bundled, size))
+            foreach (var count in new[] { 0, 1, 8, 13 })
+            {
+                using (var stream = CreateVirtualSlice(bundled, size, start, out var sources))
+                {
+                    stream.Position = position;
+                    var expectedCount = (int)Math.Min(count, Math.Max(0, stream.Length - position));
+                    var buffer = Enumerable.Range(0, 19).Select(i => (byte)(i * 7 + 1)).ToArray();
+                    var unchanged = (byte[])buffer.Clone();
+                    var context = $"bundled={bundled}, size={size}, start={start}, position={position}, count={count}";
+                    Assert.DoesNotThrow(() => stream.Write(buffer, 2, count), context);
+                    CollectionAssert.AreEqual(unchanged, buffer, context);
+                    Assert.AreEqual(position + expectedCount, stream.Position, context);
+                    Assert.AreEqual(expectedCount, sources.Sum(s => s.Written.Count), context);
+                    Assert.AreEqual(expectedCount, sources.Sum(s => s.Calls.Sum(c => c.Count)), context);
+                    for (var i = 0; i < expectedCount; i++)
+                    {
+                        var location = Locate(bundled, size, start, position + i);
+                        Assert.AreEqual(buffer[2 + i], sources[location.Source].Written[location.Position], context);
+                    }
+                    for (var index = 0; index < sources.Length; index++)
+                    {
+                        var source = sources[index];
+                        Assert.AreEqual(0, source.DisposeCount, context);
+                        var lastWritten = source.Written.Count == 0 ? 0 : source.Written.Keys.Max() + 1;
+                        Assert.AreEqual(lastWritten, source.Position, context);
+                        Assert.That(source.Calls.All(c => c.Offset >= 2 && c.Offset + c.Count <= 2 + expectedCount), Is.True, context);
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public static void TransferFailuresRetainPartialEffectsValidationAndOwnership()
+        {
+            foreach (var write in new[] { false, true })
+            foreach (var size in new long[] { 31, (1L << 32) + 8 })
+            {
+                var failure = new IOException("selected transfer");
+                var stream = CreateVirtualSlice(true, size, 3, out var sources);
+                using (stream)
+                {
+                    sources[1].Failure = failure;
+                    stream.Position = size - 2;
+                    var buffer = Enumerable.Repeat((byte)255, 12).ToArray();
+                    var context = $"write={write}, size={size}";
+                    TestDelegate transfer = () => { if (write) stream.Write(buffer, 2, 8); else stream.Read(buffer, 2, 8); };
+                    Assert.AreSame(failure, Assert.Throws<IOException>(transfer), context);
+                    Assert.AreEqual(write ? size - 2 : size, stream.Position, context);
+                    Assert.AreEqual((size + 1, 2, 2), sources[0].Calls.Single(), context);
+                    Assert.AreEqual((0L, 4, 6), sources[1].Calls.Single(), context);
+                    Assert.AreEqual(0, sources[2].Calls.Count, context);
+                    Assert.AreEqual(size + 3, sources[0].Position, context);
+                    Assert.AreEqual(0, sources[1].Position, context);
+                    if (write)
+                    {
+                        Assert.AreEqual(2, sources[0].Written.Count, context);
+                        Assert.AreEqual(255, sources[0].Written[size + 1], context);
+                        Assert.AreEqual(255, sources[0].Written[size + 2], context);
+                        Assert.AreEqual(0, sources[1].Written.Count, context);
+                    }
+                    else
+                    {
+                        Assert.AreEqual(VirtualStream.ByteAt(size + 1, 11), buffer[2], context);
+                        Assert.AreEqual(VirtualStream.ByteAt(size + 2, 11), buffer[3], context);
+                        Assert.That(buffer.Where((b, i) => i < 2 || i >= 4).All(b => b == 255), Is.True, context);
+                    }
+                    var calls = sources.Sum(s => s.Calls.Count);
+                    var position = stream.Position;
+                    Assert.AreEqual("buffer", Assert.Throws<ArgumentNullException>(() => { if (write) stream.Write(null, 0, 0); else stream.Read(null, 0, 0); }).ParamName, context);
+                    Assert.AreEqual("count", Assert.Throws<ArgumentException>(() => { if (write) stream.Write(buffer, 11, 2); else stream.Read(buffer, 11, 2); }).ParamName, context);
+                    if (write) stream.Write(buffer, buffer.Length, 0);
+                    else Assert.AreEqual(0, stream.Read(buffer, buffer.Length, 0), context);
+                    Assert.AreEqual(position, stream.Position, context);
+                    Assert.AreEqual(calls, sources.Sum(s => s.Calls.Count), context);
+                    Assert.That(sources.All(s => s.DisposeCount == 0), Is.True, context);
+                }
+                Assert.That(sources.All(s => s.DisposeCount == 1), Is.True, $"write={write}, size={size}");
             }
         }
 
