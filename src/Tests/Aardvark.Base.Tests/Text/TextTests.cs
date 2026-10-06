@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Aardvark.Base;
 using NUnit.Framework;
 
@@ -31,6 +33,101 @@ namespace Aardvark.Tests.TextUtilities
             var text = new Text("abc", 3, 0);
 
             Assert.AreEqual(string.Empty, text.ToString());
+        }
+
+        private static void AssertTrimmedView(Text result, Text input, int leading, string content, string context)
+        {
+            Assert.AreEqual(content, result.ToString(), context);
+            Assert.AreEqual(content.Length, result.Count, context);
+            Assert.AreEqual(input.Start + leading, result.Start, context);
+            Assert.AreEqual(result.Start + content.Length, result.End, context);
+            Assert.AreSame(input.String, result.String, context);
+        }
+
+        [Test]
+        public static void TrimmedRetainsSurvivingViewsAndSliceCoordinates()
+        {
+            var modes = new[]
+            {
+                (Name: "whitespace", Predicate: (Func<char, bool>)CharFun.IsWhiteSpace,
+                 Padding: new[] { "", " ", "\t", "\r\n", " \t\r\n " }),
+                (Name: "custom", Predicate: (Func<char, bool>)(c => c == '_' || char.IsDigit(c)),
+                 Padding: new[] { "", "_", "12", "__345_" })
+            };
+            foreach (var mode in modes)
+            foreach (var content in new[] { "a", "Z", "é", "\0", "\ud800", "ab", "a b", "a1_b", new string('v', 1024) })
+            foreach (var leading in mode.Padding)
+            foreach (var trailing in mode.Padding)
+            foreach (var offset in new[] { 0, 2, 7 })
+            {
+                var payload = leading + content + trailing;
+                var backing = offset == 0 ? payload : new string('#', offset) + payload + "#outside";
+                var input = new Text(backing, offset, payload.Length);
+                var context = $"{mode.Name}, content length={content.Length}, first=U+{(int)content[0]:X4}, " +
+                              $"leading length={leading.Length}, trailing length={trailing.Length}, offset={offset}";
+                AssertTrimmedView(input.Trimmed(mode.Predicate), input, leading.Length, content, context);
+                if (mode.Name == "whitespace")
+                    AssertTrimmedView(input.WhiteSpaceTrimmed, input, leading.Length, content, context);
+            }
+        }
+
+        [Test]
+        public static void TrimmedReturnsCanonicalEmptyWithoutReadingOutsideSlices()
+        {
+            var modes = new[]
+            {
+                (Predicate: (Func<char, bool>)CharFun.IsWhiteSpace, Inputs: new[] { "", " ", "\t", " \r\n\t " }),
+                (Predicate: (Func<char, bool>)(c => c == '_' || char.IsDigit(c)), Inputs: new[] { "", "_", "123", "__12_" })
+            };
+            foreach (var mode in modes)
+            foreach (var payload in mode.Inputs)
+            foreach (var offset in new[] { 0, 3 })
+            {
+                var input = new Text(new string('#', offset) + payload + "#outside", offset, payload.Length);
+                var visited = new List<char>();
+                var result = input.Trimmed(c => { visited.Add(c); return mode.Predicate(c); });
+                var context = $"all-trimmed length={payload.Length}, offset={offset}";
+                Assert.AreEqual(0, result.Start, context);
+                Assert.AreEqual(0, result.End, context);
+                Assert.IsNull(result.String, context);
+                CollectionAssert.AreEqual(payload, visited, context);
+            }
+            foreach (var input in new[] { Text.Empty, default(Text), new Text(""), new Text("outside", 3, 0), new Text(5, 3, "outside") })
+            {
+                Assert.IsNull(input.Trimmed(null).String);
+                Assert.AreEqual(0, input.Trimmed(c => throw new InvalidOperationException()).Count);
+            }
+        }
+
+        [Test]
+        public static void TrimmedPreservesPredicateTraversalAndExceptionIdentity()
+        {
+            foreach (var content in new[] { "a", "abc" })
+            foreach (var offset in new[] { 0, 3 })
+            {
+                var payload = " _" + content + "_ ";
+                var input = new Text(new string('#', offset) + payload + "#outside", offset, payload.Length);
+                var expectedVisits = content.Length == 1 ? " _a _" : " _a _c";
+                var visited = new List<char>();
+                Func<char, bool> predicate = c => { visited.Add(c); return c == ' ' || c == '_'; };
+                var context = $"content={content}, offset={offset}";
+                AssertTrimmedView(input.Trimmed(predicate), input, 2, content, context);
+                CollectionAssert.AreEqual(expectedVisits, visited, context);
+                for (var throwAt = 0; throwAt < expectedVisits.Length; throwAt++)
+                {
+                    visited.Clear();
+                    var error = new InvalidOperationException("predicate failure");
+                    var actual = Assert.Throws<InvalidOperationException>(() => input.Trimmed(c =>
+                    {
+                        visited.Add(c);
+                        if (visited.Count == throwAt + 1) throw error;
+                        return c == ' ' || c == '_';
+                    }), $"{context}, throwAt={throwAt}");
+                    Assert.AreSame(error, actual, context);
+                    CollectionAssert.AreEqual(expectedVisits.Substring(0, throwAt + 1), visited, context);
+                }
+                Assert.Throws<NullReferenceException>(() => input.Trimmed(null), context);
+            }
         }
 
         [Test]

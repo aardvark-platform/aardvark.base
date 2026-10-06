@@ -1,3 +1,4 @@
+- [Base] Preserved single-character results in `Text.Trimmed`
 - [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
 - [Base] Corrected and accelerated order-independent integer range-set construction
 - [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views
