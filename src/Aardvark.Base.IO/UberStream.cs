@@ -7,6 +7,8 @@ namespace Aardvark.Base.Coder
 {
     /// <summary>
     /// To bundle multiple streams to one or create a sub-stream for an existing stream.
+    /// Slice positions and lengths use Int64 and may exceed Int32.MaxValue;
+    /// individual buffer transfers remain bounded by their Int32 count.
     /// </summary>
     public class UberStream : Stream
     {
@@ -79,9 +81,7 @@ namespace Aardvark.Base.Coder
                     sub.Stream.Position = sub.StartPos + subPosition;
 
                 // calculate bytes to read in sub-stream
-                var bytesToRead = (int)(sub.Length - subPosition);
-                if (bytesToRead > count - haveBeenRead)
-                    bytesToRead = count - haveBeenRead;
+                var bytesToRead = (int)Math.Min(sub.Length - subPosition, count - haveBeenRead);
                 if (bytesToRead <= 0) break;
 
                 var actual = sub.Stream.Read(buffer, offset + haveBeenRead, bytesToRead);
@@ -116,9 +116,7 @@ namespace Aardvark.Base.Coder
                     sub.Stream.Position = sub.StartPos + subPosition;
 
                 // calculate bytes to process in sub-stream
-                var bytesToDo = (int)(sub.Length - subPosition);
-                if (bytesToDo > count - shouldBeenDone)
-                    bytesToDo = count - shouldBeenDone;
+                var bytesToDo = (int)Math.Min(sub.Length - subPosition, count - shouldBeenDone);
 
                 sub.Stream.Write(buffer, offset + shouldBeenDone, bytesToDo);
                 haveBeenDone += bytesToDo;
@@ -308,6 +306,11 @@ namespace Aardvark.Base.Coder
                 sub.Stream.Flush();
         }
 
+        /// <summary>
+        /// Read up to count bytes at the current logical position, including across
+        /// slices larger than Int32.MaxValue. Short underlying reads advance the
+        /// position only by the bytes returned and end the current transfer.
+        /// </summary>
         public override int Read(byte[] buffer, int offset, int count)
         {
             ValidateUberStreamBufferArguments(buffer, offset, count);
@@ -354,6 +357,10 @@ namespace Aardvark.Base.Coder
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Write up to count bytes at the current logical position, including across
+        /// slices larger than Int32.MaxValue, clipping the transfer at the logical stream end.
+        /// </summary>
         public override void Write(byte[] buffer, int offset, int count)
         {
             ValidateUberStreamBufferArguments(buffer, offset, count);
