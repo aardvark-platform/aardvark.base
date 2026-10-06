@@ -56,6 +56,27 @@ All `ToDictionaryDistinct` overloads evaluate the key and element selectors exac
 
 Selector and key hashing or equality exceptions propagate directly without retrying the operation.
 
+## EnumerableEx.PairsCount
+
+`PairsCount(source, excludeIdenticalPairs, excludeReversePairs)` counts source
+positions, not distinct values, matching `Pairs` enumeration even with duplicates.
+For a source of length `n`, the counts are:
+
+| Exclude identical positions | Exclude reverse pairs | Count |
+| --- | --- | --- |
+| false | false | `n * n` |
+| true | false | `n * (n - 1)` |
+| false | true | `n * (n + 1) / 2` |
+| true | true | `n * (n - 1) / 2` |
+
+Products and division use `Int64` arithmetic before a checked conversion to `Int32`.
+Representable results are exact even when an intermediate product exceeds
+`Int32.MaxValue`; an unrepresentable final result throws `OverflowException`.
+The source is counted once using LINQ `Count`, retaining collection fast paths and
+single enumeration/disposal for general sequences. Null sources throw
+`ArgumentNullException` with parameter `self`; source exceptions propagate.
+`Pairs` enumeration itself is unchanged.
+
 ## LruCache<TKey, TValue>
 
 `LruCache` is synchronized and capacity-driven.
