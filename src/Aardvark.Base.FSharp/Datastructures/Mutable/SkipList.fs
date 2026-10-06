@@ -215,8 +215,10 @@ type SkipList<'a>(cmp : 'a -> 'a -> int) =
         count <- 0
         root <- Array.zeroCreate 0
 
+    /// Remove the element at the zero-based index in comparer order.
+    /// Return false without changing the list when index is outside [0, Count).
     member x.RemoveAt (index : int) =
-        if root.Length <> 0 then
+        if uint32 index < uint32 count then
             let height = root.Length
             let (_, prev) = findPrevIndex [] 0 (height - 1) (index + 1) null root
 
