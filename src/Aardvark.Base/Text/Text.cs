@@ -671,11 +671,15 @@ namespace Aardvark.Base
                             RegexOptions.Singleline | RegexOptions.IgnoreCase
                             | RegexOptions.ExplicitCapture | RegexOptions.Compiled);
 
+        /// <summary>
+        /// Parses a boolean prefix at the view-relative start, examining at most
+        /// five characters without reading beyond the end of this text view.
+        /// </summary>
         public readonly ParsedValue<bool> ParsedValueOfBoolAt(int start)
         {
             start += Start;
             if (start >= End) return new ParsedValue<bool>(ParseError.EndOfText, 0);
-            var match = s_boolRegex.Match(String, start, 5);
+            var match = s_boolRegex.Match(String, start, Math.Min(5, End - start));
             if (!match.Success) return new ParsedValue<bool>(ParseError.OutOfRange, 0);
             if (match.Groups[1].Success) return new ParsedValue<bool>(false, match.Length);
             if (match.Groups[2].Success) return new ParsedValue<bool>(true, match.Length);
