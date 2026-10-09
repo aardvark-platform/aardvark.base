@@ -196,11 +196,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Compares the key value pairs of two dictionaries using Equals to compare the values.
+        /// Compares the key value pairs of two dictionaries. A null value in this dictionary
+        /// equals only a null value in the other; non-null values use their Equals(object) method.
         /// </summary>
         public static bool DictionaryEquals<Tk, Tv>(this IDictionary<Tk, Tv> self, IDictionary<Tk, Tv> other)
         {
-            return DictionaryEquals(self, other, (valueA, valueB) => valueA.Equals(valueB));
+            return DictionaryEquals(self, other, (valueA, valueB) => valueA is null ? valueB is null : valueA.Equals(valueB));
         }
 
         /// <summary>
