@@ -46,6 +46,19 @@ Common helpers:
 
 `SingleValueDict<TKey, TValue>` and `SingleValueSymbolDict<TValue>` associate every current key with one shared value. Their `Values` sequences contain that shared value once per key and are empty when the dictionaries have no keys.
 
+## IDictionaryExtensions.DictionaryEquals
+
+The default overload compares counts, then looks up each key from the first
+dictionary in the second, using the second dictionary's key comparer. A null
+first value matches only a null second value. Non-null first values retain
+`valueA.Equals(valueB)` (`Equals(object)`) dispatch, including custom equality
+with null; `IEquatable<T>.Equals` is not substituted. Comparison stops at the
+first missing key or unequal value.
+
+The custom-comparator overload receives first and second values unchanged,
+including nulls, in the first dictionary's enumeration order. It runs only
+after a successful key lookup; comparator exceptions propagate directly.
+
 ## EnumerableEx.ToDictionaryDistinct
 
 All `ToDictionaryDistinct` overloads evaluate the key and element selectors exactly once per source element. Duplicate keys are handled explicitly according to the selected policy:
@@ -145,3 +158,4 @@ exposes the same results as options.
 - `src/Aardvark.Base/AlgoDat/LruCache.cs`
 - `src/Aardvark.Base/AlgoDat/ConcurrentHashSet.cs`
 - `src/Aardvark.Base/Extensions/IEnumerableExtensions.cs`
+- `src/Aardvark.Base/Extensions/DictionaryExtensions.cs`
