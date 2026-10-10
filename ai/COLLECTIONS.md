@@ -95,6 +95,17 @@ set.Clear();
 set.UnionWith(other);
 ```
 
+## ReferenceCountingSet Enumerator Reset
+
+`ReferenceCountingSet<T>` enumeration returns each distinct element once,
+including null first when present. On an unchanged set, `IEnumerator.Reset`
+restarts that same enumerator from the beginning, including after partial or
+completed traversal and repeated resets. Generic and non-generic interface
+acquisition share this replay behavior. An `Add` that inserts a non-null key
+still invalidates the underlying dictionary enumerator; failed resets do not
+rearm null emission or otherwise publish a reset state. `Current` is only
+meaningful after a successful `MoveNext`, before reset, exhaustion or mutation.
+
 ## Integer Range Sets
 
 `RangeSet1i`, `RangeSet1ui`, `RangeSet1l`, and `RangeSet1ul` represent unions of
@@ -133,6 +144,7 @@ exposes the same results as options.
 
 ## Source Anchors
 
+- `src/Aardvark.Base.FSharp/Datastructures/Mutable/ReferenceCountingSet.fs`
 - `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_template.fs`
 - `src/Aardvark.Base.FSharp/Datastructures/Immutable/RangeSet_auto.fs`
 - `src/Aardvark.Base/AlgoDat/ExtendedCore/SortedSetExt.cs`
