@@ -384,8 +384,11 @@ and ReferenceCountingSetEnumerator<'a> =
                 x.MoveNext()
 
             member x.Reset() =
+                let e = x.e :> IEnumerator
+                e.Reset()
+                x.e <- unbox e
                 x.emitNull <- x.containsNull
-                (x.e :> IEnumerator).Reset()
+                x.currentIsNull <- false
 
             member x.Current = x.Current :> obj
 
