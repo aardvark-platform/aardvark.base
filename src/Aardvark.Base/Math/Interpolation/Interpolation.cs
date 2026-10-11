@@ -53,7 +53,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Gets a function that performs linear interpolation for values of T:
         /// (T a, T b, U t) => a * (1 - t) + b * t.
-        /// For t = 0.0 the funtion will return a, and for t = 1.0 the function will return b.
+        /// For t = 0.0 the function will return a, and for t = 1.0 the function will return b.
+        /// U must support conversion of the double constant 1.0 and subtraction.
+        /// T must support multiplication by U and addition of the resulting values.
+        /// Weights are not clamped, so values outside [0, 1] extrapolate.
         /// </summary>
         public static Func<T, T, U, T> Lerp
         {
@@ -67,7 +70,7 @@ namespace Aardvark.Base
 
                     var expr = Ex.Lambda<Func<T, T, U, T>>(
                         Ex.Add(
-                            Ex.Multiply(a, Ex.Subtract(Ex.Constant(1.0), x)),
+                            Ex.Multiply(a, Ex.Subtract(Ex.Convert(Ex.Constant(1.0), typeof(U)), x)),
                             Ex.Multiply(b, x)
                             ),
 
