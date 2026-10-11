@@ -176,6 +176,16 @@ Polynomial coefficient arrays are stored in ascending degree order.
 Fixed-width tuple APIs fill unused trailing entries with `NaN`. Cubic solvers preserve
 repeated roots. Array conversion drops trailing `NaN` entries.
 
+## Generic Linear Interpolation
+
+`Ipol<T, U>.Lerp` caches a delegate for `a * (1 - t) + b * t` with weight type
+`U`. The constant `1.0` is converted from `double` to `U` before subtraction.
+`U` must support that conversion and subtraction; `T` must support multiplication
+by `U` and addition of the resulting values. Scalar `float` and `V2f`/`V3f`/`V4f`
+use `float` weights; the corresponding double types use `double` weights.
+Weights are not clamped, so values outside `[0, 1]` extrapolate. `Ipol.Generate`
+binds endpoints to the supplied interpolator without changing these semantics.
+
 ## Cubic Curve Evaluation
 
 `Ipol.CubicHermite.Eval`, `EvalD1`, `EvalD2`, and `EvalD3` evaluate scalar, `V2d`,
@@ -228,4 +238,5 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs`
 - `src/Aardvark.Base/Math/Base/MedianWindow.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`
+- `src/Aardvark.Base/Math/Interpolation/Interpolation.cs`
 - `src/Aardvark.Base/Math/Curves/Curves.cs`
