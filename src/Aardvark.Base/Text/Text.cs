@@ -205,19 +205,20 @@ namespace Aardvark.Base
         /// <summary>
         /// Return the subtext in the range [start, end). For the start
         /// index, negative indices count from the end. For the end index,
-        /// negative indices and the index 0 count from the end. The ranges
-        /// are clamped to the input text so that no exceptions can occur.
-        /// If the the start and end index are crossed, the empty text is
+        /// negative indices and the index 0 count from the end. Otherwise,
+        /// indices count from the beginning of this text, not its backing
+        /// string. Both endpoints are clamped to the input text. If the
+        /// start and end indices are crossed or equal, the empty text is
         /// returned. As an example the call t.Sub(-3, 0) returns a text
-        /// containing the last 3 characters t or the complete text t, if
-        /// its length is less than 3 characters.
+        /// containing the last 3 characters of t or the complete text t,
+        /// if its length is less than 3 characters.
         /// </summary>
         public readonly Text Sub(int start, int end)
         {
             start = start < 0   ? Math.Max(Start, End + start)
-                                : Math.Min(Start + start, End);
+                                : Start + Math.Min(start, Count);
             end = end <= 0      ? Math.Max(Start, End + end)
-                                : Math.Min(Start + end, End);
+                                : Start + Math.Min(end, Count);
             return start < end ? new Text(start, end, String) : Empty;
         }
 
