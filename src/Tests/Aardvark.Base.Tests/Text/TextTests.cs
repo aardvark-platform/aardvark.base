@@ -1,5 +1,8 @@
 using Aardvark.Base;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Aardvark.Tests.TextUtilities
 {
@@ -277,6 +280,138 @@ namespace Aardvark.Tests.TextUtilities
             Assert.AreEqual("foo:bar", root.Name.ToString());
             Assert.AreEqual(1, root.AttList.Count);
             Assert.AreEqual("baz:qux", root.AttList[0].Key.ToString());
+        }
+
+        private sealed class BoundedLookupComparer : IEqualityComparer<string>
+        {
+            private readonly IEqualityComparer<string> inner;
+            public readonly List<string> Keys = new List<string>();
+            public int Budget = int.MaxValue;
+            public int ThrowAt = int.MaxValue;
+            public Exception Failure;
+
+            public BoundedLookupComparer(IEqualityComparer<string> inner) => this.inner = inner;
+            public bool Equals(string a, string b) => inner.Equals(a, b);
+            public int GetHashCode(string key)
+            {
+                Keys.Add(key);
+                if (Keys.Count > Budget) throw new InvalidOperationException("Replacement exceeded its match lookup budget.");
+                if (Keys.Count == ThrowAt) throw Failure;
+                return inner.GetHashCode(key);
+            }
+        }
+
+        private static Dictionary<string, string> ReplacementMap(IEqualityComparer<string> comparer, int emptyMode)
+        {
+            var map = new Dictionary<string, string>(comparer)
+            {
+                ["a"] = "A$&", ["b"] = null, ["ab"] = "[AB]", ["_id"] = "__", ["WORD"] = "value"
+            };
+            if (emptyMode > 0) map[""] = emptyMode == 1 ? "|" : null;
+            return map;
+        }
+
+        private static void CheckReplacement(Text view, Regex regex, StringComparer comparer, int emptyMode, bool identifiers = false)
+        {
+            string context = $"text={view}, start={view.Start}, pattern={regex}, options={regex.Options}, comparer={comparer}, emptyMode={emptyMode}";
+            var map = ReplacementMap(comparer, emptyMode);
+            var expectedKeys = new List<string>();
+            string expected = regex.Replace(view.ToString(), match =>
+            {
+                expectedKeys.Add(match.Value);
+                return map.TryGetValue(match.Value, out string replacement) ? replacement : match.Value;
+            });
+            var bounded = new BoundedLookupComparer(comparer);
+            var actualMap = new Dictionary<string, string>(map, bounded);
+            bounded.Keys.Clear();
+            bounded.Budget = expectedKeys.Count + 1;
+            Text actual = default;
+            Assert.DoesNotThrow(() => actual = identifiers ? view.ReplaceIdentifiers(actualMap) : view.ReplaceParts(regex, actualMap), context);
+            Assert.AreEqual(expected, actual.ToString(), context);
+            CollectionAssert.AreEqual(expectedKeys, bounded.Keys, context);
+            if (identifiers && view.Start == 0)
+                Assert.AreEqual(expected, view.ToString().ReplaceIdentifiers(map), context);
+            if (expectedKeys.Count == 0 && view.Start == 0)
+            {
+                Assert.AreSame(view.String, actual.String, context);
+                Assert.AreEqual(view.Start, actual.Start, context);
+                Assert.AreEqual(view.End, actual.End, context);
+            }
+        }
+
+        private static IEnumerable<Text> ReplacementViews(string value)
+        {
+            yield return new Text(value);
+            foreach (int offset in new[] { 2, 7 })
+                yield return new Text(new string('x', offset) + value + "zz", offset, value.Length);
+        }
+
+        [Test]
+        public static void ReplacePartsAdvancesZeroLengthAndMixedMatchesWithinViews()
+        {
+            foreach (string value in new[] { "a", "ab", "ba", "Aa b", "\na\n", " a b ", "🙂ab" })
+            foreach (var view in ReplacementViews(value))
+            foreach (string pattern in new[] { "", "^", @"\A", "(?=a)", "(?<=a)", @"\b", "a*", "a?", "(?=.)|.", "^a", "(ab)|(?=b)|$", "(?=z)|(?<=x)" })
+            foreach (var options in new[] { RegexOptions.None, RegexOptions.Multiline })
+            foreach (var comparer in new[] { StringComparer.Ordinal, StringComparer.OrdinalIgnoreCase })
+            foreach (int emptyMode in new[] { 0, 1, 2 })
+                CheckReplacement(view, new Regex(pattern, options), comparer, emptyMode);
+        }
+
+        [Test]
+        public static void ReplacePartsProcessesTerminalMatchesAndNonNullEmptyViews()
+        {
+            foreach (string value in new[] { "", "a", "ab", "\na\n" })
+            foreach (var view in ReplacementViews(value))
+            foreach (string pattern in new[] { "", "$", @"\z", "^|$", "a|$", "a*" })
+            foreach (int emptyMode in new[] { 0, 1, 2 })
+                CheckReplacement(view, new Regex(pattern), StringComparer.Ordinal, emptyMode);
+            foreach (string pattern in new[] { "", "^", "$", @"\A|\z" })
+                CheckReplacement(new Text("outside", 0, 0), new Regex(pattern), StringComparer.Ordinal, 1);
+        }
+
+        [Test]
+        public static void ReplacePartsRetainsOrdinaryAndIdentifierLookupSemantics()
+        {
+            foreach (string value in new[] { "", "missing!", "a b a", "Aa BB WORD word", "a.b_a _id 77", "aéb ab\na" })
+            foreach (var view in ReplacementViews(value))
+            foreach (var comparer in new[] { StringComparer.Ordinal, StringComparer.OrdinalIgnoreCase })
+            {
+                foreach (string pattern in new[] { "a", "a|b", "(a)", @"\w+", "x+" })
+                    CheckReplacement(view, new Regex(pattern), comparer, 0);
+                CheckReplacement(view, Text.IdentifierRegex, comparer, 0, identifiers: true);
+            }
+        }
+
+        [Test]
+        public static void ReplacePartsPropagatesLookupAndArgumentFailures()
+        {
+            foreach (var view in ReplacementViews("aba"))
+            {
+                Assert.Throws<NullReferenceException>(() => view.ReplaceParts(null, ReplacementMap(StringComparer.Ordinal, 0)));
+                Assert.Throws<NullReferenceException>(() => view.ReplaceParts(new Regex("a"), null));
+                Assert.AreEqual(view.ToString(), view.ReplaceParts(new Regex("missing"), null).ToString());
+                foreach (string pattern in new[] { "a", "", "a|$" })
+                {
+                    var regex = new Regex(pattern);
+                    int count = regex.Matches(view.ToString()).Count;
+                    for (int failAt = 1; failAt <= count; failAt++)
+                    {
+                        var failure = new InvalidOperationException("lookup failure");
+                        var bounded = new BoundedLookupComparer(StringComparer.Ordinal);
+                        var map = new Dictionary<string, string>(ReplacementMap(StringComparer.Ordinal, 1), bounded);
+                        bounded.Keys.Clear();
+                        bounded.Budget = count + 1;
+                        bounded.ThrowAt = failAt;
+                        bounded.Failure = failure;
+                        string context = $"start={view.Start}, pattern={pattern}, failAt={failAt}";
+                        Assert.AreSame(failure, Assert.Throws<InvalidOperationException>(() => view.ReplaceParts(regex, map), context), context);
+                        Assert.AreEqual(failAt, bounded.Keys.Count, context);
+                    }
+                }
+            }
+            foreach (var view in new[] { Text.Empty, default(Text) })
+                Assert.Throws<ArgumentNullException>(() => view.ReplaceParts(new Regex(""), ReplacementMap(StringComparer.Ordinal, 1)));
         }
     }
 }

@@ -409,6 +409,11 @@ namespace Aardvark.Base
         public readonly Text ReplaceIdentifiers(Dictionary<string, string> changeMap)
              => ReplaceParts(IdentifierRegex, changeMap);
 
+        /// <summary>
+        /// Replaces successive left-to-right regex matches within this view using the dictionary's key comparer.
+        /// Unmapped matches remain unchanged; null replacement values remove matched text.
+        /// Zero-length matches, including terminal matches, are processed without repeating them.
+        /// </summary>
         public readonly Text ReplaceParts(
             Regex partRegex,
             Dictionary<string, string> changeMap)
@@ -417,9 +422,9 @@ namespace Aardvark.Base
             var str = String;
             int pos = Start, end = End;
             Match match = partRegex.Match(str, pos, end - pos);
+            if (!match.Success && pos == 0) return this;
             while (match.Success)
             {
-                Group group = match.Groups[1];
                 newText.Append(str, pos, match.Index - pos);
                 var unchanged = match.Value;
                 if (changeMap.TryGetValue(unchanged, out string changed))
@@ -427,16 +432,11 @@ namespace Aardvark.Base
                 else
                     newText.Append(unchanged);
                 pos = match.Index + match.Length;
-                if (pos >= end) break;
-                match = partRegex.Match(str, pos, end - pos);
+                match = match.NextMatch();
             }
-            if (pos > 0)
-            {
-                if (pos < end)
-                    newText.Append(str, pos, end - pos);
-                return new Text(newText.ToString());
-            }
-            return this;
+            if (pos < end)
+                newText.Append(str, pos, end - pos);
+            return new Text(newText.ToString());
         }
 
         /// <summary>
