@@ -56,6 +56,14 @@ All `ToDictionaryDistinct` overloads evaluate the key and element selectors exac
 
 Selector and key hashing or equality exceptions propagate directly without retrying the operation.
 
+## EnumerableEx.DistinctUntilChanged
+
+`DistinctUntilChanged` streams the first representative of each contiguous run.
+Consecutive nulls collapse into one; a null after a retained non-null value is emitted.
+Non-null candidates still use `candidate.Equals(retained)`, including custom
+behavior when the retained value is null. Traversal is deferred and single-pass,
+without buffering or hashing.
+
 ## LruCache<TKey, TValue>
 
 `LruCache` is synchronized and capacity-driven.

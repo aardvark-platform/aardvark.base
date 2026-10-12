@@ -2383,7 +2383,9 @@ namespace Aardvark.Base
         public static bool IsEmpty<T>(this IEnumerable<T> self) => !self.Any(); // checks for ICollection internally
         
         /// <summary>
-        /// Returns a sequence that contains only distinct contiguous elements.
+        /// Returns the first representative of each contiguous run. Consecutive
+        /// nulls form one run; a null candidate after a retained non-null value starts a new run.
+        /// Non-null candidates are compared to the retained value using their Equals method.
         /// </summary>
         public static IEnumerable<T> DistinctUntilChanged<T>(this IEnumerable<T> self)
             where T : IEquatable<T>
@@ -2393,7 +2395,7 @@ namespace Aardvark.Base
             foreach (var x in self)
             {
                 if (first) first = false;
-                else if (x.Equals(current)) continue;
+                else if (x is null ? current is null : x.Equals(current)) continue;
                 current = x;
                 yield return current;
             }

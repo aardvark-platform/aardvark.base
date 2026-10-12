@@ -86,6 +86,13 @@ namespace Aardvark.Tests.Extensions
             }
         }
 
+        private sealed class ContiguousEqualityItem : IEquatable<ContiguousEqualityItem>
+        {
+            public Func<ContiguousEqualityItem, bool> Compare { get; set; }
+
+            public bool Equals(ContiguousEqualityItem other) => Compare(other);
+        }
+
         private sealed class ThrowOnceHashKey
         {
             public readonly ArgumentException Exception = new ArgumentException("Hash failed.");
@@ -160,7 +167,7 @@ namespace Aardvark.Tests.Extensions
         private static DisposeTrackingEnumerable<int> Track(params int[] values)
             => new DisposeTrackingEnumerable<int>(values);
 
-        private static void AssertDisposedOnce(params DisposeTrackingEnumerable<int>[] values)
+        private static void AssertDisposedOnce<T>(params DisposeTrackingEnumerable<T>[] values)
         {
             foreach (var value in values)
             {
@@ -640,6 +647,142 @@ namespace Aardvark.Tests.Extensions
 
             Assert.IsFalse(unequal.AllEqual());
             Assert.AreEqual(1, unequal.EnumeratorCount);
+        }
+
+        [Test]
+        public static void DistinctUntilChangedCollapsesNullAndEqualRuns()
+        {
+            var combinations = 1;
+            for (var length = 0; length <= 6; length++, combinations *= 3)
+            for (var code = 0; code < combinations; code++)
+            {
+                var strings = new string[length];
+                var integers = new int[length];
+                var expectedStrings = new List<string>();
+                var expectedIntegers = new List<int>();
+                var digits = code;
+                for (var i = 0; i < length; i++, digits /= 3)
+                {
+                    integers[i] = digits % 3;
+                    strings[i] = integers[i] == 0 ? null : new string((char)('a' + integers[i] - 1), 1);
+                    if (i == 0 || strings[i] != strings[i - 1]) expectedStrings.Add(strings[i]);
+                    if (i == 0 || integers[i] != integers[i - 1]) expectedIntegers.Add(integers[i]);
+                }
+                var context = $"length={length}, code={code}, values=[{string.Join(",", strings.Select(s => s ?? "null"))}]";
+                var singleUse = new SingleUseEnumerable<string>(strings);
+                var source = new DisposeTrackingEnumerable<string>(singleUse);
+                var actual = source.DistinctUntilChanged().ToArray();
+                Assert.AreEqual(1, singleUse.EnumeratorCount, context);
+                AssertDisposedOnce(source);
+                CollectionAssert.AreEqual(expectedStrings, actual, context);
+                for (var i = 0; i < actual.Length; i++) Assert.AreSame(expectedStrings[i], actual[i], context);
+                CollectionAssert.AreEqual(expectedIntegers, integers.DistinctUntilChanged(), context);
+            }
+        }
+
+        [Test]
+        public static void DistinctUntilChangedRetainsRepresentativesAndCandidateEquality()
+        {
+            foreach (var withNull in new[] { false, true })
+            {
+                var context = $"withNull={withNull}";
+                var calls = new List<string>();
+                var first = new ContiguousEqualityItem { Compare = _ => throw new Exception("Compared the representative instead of the candidate.") };
+                var representative = withNull ? null : first;
+                var duplicate = new ContiguousEqualityItem { Compare = other =>
+                {
+                    calls.Add("duplicate");
+                    Assert.AreSame(representative, other, context);
+                    return true;
+                }};
+                var next = new ContiguousEqualityItem { Compare = other =>
+                {
+                    calls.Add("next");
+                    Assert.AreSame(representative, other, context);
+                    return false;
+                }};
+                var last = new ContiguousEqualityItem { Compare = other =>
+                {
+                    calls.Add("last");
+                    Assert.AreSame(next, other, context);
+                    return true;
+                }};
+                var input = withNull ? new[] { first, null, null, duplicate, next, last } : new[] { first, duplicate, next, last };
+                var expected = withNull ? new[] { first, null, next } : new[] { first, next };
+                var actual = input.DistinctUntilChanged().ToArray();
+                Assert.AreEqual(expected.Length, actual.Length, context);
+                for (var i = 0; i < actual.Length; i++) Assert.AreSame(expected[i], actual[i], context);
+                CollectionAssert.AreEqual(new[] { "duplicate", "next", "last" }, calls, context);
+            }
+        }
+
+        [Test]
+        public static void DistinctUntilChangedDefersTraversalAndDisposesOnEveryExit()
+        {
+            foreach (var values in new[] { Array.Empty<int>(), new[] { 7 }, new[] { 7, 7, 9, 9, 7 } })
+            {
+                var singleUse = new SingleUseEnumerable<int>(values);
+                var source = new DisposeTrackingEnumerable<int>(singleUse);
+                var query = source.DistinctUntilChanged();
+                Assert.AreEqual(0, source.EnumeratorCount);
+                var actual = new List<int>();
+                using (var iterator = query.GetEnumerator())
+                {
+                    Assert.AreEqual(0, source.EnumeratorCount);
+                    while (iterator.MoveNext()) actual.Add(iterator.Current);
+                    AssertDisposedOnce(source);
+                }
+                CollectionAssert.AreEqual(values.Where((x, i) => i == 0 || x != values[i - 1]), actual);
+                Assert.AreEqual(1, singleUse.EnumeratorCount);
+                AssertDisposedOnce(source);
+            }
+            var error = new InvalidOperationException("source failure");
+            IEnumerable<int> FailAfterFirst() { yield return 7; throw error; }
+            foreach (var fail in new[] { false, true })
+            {
+                var source = new DisposeTrackingEnumerable<int>(new SingleUseEnumerable<int>(FailAfterFirst()));
+                using (var iterator = source.DistinctUntilChanged().GetEnumerator())
+                {
+                    Assert.AreEqual(0, source.EnumeratorCount);
+                    Assert.IsTrue(iterator.MoveNext());
+                    Assert.AreEqual(7, iterator.Current);
+                    if (fail)
+                    {
+                        Assert.AreSame(error, Assert.Throws<InvalidOperationException>(() => iterator.MoveNext()));
+                        AssertDisposedOnce(source);
+                    }
+                }
+                AssertDisposedOnce(source);
+            }
+            var first = new ContiguousEqualityItem { Compare = _ => throw new Exception("Unexpected receiver.") };
+            var equalityCalls = 0;
+            var candidate = new ContiguousEqualityItem { Compare = other =>
+            {
+                equalityCalls++;
+                Assert.AreSame(first, other);
+                throw error;
+            }};
+            IEnumerable<ContiguousEqualityItem> FailInEquality()
+            {
+                yield return first;
+                yield return candidate;
+                Assert.Fail("Read past the equality failure.");
+            }
+            var tracked = new DisposeTrackingEnumerable<ContiguousEqualityItem>(new SingleUseEnumerable<ContiguousEqualityItem>(FailInEquality()));
+            using (var iterator = tracked.DistinctUntilChanged().GetEnumerator())
+            {
+                Assert.AreEqual(0, tracked.EnumeratorCount);
+                Assert.IsTrue(iterator.MoveNext());
+                Assert.AreSame(first, iterator.Current);
+                Assert.AreSame(error, Assert.Throws<InvalidOperationException>(() => iterator.MoveNext()));
+                Assert.AreEqual(1, equalityCalls);
+                AssertDisposedOnce(tracked);
+            }
+            AssertDisposedOnce(tracked);
+            IEnumerable<string> nullSource = null;
+            var deferred = nullSource.DistinctUntilChanged();
+            using (var iterator = deferred.GetEnumerator())
+                Assert.Throws<NullReferenceException>(() => iterator.MoveNext());
         }
 
         [Test]
