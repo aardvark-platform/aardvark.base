@@ -43,7 +43,7 @@ namespace Aardvark.Base
                     x1 = 2.0 * m_rndUniform.UniformDouble() - 1.0;
                     x2 = 2.0 * m_rndUniform.UniformDouble() - 1.0;
                     w = x1 * x1 + x2 * x2;
-                } while (w >= 1.0);
+                } while (w >= 1.0 || w == 0.0);
 
                 w = Fun.Sqrt((-2.0 * Fun.Log(w)) / w);
                 value = x1 * w;

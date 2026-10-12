@@ -96,6 +96,11 @@ random values for an empty array.
 `CreateUniformDoubleFullArray` allocates the destination and then uses the same
 bulk semantics.
 
+`RandomGaussian.GetDouble` rejects polar Box–Muller pairs at the exact center
+or on/outside the unit circle. Every accepted pair returns its first sample and
+caches the second, including zero, for the next call without another uniform draw.
+Positive radii below one retain the existing transformation; no retry limit is imposed.
+
 `Prime.IsTrueFor(long)` has the same mathematical semantics as
 `Fun.IsPrime(long)`: values below two are not prime. `Prime.WithIndex(i)` returns
 the zero-based indexed prime (`WithIndex(0) == 2`), and
@@ -210,6 +215,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base/Hashing/HashCode.cs`
 - `src/Aardvark.Base/Introspection/Introspection.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
+- `src/Aardvark.Base/Random/RandomDistributions.cs`
 - `src/Aardvark.Base/Random/IRandomUniform.cs`
 - `src/Aardvark.Base/Random/PerlinNoise.cs`
 - `src/Aardvark.Base/Random/RandomSample.cs`
