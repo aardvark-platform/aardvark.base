@@ -33,6 +33,69 @@ namespace Aardvark.Tests.TextUtilities
             Assert.AreEqual(string.Empty, text.ToString());
         }
 
+        private static void AssertSubResult(Text source, int start, int end, int expectedStart, int expectedEnd, string expectedContents)
+        {
+            string context = $"view=[{source.Start},{source.End}), backing={source.String ?? "<null>"}, start={start}, end={end}";
+            var result = source.Sub(start, end);
+            Assert.AreEqual(expectedStart, result.Start, context + ", start coordinate");
+            Assert.AreEqual(expectedEnd, result.End, context + ", end coordinate");
+            Assert.AreEqual(expectedContents.Length, result.Count, context + ", count");
+            if (expectedContents.Length == 0)
+                Assert.IsNull(result.String, context + ", canonical empty backing");
+            else
+            {
+                Assert.AreSame(source.String, result.String, context + ", shared backing");
+                Assert.GreaterOrEqual(result.Start, source.Start, context);
+                Assert.LessOrEqual(result.End, source.End, context);
+            }
+            Assert.AreEqual(expectedContents, result.ToString(), context + ", contents");
+        }
+
+        [Test]
+        public static void SubClampsExtremePositiveIndicesOnOffsetViews()
+        {
+            foreach (var view in new[] { new Text("abc", 1), new Text("abc", 2), new Text("xabc!", 1, 3), new Text("xxabcxx", 2, 3) })
+            {
+                AssertSubResult(view, 0, int.MaxValue, view.Start, view.End, view.ToString());
+                AssertSubResult(view, -1, int.MaxValue, view.End - 1, view.End, "c");
+                AssertSubResult(view, int.MaxValue, 0, 0, 0, string.Empty);
+                AssertSubResult(view, int.MaxValue, 1, 0, 0, string.Empty);
+                AssertSubResult(view, int.MaxValue - 1, int.MaxValue, 0, 0, string.Empty);
+            }
+        }
+
+        [Test]
+        public static void SubMatchesWideRelativeIndexClamping()
+        {
+            var views = new[]
+            {
+                Text.Empty, default(Text), new Text(string.Empty),
+                new Text("abc", 0, 0), new Text("abc", 1, 0), new Text("abc", 3, 0),
+                new Text("a"), new Text("abc"), new Text("abc", 1), new Text("xxabcxx", 2, 3),
+                new Text("a🙂éz"), new Text("!a🙂éz!", 1, 5), new Text("xxxxxxxxxxxxxxxxxabc!", 17, 3),
+            };
+            var indices = new[] { int.MinValue, int.MinValue + 1, -100, -6, -4, -3, -2, -1, 0, 1, 2, 3, 4, 6, 100, int.MaxValue - 1, int.MaxValue };
+            foreach (var view in views)
+            foreach (int start in indices)
+            foreach (int end in indices)
+            {
+                long count = view.Count;
+                long relativeStart = start < 0 ? count + (long)start : start;
+                long relativeEnd = end <= 0 ? count + (long)end : end;
+                relativeStart = System.Math.Max(0L, System.Math.Min(count, relativeStart));
+                relativeEnd = System.Math.Max(0L, System.Math.Min(count, relativeEnd));
+                int expectedStart = 0, expectedEnd = 0;
+                string expectedContents = string.Empty;
+                if (relativeStart < relativeEnd)
+                {
+                    expectedStart = view.Start + (int)relativeStart;
+                    expectedEnd = view.Start + (int)relativeEnd;
+                    expectedContents = view.String.Substring(expectedStart, expectedEnd - expectedStart);
+                }
+                AssertSubResult(view, start, end, expectedStart, expectedEnd, expectedContents);
+            }
+        }
+
         [Test]
         public static void IndexOfFindsValuesInFullText()
         {
