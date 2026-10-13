@@ -144,15 +144,17 @@ namespace Aardvark.Base
         #region Bitwise Rotation
 
         /// <summary>
-        /// Bitwise circular left shift.
+        /// Circularly rotates the 32-bit pattern to the left, without sign extension.
+        /// The count is taken modulo 32, including negative counts.
         /// </summary>
         public static int BitwiseRotateLeft(this int value, int numberOfBits)
         {
-            return (value << numberOfBits) | (value >> (32 - numberOfBits));
+            return (value << numberOfBits) | (value >>> (32 - numberOfBits));
         }
 
         /// <summary>
-        /// Bitwise circular left shift.
+        /// Circularly rotates the 32-bit pattern to the left.
+        /// The count is taken modulo 32, including negative counts.
         /// </summary>
         public static uint BitwiseRotateLeft(this uint value, int numberOfBits)
         {
@@ -160,15 +162,17 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Bitwise circular left shift.
+        /// Circularly rotates the 64-bit pattern to the left, without sign extension.
+        /// The count is taken modulo 64, including negative counts.
         /// </summary>
         public static long BitwiseRotateLeft(this long value, int numberOfBits)
         {
-            return (value << numberOfBits) | (value >> (64 - numberOfBits));
+            return (value << numberOfBits) | (value >>> (64 - numberOfBits));
         }
 
         /// <summary>
-        /// Bitwise circular left shift.
+        /// Circularly rotates the 64-bit pattern to the left.
+        /// The count is taken modulo 64, including negative counts.
         /// </summary>
         public static ulong BitwiseRotateLeft(this ulong value, int numberOfBits)
         {
