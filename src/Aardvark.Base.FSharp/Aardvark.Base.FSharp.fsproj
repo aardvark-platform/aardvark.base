@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;netstandard2.0</TargetFrameworks>
     <AssemblyName>Aardvark.Base.FSharp</AssemblyName>
     <OutputType>Library</OutputType>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
@@ -88,6 +88,7 @@
     <Compile Include="Native\SharedMemory.fs" />
     <Compile Include="Ag.fs" />
     <None Include="paket.references" />
+    <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aardvark.Base\Aardvark.Base.csproj" />

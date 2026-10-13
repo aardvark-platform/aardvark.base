@@ -41,14 +41,15 @@ type CoderExtensions private() =
         }
 
 
-
+[<TestFixture>]
 module CoderTests =
     open Aardvark.Base.Runtime.FieldCoders
 
-    do  let ass = typeof<CoderExtensions>.Assembly
+    [<OneTimeSetUp>]
+    let setup() =
+        let ass = typeof<CoderExtensions>.Assembly
         System.Environment.CurrentDirectory <- System.IO.Path.GetDirectoryName(ass.Location)
         IntrospectionProperties.CustomEntryAssembly <- ass
-        
         Aardvark.Init()
 
     [<AutoOpen>]

@@ -902,7 +902,7 @@ namespace Aardvark.Tests.Extensions
         {
             var source = new[] { "first", null, "third" };
 
-            Assert.AreEqual(1, source.IndexOf(null));
+            Assert.AreEqual(1, source.IndexOf((string)null));
         }
 
         [Test]

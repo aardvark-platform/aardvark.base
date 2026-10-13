@@ -5,9 +5,10 @@ open Aardvark.Base
 namespace Aardvark.Base
 #endif
 
-
 open System
 open System.Threading
+
+#nowarn "44"
 
 [<AutoOpen>]
 module Weak =
@@ -25,6 +26,7 @@ module Weak =
     let private statistics = Dictionary<obj, int>() 
     let mutable private statisticsNone = 0
 
+    [<Obsolete>]
     let convertArray (f : ('a -> 'b)) (arr : Array) =
         if isNull arr || arr.GetType().GetElementType() = typeof<'b> then
             arr
@@ -46,6 +48,7 @@ module Weak =
                                  Report.Warn("Some(null)")
             | _ -> statisticsNone <- statisticsNone + 1
 
+    [<Obsolete>]
     let printStatistics() =
         let mem = System.GC.GetTotalMemory(true)
         System.GC.WaitForPendingFinalizers()
@@ -100,6 +103,7 @@ module Weak =
 
     let private registrations = ConditionalWeakTable<obj, Finalizable>()
 
+    [<Obsolete>]
     let registerFinalizer<'a> (obj : 'a, finalizer : obj -> unit, data : Option<obj>) =
         match registrations.TryGetValue(obj) with
             | (true, v) -> v.Add(finalizer, data)
@@ -109,6 +113,7 @@ module Weak =
 
 
     (*============================ Weak Types =================================*)
+    [<Obsolete>]
     [<AllowNullLiteral>]
     type Weak<'a when 'a : not struct>(obj : 'a) =
         do if isNull (obj :> obj) then failwith "created null weak"
@@ -157,6 +162,7 @@ module Weak =
                                                 | _ -> false 
                     | _ -> false
  
+    [<Obsolete>]
     [<return: Struct>]
     let inline (|Strong|_|) (weak : Weak<'a>) = 
         match weak.TryGetTarget() with
@@ -164,7 +170,7 @@ module Weak =
         | _ -> ValueNone
         
 
-    
+    [<Obsolete>]
     let registerWeakFinalizer (w : Weak<obj>, finalizer : obj -> unit, data : Option<obj>) =
         match w with
             | Strong(v) -> registerFinalizer(v, finalizer, data)
@@ -174,14 +180,20 @@ module Weak =
 
 
     type System.Object with
+        [<Obsolete>]
         member x.RegisterFinalizer(f : obj -> unit, ?data) =
             registerFinalizer(x, f, data)
 
+        [<Obsolete>]
         member x.RegisterFinalizer(f : unit -> unit) =
             registerFinalizer(x, (fun _ -> f()), None)
 
-    type System.Collections.Generic.IEnumerable<'a> with
-        member x.RegisterAnyFinalizer(f : obj -> unit, ?data) =
+    [<AbstractClass; Sealed>]
+    type IEnumerableExtensions private() =
+
+        [<Obsolete>]
+        [<Extension>]
+        static member RegisterAnyFinalizer(x : IEnumerable<'a>, f : obj -> unit, ?data) =
             let fRef = ref <| Some(f)
             let finalize(_) =
                 match !fRef with
@@ -195,7 +207,9 @@ module Weak =
 
             x |> Seq.iter (fun o -> registerFinalizer(o, finalize, None))
 
-        member x.RegisterAllFinalizer(f : obj -> unit, ?data) =
+        [<Obsolete>]
+        [<Extension>]
+        static member RegisterAllFinalizer(x : IEnumerable<'a>, f : obj -> unit, ?data) =
             let countRef = ref (x.Count())
             let finalize(_) =
                 if !countRef = 1 then
@@ -208,13 +222,17 @@ module Weak =
 
             x |> Seq.iter (fun o -> registerFinalizer(o, finalize, None))
 
-        member x.RegisterAnyFinalizer(f : unit -> unit) =
+        [<Obsolete>]
+        [<Extension>]
+        static member RegisterAnyFinalizer(x : IEnumerable<'a>, f : unit -> unit) =
             x.RegisterAnyFinalizer(fun (o:obj) -> f())
 
-        member x.RegisterAllFinalizer(f : unit -> unit, ?data) =
+        [<Obsolete>]
+        [<Extension>]
+        static member RegisterAllFinalizer(x : IEnumerable<'a>, f : unit -> unit, ?data) =
             x.RegisterAllFinalizer(fun (o:obj) -> f())
 
-
+    [<Obsolete>]
     type WeakList<'a when 'a : not struct and 'a : equality>(l : list<Weak<'a>>) =
         let m_elements = l
         let m_isLife = ref true

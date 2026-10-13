@@ -14,23 +14,18 @@ open FsUnit
 open System.IO
 open FSharp.Data.Adaptive
 
-
-module RefelectionTests =
+[<TestFixture>]
+module ReflectionTests =
     open Aardvark.Base.Runtime.FieldCoders
     type private Marker = Marker
 
-    let mutable initialized = false
-
+    [<OneTimeSetUp>]
     let init() =
-        if not initialized then
-            initialized <- true
-            let ass = typeof<Marker>.Assembly
-            Report.LogFileName <- System.IO.Path.GetDirectoryName(ass.Location) + "\\Aardvark.log"
-            System.Environment.CurrentDirectory <- System.IO.Path.GetDirectoryName(ass.Location)
-            IntrospectionProperties.CustomEntryAssembly <- ass
-            Aardvark.Init()
-
-    do init()
+        let ass = typeof<Marker>.Assembly
+        Report.LogFileName <- System.IO.Path.GetDirectoryName(ass.Location) + "\\Aardvark.log"
+        System.Environment.CurrentDirectory <- System.IO.Path.GetDirectoryName(ass.Location)
+        IntrospectionProperties.CustomEntryAssembly <- ass
+        Aardvark.Init()
 
     let tryUnify (decl : Type) (real : Type) =
         match decl.TryUnifyWith real with

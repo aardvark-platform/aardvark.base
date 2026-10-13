@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
     <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     <WarnOn>3389;3390;3395</WarnOn>
@@ -14,7 +14,7 @@
     <OutputPath>..\..\..\bin\Release</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <RunWorkingDirectory>$(OutputPath)\net8.0</RunWorkingDirectory>
+    <RunWorkingDirectory>$(OutputPath)\net10.0</RunWorkingDirectory>
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="data\test.jpg" />
