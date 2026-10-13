@@ -3,6 +3,8 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace Aardvark.Tests
 {
@@ -37,6 +39,100 @@ namespace Aardvark.Tests
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+        }
+
+        private static Func<T, int, T> NetStandardRotateLeft<T>()
+        {
+            var outputDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var path = Path.GetFullPath(Path.Combine(outputDirectory, "..", "netstandard2.0", "Aardvark.Base.dll"));
+            Assert.That(File.Exists(path), Is.True, $"Expected sibling netstandard2.0 assembly at '{path}'.");
+            var fun = Assembly.LoadFile(path).GetType(typeof(Fun).FullName);
+            var method = fun.GetMethod(nameof(Fun.BitwiseRotateLeft), new[] { typeof(T), typeof(int) });
+            return (Func<T, int, T>)method.CreateDelegate(typeof(Func<T, int, T>));
+        }
+
+        private static ulong PermuteRotationBits(ulong bits, int count, int width)
+        {
+            int shift = count % width;
+            if (shift < 0) shift += width;
+            ulong result = 0;
+            for (int bit = 0; bit < width; bit++)
+                if ((bits & (1UL << bit)) != 0)
+                    result |= 1UL << ((bit + shift) % width);
+            return result;
+        }
+
+        private static IEnumerable<int> RotationCounts(int width)
+        {
+            yield return int.MinValue;
+            yield return int.MinValue + 1;
+            yield return int.MaxValue - 1;
+            yield return int.MaxValue;
+            for (int count = -2 * width; count <= 2 * width; count++) yield return count;
+        }
+
+        [Test]
+        public void BitwiseRotateLeftPreserves32BitPatternsForEveryCount()
+        {
+            var values = new List<int> { int.MinValue, -2, -1, 0, 1, int.MaxValue,
+                unchecked((int)0xAAAAAAAAU), 0x55555555 };
+            var random = new Random(51317);
+            var bytes = new byte[4];
+            for (int i = 0; i < 128; i++)
+            {
+                random.NextBytes(bytes);
+                values.Add(BitConverter.ToInt32(bytes, 0));
+            }
+
+            foreach (bool netStandard in new[] { false, true })
+            {
+                Func<int, int, int> signed = netStandard ? NetStandardRotateLeft<int>() : Fun.BitwiseRotateLeft;
+                Func<uint, int, uint> unsigned = netStandard ? NetStandardRotateLeft<uint>() : Fun.BitwiseRotateLeft;
+                string target = netStandard ? "netstandard2.0" : "net8.0";
+                Assert.AreEqual(1U, unsigned(0x80000000U, 1), $"{target}, unsigned sign bit by one");
+                Assert.AreEqual(1, signed(int.MinValue, 1), $"{target}, int.MinValue by one");
+                foreach (int value in values)
+                foreach (int count in RotationCounts(32))
+                {
+                    uint bits = unchecked((uint)value);
+                    uint expected = (uint)PermuteRotationBits(bits, count, 32);
+                    string context = $"{target}, bits=0x{bits:X8}, count={count}";
+                    Assert.AreEqual(expected, unsigned(bits, count), context + ", unsigned");
+                    Assert.AreEqual(unchecked((int)expected), signed(value, count), context + ", signed");
+                }
+            }
+        }
+
+        [Test]
+        public void BitwiseRotateLeftPreserves64BitPatternsForEveryCount()
+        {
+            var values = new List<long> { long.MinValue, -2, -1, 0, 1, long.MaxValue,
+                unchecked((long)0xAAAAAAAAAAAAAAAAUL), 0x5555555555555555L };
+            var random = new Random(91753);
+            var bytes = new byte[8];
+            for (int i = 0; i < 128; i++)
+            {
+                random.NextBytes(bytes);
+                values.Add(BitConverter.ToInt64(bytes, 0));
+            }
+
+            foreach (bool netStandard in new[] { false, true })
+            {
+                Func<long, int, long> signed = netStandard ? NetStandardRotateLeft<long>() : Fun.BitwiseRotateLeft;
+                Func<ulong, int, ulong> unsigned = netStandard ? NetStandardRotateLeft<ulong>() : Fun.BitwiseRotateLeft;
+                string target = netStandard ? "netstandard2.0" : "net8.0";
+                Assert.AreEqual(1UL, unsigned(0x8000000000000000UL, 1), $"{target}, unsigned sign bit by one");
+                Assert.AreEqual(1L, signed(long.MinValue, 1), $"{target}, long.MinValue by one");
+                foreach (long value in values)
+                foreach (int count in RotationCounts(64))
+                {
+                    ulong bits = unchecked((ulong)value);
+                    ulong expected = PermuteRotationBits(bits, count, 64);
+                    string context = $"{target}, bits=0x{bits:X16}, count={count}";
+                    Assert.AreEqual(expected, unsigned(bits, count), context + ", unsigned");
+                    Assert.AreEqual(unchecked((long)expected), signed(value, count), context + ", signed");
+                }
             }
         }
 
