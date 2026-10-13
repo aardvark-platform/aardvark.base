@@ -96,6 +96,12 @@ random values for an empty array.
 `CreateUniformDoubleFullArray` allocates the destination and then uses the same
 bulk semantics.
 
+`TakeRandomly` retains an element only when its uniform draw in `[0, 1)` is
+strictly below `p`: probability zero retains none, and probability one retains
+all valid draws. Both overloads preserve source order and draw once per visited
+element, including at the endpoints; the selector runs only for retained elements.
+Validation and sampling are deferred until enumeration.
+
 `Prime.IsTrueFor(long)` has the same mathematical semantics as
 `Fun.IsPrime(long)`: values below two are not prime. `Prime.WithIndex(i)` returns
 the zero-based indexed prime (`WithIndex(0) == 2`), and
@@ -210,6 +216,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base/Hashing/HashCode.cs`
 - `src/Aardvark.Base/Introspection/Introspection.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
+- `src/Aardvark.Base/Random/RandomIEnumerableExtensions.cs`
 - `src/Aardvark.Base/Random/IRandomUniform.cs`
 - `src/Aardvark.Base/Random/PerlinNoise.cs`
 - `src/Aardvark.Base/Random/RandomSample.cs`
