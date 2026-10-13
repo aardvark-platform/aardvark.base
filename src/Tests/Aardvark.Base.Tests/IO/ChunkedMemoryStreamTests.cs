@@ -3,6 +3,8 @@ using NUnit.Framework;
 using System;
 using System.IO;
 
+#pragma warning disable CA2022
+
 namespace Aardvark.Tests.IO
 {
     static class ChunkedMemoryStreamTests

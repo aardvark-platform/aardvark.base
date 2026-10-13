@@ -77,8 +77,8 @@ public partial class Aardvark
         Report.BeginTimed("Initializing Aardvark");
 
         const string framework =
-#if NET8_0
-            ".NET 8.0";
+#if NET10_0
+            ".NET 10.0";
 #elif NETSTANDARD2_0
             ".NET Standard 2.0";
 #endif

@@ -176,11 +176,6 @@ namespace Aardvark.Base
         /// </summary>
         public void Update(ReadOnlySpan<byte> buffer)
         {
-            if (buffer == null)
-            {
-                throw new ArgumentNullException("buffer");
-            }
-
             uint s1 = m_checksum & 0xFFFF;
             uint s2 = m_checksum >> 16;
             var offset = 0;

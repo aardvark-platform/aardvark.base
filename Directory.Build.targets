@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- https://github.com/fsprojects/Paket/issues/4307 -->
+    <NoWarn>$(NoWarn);NU1510</NoWarn>
+  </PropertyGroup>
+</Project>
