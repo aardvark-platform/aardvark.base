@@ -5422,6 +5422,7 @@ namespace Aardvark.Base
         [Pure]
         public static int NextPowerOfTwo(this int x)
         {
+            if (x <= 0) return 0;
             --x;
             x |= x >> 1;
             x |= x >> 2;
@@ -5460,6 +5461,7 @@ namespace Aardvark.Base
         [Pure]
         public static long NextPowerOfTwo(this long x)
         {
+            if (x <= 0) return 0;
             --x;
             x |= x >> 1;
             x |= x >> 2;

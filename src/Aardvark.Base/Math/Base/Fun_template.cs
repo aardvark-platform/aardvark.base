@@ -1265,6 +1265,9 @@ namespace Aardvark.Base
         [Pure]
         public static __t.Name__ NextPowerOfTwo(this __t.Name__ x)
         {
+            //# if (signedtypes.Contains(t)) {
+            if (x <= 0) return 0;
+            //# }
             --x;
             x |= x >> 1;
             x |= x >> 2;
