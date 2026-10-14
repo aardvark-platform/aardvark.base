@@ -1,3 +1,4 @@
+- [Base] Made integer `Fun.Log2CeilingInt` exact above floating-point precision boundaries
 - [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
 - [Base] Corrected and accelerated order-independent integer range-set construction
 - [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views
