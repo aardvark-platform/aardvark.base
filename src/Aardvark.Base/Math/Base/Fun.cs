@@ -807,32 +807,48 @@ namespace Aardvark.Base
             => Log2CeilingIntRef(ref v);
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// Computes the exact base-two logarithm ceiling for a positive integer.
+        /// Zero returns -127; negative inputs retain the floating-point conversion result.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2CeilingInt(this int v)
-            => Log2CeilingInt((float)v);
+        {
+            var exponent = Log2CeilingInt((float)v);
+            return v > 0 && exponent < 32 && (uint)v > (1U << exponent) ? exponent + 1 : exponent;
+        }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// Computes the exact base-two logarithm ceiling for a positive integer.
+        /// Zero returns -127.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2CeilingInt(this uint v)
-            => Log2CeilingInt((float)v);
+        {
+            var exponent = Log2CeilingInt((float)v);
+            return v > 0 && exponent < 32 && v > (1U << exponent) ? exponent + 1 : exponent;
+        }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// Computes the exact base-two logarithm ceiling for a positive integer.
+        /// Zero returns -1023; negative inputs retain the floating-point conversion result.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2CeilingInt(this long v)
-            => Log2CeilingInt((double)v);
+        {
+            var exponent = Log2CeilingInt((double)v);
+            return v > 0 && exponent < 64 && (ulong)v > (1UL << exponent) ? exponent + 1 : exponent;
+        }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// Computes the exact base-two logarithm ceiling for a positive integer.
+        /// Zero returns -1023.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2CeilingInt(this ulong v)
-            => Log2CeilingInt((double)v);
+        {
+            var exponent = Log2CeilingInt((double)v);
+            return v > 0 && exponent < 64 && v > (1UL << exponent) ? exponent + 1 : exponent;
+        }
 
         #endregion
 
