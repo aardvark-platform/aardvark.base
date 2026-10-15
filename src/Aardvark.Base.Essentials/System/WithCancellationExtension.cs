@@ -14,6 +14,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a task that completes (or cancels) when either the input task completes or the cancellation token is signalled.
         /// On cancellation, the original task still runs to completion because there is no way to preemptively cancel it.
+        /// If the supplied token wins, the canceled wrapper's TaskCanceledException carries that token.
         /// </summary>
         public static Task<T> WithCancellation<T>(this Task<T> task, CancellationToken ct)
         {
@@ -30,6 +31,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Creates a task that completes (or cancels) when either the input task completes or the cancellation token is signalled.
         /// On cancellation, the original task still runs to completion because there is no way to preemptively cancel it.
+        /// If the supplied token wins, the canceled wrapper's TaskCanceledException carries that token.
         /// </summary>
         public static Task<T> WithCancellation<T>(this Task<T> task, CancellationToken? ct)
         {
@@ -54,7 +56,7 @@ namespace Aardvark.Base
             {
                 if (task != await Task.WhenAny(task, tcs.Task))
                 {
-                    throw new TaskCanceledException(task);
+                    return await Task.FromCanceled<T>(ct);
                 }
             }
             return await task;

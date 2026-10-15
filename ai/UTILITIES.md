@@ -62,6 +62,12 @@ wins, `Result` blocks until completion, and subscriptions accepted before or
 after completion run exactly once with the published value. Continuations run
 synchronously outside internal synchronization.
 
+`Task<T>.WithCancellation` preserves the supplied token in `TaskCanceledException`
+when that token wins over a pending input. Canceling the wrapper does not cancel
+or otherwise stop the input task. Completed inputs take precedence and retain
+identity, as do calls with absent or noncancelable tokens. Input results, faults
+and cancellation tokens propagate unchanged when the input wins.
+
 ## Ordered Hash Combination
 
 `HashCode.GetCombinedHashCode<T>` is order-sensitive. Arrays and `IEnumerable<T>`
@@ -207,6 +213,7 @@ Mathematical constants are on non-generic classes:
 - `src/Aardvark.Base.Telemetry/IProbe.cs`
 - `src/Aardvark.Base.Telemetry/TelemetryExtensions.cs`
 - `src/Aardvark.Base.Essentials/System/Awaitable.cs`
+- `src/Aardvark.Base.Essentials/System/WithCancellationExtension.cs`
 - `src/Aardvark.Base/Hashing/HashCode.cs`
 - `src/Aardvark.Base/Introspection/Introspection.cs`
 - `src/Aardvark.Base/Random/RandomSystem.cs`
