@@ -45,10 +45,14 @@ namespace Aardvark.Tests
         {
             long[] origins = { 0, -9, -3, -1, (1L << 62) - 3, (1L << 62) + 1,
                 -(1L << 62) - 7, long.MaxValue - 7, long.MinValue, long.MinValue + 1 };
+            var sizes = new[] { (5, 1), (1, 7), (5, 7), (2, 3), (3, 2), (0, 0), (1, 1) };
             for (int i = 0; i < origins.Length; i++)
-            foreach (var size in new[] { (5, 1), (1, 7), (5, 7), (2, 3), (3, 2), (0, 0), (1, 1) })
+            foreach (var size in sizes)
                 yield return new Cell(origins[i], origins[i] + size.Item1,
                     origins[(i + 3) % origins.Length], origins[(i + 3) % origins.Length] + size.Item2);
+            foreach (long origin in new long[] { 0, -9, -3, -1 })
+            foreach (var size in sizes)
+                yield return new Cell(origin, origin + size.Item1, origin, origin + size.Item2);
         }
 
         private static long Average(long a, long b) => (long)(((BigInteger)a + b) / 2);
