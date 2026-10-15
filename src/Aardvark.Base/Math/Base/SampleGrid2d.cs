@@ -15,6 +15,13 @@ namespace Aardvark.Base
             m_delta = region.Size / (V2d)m_last;
         }
 
+        private static long Midpoint(long a, long b)
+        {
+            // The bitwise average rounds down; correct negative odd sums toward zero.
+            long floor = (a & b) + ((a ^ b) >> 1);
+            return floor + ((floor >>> 63) & (a ^ b));
+        }
+
         public static void AdaptivelyFill(
             Action<long, long, long, long, double, double> xMid,
             Action<long, long, long, long, double, double> yMid,
@@ -30,7 +37,7 @@ namespace Aardvark.Base
             double wx0 = 0.0, wx1 = 0.0, wy0 = 0.0, wy1 = 0.0;
             if (dx > 1)
             {
-                xm = (x1 + x0) / 2;
+                xm = Midpoint(x0, x1);
                 wx1 = (xm - x0) / (double)dx;
                 wx0 = (x1 - xm) / (double)dx;
                 xMid(x0, x1, y0, xm, wx0, wx1);
@@ -44,7 +51,7 @@ namespace Aardvark.Base
             }
             if (dy > 1)
             {
-                ym = (y1 + y0) / 2;
+                ym = Midpoint(y0, y1);
                 wy1 = (ym - y0) / (double)dy;
                 wy0 = (y1 - ym) / (double)dy;
                 yMid(x0, y0, y1, ym, wy0, wy1);
@@ -81,7 +88,7 @@ namespace Aardvark.Base
             double wx0 = 0.0, wx1 = 0.0, wy0 = 0.0, wy1 = 0.0;
             if (dx > 1)
             {
-                xm = (x1 + x0) / 2;
+                xm = Midpoint(x0, x1);
                 wx1 = (xm - x0) / (double)dx;
                 wx0 = (x1 - xm) / (double)dx;
                 xMid(depth, x0, x1, y0, xm, wx0, wx1);
@@ -95,7 +102,7 @@ namespace Aardvark.Base
             }
             if (dy > 1)
             {
-                ym = (y1 + y0) / 2;
+                ym = Midpoint(y0, y1);
                 wy1 = (ym - y0) / (double)dy;
                 wy0 = (y1 - ym) / (double)dy;
                 yMid(depth, x0, y0, y1, ym, wy0, wy1);
@@ -143,13 +150,13 @@ namespace Aardvark.Base
             }
             if (dx > 1)
             {
-                var xm = (x1 + x0) / 2;
+                var xm = Midpoint(x0, x1);
                 var xdm = xd0 + (xd1 - xd0) * (xm - x0) / (double)dx;
                 sample(xm, y0, xdm, yd0);
                 sample(xm, y1, xdm, yd1);
                 if (dy > 1)
                 {
-                    var ym = (y1 + y0) / 2;
+                    var ym = Midpoint(y0, y1);
                     var ydm = yd0 + (yd1 - yd0) * (ym - y0) / (double)dy;
                     sample(x0, ym, xd0, ydm);
                     sample(xm, ym, xdm, ydm);
@@ -173,7 +180,7 @@ namespace Aardvark.Base
             }
             else
             {
-                var ym = (y1 + y0) / 2;
+                var ym = Midpoint(y0, y1);
                 var ydm = yd0 + (yd1 - yd0) * (ym - y0) / (double)dy;
                 sample(x0, ym, xd0, ydm);
                 sample(x1, ym, xd1, ydm);

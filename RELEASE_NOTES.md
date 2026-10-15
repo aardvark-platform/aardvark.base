@@ -1,3 +1,4 @@
+- [Base] Fixed adaptive grid subdivision at large Int64 coordinates while preserving negative midpoint rounding
 - [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
 - [Base] Corrected and accelerated order-independent integer range-set construction
 - [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views

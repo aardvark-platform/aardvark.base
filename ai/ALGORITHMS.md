@@ -131,6 +131,15 @@ or `0.0` before the first insertion and after `Reset()`. `History` exposes the
 ring storage and is not cleared by reset. `Reset()` is constant-time and starts
 a new active window while preserving that storage.
 
+## Adaptive Grid Sampling
+
+Both `SampleGrid2d.AdaptivelyFill` overloads and `AdaptivelySample` average Int64
+endpoints without overflowing, retaining truncation toward zero for negative and
+mixed-sign intervals. Midpoints stay inside ordered intervals that subdivide.
+Callback order, depth propagation, interpolation formulas and early exits
+are unchanged. Spans (`x1 - x0` and `y1 - y0`) must still be representable as Int64;
+this does not extend support to full-width spans or alter regular-grid sampling.
+
 ## Probability Sampling
 
 ### Alias tables
@@ -227,5 +236,6 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/Math/Base/Statistics.cs`
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs`
 - `src/Aardvark.Base/Math/Base/MedianWindow.cs`
+- `src/Aardvark.Base/Math/Base/SampleGrid2d.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`
 - `src/Aardvark.Base/Math/Curves/Curves.cs`
