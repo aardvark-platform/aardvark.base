@@ -1,3 +1,4 @@
+- [Essentials] Preserved the supplied cancellation token when `Task.WithCancellation` cancels a pending wrapper
 - [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions
 - [Base] Corrected and accelerated order-independent integer range-set construction
 - [Base] Corrected and accelerated comparer-ordered neighbour queries on live sorted-set views
