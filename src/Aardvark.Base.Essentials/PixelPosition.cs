@@ -65,11 +65,13 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// PixelPosition from normalized device coordinates.
+        /// Pixel position in the specified region from normalized device coordinates.
+        /// Flips Y and truncates the scaled coordinates toward zero before adding the region origin.
+        /// Coordinates are not clamped to the region.
         /// </summary>
         public PixelPosition(Ndc2d ndc, Box2i renderTargetRegion)
         {
-            Position = new V2i(ndc.TextureCoordinate * (V2d)renderTargetRegion.Size);
+            Position = new V2i(ndc.TextureCoordinate * (V2d)renderTargetRegion.Size) + renderTargetRegion.Min;
             Bounds = renderTargetRegion;
         }
 
