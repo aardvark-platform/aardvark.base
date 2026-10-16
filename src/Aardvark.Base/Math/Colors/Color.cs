@@ -236,7 +236,7 @@ namespace Aardvark.Base
             foreach (var t in s_colFormatArray)
             {
                 var format = t.Item1; var name = t.Item2; var intent = t.Item3; var channelCount = t.Item4;
-                s_nameOfFormat.Add(format, intent);
+                s_nameOfFormat.Add(format, name);
                 s_formatOfName.Add(name, format);
                 s_intentOfFormat.Add(format, intent);
                 s_channelCountMap.Add(format, channelCount);
