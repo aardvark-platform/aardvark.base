@@ -50,6 +50,11 @@ Results outside the selected precision follow IEEE overflow and underflow behavi
 - `Sign` returns zero for either signed zero and throws `ArithmeticException` for every NaN encoding.
 - `Max` and `Min` propagate NaN regardless of operand position. Between opposite-signed zeros, `Max` selects positive zero and `Min` selects negative zero.
 
+Float-to-Half narrowing keeps its existing mantissa-truncation policy. NaNs remain
+NaNs even when all payload bits would be discarded; the sign and any retained
+payload bits are preserved. Finite and infinity conversions keep their existing
+results.
+
 Raw encodings remain available through `Half.ToHalf(ushort)` and `Half.GetBits(Half)` when payload or zero-sign distinctions are required.
 
 ## Fraction Semantics
