@@ -65,7 +65,70 @@ namespace Aardvark.Tests
         public void CanCreateCell_FromBox_Centered_Unit()
         {
             var a = new Cell(new Box3d(new V3d(-1, -1, -1), new V3d(1, 1, 1)));
-            Assert.IsTrue(a == new Cell(1));
+            // box.Max is interpreted as inclusive, but Cell.Max is exclusive,
+            // therefore (1,1,1) is not contained in Cell(1) = [-1,1) and we
+            // have to use next bigger cell
+            Assert.IsTrue(a == new Cell(2));
+        }
+
+        private static void AssertContainsHalfOpen(Cell cell, Box3d box)
+        {
+            var bb = cell.BoundingBox;
+            Assert.IsTrue(bb.Min.AllSmallerOrEqual(box.Min), $"{cell} min {bb.Min} > {box.Min}");
+            Assert.IsTrue(box.Max.AllSmaller(bb.Max), $"{cell} max {bb.Max} <= {box.Max}");
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_MaxOnUpperFace()
+        {
+            // straddles the origin, max.X exactly on the upper face of Cell(2) = [-2,2)
+            var box = new Box3d(new V3d(-2, -2, 0), new V3d(2, 1.9375, 0));
+            var a = new Cell(box);
+            Assert.IsTrue(a.IsCenteredAtOrigin);
+            AssertContainsHalfOpen(a, box);
+            Assert.IsTrue(a == new Cell(3));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_MaxOnUpperFace_EachAxis()
+        {
+            for (var axis = 0; axis < 3; axis++)
+            {
+                var max = new V3d(1.5, 1.5, 1.5);
+                max[axis] = 2;
+                var box = new Box3d(new V3d(-1, -1, -1), max);
+                var a = new Cell(box);
+                AssertContainsHalfOpen(a, box);
+                Assert.IsTrue(a == new Cell(3), $"axis {axis}: {a}");
+            }
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_MinOnLowerFace()
+        {
+            // the lower face is inclusive: Cell(2) = [-2,2) contains -2
+            var box = new Box3d(new V3d(-2, -2, -2), new V3d(1.5, 1.5, 1.5));
+            var a = new Cell(box);
+            AssertContainsHalfOpen(a, box);
+            Assert.IsTrue(a == new Cell(2));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_ContainsBoxHalfOpen()
+        {
+            for (var e = -4; e <= 20; e++)
+            {
+                var h = Math.Pow(2.0, e);
+                foreach (var box in new[]
+                {
+                    new Box3d(new V3d(-h, -h, -h), new V3d(h, h, h)),
+                    new Box3d(new V3d(-h, 0, 0), new V3d(h * 0.75, h * 0.5, h)),
+                    new Box3d(new V3d(-h * 0.25, -h, 0), new V3d(h, h * 0.5, h * 0.5)),
+                })
+                {
+                    AssertContainsHalfOpen(new Cell(box), box);
+                }
+            }
         }
 
         [Test]

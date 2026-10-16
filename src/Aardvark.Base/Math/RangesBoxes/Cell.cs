@@ -142,6 +142,14 @@ public readonly partial struct Cell : IEquatable<Cell>
         {
             X = Y = Z = long.MaxValue;
             Exponent = Math.Max(box.Min.NormMax, box.Max.NormMax).Log2CeilingInt() + 1;
+
+            // box.Max is inclusive, the cell's upper face is exclusive
+            var h = Math.Pow(2.0, Exponent - 1);
+            while (box.Max.X >= h || box.Max.Y >= h || box.Max.Z >= h)
+            {
+                ++Exponent;
+                h *= 2.0;
+            }
         }
         else // case 2: doesn't contain origin
         {
