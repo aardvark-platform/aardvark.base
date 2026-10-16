@@ -1597,9 +1597,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the inverse hyperbolic sine of the specified number.
+        /// Returns the inverse hyperbolic sine across the full floating-point range.
+        /// Preserves signed zero and signed infinities; NaN returns NaN.
         /// </summary>
         //# fname = "Asinh";
+        //# var asinhTiny = t == Meta.DoubleType ? "1.4901161193847656e-8" : "0.000244140625f";
+        //# var asinhLarge = t == Meta.DoubleType ? "67108864.0" : "4096.0f";
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ __fname__(this __t.Name__ x)
@@ -1611,7 +1614,16 @@ namespace Aardvark.Base
                 return MathF.__fname__(x);
             //# }
 #else
-                return Log(x + Sqrt(x * x + 1));
+                var a = Abs(x);
+                // Precision-based cutoffs preserve tiny inputs and avoid squaring large ones.
+                if (a < __asinhTiny__) return x;
+                if (a > __asinhLarge__) return CopySign(Log(a) + __constant__.Ln2, x);
+                if (a >= __half__) return CopySign(Log(a + Sqrt(1 + a * a)), x);
+
+                var u = a + a * a / (1 + Sqrt(1 + a * a));
+                var v = 1 + u;
+                // Correct the rounding of 1 + u in the logarithm's argument.
+                return CopySign(Log(v) * (u / (v - 1)), x);
 #endif
         }
 
