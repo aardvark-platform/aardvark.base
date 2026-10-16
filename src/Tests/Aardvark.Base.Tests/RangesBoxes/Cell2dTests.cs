@@ -65,7 +65,60 @@ namespace Aardvark.Tests
         public void CanCreateCell_FromBox_Centered_PowerOfTwo()
         {
             var a = new Cell2d(new Box2d(new V2d(-1, -1), new V2d(0.1, 1)));
-            Assert.IsTrue(a == new Cell2d(1));
+            // box.Max is interpreted as inclusive, but Cell2d.Max is exclusive,
+            // therefore y = 1 is not contained in Cell2d(1) = [-1,1) and we
+            // have to use next bigger cell
+            Assert.IsTrue(a == new Cell2d(2));
+        }
+
+        private static void AssertContainsHalfOpen(Cell2d cell, Box2d box)
+        {
+            var bb = cell.BoundingBox;
+            Assert.IsTrue(bb.Min.AllSmallerOrEqual(box.Min), $"{cell} min {bb.Min} > {box.Min}");
+            Assert.IsTrue(box.Max.AllSmaller(bb.Max), $"{cell} max {bb.Max} <= {box.Max}");
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_MaxOnUpperFace_EachAxis()
+        {
+            for (var axis = 0; axis < 2; axis++)
+            {
+                var max = new V2d(1.5, 1.5);
+                max[axis] = 2;
+                var box = new Box2d(new V2d(-2, -1), max);
+                var a = new Cell2d(box);
+                Assert.IsTrue(a.IsCenteredAtOrigin);
+                AssertContainsHalfOpen(a, box);
+                Assert.IsTrue(a == new Cell2d(3), $"axis {axis}: {a}");
+            }
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_MinOnLowerFace()
+        {
+            // the lower face is inclusive: Cell2d(2) = [-2,2) contains -2
+            var box = new Box2d(new V2d(-2, -2), new V2d(1.5, 1.5));
+            var a = new Cell2d(box);
+            AssertContainsHalfOpen(a, box);
+            Assert.IsTrue(a == new Cell2d(2));
+        }
+
+        [Test]
+        public void CanCreateCell_FromBox_Centered_ContainsBoxHalfOpen()
+        {
+            for (var e = -4; e <= 20; e++)
+            {
+                var h = Math.Pow(2.0, e);
+                foreach (var box in new[]
+                {
+                    new Box2d(new V2d(-h, -h), new V2d(h, h)),
+                    new Box2d(new V2d(-h, 0), new V2d(h * 0.75, h)),
+                    new Box2d(new V2d(-h * 0.25, -h), new V2d(h, h * 0.5)),
+                })
+                {
+                    AssertContainsHalfOpen(new Cell2d(box), box);
+                }
+            }
         }
 
         [Test]
