@@ -5788,7 +5788,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the inverse hyperbolic sine of the specified number.
+        /// Returns the inverse hyperbolic sine across the full floating-point range.
+        /// Preserves signed zero and signed infinities; NaN returns NaN.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5797,7 +5798,16 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Asinh(x);
 #else
-                return Log(x + Sqrt(x * x + 1));
+                var a = Abs(x);
+                // Precision-based cutoffs preserve tiny inputs and avoid squaring large ones.
+                if (a < 0.000244140625f) return x;
+                if (a > 4096.0f) return CopySign(Log(a) + ConstantF.Ln2, x);
+                if (a >= 0.5f) return CopySign(Log(a + Sqrt(1 + a * a)), x);
+
+                var u = a + a * a / (1 + Sqrt(1 + a * a));
+                var v = 1 + u;
+                // Correct the rounding of 1 + u in the logarithm's argument.
+                return CopySign(Log(v) * (u / (v - 1)), x);
 #endif
         }
 
@@ -5996,7 +6006,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the inverse hyperbolic sine of the specified number.
+        /// Returns the inverse hyperbolic sine across the full floating-point range.
+        /// Preserves signed zero and signed infinities; NaN returns NaN.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6005,7 +6016,16 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return Math.Asinh(x);
 #else
-                return Log(x + Sqrt(x * x + 1));
+                var a = Abs(x);
+                // Precision-based cutoffs preserve tiny inputs and avoid squaring large ones.
+                if (a < 1.4901161193847656e-8) return x;
+                if (a > 67108864.0) return CopySign(Log(a) + Constant.Ln2, x);
+                if (a >= 0.5) return CopySign(Log(a + Sqrt(1 + a * a)), x);
+
+                var u = a + a * a / (1 + Sqrt(1 + a * a));
+                var v = 1 + u;
+                // Correct the rounding of 1 + u in the logarithm's argument.
+                return CopySign(Log(v) * (u / (v - 1)), x);
 #endif
         }
 

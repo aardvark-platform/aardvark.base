@@ -40,6 +40,14 @@ Examples:
 `Norm`, `Reciprocal`, division, and `Sqrt` allocate no managed memory.
 Results outside the selected precision follow IEEE overflow and underflow behavior.
 
+## Inverse Hyperbolic Sine
+
+`Fun.Asinh(float)` and `Fun.Asinh(double)` support the full floating-point range.
+The `netstandard2.0` fallback keeps finite inputs finite and retains tiny inputs
+without cancellation or underflow to zero. Signed zeros and infinities retain
+their sign, and NaN remains NaN. Floating-point vector overloads apply the scalar
+function component-wise; native runtime paths are unchanged.
+
 ## Half Comparison and Collection Semantics
 
 `Aardvark.Base.Half` follows `System.Half` comparison conventions.
@@ -181,7 +189,7 @@ var hit = box.Intersects(ray, out double t);
 
 - `src/Aardvark.Base/Math/Base/Complex_auto.cs` (`ComplexF`/`ComplexD` magnitude, reciprocal, division, and principal square-root semantics)
 - `src/Aardvark.Base/Math/Base/Half.cs` (`Half` comparison, equality, hashing, ordering, and extrema semantics)
-- `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`, `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple`)
+- `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`, `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple`, `Fun.Asinh`)
 - `src/Aardvark.Base/Math/Vectors/Vector_auto.cs` (`V3d`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`M44d`, transforms, operators)
 - `src/Aardvark.Base/Math/Trafos/Rot3_auto.cs` (`Rot3d` to `M44d` cast)
