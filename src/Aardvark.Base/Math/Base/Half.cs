@@ -250,6 +250,9 @@ namespace Aardvark.Base
             uint value = *((uint*)&single);
 
             ushort result = (ushort)(baseTable[(value >> 23) & 0x1ff] + ((value & 0x007fffff) >> shiftTable[value >> 23]));
+            // A NaN must retain a mantissa bit even when its entire payload was truncated.
+            if ((value & 0x7fffffff) > 0x7f800000 && (result & 0x03ff) == 0)
+                result |= 1;
             return Half.ToHalf(result);
         }
 
