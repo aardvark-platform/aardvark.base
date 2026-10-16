@@ -88,6 +88,18 @@ void CodeM44d(ref M44d value);
 
 See [ICoder_auto.cs](../src/Aardvark.Base.IO/ICoder_auto.cs) for the full list.
 
+### Color and pixel formats
+
+`CodeColFormat` stores the color format's `GetName()`; `CodePixFormat` also
+stores the pixel element type. Names preserve format identity: `RGBP` and
+`BGRP` denote premultiplied alpha, while their `GetIntent()` values remain
+`RGBA` and `BGRA` for channel access. Do not substitute an intent for a name.
+
+Newly written metadata retains `RGBP`/`BGRP`, which existing readers already
+recognize. Previously mislabeled `RGBA`/`BGRA` records cannot reveal whether
+the original format was premultiplied; reading cannot recover that state.
+No decoding or color conversion change is involved.
+
 ### Collections
 ```csharp
 void CodeT<T>(ref T obj);
