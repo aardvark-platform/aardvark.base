@@ -36,8 +36,8 @@ namespace Aardvark.Base
         #region Array Indices of Certain Elements
 
         /// <summary>
-        /// For an array of monotonically increasing values, returns
-        /// the index i of the largest value such that array[i] &lt;= x.
+        /// For an array of nondecreasing values, returns
+        /// the rightmost index i such that array[i] &lt;= x.
         /// If x is smaller than the first value, then -1 is returned.
         /// If x is greater than the last value, then a.Length is returned.
         /// </summary>
@@ -46,7 +46,8 @@ namespace Aardvark.Base
         {
             var r = new Range1i(0, a.Length - 1);
             if (x.CompareTo(a[0]) < 0) return -1;
-            if (x.CompareTo(a[r.Max]) > 0) return a.Length;
+            var comparison = x.CompareTo(a[r.Max]);
+            if (comparison >= 0) return comparison == 0 ? r.Max : a.Length;
             while (r.Size > 1)
             {
                 var half = r.Center;
@@ -56,8 +57,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// For an array of monotonically increasing values, returns
-        /// the index i of the largest value such that array[i] &lt;= x.
+        /// For an array of nondecreasing values, returns
+        /// the rightmost index i such that array[i] &lt;= x.
         /// If x is smaller than the first value, then -1 is returned.
         /// If x is greater than the last value, then a.Length is returned.
         /// </summary>
@@ -66,7 +67,8 @@ namespace Aardvark.Base
         {
             var r = new Range1l(0, a.Length - 1);
             if (x.CompareTo(a[0]) < 0) return -1;
-            if (x.CompareTo(a[r.Max]) > 0) return a.Length;
+            var comparison = x.CompareTo(a[r.Max]);
+            if (comparison >= 0) return comparison == 0 ? r.Max : a.Length;
             while (r.Size > 1)
             {
                 var half = r.Center;
@@ -76,8 +78,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// For a list of monotonically increasing values, returns
-        /// the index i of the largest value such that list[i] &lt;= x.
+        /// For a list of nondecreasing values, returns
+        /// the rightmost index i such that list[i] &lt;= x.
         /// If x is smaller than the first value, then -1 is returned.
         /// If x is greater than the last value, then a.Count is returned.
         /// </summary>
@@ -86,7 +88,8 @@ namespace Aardvark.Base
         {
             var r = new Range1i(0, a.Count - 1);
             if (x.CompareTo(a[0]) < 0) return -1;
-            if (x.CompareTo(a[r.Max]) > 0) return a.Count;
+            var comparison = x.CompareTo(a[r.Max]);
+            if (comparison >= 0) return comparison == 0 ? r.Max : a.Count;
             while (r.Size > 1)
             {
                 int half = r.Center;
