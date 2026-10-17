@@ -34,6 +34,7 @@
     <Compile Include="ArrayChooseBench.fs" />
     <Compile Include="BvhIntersectBench.fs" />
     <Compile Include="RangeSetConstructionBench.fs" />
+    <Compile Include="FixedSizeArrayConstructionBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

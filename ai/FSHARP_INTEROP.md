@@ -213,6 +213,34 @@ HashSet.intersectWith keepItems setA      // mutates setA
 
 ---
 
+## Fixed-Size Arrays
+
+`Arr<'d, 'a>` has the capacity described by the natural-number type `'d`
+(for example, `Arr<N<4>, int>`). Its sequence constructor copies at most that
+many elements in source order into owned storage. It truncates longer inputs
+and pads shorter inputs with `Unchecked.defaultof<'a>` (zero for numeric values,
+null for reference types). Mutating the caller's array does not change the
+constructed array, and vice versa; reference elements themselves are not cloned.
+
+Arrays use a prefix-copy fast path. Other sources are acquired once, never
+advanced beyond capacity, and their enumerators are disposed on completion,
+early truncation, or an exception. Zero capacity does not acquire an enumerator.
+Null sources still raise `ArgumentNullException`, including at zero capacity.
+Infinite sources can therefore be used when their required prefix terminates.
+
+`Arr.ofList`, `Arr.ofSeq`, `List.toFixed`, `Seq.toFixed`, and `Array.toFixed`
+share these construction semantics. `Data` exposes the owned mutable array;
+`Length`, indexing, enumeration, and the `FixedArray`/`FixedArrayType` and
+`TypeMeta.ArrOf` reflection patterns are unchanged. `FixedList` operations are
+separate and unchanged.
+
+```fsharp
+let padded : Arr<N<4>, int> = Arr.ofList [1; 2] // [|1; 2; 0; 0|]
+let prefix : Arr<N<4>, int> = Arr.ofSeq (Seq.initInfinite id) // [|0; 1; 2; 3|]
+```
+
+---
+
 ## Memory and Native Utilities
 
 ### MicroTime (Time Spans)
