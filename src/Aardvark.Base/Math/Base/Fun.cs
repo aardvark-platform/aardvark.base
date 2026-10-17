@@ -906,7 +906,7 @@ namespace Aardvark.Base
         public static double Gauss(double x, double stdDev)
         {
             var rcpS = 1.0 / stdDev;
-            return rcpS / Constant.SqrtPiTimesTwo * Fun.Exp(-0.5 * (x * stdDev).Square());
+            return rcpS / Constant.SqrtPiTimesTwo * Fun.Exp(-0.5 * (x * rcpS).Square());
         }
 
         /// <summary>

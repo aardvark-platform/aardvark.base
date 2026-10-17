@@ -131,6 +131,14 @@ or `0.0` before the first insertion and after `Reset()`. `History` exposes the
 ring storage and is not cleared by reset. `Reset()` is constant-time and starts
 a new active window while preserving that storage.
 
+## Gaussian Densities
+
+`Fun.Gauss(x, stdDev)` evaluates the zero-mean one-dimensional Gaussian density,
+not a random sample. For a positive standard deviation `sigma`, the density is
+`exp(-0.5 * (x / sigma)^2) / (sigma * sqrt(2 * pi))`. Standard deviation controls
+both the width and normalization; it is not the variance. The product of the
+independent axis densities matches the elliptical `Fun.Gauss2d(x, y, sx, sy)`.
+
 ## Probability Sampling
 
 ### Alias tables
@@ -225,6 +233,7 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
 - `src/Aardvark.Base/Math/Base/DistributionFunction.cs`
 - `src/Aardvark.Base/Math/Base/Statistics.cs`
+- `src/Aardvark.Base/Math/Base/Fun.cs`
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs`
 - `src/Aardvark.Base/Math/Base/MedianWindow.cs`
 - `src/Aardvark.Base/Math/Numerics/Polynomial.cs`
