@@ -1,3 +1,5 @@
+- [Base] Corrected `Fun.Pythag` NaN propagation and positive-infinity precedence, including mixed infinity/NaN inputs
+
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face
 - [Base] Corrected stable 3D `RotateInto` mappings for near-antiparallel directions

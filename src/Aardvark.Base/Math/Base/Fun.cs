@@ -639,10 +639,16 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Computes sqrt(a²+b²) without destructive underflow or overflow.
+        /// An infinite operand produces positive infinity, even when paired with NaN.
+        /// Otherwise, a NaN operand produces NaN. Two zero operands produce positive zero.
         /// </summary>
         public static double Pythag(double a, double b)
         {
             double at = a > 0 ? a : -a, bt = b > 0 ? b : -b, ct, result;
+
+            // Only finite magnitudes reach the scaled calculation; infinity wins over NaN.
+            if (!(at < double.PositiveInfinity && bt < double.PositiveInfinity))
+                return at == double.PositiveInfinity || bt == double.PositiveInfinity ? double.PositiveInfinity : double.NaN;
 
             if (at > bt) { ct = bt / at; result = at * Math.Sqrt(1.0 + ct * ct); }
             else if (bt > 0.0) { ct = at / bt; result = bt * Math.Sqrt(1.0 + ct * ct); }
