@@ -2,9 +2,9 @@
 using Aardvark.Base;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace Aardvark.Tests
 {
@@ -66,24 +66,88 @@ namespace Aardvark.Tests
             return index;
         }
 
+        private static IEnumerable<(string Target, Func<double, double, double> Gauss,
+            Func<double, double, double, double, double> Gauss2d)> GaussianFunctions()
+        {
+            yield return (typeof(Fun).Assembly.Location, Fun.Gauss, Fun.Gauss2d);
+
+            var directory = Path.GetDirectoryName(typeof(Distributions).Assembly.Location);
+            var path = Path.GetFullPath(Path.Combine(directory!, "..", "netstandard2.0", "Aardvark.Base.dll"));
+            Assert.That(File.Exists(path), Is.True, $"Expected sibling core assembly at '{path}'.");
+            var fun = Assembly.LoadFile(path).GetType(typeof(Fun).FullName!);
+            var gauss = fun!.GetMethod(nameof(Fun.Gauss), new[] { typeof(double), typeof(double) })!
+                .CreateDelegate<Func<double, double, double>>();
+            var gauss2d = fun.GetMethod(nameof(Fun.Gauss2d),
+                new[] { typeof(double), typeof(double), typeof(double), typeof(double) })!
+                .CreateDelegate<Func<double, double, double, double, double>>();
+            yield return (path, gauss, gauss2d);
+        }
+
+        [Test]
+        public static void GaussianDensitiesMatchStandardizedCoordinates()
+        {
+            Assert.Multiple(() =>
+            {
+                foreach (var (target, gauss, _) in GaussianFunctions())
+                {
+                    foreach (var sigma in new[] { 0.125, 0.3, 0.5, 0.75, 1.0, 1.5, 2.0, 3.0, 10.0 })
+                    {
+                        var center = 1.0 / (sigma * Math.Sqrt(2.0 * Math.PI));
+                        Assert.AreEqual(center, gauss(0.0, sigma), center * 2e-15, $"{target}: center, sigma={sigma:R}");
+                        for (int i = -32; i <= 32; i++)
+                        {
+                            var x = sigma * (i / 4.0);
+                            var z = x / sigma;
+                            var expected = Math.Exp(-(z * z) / 2.0) / (sigma * Math.Sqrt(2.0 * Math.PI));
+                            var actual = gauss(x, sigma);
+                            var context = $"{target}: x={x:R}, sigma={sigma:R}";
+                            Assert.AreEqual(expected, actual, expected * 2e-14, context);
+                            Assert.AreEqual(actual, gauss(-x, sigma), context + ", symmetry");
+                        }
+                    }
+                    Assert.AreEqual(0.12098536225957168, gauss(2.0, 2.0), 2e-16, target);
+                    Assert.AreEqual(0.48394144903828673, gauss(0.5, 0.5), 2e-16, target);
+                }
+            });
+        }
+
         [Test]
         public static void GaussTest()
         {
-            // sample normal distribution function from -10 to 10
-            var range = new Range1d(-10, 10);
-            var sampleCount = 201; // uneven values with give symmetrical pdf
-            var pdf = new double[sampleCount].SetByIndex(i =>
+            Assert.Multiple(() =>
             {
-                var x = i / (sampleCount - 1.0);
-                var p = range.Lerp(x);
-                return Fun.Gauss(p, 1.0);
+                foreach (var (target, gauss, _) in GaussianFunctions())
+                foreach (var sigma in new[] { 0.5, 1.0, 2.0 })
+                {
+                    // Trapezoidal integration over +/-10 standard deviations.
+                    const int intervals = 2000;
+                    var sum = 0.5 * (gauss(-10.0 * sigma, sigma) + gauss(10.0 * sigma, sigma));
+                    for (int i = 1; i < intervals; i++)
+                        sum += gauss((20.0 * i / intervals - 10.0) * sigma, sigma);
+                    var integral = sum * (20.0 * sigma / intervals);
+                    Assert.AreEqual(1.0, integral, 1e-12, $"{target}: sigma={sigma:R}");
+                }
             });
+        }
 
-            // integrate sampled gauss distribution
-            var stepSize = range.Size / (sampleCount - 1.0);
-            var integral = pdf.Sum() * stepSize;
-            // Gauss must integrate to 1.0
-            Assert.True(integral.ApproximateEquals(1.0, 1e-10)); 
+        [Test]
+        public static void EllipticalGaussianFactorizesIntoAxisDensities()
+        {
+            Assert.Multiple(() =>
+            {
+                foreach (var (target, gauss, gauss2d) in GaussianFunctions())
+                foreach (var sx in new[] { 0.5, 1.0, 2.0 })
+                foreach (var sy in new[] { 0.3, 1.0, 3.0 })
+                foreach (var zx in new[] { -4.0, -1.0, 0.0, 0.5, 3.0 })
+                foreach (var zy in new[] { -4.0, -1.0, 0.0, 0.5, 3.0 })
+                {
+                    var x = sx * zx;
+                    var y = sy * zy;
+                    var expected = gauss2d(x, y, sx, sy);
+                    Assert.AreEqual(expected, gauss(x, sx) * gauss(y, sy), expected * 2e-14,
+                        $"{target}: x={x:R}, y={y:R}, sx={sx:R}, sy={sy:R}");
+                }
+            });
         }
 
         [Test]
