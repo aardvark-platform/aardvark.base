@@ -54,37 +54,46 @@ module private LibTess =
 
         arr
 
+    /// Indices of the points that carry a real corner: consecutive duplicates and vertices whose
+    /// incoming and outgoing directions are collinear contribute nothing to the shape.
+    ///
+    /// Duplicates are dropped before the collinearity test, not by it. A repeated point gives a
+    /// zero-length edge whose normalized direction is degenerate, and angleTiny then answers true
+    /// at both ends of the repeat - removing both copies of the vertex, and with them a real corner
+    /// of the contour. LibTess emits such a repeat where a boundary contour pinches at a vertex.
     let nonRedundantPoints (angleEps : float) (p : V2d[]) : Option<int[]> =
         if p.Length < 3 then
             None
         else
-            let inline angleTiny (eps : float) (a : V2d) (b : V2d) =
-                Vec.dot a b >= 0.0 && 
-                abs (a.X * b.Y - a.Y * b.X) < eps
-                    
-            
-            let mutable pl = p.[p.Length - 1]
-            let mutable pc = p.[0]
-            let mutable pn = p.[1]
+            let n = p.Length
 
-            let mutable dlc = pc - pl |> Vec.normalize
-            let mutable dcn = pn - pc |> Vec.normalize
+            // one index per run of identical consecutive points, cyclically
+            let distinct = System.Collections.Generic.List<int>(n)
+            for i in 0 .. n - 1 do
+                if p.[i] <> p.[(i + n - 1) % n] then distinct.Add i
 
-            let points = System.Collections.Generic.List<int>(p.Length)
-            for i in 0 .. p.Length - 1 do
-                if not (angleTiny angleEps dlc dcn) then
-                    points.Add(i)
-
-                pl <- pc
-                pc <- pn
-                pn <- p.[(i + 2) % p.Length]
-                dlc <- dcn
-                dcn <- pn - pc |> Vec.normalize 
-
-            if points.Count < 3 then 
+            if distinct.Count < 3 then
                 None
-            else 
-                Some (points.ToArray())
+            else
+                let idx = distinct.ToArray()
+                let m = idx.Length
+                let at k = p.[idx.[((k % m) + m) % m]]
+
+                let inline angleTiny (eps : float) (a : V2d) (b : V2d) =
+                    Vec.dot a b >= 0.0 &&
+                    abs (a.X * b.Y - a.Y * b.X) < eps
+
+                let points = System.Collections.Generic.List<int>(m)
+                for k in 0 .. m - 1 do
+                    let dlc = at k - at (k - 1) |> Vec.normalize
+                    let dcn = at (k + 1) - at k |> Vec.normalize
+                    if not (angleTiny angleEps dlc dcn) then
+                        points.Add idx.[k]
+
+                if points.Count < 3 then
+                    None
+                else
+                    Some (points.ToArray())
 
     let boundary (rule : WindingRule) (regions : seq<list<Polygon2d>>) : list<Polygon2d> =
         let t = Tess()
