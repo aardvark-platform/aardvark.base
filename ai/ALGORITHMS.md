@@ -76,6 +76,26 @@ Excluding work performed by the supplied factory, `I` attempted iterations over 
 training items take `O(I * N)` time and `O(N + K)` auxiliary memory for `K` retained
 learners. Inference takes `O(K)` time and allocates no managed memory per call after warmup.
 
+## Integer Bresenham Lines
+
+`GeometryFun.BresenhamLineIterator(V2i p0, V2i p1)` and its `V2l` overload
+lazily rasterize a directed line across the complete signed 32-bit and 64-bit
+coordinate domains. Both endpoints are included, and a singleton line yields
+its endpoint once. Successive positions are 8-connected; complete traversal has
+`max(abs(p1.X - p0.X), abs(p1.Y - p0.Y)) + 1` positions, with these distances
+interpreted mathematically rather than as overflowing signed arithmetic.
+
+The major coordinate advances each step. The minor coordinate is rounded to the
+nearest integer displacement from `p0`; exact half-step ties advance toward `p1`.
+Reversing endpoints can therefore select different tied pixels, for example
+`(0,0) -> (2,1)` visits `(1,1)`, while the reverse direction visits `(1,0)`.
+
+Coordinate distances and the bounded rounding remainder use unsigned fixed-width
+arithmetic, without floating point or arbitrary-precision arithmetic. Enumerating
+`k` positions takes `O(k)` time and `O(1)` auxiliary space. The iterator has
+fixed-size state and no per-position allocation. Enormous lines can be
+consumed as bounded prefixes without materializing the complete raster.
+
 ## BbTree
 
 Bounding-box hierarchy in `Geometry/BbTree.cs`.
@@ -220,6 +240,8 @@ slot counts. They sum bins plus underflow/overflow counts and union the observed
 - `src/Aardvark.Base/AlgoDat/AdaBoost.cs`
 - `src/Aardvark.Base/AlgoDat/SalesmanOfDeath.cs`
 - `src/Aardvark.Base/Geometry/BbTree.cs`
+- `src/Aardvark.Base/Geometry/Algorithms_template.cs`
+- `src/Aardvark.Base/Geometry/Algorithms_auto.cs`
 - `src/Aardvark.Base/Math/LuFactorization.cs`
 - `src/Aardvark.Base/Math/QrFactorization.cs`
 - `src/Aardvark.Base/Math/Base/AliasTable_auto.cs`
