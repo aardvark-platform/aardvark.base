@@ -882,6 +882,7 @@ namespace Aardvark.Base
         //# var fname = "Cbrt";
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
         //# var rcast = (rtype != Meta.DoubleType) ? "(" + rtype.Name + ")" : "";
+        //# var ncast = iltypes.Contains(t) ? "(double)" : "";
         /// <summary>
         /// Returns the cubic root of the specified number.
         //# if (!dreptypes.Contains(t)) {
@@ -900,7 +901,7 @@ namespace Aardvark.Base
                 //# }
 #else
                 //# if (signedtypes.Contains(t)) {
-                return x < 0 ? __rcast__-Math.Pow(-x, Constant.OneThird)
+                return x < 0 ? __rcast__-Math.Pow(-__ncast__x, Constant.OneThird)
                              :  __rcast__Math.Pow( x, Constant.OneThird);
                 //# } else {
                 return __rcast__Math.Pow(x, Constant.OneThird);

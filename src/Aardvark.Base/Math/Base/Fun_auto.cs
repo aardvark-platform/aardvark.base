@@ -3258,7 +3258,7 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
 #else
-                return x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                return x < 0 ? -Math.Pow(-(double)x, Constant.OneThird)
                              :  Math.Pow( x, Constant.OneThird);
 #endif
         }
@@ -3288,7 +3288,7 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return Math.Cbrt(x);
 #else
-                return x < 0 ? -Math.Pow(-x, Constant.OneThird)
+                return x < 0 ? -Math.Pow(-(double)x, Constant.OneThird)
                              :  Math.Pow( x, Constant.OneThird);
 #endif
         }
