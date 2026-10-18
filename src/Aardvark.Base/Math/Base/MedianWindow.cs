@@ -5,7 +5,8 @@ namespace Aardvark.Base
 {
     /// <summary>
     /// Represents a moving median window of a sequence.
-    /// It builds the median of the last N inserted values.
+    /// It builds the median of the last N inserted values, ordering NaNs below
+    /// numeric values and equal to other NaNs.
     /// </summary>
     public class MedianWindow
     {
@@ -26,6 +27,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Inserts a value and returns the median of the active window. For an
         /// even number of active values, the upper of the two middle values is returned.
+        /// NaNs sort below numeric values and compare equal to other NaNs.
         /// </summary>
         public double Insert(double value)
         {
@@ -49,19 +51,19 @@ namespace Aardvark.Base
 
             m_buffer[slot] = value;
 
-            if (sortedIndex > 0 && value < m_buffer[m_indices[sortedIndex - 1]])
+            if (sortedIndex > 0 && value.CompareTo(m_buffer[m_indices[sortedIndex - 1]]) < 0)
             {
                 do
                 {
                     m_indices[sortedIndex] = m_indices[sortedIndex - 1];
                     sortedIndex--;
                 }
-                while (sortedIndex > 0 && value < m_buffer[m_indices[sortedIndex - 1]]);
+                while (sortedIndex > 0 && value.CompareTo(m_buffer[m_indices[sortedIndex - 1]]) < 0);
             }
             else
             {
                 int last = m_count - 1;
-                while (sortedIndex < last && value > m_buffer[m_indices[sortedIndex + 1]])
+                while (sortedIndex < last && value.CompareTo(m_buffer[m_indices[sortedIndex + 1]]) > 0)
                 {
                     m_indices[sortedIndex] = m_indices[sortedIndex + 1];
                     sortedIndex++;
@@ -82,6 +84,7 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the current median, or 0.0 when the window is empty. For an
         /// even number of active values, this is the upper of the two middle values.
+        /// NaNs sort below numeric values and compare equal to other NaNs.
         /// </summary>
         public double Value { get { return m_median; } }
 

@@ -123,8 +123,10 @@ Rank-deficient input may produce non-finite factors.
 `MedianWindow` retains the latest values in a fixed-size window without transient allocations.
 Before the window is full, `Insert` returns the upper median of all values seen
 so far; afterward it returns the upper median of the latest window. For an even
-active count, the upper of the two middle values is selected. Equal values,
-including signed zero, retain their current tie order.
+active count, the upper of the two middle values is selected. Ordering follows
+`double.CompareTo`: NaNs sort below numeric values and compare equal to other
+NaNs, so active NaNs participate in the median and evicted NaNs cannot corrupt
+later medians. Equal values, including signed zero, retain their current tie order.
 
 `Value` is the current median. `Last` returns the most recently inserted value,
 or `0.0` before the first insertion and after `Reset()`. `History` exposes the
