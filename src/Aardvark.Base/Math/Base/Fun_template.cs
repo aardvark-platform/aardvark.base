@@ -455,7 +455,27 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ ClampWrap(this __t.Name__ x, __t.Name__ a, __t.Name__ b)
+        //# if (t == Meta.IntType || t == Meta.UIntType) {
+        {
+            if (a >= b) return (__t.Name__)(ModP(x - a, b - a) + a);
+            return (__t.Name__)(ModP((long)x - a, (long)b - a) + a);
+        }
+        //# } else if (t == Meta.LongType) {
+        {
+            if (a >= b) return ModP(x - a, b - a) + a;
+            // Unsigned differences cover distances wider than long.MaxValue.
+            ulong width = unchecked((ulong)b - (ulong)a);
+            if (x >= a)
+            {
+                ulong offset = unchecked((ulong)x - (ulong)a) % width;
+                return unchecked((long)((ulong)a + offset));
+            }
+            ulong remainder = unchecked((ulong)a - (ulong)x) % width;
+            return remainder == 0 ? a : unchecked((long)((ulong)b - remainder));
+        }
+        //# } else {
             => (__t.Name__)(ModP(x - a, b - a) + a);
+        //# }
 
         //# });
         //# ilfdtypes.Where(t => t.Name != "ulong").ForEach(t => { //ulong cannot be wrapped in a larger integer variable for subtraction
@@ -465,7 +485,11 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ ClampWrap(this __t.Name__ x, Range1__t.Char__ range)
+        //# if (t == Meta.IntType || t == Meta.UIntType || t == Meta.LongType) {
+            => ClampWrap(x, range.Min, range.Max);
+        //# } else {
             => (__t.Name__)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
+        //# }
 
         //# });
         #endregion
