@@ -65,6 +65,19 @@ Raw encodings remain available through `Half.ToHalf(ushort)` and `Half.GetBits(H
 
 Binary/XML coders serialize the fields without reduction. Finite arithmetic can overflow.
 
+## Integer Interval Wrapping
+
+For `int`, `uint`, and `long`, `Fun.ClampWrap(x, a, b)` returns the exact mathematical
+`a + floorMod(x - a, b - a)` whenever `a < b`. The result lies in `[a,b)`, including
+for unsigned inputs below `a`, signed extremes, and intervals whose width exceeds
+the signed type's maximum. For example, `Fun.ClampWrap(0u, 1u, 4u)` returns `3u`.
+
+`Range1i`, `Range1ui`, and `Range1l` overloads use the same scalar behavior; integer
+vector overloads apply it component-wise. Empty or reversed intervals retain their
+legacy results and exceptions rather than acquiring a new validation policy.
+`ModP`, smaller integer and real-valued overloads are unchanged; there is no `ulong`
+`ClampWrap` overload.
+
 ## Integer Primality
 
 `Fun.IsPrime(int)` and `Fun.IsPrime(long)` return `true` exactly for prime integers: values greater than or equal to 2 whose only positive divisors are 1 and themselves. Negative values, zero, and one return `false`.

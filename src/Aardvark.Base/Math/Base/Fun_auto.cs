@@ -1956,7 +1956,10 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClampWrap(this int x, int a, int b)
-            => (int)(ModP(x - a, b - a) + a);
+        {
+            if (a >= b) return (int)(ModP(x - a, b - a) + a);
+            return (int)(ModP((long)x - a, (long)b - a) + a);
+        }
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
@@ -1964,7 +1967,10 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ClampWrap(this uint x, uint a, uint b)
-            => (uint)(ModP(x - a, b - a) + a);
+        {
+            if (a >= b) return (uint)(ModP(x - a, b - a) + a);
+            return (uint)(ModP((long)x - a, (long)b - a) + a);
+        }
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
@@ -1972,7 +1978,18 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ClampWrap(this long x, long a, long b)
-            => (long)(ModP(x - a, b - a) + a);
+        {
+            if (a >= b) return ModP(x - a, b - a) + a;
+            // Unsigned differences cover distances wider than long.MaxValue.
+            ulong width = unchecked((ulong)b - (ulong)a);
+            if (x >= a)
+            {
+                ulong offset = unchecked((ulong)x - (ulong)a) % width;
+                return unchecked((long)((ulong)a + offset));
+            }
+            ulong remainder = unchecked((ulong)a - (ulong)x) % width;
+            return remainder == 0 ? a : unchecked((long)((ulong)b - remainder));
+        }
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
@@ -2004,7 +2021,7 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ClampWrap(this int x, Range1i range)
-            => (int)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
+            => ClampWrap(x, range.Min, range.Max);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
@@ -2012,7 +2029,7 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static uint ClampWrap(this uint x, Range1ui range)
-            => (uint)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
+            => ClampWrap(x, range.Min, range.Max);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
@@ -2020,7 +2037,7 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ClampWrap(this long x, Range1l range)
-            => (long)(ModP(x - range.Min, range.Max - range.Min) + range.Min);
+            => ClampWrap(x, range.Min, range.Max);
 
         /// <summary>
         /// Clamps value to interval [a,b[ and cyclically wraps around values outside this interval.
