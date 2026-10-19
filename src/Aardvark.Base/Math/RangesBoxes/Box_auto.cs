@@ -477,8 +477,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
@@ -1491,8 +1492,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
@@ -2505,8 +2507,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
@@ -3519,8 +3522,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
@@ -4552,8 +4556,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
@@ -5585,8 +5590,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
@@ -6618,8 +6624,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
@@ -7632,8 +7639,9 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
-                for (var i = Min; i <= Max; i++)
+                for (var i = Min; i < Max; i++)
                     yield return i;
+                yield return Max;
             }
         }
 
