@@ -570,8 +570,14 @@ namespace Aardvark.Base
             get
             {
                 if (IsInvalid) yield break; //Todo: check should not be necessary
+                //# if (!ft.IsReal) {
+                for (var i = Min; i < Max; i++)
+                    yield return i;
+                yield return Max;
+                //# } else {
                 for (var i = Min; i <= Max; i++)
                     yield return i;
+                //# }
             }
         }
 
