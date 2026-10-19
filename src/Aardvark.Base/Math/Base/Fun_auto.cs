@@ -5811,6 +5811,9 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Acosh(x);
 #else
+                if (x < 1) return float.NaN;
+                // At large magnitudes the correction to Log(2*x) is below precision.
+                if (x > 4096f) return Log(x) + ConstantF.Ln2;
                 return Log(x + Sqrt(x * x - 1));
 #endif
         }
@@ -6019,6 +6022,9 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return Math.Acosh(x);
 #else
+                if (x < 1) return double.NaN;
+                // At large magnitudes the correction to Log(2*x) is below precision.
+                if (x > 67108864.0) return Log(x) + Constant.Ln2;
                 return Log(x + Sqrt(x * x - 1));
 #endif
         }

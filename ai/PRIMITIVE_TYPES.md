@@ -30,6 +30,16 @@ Examples:
 - Core vector/matrix structs are mutable value types (`struct`), not uniformly `readonly struct`.
 - For matrix/vector math in 3D, prefer explicit methods (`TransformPos`, `TransformDir`) over ambiguous shorthand.
 
+## Portable Inverse Hyperbolic Cosine
+
+The portable float/double `Acosh` fallbacks return NaN for inputs below one and
+finite results for all finite inputs at or above one, including the largest
+representable values. Large inputs use `Log(x) + Ln2` without squaring or doubling
+`x`; ordinary inputs retain the existing formula and its near-one rounding
+sensitivity. Positive infinity remains positive infinity, and NaN propagates.
+Native `Math.Acosh`/`MathF.Acosh` paths and component-wise vector delegation are
+unchanged. This is not a change to `Asinh`, `Atanh`, or complex functions.
+
 ## Complex Arithmetic
 
 `ComplexF` and `ComplexD` are mutable complex value types.

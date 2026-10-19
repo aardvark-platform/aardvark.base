@@ -1630,6 +1630,9 @@ namespace Aardvark.Base
                 return MathF.__fname__(x);
             //# }
 #else
+                if (x < 1) return __t.Name__.NaN;
+                // At large magnitudes the correction to Log(2*x) is below precision.
+                if (x > __(t == Meta.FloatType ? "4096f" : "67108864.0")__) return Log(x) + __constant__.Ln2;
                 return Log(x + Sqrt(x * x - 1));
 #endif
         }
