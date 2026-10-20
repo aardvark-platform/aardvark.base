@@ -5816,8 +5816,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the inverse hyperbolic tangent of the specified number.
-        /// Note that the absolute value of the argument must be smaller than 1.
+        /// Returns the inverse hyperbolic tangent of the specified number, preserving signed zero.
+        /// Returns signed infinity at +/-1 and NaN for NaN or arguments outside [-1,1].
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -5826,7 +5826,13 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return MathF.Atanh(x);
 #else
-                return 0.5f * Log((1 + x) / (1 - x));
+                var a = Abs(x);
+                // Below 2^-12 (float) / 2^-27 (double), the cubic correction rounds away.
+                if (a < 0.000244140625f) return x;
+                if (a >= 0.5f) return CopySign(0.5f * Log((1 + a) / (1 - a)), x);
+                var u = 2 * a / (1 - a);
+                var v = 1 + u;
+                return CopySign(0.5f * Log(v) * (u / (v - 1)), x);
 #endif
         }
 
@@ -6024,8 +6030,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the inverse hyperbolic tangent of the specified number.
-        /// Note that the absolute value of the argument must be smaller than 1.
+        /// Returns the inverse hyperbolic tangent of the specified number, preserving signed zero.
+        /// Returns signed infinity at +/-1 and NaN for NaN or arguments outside [-1,1].
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -6034,7 +6040,13 @@ namespace Aardvark.Base
 #if NETCOREAPP3_1_OR_GREATER
                 return Math.Atanh(x);
 #else
-                return 0.5 * Log((1 + x) / (1 - x));
+                var a = Abs(x);
+                // Below 2^-12 (float) / 2^-27 (double), the cubic correction rounds away.
+                if (a < 7.450580596923828125e-9) return x;
+                if (a >= 0.5) return CopySign(0.5 * Log((1 + a) / (1 - a)), x);
+                var u = 2 * a / (1 - a);
+                var v = 1 + u;
+                return CopySign(0.5 * Log(v) * (u / (v - 1)), x);
 #endif
         }
 
