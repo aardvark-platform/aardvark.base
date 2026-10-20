@@ -1635,8 +1635,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the inverse hyperbolic tangent of the specified number.
-        /// Note that the absolute value of the argument must be smaller than 1.
+        /// Returns the inverse hyperbolic tangent of the specified number, preserving signed zero.
+        /// Returns signed infinity at +/-1 and NaN for NaN or arguments outside [-1,1].
         /// </summary>
         //# fname = "Atanh";
         [Pure]
@@ -1650,7 +1650,13 @@ namespace Aardvark.Base
                 return MathF.__fname__(x);
             //# }
 #else
-                return __half__ * Log((1 + x) / (1 - x));
+                var a = Abs(x);
+                // Below 2^-12 (float) / 2^-27 (double), the cubic correction rounds away.
+                if (a < __(t == Meta.FloatType ? "0.000244140625f" : "7.450580596923828125e-9")__) return x;
+                if (a >= __half__) return CopySign(__half__ * Log((1 + a) / (1 - a)), x);
+                var u = 2 * a / (1 - a);
+                var v = 1 + u;
+                return CopySign(__half__ * Log(v) * (u / (v - 1)), x);
 #endif
         }
 

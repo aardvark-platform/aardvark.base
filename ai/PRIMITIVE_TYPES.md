@@ -30,6 +30,16 @@ Examples:
 - Core vector/matrix structs are mutable value types (`struct`), not uniformly `readonly struct`.
 - For matrix/vector math in 3D, prefer explicit methods (`TransformPos`, `TransformDir`) over ambiguous shorthand.
 
+## Portable Inverse Hyperbolic Tangent
+
+The portable float/double `Atanh` fallbacks preserve signed zeros and tiny inputs
+exactly, using precision-justified cutoffs and a local compensated logarithm to
+avoid near-zero cancellation. Evaluation is sign-symmetric. Inputs at +/-1 return
+signed infinity; NaNs and inputs outside [-1,1] return NaN.
+Native-runtime branches remain unchanged, including platform-specific tiny-input
+rounding. This does not change other hyperbolic/complex functions or the vector
+implementations, which continue to delegate component-wise.
+
 ## Complex Arithmetic
 
 `ComplexF` and `ComplexD` are mutable complex value types.
