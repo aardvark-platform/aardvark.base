@@ -336,8 +336,9 @@ namespace Aardvark.Base
             }
 
             /// <summary>
-            /// Computes the bounding box of the Kochanek-Bartels spline
-            /// defined by points the specified points, tension, and bias.
+            /// Computes the bounding box over the closed parameter domain of the
+            /// Kochanek-Bartels spline defined by the specified points, tension, and bias.
+            /// Parameters outside [0, 1] extrapolate the same cubic polynomial.
             /// </summary>
             public static Box3d Bounds(Range1d domain,
                 V3d p0, V3d p1, V3d p2, V3d p3, double tension, double bias)
@@ -350,10 +351,10 @@ namespace Aardvark.Base
                 var m1 = x1 * s1 + x2 * s2;
 
                 var bb = Box3d.Invalid;
-                bb.ExtendBy(domain.Min > 0
+                bb.ExtendBy(domain.Min != 0
                     ? Eval(domain.Min, p0, p1, p2, p3, tension, bias)
                     : p1);
-                bb.ExtendBy(domain.Max < 1
+                bb.ExtendBy(domain.Max != 1
                     ? Eval(domain.Max, p0, p1, p2, p3, tension, bias)
                     : p2);
 

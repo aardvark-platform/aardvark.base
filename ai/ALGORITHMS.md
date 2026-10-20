@@ -190,6 +190,12 @@ parameter values.
 `Ipol.CatmullRom` and `Ipol.KochanekBartels` provide the same value/derivative orders.
 All three families evaluate in constant time and are allocation-free after warmup.
 
+`Ipol.KochanekBartels.Bounds(domain, ...)` bounds the same polynomial over the closed,
+finite ordered parameter domain, including extrapolation outside `[0, 1]` and point
+domains. It includes both actual endpoint values and stationary points inside the
+domain; only parameters exactly `0` and `1` use `p1` and `p2` directly. Overloads without
+a domain continue to bound `[0, 1]`.
+
 ## Enumerable Population Variance
 
 `Fun.Variance` and `Fun.StandardDeviation` enumerate `IEnumerable<int>`,
