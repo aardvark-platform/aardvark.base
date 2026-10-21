@@ -24,6 +24,7 @@
     <Compile Include="Tensors\TensorTests.fs" />
     <Compile Include="Tensors\TensorMathTests.fs" />
     <Compile Include="Tensors\PixTests.fs" />
+    <Compile Include="Datastructures\FixedSizeArrayTests.fs" />
     <Compile Include="Datastructures\RangeSetTests.fs" />
     <Compile Include="Datastructures\SortedSetExt.fs" />
     <Compile Include="Datastructures\MapExt.fs" />
