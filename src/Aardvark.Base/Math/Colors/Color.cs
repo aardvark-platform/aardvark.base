@@ -1365,9 +1365,11 @@ namespace Aardvark.Base
 
         public static C4b Average(this IEnumerable<C4b> items)
         {
-            var sum = new C4d(0, 0, 0);
+            var sum = new C4d(0, 0, 0, 0);
             long count = 0;
             foreach (var c in items) { sum.R += c.R; sum.G += c.G; sum.B += c.B; sum.A += c.A; ++count; }
+            // Retain the legacy empty-input computation.
+            if (count == 0) sum.A = 1;
             var scale = 1.0 / count;
             return new C4b((byte)(sum.R * scale), (byte)(sum.G * scale), (byte)(sum.B * scale), (byte)(sum.A * scale));
         }
