@@ -169,12 +169,21 @@ namespace Aardvark.Base
         //# numtypes.ForEach(t => {
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
+        //# if (iltypes.Contains(t)) {
+        /// The integer distance is exact; a negative epsilon returns false.
+        //# }
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this __t.Name__ x, __t.Name__ y, __t.Name__ epsilon)
         {
-            //# if (signedtypes.Contains(t)) {
+            //# if (t == Meta.IntType) {
+            return Abs((long)x - y) <= epsilon;
+            //# } else if (t == Meta.LongType) {
+            return epsilon >= 0 &&
+                (x > y ? unchecked((ulong)x - (ulong)y)
+                       : unchecked((ulong)y - (ulong)x)) <= (ulong)epsilon;
+            //# } else if (signedtypes.Contains(t)) {
             return Abs(x - y) <= epsilon;
             //# } else {
             return (x > y) ? ((x - y) <= epsilon) : ((y - x) <= epsilon);
