@@ -1,3 +1,4 @@
+- [Base] Fixed Kochanek-Bartels spline bounds for parameter domains extending outside `[0, 1]`
 - Update to .NET 10
 
 ### 5.3.28

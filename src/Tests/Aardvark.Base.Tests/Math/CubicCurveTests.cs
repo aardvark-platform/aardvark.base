@@ -1,6 +1,11 @@
 using Aardvark.Base;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Aardvark.Tests
 {
@@ -166,6 +171,162 @@ namespace Aardvark.Tests
             Assert.That(double.IsFinite(warmup), Is.True);
             Assert.That(double.IsFinite(checksum), Is.True);
             Assert.That(allocated, Is.Zero);
+        }
+
+        private static IEnumerable<Assembly> BoundsAssemblies()
+        {
+            yield return typeof(Ipol).Assembly;
+            string path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Ipol).Assembly.Location)!,
+                "..", "netstandard2.0", "Aardvark.Base.dll"));
+            Assert.That(File.Exists(path), Is.True, $"Missing sibling core assembly: {path}");
+            yield return Assembly.LoadFile(path);
+        }
+
+        private static Func<double, double, V3d[], double, double, Box3d> BindBounds(Assembly assembly, int wrapper = 0)
+        {
+            var vector = assembly.GetType(typeof(V3d).FullName!, throwOnError: true)!;
+            var range = assembly.GetType(typeof(Range1d).FullName!, throwOnError: true)!;
+            var owner = assembly.GetType(typeof(Ipol.KochanekBartels).FullName!, throwOnError: true)!;
+            var min = Expression.Parameter(typeof(double)); var max = Expression.Parameter(typeof(double));
+            var points = Expression.Parameter(typeof(V3d[]));
+            var tension = Expression.Parameter(typeof(double)); var bias = Expression.Parameter(typeof(double));
+            var ctor = vector.GetConstructor(new[] { typeof(double), typeof(double), typeof(double) })!;
+            Expression Point(int i) => Expression.New(ctor, "XYZ".Select(c =>
+                Expression.Field(Expression.ArrayIndex(points, Expression.Constant(i)), c.ToString())));
+            var args = new List<Expression>();
+            if (wrapper == 0) args.Add(Expression.New(range.GetConstructor(new[] { typeof(double), typeof(double) })!, min, max));
+            args.AddRange(Enumerable.Range(0, 4).Select(Point));
+            if (wrapper != 2) { args.Add(tension); args.Add(bias); }
+            var method = owner.GetMethod(nameof(Ipol.KochanekBartels.Bounds), args.Select(a => a.Type).ToArray())!;
+            Assert.That(method.ReturnType.Assembly, Is.SameAs(assembly));
+            var result = Expression.Variable(method.ReturnType);
+            Expression NativeVector(string field) => Expression.New(typeof(V3d).GetConstructor(new[] { typeof(double), typeof(double), typeof(double) })!,
+                "XYZ".Select(c => Expression.Field(Expression.Field(result, field), c.ToString())));
+            var body = Expression.Block(new[] { result }, Expression.Assign(result, Expression.Call(method, args)),
+                Expression.New(typeof(Box3d).GetConstructor(new[] { typeof(V3d), typeof(V3d) })!, NativeVector("Min"), NativeVector("Max")));
+            return Expression.Lambda<Func<double, double, V3d[], double, double, Box3d>>(body, min, max, points, tension, bias).Compile();
+        }
+
+        private static V3d[] PolynomialControls(V3d cubic, V3d quadratic, V3d linear, V3d constant)
+            => new[] { cubic + quadratic - linear + constant, constant,
+                cubic + quadratic + linear + constant, 6 * cubic + 4 * quadratic + 2 * linear + constant };
+
+        private static IEnumerable<(string Name, V3d[] Points)> BoundsCurves()
+        {
+            yield return ("linear reproduction", new[] { V3d.Zero, new V3d(1), new V3d(2), new V3d(3) });
+            yield return ("constant", Enumerable.Repeat(new V3d(2, -3, 7), 4).ToArray());
+            yield return ("quadratic", PolynomialControls(V3d.Zero, new V3d(1, -1, 2), new V3d(2, -4, -1), new V3d(1, 3, -2)));
+            yield return ("cubic", PolynomialControls(new V3d(1, -1, 2), new V3d(-3, 1, -6), new V3d(2, 2, 4), new V3d(1, -2, 3)));
+            yield return ("repeated stationary root", PolynomialControls(new V3d(1, -1, 0), new V3d(-4.5, 4.5, 0),
+                new V3d(6.75, -6.75, 1), new V3d(-3.375, 3.375, 0)));
+            var random = new Random(73031);
+            for (int i = 0; i < 12; i++)
+                yield return ($"seeded {i}", Enumerable.Range(0, 4).Select(_ =>
+                    new V3d(random.Next(-8, 9) * 0.25, random.Next(-8, 9) * 0.25, random.Next(-8, 9) * 0.25)).ToArray());
+        }
+
+        private static readonly (double Tension, double Bias)[] s_boundsParameters =
+        {
+            (0, 0), (0.25, -0.5), (-0.5, 0.75), (0.75, -0.25), (1, 0.5), (-1.25, 1.5)
+        };
+
+        private static IEnumerable<Range1d> BoundsDomains(bool extrapolated)
+        {
+            double[] parameters = { -3, -2, -1, -0.25, 0, Math.BitIncrement(0), 0.125, 0.25, 0.5,
+                0.75, 0.875, Math.BitDecrement(1), 1, Math.BitIncrement(1), 1.25, 2, 3 };
+            for (int i = 0; i < parameters.Length; i++)
+            for (int j = i; j < parameters.Length; j++)
+                if ((parameters[i] < 0 || parameters[j] > 1) == extrapolated)
+                    yield return new Range1d(parameters[i], parameters[j]);
+        }
+
+        private static IEnumerable<double> StationaryRoots(double cubic, double quadratic, double linear)
+        {
+            double a = 3 * cubic, b = 2 * quadratic, c = linear;
+            if (a == 0)
+            {
+                if (b != 0) yield return -c / b;
+                yield break;
+            }
+            double scale = Math.Max(Math.Abs(a), Math.Max(Math.Abs(b), Math.Abs(c)));
+            a /= scale; b /= scale; c /= scale;
+            double discriminant = b * b - 4 * a * c;
+            if (discriminant < 0) yield break;
+            if (discriminant == 0) { yield return -b / (2 * a); yield break; }
+            double q = -0.5 * (b + Math.CopySign(Math.Sqrt(discriminant), b));
+            yield return q / a;
+            yield return c / q;
+        }
+
+        private static void CheckBounds(Box3d actual, Range1d domain, V3d[] points, double tension, double bias, string context)
+        {
+            Assert.That(actual.IsValid, Is.True, context);
+            for (int axis = 0; axis < 3; axis++)
+            {
+                double p0 = points[0][axis], p1 = points[1][axis], p2 = points[2][axis], p3 = points[3][axis];
+                // Expand the control-point coefficients independently, not via production tangents/Eval.
+                double scale = (1 - tension) / 2;
+                double incoming = -scale * (1 + bias) * p0 + 2 * scale * bias * p1 + scale * (1 - bias) * p2;
+                double outgoing = -scale * (1 + bias) * p1 + 2 * scale * bias * p2 + scale * (1 - bias) * p3;
+                double a = 2 * p1 - 2 * p2 + incoming + outgoing;
+                double b = -3 * p1 + 3 * p2 - 2 * incoming - outgoing;
+                double c = incoming, d = p1;
+                double Eval(double t) => ((a * t + b) * t + c) * t + d;
+                var values = new List<double> { Eval(domain.Min), Eval(domain.Max) };
+                foreach (double t in StationaryRoots(a, b, c))
+                    if (t >= domain.Min && t <= domain.Max) values.Add(Eval(t));
+                double expectedMin = values.Min(), expectedMax = values.Max();
+                double tolerance = 4e-13 + 4e-12 * Math.Max(Math.Abs(expectedMin), Math.Abs(expectedMax));
+                string message = $"{context}, axis {axis}, domain {domain}, tension {tension}, bias {bias}";
+                Assert.That(double.IsFinite(actual.Min[axis]) && double.IsFinite(actual.Max[axis]), Is.True, message);
+                Assert.That(actual.Min[axis], Is.EqualTo(expectedMin).Within(tolerance), message + " min");
+                Assert.That(actual.Max[axis], Is.EqualTo(expectedMax).Within(tolerance), message + " max");
+                for (int sample = 0; sample <= 4; sample++)
+                {
+                    double value = Eval(domain.Min + (domain.Max - domain.Min) * sample / 4);
+                    Assert.That(value, Is.InRange(actual.Min[axis] - tolerance, actual.Max[axis] + tolerance), message + $", sample {sample}");
+                }
+            }
+        }
+
+        [Test]
+        public void ExtrapolatedSplineBoundsMatchPolynomialExtrema()
+        {
+            foreach (var assembly in BoundsAssemblies())
+            {
+                var call = BindBounds(assembly);
+                var linear = new[] { V3d.Zero, new V3d(1), new V3d(2), new V3d(3) };
+                var regression = call(-1, 2, linear, 0, 0);
+                Assert.That(regression.Min, Is.EqualTo(V3d.Zero), "[-1,2] linear minimum");
+                Assert.That(regression.Max, Is.EqualTo(new V3d(3)), "[-1,2] linear maximum");
+                foreach (var curve in BoundsCurves())
+                foreach (var p in s_boundsParameters)
+                foreach (var domain in BoundsDomains(true))
+                    CheckBounds(call(domain.Min, domain.Max, curve.Points, p.Tension, p.Bias), domain,
+                        curve.Points, p.Tension, p.Bias, curve.Name);
+            }
+        }
+
+        [Test]
+        public void SplineBoundsKeepUnitSubintervalAndWrapperBehavior()
+        {
+            foreach (var assembly in BoundsAssemblies())
+            {
+                var call = BindBounds(assembly);
+                var unit = BindBounds(assembly, 1); var defaults = BindBounds(assembly, 2);
+                foreach (var curve in BoundsCurves())
+                {
+                    Assert.That(defaults(0, 1, curve.Points, 0, 0), Is.EqualTo(call(0, 1, curve.Points, 0, 0)), curve.Name);
+                    foreach (var p in s_boundsParameters)
+                    {
+                        Assert.That(unit(0, 1, curve.Points, p.Tension, p.Bias),
+                            Is.EqualTo(call(0, 1, curve.Points, p.Tension, p.Bias)), curve.Name);
+                        foreach (var domain in BoundsDomains(false))
+                            CheckBounds(call(domain.Min, domain.Max, curve.Points, p.Tension, p.Bias), domain,
+                                curve.Points, p.Tension, p.Bias, curve.Name);
+                    }
+                }
+            }
         }
 
         private static double Hermite(int derivative, double t, double a, double b, double tangentIn, double tangentOut)
