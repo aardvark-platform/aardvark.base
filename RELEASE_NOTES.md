@@ -1,3 +1,4 @@
+- [Base] Made `int`/`long` approximate comparisons overflow-safe, including integer vectors
 - Update to .NET 10
 
 ### 5.3.28

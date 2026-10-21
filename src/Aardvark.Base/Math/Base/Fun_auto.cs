@@ -1197,12 +1197,13 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
+        /// The integer distance is exact; a negative epsilon returns false.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this int x, int y, int epsilon)
         {
-            return Abs(x - y) <= epsilon;
+            return Abs((long)x - y) <= epsilon;
         }
 
         /// <summary>
@@ -1217,12 +1218,15 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns whether the distance between x and y is not more than epsilon.
+        /// The integer distance is exact; a negative epsilon returns false.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ApproximateEquals(this long x, long y, long epsilon)
         {
-            return Abs(x - y) <= epsilon;
+            return epsilon >= 0 &&
+                (x > y ? unchecked((ulong)x - (ulong)y)
+                       : unchecked((ulong)y - (ulong)x)) <= (ulong)epsilon;
         }
 
         /// <summary>
