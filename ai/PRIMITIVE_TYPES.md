@@ -89,6 +89,15 @@ var lcm = Fun.LeastCommonMultiple(-18L, 24L); // 72
 var zero = Fun.LeastCommonMultiple(0u, 0u);   // 0
 ```
 
+## Floating-Point Integer Logarithms
+
+For positive finite `float`/`double` inputs, `Fun.Log2Int` returns the exact floor of
+the base-two exponent, and `Fun.Log2CeilingInt` returns its exact ceiling, including
+subnormals. Both agree at powers of two: `float.Epsilon` gives `-149` and
+`double.Epsilon` gives `-1074`. Floating vector `Log2Int` applies this per component.
+Zero, negative values, infinities and NaNs retain the existing exponent-field
+conventions; these methods do not validate the mathematical logarithm domain.
+
 ## Vector Families
 
 Common families:
@@ -182,6 +191,7 @@ var hit = box.Intersects(ray, out double t);
 - `src/Aardvark.Base/Math/Base/Complex_auto.cs` (`ComplexF`/`ComplexD` magnitude, reciprocal, division, and principal square-root semantics)
 - `src/Aardvark.Base/Math/Base/Half.cs` (`Half` comparison, equality, hashing, ordering, and extrema semantics)
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`, `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple`)
+- `src/Aardvark.Base/Math/Base/Fun.cs` (`Fun.Log2Int`, `Fun.Log2CeilingInt`)
 - `src/Aardvark.Base/Math/Vectors/Vector_auto.cs` (`V3d`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`M44d`, transforms, operators)
 - `src/Aardvark.Base/Math/Trafos/Rot3_auto.cs` (`Rot3d` to `M44d` cast)

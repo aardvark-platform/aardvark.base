@@ -1,3 +1,4 @@
+- [Base] Corrected floating-point integer logarithms for positive subnormals and coordinate scaling for tiny `Cell`/`Cell2d` bounds
 - Update to .NET 10
 
 ### 5.3.28
