@@ -468,4 +468,95 @@ namespace Aardvark.Base.Benchmarks
             return sum;
         }
     }
+
+    [MemoryDiagnoser]
+    public class FloatingLog2Int
+    {
+        public const int Count = 4096;
+        readonly float[] m_float = new float[Count];
+        readonly double[] m_double = new double[Count];
+        readonly V4f[] m_vectorFloat = new V4f[Count];
+        readonly V4d[] m_vectorDouble = new V4d[Count];
+
+        [Params(false, true)]
+        public bool Subnormal { get; set; }
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            var random = new Random(41973);
+            var bytes = new byte[8];
+            for (int i = 0; i < Count; i++)
+            {
+                random.NextBytes(bytes);
+                uint f = BitConverter.ToUInt32(bytes, 0) & 0x007fffff;
+                ulong d = BitConverter.ToUInt64(bytes, 0) & 0x000fffffffffffff;
+                if (Subnormal) { if (f == 0) f = 1; if (d == 0) d = 1; }
+                else { f |= (uint)random.Next(1, 255) << 23; d |= (ulong)random.Next(1, 2047) << 52; }
+                m_float[i] = BitConverter.Int32BitsToSingle((int)f);
+                m_double[i] = BitConverter.Int64BitsToDouble((long)d);
+            }
+            for (int i = 0; i < Count; i++)
+            {
+                m_vectorFloat[i] = new V4f(m_float[i], m_float[(i + 17) % Count], m_float[(i + 31) % Count], m_float[(i + 47) % Count]);
+                m_vectorDouble[i] = new V4d(m_double[i], m_double[(i + 17) % Count], m_double[(i + 31) % Count], m_double[(i + 47) % Count]);
+            }
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public int FloatFloor()
+        {
+            int sum = 0;
+            for (int i = 0; i < Count; i++) sum += Fun.Log2Int(m_float[i]);
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public int FloatCeiling()
+        {
+            int sum = 0;
+            for (int i = 0; i < Count; i++) sum += Fun.Log2CeilingInt(m_float[i]);
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public int DoubleFloor()
+        {
+            int sum = 0;
+            for (int i = 0; i < Count; i++) sum += Fun.Log2Int(m_double[i]);
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public int DoubleCeiling()
+        {
+            int sum = 0;
+            for (int i = 0; i < Count; i++) sum += Fun.Log2CeilingInt(m_double[i]);
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public int VectorFloatFloor()
+        {
+            int sum = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                var value = Fun.Log2Int(m_vectorFloat[i]);
+                sum += value.X + value.Y + value.Z + value.W;
+            }
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public int VectorDoubleFloor()
+        {
+            int sum = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                var value = Fun.Log2Int(m_vectorDouble[i]);
+                sum += value.X + value.Y + value.Z + value.W;
+            }
+            return sum;
+        }
+    }
 }

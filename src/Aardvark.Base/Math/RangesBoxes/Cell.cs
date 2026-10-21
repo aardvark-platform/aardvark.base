@@ -158,7 +158,9 @@ public readonly partial struct Cell : IEquatable<Cell>
                     : box.Size.NormMax.Log2CeilingInt()
                     ;
             var s = Math.Pow(2.0, Exponent);
-            var a = (box.Min * (1.0 / s)).Floor();
+            var inverse = 1.0 / s;
+            // Tiny scales may overflow the reciprocal while component-wise division stays finite.
+            var a = (double.IsPositiveInfinity(inverse) ? box.Min / s : box.Min * inverse).Floor();
 
             X = (long)a.X;
             Y = (long)a.Y;

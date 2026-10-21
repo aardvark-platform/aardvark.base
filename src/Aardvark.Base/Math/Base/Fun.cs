@@ -689,8 +689,16 @@ namespace Aardvark.Base
         {
             fixed (double* ptr = &v)
             {
-                var a = (ulong*)ptr;
-                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - 1023;
+                var bits = *(ulong*)ptr;
+                // The unsigned range 1..mantissaMask selects only positive subnormals.
+                if (unchecked(bits - 1) < DoubleMantissaMask)
+                {
+                    // v = significand * 2^-1074; the integer significand normalizes exactly.
+                    var significand = (double)bits;
+                    var normalized = *(ulong*)&significand;
+                    return (int)((normalized & DoubleExponentMask) >> DoubleMantissaBits) - 1023 - 1074;
+                }
+                return (int)((bits & DoubleExponentMask) >> DoubleMantissaBits) - 1023;
             }
         }
 
@@ -699,8 +707,16 @@ namespace Aardvark.Base
         {
             fixed (float* ptr = &v)
             {
-                var a = (uint*)ptr;
-                return (int)(((*a & FloatExponentMask) >> FloatMantissaBits)) - 127;
+                var bits = *(uint*)ptr;
+                // The unsigned range 1..mantissaMask selects only positive subnormals.
+                if (unchecked(bits - 1) < FloatMantissaMask)
+                {
+                    // v = significand * 2^-149; the integer significand normalizes exactly.
+                    var significand = (float)bits;
+                    var normalized = *(uint*)&significand;
+                    return (int)((normalized & FloatExponentMask) >> FloatMantissaBits) - 127 - 149;
+                }
+                return (int)((bits & FloatExponentMask) >> FloatMantissaBits) - 127;
             }
         }
 
@@ -709,9 +725,17 @@ namespace Aardvark.Base
         {
             fixed (double* ptr = &v)
             {
-                var a = (ulong*)ptr;
-                var shift = (*a & DoubleMantissaMask) > 0 ? 1022 : 1023;
-                return (int)(((*a & DoubleExponentMask) >> DoubleMantissaBits)) - shift;
+                var bits = *(ulong*)ptr;
+                if (unchecked(bits - 1) < DoubleMantissaMask)
+                {
+                    // Normalize the exact integer significand, retaining its power-of-two test.
+                    var significand = (double)bits;
+                    var normalized = *(ulong*)&significand;
+                    var subnormalShift = (normalized & DoubleMantissaMask) > 0 ? 1022 : 1023;
+                    return (int)((normalized & DoubleExponentMask) >> DoubleMantissaBits) - subnormalShift - 1074;
+                }
+                var shift = (bits & DoubleMantissaMask) > 0 ? 1022 : 1023;
+                return (int)((bits & DoubleExponentMask) >> DoubleMantissaBits) - shift;
             }
         }
 
@@ -720,14 +744,23 @@ namespace Aardvark.Base
         {
             fixed (float* ptr = &v)
             {
-                var a = (uint*)ptr;
-                var shift = (*a & FloatMantissaMask) > 0 ? 126 : 127;
-                return (int)(((*a & FloatExponentMask) >> FloatMantissaBits)) - shift;
+                var bits = *(uint*)ptr;
+                if (unchecked(bits - 1) < FloatMantissaMask)
+                {
+                    // Normalize the exact integer significand, retaining its power-of-two test.
+                    var significand = (float)bits;
+                    var normalized = *(uint*)&significand;
+                    var subnormalShift = (normalized & FloatMantissaMask) > 0 ? 126 : 127;
+                    return (int)((normalized & FloatExponentMask) >> FloatMantissaBits) - subnormalShift - 149;
+                }
+                var shift = (bits & FloatMantissaMask) > 0 ? 126 : 127;
+                return (int)((bits & FloatExponentMask) >> FloatMantissaBits) - shift;
             }
         }
 
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
+        /// Positive finite values include subnormals. Other inputs retain the exponent-field convention.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this double v)
@@ -735,6 +768,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
+        /// Positive finite values include subnormals. Other inputs retain the exponent-field convention.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this float v)
@@ -794,6 +828,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// Positive finite values include subnormals. Other inputs retain the exponent-field convention.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2CeilingInt(this double v)
@@ -801,6 +836,7 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Efficiently computes the Log2 for the given value rounded to the next integer towards positive infinity.
+        /// Positive finite values include subnormals. Other inputs retain the exponent-field convention.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2CeilingInt(this float v)
