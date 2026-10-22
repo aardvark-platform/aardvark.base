@@ -6354,7 +6354,12 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double InvLerp(this long y, long a, long b)
-            => ((double)a - (double)y) / ((double)a - (double)b);
+        {
+            if (a == b) return ((double)a - (double)y) / ((double)a - (double)b);
+            var numerator = a >= y ? (double)unchecked((ulong)a - (ulong)y) : -(double)unchecked((ulong)y - (ulong)a);
+            var denominator = a >= b ? (double)unchecked((ulong)a - (ulong)b) : -(double)unchecked((ulong)b - (ulong)a);
+            return numerator / denominator;
+        }
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.
@@ -6378,7 +6383,12 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double InvLerp(this ulong y, ulong a, ulong b)
-            => ((double)a - (double)y) / ((double)a - (double)b);
+        {
+            if (a == b) return ((double)a - (double)y) / ((double)a - (double)b);
+            var numerator = a >= y ? (double)unchecked(a - y) : -(double)unchecked(y - a);
+            var denominator = a >= b ? (double)unchecked(a - b) : -(double)unchecked(b - a);
+            return numerator / denominator;
+        }
 
         /// <summary>
         /// Linearly interpolates between a and b according to t.

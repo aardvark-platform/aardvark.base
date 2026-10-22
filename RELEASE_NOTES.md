@@ -1,4 +1,5 @@
 - Update to .NET 10
+- [Math] Fixed 64-bit integer inverse interpolation for narrow intervals at large coordinates and full-width differences
 
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face

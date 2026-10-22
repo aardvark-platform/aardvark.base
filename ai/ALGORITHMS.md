@@ -176,6 +176,17 @@ Polynomial coefficient arrays are stored in ascending degree order.
 Fixed-width tuple APIs fill unused trailing entries with `NaN`. Cubic solvers preserve
 repeated roots. Array conversion drops trailing `NaN` entries.
 
+## 64-bit Inverse Linear Interpolation
+
+For distinct `long` or `ulong` endpoints, `Fun.InvLerp(y, a, b)` forms the signed
+`a - y` and `a - b` differences as overflow-safe unsigned magnitudes before converting
+to `double` and dividing. This preserves small intervals at large coordinates and
+supports full-width differences, reversed endpoints and extrapolation. Conversion
+and division still round; correctly rounded rational results are not promised.
+Equal endpoints retain the original floating expression and its degenerate results.
+The numerator is positive zero at `y == a`, so an ascending interval returns negative
+zero there, as with the original `a - y` / `a - b` orientation.
+
 ## Cubic Curve Evaluation
 
 `Ipol.CubicHermite.Eval`, `EvalD1`, `EvalD2`, and `EvalD3` evaluate scalar, `V2d`,
