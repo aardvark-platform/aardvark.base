@@ -1730,7 +1730,16 @@ namespace Aardvark.Base
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double InvLerp(this __t.Name__ y, __t.Name__ a, __t.Name__ b)
+        //# if (t.Name == "long" || t.Name == "ulong") { var cast = t.Name == "long" ? "(ulong)" : "";
+        {
+            if (a == b) return ((double)a - (double)y) / ((double)a - (double)b);
+            var numerator = a >= y ? (double)unchecked(__cast__a - __cast__y) : -(double)unchecked(__cast__y - __cast__a);
+            var denominator = a >= b ? (double)unchecked(__cast__a - __cast__b) : -(double)unchecked(__cast__b - __cast__a);
+            return numerator / denominator;
+        }
+        //# } else {
             => ((double)a - (double)y) / ((double)a - (double)b);
+        //# }
 
         //# }
         //# });
