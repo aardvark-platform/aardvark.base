@@ -190,6 +190,14 @@ parameter values.
 `Ipol.CatmullRom` and `Ipol.KochanekBartels` provide the same value/derivative orders.
 All three families evaluate in constant time and are allocation-free after warmup.
 
+## Enumerable Integral Means
+
+`Fun.Mean` accumulates `IEnumerable<byte>` and `IEnumerable<sbyte>` sums in `long`,
+and `IEnumerable<long>` and `IEnumerable<ulong>` sums in `decimal`. These sums are
+exact throughout the existing `Int32` element-count domain. The sum is converted to
+`double` before division by the count, so floating-point conversion and division
+rounding still apply. Empty inputs return `NaN`; enumeration remains single-pass.
+
 ## Enumerable Population Variance
 
 `Fun.Variance` and `Fun.StandardDeviation` enumerate `IEnumerable<int>`,
