@@ -2904,7 +2904,7 @@ namespace Aardvark.Base
         public static int AbsSum(this IEnumerable<sbyte> array)
         {
             int sum = 0;
-            foreach (var i in array) sum += i.Abs();
+            foreach (var i in array) sum += ((int)i).Abs();
             return sum;
         }
 
@@ -2915,7 +2915,7 @@ namespace Aardvark.Base
         public static long AbsSum(this IEnumerable<short> array)
         {
             long sum = 0;
-            foreach (var i in array) sum += i.Abs();
+            foreach (var i in array) sum += ((long)i).Abs();
             return sum;
         }
 
@@ -2926,7 +2926,7 @@ namespace Aardvark.Base
         public static long AbsSum(this IEnumerable<int> array)
         {
             long sum = 0;
-            foreach (var i in array) sum += i.Abs();
+            foreach (var i in array) sum += ((long)i).Abs();
             return sum;
         }
 
