@@ -812,6 +812,7 @@ namespace Aardvark.Base
         #region AbsSum
 
         //# signedtypes.ForEach(t => { var st = Meta.SummationTypeOf(t);
+        //# var value = t.Name == "sbyte" || t.Name == "short" || t.Name == "int" ? "((" + st.Name + ")i)" : "i";
         /// <summary>
         /// Returns the sum of the absolute values of the given numbers.
         /// </summary>
@@ -819,7 +820,7 @@ namespace Aardvark.Base
         public static __st.Name__ AbsSum(this IEnumerable<__t.Name__> array)
         {
             __st.Name__ sum = 0;
-            foreach (var i in array) sum += i.Abs();
+            foreach (var i in array) sum += __value__.Abs();
             return sum;
         }
 
