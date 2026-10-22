@@ -1,4 +1,5 @@
 - Update to .NET 10
+- [Math] Fixed overflowing sums in byte, sbyte, long and ulong sequence means
 
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face

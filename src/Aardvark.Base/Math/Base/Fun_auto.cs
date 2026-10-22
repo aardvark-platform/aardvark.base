@@ -6456,7 +6456,7 @@ namespace Aardvark.Base
         public static double Mean(this IEnumerable<byte> array)
         {
             int count = 0;
-            int sum = 0;
+            long sum = 0;
             foreach (var x in array) { sum += x; ++count; }
             return (double)sum / count;
         }
@@ -6468,7 +6468,7 @@ namespace Aardvark.Base
         public static double Mean(this IEnumerable<sbyte> array)
         {
             int count = 0;
-            int sum = 0;
+            long sum = 0;
             foreach (var x in array) { sum += x; ++count; }
             return (double)sum / count;
         }
@@ -6528,9 +6528,9 @@ namespace Aardvark.Base
         public static double Mean(this IEnumerable<long> array)
         {
             int count = 0;
-            long sum = 0;
+            decimal sum = 0;
             foreach (var x in array) { sum += x; ++count; }
-            return (double)sum / count;
+            return (double)(sum == 0 ? 0m : sum) / count;
         }
 
         /// <summary>
@@ -6540,7 +6540,7 @@ namespace Aardvark.Base
         public static double Mean(this IEnumerable<ulong> array)
         {
             int count = 0;
-            ulong sum = 0;
+            decimal sum = 0;
             foreach (var x in array) { sum += x; ++count; }
             return (double)sum / count;
         }

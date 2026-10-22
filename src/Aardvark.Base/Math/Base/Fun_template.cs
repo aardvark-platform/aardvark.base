@@ -1739,7 +1739,9 @@ namespace Aardvark.Base
 
         #region Mean
 
-        //# numtypes.ForEach(t => { var st = Meta.SummationTypeOf(t);
+        //# numtypes.ForEach(t => {
+        //# var st = t.Name == "byte" || t.Name == "sbyte" ? "long" : t.Name == "long" || t.Name == "ulong" ? "decimal" : Meta.SummationTypeOf(t).Name;
+        //# var result = t.Name == "long" ? "(sum == 0 ? 0m : sum)" : "sum"; // Decimal cancellation can retain a negative zero.
         /// <summary>
         /// Returns the mean of the given values.
         /// </summary>
@@ -1747,9 +1749,9 @@ namespace Aardvark.Base
         public static double Mean(this IEnumerable<__t.Name__> array)
         {
             int count = 0;
-            __st.Name__ sum = 0;
+            __st__ sum = 0;
             foreach (var x in array) { sum += x; ++count; }
-            return (double)sum / count;
+            return (double)__result__ / count;
         }
 
         //# });
