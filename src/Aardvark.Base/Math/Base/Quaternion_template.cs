@@ -37,6 +37,7 @@ namespace Aardvark.Base
     //#   var half = isDouble ? "0.5" : "0.5f";
     //#   var pi = isDouble ? "Constant.Pi" : "ConstantF.Pi";
     //#   var piHalf = isDouble ? "Constant.PiHalf" : "ConstantF.PiHalf";
+    //#   var minNormal = isDouble ? "2.2250738585072014e-308" : "1.1754943508222875e-38f";
     #region __type__
 
     /// <summary>
@@ -205,7 +206,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets normalized (unit) quaternion from this <see cref="__type__"/>
+        /// Gets a unit quaternion from this finite, nonzero <see cref="__type__"/>.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         public readonly __type__ Normalized
         {
@@ -557,19 +559,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a normalized copy of a <see cref="__type__"/>.
+        /// Returns a unit copy of a finite, nonzero <see cref="__type__"/>.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __type__ Normalized(__type__ q)
             => q.Normalized;
 
         /// <summary>
-        /// Normalizes a <see cref="__type__"/>.
+        /// Normalizes a finite, nonzero <see cref="__type__"/> to unit length.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref __type__ q)
         {
-            var norm = q.Norm;
+            var normSquared = q.NormSquared;
+            if (normSquared < __minNormal__ || __ftype__.IsPositiveInfinity(normSquared))
+            {
+                var max = Fun.Max(Fun.Abs(q.W), Fun.Abs(q.X), Fun.Abs(q.Y), Fun.Abs(q.Z));
+                if (max > 0 && max < __ftype__.PositiveInfinity)
+                {
+                    q.W /= max;
+                    q.X /= max;
+                    q.Y /= max;
+                    q.Z /= max;
+                    normSquared = q.NormSquared;
+                }
+            }
+            var norm = normSquared.Sqrt();
             if (norm > 0)
             {
                 var scale = 1 / norm;
