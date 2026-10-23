@@ -179,7 +179,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets normalized (unit) quaternion from this <see cref="QuaternionF"/>
+        /// Gets a unit quaternion from this finite, nonzero <see cref="QuaternionF"/>.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         public readonly QuaternionF Normalized
         {
@@ -534,19 +535,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a normalized copy of a <see cref="QuaternionF"/>.
+        /// Returns a unit copy of a finite, nonzero <see cref="QuaternionF"/>.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionF Normalized(QuaternionF q)
             => q.Normalized;
 
         /// <summary>
-        /// Normalizes a <see cref="QuaternionF"/>.
+        /// Normalizes a finite, nonzero <see cref="QuaternionF"/> to unit length.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref QuaternionF q)
         {
-            var norm = q.Norm;
+            var normSquared = q.NormSquared;
+            if (normSquared < 1.1754943508222875e-38f || float.IsPositiveInfinity(normSquared))
+            {
+                var max = Fun.Max(Fun.Abs(q.W), Fun.Abs(q.X), Fun.Abs(q.Y), Fun.Abs(q.Z));
+                if (max > 0 && max < float.PositiveInfinity)
+                {
+                    q.W /= max;
+                    q.X /= max;
+                    q.Y /= max;
+                    q.Z /= max;
+                    normSquared = q.NormSquared;
+                }
+            }
+            var norm = normSquared.Sqrt();
             if (norm > 0)
             {
                 var scale = 1 / norm;
@@ -857,7 +873,8 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Gets normalized (unit) quaternion from this <see cref="QuaternionD"/>
+        /// Gets a unit quaternion from this finite, nonzero <see cref="QuaternionD"/>.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         public readonly QuaternionD Normalized
         {
@@ -1212,19 +1229,34 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns a normalized copy of a <see cref="QuaternionD"/>.
+        /// Returns a unit copy of a finite, nonzero <see cref="QuaternionD"/>.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static QuaternionD Normalized(QuaternionD q)
             => q.Normalized;
 
         /// <summary>
-        /// Normalizes a <see cref="QuaternionD"/>.
+        /// Normalizes a finite, nonzero <see cref="QuaternionD"/> to unit length.
+        /// Zero quaternions remain unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void Normalize(this ref QuaternionD q)
         {
-            var norm = q.Norm;
+            var normSquared = q.NormSquared;
+            if (normSquared < 2.2250738585072014e-308 || double.IsPositiveInfinity(normSquared))
+            {
+                var max = Fun.Max(Fun.Abs(q.W), Fun.Abs(q.X), Fun.Abs(q.Y), Fun.Abs(q.Z));
+                if (max > 0 && max < double.PositiveInfinity)
+                {
+                    q.W /= max;
+                    q.X /= max;
+                    q.Y /= max;
+                    q.Z /= max;
+                    normSquared = q.NormSquared;
+                }
+            }
+            var norm = normSquared.Sqrt();
             if (norm > 0)
             {
                 var scale = 1 / norm;
