@@ -178,13 +178,16 @@ namespace Aardvark.Base
             get => Radius * Radius * __pi__;
         }
 
+        /// <summary>
+        /// Gets the axis-aligned inscribed square centered on this circle.
+        /// </summary>
         public readonly __box2t__ InscribedSquare
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 var a = Fun.Sqrt(RadiusSquared * __half__);
-                return new __box2t__(new __v2t__(-a), new __v2t__(a));
+                return new __box2t__(Center - new __v2t__(a), Center + new __v2t__(a));
             }
         }
 
