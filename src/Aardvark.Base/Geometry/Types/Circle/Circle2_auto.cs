@@ -165,13 +165,16 @@ namespace Aardvark.Base
             get => Radius * Radius * ConstantF.Pi;
         }
 
+        /// <summary>
+        /// Gets the axis-aligned inscribed square centered on this circle.
+        /// </summary>
         public readonly Box2f InscribedSquare
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 var a = Fun.Sqrt(RadiusSquared * 0.5f);
-                return new Box2f(new V2f(-a), new V2f(a));
+                return new Box2f(Center - new V2f(a), Center + new V2f(a));
             }
         }
 
@@ -392,13 +395,16 @@ namespace Aardvark.Base
             get => Radius * Radius * Constant.Pi;
         }
 
+        /// <summary>
+        /// Gets the axis-aligned inscribed square centered on this circle.
+        /// </summary>
         public readonly Box2d InscribedSquare
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
                 var a = Fun.Sqrt(RadiusSquared * 0.5);
-                return new Box2d(new V2d(-a), new V2d(a));
+                return new Box2d(Center - new V2d(a), Center + new V2d(a));
             }
         }
 
