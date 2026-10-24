@@ -1,3 +1,4 @@
+- [Math] Preserve tiny signed angle differences and the correct direction near half-turns
 - Update to .NET 10
 
 ### 5.3.28
