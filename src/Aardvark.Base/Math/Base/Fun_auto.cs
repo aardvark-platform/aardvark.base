@@ -1118,13 +1118,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the signed difference between two angles in radians.
         /// The result is within the range of [-Pi, Pi).
+        /// Exact half-turns map to -Pi; zero differences return positive zero.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float AngleDifference(this float alphaInRadians, float betaInRadians)
         {
-            var phi = (betaInRadians - alphaInRadians + ConstantF.Pi) % ConstantF.PiTimesTwo - ConstantF.Pi;
-            return (phi < -ConstantF.Pi) ? phi + ConstantF.PiTimesTwo : phi;
+            var phi = (betaInRadians - alphaInRadians) % ConstantF.PiTimesTwo;
+            if (phi >= ConstantF.Pi) return phi - ConstantF.PiTimesTwo;
+            if (phi < -ConstantF.Pi) return phi + ConstantF.PiTimesTwo;
+            return phi == 0 ? 0 : phi;
         }
 
         /// <summary>
@@ -1142,13 +1145,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the signed difference between two angles in radians.
         /// The result is within the range of [-Pi, Pi).
+        /// Exact half-turns map to -Pi; zero differences return positive zero.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double AngleDifference(this double alphaInRadians, double betaInRadians)
         {
-            var phi = (betaInRadians - alphaInRadians + Constant.Pi) % Constant.PiTimesTwo - Constant.Pi;
-            return (phi < -Constant.Pi) ? phi + Constant.PiTimesTwo : phi;
+            var phi = (betaInRadians - alphaInRadians) % Constant.PiTimesTwo;
+            if (phi >= Constant.Pi) return phi - Constant.PiTimesTwo;
+            if (phi < -Constant.Pi) return phi + Constant.PiTimesTwo;
+            return phi == 0 ? 0 : phi;
         }
 
         #endregion

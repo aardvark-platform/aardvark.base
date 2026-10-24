@@ -152,13 +152,16 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns the signed difference between two angles in radians.
         /// The result is within the range of [-Pi, Pi).
+        /// Exact half-turns map to -Pi; zero differences return positive zero.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __t.Name__ AngleDifference(this __t.Name__ alphaInRadians, __t.Name__ betaInRadians)
         {
-            var phi = (betaInRadians - alphaInRadians + __constant__.Pi) % __constant__.PiTimesTwo - __constant__.Pi;
-            return (phi < -__constant__.Pi) ? phi + __constant__.PiTimesTwo : phi;
+            var phi = (betaInRadians - alphaInRadians) % __constant__.PiTimesTwo;
+            if (phi >= __constant__.Pi) return phi - __constant__.PiTimesTwo;
+            if (phi < -__constant__.Pi) return phi + __constant__.PiTimesTwo;
+            return phi == 0 ? 0 : phi;
         }
 
         //# });
