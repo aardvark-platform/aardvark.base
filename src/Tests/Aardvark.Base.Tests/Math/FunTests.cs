@@ -3,6 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Aardvark.Tests
 {
@@ -166,6 +170,172 @@ namespace Aardvark.Tests
             Assert.AreEqual(0.0, new[] { false, false }.Entropy(new[] { 2.0, 5.0 }), 0.0);
             Assert.AreEqual(0.0, new[] { true, false }.Entropy(new[] { 0.0, 5.0 }), 0.0);
             Assert.AreEqual(0.0, new[] { true, false }.Entropy(new[] { 5.0, 0.0 }), 0.0);
+        }
+
+        private static IEnumerable<Assembly> EntropyCores()
+        {
+            var path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "netstandard2.0", "Aardvark.Base.dll"));
+            Assert.That(File.Exists(path), Is.True, $"Required sibling core: {path}");
+            yield return typeof(Fun).Assembly;
+            yield return Assembly.LoadFile(path);
+        }
+
+        private static Func<bool[], double[], double> WeightedEntropy(Assembly core)
+            => (Func<bool[], double[], double>)core.GetType("Aardvark.Base.Fun", true)!
+                .GetMethod("Entropy", new[] { typeof(bool[]), typeof(double[]) })!
+                .CreateDelegate(typeof(Func<bool[], double[], double>));
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static double LegacyWeightedEntropy(bool[] xs, double[] weights)
+        {
+            if (weights == null) throw new ArgumentNullException("weights");
+            if (xs == null) throw new ArgumentNullException("xs");
+            if (weights.Length != xs.Length) throw new ArgumentException("weights.Length != xs.Length");
+            double positive = 0, negative = 0;
+            for (int i = 0; i < xs.Length; i++) { if (xs[i]) positive += weights[i]; else negative += weights[i]; }
+            if (positive == 0 || negative == 0) return 0;
+            double total = positive + negative, p = positive / total, n = negative / total;
+            double hp = -Math.Log(p, 2), hn = -Math.Log(n, 2);
+            return p * hp + n * hn;
+        }
+
+        private static double SmallProportionEntropy(bool[] classes, int[] units)
+        {
+            long positive = 0, negative = 0;
+            for (int i = 0; i < classes.Length; i++) { if (classes[i]) positive += units[i]; else negative += units[i]; }
+            return positive == 0 || negative == 0 ? 0 : ExpectedBinaryEntropy(positive, negative);
+        }
+
+        [Test]
+        public void WeightedEntropyRescalesClassAndCombinedOverflow()
+        {
+            foreach (var core in EntropyCores())
+            {
+                var entropy = WeightedEntropy(core);
+                void Check(bool[] classes, int[] units, string context)
+                {
+                    double expected = SmallProportionEntropy(classes, units);
+                    int upperExponent = 1023 - Math.ILogB(units.Max());
+                    foreach (int exponent in new[] { upperExponent - 2, upperExponent - 1, upperExponent })
+                    for (int order = 0; order < 3; order++)
+                    for (int complement = 0; complement < 2; complement++)
+                    {
+                        var indices = Enumerable.Range(0, classes.Length).Select(i => order == 0 ? i : order == 1 ? classes.Length - i - 1 : (i + 1) % classes.Length).ToArray();
+                        var labels = indices.Select(i => classes[i] ^ (complement != 0)).ToArray();
+                        var weights = indices.Select(i => Math.ScaleB(units[i], exponent)).ToArray();
+                        Assert.That(weights.All(double.IsFinite), Is.True, context);
+                        Assert.That(entropy(labels, weights), Is.EqualTo(expected).Within(2e-14),
+                            $"{core.Location}: {context}, exponent={exponent}, order={order}, complement={complement}, proportions={string.Join(",", units)}");
+                    }
+                }
+                Check(new[] { true, false }, new[] { 1, 1 }, "combined balanced");
+                Check(new[] { true, false }, new[] { 3, 1 }, "combined 3:1");
+                Check(new[] { true, false }, new[] { 31, 1 }, "combined 31:1");
+                Check(new[] { true, true, false }, new[] { 1, 1, 1 }, "within one class");
+                Check(new[] { true, true, false, false }, new[] { 1, 1, 1, 1 }, "within both classes");
+                Check(new[] { true, false, true, false, true, false }, new[] { 0, 1, 3, 0, 1, 7 }, "zero weights");
+                Check(new[] { true, true, true }, new[] { 1, 2, 3 }, "single class early return");
+                for (int n = 2; n <= 8; n++)
+                {
+                    var labels = Enumerable.Range(0, n).Select(i => i < n - 1).ToArray();
+                    var weights = Enumerable.Repeat(double.MaxValue, n).ToArray();
+                    Assert.That(entropy(labels, weights), Is.EqualTo(ExpectedBinaryEntropy(n - 1, 1)).Within(2e-14), $"{core.Location}: repeated maximum n={n}");
+                }
+                const int seed = 84179;
+                var random = new Random(seed);
+                for (int sample = 0; sample < 512; sample++)
+                {
+                    int n = random.Next(2, 66);
+                    var labels = Enumerable.Range(0, n).Select(i => random.Next(2) == 0).ToArray();
+                    var units = Enumerable.Range(0, n).Select(i => random.Next(32)).ToArray();
+                    labels[0] = true; labels[1] = false; units[0] = random.Next(1, 32); units[1] = random.Next(1, 32);
+                    Check(labels, units, $"seed={seed}, sample={sample}, n={n}");
+                }
+            }
+        }
+
+        [Test]
+        public void WeightedEntropySkipsRoundedZeroFallbackContributions()
+        {
+            foreach (var core in EntropyCores())
+            {
+                var entropy = WeightedEntropy(core);
+                var rows = new[]
+                {
+                    (small: double.Epsilon, large: double.MaxValue, expected: 0.0),
+                    (small: Math.ScaleB(1, -51), large: Math.ScaleB(1, 1023), expected: 0.0),
+                    (small: Math.ScaleB(1, -50), large: Math.ScaleB(1, 1023), expected: ExpectedBinaryEntropy(2 * double.Epsilon, 2))
+                };
+                foreach (var row in rows)
+                for (int tinyPosition = 0; tinyPosition < 3; tinyPosition++)
+                for (int complement = 0; complement < 2; complement++)
+                {
+                    var labels = new[] { false, false, false, true }; labels[tinyPosition] = true;
+                    if (complement != 0) labels = labels.Select(x => !x).ToArray();
+                    var weights = new[] { row.large, row.large, row.large, -0.0 }; weights[tinyPosition] = row.small;
+                    double actual = entropy(labels, weights);
+                    Assert.That(BitConverter.DoubleToInt64Bits(actual), Is.EqualTo(BitConverter.DoubleToInt64Bits(row.expected)),
+                        $"{core.Location}: small={row.small:R}, large={row.large:R}, tiny position={tinyPosition}, complement={complement}");
+                }
+            }
+        }
+
+        [Test]
+        public void WeightedEntropyKeepsValidationAndLegacyWeightPolicies()
+        {
+            foreach (var core in EntropyCores())
+            {
+                var entropy = WeightedEntropy(core);
+                Assert.That(Assert.Throws<ArgumentNullException>(() => entropy(null!, null!))!.ParamName, Is.EqualTo("weights"), core.Location);
+                Assert.That(Assert.Throws<ArgumentNullException>(() => entropy(Array.Empty<bool>(), null!))!.ParamName, Is.EqualTo("weights"), core.Location);
+                Assert.That(Assert.Throws<ArgumentNullException>(() => entropy(null!, Array.Empty<double>()))!.ParamName, Is.EqualTo("xs"), core.Location);
+                foreach (var lengths in new[] { (0, 1), (1, 0), (2, 3), (3, 2) })
+                    Assert.That(Assert.Throws<ArgumentException>(() => entropy(new bool[lengths.Item1], new double[lengths.Item2]))!.Message,
+                        Is.EqualTo("weights.Length != xs.Length"), core.Location);
+                void Check(bool[] labels, double[] weights, string context)
+                {
+                    var savedLabels = (bool[])labels.Clone(); var savedWeights = weights.Select(BitConverter.DoubleToInt64Bits).ToArray();
+                    double expected = LegacyWeightedEntropy(labels, weights), actual = entropy(labels, weights);
+                    if (double.IsNaN(expected)) Assert.That(double.IsNaN(actual), Is.True, $"{core.Location}: {context}");
+                    else Assert.That(BitConverter.DoubleToInt64Bits(actual), Is.EqualTo(BitConverter.DoubleToInt64Bits(expected)), $"{core.Location}: {context}");
+                    Assert.That(labels, Is.EqualTo(savedLabels), context);
+                    Assert.That(weights.Select(BitConverter.DoubleToInt64Bits), Is.EqualTo(savedWeights), context);
+                }
+                Check(Array.Empty<bool>(), Array.Empty<double>(), "empty");
+                Check(new[] { true, false }, new[] { double.Epsilon, double.MaxValue }, "ordinary rounded probability remains legacy NaN");
+                Check(new[] { true, false }, new[] { -1.0, -3.0 }, "negative class totals");
+                Check(new[] { true, true, false }, new[] { -1.0, 1.0, double.NaN }, "zero class before invalid input");
+                const int seed = 84203;
+                var random = new Random(seed);
+                for (int sample = 0; sample < 2048; sample++)
+                {
+                    int n = random.Next(66), exponent = random.Next(-100, 101);
+                    var labels = Enumerable.Range(0, n).Select(i => random.Next(2) == 0).ToArray();
+                    var weights = Enumerable.Range(0, n).Select(i => Math.ScaleB(random.Next(32), exponent)).ToArray();
+                    Check(labels, weights, $"ordinary seed={seed}, sample={sample}");
+                }
+                var invalid = new[] { -1.0, -double.MaxValue, double.PositiveInfinity, double.NegativeInfinity,
+                    BitConverter.Int64BitsToDouble(0x7ff8000000001234), BitConverter.Int64BitsToDouble(unchecked((long)0xfff8000000005678)) };
+                foreach (double bad in invalid)
+                for (int position = 0; position < 4; position++)
+                for (int mask = 0; mask < 16; mask++)
+                foreach (bool overflow in new[] { false, true })
+                {
+                    var labels = Enumerable.Range(0, 4).Select(i => (mask & (1 << i)) != 0).ToArray();
+                    var weights = overflow ? new[] { double.MaxValue, double.MaxValue, double.MaxValue, 1.0 } : new[] { 0.0, -0.0, 1.0, 2.0 };
+                    weights[position] = bad;
+                    Check(labels, weights, $"invalid={bad:R}, position={position}, mask={mask}, overflow={overflow}");
+                }
+                var fun = core.GetType("Aardvark.Base.Fun", true)!;
+                var binary = (Func<bool[], double>)fun.GetMethods().Single(m => m.Name == "Entropy" && m.IsGenericMethodDefinition && m.GetParameters()[0].ParameterType == typeof(bool[]))
+                    .MakeGenericMethod(typeof(int)).CreateDelegate(typeof(Func<bool[], double>));
+                var sequence = (Func<IEnumerable<int>, double>)fun.GetMethods().Single(m => m.Name == "Entropy" && m.IsGenericMethodDefinition && m.GetParameters()[0].ParameterType.IsGenericType)
+                    .MakeGenericMethod(typeof(int)).CreateDelegate(typeof(Func<IEnumerable<int>, double>));
+                Assert.That(binary(new[] { true, false, true, false }), Is.EqualTo(1), core.Location);
+                Assert.That(binary(Array.Empty<bool>()), Is.Zero, core.Location);
+                Assert.That(sequence(new[] { 1, 1, 2, 2 }), Is.EqualTo(1), core.Location);
+                Assert.That(sequence(Array.Empty<int>()), Is.Zero, core.Location);
+            }
         }
 
         [Test]

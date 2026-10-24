@@ -358,8 +358,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Shannon entropy of weighted bipartite set. Positive and negative
-        /// class totals are normalized by their combined weight.
+        /// Shannon entropy of a weighted bipartite set, normalizing class totals
+        /// by their combined weight. Finite nonnegative weights are rescaled if
+        /// totals overflow; rounded-zero fallback probability contributions are zero.
         /// </summary>
         public static double Entropy(this bool[] xs, double[] weights)
         {
@@ -385,6 +386,36 @@ namespace Aardvark.Base
             if (countPos == 0 || countNeg == 0) return 0.0;
 
             var totalWeight = countPos + countNeg;
+            if (double.IsInfinity(totalWeight))
+            {
+                var maxWeight = 0.0;
+                for (var i = 0; i < count; i++)
+                {
+                    var weight = weights[i];
+                    if (!(weight >= 0 && weight < double.PositiveInfinity))
+                    {
+                        maxWeight = double.NaN;
+                        break;
+                    }
+                    if (weight > maxWeight) maxWeight = weight;
+                }
+                if (maxWeight > 0)
+                {
+                    var scaledPos = 0.0;
+                    var scaledNeg = 0.0;
+                    for (var i = 0; i < count; i++)
+                    {
+                        var weight = weights[i] / maxWeight;
+                        if (xs[i]) scaledPos += weight;
+                        else scaledNeg += weight;
+                    }
+                    var scaledTotal = scaledPos + scaledNeg;
+                    var positive = scaledPos / scaledTotal;
+                    var negative = scaledNeg / scaledTotal;
+                    return (positive == 0 ? 0 : positive * -Math.Log(positive, 2))
+                         + (negative == 0 ? 0 : negative * -Math.Log(negative, 2));
+                }
+            }
             var pPos = countPos / totalWeight;
             var pNeg = countNeg / totalWeight;
             var hPos = -Math.Log(pPos, 2);
