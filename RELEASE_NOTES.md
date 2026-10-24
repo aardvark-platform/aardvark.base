@@ -1,3 +1,4 @@
+- [Base] Preserve saturation when converting dark chromatic RGB colors to HSV
 - Update to .NET 10
 
 ### 5.3.28

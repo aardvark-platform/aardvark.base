@@ -1226,7 +1226,7 @@ namespace Aardvark.Base
                 }
             }
             return new HSVf(Fun.Frac(h6 * 1.0 / 6.0),
-                            cr > Constant<float>.PositiveTinyValue ? cr / v : 0.0,
+                            cr > 0.0 ? cr / v : 0.0,
                             v);
         }
 

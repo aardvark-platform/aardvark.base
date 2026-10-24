@@ -1,4 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Aardvark.Base;
 using NUnit.Framework;
 
@@ -69,6 +74,149 @@ namespace Aardvark.Tests
                 }
                 Test.End();
 
+            }
+        }
+
+        [Test]
+        public void ChromaticHsvPreservesSaturationAcrossDarkScales()
+        {
+            foreach (var core in HsvCores())
+            {
+                var scales = Enumerable.Range(-149, 150).Select(e => MathF.ScaleB(1, e))
+                    .Concat(new[] { 1e-8f, MathF.BitDecrement(MathF.ScaleB(1, -126)),
+                        MathF.BitIncrement(MathF.ScaleB(1, -126)) });
+                foreach (var v in scales)
+                foreach (var rgb in new[] { new[] { v, 0f, 0f }, new[] { v, v, 0f },
+                    new[] { v, v * 0.5f, 0f }, new[] { v, v * 0.75f, v * 0.25f } })
+                    CheckHsvPermutations(core, rgb);
+
+                var random = new Random(68831);
+                for (var i = 0; i < 4096; i++)
+                {
+                    // Include dense subnormal encodings as well as normal RGB intensities.
+                    var bits = i % 2 == 0 ? random.Next(1, 0x00800000)
+                                         : random.Next(1, 0x3f800001);
+                    var v = BitConverter.Int32BitsToSingle(bits);
+                    CheckHsvPermutations(core, new[] { v, v * (float)random.NextDouble(),
+                        v * (float)random.NextDouble() });
+                }
+            }
+        }
+
+        [Test]
+        public void HsvSaturationUsesPositiveChromaAtFormerCutoff()
+        {
+            // The former cutoff was four float epsilons, not a relative color tolerance.
+            var cutoff = MathF.ScaleB(1, -21);
+            foreach (var core in HsvCores())
+            {
+                foreach (var cr in new[] { MathF.BitDecrement(cutoff), cutoff,
+                    MathF.BitIncrement(cutoff) })
+                {
+                    CheckHsvPermutations(core, new[] { cr, 0f, 0f });
+                    CheckHsvPermutations(core, new[] { cr, cr, 0f });
+                    CheckHsvPermutations(core, new[] { cr, cr * 0.375f, 0f });
+                }
+                // At a nonzero offset, use adjacent representable differences around it.
+                foreach (var steps in new[] { 7, 8, 9 })
+                {
+                    var max = 0.5f + steps * MathF.ScaleB(1, -24);
+                    CheckHsvPermutations(core, new[] { max, 0.5f, 0.5f });
+                    CheckHsvPermutations(core, new[] { max, max, 0.5f });
+                }
+            }
+        }
+
+        [Test]
+        public void HsvKeepsBlackGrayscaleAndOrdinaryConversions()
+        {
+            foreach (var core in HsvCores())
+            {
+                foreach (var gray in new[] { 0f, float.Epsilon, 3 * float.Epsilon,
+                    MathF.BitDecrement(MathF.ScaleB(1, -126)), MathF.ScaleB(1, -126),
+                    1e-8f, MathF.ScaleB(1, -21), 0.125f, 0.5f, 1f })
+                {
+                    var result = core.Convert(gray, gray, gray);
+                    var context = $"{core.Name}: gray {gray:R}";
+                    Assert.AreEqual(0, BitConverter.SingleToInt32Bits(result[0]), context);
+                    Assert.AreEqual(0, BitConverter.SingleToInt32Bits(result[1]), context);
+                    CheckHsv(core, gray, gray, gray);
+                }
+                for (var mask = 0; mask < 8; mask++)
+                {
+                    var r = (mask & 1) == 0 ? 0f : -0f;
+                    var g = (mask & 2) == 0 ? 0f : -0f;
+                    var b = (mask & 4) == 0 ? 0f : -0f;
+                    var result = core.Convert(r, g, b);
+                    var context = $"{core.Name}: zero mask {mask}";
+                    Assert.AreEqual(0, BitConverter.SingleToInt32Bits(result[0]), context);
+                    Assert.AreEqual(0, BitConverter.SingleToInt32Bits(result[1]), context);
+                    Assert.AreEqual(BitConverter.SingleToInt32Bits(b),
+                        BitConverter.SingleToInt32Bits(result[2]), context);
+                }
+                var random = new Random(68839);
+                for (var i = 0; i < 4096; i++)
+                {
+                    var rgb = new[] { (float)random.NextDouble(), (float)random.NextDouble(),
+                        (float)random.NextDouble() };
+                    CheckHsvPermutations(core, rgb);
+                }
+            }
+        }
+
+        private static void CheckHsvPermutations(
+            (string Name, Func<float, float, float, float[]> Convert) core, float[] rgb)
+        {
+            for (var r = 0; r < 3; r++)
+            for (var g = 0; g < 3; g++)
+                if (r != g) CheckHsv(core, rgb[r], rgb[g], rgb[3 - r - g]);
+        }
+
+        private static void CheckHsv(
+            (string Name, Func<float, float, float, float[]> Convert) core,
+            float r, float g, float b)
+        {
+            const double u = 1.0 / (1 << 24);
+            var result = core.Convert(r, g, b);
+            var max = Math.Max((double)r, Math.Max((double)g, b));
+            var min = Math.Min((double)r, Math.Min((double)g, b));
+            var saturation = max == 0 ? 0 : (max - min) / max;
+            var context = $"{core.Name}: RGB({r:R}, {g:R}, {b:R})";
+            Assert.AreEqual(saturation, result[1], 2 * u * saturation, context + " saturation");
+            Assert.AreEqual(BitConverter.SingleToInt32Bits((float)max),
+                BitConverter.SingleToInt32Bits(result[2]), context + " value");
+            // Float hue/sector arithmetic scales its error with the color, not with one.
+            var tolerance = 8 * u * max + 2.0 * float.Epsilon;
+            Assert.AreEqual(r, result[3], tolerance, context + " round-trip R");
+            Assert.AreEqual(g, result[4], tolerance, context + " round-trip G");
+            Assert.AreEqual(b, result[5], tolerance, context + " round-trip B");
+        }
+
+        private static IEnumerable<(string Name, Func<float, float, float, float[]> Convert)> HsvCores()
+        {
+            foreach (var target in new[] { "net10.0", "netstandard2.0" })
+            {
+                var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(C3f).Assembly.Location),
+                    "..", target, "Aardvark.Base.dll"));
+                Assert.IsTrue(File.Exists(path), "Required core missing: " + path);
+                var assembly = Assembly.LoadFile(path);
+                var rgbType = assembly.GetType("Aardvark.Base.C3f", true);
+                var hsvType = assembly.GetType("Aardvark.Base.HSVf", true);
+                var col = assembly.GetType("Aardvark.Base.Col", true);
+                var r = Expression.Parameter(typeof(float));
+                var g = Expression.Parameter(typeof(float));
+                var b = Expression.Parameter(typeof(float));
+                var hsv = Expression.Variable(hsvType);
+                var rgb = Expression.Variable(rgbType);
+                var body = Expression.Block(new[] { hsv, rgb },
+                    Expression.Assign(hsv, Expression.Call(col.GetMethod("ToHSVf", new[] { rgbType }),
+                        Expression.New(rgbType.GetConstructor(new[] { typeof(float), typeof(float), typeof(float) }),
+                            r, g, b))),
+                    Expression.Assign(rgb, Expression.Call(col.GetMethod("ToC3f", new[] { hsvType }), hsv)),
+                    Expression.NewArrayInit(typeof(float),
+                        Expression.Field(hsv, "H"), Expression.Field(hsv, "S"), Expression.Field(hsv, "V"),
+                        Expression.Field(rgb, "R"), Expression.Field(rgb, "G"), Expression.Field(rgb, "B")));
+                yield return (target, Expression.Lambda<Func<float, float, float, float[]>>(body, r, g, b).Compile());
             }
         }
 
