@@ -1873,7 +1873,11 @@ namespace Aardvark.Base
         public readonly Circle__dim____cch__ BoundingCircle__dim____cch__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            //# if (ft == Meta.IntType || ft == Meta.LongType) {
+            get => IsInvalid ? Circle__dim____cch__.Invalid : new Box__dim__d(this).BoundingCircle__dim__d;
+            //# } else {
             get => IsInvalid ? Circle__dim____cch__.Invalid : new Circle__dim____cch__(/*# if (ft != ct) {*/(V__dim____cch__)/*# }*/Center, __half__ * Size.Length);
+            //# }
         }
 
         #endregion
@@ -1885,7 +1889,11 @@ namespace Aardvark.Base
         public readonly Sphere__dim____cch__ BoundingSphere__dim____cch__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            //# if (ft == Meta.IntType || ft == Meta.LongType) {
+            get => IsInvalid ? Sphere__dim____cch__.Invalid : new Box__dim__d(this).BoundingSphere__dim__d;
+            //# } else {
             get => IsInvalid ? Sphere__dim____cch__.Invalid : new Sphere__dim____cch__(/*# if (ft != ct) {*/(V__dim____cch__)/*# }*/Center, __half__ * Size.Length);
+            //# }
         }
 
         #endregion

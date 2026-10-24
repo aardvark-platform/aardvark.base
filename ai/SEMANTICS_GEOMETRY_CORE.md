@@ -32,6 +32,16 @@ var hit = RayHit3d.MaxRange;
 bool hitsTri = ray.Hits(triangle, 0.0, double.MaxValue, ref hit);
 ```
 
+## Integer Box Bounding Volumes
+
+`BoundingCircle2d` on `Box2i`/`Box2l` and `BoundingSphere3d` on `Box3i`/`Box3l`
+check integer validity first, then convert endpoints to double vectors and use
+the corresponding double-box calculation. Midpoints and diagonals therefore
+avoid integer truncation and overflow; public integer `Center`/`Size` are unchanged.
+Long endpoints or midpoints can round in double precision: narrow boxes may
+collapse, and exact 64-bit corner enclosure is not guaranteed. These getters
+retain the existing floating-box rounding behavior, not exact integer geometry.
+
 ## Triangle Bounding Volumes
 
 `Triangle2f`/`Triangle2d` bounding circles and `Triangle3f`/`Triangle3d` bounding
@@ -237,6 +247,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 
 ## Source Anchors
 
+- `src/Aardvark.Base/Math/RangesBoxes/Box_template.cs` (integer box bounding circles/spheres and double-box delegation)
 - `src/Aardvark.Base/Geometry/Types/Triangle/Triangle2_template.cs` (`BoundingCircle2f`, `BoundingCircle2d` after generation)
 - `src/Aardvark.Base/Geometry/Types/Triangle/Triangle3_template.cs` (`BoundingSphere3f`, `BoundingSphere3d` after generation)
 
