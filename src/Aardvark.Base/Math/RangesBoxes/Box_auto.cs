@@ -11762,7 +11762,7 @@ namespace Aardvark.Base
         public readonly Circle2d BoundingCircle2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
+            get => IsInvalid ? Circle2d.Invalid : new Box2d(this).BoundingCircle2d;
         }
 
         #endregion
@@ -13329,7 +13329,7 @@ namespace Aardvark.Base
         public readonly Circle2d BoundingCircle2d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => IsInvalid ? Circle2d.Invalid : new Circle2d((V2d)Center, 0.5 * Size.Length);
+            get => IsInvalid ? Circle2d.Invalid : new Box2d(this).BoundingCircle2d;
         }
 
         #endregion
@@ -18113,7 +18113,7 @@ namespace Aardvark.Base
         public readonly Sphere3d BoundingSphere3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
+            get => IsInvalid ? Sphere3d.Invalid : new Box3d(this).BoundingSphere3d;
         }
 
         #endregion
@@ -20037,7 +20037,7 @@ namespace Aardvark.Base
         public readonly Sphere3d BoundingSphere3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => IsInvalid ? Sphere3d.Invalid : new Sphere3d((V3d)Center, 0.5 * Size.Length);
+            get => IsInvalid ? Sphere3d.Invalid : new Box3d(this).BoundingSphere3d;
         }
 
         #endregion
