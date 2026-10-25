@@ -61,13 +61,17 @@ namespace Aardvark.Base
 
         #region Geometric Computations
 
+        /// <summary>
+        /// Returns the closest point on the closed segment from P0 to P1.
+        /// Segments whose squared length is tiny return P0.
+        /// </summary>
         public readonly V2f GetClosestPointOnLine(V2f p)
         {
             var d = P0 - P1;
             var l = d.LengthSquared;
             if(Fun.IsTiny(l))
                 return P0; //it does not matter which of the two points we choose
-            var t = (P0.Dot(d) - p.Dot(d)) / l; //parametric distance from P0 to P1, where closest point to p is
+            var t = (P0 - p).Dot(d) / l; //parametric distance from P0 to P1, where closest point to p is
             if (t <= 0)
                 return P0;
             if (t >= 1)
@@ -167,13 +171,17 @@ namespace Aardvark.Base
 
         #region Geometric Computations
 
+        /// <summary>
+        /// Returns the closest point on the closed segment from P0 to P1.
+        /// Segments whose squared length is tiny return P0.
+        /// </summary>
         public readonly V2d GetClosestPointOnLine(V2d p)
         {
             var d = P0 - P1;
             var l = d.LengthSquared;
             if(Fun.IsTiny(l))
                 return P0; //it does not matter which of the two points we choose
-            var t = (P0.Dot(d) - p.Dot(d)) / l; //parametric distance from P0 to P1, where closest point to p is
+            var t = (P0 - p).Dot(d) / l; //parametric distance from P0 to P1, where closest point to p is
             if (t <= 0)
                 return P0;
             if (t >= 1)

@@ -186,6 +186,18 @@ Computation is linear-time and allocation-free.
 - Equal farthest distances select the first source index, preserving deterministic left-to-right output.
 - After warmup, queries allocate only the result array. Traversal does not consume call stack proportional to input size.
 
+## Closed 2D Segment Projections
+
+`Line2f.GetClosestPointOnLine` and `Line2d.GetClosestPointOnLine` return the
+closest point on the closed segment, clamping projections to its endpoints.
+They project the local displacement from `P0`, avoiding cancellation between
+large world-space dot products. Squared lengths classified as tiny retain `P0`.
+
+`GetDistanceToLine` and `IsDistanceToPointSmallerThan` use this segment projection;
+the latter includes distance equal to its threshold. Polyline simplification
+inherits the corrected distance without changing its tolerance or split rules.
+The existing tiny-length guard and floating-point range limitations remain.
+
 ## Supporting-Line Distance And Parameters
 
 The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` treat `Ray2f`/`Ray2d` and `Ray3f`/`Ray3d` as unbounded supporting lines. They do not clamp parameters to a forward half-ray:
@@ -251,6 +263,7 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - `src/Aardvark.Base/Geometry/Types/Circle/Circle3_auto.cs` (`Circle3f`/`Circle3d` frame, points, and bounds)
 - `src/Aardvark.Base/Geometry/Types/Polygon/Polygon2_auto.cs` (`Polygon2f`/`Polygon2d` centroids)
 - `src/Aardvark.Base/Geometry/Types/Polygon/Polygon3_auto.cs` (`Polygon3f`/`Polygon3d` centroids)
+- `src/Aardvark.Base/Geometry/Types/Line/Line2_template.cs` (`Line2f`/`Line2d` closed-segment projections and distances)
 - `src/Aardvark.Base/Geometry/SpecialPoints_auto.cs` (point/ray and ray/ray closest-distance parameters)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f.ClipWithConvex`, `Line2d.ClipWithConvex`)
 - `src/Aardvark.Base/Geometry/ClippingFunctions_auto.cs` (`Line2f`/`Line2d`/`Line3f`/`Line3d.ClipByPlane`)

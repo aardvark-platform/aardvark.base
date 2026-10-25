@@ -1,3 +1,4 @@
+- [Base] Correct translated 2D segment projections, distances and polyline simplification
 - Update to .NET 10
 
 ### 5.3.28
