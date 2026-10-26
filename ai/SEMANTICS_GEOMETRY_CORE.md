@@ -58,6 +58,20 @@ For a normalized normal `n`, the axis-aligned bound extent in component `i`
 is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. `BoundingBox3f` and `BoundingBox3d`
 use these extents and are allocation-free.
 
+## Ellipse Principal Axes
+
+`Ellipse2f`/`Ellipse2d` and `Ellipse3f`/`Ellipse3d.FromConjugateDiameters`
+convert conjugate half-diameters to principal half-axes, up to floating-point
+rounding. `Axis0` is the major half-axis; `Axis1` is the minor half-axis. The
+squared-length overload reports the lengths squared of those returned axes.
+The center and supplied 3D normal are preserved, not normalized or recomputed.
+
+Only a computed zero dot product bypasses the principal-axis rotation; a small
+nonzero dot product is not evidence of orthogonality. The existing arithmetic
+does not rescale extreme inputs to prevent squared-length or dot-product
+underflow/overflow. Collinear inputs describe a degenerate ellipse whose minor
+axis may have a floating-point residual.
+
 ## Sphere Ray Intersections
 
 `Ray3f.HitsSphere` and `Ray3d.HitsSphere` intersect finite rays with finite
@@ -236,6 +250,8 @@ The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` tre
 - Attributed boolean operations have no operators.
 
 ## Source Anchors
+
+- `src/Aardvark.Base/Geometry/Types/Ellipse/Ellipse_template.cs` (`FromConjugateDiameters`)
 
 - `src/Aardvark.Base/Geometry/Types/Triangle/Triangle2_template.cs` (`BoundingCircle2f`, `BoundingCircle2d` after generation)
 - `src/Aardvark.Base/Geometry/Types/Triangle/Triangle3_template.cs` (`BoundingSphere3f`, `BoundingSphere3d` after generation)
