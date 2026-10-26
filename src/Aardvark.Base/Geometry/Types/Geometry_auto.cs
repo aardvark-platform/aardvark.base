@@ -1017,7 +1017,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// TODO summary.
+        /// Clips the polygon to the box using inward-facing axis planes.
+        /// The absolute signed-distance tolerance <paramref name="eps"/> is used
+        /// to classify vertices and edge crossings at every box face.
         /// </summary>
         public static Polygon2f ConvexClipped(
                 this Polygon2f polygon, Box2f box, float eps = 1e-5f)
@@ -1027,7 +1029,7 @@ namespace Aardvark.Base
                 new Plane2f(V2f.XAxis, box.Min), new Plane2f(-V2f.XAxis, box.Max),
                 new Plane2f(V2f.YAxis, box.Min), new Plane2f(-V2f.YAxis, box.Max),
             };
-            return polygon.ConvexClipped(lines);
+            return polygon.ConvexClipped(lines, eps);
         }
 
         #endregion
@@ -4494,7 +4496,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// TODO summary.
+        /// Clips the polygon to the box using inward-facing axis planes.
+        /// The absolute signed-distance tolerance <paramref name="eps"/> is used
+        /// to classify vertices and edge crossings at every box face.
         /// </summary>
         public static Polygon3f ConvexClipped(
                 this Polygon3f polygon, Box3f box, float eps = 1e-5f)
@@ -4505,7 +4509,7 @@ namespace Aardvark.Base
                 new Plane3f(V3f.YAxis, box.Min), new Plane3f(-V3f.YAxis, box.Max),
                 new Plane3f(V3f.ZAxis, box.Min), new Plane3f(-V3f.ZAxis, box.Max),
             };
-            return polygon.ConvexClipped(planes);
+            return polygon.ConvexClipped(planes, eps);
         }
 
         #endregion
@@ -7972,7 +7976,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// TODO summary.
+        /// Clips the polygon to the box using inward-facing axis planes.
+        /// The absolute signed-distance tolerance <paramref name="eps"/> is used
+        /// to classify vertices and edge crossings at every box face.
         /// </summary>
         public static Polygon2d ConvexClipped(
                 this Polygon2d polygon, Box2d box, double eps = 1e-8)
@@ -7982,7 +7988,7 @@ namespace Aardvark.Base
                 new Plane2d(V2d.XAxis, box.Min), new Plane2d(-V2d.XAxis, box.Max),
                 new Plane2d(V2d.YAxis, box.Min), new Plane2d(-V2d.YAxis, box.Max),
             };
-            return polygon.ConvexClipped(lines);
+            return polygon.ConvexClipped(lines, eps);
         }
 
         #endregion
@@ -11449,7 +11455,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// TODO summary.
+        /// Clips the polygon to the box using inward-facing axis planes.
+        /// The absolute signed-distance tolerance <paramref name="eps"/> is used
+        /// to classify vertices and edge crossings at every box face.
         /// </summary>
         public static Polygon3d ConvexClipped(
                 this Polygon3d polygon, Box3d box, double eps = 1e-8)
@@ -11460,7 +11468,7 @@ namespace Aardvark.Base
                 new Plane3d(V3d.YAxis, box.Min), new Plane3d(-V3d.YAxis, box.Max),
                 new Plane3d(V3d.ZAxis, box.Min), new Plane3d(-V3d.ZAxis, box.Max),
             };
-            return polygon.ConvexClipped(planes);
+            return polygon.ConvexClipped(planes, eps);
         }
 
         #endregion
