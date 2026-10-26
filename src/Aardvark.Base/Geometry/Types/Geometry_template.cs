@@ -889,7 +889,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// TODO summary.
+        /// Clips the polygon to the box using inward-facing axis planes.
+        /// The absolute signed-distance tolerance <paramref name="eps"/> is used
+        /// to classify vertices and edge crossings at every box face.
         /// </summary>
         public static __type__ ConvexClipped(
                 this __type__ polygon, __tbox__ box, __ftype__ eps = __eps__)
@@ -900,7 +902,7 @@ namespace Aardvark.Base
                 new __tplane__(__tvec__.__axis__Axis, box.Min), new __tplane__(-__tvec__.__axis__Axis, box.Max),
                 //# });
             };
-            return polygon.ConvexClipped(__plane__s);
+            return polygon.ConvexClipped(__plane__s, eps);
         }
 
         #endregion

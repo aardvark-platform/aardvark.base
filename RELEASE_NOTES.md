@@ -1,3 +1,4 @@
+- [Base] Honor explicit tolerances when clipping polygons to boxes
 - Update to .NET 10
 
 ### 5.3.28

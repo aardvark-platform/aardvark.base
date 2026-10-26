@@ -1,6 +1,9 @@
 ﻿using Aardvark.Base;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace Aardvark.Tests.Geometry
 {
@@ -235,6 +238,185 @@ namespace Aardvark.Tests.Geometry
                     new Line2f(new V2f(x, -1.0f), new V2f(x, -0.5f))
                         .ClipWithConvex(polygon, 0.0f)
                 );
+            }
+        }
+
+        [Test]
+        public void BoxClippingForwardsLooseTolerance()
+        {
+            foreach (var core in BoxClippingCores())
+            foreach (var face in BoxFaces(core.Dimension))
+            foreach (var gap in new[] { 0.03125, 0.0625, 0.125, 0.5 })
+            {
+                var points = FacePolygon(core.Dimension, face.Bounds, face.Axis, face.Max,
+                    new[] { -gap, -gap, -gap / 2 }, new[] { 0.25, 0.75, 0.5 });
+                var result = core.Clip(points, face.Bounds, 0.125);
+                var context = $"{core.Name}: {face.Name}, loose gap={gap:R}";
+                var expected = gap <= 0.125 ? points : Array.Empty<double>();
+                Assert.That(result.Box, Is.EqualTo(expected), context + " retained/rejected vertices");
+                Assert.That(result.Box, Is.EqualTo(result.Planes), context + " ordered plane equivalence");
+                Assert.That(result.Omitted, Is.Empty, context + " omitted default rejects");
+                Assert.That(result.Default, Is.EqualTo(result.Omitted), context + " explicit default");
+            }
+        }
+
+        [Test]
+        public void ZeroBoxToleranceRejectsSubDefaultOutsideVertices()
+        {
+            foreach (var core in BoxClippingCores())
+            foreach (var face in BoxFaces(core.Dimension))
+            foreach (var multiplier in new[] { 0.5, 1.0, 2.0 })
+            {
+                var gap = Math.ScaleB(multiplier, core.Wide ? -28 : -18);
+                var points = FacePolygon(core.Dimension, face.Bounds, face.Axis, face.Max,
+                    new[] { -gap, -gap, -gap / 2 }, new[] { 0.25, 0.75, 0.5 });
+                var result = core.Clip(points, face.Bounds, 0);
+                var context = $"{core.Name}: {face.Name}, zero tolerance, gap={gap:R}";
+                Assert.That(result.Box, Is.Empty, context + " strict rejection");
+                Assert.That(result.Planes, Is.Empty, context + " strict plane rejection");
+                Assert.That(result.Omitted, Is.EqualTo(points), context + " omitted default retains triangle");
+                Assert.That(result.Default, Is.EqualTo(result.Omitted), context + " explicit default");
+            }
+        }
+
+        [Test]
+        public void BoxClippingKeepsDefaultAndOrdinaryGeometry()
+        {
+            foreach (var core in BoxClippingCores())
+            foreach (var face in BoxFaces(core.Dimension))
+            foreach (var kind in new[] { "inside", "crossing", "outside" })
+            foreach (var eps in new[] { 0.0, core.DefaultEpsilon, 0.125 })
+            {
+                var u = kind == "inside" ? new[] { 0.25, 0.75, 0.5 }
+                    : kind == "crossing" ? new[] { -0.5, 0.5, 0.5 }
+                    : new[] { -0.5, -0.5, -0.25 };
+                var v = kind == "outside" ? new[] { 0.25, 0.75, 0.5 } : new[] { 0.25, 0.25, 0.75 };
+                var points = FacePolygon(core.Dimension, face.Bounds, face.Axis, face.Max, u, v);
+                var expected = kind == "inside" ? points : kind == "outside" ? Array.Empty<double>()
+                    : FacePolygon(core.Dimension, face.Bounds, face.Axis, face.Max,
+                        new[] { 0.0, 0.5, 0.5, 0.0 }, new[] { 0.25, 0.25, 0.75, 0.5 });
+                var result = core.Clip(points, face.Bounds, eps);
+                var context = $"{core.Name}: {face.Name}, {kind}, eps={eps:R}";
+                Assert.That(result.Box, Is.EqualTo(expected), context + " explicit outcome/order");
+                Assert.That(result.Box, Is.EqualTo(result.Planes), context + " ordered plane equivalence");
+                Assert.That(result.Omitted, Is.EqualTo(expected), context + " omitted default");
+                Assert.That(result.Default, Is.EqualTo(result.Omitted), context + " explicit default");
+            }
+        }
+
+        private static IEnumerable<(double[] Bounds, int Axis, bool Max, string Name)> BoxFaces(int dimension)
+        {
+            foreach (var origin in new[] { new[] { 0.0, 0.0, 0.0 }, new[] { 2.0, -4.0, 6.0 },
+                new[] { -8.0, 4.0, -2.0 }, new[] { 0.5, -0.25, 1.5 } })
+            {
+                var bounds = new double[2 * dimension];
+                for (var i = 0; i < dimension; i++) { bounds[i] = origin[i]; bounds[i + dimension] = origin[i] + 1; }
+                for (var axis = 0; axis < dimension; axis++)
+                foreach (var max in new[] { false, true })
+                    yield return (bounds, axis, max, $"origin=({string.Join(",", origin)}), axis={axis}, max={max}");
+            }
+        }
+
+        // Coordinates are constructed in an inward normal/tangent frame, so the retained
+        // and crossing expectations are analytic, not inferred solely from the plane API.
+        private static double[] FacePolygon(int dimension, double[] bounds, int axis, bool max,
+            double[] normal, double[] tangent)
+        {
+            var points = new double[dimension * normal.Length];
+            for (var i = 0; i < normal.Length; i++)
+            for (var k = 0; k < dimension; k++)
+            {
+                var offset = k == axis ? (max ? 1 - normal[i] : normal[i])
+                    : k == (axis + 1) % dimension ? tangent[i] : 0.5;
+                points[i * dimension + k] = bounds[k] + offset;
+            }
+            return points;
+        }
+
+        private sealed class BoxClipCore
+        {
+            public readonly string Name;
+            public readonly bool Wide;
+            public readonly int Dimension;
+            public readonly double DefaultEpsilon;
+            private readonly Type vector, plane, polygon;
+            private readonly ConstructorInfo vectorCtor, planeCtor, polygonCtor, boxCtor;
+            private readonly MethodInfo boxClip, planeClip, readPoints;
+            private readonly FieldInfo[] coordinates;
+
+            public BoxClipCore(Assembly assembly, string target, int dimension, bool wide)
+            {
+                Dimension = dimension; Wide = wide;
+                var suffix = dimension.ToString() + (wide ? "d" : "f");
+                Name = target + "/Polygon" + suffix;
+                var scalar = wide ? typeof(double) : typeof(float);
+                vector = assembly.GetType("Aardvark.Base.V" + suffix, true);
+                plane = assembly.GetType("Aardvark.Base.Plane" + suffix, true);
+                polygon = assembly.GetType("Aardvark.Base.Polygon" + suffix, true);
+                var box = assembly.GetType("Aardvark.Base.Box" + suffix, true);
+                var extensions = assembly.GetType("Aardvark.Base.Polygon" + suffix + "Extensions", true);
+                var types = new Type[dimension]; for (var k = 0; k < dimension; k++) types[k] = scalar;
+                vectorCtor = vector.GetConstructor(types);
+                planeCtor = plane.GetConstructor(new[] { vector, vector });
+                polygonCtor = polygon.GetConstructor(new[] { vector.MakeArrayType() });
+                boxCtor = box.GetConstructor(new[] { vector, vector });
+                boxClip = extensions.GetMethod("ConvexClipped", new[] { polygon, box, scalar });
+                planeClip = extensions.GetMethod("ConvexClipped", new[] { polygon, plane.MakeArrayType(), scalar });
+                readPoints = polygon.GetMethod("GetPointArray", Type.EmptyTypes);
+                coordinates = new FieldInfo[dimension];
+                for (var k = 0; k < dimension; k++) coordinates[k] = vector.GetField("XYZ"[k].ToString());
+                DefaultEpsilon = wide ? 1e-8 : (double)1e-5f;
+                Assert.AreEqual(DefaultEpsilon, Convert.ToDouble(boxClip.GetParameters()[2].DefaultValue), Name + " default metadata");
+            }
+
+            private object Scalar(double x) => Wide ? (object)x : (object)(float)x;
+            private object Vector(double[] values, int offset)
+            {
+                var args = new object[Dimension];
+                for (var k = 0; k < Dimension; k++) args[k] = Scalar(values[offset + k]);
+                return vectorCtor.Invoke(args);
+            }
+            private double[] Points(object result)
+            {
+                var array = (Array)readPoints.Invoke(result, null);
+                var values = new double[array.Length * Dimension];
+                for (var i = 0; i < array.Length; i++)
+                for (var k = 0; k < Dimension; k++) values[i * Dimension + k] = Convert.ToDouble(coordinates[k].GetValue(array.GetValue(i)));
+                return values;
+            }
+            public (double[] Box, double[] Planes, double[] Omitted, double[] Default) Clip(double[] points, double[] bounds, double eps)
+            {
+                var ownPoints = Array.CreateInstance(vector, points.Length / Dimension);
+                for (var i = 0; i < ownPoints.Length; i++) ownPoints.SetValue(Vector(points, i * Dimension), i);
+                var poly = polygonCtor.Invoke(new object[] { ownPoints });
+                var min = Vector(bounds, 0); var max = Vector(bounds, Dimension);
+                var box = boxCtor.Invoke(new[] { min, max });
+                var planes = Array.CreateInstance(plane, 2 * Dimension);
+                for (var axis = 0; axis < Dimension; axis++)
+                {
+                    var normal = new double[Dimension]; normal[axis] = 1;
+                    planes.SetValue(planeCtor.Invoke(new[] { Vector(normal, 0), min }), 2 * axis);
+                    normal[axis] = -1;
+                    planes.SetValue(planeCtor.Invoke(new[] { Vector(normal, 0), max }), 2 * axis + 1);
+                }
+                return (Points(boxClip.Invoke(null, new[] { poly, box, Scalar(eps) })),
+                    Points(planeClip.Invoke(null, new[] { poly, planes, Scalar(eps) })),
+                    Points(boxClip.Invoke(null, new[] { poly, box, Type.Missing })),
+                    Points(boxClip.Invoke(null, new[] { poly, box, Scalar(DefaultEpsilon) })));
+            }
+        }
+
+        private static IEnumerable<BoxClipCore> BoxClippingCores()
+        {
+            foreach (var target in new[] { "net10.0", "netstandard2.0" })
+            {
+                var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Polygon2d).Assembly.Location),
+                    "..", target, "Aardvark.Base.dll"));
+                Assert.IsTrue(File.Exists(path), "Required core missing: " + path);
+                var assembly = Assembly.LoadFile(path);
+                foreach (var dimension in new[] { 2, 3 })
+                foreach (var wide in new[] { false, true })
+                    yield return new BoxClipCore(assembly, target, dimension, wide);
             }
         }
 
