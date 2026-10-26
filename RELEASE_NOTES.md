@@ -1,3 +1,4 @@
+- [Base] Recover principal ellipse axes from small nonorthogonal conjugate diameters
 - Update to .NET 10
 
 ### 5.3.28

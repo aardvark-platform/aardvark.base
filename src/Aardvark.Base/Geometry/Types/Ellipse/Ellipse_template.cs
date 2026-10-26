@@ -78,15 +78,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
         /// </summary>
         public static __et__ FromConjugateDiameters(__vt__ center, /*# if (d == 3) { */__vt__ normal, /*# } */__vt__ a, __vt__ b)
         {
             var ab = Vec.Dot(a, b);
             __ftype__ a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) return new __et__(center, /*# if (d == 3) { */normal, /*# } */a, b);
                 else return new __et__(center, /*# if (d == 3) { */normal, /*# } */b, a);
@@ -102,18 +103,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
-        /// Also computes the squared lengths of the major and minor
-        /// half axis.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
+        /// Also returns the squared lengths of the resulting half-axes.
         /// </summary>
         public static __et__ FromConjugateDiameters(__vt__ center, /*# if (d == 3) { */__vt__ normal, /*# } */__vt__ a, __vt__ b,
                 out __ftype__ major2, out __ftype__ minor2)
         {
             var ab = Vec.Dot(a, b);
             __ftype__ a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) { major2 = a2; minor2 = b2; return new __et__(center, /*# if (d == 3) { */normal, /*# } */a, b); }
                 else { major2 = b2; minor2 = a2; return new __et__(center, /*# if (d == 3) { */normal, /*# } */b, a); }

@@ -53,15 +53,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
         /// </summary>
         public static Ellipse2f FromConjugateDiameters(V2f center, V2f a, V2f b)
         {
             var ab = Vec.Dot(a, b);
             float a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) return new Ellipse2f(center, a, b);
                 else return new Ellipse2f(center, b, a);
@@ -77,18 +78,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
-        /// Also computes the squared lengths of the major and minor
-        /// half axis.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
+        /// Also returns the squared lengths of the resulting half-axes.
         /// </summary>
         public static Ellipse2f FromConjugateDiameters(V2f center, V2f a, V2f b,
                 out float major2, out float minor2)
         {
             var ab = Vec.Dot(a, b);
             float a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) { major2 = a2; minor2 = b2; return new Ellipse2f(center, a, b); }
                 else { major2 = b2; minor2 = a2; return new Ellipse2f(center, b, a); }
@@ -286,15 +287,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
         /// </summary>
         public static Ellipse3f FromConjugateDiameters(V3f center, V3f normal, V3f a, V3f b)
         {
             var ab = Vec.Dot(a, b);
             float a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) return new Ellipse3f(center, normal, a, b);
                 else return new Ellipse3f(center, normal, b, a);
@@ -310,18 +312,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
-        /// Also computes the squared lengths of the major and minor
-        /// half axis.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
+        /// Also returns the squared lengths of the resulting half-axes.
         /// </summary>
         public static Ellipse3f FromConjugateDiameters(V3f center, V3f normal, V3f a, V3f b,
                 out float major2, out float minor2)
         {
             var ab = Vec.Dot(a, b);
             float a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) { major2 = a2; minor2 = b2; return new Ellipse3f(center, normal, a, b); }
                 else { major2 = b2; minor2 = a2; return new Ellipse3f(center, normal, b, a); }
@@ -519,15 +521,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
         /// </summary>
         public static Ellipse2d FromConjugateDiameters(V2d center, V2d a, V2d b)
         {
             var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) return new Ellipse2d(center, a, b);
                 else return new Ellipse2d(center, b, a);
@@ -543,18 +546,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
-        /// Also computes the squared lengths of the major and minor
-        /// half axis.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
+        /// Also returns the squared lengths of the resulting half-axes.
         /// </summary>
         public static Ellipse2d FromConjugateDiameters(V2d center, V2d a, V2d b,
                 out double major2, out double minor2)
         {
             var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) { major2 = a2; minor2 = b2; return new Ellipse2d(center, a, b); }
                 else { major2 = b2; minor2 = a2; return new Ellipse2d(center, b, a); }
@@ -752,15 +755,16 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
         /// </summary>
         public static Ellipse3d FromConjugateDiameters(V3d center, V3d normal, V3d a, V3d b)
         {
             var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) return new Ellipse3d(center, normal, a, b);
                 else return new Ellipse3d(center, normal, b, a);
@@ -776,18 +780,18 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Construct ellipse from two conjugate diameters, and set
-        /// Axis0 to the major axis and Axis1 to the minor axis.
-        /// The algorithm was constructed from first principles.
-        /// Also computes the squared lengths of the major and minor
-        /// half axis.
+        /// Construct an ellipse from two conjugate half-diameters, with
+        /// orthogonal principal half-axes up to floating-point rounding.
+        /// Axis0 is the major half-axis and Axis1 is the minor half-axis.
+        /// A computed zero dot product retains the input axes, ordered by length.
+        /// Also returns the squared lengths of the resulting half-axes.
         /// </summary>
         public static Ellipse3d FromConjugateDiameters(V3d center, V3d normal, V3d a, V3d b,
                 out double major2, out double minor2)
         {
             var ab = Vec.Dot(a, b);
             double a2 = a.LengthSquared, b2 = b.LengthSquared;
-            if (ab.IsTiny())
+            if (ab == 0)
             {
                 if (a2 >= b2) { major2 = a2; minor2 = b2; return new Ellipse3d(center, normal, a, b); }
                 else { major2 = b2; minor2 = a2; return new Ellipse3d(center, normal, b, a); }
