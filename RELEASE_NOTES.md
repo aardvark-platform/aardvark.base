@@ -1,3 +1,4 @@
+- [Base] Correct integer RGB scaling when premultiplying alpha in byte, ushort and uint colors
 - Update to .NET 10
 
 ### 5.3.28

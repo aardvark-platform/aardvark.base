@@ -824,11 +824,15 @@ namespace Aardvark.Base
 
         #region Alpha to premultiplied Alpha and back
 
+        /// <summary>
+        /// Scales RGB by alpha/255 with truncating integer division. Preserves alpha.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4b AlphaToPremultipliedAlpha(this C4b c)
         {
-            var f = c_byteToDouble * (double)c.A;
-            return new C4b((byte)(f * c.R), (byte)(f * c.G), (byte)(f * c.B), c.A);
+            return new C4b((byte)((int)c.R * c.A / byte.MaxValue),
+                          (byte)((int)c.G * c.A / byte.MaxValue),
+                          (byte)((int)c.B * c.A / byte.MaxValue), c.A);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -839,11 +843,15 @@ namespace Aardvark.Base
             return new C4b((byte)(f * c.R), (byte)(f * c.G), (byte)(f * c.B), c.A);
         }
 
+        /// <summary>
+        /// Scales RGB by alpha/65535 with truncating integer division. Preserves alpha.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4us AlphaToPremultipliedAlpha(this C4us c)
         {
-            var f = c_uShortToDouble * (double)c.A;
-            return new C4us((ushort)(f * c.R), (ushort)(f * c.G), (ushort)(f * c.B), c.A);
+            return new C4us((ushort)((uint)c.R * c.A / ushort.MaxValue),
+                           (ushort)((uint)c.G * c.A / ushort.MaxValue),
+                           (ushort)((uint)c.B * c.A / ushort.MaxValue), c.A);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -854,11 +862,15 @@ namespace Aardvark.Base
             return new C4us((ushort)(f * c.R), (ushort)(f * c.G), (ushort)(f * c.B), c.A);
         }
 
+        /// <summary>
+        /// Scales RGB by alpha/4294967295 with truncating integer division. Preserves alpha.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static C4ui AlphaToPremultipliedAlpha(this C4ui c)
         {
-            var f = c_uIntToDouble * (double)c.A;
-            return new C4ui((uint)(f * c.R), (uint)(f * c.G), (uint)(f * c.B), c.A);
+            return new C4ui((uint)((ulong)c.R * c.A / uint.MaxValue),
+                           (uint)((ulong)c.G * c.A / uint.MaxValue),
+                           (uint)((ulong)c.B * c.A / uint.MaxValue), c.A);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
