@@ -1,3 +1,4 @@
+- [Base] Correct portable integer log2 floors and inherited mipmap counts near powers of two
 - Update to .NET 10
 
 ### 5.3.28

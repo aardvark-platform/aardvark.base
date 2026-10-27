@@ -741,7 +741,8 @@ namespace Aardvark.Base
             => Log2IntRef(ref v);
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
+        /// Returns the exact floor of log2(v) for every positive integer.
+        /// Zero and negative values retain their target-specific behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this int v)
@@ -749,12 +750,14 @@ namespace Aardvark.Base
             #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2((uint)v);
             #else
-                return Log2Int((float)v);
+                var exponent = Log2Int((float)v);
+                return v > 0 && (exponent == 32 || (uint)v < (1u << exponent)) ? exponent - 1 : exponent;
             #endif
         }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
+        /// Returns the exact floor of log2(v) for every positive integer.
+        /// Zero retains its target-specific behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this uint v)
@@ -762,12 +765,14 @@ namespace Aardvark.Base
             #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2(v);
             #else
-                return Log2Int((float)v);
+                var exponent = Log2Int((float)v);
+                return v > 0 && (exponent == 32 || v < (1u << exponent)) ? exponent - 1 : exponent;
             #endif
         }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
+        /// Returns the exact floor of log2(v) for every positive integer.
+        /// Zero and negative values retain their target-specific behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this long v)
@@ -775,12 +780,14 @@ namespace Aardvark.Base
             #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2((ulong)v);
             #else
-                return Log2Int((double)v);
+                var exponent = Log2Int((double)v);
+                return v > 0 && (exponent == 64 || (ulong)v < (1ul << exponent)) ? exponent - 1 : exponent;
             #endif
         }
 
         /// <summary>
-        /// Efficiently computes the Log2 for the given value rounded to the next integer towards negative infinity.
+        /// Returns the exact floor of log2(v) for every positive integer.
+        /// Zero retains its target-specific behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Log2Int(this ulong v)
@@ -788,7 +795,8 @@ namespace Aardvark.Base
             #if NETCOREAPP3_1_OR_GREATER
                 return System.Numerics.BitOperations.Log2(v);
             #else
-                return Log2Int((double)v);
+                var exponent = Log2Int((double)v);
+                return v > 0 && (exponent == 64 || v < (1ul << exponent)) ? exponent - 1 : exponent;
             #endif
         }
 

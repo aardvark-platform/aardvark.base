@@ -65,6 +65,19 @@ Raw encodings remain available through `Half.ToHalf(ushort)` and `Half.GetBits(H
 
 Binary/XML coders serialize the fields without reduction. Finite arithmetic can overflow.
 
+## Integer Binary Logarithms
+
+`Fun.Log2Int(int/uint/long/ulong)` returns the exact floor of the binary
+logarithm for every positive integer on both core targets. The portable
+implementation corrects its floating-point exponent estimate with an exact
+unsigned comparison, so conversion rounding cannot add a level just below a
+power of two. `Fun.MipmapLevels` inherits this guarantee for positive scalar,
+`V2i` and `V3i` sizes through their largest dimension.
+
+Zero and signed-negative results remain target-specific legacy behavior; this
+is not a new mathematical definition for nonpositive inputs. Floating-point
+logarithms and `Log2CeilingInt` are separate operations and are unchanged.
+
 ## Integer Primality
 
 `Fun.IsPrime(int)` and `Fun.IsPrime(long)` return `true` exactly for prime integers: values greater than or equal to 2 whose only positive divisors are 1 and themselves. Negative values, zero, and one return `false`.
@@ -178,6 +191,8 @@ var hit = box.Intersects(ray, out double t);
 ```
 
 ## Source Anchors
+
+- `src/Aardvark.Base/Math/Base/Fun.cs` (integer `Log2Int` and `MipmapLevels`)
 
 - `src/Aardvark.Base/Math/Base/Complex_auto.cs` (`ComplexF`/`ComplexD` magnitude, reciprocal, division, and principal square-root semantics)
 - `src/Aardvark.Base/Math/Base/Half.cs` (`Half` comparison, equality, hashing, ordering, and extrema semantics)
