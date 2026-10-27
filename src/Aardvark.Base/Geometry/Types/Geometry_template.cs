@@ -362,11 +362,13 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Returns copy of polygon. Same as Map(p => p).
+        /// Copies the active PointCount prefix in vertex order to independent storage.
+        /// Unused backing-array capacity is excluded.
         /// </summary>
+        /// <exception cref="NullReferenceException">The polygon has no backing array.</exception>
         public readonly __type__ Copy()
         {
-            return new __type__(m_pointArray.Copy());
+            return new __type__(m_pointArray.Copy(m_pointCount));
         }
 
         /// <summary>
