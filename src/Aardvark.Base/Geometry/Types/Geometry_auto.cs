@@ -313,11 +313,13 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Returns copy of polygon. Same as Map(p => p).
+        /// Copies the active PointCount prefix in vertex order to independent storage.
+        /// Unused backing-array capacity is excluded.
         /// </summary>
+        /// <exception cref="NullReferenceException">The polygon has no backing array.</exception>
         public readonly Polygon2f Copy()
         {
-            return new Polygon2f(m_pointArray.Copy());
+            return new Polygon2f(m_pointArray.Copy(m_pointCount));
         }
 
         /// <summary>
@@ -3790,11 +3792,13 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Returns copy of polygon. Same as Map(p => p).
+        /// Copies the active PointCount prefix in vertex order to independent storage.
+        /// Unused backing-array capacity is excluded.
         /// </summary>
+        /// <exception cref="NullReferenceException">The polygon has no backing array.</exception>
         public readonly Polygon3f Copy()
         {
-            return new Polygon3f(m_pointArray.Copy());
+            return new Polygon3f(m_pointArray.Copy(m_pointCount));
         }
 
         /// <summary>
@@ -7268,11 +7272,13 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Returns copy of polygon. Same as Map(p => p).
+        /// Copies the active PointCount prefix in vertex order to independent storage.
+        /// Unused backing-array capacity is excluded.
         /// </summary>
+        /// <exception cref="NullReferenceException">The polygon has no backing array.</exception>
         public readonly Polygon2d Copy()
         {
-            return new Polygon2d(m_pointArray.Copy());
+            return new Polygon2d(m_pointArray.Copy(m_pointCount));
         }
 
         /// <summary>
@@ -10745,11 +10751,13 @@ namespace Aardvark.Base
         #region Transformations
 
         /// <summary>
-        /// Returns copy of polygon. Same as Map(p => p).
+        /// Copies the active PointCount prefix in vertex order to independent storage.
+        /// Unused backing-array capacity is excluded.
         /// </summary>
+        /// <exception cref="NullReferenceException">The polygon has no backing array.</exception>
         public readonly Polygon3d Copy()
         {
-            return new Polygon3d(m_pointArray.Copy());
+            return new Polygon3d(m_pointArray.Copy(m_pointCount));
         }
 
         /// <summary>

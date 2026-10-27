@@ -1,3 +1,4 @@
+- [Base] Preserve active polygon vertices when copying polygons with spare capacity
 - Update to .NET 10
 
 ### 5.3.28
