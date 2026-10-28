@@ -1,3 +1,4 @@
+- [Base] Preserve thin bounds of nearly axis-aligned 3D circles
 - Update to .NET 10
 
 ### 5.3.28
