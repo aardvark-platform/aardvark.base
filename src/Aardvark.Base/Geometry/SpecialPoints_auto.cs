@@ -276,6 +276,10 @@ namespace Aardvark.Base
         public static V2f GetClosestPointOn(this Triangle2f triangle, V2f query)
             => query.GetClosestPointOn(triangle);
 
+        /// <summary>
+        /// Returns the closest point on the closed triangle. Repeated vertices
+        /// reduce it to the remaining segment, or a point when all coincide.
+        /// </summary>
         public static V2f GetClosestPointOnTriangle(this V2f query, V2f a, V2f b, V2f c)
         {
             var e01 = b - a;
@@ -294,6 +298,7 @@ namespace Aardvark.Base
             var vc = d1 * d4 - d3 * d2;
             if (vc <= 0 && d1 >= 0 && d3 <= 0)
             {
+                if (d1 == d3 && a == b) return query.GetClosestPointOn(new Line2f(a, c));
                 var t = d1 / (d1 - d3);
                 return a + t * e01;   // bary (1-t,t,0)
             }
@@ -543,7 +548,8 @@ namespace Aardvark.Base
             => query.GetClosestPointOn(triangle);
 
         /// <summary>
-        /// Tested by rft on 2008-08-06.
+        /// Returns the closest point on the closed triangle. Repeated vertices
+        /// reduce it to the remaining segment, or a point when all coincide.
         /// </summary>
         public static V3f GetClosestPointOnTriangle(this V3f query, V3f p0, V3f p1, V3f p2)
         {
@@ -563,6 +569,7 @@ namespace Aardvark.Base
             var vc = d1 * d4 - d3 * d2;
             if (vc <= 0 && d1 >= 0 && d3 <= 0)
             {
+                if (d1 == d3 && p0 == p1) return query.GetClosestPointOnLine(p0, p2);
                 var t = d1 / (d1 - d3);
                 return p0 + t * e01;   // bary (1-t,t,0)
             }
@@ -892,6 +899,10 @@ namespace Aardvark.Base
         public static V2d GetClosestPointOn(this Triangle2d triangle, V2d query)
             => query.GetClosestPointOn(triangle);
 
+        /// <summary>
+        /// Returns the closest point on the closed triangle. Repeated vertices
+        /// reduce it to the remaining segment, or a point when all coincide.
+        /// </summary>
         public static V2d GetClosestPointOnTriangle(this V2d query, V2d a, V2d b, V2d c)
         {
             var e01 = b - a;
@@ -910,6 +921,7 @@ namespace Aardvark.Base
             var vc = d1 * d4 - d3 * d2;
             if (vc <= 0 && d1 >= 0 && d3 <= 0)
             {
+                if (d1 == d3 && a == b) return query.GetClosestPointOn(new Line2d(a, c));
                 var t = d1 / (d1 - d3);
                 return a + t * e01;   // bary (1-t,t,0)
             }
@@ -1159,7 +1171,8 @@ namespace Aardvark.Base
             => query.GetClosestPointOn(triangle);
 
         /// <summary>
-        /// Tested by rft on 2008-08-06.
+        /// Returns the closest point on the closed triangle. Repeated vertices
+        /// reduce it to the remaining segment, or a point when all coincide.
         /// </summary>
         public static V3d GetClosestPointOnTriangle(this V3d query, V3d p0, V3d p1, V3d p2)
         {
@@ -1179,6 +1192,7 @@ namespace Aardvark.Base
             var vc = d1 * d4 - d3 * d2;
             if (vc <= 0 && d1 >= 0 && d3 <= 0)
             {
+                if (d1 == d3 && p0 == p1) return query.GetClosestPointOnLine(p0, p2);
                 var t = d1 / (d1 - d3);
                 return p0 + t * e01;   // bary (1-t,t,0)
             }
