@@ -3,6 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Versioning;
 
 using Num = System.Numerics;
 
@@ -573,6 +577,171 @@ namespace Aardvark.Tests
                 AreEqual(x, z[0]);
                 AreEqual(x, w[0]);
             });
+
+        [Test]
+        public static void SignedMinimumRealRootsMatchNumerics()
+        {
+            foreach (var core in RealRootCores())
+            foreach (var type in new[] { typeof(int), typeof(long) })
+            {
+                long value = type == typeof(int) ? int.MinValue : long.MinValue;
+                var actual = CheckIntegerRealRoot(core, type, value, false);
+                Assert.That(double.IsFinite(actual.Imag) && actual.Imag > 0, Is.True, core.Name + "/" + type.Name);
+            }
+        }
+
+        [Test]
+        public static void OrdinaryIntegerRealRootsKeepTheirRounding()
+        {
+            foreach (var core in RealRootCores())
+            foreach (var type in new[] { typeof(int), typeof(long) })
+            foreach (var value in OrdinaryRootInputs(type == typeof(long)))
+                CheckIntegerRealRoot(core, type, value, true);
+        }
+
+        [Test]
+        public static void OtherRealRootsKeepZerosAndExceptionalValues()
+        {
+            foreach (var core in RealRootCores())
+            {
+                for (var value = (int)sbyte.MinValue; value <= sbyte.MaxValue; value++)
+                    CheckIntegerRealRoot(core, typeof(sbyte), value, true);
+                var random = new Random(75143);
+                var shorts = new[] { short.MinValue, short.MinValue + 1, -16384, -1024, -81, -16, -9, -4, -2, -1, 0, 1, 2, 4, 9, 16, 81, 1024, 16384, short.MaxValue - 1, short.MaxValue };
+                foreach (var value in shorts.Concat(Enumerable.Range(0, 1024).Select(_ => random.Next(short.MinValue, short.MaxValue + 1))))
+                    CheckIntegerRealRoot(core, typeof(short), value, true);
+
+                foreach (var single in new[] { true, false })
+                {
+                    var type = single ? typeof(float) : typeof(double);
+                    var exponents = single ? new[] { -149, -126, -64, -1, 0, 1, 64, 127 } : new[] { -1074, -1022, -512, -1, 0, 1, 512, 1023 };
+                    var finite = exponents.Select(e => Math.ScaleB(1, e)).Concat(new[] { 0.125, 2.0, 4, 9, 16, 81, single ? float.MaxValue : double.MaxValue });
+                    foreach (var magnitude in finite)
+                    foreach (var sign in new[] { -1, 1 })
+                        CheckOtherFloatingRoot(core, type, magnitude * sign);
+                    foreach (var special in new[] { 0.0, -0.0, double.PositiveInfinity, double.NegativeInfinity, double.NaN })
+                        CheckOtherFloatingRoot(core, type, special);
+                }
+            }
+        }
+
+        private static (double Real, double Imag) CheckIntegerRealRoot(RealRootCore core, Type type, long value, bool legacy)
+        {
+            var actual = core.Evaluate(type, Convert.ChangeType(value, type));
+            var expected = Num.Complex.Sqrt(new Num.Complex((double)value, 0));
+            var context = core.Name + "/" + type.Name + ": " + value;
+            AssertRootBits(expected.Real, actual.Real, context + " real");
+            AssertRootBits(expected.Imaginary, actual.Imag, context + " imaginary");
+            if (legacy)
+            {
+                // The minimum long is excluded here: characterize the former
+                // integer-negation path only where it already returned a root.
+                var component = Math.Sqrt((double)(value < 0 ? -value : value));
+                AssertRootBits(value < 0 ? 0 : component, actual.Real, context + " legacy real");
+                AssertRootBits(value < 0 ? component : 0, actual.Imag, context + " legacy imaginary");
+            }
+            return actual;
+        }
+
+        private static void CheckOtherFloatingRoot(RealRootCore core, Type type, double input)
+        {
+            var single = type == typeof(float);
+            var value = single ? (double)(float)input : input;
+            var actual = core.Evaluate(type, single ? (object)(float)value : (object)value);
+            var magnitude = value >= 0 ? value : -value;
+            var component = single ? (double)(core.Modern ? MathF.Sqrt((float)magnitude) : (float)Math.Sqrt(magnitude)) : Math.Sqrt(magnitude);
+            var context = core.Name + "/" + type.Name + ": " + value.ToString("R");
+            AssertRootBits(value >= 0 ? component : 0, actual.Real, context + " legacy real");
+            AssertRootBits(value >= 0 ? 0 : component, actual.Imag, context + " legacy imaginary");
+            if (double.IsFinite(value) && value != 0)
+            {
+                var reference = Num.Complex.Sqrt(new Num.Complex(value, 0));
+                if (single)
+                {
+                    // This independent reference takes a double root before
+                    // narrowing; keep its possible one-ULP difference scoped
+                    // to unchanged float controls, never integer roots.
+                    Assert.That(Math.Abs((long)BitConverter.SingleToInt32Bits((float)actual.Real) - BitConverter.SingleToInt32Bits((float)reference.Real)), Is.LessThanOrEqualTo(1), context);
+                    Assert.That(Math.Abs((long)BitConverter.SingleToInt32Bits((float)actual.Imag) - BitConverter.SingleToInt32Bits((float)reference.Imaginary)), Is.LessThanOrEqualTo(1), context);
+                }
+                else
+                {
+                    AssertRootBits(reference.Real, actual.Real, context + " reference real");
+                    AssertRootBits(reference.Imaginary, actual.Imag, context + " reference imaginary");
+                }
+            }
+        }
+
+        private static void AssertRootBits(double expected, double actual, string context)
+        {
+            if (double.IsNaN(expected)) Assert.That(double.IsNaN(actual), Is.True, context);
+            else Assert.AreEqual(BitConverter.DoubleToInt64Bits(expected), BitConverter.DoubleToInt64Bits(actual), context);
+        }
+
+        private static IEnumerable<long> OrdinaryRootInputs(bool wide)
+        {
+            long min = wide ? long.MinValue : int.MinValue;
+            long max = wide ? long.MaxValue : int.MaxValue;
+            var values = new HashSet<long> { -1, 0, 1, min + 1, min + 2, min + 3, min + 7, min + 16, min + 1024, max, max - 1, max - 2 };
+            void Add(long value) { if (value > min && value <= max) values.Add(value); }
+            for (var exponent = 0; exponent < (wide ? 63 : 31); exponent++)
+            {
+                var power = 1L << exponent;
+                foreach (var delta in new[] { -2, -1, 0, 1, 2 })
+                {
+                    Add(power + delta);
+                    Add(-power + delta);
+                }
+            }
+            foreach (var root in wide ? new[] { 0L, 1, 2, 3, 7, 127, 65535, 65536, 94906265, 3037000499 } : new[] { 0L, 1, 2, 3, 7, 15, 127, 255, 256, 4095, 46340 })
+            {
+                var square = root * root;
+                foreach (var delta in new[] { -1, 0, 1 }) { Add(square + delta); Add(-square + delta); }
+            }
+            var random = new Random(75131 + (wide ? 64 : 32));
+            var bytes = new byte[wide ? 8 : 4];
+            for (var i = 0; i < 10000; i++)
+            {
+                random.NextBytes(bytes);
+                Add(wide ? BitConverter.ToInt64(bytes, 0) : BitConverter.ToInt32(bytes, 0));
+            }
+            return values;
+        }
+
+        private sealed class RealRootCore
+        {
+            public readonly string Name;
+            public readonly bool Modern;
+            private readonly Dictionary<Type, MethodInfo> methods;
+            public RealRootCore(Assembly assembly, string target)
+            {
+                Name = target;
+                Modern = target == "net10.0";
+                var fun = assembly.GetType("Aardvark.Base.Fun", true);
+                methods = new[] { typeof(sbyte), typeof(short), typeof(int), typeof(long), typeof(float), typeof(double) }
+                    .ToDictionary(type => type, type => fun.GetMethod("Csqrt", new[] { type }));
+            }
+            public (double Real, double Imag) Evaluate(Type scalar, object value)
+            {
+                var method = methods[scalar];
+                var result = method.Invoke(null, new[] { value });
+                return (Convert.ToDouble(method.ReturnType.GetField("Real").GetValue(result)),
+                    Convert.ToDouble(method.ReturnType.GetField("Imag").GetValue(result)));
+            }
+        }
+
+        private static IEnumerable<RealRootCore> RealRootCores()
+        {
+            foreach (var target in new[] { "net10.0", "netstandard2.0" })
+            {
+                var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(ComplexD).Assembly.Location), "..", target, "Aardvark.Base.dll"));
+                Assert.That(File.Exists(path), Is.True, "Required sibling core: " + path);
+                var assembly = Assembly.LoadFile(path);
+                Assert.AreEqual(target == "net10.0" ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0",
+                    assembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName, path);
+                yield return new RealRootCore(assembly, target);
+            }
+        }
 
         [Test]
         public static void Root()
