@@ -2237,6 +2237,7 @@ namespace Aardvark.Base
         }
         /// <summary>
         /// Returns the square root of the given real number and returns a complex number.
+        /// Negative inputs, including the signed minimum, produce a finite positive imaginary root.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Csqrt(this int number)
@@ -2247,11 +2248,12 @@ namespace Aardvark.Base
             }
             else
             {
-                return new ComplexD(0, Sqrt(-number));
+                return new ComplexD(0, Sqrt(-(double)number));
             }
         }
         /// <summary>
         /// Returns the square root of the given real number and returns a complex number.
+        /// Negative inputs, including the signed minimum, produce a finite positive imaginary root.
         /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2263,7 +2265,7 @@ namespace Aardvark.Base
             }
             else
             {
-                return new ComplexD(0, Sqrt(-number));
+                return new ComplexD(0, Sqrt(-(double)number));
             }
         }
         /// <summary>

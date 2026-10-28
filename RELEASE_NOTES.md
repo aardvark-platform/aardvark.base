@@ -1,3 +1,4 @@
+- [Base] Return finite complex square roots for minimum signed int and long values
 - Update to .NET 10
 
 ### 5.3.28

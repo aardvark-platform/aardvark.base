@@ -1077,6 +1077,9 @@ namespace Aardvark.Base
         //# if (ftype == Meta.DoubleType ^ t == Meta.FloatType) {
         /// <summary>
         /// Returns the square root of the given real number and returns a complex number.
+        //# if (t == Meta.IntType || t == Meta.LongType) {
+        /// Negative inputs, including the signed minimum, produce a finite positive imaginary root.
+        //# }
         //# if (!dreptypes.Contains(t)) {
         /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
         //# }
@@ -1090,7 +1093,7 @@ namespace Aardvark.Base
             }
             else
             {
-                return new __ct__(0, Sqrt(-number));
+                return new __ct__(0, Sqrt(-/*# if (t == Meta.IntType || t == Meta.LongType) { */(double)/*# } */number));
             }
         }
         //# }}});
