@@ -242,7 +242,8 @@ namespace Aardvark.Base
         #region IBoundingBox3f Members
 
         /// <summary>
-        /// Returns the exact axis-aligned bounds for the normalized-normal representation.
+        /// Returns axis-aligned bounds for a normalized normal using stable norms
+        /// of its complementary components, retaining thin near-axis extents.
         /// </summary>
         public readonly Box3f BoundingBox3f
         {
@@ -250,9 +251,9 @@ namespace Aardvark.Base
             get
             {
                 var extent = new V3f(
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.X * Normal.X)),
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Y * Normal.Y)),
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Z * Normal.Z)));
+                    (float)(Radius * Fun.Pythag(Normal.Y, Normal.Z)),
+                    (float)(Radius * Fun.Pythag(Normal.Z, Normal.X)),
+                    (float)(Radius * Fun.Pythag(Normal.X, Normal.Y)));
                 return new Box3f(Center - extent, Center + extent);
             }
         }
@@ -514,17 +515,28 @@ namespace Aardvark.Base
         #region IBoundingBox3d Members
 
         /// <summary>
-        /// Returns the exact axis-aligned bounds for the normalized-normal representation.
+        /// Returns axis-aligned bounds for a normalized normal using stable norms
+        /// of its complementary components, retaining thin near-axis extents.
         /// </summary>
         public readonly Box3d BoundingBox3d
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
+                // Scale before the norm when a large radius can recover precision
+                // from subnormal normal components. Keep small-radius products last.
+                if (Radius > 1 && !double.IsInfinity(Radius))
+                {
+                    var scaledExtent = new V3d(
+                        Fun.Pythag(Radius * Normal.Y, Radius * Normal.Z),
+                        Fun.Pythag(Radius * Normal.Z, Radius * Normal.X),
+                        Fun.Pythag(Radius * Normal.X, Radius * Normal.Y));
+                    return new Box3d(Center - scaledExtent, Center + scaledExtent);
+                }
                 var extent = new V3d(
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.X * Normal.X)),
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Y * Normal.Y)),
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Z * Normal.Z)));
+                    (Radius * Fun.Pythag(Normal.Y, Normal.Z)),
+                    (Radius * Fun.Pythag(Normal.Z, Normal.X)),
+                    (Radius * Fun.Pythag(Normal.X, Normal.Y)));
                 return new Box3d(Center - extent, Center + extent);
             }
         }

@@ -55,8 +55,15 @@ unit tangents scaled by `Radius`. A zero radius produces two zero axes.
 use the same oriented frame. These operations are allocation-free.
 
 For a normalized normal `n`, the axis-aligned bound extent in component `i`
-is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. `BoundingBox3f` and `BoundingBox3d`
-use these extents and are allocation-free.
+is `Radius * sqrt(n[j] * n[j] + n[k] * n[k])`, where `j` and `k` are the other
+two components. `BoundingBox3f` and `BoundingBox3d` evaluate complementary norms
+with stable `Pythag` arithmetic instead of subtracting a near-unit square from
+one. Float calculations retain double intermediates until the final extent;
+for finite double radii greater than one, scaling precedes the norm so large
+radii can recover representable extents from subnormal components. Small-radius
+scaling follows the norm. The getters do not construct tangent frames, remain
+allocation-free, and retain the normalized-normal contract. Endpoint coordinates
+still have the destination type's rounding limits.
 
 ## Sphere Ray Intersections
 

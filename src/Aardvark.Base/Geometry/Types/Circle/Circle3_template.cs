@@ -256,17 +256,30 @@ namespace Aardvark.Base
         #region __iboundingbox__ Members
 
         /// <summary>
-        /// Returns the exact axis-aligned bounds for the normalized-normal representation.
+        /// Returns axis-aligned bounds for a normalized normal using stable norms
+        /// of its complementary components, retaining thin near-axis extents.
         /// </summary>
         public readonly __box3t__ BoundingBox3__tc__
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get
             {
+                //# if (isDouble) {
+                // Scale before the norm when a large radius can recover precision
+                // from subnormal normal components. Keep small-radius products last.
+                if (Radius > 1 && !double.IsInfinity(Radius))
+                {
+                    var scaledExtent = new __v3t__(
+                        Fun.Pythag(Radius * Normal.Y, Radius * Normal.Z),
+                        Fun.Pythag(Radius * Normal.Z, Radius * Normal.X),
+                        Fun.Pythag(Radius * Normal.X, Radius * Normal.Y));
+                    return new __box3t__(Center - scaledExtent, Center + scaledExtent);
+                }
+                //# }
                 var extent = new __v3t__(
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.X * Normal.X)),
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Y * Normal.Y)),
-                    Radius * Fun.Sqrt(Fun.Max(0, 1 - Normal.Z * Normal.Z)));
+                    /*# if (!isDouble) { */(float)/*# } */(Radius * Fun.Pythag(Normal.Y, Normal.Z)),
+                    /*# if (!isDouble) { */(float)/*# } */(Radius * Fun.Pythag(Normal.Z, Normal.X)),
+                    /*# if (!isDouble) { */(float)/*# } */(Radius * Fun.Pythag(Normal.X, Normal.Y)));
                 return new __box3t__(Center - extent, Center + extent);
             }
         }
