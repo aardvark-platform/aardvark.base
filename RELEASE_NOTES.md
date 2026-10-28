@@ -1,3 +1,4 @@
+- [Base] Return segment closest points and distances for repeated-vertex triangles
 - Update to .NET 10
 
 ### 5.3.28

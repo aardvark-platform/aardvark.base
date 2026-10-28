@@ -32,6 +32,18 @@ var hit = RayHit3d.MaxRange;
 bool hitsTri = ray.Hits(triangle, 0.0, double.MaxValue, ref hit);
 ```
 
+## Triangle Closest Points
+
+`GetClosestPointOnTriangle` for float/double 2D/3D vectors treats a triangle
+with repeated vertices as the closed segment between its distinct vertices.
+If all three vertices coincide, the result is that point. Projections clamp
+to the segment endpoints. The point/triangle and triangle/point
+`GetClosestPointOn` wrappers and `Triangle.Distance` inherit this behavior.
+The zero-denominator guard reuses the existing point-to-segment query only
+when the first two vertices coincide. It does not introduce a general
+degeneracy solver or change other triangle arithmetic and numeric-range
+policies, including underflow with distinct vertices.
+
 ## Triangle Bounding Volumes
 
 `Triangle2f`/`Triangle2d` bounding circles and `Triangle3f`/`Triangle3d` bounding
