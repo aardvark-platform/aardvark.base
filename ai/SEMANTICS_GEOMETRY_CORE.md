@@ -32,6 +32,19 @@ var hit = RayHit3d.MaxRange;
 bool hitsTri = ray.Hits(triangle, 0.0, double.MaxValue, ref hit);
 ```
 
+## Box/Sphere Containment
+
+`GeometryFun.Contains(Box3f, Sphere3f)` and `Contains(Box3d, Sphere3d)`
+use closed containment: a finite nonnegative radius must be no greater than
+all six center-to-face clearances. Face tangency is included, and a zero-radius
+sphere with a finite center is contained exactly when that center is in the closed
+box, including on degenerate faces, edges and point boxes. Nonfinite centers,
+negative/nonfinite radii, NaN bounds and invalid boxes return false. Valid unbounded
+boxes may contain finite spheres.
+The comparisons are allocation-free and use ordinary floating-point subtraction
+and rounding, without a tolerance or a full-range exact-arithmetic guarantee.
+`Intersects`, cylinder containment and bounding-volume generation are unchanged.
+
 ## Triangle Bounding Volumes
 
 `Triangle2f`/`Triangle2d` bounding circles and `Triangle3f`/`Triangle3d` bounding

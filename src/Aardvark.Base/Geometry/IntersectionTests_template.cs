@@ -254,13 +254,26 @@ namespace Aardvark.Base
 
         #region __box3t__ contains __sphere3t__
 
+        /// <summary>
+        /// Returns true if the sphere is contained in the closed box, including
+        /// face tangency and zero-radius spheres. The radius must be finite and
+        /// nonnegative; NaN inputs and invalid boxes return false. Comparisons use
+        /// center-to-face clearances with ordinary floating-point rounding.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(
              this __box3t__ box, __sphere3t__ sphere
             )
         {
-            return box.Contains(sphere.Center)
-                    && !box.Intersects(sphere);
+            var center = sphere.Center;
+            var radius = sphere.Radius;
+            return radius >= 0 && !__rtype__.IsInfinity(radius)
+                    && radius <= center.X - box.Min.X
+                    && radius <= box.Max.X - center.X
+                    && radius <= center.Y - box.Min.Y
+                    && radius <= box.Max.Y - center.Y
+                    && radius <= center.Z - box.Min.Z
+                    && radius <= box.Max.Z - center.Z;
         }
 
         #endregion

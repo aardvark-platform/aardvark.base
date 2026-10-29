@@ -1,3 +1,4 @@
+- [Geometry] Correct box containment of interior, tangent and zero-radius spheres
 - Update to .NET 10
 
 ### 5.3.28
