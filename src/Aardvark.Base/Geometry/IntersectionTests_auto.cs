@@ -221,13 +221,26 @@ namespace Aardvark.Base
 
         #region Box3f contains Sphere3f
 
+        /// <summary>
+        /// Returns true if the sphere is contained in the closed box, including
+        /// face tangency and zero-radius spheres. The radius must be finite and
+        /// nonnegative; NaN inputs and invalid boxes return false. Comparisons use
+        /// center-to-face clearances with ordinary floating-point rounding.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(
              this Box3f box, Sphere3f sphere
             )
         {
-            return box.Contains(sphere.Center)
-                    && !box.Intersects(sphere);
+            var center = sphere.Center;
+            var radius = sphere.Radius;
+            return radius >= 0 && !float.IsInfinity(radius)
+                    && radius <= center.X - box.Min.X
+                    && radius <= box.Max.X - center.X
+                    && radius <= center.Y - box.Min.Y
+                    && radius <= box.Max.Y - center.Y
+                    && radius <= center.Z - box.Min.Z
+                    && radius <= box.Max.Z - center.Z;
         }
 
         #endregion
@@ -4535,13 +4548,26 @@ namespace Aardvark.Base
 
         #region Box3d contains Sphere3d
 
+        /// <summary>
+        /// Returns true if the sphere is contained in the closed box, including
+        /// face tangency and zero-radius spheres. The radius must be finite and
+        /// nonnegative; NaN inputs and invalid boxes return false. Comparisons use
+        /// center-to-face clearances with ordinary floating-point rounding.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(
              this Box3d box, Sphere3d sphere
             )
         {
-            return box.Contains(sphere.Center)
-                    && !box.Intersects(sphere);
+            var center = sphere.Center;
+            var radius = sphere.Radius;
+            return radius >= 0 && !double.IsInfinity(radius)
+                    && radius <= center.X - box.Min.X
+                    && radius <= box.Max.X - center.X
+                    && radius <= center.Y - box.Min.Y
+                    && radius <= box.Max.Y - center.Y
+                    && radius <= center.Z - box.Min.Z
+                    && radius <= box.Max.Z - center.Z;
         }
 
         #endregion
