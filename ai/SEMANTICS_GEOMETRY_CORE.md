@@ -186,6 +186,18 @@ Computation is linear-time and allocation-free.
 - Equal farthest distances select the first source index, preserving deterministic left-to-right output.
 - After warmup, queries allocate only the result array. Traversal does not consume call stack proportional to input size.
 
+## Radial Closest Surface Points
+
+Point-to-`Circle2f`/`Circle2d` and point-to-`Sphere3f`/`Sphere3d`
+`GetClosestPointOn` queries select positive X when the query exactly equals
+its finite center and the radius is finite and positive: `(Center.X + Radius,
+Center.Y[, Center.Z])`. The other center coordinates are preserved. Both receiver
+directions share this deterministic tie choice. This is exact coincidence, not
+a squared-length or tolerance test: tiny nonzero displacements and all other
+inputs retain the existing radial arithmetic, including zero/negative/nonfinite
+radii and nonfinite coordinates. The queries remain allocation-free; ordinary
+floating-point rounding and range limits still apply.
+
 ## Supporting-Line Distance And Parameters
 
 The closest-point and minimal-distance extensions in `SpecialPoints_auto.cs` treat `Ray2f`/`Ray2d` and `Ray3f`/`Ray3d` as unbounded supporting lines. They do not clamp parameters to a forward half-ray:
