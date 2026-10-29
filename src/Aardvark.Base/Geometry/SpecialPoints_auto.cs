@@ -256,10 +256,24 @@ namespace Aardvark.Base
 
         #region V2f - Circle2f
 
+        /// <summary>
+        /// Returns a closest point on the circle's surface. At the exact finite center
+        /// of a finite positive-radius circle, chooses the positive-X surface point,
+        /// preserving the other center coordinate. Other inputs retain radial projection;
+        /// floating-point rounding and range limits still apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f GetClosestPointOn(this V2f query, Circle2f circle)
-            => circle.Center + circle.Radius * (query - circle.Center).Normalized;
+        {
+            if (query == circle.Center && circle.Center.IsFinite && circle.Radius > 0 && !float.IsInfinity(circle.Radius))
+                return new V2f(circle.Center.X + circle.Radius, circle.Center.Y);
+            return circle.Center + circle.Radius * (query - circle.Center).Normalized;
+        }
 
+        /// <summary>
+        /// Returns a closest surface point, choosing positive X for an exact finite
+        /// center query on a finite positive-radius circle. Rounding and range limits apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2f GetClosestPointOn(this Circle2f circle, V2f query)
             => query.GetClosestPointOn(circle);
@@ -498,10 +512,24 @@ namespace Aardvark.Base
 
         #region V3f - Sphere3f
 
+        /// <summary>
+        /// Returns a closest point on the sphere's surface. At the exact finite center
+        /// of a finite positive-radius sphere, chooses the positive-X surface point,
+        /// preserving the other center coordinates. Other inputs retain radial projection;
+        /// floating-point rounding and range limits still apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f GetClosestPointOn(this V3f query, Sphere3f sphere)
-            => sphere.Center + sphere.Radius * (query - sphere.Center).Normalized;
+        {
+            if (query == sphere.Center && sphere.Center.IsFinite && sphere.Radius > 0 && !float.IsInfinity(sphere.Radius))
+                return new V3f(sphere.Center.X + sphere.Radius, sphere.Center.Y, sphere.Center.Z);
+            return sphere.Center + sphere.Radius * (query - sphere.Center).Normalized;
+        }
 
+        /// <summary>
+        /// Returns a closest surface point, choosing positive X for an exact finite
+        /// center query on a finite positive-radius sphere. Rounding and range limits apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3f GetClosestPointOn(this Sphere3f sphere, V3f query)
             => query.GetClosestPointOn(sphere);
@@ -872,10 +900,24 @@ namespace Aardvark.Base
 
         #region V2d - Circle2d
 
+        /// <summary>
+        /// Returns a closest point on the circle's surface. At the exact finite center
+        /// of a finite positive-radius circle, chooses the positive-X surface point,
+        /// preserving the other center coordinate. Other inputs retain radial projection;
+        /// floating-point rounding and range limits still apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d GetClosestPointOn(this V2d query, Circle2d circle)
-            => circle.Center + circle.Radius * (query - circle.Center).Normalized;
+        {
+            if (query == circle.Center && circle.Center.IsFinite && circle.Radius > 0 && !double.IsInfinity(circle.Radius))
+                return new V2d(circle.Center.X + circle.Radius, circle.Center.Y);
+            return circle.Center + circle.Radius * (query - circle.Center).Normalized;
+        }
 
+        /// <summary>
+        /// Returns a closest surface point, choosing positive X for an exact finite
+        /// center query on a finite positive-radius circle. Rounding and range limits apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V2d GetClosestPointOn(this Circle2d circle, V2d query)
             => query.GetClosestPointOn(circle);
@@ -1114,10 +1156,24 @@ namespace Aardvark.Base
 
         #region V3d - Sphere3d
 
+        /// <summary>
+        /// Returns a closest point on the sphere's surface. At the exact finite center
+        /// of a finite positive-radius sphere, chooses the positive-X surface point,
+        /// preserving the other center coordinates. Other inputs retain radial projection;
+        /// floating-point rounding and range limits still apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d GetClosestPointOn(this V3d query, Sphere3d sphere)
-            => sphere.Center + sphere.Radius * (query - sphere.Center).Normalized;
+        {
+            if (query == sphere.Center && sphere.Center.IsFinite && sphere.Radius > 0 && !double.IsInfinity(sphere.Radius))
+                return new V3d(sphere.Center.X + sphere.Radius, sphere.Center.Y, sphere.Center.Z);
+            return sphere.Center + sphere.Radius * (query - sphere.Center).Normalized;
+        }
 
+        /// <summary>
+        /// Returns a closest surface point, choosing positive X for an exact finite
+        /// center query on a finite positive-radius sphere. Rounding and range limits apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static V3d GetClosestPointOn(this Sphere3d sphere, V3d query)
             => query.GetClosestPointOn(sphere);

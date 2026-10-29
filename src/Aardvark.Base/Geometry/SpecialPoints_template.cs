@@ -250,10 +250,24 @@ namespace Aardvark.Base
 
         #region __v2t__ - __circle2t__
 
+        /// <summary>
+        /// Returns a closest point on the circle's surface. At the exact finite center
+        /// of a finite positive-radius circle, chooses the positive-X surface point,
+        /// preserving the other center coordinate. Other inputs retain radial projection;
+        /// floating-point rounding and range limits still apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __v2t__ query, __circle2t__ circle)
-            => circle.Center + circle.Radius * (query - circle.Center).Normalized;
+        {
+            if (query == circle.Center && circle.Center.IsFinite && circle.Radius > 0 && !__rtype__.IsInfinity(circle.Radius))
+                return new __v2t__(circle.Center.X + circle.Radius, circle.Center.Y);
+            return circle.Center + circle.Radius * (query - circle.Center).Normalized;
+        }
 
+        /// <summary>
+        /// Returns a closest surface point, choosing positive X for an exact finite
+        /// center query on a finite positive-radius circle. Rounding and range limits apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v2t__ GetClosestPointOn(this __circle2t__ circle, __v2t__ query)
             => query.GetClosestPointOn(circle);
@@ -492,10 +506,24 @@ namespace Aardvark.Base
 
         #region __v3t__ - __sphere3t__
 
+        /// <summary>
+        /// Returns a closest point on the sphere's surface. At the exact finite center
+        /// of a finite positive-radius sphere, chooses the positive-X surface point,
+        /// preserving the other center coordinates. Other inputs retain radial projection;
+        /// floating-point rounding and range limits still apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOn(this __v3t__ query, __sphere3t__ sphere)
-            => sphere.Center + sphere.Radius * (query - sphere.Center).Normalized;
+        {
+            if (query == sphere.Center && sphere.Center.IsFinite && sphere.Radius > 0 && !__rtype__.IsInfinity(sphere.Radius))
+                return new __v3t__(sphere.Center.X + sphere.Radius, sphere.Center.Y, sphere.Center.Z);
+            return sphere.Center + sphere.Radius * (query - sphere.Center).Normalized;
+        }
 
+        /// <summary>
+        /// Returns a closest surface point, choosing positive X for an exact finite
+        /// center query on a finite positive-radius sphere. Rounding and range limits apply.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __v3t__ GetClosestPointOn(this __sphere3t__ sphere, __v3t__ query)
             => query.GetClosestPointOn(sphere);

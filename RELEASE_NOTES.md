@@ -1,3 +1,4 @@
+- [Geometry] Return a deterministic surface point for circle and sphere closest-point queries at their finite center with a finite positive radius
 - Update to .NET 10
 
 ### 5.3.28
