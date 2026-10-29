@@ -1,3 +1,4 @@
+- [Base] Reduce area cancellation for translated 2D polygons
 - Update to .NET 10
 
 ### 5.3.28

@@ -192,26 +192,27 @@ namespace Aardvark.Base
 #endif
 
         /// <summary>
-        /// Computes the area of the polygon according to
-        /// "Fast Polygon Area and Newell Normal Computation"
-        ///  journal of graphics tools, 7(2):9-13, 2002
+        /// Computes signed area from the active vertices using Newell-form products.
+        /// Counterclockwise winding is positive; fewer than three vertices return zero.
+        /// X coordinates are relative to the first vertex to reduce cancellation
+        /// under translation. Floating-point rounding and range limits still apply.
+        /// See "Fast Polygon Area and Newell Normal Computation", JGT 7(2):9-13, 2002.
         /// </summary>
         public static __ftype__ ComputeSignedArea(this __polygon2t__ polygon)
         {
             var pc = polygon.PointCount;
             if (pc < 3) return 0;
-            __ftype__ area = polygon[pc - 1].X * (polygon[0].Y - polygon[pc - 2].Y);
-            area += polygon[0].X * (polygon[1].Y - polygon[pc - 1].Y);
+            var x0 = polygon[0].X;
+            __ftype__ area = (polygon[pc - 1].X - x0) * (polygon[0].Y - polygon[pc - 2].Y);
             for (int pi = 2; pi < pc; pi++)
-                area += polygon[pi - 1].X * (polygon[pi].Y - polygon[pi - 2].Y);
+                area += (polygon[pi - 1].X - x0) * (polygon[pi].Y - polygon[pi - 2].Y);
             return area / 2;
         }
 
         /// <summary>
-        /// Computes the area of the polygon according to
-        /// "Fast Polygon Area and Newell Normal Computation"
-        ///  journal of graphics tools, 7(2):9-13, 2002. The
-        ///  absolute value is returned (i.e. area >= 0.0).
+        /// Returns the absolute value of the signed area computed from active vertices.
+        /// Fewer than three vertices return zero. Floating-point rounding and range
+        /// limits are the same as for ComputeSignedArea.
         /// </summary>
         public static __ftype__ ComputeArea(this __polygon2t__ polygon)
             => polygon.ComputeSignedArea().Abs();
