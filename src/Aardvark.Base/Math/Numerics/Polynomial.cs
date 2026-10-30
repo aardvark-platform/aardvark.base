@@ -280,6 +280,24 @@ namespace Aardvark.Base
             return direct < 0.0 ? Fun.Abs(discriminant) : -Fun.Abs(discriminant);
         }
 
+        private static double PositiveDiscriminantCubicRoot(double p3, double q2, double sqrtD)
+        {
+            // Keep the existing exceptional-value arithmetic when the
+            // discriminant overflows; this is not an exponent-range repair.
+            if (!sqrtD.IsFinite())
+                return Fun.Cbrt(sqrtD - q2) - Fun.Cbrt(sqrtD + q2);
+
+            double u = Fun.Cbrt(sqrtD + Fun.Abs(q2));
+            double v = p3 / u; // Cardano's two terms have product p/3.
+            if (p3 > 0.0)
+            {
+                // Rationalize the cancelling difference using u^3-v^3=2|q/2|.
+                // Preserve the original positive zero when q/2 is zero.
+                return q2 == 0.0 ? 0.0 : -2.0 * q2 / (u * u + p3 + v * v);
+            }
+            return q2 < 0.0 ? u - v : v - u;
+        }
+
         /// <summary>
         /// Return real roots of the equation: a x^3 + b x^2 + c x + d = 0.
         /// Double and triple solutions are returned as replicated values.
@@ -345,7 +363,7 @@ namespace Aardvark.Base
                 if (d > 0.0)
                 {
                     d = Fun.Sqrt(d);
-                    double root = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2) - shift;
+                    double root = PositiveDiscriminantCubicRoot(p3, q2, d) - shift;
                     return (root, double.NaN, double.NaN);
                 }
             }
@@ -389,7 +407,7 @@ namespace Aardvark.Base
             if (d > 0.0)
             {
                 d = Fun.Sqrt(d);
-                double root = Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2);
+                double root = PositiveDiscriminantCubicRoot(p3, q2, d);
                 return (root, double.NaN, double.NaN);
             }
             if (d == 0.0)
@@ -420,6 +438,8 @@ namespace Aardvark.Base
             if (d < 0) // -------------- casus irreducibilis: three real roots
                 return 2 * Fun.Sqrt(-p3) * Fun.Cos(1/3.0
                               * Fun.Acos(-q2 / Fun.Sqrt(-p3c))) - 1/3.0 * c2;
+            if (d > 0.0)
+                return PositiveDiscriminantCubicRoot(p3, q2, Fun.Sqrt(d)) - 1/3.0 * c2;
             d = Fun.Sqrt(d);  // one triple root or a single and a double root
             return Fun.Cbrt(d - q2) - Fun.Cbrt(d + q2) - 1/3.0 * c2;
         }

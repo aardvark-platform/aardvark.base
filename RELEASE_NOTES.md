@@ -1,3 +1,4 @@
+- [Math] Preserve small real cubic roots lost to cancellation in Cardano evaluation
 - Update to .NET 10
 
 ### 5.3.28
