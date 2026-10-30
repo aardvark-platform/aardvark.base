@@ -175,6 +175,13 @@ Polynomial coefficient arrays are stored in ascending degree order.
 `RealRoots` and `RealRootsNormed` return only finite real roots, sorted ascending.
 Fixed-width tuple APIs fill unused trailing entries with `NaN`. Cubic solvers preserve
 repeated roots. Array conversion drops trailing `NaN` entries.
+For a finite positive cubic discriminant, Cardano evaluation derives the smaller
+term from the product identity and rationalizes a cancelling cube-root difference,
+preserving small real roots such as that of `x^3 + x + 1e-20`.
+Discriminant refinement, zero/negative-discriminant branches, shifts and exceptional
+arithmetic retain their existing policies. This does not rescale full-exponent-range
+coefficients or repair cancellation while forming the depressed coefficients.
+Existing ill-conditioned repeated-root quartic behavior is not changed.
 
 ## Cubic Curve Evaluation
 
