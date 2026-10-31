@@ -1,3 +1,4 @@
+- [Geometry] Reject separated parallel 2D segments in overlap-enabled intersection queries
 - Update to .NET 10
 
 ### 5.3.28

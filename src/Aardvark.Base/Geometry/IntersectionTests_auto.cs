@@ -480,8 +480,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the line segment intersects the line segment between p0 and p1.
         /// The intersection point is returned in p.
-        /// If overlapping is true and the segments are parallel, then
-        /// the closest point to p0 of the intersection range is returned in p.
+        /// If overlapping is true, parallel segments must have supporting-line separation
+        /// smaller than Constant&lt;float&gt;.PositiveTinyValue and intersecting projections.
+        /// The first point of the projected intersection range along line's P0-to-P1
+        /// direction is returned in p. The existing shared-origin check takes precedence.
         /// </summary>
         public static bool IntersectsLine(
             this Line2f line,
@@ -534,6 +536,15 @@ namespace Aardvark.Base
                 }
 
                 var normalizedDirection = u / lu;
+                // Keep subnormal axis-aligned offsets from underflowing in the determinant.
+                var distance = lu > 0 && u.Y == 0 ? Fun.Abs(a.Y)
+                    : lu > 0 && u.X == 0 ? Fun.Abs(a.X)
+                    : Fun.Abs(a.X * u.Y - a.Y * u.X) / lu;
+                if (distance >= Constant<float>.PositiveTinyValue)
+                {
+                    p = V2f.NaN;
+                    return false;
+                }
 
                 var r0 = new Range1f(0, lu);
                 var r1 = new Range1f((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
@@ -562,8 +573,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the line segment intersects the line segment between p0 and p1 within given tolerance.
         /// The intersection point is returned in p.
-        /// If overlapping is true and the segments are parallel, then
-        /// the closest point to p0 of the intersection range is returned in p.
+        /// If overlapping is true, parallel segments must have supporting-line separation
+        /// at most absoluteEpsilon and intersecting projections within that tolerance.
+        /// The first point of the tolerance-adjusted projected intersection range along
+        /// line's P0-to-P1 direction is returned in p. The existing shared-origin check takes precedence.
         /// </summary>
         public static bool IntersectsLine(
             this Line2f line,
@@ -621,6 +634,15 @@ namespace Aardvark.Base
                 }
 
                 var normalizedDirection = u / lu;
+                // Keep subnormal axis-aligned offsets from underflowing in the determinant.
+                var distance = lu > 0 && u.Y == 0 ? Fun.Abs(a.Y)
+                    : lu > 0 && u.X == 0 ? Fun.Abs(a.X)
+                    : Fun.Abs(a.X * u.Y - a.Y * u.X) / lu;
+                if (distance > absoluteEpsilon)
+                {
+                    p = V2f.NaN;
+                    return false;
+                }
 
                 var r0 = new Range1f(0, lu);
                 var r1 = new Range1f((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
@@ -4794,8 +4816,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the line segment intersects the line segment between p0 and p1.
         /// The intersection point is returned in p.
-        /// If overlapping is true and the segments are parallel, then
-        /// the closest point to p0 of the intersection range is returned in p.
+        /// If overlapping is true, parallel segments must have supporting-line separation
+        /// smaller than Constant&lt;double&gt;.PositiveTinyValue and intersecting projections.
+        /// The first point of the projected intersection range along line's P0-to-P1
+        /// direction is returned in p. The existing shared-origin check takes precedence.
         /// </summary>
         public static bool IntersectsLine(
             this Line2d line,
@@ -4848,6 +4872,15 @@ namespace Aardvark.Base
                 }
 
                 var normalizedDirection = u / lu;
+                // Keep subnormal axis-aligned offsets from underflowing in the determinant.
+                var distance = lu > 0 && u.Y == 0 ? Fun.Abs(a.Y)
+                    : lu > 0 && u.X == 0 ? Fun.Abs(a.X)
+                    : Fun.Abs(a.X * u.Y - a.Y * u.X) / lu;
+                if (distance >= Constant<double>.PositiveTinyValue)
+                {
+                    p = V2d.NaN;
+                    return false;
+                }
 
                 var r0 = new Range1d(0, lu);
                 var r1 = new Range1d((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
@@ -4876,8 +4909,10 @@ namespace Aardvark.Base
         /// <summary>
         /// Returns true if the line segment intersects the line segment between p0 and p1 within given tolerance.
         /// The intersection point is returned in p.
-        /// If overlapping is true and the segments are parallel, then
-        /// the closest point to p0 of the intersection range is returned in p.
+        /// If overlapping is true, parallel segments must have supporting-line separation
+        /// at most absoluteEpsilon and intersecting projections within that tolerance.
+        /// The first point of the tolerance-adjusted projected intersection range along
+        /// line's P0-to-P1 direction is returned in p. The existing shared-origin check takes precedence.
         /// </summary>
         public static bool IntersectsLine(
             this Line2d line,
@@ -4935,6 +4970,15 @@ namespace Aardvark.Base
                 }
 
                 var normalizedDirection = u / lu;
+                // Keep subnormal axis-aligned offsets from underflowing in the determinant.
+                var distance = lu > 0 && u.Y == 0 ? Fun.Abs(a.Y)
+                    : lu > 0 && u.X == 0 ? Fun.Abs(a.X)
+                    : Fun.Abs(a.X * u.Y - a.Y * u.X) / lu;
+                if (distance > absoluteEpsilon)
+                {
+                    p = V2d.NaN;
+                    return false;
+                }
 
                 var r0 = new Range1d(0, lu);
                 var r1 = new Range1d((p0 - line.P0).Dot(normalizedDirection), (p1 - line.P0).Dot(normalizedDirection));
