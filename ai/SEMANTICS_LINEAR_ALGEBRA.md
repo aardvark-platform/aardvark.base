@@ -101,6 +101,19 @@ The 3D matrix, Euclidean, Similarity, Affine and `Trafo3` `RotateInto` factories
 inherit this normalized-input contract and mapping behavior. A `Trafo3` also
 provides the inverse mapping in its backward matrix.
 
+## Coordinate System Units
+
+`CoordinateSystem.Info.UnitScale` is meters per coordinate unit: millimeters use
+`0.001`, meters use `1`. `ToAardvark` converts those coordinates to meters in the
+right-handed, Z-up Aardvark frame.
+
+`CoordinateSystem.FromTo(from, to).Forward` maps source coordinate values into
+target coordinate values; `Backward` maps them back. For matching handedness and
+up axis, the forward scale is `from.UnitScale / to.UnitScale`: 1000 millimeters
+become 1 meter, not 1000000 meters. Equal scales retain the identity shortcut.
+The existing handedness and up-axis operations are unchanged; this unit contract
+does not establish a general orientation-composition identity.
+
 ## Trafo3d Composition Note
 
 `Trafo3d` multiplication order is intentionally reversed relative to raw `M44d` multiplication:
@@ -114,6 +127,7 @@ This is documented in `Trafo_auto.cs` and affects composition assumptions.
 
 ## Source Anchors
 
+- `src/Aardvark.Base/Math/Trafos/CoordinateSystem.cs` (`Info.UnitScale`, `ToAardvark`, `FromTo`)
 - `src/Aardvark.Base/Math/Trafos/Rot3_template.cs` (`RotateInto`)
 - `src/Aardvark.Base/Math/Trafos/Rot3_auto.cs` (`Rot3f`, `Rot3d`)
 - `src/Aardvark.Base/Math/Trafos/Matrix_auto.cs` (`M44d`, `FromRows`, `FromCols`, `operator*`, `TransformPos`, `TransposedTransformPos`)

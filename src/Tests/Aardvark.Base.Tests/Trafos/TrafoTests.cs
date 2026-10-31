@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Versioning;
 using NUnit.Framework;
 using Aardvark.Base;
 
@@ -230,34 +233,137 @@ namespace Aardvark.Tests
         }
         
         [Test]
-        public void CoordsystemTransformTest()
+        public void CoordinateUnitsConvertMillimetersAndMeters()
         {
-            var sys = new[] 
+            foreach (var core in CoordinateSystemCores())
+            foreach (var hand in new[] { CoordinateSystem.Handedness.Left, CoordinateSystem.Handedness.Right })
+            foreach (var up in new[] { CoordinateSystem.Axis.X, CoordinateSystem.Axis.Y, CoordinateSystem.Axis.Z })
+            {
+                var millimeters = core.Info(.001, hand, up); var meters = core.Info(1, hand, up);
+                var mmToM = core.FromTo(millimeters, meters); var mToMm = core.FromTo(meters, millimeters);
+                var mm = new V3d(1000, -2500, 750); var m = new V3d(1, -2.5, .75);
+                var context = $"{core.Name}, {hand}/{up}, millimeters/meters";
+                Assert.AreEqual(m, core.Position(mmToM, false, mm), context + " mm -> m");
+                Assert.AreEqual(mm, core.Position(mmToM, true, m), context + " mm <- m");
+                Assert.AreEqual(mm, core.Position(mToMm, false, m), context + " m -> mm");
+                Assert.AreEqual(m, core.Position(mToMm, true, mm), context + " m <- mm");
+                CheckCoordinatePosition(core.Position(core.ToAardvark(millimeters), false, mm),
+                    core.Position(core.ToAardvark(meters), false, m), context + " physical meters");
+            }
+        }
+
+        [Test]
+        public void CoordinateUnitPairsPreservePhysicalPositions()
+        {
+            foreach (var core in CoordinateSystemCores())
+            foreach (var hand in new[] { CoordinateSystem.Handedness.Left, CoordinateSystem.Handedness.Right })
+            foreach (var up in new[] { CoordinateSystem.Axis.X, CoordinateSystem.Axis.Y, CoordinateSystem.Axis.Z })
+            foreach (var fromScale in CoordinateUnitScales)
+            foreach (var toScale in CoordinateUnitScales)
+            {
+                if (fromScale == toScale) continue;
+                var from = core.Info(fromScale, hand, up); var to = core.Info(toScale, hand, up);
+                var direct = core.FromTo(from, to); var reverse = core.FromTo(to, from);
+                var fromPhysical = core.ToAardvark(from); var toPhysical = core.ToAardvark(to);
+                foreach (var point in CoordinateUnitPoints)
                 {
-                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.X),
-                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.X),
-                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Y),
-                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Y),
-                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Z),
-                  new CoordinateSystem.Info(1, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Z),
-                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.X),
-                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.X),
-                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Y),
-                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Y),
-                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Left, CoordinateSystem.Axis.Z),
-                  new CoordinateSystem.Info(10, CoordinateSystem.Handedness.Right, CoordinateSystem.Axis.Z)
-                };
+                    var context = $"{core.Name}, {hand}/{up}, from={fromScale}, to={toScale}, point={point}";
+                    // Independent physical-coordinate anchors, not merely mutually inverse ratios.
+                    var sourceMeters = core.Position(fromPhysical, false, point);
+                    var targetMeters = core.Position(toPhysical, false, point);
+                    var expectedForward = core.Position(toPhysical, true, sourceMeters);
+                    var expectedBackward = core.Position(fromPhysical, true, targetMeters);
+                    var forward = core.Position(direct, false, point); var backward = core.Position(direct, true, point);
+                    CheckCoordinatePosition(expectedForward, forward, context + " forward");
+                    CheckCoordinatePosition(expectedBackward, backward, context + " backward");
+                    CheckCoordinatePosition(expectedBackward, core.Position(reverse, false, point), context + " reverse forward");
+                    CheckCoordinatePosition(expectedForward, core.Position(reverse, true, point), context + " reverse backward");
+                    CheckCoordinatePosition(sourceMeters, core.Position(toPhysical, false, forward), context + " source physical meters");
+                    CheckCoordinatePosition(targetMeters, core.Position(fromPhysical, false, backward), context + " target physical meters");
+                }
+            }
+        }
 
-            //foreach(var from in sys)
-            //    foreach(var to in sys)
-            //    {
-            //        // TODO: think about what the correct validation is and implement this test properly...
+        [Test]
+        public void EqualCoordinateUnitsKeepIdentity()
+        {
+            foreach (var core in CoordinateSystemCores())
+            foreach (var hand in new[] { CoordinateSystem.Handedness.Left, CoordinateSystem.Handedness.Right })
+            foreach (var up in new[] { CoordinateSystem.Axis.X, CoordinateSystem.Axis.Y, CoordinateSystem.Axis.Z })
+            foreach (var scale in CoordinateUnitScales)
+            {
+                var info = core.Info(scale, hand, up); var direct = core.FromTo(info, info);
+                var context = $"{core.Name}, {hand}/{up}, equal scale={scale}";
+                Assert.AreEqual(core.Identity, direct, context + " exact identity matrices");
+                foreach (var point in CoordinateUnitPoints)
+                {
+                    Assert.AreEqual(point, core.Position(direct, false, point), context + " forward, point=" + point);
+                    Assert.AreEqual(point, core.Position(direct, true, point), context + " backward, point=" + point);
+                }
+            }
+        }
 
-            //        var direct = CoordinateSystem.FromTo(from, to);
-            //        var usingAardvark = CoordinateSystem.ToAardvark(to).Inverse * CoordinateSystem.ToAardvark(from);
+        private static readonly double[] CoordinateUnitScales = { .001, .01, .25, 1, 2, 10, 1000 };
+        private static readonly V3d[] CoordinateUnitPoints =
+            { new V3d(1, 2, 3), new V3d(-1, -2, -3), new V3d(1, -2, 3), new V3d(-.5, 1.25, -4) };
 
-            //        ValidateTrafos(direct, usingAardvark);
-            //    }
+        private static void CheckCoordinatePosition(V3d expected, V3d actual, string context)
+        {
+            for (var i = 0; i < 3; i++)
+                Assert.That(Math.Abs(actual[i] - expected[i]), Is.LessThanOrEqualTo(16 * Math.ScaleB(1, -53) * Math.Abs(expected[i])), context + ", component=" + i);
+        }
+
+        private sealed class CoordinateCore
+        {
+            public readonly string Name;
+            public readonly object Identity;
+            private readonly Type hand, axis;
+            private readonly ConstructorInfo infoConstructor, pointConstructor;
+            private readonly MethodInfo fromTo, toAardvark, transformPos;
+            private readonly FieldInfo forward, backward;
+            private readonly FieldInfo[] components;
+
+            public CoordinateCore(Assembly assembly, string name)
+            {
+                Name = name;
+                var coordinate = assembly.GetType("Aardvark.Base.CoordinateSystem", true);
+                var info = coordinate.GetNestedType("Info"); hand = coordinate.GetNestedType("Handedness"); axis = coordinate.GetNestedType("Axis");
+                var trafo = assembly.GetType("Aardvark.Base.Trafo3d", true);
+                var matrix = assembly.GetType("Aardvark.Base.M44d", true); var vector = assembly.GetType("Aardvark.Base.V3d", true);
+                foreach (var type in new[] { info, hand, axis, trafo, matrix, vector }) Assert.AreSame(assembly, type.Assembly, name);
+                infoConstructor = info.GetConstructor(new[] { typeof(double), hand, axis });
+                pointConstructor = vector.GetConstructor(new[] { typeof(double), typeof(double), typeof(double) });
+                fromTo = coordinate.GetMethod("FromTo", new[] { info, info });
+                toAardvark = coordinate.GetMethod("ToAardvark", new[] { info });
+                transformPos = assembly.GetType("Aardvark.Base.Mat", true).GetMethod("TransformPos", new[] { matrix, vector });
+                Assert.IsNotNull(transformPos, name + " Mat.TransformPos(M44d,V3d)");
+                Assert.AreEqual(trafo, fromTo.ReturnType, name); Assert.AreEqual(vector, transformPos.ReturnType, name);
+                forward = trafo.GetField("Forward"); backward = trafo.GetField("Backward");
+                components = new[] { "X", "Y", "Z" }.Select(vector.GetField).ToArray();
+                Identity = trafo.GetProperty("Identity").GetValue(null);
+            }
+            public object Info(double scale, CoordinateSystem.Handedness h, CoordinateSystem.Axis up)
+                => infoConstructor.Invoke(new[] { (object)scale, Enum.ToObject(hand, (int)h), Enum.ToObject(axis, (int)up) });
+            public object FromTo(object from, object to) => fromTo.Invoke(null, new[] { from, to });
+            public object ToAardvark(object from) => toAardvark.Invoke(null, new[] { from });
+            public V3d Position(object trafo, bool inverse, V3d point)
+            {
+                var input = pointConstructor.Invoke(new object[] { point.X, point.Y, point.Z });
+                var result = transformPos.Invoke(null, new[] { (inverse ? backward : forward).GetValue(trafo), input });
+                return new V3d((double)components[0].GetValue(result), (double)components[1].GetValue(result), (double)components[2].GetValue(result));
+            }
+        }
+
+        private static IEnumerable<CoordinateCore> CoordinateSystemCores()
+        {
+            foreach (var target in new[] { "net10.0", "netstandard2.0" })
+            {
+                var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Trafo3d).Assembly.Location), "..", target, "Aardvark.Base.dll"));
+                Assert.That(File.Exists(path), Is.True, "Required sibling core: " + path);
+                var assembly = Assembly.LoadFile(path);
+                Assert.AreEqual(target == "net10.0" ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0", assembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName, path);
+                yield return new CoordinateCore(assembly, target);
+            }
         }
         
         [Test]
