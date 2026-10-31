@@ -32,6 +32,20 @@ var hit = RayHit3d.MaxRange;
 bool hitsTri = ray.Hits(triangle, 0.0, double.MaxValue, ref hit);
 ```
 
+## Line2 Segment Overlap
+
+For `Line2f`/`Line2d.IntersectsLine` overloads taking `bool overlapping`, the
+parallel, overlap-enabled branch checks perpendicular supporting-line separation
+before intersecting projected intervals. The default distance must be strictly
+less than `Constant<float/double>.PositiveTinyValue`; the explicit distance may
+equal `absoluteEpsilon`. Miss outputs are NaN vectors.
+
+The returned point keeps the existing lower endpoint of the (possibly
+tolerance-adjusted) projected intersection range along the receiver's `P0`-to-`P1`
+direction. The shared-origin shortcut still takes precedence. Nonparallel
+arithmetic, overlap-disabled behavior, parallel classification and general
+degeneracy handling are unchanged.
+
 ## Triangle Bounding Volumes
 
 `Triangle2f`/`Triangle2d` bounding circles and `Triangle3f`/`Triangle3d` bounding
