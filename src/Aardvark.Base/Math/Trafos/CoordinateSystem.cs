@@ -20,6 +20,9 @@ namespace Aardvark.Base
 
         public struct Info
         {
+            /// <summary>
+            /// Meters per coordinate unit; for example, 0.001 for millimeters.
+            /// </summary>
             public double UnitScale;
             public Handedness Handedness;
             public Axis UpVector;
@@ -99,13 +102,16 @@ namespace Aardvark.Base
             => ax == Axis.X ? V3d.XAxis : (ax == Axis.Y ? V3d.YAxis : V3d.ZAxis);
 
         /// <summary>
-        /// Builds transformation from one coordinate system to another.
+        /// Builds a transformation whose forward matrix maps coordinate values
+        /// from <paramref name="from"/> to <paramref name="to"/>; its backward
+        /// matrix maps them back. Unit scales are meters per coordinate unit,
+        /// so the forward unit conversion scales by from.UnitScale / to.UnitScale.
         /// </summary>
         public static Trafo3d FromTo(Info from, Info to)
         {
             var t = Trafo3d.Identity;
             if (from.UnitScale != to.UnitScale)
-                t = Trafo3d.Scale(to.UnitScale / from.UnitScale);
+                t = Trafo3d.Scale(from.UnitScale / to.UnitScale);
 
             if (from.Handedness != to.Handedness)
                 t *= SwapHand;

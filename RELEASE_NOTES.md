@@ -1,3 +1,4 @@
+- [Math] Correct coordinate-system unit conversions between unequal unit scales
 - Update to .NET 10
 
 ### 5.3.28
