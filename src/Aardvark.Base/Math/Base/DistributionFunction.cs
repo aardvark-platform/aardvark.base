@@ -65,9 +65,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Retrieve index to the discrete PDF where its cumulative distribution matches the random variable x1 [0, 1].
-        /// For a valid CDF with finite positive total, a threshold equal to the total
-        /// selects the final positive-mass interval, including x1 == 1 and rounded interior draws.
+        /// Retrieve index to the discrete PDF where its cumulative distribution matches the random variable x1 [0, 1).
+        /// For a valid CDF with finite positive total, an interior draw can round its
+        /// threshold to the total, selecting the final positive-mass interval.
         /// Uses binary search O(log n).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -89,9 +89,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Retrieve index of a discrete PDF given its cumulative distribution function (CDF) and a random variable x1 [0, 1].
-        /// For a valid CDF with finite positive total, a threshold equal to the total
-        /// selects the final positive-mass interval, including x1 == 1 and rounded interior draws.
+        /// Retrieve index of a discrete PDF given its cumulative distribution function (CDF) and a random variable x1 [0, 1).
+        /// For a valid CDF with finite positive total, an interior draw can round its
+        /// threshold to the total, selecting the final positive-mass interval.
         /// Uses binary search O(log n).
         /// </summary>
         public static int SampleCDF(double[] cdf, double x1)

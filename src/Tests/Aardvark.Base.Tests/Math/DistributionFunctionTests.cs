@@ -23,17 +23,16 @@ namespace Aardvark.Tests
                 {
                     var pdf = new double[6 + tail];
                     pdf[1] = factor; pdf[3] = 3 * factor; pdf[5] = 2 * factor;
-                    CheckConstructors(core, pdf, new[] { 0.0, .5, .75, Math.BitDecrement(1.0), 1.0 });
+                    CheckConstructors(core, pdf, new[] { 0.0, .5, .75, Math.BitDecrement(1.0) });
                 }
                 foreach (var length in new[] { 1, 2, 17, 1025, 65537 })
                 foreach (var index in new HashSet<int> { 0, length / 2, length - 1 })
                 foreach (var mass in new[] { double.Epsilon, 2 * double.Epsilon, 3 * double.Epsilon, Math.ScaleB(1, -1022), 1.0, Math.ScaleB(1, 900) })
                 {
                     var pdf = new double[length]; pdf[index] = mass;
-                    CheckConstructors(core, pdf, new[] { 0.0, .5, Math.BitIncrement(.5), .75, Math.BitDecrement(1.0), 1.0 });
+                    CheckConstructors(core, pdf, new[] { 0.0, .5, Math.BitIncrement(.5), .75, Math.BitDecrement(1.0) });
                 }
                 Assert.AreEqual(double.Epsilon, .75 * double.Epsilon, "Interior draw rounds to the terminal threshold");
-                CheckConstructors(core, new[] { 1.0, 0.0 }, new[] { 1.0 });
                 CheckConstructors(core, new[] { double.Epsilon, 0.0 }, new[] { .75 });
             }
         }
@@ -84,7 +83,7 @@ namespace Aardvark.Tests
                     core.Update(distribution);
                     Assert.AreSame(storage, core.Cdf(distribution), core.Name + " update preserves CDF storage");
                     CollectionAssert.AreEqual(Integrate(pdf), storage, core.Name + " current PDF integration");
-                    foreach (var draw in new[] { 0.0, .25, .5, .75, Math.BitDecrement(1.0), 1.0 })
+                    foreach (var draw in new[] { 0.0, .25, .5, .75, Math.BitDecrement(1.0) })
                         Check(core, distribution, storage, draw, "updated PDF=[" + string.Join(",", pdf) + "]");
                     CollectionAssert.AreEqual(stage, pdf, core.Name + " sampling preserves PDF");
                 }
@@ -101,7 +100,8 @@ namespace Aardvark.Tests
         private static int Expected(double[] cdf, double draw)
         {
             var total = cdf[cdf.Length - 1]; var threshold = draw * total;
-            // Independent interval-membership oracle, including the closed terminal boundary.
+            // Independent interval-membership oracle: a half-open draw can round its
+            // threshold to the total; this does not make the draw interval closed.
             for (var i = 0; i < cdf.Length - 1; i++)
                 if (cdf[i] < cdf[i + 1] && cdf[i] <= threshold &&
                     (threshold < cdf[i + 1] || threshold == total && cdf[i + 1] == total)) return i;
@@ -123,6 +123,7 @@ namespace Aardvark.Tests
 
         private static void Check(SamplingCore core, object distribution, double[] cdf, double draw, string label)
         {
+            Assert.That(draw >= 0 && draw < 1, Is.True, $"{core.Name}: {label}, fixture draw={draw:R} must be in [0, 1)");
             var expected = Expected(cdf, draw); var context = $"{core.Name}: {label}, draw={draw:R}, expected={expected}";
             Assert.That(cdf[expected + 1], Is.GreaterThan(cdf[expected]), context + " positive interval");
             for (var api = 0; api < 4; api++) Assert.AreEqual(expected, core.Sample(distribution, cdf, draw, api), context + ", API=" + api);
