@@ -1,3 +1,4 @@
+- [Math] Avoid selecting zero-weight trailing bins at the terminal CDF sampling boundary
 - Update to .NET 10
 
 ### 5.3.28
