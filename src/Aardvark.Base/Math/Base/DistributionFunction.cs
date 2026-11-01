@@ -54,6 +54,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Retrieve random index distributed proportional to probability density function.
+        /// For a valid CDF with finite positive total, a threshold rounded to the total
+        /// selects the final positive-mass interval, skipping trailing zero-weight bins.
         /// Uses binary search O(log n).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -63,7 +65,9 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Retrieve index to the discrete PDF where its cumulative distribution matches the random variable x1 [0, 1].
+        /// Retrieve index to the discrete PDF where its cumulative distribution matches the random variable x1 [0, 1).
+        /// For a valid CDF with finite positive total, an interior draw can round its
+        /// threshold to the total, selecting the final positive-mass interval.
         /// Uses binary search O(log n).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -74,6 +78,8 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Retrieve random index of a discretized PDF given its cumulative distribution function (CDF).
+        /// For a valid CDF with finite positive total, a threshold rounded to the total
+        /// selects the final positive-mass interval, skipping trailing zero-weight bins.
         /// Uses binary search O(log n).
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -83,15 +89,31 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Retrieve index of a discrete PDF given its cumulative distribution function (CDF) and a random variable x1 [0, 1].
+        /// Retrieve index of a discrete PDF given its cumulative distribution function (CDF) and a random variable x1 [0, 1).
+        /// For a valid CDF with finite positive total, an interior draw can round its
+        /// threshold to the total, selecting the final positive-mass interval.
         /// Uses binary search O(log n).
         /// </summary>
         public static int SampleCDF(double[] cdf, double x1)
         {
             var range = cdf.Length;
-            var valueToFind = x1 * cdf[range - 1]; // x1 * sum -> CDF threshold to find
+            var total = cdf[range - 1];
+            var valueToFind = x1 * total; // x1 * sum -> CDF threshold to find
 
             var i0 = 0;
+            if (valueToFind == total && total > 0 && total < double.PositiveInfinity && x1 <= 1)
+            {
+                // Find the start of the terminal plateau, not its last zero-weight bin.
+                var end = range - 1;
+                while (i0 < end)
+                {
+                    var center = i0 + ((end - i0) >> 1);
+                    if (cdf[center] < total) i0 = center + 1;
+                    else end = center;
+                }
+                return Fun.Clamp(i0 - 1, 0, cdf.Length - 2);
+            }
+
             // binary search
             while (range > 0)
             {

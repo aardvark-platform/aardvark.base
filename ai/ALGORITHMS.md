@@ -161,6 +161,18 @@ int i = d.Sample(rnd);
 int j = DistributionFunction.SampleCDF(d.CDF, rnd.UniformDouble());
 ```
 
+For a valid CDF with finite positive total and a draw in `[0, 1)`, matching
+`UniformDouble()`, sampling selects a positive-mass interval. Interior thresholds
+use the upper-bound rule: an exact cutoff belongs to the next positive interval,
+skipping zero-mass bins. A draw below one can still round its computed threshold
+to the total: PDF `[double.Epsilon, 0]` at `x1 = 0.75` produces
+`0.75 * double.Epsilon == double.Epsilon`. Sampling then selects the final
+positive-mass interval (index zero here), not a trailing zero-weight bin.
+The terminal plateau is located by binary search, so long zero-weight tails
+remain `O(log n)`. Sampling allocates no managed memory; each random overload
+calls `UniformDouble()` exactly once. Constructors and invalid-input policies
+are unchanged; this does not add validation of supplied PDFs or CDFs.
+
 ## Polynomial
 
 `Polynomial` is in `Math/Numerics/Polynomial.cs` (not `Math/Base`).
