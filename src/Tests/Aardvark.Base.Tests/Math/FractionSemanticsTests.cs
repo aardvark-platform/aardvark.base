@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
+using System.Runtime.Versioning;
 using Aardvark.Base;
 using NUnit.Framework;
 
@@ -278,6 +282,184 @@ namespace Aardvark.Tests
             var value = new Fraction(12, 30);
             AssertRaw(value, 12, 30);
             Assert.AreEqual("12/30", value.ToString());
+        }
+
+        [Test]
+        public void ConstructedSignedExtremesPreserveValuesAndStorage()
+        {
+            foreach (var core in ConstructorCores())
+            {
+                foreach (var numerator in ConstructorBoundaryValues)
+                foreach (var denominator in ConstructorBoundaryValues)
+                    AssertConstructor(core, numerator, denominator);
+                ulong state = 0xb624439ea3d53ce3UL;
+                for (var i = 0; i < 4096; i++)
+                {
+                    var numerator = unchecked((long)Next(ref state));
+                    var denominator = unchecked((long)Next(ref state));
+                    if (i % 7 == 0) numerator = long.MinValue;
+                    if (i % 7 == 1) denominator = long.MinValue;
+                    if (i % 7 == 2) numerator = denominator = long.MinValue;
+                    if (i % 7 == 3) denominator = 0;
+                    AssertConstructor(core, numerator, denominator);
+                }
+            }
+        }
+
+        [Test]
+        public void ExtremeFractionTextRoundTripsPreserveValues()
+        {
+            foreach (var core in ConstructorCores())
+            foreach (var numerator in ConstructorBoundaryValues)
+            foreach (var denominator in ConstructorBoundaryValues)
+            {
+                var raw = core.Raw(numerator, denominator);
+                foreach (var source in new[] { raw, core.Reduce(raw) })
+                {
+                    var fields = core.Fields(source);
+                    var context = $"{core.Name}: text round-trip {fields.N}/{fields.D}";
+                    Assert.AreEqual(fields.N + "/" + fields.D, source.ToString(), context);
+                    var parsed = core.Parse(source.ToString());
+                    AssertFractionValue(core, parsed, fields.N, fields.D, context);
+                    AssertNormalizedStorage(core, parsed, fields.N, fields.D, context);
+                    Assert.IsTrue(core.Equal(source, parsed), context + " numerical Equals");
+                    Assert.AreEqual(source.GetHashCode(), parsed.GetHashCode(), context + " hash");
+                }
+            }
+        }
+
+        [Test]
+        public void ConstructedFractionsKeepCollectionAndStorageContracts()
+        {
+            foreach (var core in ConstructorCores())
+            {
+                Assert.AreEqual(16, Marshal.SizeOf(core.Type), core.Name);
+                Assert.AreEqual(IntPtr.Zero, Marshal.OffsetOf(core.Type, "Numerator"), core.Name);
+                Assert.AreEqual(new IntPtr(8), Marshal.OffsetOf(core.Type, "Denominator"), core.Name);
+                Assert.IsNotNull(core.Type.GetCustomAttribute<DataContractAttribute>(), core.Name);
+                foreach (var field in new[] { "Numerator", "Denominator" })
+                    Assert.IsNotNull(core.Type.GetField(field).GetCustomAttribute<DataMemberAttribute>(), core.Name + " " + field);
+                foreach (var n in ConstructorBoundaryValues)
+                    Assert.AreEqual((n, 1L), core.Fields(core.Integer(n)), core.Name + " single-argument constructor");
+
+                foreach (var numerator in ConstructorBoundaryValues)
+                foreach (var denominator in ConstructorBoundaryValues)
+                {
+                    var context = $"{core.Name}: collections/reduction/storage {numerator}/{denominator}";
+                    var value = core.Create(numerator, denominator); var raw = core.Raw(numerator, denominator);
+                    Assert.IsTrue(core.Equal(raw, value), context + " numerical Equals");
+                    Assert.AreEqual(numerator != 0 || denominator != 0, core.OperatorEqual(raw, value), context + " IEEE equality");
+                    Assert.AreEqual(raw.GetHashCode(), value.GetHashCode(), context + " hash");
+                    var reduced = core.Reduce(value); var fields = core.Fields(reduced);
+                    AssertFractionValue(core, reduced, numerator, denominator, context);
+                    Assert.IsTrue(core.Equal(raw, reduced), context + " reduced Equals");
+                    Assert.AreEqual(raw.GetHashCode(), reduced.GetHashCode(), context + " reduced hash");
+                    Assert.AreEqual(fields, core.Fields(core.Reduce(reduced)), context + " reduction idempotence");
+                    if (denominator != 0)
+                    {
+                        var gcd = BigInteger.GreatestCommonDivisor(BigInteger.Abs(numerator), BigInteger.Abs(denominator));
+                        BigInteger n = numerator / gcd, d = denominator / gcd;
+                        if (d < 0) { n = -n; d = -d; }
+                        Assert.AreEqual(BigInteger.One, BigInteger.GreatestCommonDivisor(BigInteger.Abs(fields.N), BigInteger.Abs(fields.D)), context + " lowest terms");
+                        if (n >= long.MinValue && n <= long.MaxValue && d <= long.MaxValue)
+                            Assert.AreEqual(((long)n, (long)d), fields, context + " representable canonical reduction");
+                    }
+                    else Assert.AreEqual(((long)Math.Sign(numerator), 0L), fields, context + " canonical special value");
+
+                    foreach (var stored in new[] { raw, value })
+                    {
+                        using (var stream = new MemoryStream())
+                        {
+                            var serializer = new DataContractSerializer(core.Type);
+                            serializer.WriteObject(stream, stored); stream.Position = 0;
+                            var restored = serializer.ReadObject(stream);
+                            Assert.That(core.Type.IsInstanceOfType(restored), Is.True, context + " serialized type identity");
+                            Assert.AreEqual(core.Fields(stored), core.Fields(restored), context + " serialized raw fields");
+                        }
+                    }
+                }
+            }
+        }
+
+        private static readonly long[] ConstructorBoundaryValues =
+        {
+            long.MinValue, long.MinValue + 1, long.MinValue + 2,
+            -2, -1, 0, 1, 2, long.MaxValue - 1, long.MaxValue
+        };
+
+        private static void AssertConstructor(ConstructorCore core, long n, long d)
+        {
+            var context = $"{core.Name}: construct {n}/{d}";
+            var actual = core.Create(n, d);
+            AssertFractionValue(core, actual, n, d, context);
+            AssertNormalizedStorage(core, actual, n, d, context);
+        }
+
+        private static void AssertFractionValue(ConstructorCore core, object actual, long n, long d, string context)
+        {
+            var fields = core.Fields(actual);
+            if (d == 0)
+            {
+                Assert.AreEqual(0, fields.D, context + " zero denominator");
+                Assert.AreEqual(Math.Sign(n), Math.Sign(fields.N), context + " NaN/infinity sign");
+            }
+            else
+            {
+                Assert.AreNotEqual(0, fields.D, context + " finite denominator");
+                Assert.AreEqual((BigInteger)n * fields.D, (BigInteger)fields.N * d, context + " exact cross-products");
+            }
+        }
+
+        private static void AssertNormalizedStorage(ConstructorCore core, object actual, long n, long d, string context)
+        {
+            BigInteger numerator = n, denominator = d;
+            if (d < 0 && -numerator >= long.MinValue && -numerator <= long.MaxValue && -denominator <= long.MaxValue)
+            {
+                numerator = -numerator; denominator = -denominator;
+            }
+            Assert.AreEqual(((long)numerator, (long)denominator), core.Fields(actual), context + " exact unreduced storage");
+        }
+
+        private sealed class ConstructorCore
+        {
+            public readonly Type Type;
+            public readonly string Name;
+            private readonly ConstructorInfo pair, integer;
+            private readonly FieldInfo numerator, denominator;
+            private readonly MethodInfo parse, reduced, equals, operatorEqual;
+            public ConstructorCore(Assembly assembly, string name)
+            {
+                Name = name; Type = assembly.GetType("Aardvark.Base.Fraction", true);
+                Assert.AreSame(assembly, Type.Assembly, name);
+                pair = Type.GetConstructor(new[] { typeof(long), typeof(long) }); integer = Type.GetConstructor(new[] { typeof(long) });
+                numerator = Type.GetField("Numerator"); denominator = Type.GetField("Denominator");
+                parse = Type.GetMethod("Parse", new[] { typeof(string) }); reduced = Type.GetProperty("Reduced").GetMethod;
+                equals = Type.GetMethod("Equals", new[] { Type }); operatorEqual = Type.GetMethod("op_Equality", new[] { Type, Type });
+                Assert.IsNotNull(pair, name); Assert.IsNotNull(integer, name); Assert.IsNotNull(parse, name); Assert.IsNotNull(equals, name);
+            }
+            public object Create(long n, long d) => pair.Invoke(new object[] { n, d });
+            public object Integer(long n) => integer.Invoke(new object[] { n });
+            public object Raw(long n, long d)
+            {
+                var value = Activator.CreateInstance(Type); numerator.SetValue(value, n); denominator.SetValue(value, d); return value;
+            }
+            public (long N, long D) Fields(object value) => ((long)numerator.GetValue(value), (long)denominator.GetValue(value));
+            public object Parse(string text) => parse.Invoke(null, new object[] { text });
+            public object Reduce(object value) => reduced.Invoke(value, null);
+            public bool Equal(object a, object b) => (bool)equals.Invoke(a, new[] { b });
+            public bool OperatorEqual(object a, object b) => (bool)operatorEqual.Invoke(null, new[] { a, b });
+        }
+
+        private static IEnumerable<ConstructorCore> ConstructorCores()
+        {
+            foreach (var target in new[] { "net10.0", "netstandard2.0" })
+            {
+                var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Fraction).Assembly.Location), "..", target, "Aardvark.Base.dll"));
+                Assert.That(File.Exists(path), Is.True, "Required sibling core: " + path);
+                var assembly = Assembly.LoadFile(path);
+                Assert.AreEqual(target == "net10.0" ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0", assembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName, path);
+                yield return new ConstructorCore(assembly, target);
+            }
         }
 
         private static void AssertExactOrder(Fraction a, Fraction b, int expected)

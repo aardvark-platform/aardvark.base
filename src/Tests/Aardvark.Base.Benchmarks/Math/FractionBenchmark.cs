@@ -1,3 +1,5 @@
+using System;
+using System.Numerics;
 using BenchmarkDotNet.Attributes;
 
 namespace Aardvark.Base.Benchmarks
@@ -20,6 +22,10 @@ namespace Aardvark.Base.Benchmarks
         private Fraction[] m_specialRight;
         private Fraction[] m_addLeft;
         private Fraction[] m_addRight;
+        private long[] m_constructorNumerators;
+        private long[] m_positiveDenominators;
+        private long[] m_negativeDenominators;
+        private long[] m_zeroDenominators;
 
         [GlobalSetup]
         public void Setup()
@@ -34,6 +40,10 @@ namespace Aardvark.Base.Benchmarks
             m_specialRight = new Fraction[Count];
             m_addLeft = new Fraction[Count];
             m_addRight = new Fraction[Count];
+            m_constructorNumerators = new long[Count];
+            m_positiveDenominators = new long[Count];
+            m_negativeDenominators = new long[Count];
+            m_zeroDenominators = new long[Count];
 
             for (int i = 0; i < Count; i++)
             {
@@ -71,6 +81,25 @@ namespace Aardvark.Base.Benchmarks
 
                 m_addLeft[i] = new Fraction(i % 17 + 1, i % 23 + 2);
                 m_addRight[i] = new Fraction(-(i % 13 + 1), i % 19 + 2);
+
+                long n = i % 17 == 0 ? 0 : (i & 1) == 0 ? 3L * (i + 1) : -3L * (i + 1);
+                long d = 3L * (i + 17);
+                m_constructorNumerators[i] = n;
+                m_positiveDenominators[i] = d;
+                m_negativeDenominators[i] = -d;
+                var positive = new Fraction(n, d);
+                var negative = new Fraction(n, -d);
+                var zero = new Fraction(n, 0);
+                if (positive.Numerator != n || positive.Denominator != d ||
+                    negative.Numerator != -n || negative.Denominator != d ||
+                    zero.Numerator != n || zero.Denominator != 0)
+                    throw new InvalidOperationException("Constructor benchmark requires already-correct fields.");
+                var a = m_addLeft[i]; var b = m_addRight[i]; var sum = a + b;
+                var gcd = BigInteger.GreatestCommonDivisor(a.Denominator, b.Denominator);
+                var expectedNumerator = (BigInteger)a.Numerator * (b.Denominator / gcd) + (BigInteger)b.Numerator * (a.Denominator / gcd);
+                var expectedDenominator = (BigInteger)(a.Denominator / gcd) * b.Denominator;
+                if (sum.Numerator != expectedNumerator || sum.Denominator != expectedDenominator)
+                    throw new InvalidOperationException("Addition benchmark requires already-correct fields.");
             }
         }
 
@@ -123,6 +152,42 @@ namespace Aardvark.Base.Benchmarks
                 if (m_specialLeft[i] == m_specialRight[i]) result++;
                 if (m_specialLeft[i] != m_specialRight[i]) result += 3;
                 if (m_specialLeft[i] < m_specialRight[i]) result += 7;
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public long ConstructPositiveDenominators()
+        {
+            long result = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                var value = new Fraction(m_constructorNumerators[i], m_positiveDenominators[i]);
+                result += value.Numerator + value.Denominator;
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public long ConstructNegativeDenominators()
+        {
+            long result = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                var value = new Fraction(m_constructorNumerators[i], m_negativeDenominators[i]);
+                result += value.Numerator + value.Denominator;
+            }
+            return result;
+        }
+
+        [Benchmark]
+        public long ConstructZeroDenominators()
+        {
+            long result = 0;
+            for (int i = 0; i < Count; i++)
+            {
+                var value = new Fraction(m_constructorNumerators[i], m_zeroDenominators[i]);
+                result += value.Numerator + value.Denominator;
             }
             return result;
         }
