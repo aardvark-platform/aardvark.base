@@ -1,3 +1,4 @@
+- [Math] Preserve Fraction values and text round-trips by retaining signed fields when denominator normalization would overflow
 - Update to .NET 10
 
 ### 5.3.28

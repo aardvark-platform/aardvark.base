@@ -54,7 +54,7 @@ Raw encodings remain available through `Half.ToHalf(ushort)` and `Half.GetBits(H
 
 ## Fraction Semantics
 
-`Fraction` has mutable `long Numerator` and `long Denominator` fields. Construction normally makes the denominator non-negative but does not automatically reduce finite values.
+`Fraction` has mutable `long Numerator` and `long Denominator` fields. The two-argument constructor normalizes a negative denominator only when negating both fields is representable. If either field is `long.MinValue`, it retains the original signed pair instead of overflowing or changing its value. Construction never reduces the pair; zero denominators and the single-argument constructor are unchanged. For example, `new Fraction(long.MinValue, -2)` retains those fields and represents positive `2^62`; `Reduced` returns `2^62/1`. `ToString`/`Parse` round-trips preserve the value of these signed extreme representations without a special parser path.
 
 - Finite comparison operators are mathematically exact and allocate no managed memory.
 - Unreduced equivalents such as `new Fraction(1, 2)` and `new Fraction(3, 6)` compare equal. `Equals` and `GetHashCode` use the same numerical finite equality, so dictionaries and sets group equivalent fractions and all finite zero representations.

@@ -30,12 +30,21 @@ namespace Aardvark.Base
             Denominator = 1;
         }
 
+        /// <summary>
+        /// Stores an unreduced numerator and denominator. A negative denominator is
+        /// normalized only when both fields can be negated without overflow;
+        /// otherwise their original signs are retained. A zero denominator is preserved.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Fraction(long numerator, long denominator)
         {
-            // ensure positive denominator
-            Numerator = denominator < 0 ? -numerator : numerator;
-            Denominator = Fun.Abs(denominator);
+            if (denominator < 0 && numerator != long.MinValue && denominator != long.MinValue)
+            {
+                numerator = -numerator;
+                denominator = -denominator;
+            }
+            Numerator = numerator;
+            Denominator = denominator;
         }
 
         #endregion
