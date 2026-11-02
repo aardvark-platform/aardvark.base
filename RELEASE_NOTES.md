@@ -1,3 +1,4 @@
+- [Geometry] Consistently include all Polygon2 edges and vertices in closed point containment, independent of winding and starting vertex
 - Update to .NET 10
 
 ### 5.3.28

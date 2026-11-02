@@ -166,6 +166,20 @@ cell, but not `Unit`. Other pairs involving `Invalid` use `BoundingBox.Intersect
 - On a miss, the segment-producing overload returns `false` and leaves its output at `default`. Ordinary crossing segments retain the established order from lower to higher Y, or lower to higher X for horizontal results.
 - The boolean overload is allocation-free.
 
+## Closed 2D Polygon Point Containment
+
+`Polygon2f.Contains(point)` and `Polygon2d.Contains(point)` include points on
+actual polygon edges and vertices, independently of winding or cyclic starting
+vertex. Convex and concave outlines use one allocation-free signed-winding scan;
+internal triangle-fan diagonals are not polygon edges. Crossings use half-open
+Y intervals so a vertex is not counted twice.
+
+For non-boundary points, the explicit `CCW` flag selects positive (`true`) or
+negative (`false`) winding. The default overload still forwards `CCW: true`.
+Fewer than three active vertices return false. Boundary recognition introduces
+no epsilon parameter or tolerance expansion; floating-point rounding and range
+limits still apply. `PolyRegion` retains its separate even-odd semantics.
+
 ## Polygon Centroids
 
 `Polygon2f`/`Polygon2d` and `Polygon3f`/`Polygon3d` centroids are independent of
