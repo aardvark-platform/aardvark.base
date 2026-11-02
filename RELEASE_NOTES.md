@@ -1,3 +1,4 @@
+- [Geometry] Correct false circle/circle and sphere/sphere overlaps at extreme finite scales while preserving closed tangency and containment
 - Update to .NET 10
 
 ### 5.3.28
