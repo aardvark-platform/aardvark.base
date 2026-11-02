@@ -286,41 +286,11 @@ namespace Aardvark.Base
 
         #region Polygon2f contains V2f (haaser)
 
-        internal static V3i InsideTriangleFlags(ref V2f p0, ref V2f p1, ref V2f p2, ref V2f point)
-        {
-            V2f n0 = new V2f(p0.Y - p1.Y, p1.X - p0.X);
-            V2f n1 = new V2f(p1.Y - p2.Y, p2.X - p1.X);
-            V2f n2 = new V2f(p2.Y - p0.Y, p0.X - p2.X);
-
-            int t0 = Fun.Sign(n0.Dot(point - p0));
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
-
-            if (t0 == 0) t1 = 1;
-            if (t1 == 0) t1 = 1;
-            if (t2 == 0) t2 = 1;
-
-            return new V3i(t0, t1, t2);
-        }
-
-        internal static V3i InsideTriangleFlags(ref V2f p0, ref V2f p1, ref V2f p2, ref V2f point, int t0)
-        {
-            V2f n1 = new V2f(p1.Y - p2.Y, p2.X - p1.X);
-            V2f n2 = new V2f(p2.Y - p0.Y, p0.X - p2.X);
-
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
-
-            if (t1 == 0) t1 = 1;
-            if (t2 == 0) t2 = 1;
-
-            return new V3i(t0, t1, t2);
-        }
-
         /// <summary>
-        /// Returns true if the Polygon2f contains the given point.
-        /// Works with all (convex and non-convex) Polygons.
-        /// Assumes that the Vertices of the Polygon are sorted counter clockwise
+        /// Returns true if the closed Polygon2f contains the given point.
+        /// Convex and concave polygons include all actual edges and vertices, regardless
+        /// of winding or cyclic starting vertex. Non-boundary points use positive
+        /// (counterclockwise) winding. Fewer than three vertices return false.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this Polygon2f poly, V2f point)
@@ -329,29 +299,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the Polygon2f contains the given point.
-        /// Works with all (convex and non-convex) Polygons.
-        /// CCW represents the sorting order of the Polygon-Vertices (true -> CCW, false -> CW)
+        /// Returns true if the closed Polygon2f contains the given point.
+        /// Actual edges and vertices are included for either winding, without an epsilon
+        /// or tolerance expansion. Non-boundary points require positive winding when
+        /// CCW is true and negative winding otherwise. Fewer than three vertices return false.
         /// </summary>
         public static bool Contains(this Polygon2f poly, V2f point, bool CCW)
         {
             int pc = poly.PointCount;
             if (pc < 3)
                 return false;
-            int counter = 0;
-            V2f p0 = poly[0], p1 = poly[1], p2 = poly[2];
-            V3i temp = InsideTriangleFlags(ref p0, ref p1, ref p2, ref point);
-            int t2_cache = temp.Z;
-            if (temp.X == temp.Y && temp.Y == temp.Z) counter += temp.X;
-            for (int pi = 3; pi < pc; pi++)
+            int winding = 0;
+            var p0 = poly[pc - 1];
+            for (int pi = 0; pi < pc; pi++)
             {
-                p1 = p2; p2 = poly[pi];
-                temp = InsideTriangleFlags(ref p0, ref p1, ref p2, ref point, -t2_cache);
-                t2_cache = temp.Z;
-                if (temp.X == temp.Y && temp.Y == temp.Z) counter += temp.X;
+                var p1 = poly[pi];
+                var side = (p1.X - p0.X) * (point.Y - p0.Y) - (p1.Y - p0.Y) * (point.X - p0.X);
+                if (side == 0 &&
+                    point.X >= Fun.Min(p0.X, p1.X) && point.X <= Fun.Max(p0.X, p1.X) &&
+                    point.Y >= Fun.Min(p0.Y, p1.Y) && point.Y <= Fun.Max(p0.Y, p1.Y))
+                    return true;
+
+                // Half-open Y intervals count a shared vertex only once.
+                if (p0.Y <= point.Y)
+                {
+                    if (p1.Y > point.Y && side > 0) winding++;
+                }
+                else if (p1.Y <= point.Y && side < 0) winding--;
+                p0 = p1;
             }
-            if (CCW) return counter > 0;
-            else return counter < 0;
+            return CCW ? winding > 0 : winding < 0;
         }
 
         #endregion
@@ -4600,41 +4577,11 @@ namespace Aardvark.Base
 
         #region Polygon2d contains V2d (haaser)
 
-        internal static V3i InsideTriangleFlags(ref V2d p0, ref V2d p1, ref V2d p2, ref V2d point)
-        {
-            V2d n0 = new V2d(p0.Y - p1.Y, p1.X - p0.X);
-            V2d n1 = new V2d(p1.Y - p2.Y, p2.X - p1.X);
-            V2d n2 = new V2d(p2.Y - p0.Y, p0.X - p2.X);
-
-            int t0 = Fun.Sign(n0.Dot(point - p0));
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
-
-            if (t0 == 0) t1 = 1;
-            if (t1 == 0) t1 = 1;
-            if (t2 == 0) t2 = 1;
-
-            return new V3i(t0, t1, t2);
-        }
-
-        internal static V3i InsideTriangleFlags(ref V2d p0, ref V2d p1, ref V2d p2, ref V2d point, int t0)
-        {
-            V2d n1 = new V2d(p1.Y - p2.Y, p2.X - p1.X);
-            V2d n2 = new V2d(p2.Y - p0.Y, p0.X - p2.X);
-
-            int t1 = Fun.Sign(n1.Dot(point - p1));
-            int t2 = Fun.Sign(n2.Dot(point - p2));
-
-            if (t1 == 0) t1 = 1;
-            if (t2 == 0) t2 = 1;
-
-            return new V3i(t0, t1, t2);
-        }
-
         /// <summary>
-        /// Returns true if the Polygon2d contains the given point.
-        /// Works with all (convex and non-convex) Polygons.
-        /// Assumes that the Vertices of the Polygon are sorted counter clockwise
+        /// Returns true if the closed Polygon2d contains the given point.
+        /// Convex and concave polygons include all actual edges and vertices, regardless
+        /// of winding or cyclic starting vertex. Non-boundary points use positive
+        /// (counterclockwise) winding. Fewer than three vertices return false.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this Polygon2d poly, V2d point)
@@ -4643,29 +4590,36 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the Polygon2d contains the given point.
-        /// Works with all (convex and non-convex) Polygons.
-        /// CCW represents the sorting order of the Polygon-Vertices (true -> CCW, false -> CW)
+        /// Returns true if the closed Polygon2d contains the given point.
+        /// Actual edges and vertices are included for either winding, without an epsilon
+        /// or tolerance expansion. Non-boundary points require positive winding when
+        /// CCW is true and negative winding otherwise. Fewer than three vertices return false.
         /// </summary>
         public static bool Contains(this Polygon2d poly, V2d point, bool CCW)
         {
             int pc = poly.PointCount;
             if (pc < 3)
                 return false;
-            int counter = 0;
-            V2d p0 = poly[0], p1 = poly[1], p2 = poly[2];
-            V3i temp = InsideTriangleFlags(ref p0, ref p1, ref p2, ref point);
-            int t2_cache = temp.Z;
-            if (temp.X == temp.Y && temp.Y == temp.Z) counter += temp.X;
-            for (int pi = 3; pi < pc; pi++)
+            int winding = 0;
+            var p0 = poly[pc - 1];
+            for (int pi = 0; pi < pc; pi++)
             {
-                p1 = p2; p2 = poly[pi];
-                temp = InsideTriangleFlags(ref p0, ref p1, ref p2, ref point, -t2_cache);
-                t2_cache = temp.Z;
-                if (temp.X == temp.Y && temp.Y == temp.Z) counter += temp.X;
+                var p1 = poly[pi];
+                var side = (p1.X - p0.X) * (point.Y - p0.Y) - (p1.Y - p0.Y) * (point.X - p0.X);
+                if (side == 0 &&
+                    point.X >= Fun.Min(p0.X, p1.X) && point.X <= Fun.Max(p0.X, p1.X) &&
+                    point.Y >= Fun.Min(p0.Y, p1.Y) && point.Y <= Fun.Max(p0.Y, p1.Y))
+                    return true;
+
+                // Half-open Y intervals count a shared vertex only once.
+                if (p0.Y <= point.Y)
+                {
+                    if (p1.Y > point.Y && side > 0) winding++;
+                }
+                else if (p1.Y <= point.Y && side < 0) winding--;
+                p0 = p1;
             }
-            if (CCW) return counter > 0;
-            else return counter < 0;
+            return CCW ? winding > 0 : winding < 0;
         }
 
         #endregion
