@@ -58,6 +58,23 @@ For a normalized normal `n`, the axis-aligned bound extent in component `i`
 is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. `BoundingBox3f` and `BoundingBox3d`
 use these extents and are allocation-free.
 
+## Circle/Circle And Sphere/Sphere Intersections
+
+`Circle2f`/`Circle2d` and `Sphere3f`/`Sphere3d` pairwise `Intersects` queries
+compare closed disks or balls: tangency, containment and coincident zero-radius
+points count as intersections. For finite centers and finite nonnegative radii,
+range-safe comparisons avoid false overlaps from overflowing or underflowing
+center differences, radius sums and squares.
+
+The ordinary squared comparison is retained when both squared magnitudes are
+normal and finite. Otherwise float inputs use widened double intermediates;
+double inputs use bounded power-of-two scaling and separately normalized radii.
+Representable local center differences are retained, and division by the scale
+is direct rather than through a potentially overflowing reciprocal. Ordinary
+floating-point rounding near contact still applies; no epsilon is introduced.
+Negative or nonfinite inputs retain the historical floating-point result. These
+queries allocate nothing and do not change ray or containment APIs.
+
 ## Sphere Ray Intersections
 
 `Ray3f.HitsSphere` and `Ray3d.HitsSphere` intersect finite rays with finite

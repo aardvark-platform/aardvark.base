@@ -1147,11 +1147,27 @@ namespace Aardvark.Base
         #region Circle2f intersects Circle2f (sm)
 
         /// <summary>
-        /// Returns true if the circles intersect, or one contains the other.
+        /// Returns true if the closed disks overlap or touch, including containment.
+        /// Finite centers and finite nonnegative radii use range-safe comparisons;
+        /// negative or nonfinite inputs retain their historical floating-point behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(this Circle2f c0, Circle2f c1)
-            => (c0.Center - c1.Center).LengthSquared <= (c0.Radius + c1.Radius).Square();
+        {
+            var delta = c0.Center - c1.Center;
+            var distanceSquared = delta.LengthSquared;
+            var radiusSquared = (c0.Radius + c1.Radius).Square();
+            if ((distanceSquared >= 1.17549435E-38f && distanceSquared < float.PositiveInfinity &&
+                 radiusSquared >= 1.17549435E-38f && radiusSquared < float.PositiveInfinity) ||
+                !c0.Center.IsFinite || !c1.Center.IsFinite ||
+                !c0.Radius.IsFinite() || !c1.Radius.IsFinite() || c0.Radius < 0 || c1.Radius < 0)
+                return distanceSquared <= radiusSquared;
+
+            var x = (double)c0.Center.X - c1.Center.X;
+            var y = (double)c0.Center.Y - c1.Center.Y;
+            var radius = (double)c0.Radius + c1.Radius;
+            return x * x + y * y <= radius * radius;
+        }
 
         #endregion
 
@@ -3433,11 +3449,28 @@ namespace Aardvark.Base
         #region Sphere3f intersects Sphere3f (sm)
 
         /// <summary>
-        /// Returns true if the spheres intersect, or one contains the other.
+        /// Returns true if the closed balls overlap or touch, including containment.
+        /// Finite centers and finite nonnegative radii use range-safe comparisons;
+        /// negative or nonfinite inputs retain their historical floating-point behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(this Sphere3f s0, Sphere3f s1)
-            => (s0.Center - s1.Center).LengthSquared <= (s0.Radius + s1.Radius).Square();
+        {
+            var delta = s0.Center - s1.Center;
+            var distanceSquared = delta.LengthSquared;
+            var radiusSquared = (s0.Radius + s1.Radius).Square();
+            if ((distanceSquared >= 1.17549435E-38f && distanceSquared < float.PositiveInfinity &&
+                 radiusSquared >= 1.17549435E-38f && radiusSquared < float.PositiveInfinity) ||
+                !s0.Center.IsFinite || !s1.Center.IsFinite ||
+                !s0.Radius.IsFinite() || !s1.Radius.IsFinite() || s0.Radius < 0 || s1.Radius < 0)
+                return distanceSquared <= radiusSquared;
+
+            var x = (double)s0.Center.X - s1.Center.X;
+            var y = (double)s0.Center.Y - s1.Center.Y;
+            var z = (double)s0.Center.Z - s1.Center.Z;
+            var radius = (double)s0.Radius + s1.Radius;
+            return x * x + y * y + z * z <= radius * radius;
+        }
 
         #endregion
 
@@ -5461,11 +5494,37 @@ namespace Aardvark.Base
         #region Circle2d intersects Circle2d (sm)
 
         /// <summary>
-        /// Returns true if the circles intersect, or one contains the other.
+        /// Returns true if the closed disks overlap or touch, including containment.
+        /// Finite centers and finite nonnegative radii use range-safe comparisons;
+        /// negative or nonfinite inputs retain their historical floating-point behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(this Circle2d c0, Circle2d c1)
-            => (c0.Center - c1.Center).LengthSquared <= (c0.Radius + c1.Radius).Square();
+        {
+            var delta = c0.Center - c1.Center;
+            var distanceSquared = delta.LengthSquared;
+            var radiusSquared = (c0.Radius + c1.Radius).Square();
+            if ((distanceSquared >= 2.2250738585072014E-308 && distanceSquared < double.PositiveInfinity &&
+                 radiusSquared >= 2.2250738585072014E-308 && radiusSquared < double.PositiveInfinity) ||
+                !c0.Center.IsFinite || !c1.Center.IsFinite ||
+                !c0.Radius.IsFinite() || !c1.Radius.IsFinite() || c0.Radius < 0 || c1.Radius < 0)
+                return distanceSquared <= radiusSquared;
+
+            var scale = Fun.Max(Fun.Abs(delta.X), Fun.Abs(delta.Y), Fun.Max(c0.Radius, c1.Radius));
+            if (scale == 0) return true;
+            if (scale == double.PositiveInfinity)
+                scale = Fun.Max(Fun.Abs(c0.Center.X), Fun.Abs(c0.Center.Y),
+                                Fun.Max(Fun.Abs(c1.Center.X), Fun.Abs(c1.Center.Y)), Fun.Max(c0.Radius, c1.Radius));
+            // Power-of-two scaling avoids introducing rounding into exact contacts.
+            scale = scale < 2.2250738585072014E-308 ? 2.2250738585072014E-308
+                : BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(scale) & 0x7ff0000000000000L);
+            // Keep local differences unless subtraction itself overflowed.
+            var x = delta.X.IsFinite() ? delta.X / scale : c0.Center.X / scale - c1.Center.X / scale;
+            var y = delta.Y.IsFinite() ? delta.Y / scale : c0.Center.Y / scale - c1.Center.Y / scale;
+            // Normalize each radius before adding; never form a reciprocal of a tiny scale.
+            var radius = c0.Radius / scale + c1.Radius / scale;
+            return x * x + y * y <= radius * radius;
+        }
 
         #endregion
 
@@ -7747,11 +7806,38 @@ namespace Aardvark.Base
         #region Sphere3d intersects Sphere3d (sm)
 
         /// <summary>
-        /// Returns true if the spheres intersect, or one contains the other.
+        /// Returns true if the closed balls overlap or touch, including containment.
+        /// Finite centers and finite nonnegative radii use range-safe comparisons;
+        /// negative or nonfinite inputs retain their historical floating-point behavior.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(this Sphere3d s0, Sphere3d s1)
-            => (s0.Center - s1.Center).LengthSquared <= (s0.Radius + s1.Radius).Square();
+        {
+            var delta = s0.Center - s1.Center;
+            var distanceSquared = delta.LengthSquared;
+            var radiusSquared = (s0.Radius + s1.Radius).Square();
+            if ((distanceSquared >= 2.2250738585072014E-308 && distanceSquared < double.PositiveInfinity &&
+                 radiusSquared >= 2.2250738585072014E-308 && radiusSquared < double.PositiveInfinity) ||
+                !s0.Center.IsFinite || !s1.Center.IsFinite ||
+                !s0.Radius.IsFinite() || !s1.Radius.IsFinite() || s0.Radius < 0 || s1.Radius < 0)
+                return distanceSquared <= radiusSquared;
+
+            var scale = Fun.Max(Fun.Max(Fun.Abs(delta.X), Fun.Abs(delta.Y), Fun.Abs(delta.Z)), Fun.Max(s0.Radius, s1.Radius));
+            if (scale == 0) return true;
+            if (scale == double.PositiveInfinity)
+                scale = Fun.Max(Fun.Max(Fun.Abs(s0.Center.X), Fun.Abs(s0.Center.Y), Fun.Abs(s0.Center.Z)),
+                                Fun.Max(Fun.Abs(s1.Center.X), Fun.Abs(s1.Center.Y), Fun.Abs(s1.Center.Z)), Fun.Max(s0.Radius, s1.Radius));
+            // Power-of-two scaling avoids introducing rounding into exact contacts.
+            scale = scale < 2.2250738585072014E-308 ? 2.2250738585072014E-308
+                : BitConverter.Int64BitsToDouble(BitConverter.DoubleToInt64Bits(scale) & 0x7ff0000000000000L);
+            // Keep local differences unless subtraction itself overflowed.
+            var x = delta.X.IsFinite() ? delta.X / scale : s0.Center.X / scale - s1.Center.X / scale;
+            var y = delta.Y.IsFinite() ? delta.Y / scale : s0.Center.Y / scale - s1.Center.Y / scale;
+            var z = delta.Z.IsFinite() ? delta.Z / scale : s0.Center.Z / scale - s1.Center.Z / scale;
+            // Normalize each radius before adding; never form a reciprocal of a tiny scale.
+            var radius = s0.Radius / scale + s1.Radius / scale;
+            return x * x + y * y + z * z <= radius * radius;
+        }
 
         #endregion
 
