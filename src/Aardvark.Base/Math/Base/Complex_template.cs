@@ -1006,10 +1006,22 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the natural logarithm of the complex number <paramref name="x"/>.
+        /// Finite nonzero values use scaled log-magnitude arithmetic when the magnitude
+        /// overflows or is subnormal. The argument and zero/nonfinite behavior are preserved.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Log(this __ct__ x)
-            => new __ct__(Log(x.Norm), x.Argument);
+        {
+            var norm = x.Norm;
+            if ((norm >= __minNormal__ && norm < __ft__.PositiveInfinity) || !x.IsFinite || (x.Real == 0 && x.Imag == 0))
+                return new __ct__(Log(norm), x.Argument);
+
+            var ar = Abs(x.Real);
+            var ai = Abs(x.Imag);
+            var max = Max(ar, ai);
+            var ratio = Min(ar, ai) / max;
+            return new __ct__(Log(max) + __half__ * Log(1 + ratio * ratio), x.Argument);
+        }
 
         /// <summary>
         /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.

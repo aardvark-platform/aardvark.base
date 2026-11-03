@@ -983,10 +983,22 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the natural logarithm of the complex number <paramref name="x"/>.
+        /// Finite nonzero values use scaled log-magnitude arithmetic when the magnitude
+        /// overflows or is subnormal. The argument and zero/nonfinite behavior are preserved.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Log(this ComplexF x)
-            => new ComplexF(Log(x.Norm), x.Argument);
+        {
+            var norm = x.Norm;
+            if ((norm >= 1.17549435e-38f && norm < float.PositiveInfinity) || !x.IsFinite || (x.Real == 0 && x.Imag == 0))
+                return new ComplexF(Log(norm), x.Argument);
+
+            var ar = Abs(x.Real);
+            var ai = Abs(x.Imag);
+            var max = Max(ar, ai);
+            var ratio = Min(ar, ai) / max;
+            return new ComplexF(Log(max) + 0.5f * Log(1 + ratio * ratio), x.Argument);
+        }
 
         /// <summary>
         /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.
@@ -2138,10 +2150,22 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the natural logarithm of the complex number <paramref name="x"/>.
+        /// Finite nonzero values use scaled log-magnitude arithmetic when the magnitude
+        /// overflows or is subnormal. The argument and zero/nonfinite behavior are preserved.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Log(this ComplexD x)
-            => new ComplexD(Log(x.Norm), x.Argument);
+        {
+            var norm = x.Norm;
+            if ((norm >= 2.2250738585072014e-308 && norm < double.PositiveInfinity) || !x.IsFinite || (x.Real == 0 && x.Imag == 0))
+                return new ComplexD(Log(norm), x.Argument);
+
+            var ar = Abs(x.Real);
+            var ai = Abs(x.Imag);
+            var max = Max(ar, ai);
+            var ratio = Min(ar, ai) / max;
+            return new ComplexD(Log(max) + 0.5 * Log(1 + ratio * ratio), x.Argument);
+        }
 
         /// <summary>
         /// Returns the logarithm of the complex number <paramref name="x"/> in the given basis.

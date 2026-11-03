@@ -115,5 +115,69 @@ namespace Aardvark.Base.Benchmarks
             for (int i = 0; i < Count; i++) sum += m_leftF[i].Sqrt();
             return sum;
         }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD LogDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Log();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF LogFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Log();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD Log2Double()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Log2();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF Log2Float()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Log2();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD Log10Double()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Log10();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF Log10Float()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Log10();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD LogBaseDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Log(3.0);
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF LogBaseFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Log(3.0f);
+            return sum;
+        }
     }
 }
