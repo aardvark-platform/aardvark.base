@@ -1808,16 +1808,18 @@ namespace Aardvark.Base
 
 
         /// <summary>
-        /// Return an array with reversed groups. The specified first group
-        /// indices array defines which consecutive elements constitute a
-        /// group, and the reverse map function specifies wich of these
-        /// groups should actually be reversed.
+        /// Returns an independent shallow copy with selected groups reversed.
+        /// Consecutive entries of groupFirstIndices delimit half-open groups;
+        /// elements before the first group and after the last are copied unchanged.
+        /// Zero groups return an unchanged copy. The reverse map is called in
+        /// increasing group-index order, including empty groups. The source array
+        /// is not modified.
         /// </summary>
         public static T[] GroupReversedCopy<T>(
                 this T[] array, int[] groupFirstIndices, int groupCount,
                 Func<int, bool> reverseMap)
         {
-            var result = new T[array.Length];
+            var result = array.Copy();
             for (int gvi = groupFirstIndices[0], gi = 0; gi < groupCount; gi++)
             {
                 int gve = groupFirstIndices[gi + 1];

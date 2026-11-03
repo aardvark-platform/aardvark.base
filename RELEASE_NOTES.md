@@ -1,3 +1,4 @@
+- [Arrays] Preserve elements outside partially covered GroupReversedCopy groups, including unchanged independent copies for zero groups
 - Update to .NET 10
 
 ### 5.3.28
