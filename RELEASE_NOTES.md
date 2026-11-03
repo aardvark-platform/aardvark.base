@@ -1,3 +1,4 @@
+- [Math] Correct complex logarithms for finite extreme magnitudes, including overflowing and subnormal magnitudes
 - Update to .NET 10
 
 ### 5.3.28

@@ -36,8 +36,9 @@ Examples:
 
 - `Norm` is the magnitude. `NormSquared` is `Real * Real + Imag * Imag` and may be zero or infinite for nonzero finite values.
 - `Sqrt` returns the principal square root. A negative real value with either sign of zero in `Imag` produces the positive-imaginary root.
+- `Log` returns the principal natural logarithm. Its real part stays finite for finite nonzero inputs even when `Norm` overflows; subnormal magnitudes use scaled log-magnitude arithmetic instead of first rounding a magnitude. Ordinary inputs retain their existing calculation. The imaginary part remains `Argument`, including signed-zero branch cuts, and zero/NaN/infinity behavior is unchanged. Base-2, base-10 and arbitrary-base logarithms share this kernel without changing their base-conversion rules.
 
-`Norm`, `Reciprocal`, division, and `Sqrt` allocate no managed memory.
+`Norm`, `Reciprocal`, division, `Sqrt`, and logarithms allocate no managed memory.
 Results outside the selected precision follow IEEE overflow and underflow behavior.
 
 ## Half Comparison and Collection Semantics
@@ -179,7 +180,7 @@ var hit = box.Intersects(ray, out double t);
 
 ## Source Anchors
 
-- `src/Aardvark.Base/Math/Base/Complex_auto.cs` (`ComplexF`/`ComplexD` magnitude, reciprocal, division, and principal square-root semantics)
+- `src/Aardvark.Base/Math/Base/Complex_auto.cs` (`ComplexF`/`ComplexD` magnitude, reciprocal, division, principal square-root, and logarithm semantics)
 - `src/Aardvark.Base/Math/Base/Half.cs` (`Half` comparison, equality, hashing, ordering, and extrema semantics)
 - `src/Aardvark.Base/Math/Base/Fun_auto.cs` (`Fun.IsPrime`, `Fun.GreatestCommonDivisor`, `Fun.LeastCommonMultiple`)
 - `src/Aardvark.Base/Math/Vectors/Vector_auto.cs` (`V3d`)

@@ -3,6 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Versioning;
 
 using Num = System.Numerics;
 
@@ -502,6 +506,153 @@ namespace Aardvark.Tests
                 Num.Complex.Exp,
                 Fun.Exp
             );
+
+        [Test]
+        public static void ExtremeLogarithmsKeepAnalyticDiagonalMagnitudes()
+        {
+            foreach (var core in LogCores())
+            {
+                var tiny = core.Wide ? double.Epsilon : float.Epsilon;
+                var normal = Math.ScaleB(1,core.Wide ? -1022 : -126);
+                var max = core.Wide ? double.MaxValue : float.MaxValue;
+                var values = new[] { tiny,2*tiny,3*tiny,7*tiny,17*tiny,255*tiny,core.Previous(normal),normal,core.Next(normal),.5,1,2,max*.5,max*.75,core.Previous(max),max };
+                foreach (var value in values)
+                foreach (var realSign in new[] { -1,1 })
+                foreach (var imagSign in new[] { -1,1 })
+                {
+                    // log(|a+ia|) = log(a) + log(2)/2, without forming a magnitude.
+                    var amplitude = core.Scalar(value);
+                    var expected = Math.Log(amplitude) + .5*Math.Log(2);
+                    core.CheckAccurate(realSign*amplitude,imagSign*amplitude,expected,"analytic diagonal, magnitude component="+amplitude.ToString("R"));
+                }
+            }
+        }
+
+        [Test]
+        public static void AsymmetricLogarithmsKeepFiniteMagnitudeLimits()
+        {
+            foreach (var core in LogCores())
+            {
+                var tiny = core.Wide ? double.Epsilon : float.Epsilon;
+                var normal = Math.ScaleB(1,core.Wide ? -1022 : -126);
+                var max = core.Wide ? double.MaxValue : float.MaxValue;
+                var pairs = new[]
+                {
+                    (tiny,2*tiny),(3*tiny,4*tiny),(7*tiny,24*tiny),(tiny,255*tiny),
+                    (core.Previous(normal),tiny),(core.Previous(normal),normal),(normal,normal*.5),(core.Next(normal),tiny),
+                    (max,max*.5),(max,tiny),(max,normal),(max,0.0),(tiny,0.0),(normal,0.0)
+                };
+                foreach (var pair in pairs)
+                foreach (var swap in new[] { false,true })
+                foreach (var realSign in new[] { -1,1 })
+                foreach (var imagSign in new[] { -1,1 })
+                {
+                    var real = realSign*(swap ? pair.Item2 : pair.Item1); var imag = imagSign*(swap ? pair.Item1 : pair.Item2);
+                    // Independent exponent decomposition, not the kernel's max/min ratio.
+                    var exponent = Math.ILogB(Math.Max(Math.Abs(real),Math.Abs(imag)));
+                    var a = Math.ScaleB(real,-exponent); var b = Math.ScaleB(imag,-exponent);
+                    var expected = exponent*Math.Log(2) + .5*Math.Log(a*a+b*b);
+                    core.CheckAccurate(real,imag,expected,"asymmetric exponent="+exponent);
+                }
+            }
+        }
+
+        [Test]
+        public static void LogarithmsPreserveOrdinaryBranchesAndSpecialValues()
+        {
+            foreach (var core in LogCores())
+            {
+                var random = new Random(163117);
+                for (var i=0;i<4096;i++)
+                {
+                    var real = core.Scalar((random.NextDouble()-.5)*32); var imag = core.Scalar((random.NextDouble()-.5)*32);
+                    core.CheckLegacy(real,imag,"ordinary seed=163117, case="+i);
+                }
+                foreach (var real in new[] { double.NegativeInfinity,-2.0,-0.0,0.0,2.0,double.PositiveInfinity,double.NaN })
+                foreach (var imag in new[] { double.NegativeInfinity,-2.0,-0.0,0.0,2.0,double.PositiveInfinity,double.NaN })
+                    core.CheckLegacy(real,imag,"exceptional values/axes/signed-zero branch cut");
+            }
+        }
+
+        private sealed class LogCore
+        {
+            public readonly bool Wide;
+            private readonly string name;
+            private readonly ConstructorInfo constructor;
+            private readonly FieldInfo realField, imagField;
+            private readonly PropertyInfo norm, argument;
+            private readonly MethodInfo scalarLog, based;
+            private readonly MethodInfo[] natural, binary, decimalLog;
+            private readonly double ln2Inv;
+            public LogCore(Assembly assembly, bool wide, string target)
+            {
+                Wide=wide; name=target+(wide?"/double":"/float"); var scalar=wide?typeof(double):typeof(float);
+                var type=assembly.GetType("Aardvark.Base.Complex"+(wide?"D":"F"),true); var fun=assembly.GetType("Aardvark.Base.Fun",true);
+                Assert.AreSame(assembly,type.Assembly,name); Assert.AreSame(assembly,fun.Assembly,name);
+                constructor=type.GetConstructor(new[] { scalar,scalar }); realField=type.GetField("Real"); imagField=type.GetField("Imag");
+                norm=type.GetProperty("Norm"); argument=type.GetProperty("Argument"); scalarLog=fun.GetMethod("Log",new[] { scalar }); based=fun.GetMethod("Log",new[] { type,scalar });
+                natural=new[] { fun.GetMethod("Log",new[] { type }),type.GetMethod("Log",new[] { type }) };
+                binary=new[] { fun.GetMethod("Log2",new[] { type }),type.GetMethod("LogBinary",new[] { type }) };
+                decimalLog=new[] { fun.GetMethod("Log10",new[] { type }),type.GetMethod("Log10",new[] { type }) };
+                foreach (var method in natural.Concat(binary).Concat(decimalLog).Concat(new[] { scalarLog,based })) { Assert.IsNotNull(method,name); Assert.AreSame(assembly,method.DeclaringType.Assembly,name); }
+                Assert.IsNotNull(constructor,name); Assert.IsNotNull(norm,name); Assert.IsNotNull(argument,name);
+                ln2Inv=Convert.ToDouble(assembly.GetType(wide?"Aardvark.Base.Constant":"Aardvark.Base.ConstantF",true).GetField("Ln2Inv").GetRawConstantValue());
+            }
+            public double Scalar(double value) => Wide?value:(float)value;
+            private object Box(double value) => Wide?(object)value:(float)value;
+            public double Previous(double value) => Wide?Math.BitDecrement(value):float.BitDecrement((float)value);
+            public double Next(double value) => Wide?Math.BitIncrement(value):float.BitIncrement((float)value);
+            private double Multiply(double a,double b) => Wide?a*b:(float)a*(float)b;
+            private double Divide(double a,double b) => Wide?a/b:(float)a/(float)b;
+            private double ScalarLog(double value) => Convert.ToDouble(scalarLog.Invoke(null,new[] { Box(value) }));
+            private void Same(double expected,double actual,string context)
+            {
+                if (double.IsNaN(expected)) Assert.IsTrue(double.IsNaN(actual),context+" NaN");
+                else Assert.AreEqual(Wide?BitConverter.DoubleToInt64Bits(expected):BitConverter.SingleToInt32Bits((float)expected),Wide?BitConverter.DoubleToInt64Bits(actual):BitConverter.SingleToInt32Bits((float)actual),context+" exact value/zero sign");
+            }
+            private void Near(double expected,double actual,string context)
+            {
+                expected=Scalar(expected); Assert.IsTrue(double.IsFinite(actual),context+" finite real part");
+                var ulp=Wide?Math.Abs(Math.BitIncrement(expected)-expected):Math.Abs((double)float.BitIncrement((float)expected)-expected);
+                Assert.That(actual,Is.EqualTo(expected).Within(8*ulp),context+" real part, reference="+expected.ToString("R"));
+            }
+            public void CheckAccurate(double real,double imag,double reference,string label) => Check(real,imag,reference,false,label);
+            public void CheckLegacy(double real,double imag,string label) => Check(real,imag,0,true,label);
+            private void Check(double real,double imag,double reference,bool legacy,string label)
+            {
+                real=Scalar(real); imag=Scalar(imag); var value=constructor.Invoke(new[] { Box(real),Box(imag) });
+                var phase=Convert.ToDouble(argument.GetValue(value)); var oldReal=ScalarLog(Convert.ToDouble(norm.GetValue(value)));
+                var context=$"{name}: {label}, input=({real:R},{imag:R})";
+                void Verify(MethodInfo method,object result,double expectedReal,double expectedImag,string suffix)
+                {
+                    var actualReal=Convert.ToDouble(realField.GetValue(result)); var actualImag=Convert.ToDouble(imagField.GetValue(result));
+                    var message=context+", "+method.DeclaringType.Name+"."+method.Name+suffix;
+                    if (legacy) Same(expectedReal,actualReal,message); else Near(expectedReal,actualReal,message);
+                    Same(expectedImag,actualImag,message+" imaginary/Argument");
+                }
+                var expected=legacy?oldReal:reference;
+                foreach (var method in natural) Verify(method,method.Invoke(null,new[] { value }),expected,phase,"");
+                foreach (var method in binary) Verify(method,method.Invoke(null,new[] { value }),legacy?Multiply(expected,ln2Inv):expected/Math.Log(2),Multiply(phase,ln2Inv),"");
+                var ten=ScalarLog(10);
+                foreach (var method in decimalLog) Verify(method,method.Invoke(null,new[] { value }),legacy?Divide(expected,ten):expected/Math.Log(10),Divide(phase,ten),"");
+                var bases=legacy?new[] { .5,2,3,10,1024,0.0,-0.0,-1,1,double.PositiveInfinity,double.NaN }:new[] { .5,2,3,10,1024 };
+                foreach (var basis in bases)
+                {
+                    var denominator=ScalarLog(basis);
+                    Verify(based,based.Invoke(null,new[] { value,Box(basis) }),legacy?Divide(expected,denominator):expected/Math.Log(Scalar(basis)),Divide(phase,denominator),", basis="+basis.ToString("R"));
+                }
+            }
+        }
+        private static IEnumerable<LogCore> LogCores()
+        {
+            foreach (var target in new[] { "net10.0","netstandard2.0" })
+            {
+                var path=Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(ComplexD).Assembly.Location),"..",target,"Aardvark.Base.dll"));
+                Assert.IsTrue(File.Exists(path),"Required sibling core: "+path); var assembly=Assembly.LoadFile(path);
+                Assert.AreEqual(target=="net10.0"?".NETCoreApp,Version=v10.0":".NETStandard,Version=v2.0",assembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName,path);
+                yield return new LogCore(assembly,false,target); yield return new LogCore(assembly,true,target);
+            }
+        }
 
         [Test]
         public static void Ln()
