@@ -1651,7 +1651,7 @@ namespace Aardvark.Base
             if (Fun.IsTiny(cross)) return false;
             cross = 1 / cross;
 
-            float t0 = (a.Y * v.X - a.X * v.Y) * cross; if (t0 < 0 || t0 > 1) return false;
+            float t0 = (a.X * v.Y - a.Y * v.X) * cross; if (t0 < 0 || t0 > 1) return false;
             float t1 = (a.Y * u.X - a.X * u.Y) * cross; if (t1 < 0 || t1 > 1) return false;
 
             return (t0 + t1 < 1);
@@ -5965,7 +5965,7 @@ namespace Aardvark.Base
             if (Fun.IsTiny(cross)) return false;
             cross = 1 / cross;
 
-            double t0 = (a.Y * v.X - a.X * v.Y) * cross; if (t0 < 0 || t0 > 1) return false;
+            double t0 = (a.X * v.Y - a.Y * v.X) * cross; if (t0 < 0 || t0 > 1) return false;
             double t1 = (a.Y * u.X - a.X * u.Y) * cross; if (t1 < 0 || t1 > 1) return false;
 
             return (t0 + t1 < 1);
