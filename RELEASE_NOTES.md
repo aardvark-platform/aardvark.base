@@ -1,3 +1,4 @@
+- [Geometry] Correct 2D box–triangle intersection classifications for enclosing triangles and separated boxes
 - Update to .NET 10
 
 ### 5.3.28
