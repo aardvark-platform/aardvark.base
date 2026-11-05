@@ -1,3 +1,4 @@
+- [Geometry] Correct plane–plane intersection classifications when a plane's normal and distance are reversed
 - Update to .NET 10
 
 ### 5.3.28

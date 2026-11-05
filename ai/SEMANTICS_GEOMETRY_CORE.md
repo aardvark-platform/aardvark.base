@@ -156,6 +156,16 @@ Centered-origin cells can intersect ordinary cells without either containing the
 `Invalid` is not an empty cell: it intersects itself and a unit-size centered
 cell, but not `Unit`. Other pairs involving `Invalid` use `BoundingBox.Intersects`.
 
+## Plane/Plane Intersection
+
+`Plane3f`/`Plane3d` use `Normal dot point == Distance`. Reversing both a
+normalized plane's normal and distance preserves plane-pair intersection decisions,
+within the existing parallel and coincidence tolerances. Parallel coincidence
+compares summed distances for opposite normals and distance differences otherwise.
+Coincident ray results retain the first plane's `Normal * Distance` origin and
+zero direction; parallel misses retain `Ray3*.Invalid`. Nonparallel line calculations
+are unchanged.
+
 ## Box/Plane Intersection
 
 `Box2f`/`Box2d` plane intersections use the full plane equation `Normal dot point == Distance`:

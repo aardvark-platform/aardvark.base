@@ -3127,7 +3127,9 @@ namespace Aardvark.Base
         {
             bool parallel = p0.Normal.IsParallelTo(p1.Normal);
 
-            if (parallel) return Fun.IsTiny(p0.Distance - p1.Distance);
+            if (parallel) return Fun.IsTiny(p0.Normal.Dot(p1.Normal) < 0
+                ? p0.Distance + p1.Distance
+                : p0.Distance - p1.Distance);
             else return true;
         }
 
@@ -3138,7 +3140,9 @@ namespace Aardvark.Base
 
             if (Fun.IsTiny(len))
             {
-                if (Fun.IsTiny(p0.Distance - p1.Distance))
+                if (Fun.IsTiny(p0.Normal.Dot(p1.Normal) < 0
+                    ? p0.Distance + p1.Distance
+                    : p0.Distance - p1.Distance))
                 {
                     ray = new __ray3t__(p0.Normal * p0.Distance, __v3t__.Zero);
                     return true;
