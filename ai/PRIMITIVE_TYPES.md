@@ -30,6 +30,17 @@ Examples:
 - Core vector/matrix structs are mutable value types (`struct`), not uniformly `readonly struct`.
 - For matrix/vector math in 3D, prefer explicit methods (`TransformPos`, `TransformDir`) over ambiguous shorthand.
 
+## Real Scalar Roots
+
+Signed scalar `Fun.Root(x, n)` returns a negative real root for a negative operand
+and an odd degree. Negative odd degrees return reciprocal roots. Signed integer
+minima are supported without overflowing integer negation.
+
+The existing power approximation and exponent rounding remain in effect; integral
+conversion to double may round. Zero (including signed zero), NaN, zero degrees and
+even degrees retain their existing `Math`/`MathF` power behavior. Unsigned overloads,
+`Cbrt` and complex roots are unchanged.
+
 ## Complex Arithmetic
 
 `ComplexF` and `ComplexD` are mutable complex value types.
