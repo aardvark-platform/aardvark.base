@@ -2990,21 +2990,29 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the n-th root of the specified number.
+        /// Negative operands have negative real roots for odd degrees, including
+        /// reciprocal roots for negative odd degrees. Power approximation and exponent
+        /// rounding are retained. Zero, NaN, zero-degree and even-degree behavior is unchanged.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Root(this sbyte x, int n)
         {
+            if (x < 0 && (n & 1) != 0) return -Math.Pow(-(double)x, 1.0 / n);
             return Math.Pow(x, 1.0 / n);
         }
 
         /// <summary>
         /// Returns the n-th root of the specified number.
+        /// Negative operands have negative real roots for odd degrees, including
+        /// reciprocal roots for negative odd degrees. Power approximation and exponent
+        /// rounding are retained. Zero, NaN, zero-degree and even-degree behavior is unchanged.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Root(this short x, int n)
         {
+            if (x < 0 && (n & 1) != 0) return -Math.Pow(-(double)x, 1.0 / n);
             return Math.Pow(x, 1.0 / n);
         }
 
@@ -3020,11 +3028,15 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the n-th root of the specified number.
+        /// Negative operands have negative real roots for odd degrees, including
+        /// reciprocal roots for negative odd degrees. Power approximation and exponent
+        /// rounding are retained. Zero, NaN, zero-degree and even-degree behavior is unchanged.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Root(this int x, int n)
         {
+            if (x < 0 && (n & 1) != 0) return -Math.Pow(-(double)x, 1.0 / n);
             return Math.Pow(x, 1.0 / n);
         }
 
@@ -3040,12 +3052,16 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the n-th root of the specified number.
+        /// Negative operands have negative real roots for odd degrees, including
+        /// reciprocal roots for negative odd degrees. Power approximation and exponent
+        /// rounding are retained. Zero, NaN, zero-degree and even-degree behavior is unchanged.
         /// Note: This function uses a double representation internally, but not all long values can be represented exactly as double.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Root(this long x, int n)
         {
+            if (x < 0 && (n & 1) != 0) return -Math.Pow(-(double)x, 1.0 / n);
             return Math.Pow(x, 1.0 / n);
         }
 
@@ -3062,25 +3078,34 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the n-th root of the specified number.
+        /// Negative operands have negative real roots for odd degrees, including
+        /// reciprocal roots for negative odd degrees. Power approximation and exponent
+        /// rounding are retained. Zero, NaN, zero-degree and even-degree behavior is unchanged.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float Root(this float x, int n)
         {
 #if NETCOREAPP3_1_OR_GREATER
+                if (x < 0 && (n & 1) != 0) return -MathF.Pow(-x, 1.0f / n);
                 return MathF.Pow(x, 1.0f / n);
 #else
+                if (x < 0 && (n & 1) != 0) return -(float)Math.Pow(-x, 1.0 / n);
                 return (float)Math.Pow(x, 1.0 / n);
 #endif
         }
 
         /// <summary>
         /// Returns the n-th root of the specified number.
+        /// Negative operands have negative real roots for odd degrees, including
+        /// reciprocal roots for negative odd degrees. Power approximation and exponent
+        /// rounding are retained. Zero, NaN, zero-degree and even-degree behavior is unchanged.
         /// </summary>
         [Pure]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Root(this double x, int n)
         {
+            if (x < 0 && (n & 1) != 0) return -Math.Pow(-(double)x, 1.0 / n);
             return Math.Pow(x, 1.0 / n);
         }
 

@@ -1,3 +1,4 @@
+- [Math] Restore real negative odd roots, including reciprocal roots and signed integer minima
 - Update to .NET 10
 
 ### 5.3.28

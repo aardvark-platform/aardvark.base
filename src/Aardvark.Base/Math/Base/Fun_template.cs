@@ -833,6 +833,11 @@ namespace Aardvark.Base
         //# var rtype = (t != Meta.FloatType) ? Meta.DoubleType : Meta.FloatType;
         /// <summary>
         /// Returns the n-th root of the specified number.
+        //# if (signedtypes.Contains(t)) {
+        /// Negative operands have negative real roots for odd degrees, including
+        /// reciprocal roots for negative odd degrees. Power approximation and exponent
+        /// rounding are retained. Zero, NaN, zero-degree and even-degree behavior is unchanged.
+        //# }
         //# if (!dreptypes.Contains(t)) {
         /// Note: This function uses a double representation internally, but not all __t.Name__ values can be represented exactly as double.
         //# }
@@ -842,11 +847,16 @@ namespace Aardvark.Base
         public static __rtype.Name__ Root(this __t.Name__ x, int n)
         {
             //# if (t != Meta.FloatType) {
+            //# if (signedtypes.Contains(t)) {
+            if (x < 0 && (n & 1) != 0) return -Math.__fname__(-(double)x, 1.0 / n);
+            //# }
             return Math.__fname__(x, 1.0 / n);
             //# } else {
 #if NETCOREAPP3_1_OR_GREATER
+                if (x < 0 && (n & 1) != 0) return -MathF.__fname__(-x, 1.0f / n);
                 return MathF.__fname__(x, 1.0f / n);
 #else
+                if (x < 0 && (n & 1) != 0) return -(float)Math.__fname__(-x, 1.0 / n);
                 return (float)Math.__fname__(x, 1.0 / n);
 #endif
             //# }
