@@ -172,9 +172,21 @@ Examples:
 - `Polynomial.RealRootsOfNormed(...)`
 
 Polynomial coefficient arrays are stored in ascending degree order.
-`RealRoots` and `RealRootsNormed` return only finite real roots, sorted ascending.
-Fixed-width tuple APIs fill unused trailing entries with `NaN`. Cubic solvers preserve
-repeated roots. Array conversion drops trailing `NaN` entries.
+For ordinary finite coefficients within the solvers' numerical range,
+`RealRoots` and `RealRootsNormed` return only finite real roots.
+Array conversion omits `NaN` entries; it does not filter infinities if numerical
+limits are exceeded. The normalized quadratic returns its roots ascending;
+fixed-width tuple APIs fill unused trailing entries with `NaN`. Repeated roots
+retain their multiplicity.
+
+The normalized quadratic `RealRootsOfNormed(p, q)` scales its square-root calculation
+by `2^512` when finite coefficients overflow the intermediate discriminant. It retains
+the cancellation-resistant root pairing and ordinary finite-discriminant arithmetic;
+`RealRootsNormed(new[] { q, p })` inherits this repair. This is not a full-range or
+correctly rounded solver: finite-discriminant cancellation, underflow and final root
+representability remain limited by double precision. General quadratic and cubic
+implementations, coefficient normalization and legacy nonfinite-input behavior are
+unchanged.
 
 ## Cubic Curve Evaluation
 

@@ -1,3 +1,4 @@
+- [Math] Preserve finite normalized quadratic roots when the intermediate discriminant overflows
 - Update to .NET 10
 
 ### 5.3.28

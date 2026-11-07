@@ -226,9 +226,12 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Return real roots of the equation x^2 + px + q = 0.
+        /// Return ascending real roots of the equation x^2 + px + q = 0.
         /// Double roots are returned as a pair of identical values.
         /// If no real roots exists, then both entries are NaN.
+        /// Finite coefficients with an overflowing discriminant use a scaled
+        /// square root. Finite-discriminant roundoff, underflow and final root
+        /// representability remain subject to double precision.
         /// </summary>
         public static (double, double) RealRootsOfNormed(double p, double q)
         {
@@ -242,14 +245,24 @@ namespace Aardvark.Base
                 var root = -p2;
                 return (root, root);
             }
+            double squareRoot;
+            if (d == double.PositiveInfinity && p.IsFinite() && q.IsFinite())
+            {
+                // 2^512 keeps the scaled square below 2^1022 and scaled |q| below 1.
+                const double scale = 1.3407807929942597e154;
+                double scaled = p2 / scale;
+                squareRoot = scale * Fun.Sqrt(scaled * scaled - (q / scale) / scale);
+            }
+            else squareRoot = Fun.Sqrt(d);
+
             if (p2 > 0.0)				               // prevent cancellation
             {
-                double r = -(p2 + Fun.Sqrt(d));
+                double r = -(p2 + squareRoot);
                 return (r, q / r);
             }
             else
             {
-                double r = Fun.Sqrt(d) - p2;
+                double r = squareRoot - p2;
                 return (q / r, r);
             }
         }
