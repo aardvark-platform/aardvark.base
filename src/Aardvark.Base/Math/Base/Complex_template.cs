@@ -880,14 +880,19 @@ namespace Aardvark.Base
             => Log(x + Sqrt(x * x - 1));
 
         /// <summary>
-        /// Returns the cosine of the complex number <paramref name="x"/>.
+        /// Returns the cosine using scalar trigonometric and hyperbolic products,
+        /// avoiding exponential cancellation in small components. Signed zeros follow
+        /// these products; historical NaN/infinity classifications are retained.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cos(this __ct__ x)
-            => (
-                Exp(new __ct__(-x.Imag, x.Real)) +
-                Exp(new __ct__(x.Imag, -x.Real))
-            ) * __half__;
+        {
+            var b = x.Imag;
+            // Retain the former exponential-overflow classifications.
+            if (Abs(b) > __isDouble ? "700.0" : "80.0f"__ && IsPositiveInfinity(Exp(Abs(b))))
+                b = b < 0 ? __ft__.NegativeInfinity : __ft__.PositiveInfinity;
+            return new __ct__(Cos(x.Real) * Cosh(b), -Sin(x.Real) * Sinh(b));
+        }
 
         /// <summary>
         /// Returns the hyperbolic cosine of the complex number <paramref name="x"/>.
@@ -914,13 +919,18 @@ namespace Aardvark.Base
             => Log(x + Sqrt(1 + x * x));
 
         /// <summary>
-        /// Returns the sine of the complex number <paramref name="x"/>.
+        /// Returns the sine using scalar trigonometric and hyperbolic products,
+        /// avoiding exponential cancellation in small components. Signed zeros follow
+        /// these products; historical NaN/infinity classifications are retained.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Sin(this __ct__ x)
         {
-            var a = Exp(new __ct__(-x.Imag, x.Real)) - Exp(new __ct__(x.Imag, -x.Real));
-            return new __ct__(a.Imag, -a.Real) * __half__;
+            var b = x.Imag;
+            // Retain the former exponential-overflow classifications.
+            if (Abs(b) > __isDouble ? "700.0" : "80.0f"__ && IsPositiveInfinity(Exp(Abs(b))))
+                b = b < 0 ? __ft__.NegativeInfinity : __ft__.PositiveInfinity;
+            return new __ct__(Sin(x.Real) * Cosh(b), Cos(x.Real) * Sinh(b));
         }
 
         /// <summary>

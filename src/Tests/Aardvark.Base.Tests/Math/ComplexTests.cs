@@ -3,6 +3,9 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Versioning;
 
 using Num = System.Numerics;
 
@@ -200,6 +203,187 @@ namespace Aardvark.Tests
                 if (!x.Equals(y))
                     AreEqual(x / y, ComplexD.One);
             });
+
+        [Test]
+        public static void TinyComplexTrigonometryRetainsEachComponent()
+        {
+            foreach (var core in TrigCores())
+            foreach (var exponent in core.Single ? new[] { -149, -148, -126, -80, -40, -30, -24, -20, -12 }
+                                                : new[] { -1074, -1073, -1022, -600, -300, -100, -60, -54, -53, -40, -20 })
+            foreach (var sign in new[] { -1, 1 })
+            {
+                double t = sign * Math.ScaleB(1, exponent);
+                foreach (var pair in new[] { (0.0, t), (t, 0.0), (t, t), (t, -t), (1.0, t), (-1.0, t), (t, .5), (.5, t) })
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh", "Tan", "Tanh" })
+                {
+                    if ((operation == "Tan" || operation == "Tanh") && Math.Max(Math.Abs(pair.Item1), Math.Abs(pair.Item2)) > .001) continue;
+                    core.Reference(operation, pair.Item1, pair.Item2, "tiny exponent=" + exponent);
+                    if (pair.Item1 == 0 || pair.Item2 == 0) core.Axis(operation, pair.Item1, pair.Item2);
+                }
+            }
+        }
+
+        [Test]
+        public static void ComplexTrigonometryMatchesAxesAndOrdinaryReferences()
+        {
+            foreach (var core in TrigCores())
+            {
+                foreach (var value in new[] { -2.0, -1.0, -.5, -.125, -0.0, 0.0, .125, .5, 1.0, 2.0 })
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh" })
+                { core.Axis(operation, value, 0); core.Axis(operation, 0, value); }
+                var random = new Random(183137);
+                for (int i = 0; i < 2048; i++)
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh" })
+                {
+                    double a = (random.NextDouble() - .5) * 4, b = (random.NextDouble() - .5) * 4;
+                    core.Reference(operation, a, b, "ordinary seed=183137 case=" + i);
+                }
+                for (int i = 0; i < 1024; i++)
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh" })
+                    core.Reference(operation, .25 + (i % 29) * .125, -1.75 + (i % 31) * .1, "existing benchmark input=" + i);
+            }
+        }
+
+        [Test]
+        public static void ComplexTrigonometryKeepsClassificationsAndProductZeroSigns()
+        {
+            foreach (var core in TrigCores())
+            {
+                var values = new[] { -0.0, 0.0, -1.0, 1.0, -.5, .5, -Math.PI / 2, Math.PI / 2,
+                    double.NaN, double.NegativeInfinity, double.PositiveInfinity,
+                    core.Single ? -float.MaxValue : -double.MaxValue, core.Single ? float.MaxValue : double.MaxValue,
+                    core.Single ? -float.Epsilon : -double.Epsilon, core.Single ? float.Epsilon : double.Epsilon };
+                foreach (var a in values)
+                foreach (var b in values)
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh", "Tan", "Tanh" })
+                    if (!double.IsFinite(a) || !double.IsFinite(b)) core.Classifications(operation, a, b);
+                double boundary = core.Single ? (double)(float)Math.Log(float.MaxValue) : Math.Log(double.MaxValue);
+                var adjacent = new[] { core.Next(boundary, false), boundary, core.Next(boundary, true),
+                                      core.Single ? 89.0 : 710.0, core.Single ? 90.0 : 711.0 };
+                foreach (var a in new[] { -1.0, -0.0, 0.0, 1.0 })
+                foreach (var b in adjacent)
+                foreach (var sign in new[] { -1, 1 })
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh", "Tan", "Tanh" })
+                { core.Classifications(operation, a, sign * b); core.Classifications(operation, sign * b, a); }
+                foreach (var a in new[] { -0.0, 0.0, -1.0, 1.0 })
+                foreach (var b in new[] { -0.0, 0.0, -1.0, 1.0 })
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh" })
+                    if (a == 0 || b == 0) core.ZeroSigns(operation, a, b);
+            }
+        }
+
+        private sealed class TrigCore
+        {
+            private readonly Type scalar, complex;
+            private readonly Type fun;
+            private readonly ConstructorInfo constructor;
+            private readonly FieldInfo real, imag;
+            private readonly Dictionary<string, MethodInfo> methods = new Dictionary<string, MethodInfo>();
+            private readonly Dictionary<string, MethodInfo> forwarders = new Dictionary<string, MethodInfo>();
+            private readonly MethodInfo add, subtract, multiply, divide;
+            public bool Single { get; }
+            private readonly string name;
+            public TrigCore(Assembly assembly, bool single, string target)
+            {
+                Single = single; scalar = single ? typeof(float) : typeof(double); name = target + "/" + scalar.Name;
+                complex = assembly.GetType(single ? "Aardvark.Base.ComplexF" : "Aardvark.Base.ComplexD", true);
+                fun = assembly.GetType("Aardvark.Base.Fun", true); Assert.AreSame(assembly, complex.Assembly, name); Assert.AreSame(assembly, fun.Assembly, name);
+                constructor = complex.GetConstructor(new[] { scalar, scalar }); Assert.IsNotNull(constructor, name); Assert.AreSame(assembly, constructor.DeclaringType.Assembly, name);
+                real = complex.GetField("Real"); imag = complex.GetField("Imag"); Assert.AreEqual(scalar, real.FieldType, name); Assert.AreEqual(scalar, imag.FieldType, name);
+                foreach (var operation in new[] { "Sin", "Cos", "Sinh", "Cosh", "Tan", "Tanh", "Exp" })
+                {
+                    var method = fun.GetMethod(operation, new[] { complex }); Assert.IsNotNull(method, name + operation); Assert.AreSame(assembly, method.DeclaringType.Assembly, name); Assert.AreEqual(complex, method.ReturnType, name); methods.Add(operation, method);
+                    if (operation == "Exp") continue;
+                    var forward = complex.GetMethod(operation, new[] { complex }); Assert.IsNotNull(forward, name + operation); Assert.AreSame(assembly, forward.DeclaringType.Assembly, name); Assert.AreEqual(complex, forward.ReturnType, name); forwarders.Add(operation, forward);
+                }
+                add = complex.GetMethod("op_Addition", new[] { complex, complex }); subtract = complex.GetMethod("op_Subtraction", new[] { complex, complex });
+                multiply = complex.GetMethod("op_Multiply", new[] { complex, scalar }); divide = complex.GetMethod("op_Division", new[] { complex, complex });
+                foreach (var method in new[] { add, subtract, multiply, divide }) { Assert.IsNotNull(method, name); Assert.AreSame(assembly, method.DeclaringType.Assembly, name); }
+            }
+            private object ScalarValue(double x) => Single ? (object)(float)x : x;
+            private double Round(double x) => Single ? (float)x : x;
+            private object Value(double a, double b) => constructor.Invoke(new[] { ScalarValue(a), ScalarValue(b) });
+            private (double, double) Read(object z) => (Convert.ToDouble(real.GetValue(z)), Convert.ToDouble(imag.GetValue(z)));
+            private double Scalar(string operation, double x)
+            {
+                var method = fun.GetMethod(operation, new[] { scalar }); Assert.AreSame(fun.Assembly, method.DeclaringType.Assembly, name);
+                return Convert.ToDouble(method.Invoke(null, new[] { ScalarValue(x) }));
+            }
+            private static void Bits(double expected, double actual, string context)
+            {
+                if (double.IsNaN(expected)) Assert.IsTrue(double.IsNaN(actual), context + " NaN");
+                else Assert.AreEqual(BitConverter.DoubleToInt64Bits(expected), BitConverter.DoubleToInt64Bits(actual), context + $", expected={expected:R}, actual={actual:R}");
+            }
+            private (double, double) Call(string operation, double a, double b, string context)
+            {
+                var value = Value(a, b); var result = Read(methods[operation].Invoke(null, new[] { value })); var forwarded = Read(forwarders[operation].Invoke(null, new[] { value }));
+                Bits(result.Item1, forwarded.Item1, context + " static-forwarder real"); Bits(result.Item2, forwarded.Item2, context + " static-forwarder imag"); return result;
+            }
+            private void Component(double expected, double actual, string context, int ulps)
+            {
+                expected = Round(expected); Assert.IsTrue(double.IsFinite(expected) && double.IsFinite(actual), context + " finite reference/component");
+                if (expected == 0) { Assert.AreEqual(0, actual, context + " exact zero"); return; }
+                Assert.IsTrue(actual != 0 && Math.Sign(actual) == Math.Sign(expected), context + " nonzero component and sign");
+                double step = Single ? Math.Abs((double)float.BitIncrement(Math.Abs((float)expected)) - Math.Abs(expected)) : Math.BitIncrement(Math.Abs(expected)) - Math.Abs(expected);
+                Assert.That(Math.Abs(actual - expected), Is.LessThanOrEqualTo(ulps * step), context + $", expected={expected:R}, actual={actual:R}, ulps={ulps}");
+            }
+            public void Reference(string operation, double a, double b, string label)
+            {
+                a = Round(a); b = Round(b); var z = new Num.Complex(a, b);
+                var expected = operation == "Sin" ? Num.Complex.Sin(z) : operation == "Cos" ? Num.Complex.Cos(z) : operation == "Sinh" ? Num.Complex.Sinh(z) : operation == "Cosh" ? Num.Complex.Cosh(z) : operation == "Tan" ? Num.Complex.Tan(z) : Num.Complex.Tanh(z);
+                var context = $"{name}: {label}, {operation}({a:R},{b:R})"; var actual = Call(operation, a, b, context); int ulps = operation == "Tan" || operation == "Tanh" ? 32 : 16;
+                Component(expected.Real, actual.Item1, context + " real", ulps); Component(expected.Imaginary, actual.Item2, context + " imag", ulps);
+            }
+            public void Axis(string operation, double a, double b)
+            {
+                a = Round(a); b = Round(b); var context = $"{name}: independent {operation} axis({a:R},{b:R})"; var actual = Call(operation, a, b, context);
+                if (b == 0) { Component(Scalar(operation, a), actual.Item1, context + " scalar real", 32); Component(0, actual.Item2, context + " zero imag", 0); }
+                else
+                {
+                    var scalarOperation = operation == "Sin" ? "Sinh" : operation == "Cos" ? "Cosh" : operation == "Sinh" ? "Sin" : operation == "Cosh" ? "Cos" : operation == "Tan" ? "Tanh" : "Tan";
+                    double expected = Scalar(scalarOperation, b); bool imaginary = operation != "Cos" && operation != "Cosh";
+                    Component(imaginary ? 0 : expected, actual.Item1, context + " real", 32); Component(imaginary ? expected : 0, actual.Item2, context + " imag", 32);
+                }
+            }
+            private object Legacy(string operation, double a, double b)
+            {
+                a = Round(a); b = Round(b);
+                if (operation == "Sinh") { var t = Read(Legacy("Sin", -b, a)); return Value(t.Item2, -t.Item1); }
+                if (operation == "Cosh") return Legacy("Cos", -b, a);
+                if (operation == "Tanh") { var t = Read(Legacy("Tan", -b, a)); return Value(t.Item2, -t.Item1); }
+                if (operation == "Tan") return a == 0 && double.IsInfinity(b) ? Value(0, Math.Sign(b)) : divide.Invoke(null, new[] { Legacy("Sin", a, b), Legacy("Cos", a, b) });
+                var e0 = methods["Exp"].Invoke(null, new[] { Value(-b, a) }); var e1 = methods["Exp"].Invoke(null, new[] { Value(b, -a) });
+                var value = (operation == "Cos" ? add : subtract).Invoke(null, new[] { e0, e1 });
+                if (operation == "Sin") { var t = Read(value); value = Value(t.Item2, -t.Item1); }
+                return multiply.Invoke(null, new[] { value, ScalarValue(.5) });
+            }
+            private static int Classification(double x) => double.IsNaN(x) ? 2 : double.IsPositiveInfinity(x) ? 1 : double.IsNegativeInfinity(x) ? -1 : 0;
+            public void Classifications(string operation, double a, double b)
+            {
+                var context = $"{name}: legacy classification {operation}({a:R},{b:R})"; var expected = Read(Legacy(operation, a, b)); var actual = Call(operation, a, b, context);
+                Assert.AreEqual(Classification(expected.Item1), Classification(actual.Item1), context + " real"); Assert.AreEqual(Classification(expected.Item2), Classification(actual.Item2), context + " imag");
+            }
+            public void ZeroSigns(string operation, double a, double b)
+            {
+                var context = $"{name}: product zero signs {operation}({a:R},{b:R})"; var actual = Call(operation, a, b, context);
+                double er, ei;
+                if (operation == "Sin") { er = Round(Scalar("Sin", a) * Scalar("Cosh", b)); ei = Round(Scalar("Cos", a) * Scalar("Sinh", b)); }
+                else if (operation == "Cos") { er = Round(Scalar("Cos", a) * Scalar("Cosh", b)); ei = Round(-Scalar("Sin", a) * Scalar("Sinh", b)); }
+                else if (operation == "Sinh") { er = Round(Scalar("Cos", -b) * Scalar("Sinh", a)); ei = -Round(Scalar("Sin", -b) * Scalar("Cosh", a)); }
+                else { er = Round(Scalar("Cos", -b) * Scalar("Cosh", a)); ei = Round(-Scalar("Sin", -b) * Scalar("Sinh", a)); }
+                Bits(er, actual.Item1, context + " real"); Bits(ei, actual.Item2, context + " imag");
+            }
+            public double Next(double x, bool up) => Single ? up ? float.BitIncrement((float)x) : float.BitDecrement((float)x) : up ? Math.BitIncrement(x) : Math.BitDecrement(x);
+        }
+        private static IEnumerable<TrigCore> TrigCores()
+        {
+            foreach (var target in new[] { "net10.0", "netstandard2.0" })
+            {
+                var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Fun).Assembly.Location), "..", target, "Aardvark.Base.dll")); Assert.IsTrue(File.Exists(path), "Required sibling core: " + path);
+                var assembly = Assembly.LoadFile(path); Assert.AreEqual(target == "net10.0" ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0", assembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName, path);
+                yield return new TrigCore(assembly, true, target); yield return new TrigCore(assembly, false, target);
+            }
+        }
 
         #region ToString and Parse
 

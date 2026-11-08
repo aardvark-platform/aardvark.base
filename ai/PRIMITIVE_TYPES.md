@@ -36,6 +36,8 @@ Examples:
 
 - `Norm` is the magnitude. `NormSquared` is `Real * Real + Imag * Imag` and may be zero or infinite for nonzero finite values.
 - `Sqrt` returns the principal square root. A negative real value with either sign of zero in `Imag` produces the positive-imaginary root.
+- `Sin(a + bi)` uses `(sin(a) * cosh(b), cos(a) * sinh(b))`; `Cos(a + bi)` uses `(cos(a) * cosh(b), -sin(a) * sinh(b))`, retaining tiny components without subtracting nearly equal exponentials. Existing rotations give `Sinh` and `Cosh` the same benefit; tiny-input `Tan`/`Tanh` inherit it without changing their forwarding or division.
+- Signed zeros intentionally follow these component products instead of exponential cancellation: for example, `Sin(-0 + 0i)` has imaginary `+0`, and `Cos(0 + 0i)` has imaginary `-0`. NaN/infinity classifications, including historical scalar-exponential overflow for very large finite arguments, are retained. This is not a general tangent-pole or full-range accuracy repair.
 
 `Norm`, `Reciprocal`, division, and `Sqrt` allocate no managed memory.
 Results outside the selected precision follow IEEE overflow and underflow behavior.
