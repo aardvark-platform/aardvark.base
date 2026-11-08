@@ -101,6 +101,70 @@ namespace Aardvark.Base.Benchmarks
         }
 
         [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD SinDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Sin();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF SinFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Sin();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD CosDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Cos();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF CosFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Cos();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD SinhDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Sinh();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF SinhFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Sinh();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD CoshDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Cosh();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF CoshFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Cosh();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
         public ComplexD SquareRootDouble()
         {
             ComplexD sum = ComplexD.Zero;

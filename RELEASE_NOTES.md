@@ -1,3 +1,4 @@
+- [Math] Preserve tiny complex sine/cosine and inherited hyperbolic components; signed zeros now follow their scalar product identities
 - Update to .NET 10
 
 ### 5.3.28
