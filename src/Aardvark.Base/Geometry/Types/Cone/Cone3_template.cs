@@ -322,9 +322,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ray3t__ GetAxis() => new __ray3t__(Origin, Direction);
 
+        /// <summary>
+        /// Returns the signed physical distance from the apex to the axial
+        /// projection of <paramref name="position"/>, positive along Direction.
+        /// Unlike the axis ray parameter, this height is independent of the
+        /// length of Direction and uses the same distance units as GetCircle.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ftype__ GetHeight(__v3t__ position)
-            => new __ray3t__(Origin, Direction).GetTOfProjectedPoint(position);
+            => (position - Origin).Dot(Direction) / Direction.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly __ftype__ GetRadius(__ftype__ height) => height * Angle.Sin() / Angle.Cos();

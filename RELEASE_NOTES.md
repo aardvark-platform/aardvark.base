@@ -1,4 +1,5 @@
 - Update to .NET 10
+- [Base] Corrected signed axial heights and positive-height off-axis closest-point/distance queries for cones with non-unit directions; stored directions and axis-ray parameters are unchanged
 
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face
