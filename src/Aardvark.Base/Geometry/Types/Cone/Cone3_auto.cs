@@ -305,9 +305,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Ray3f GetAxis() => new Ray3f(Origin, Direction);
 
+        /// <summary>
+        /// Returns the signed physical distance from the apex to the axial
+        /// projection of <paramref name="position"/>, positive along Direction.
+        /// Unlike the axis ray parameter, this height is independent of the
+        /// length of Direction and uses the same distance units as GetCircle.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float GetHeight(V3f position)
-            => new Ray3f(Origin, Direction).GetTOfProjectedPoint(position);
+            => (position - Origin).Dot(Direction) / Direction.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly float GetRadius(float height) => height * Angle.Sin() / Angle.Cos();
@@ -646,9 +652,15 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly Ray3d GetAxis() => new Ray3d(Origin, Direction);
 
+        /// <summary>
+        /// Returns the signed physical distance from the apex to the axial
+        /// projection of <paramref name="position"/>, positive along Direction.
+        /// Unlike the axis ray parameter, this height is independent of the
+        /// length of Direction and uses the same distance units as GetCircle.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly double GetHeight(V3d position)
-            => new Ray3d(Origin, Direction).GetTOfProjectedPoint(position);
+            => (position - Origin).Dot(Direction) / Direction.Length;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public readonly double GetRadius(double height) => height * Angle.Sin() / Angle.Cos();

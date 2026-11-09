@@ -58,6 +58,19 @@ For a normalized normal `n`, the axis-aligned bound extent in component `i`
 is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. `BoundingBox3f` and `BoundingBox3d`
 use these extents and are allocation-free.
 
+## Cone3 Axial Height
+
+`Cone3f.GetHeight` and `Cone3d.GetHeight` return signed physical distance from
+`Origin` to the axial projection of the query, positive along `Direction`.
+Positive rescaling of the axis does not change this metric height. It uses the
+same distance units as `GetCircle(height)` and `GetRadius(height)`, including
+when `GetClosestPoint` and `GetDistance` compute a cross-section radius.
+
+The stored `Direction` is not normalized. `GetAxis()` still returns the raw ray
+`Origin + t * Direction`; its parameter is not a physical distance for non-unit
+axes. Zero/non-finite axes and floating-point overflow, underflow and conditioning
+limits are not repaired by the metric-height correction.
+
 ## Sphere Ray Intersections
 
 `Ray3f.HitsSphere` and `Ray3d.HitsSphere` intersect finite rays with finite
