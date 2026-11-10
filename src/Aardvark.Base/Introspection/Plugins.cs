@@ -219,49 +219,81 @@ public partial class Aardvark
                 serializer.WriteObject(writer, this);
             }
 
-            public static PluginCache ReadFromFile()
+            // Note: Used in unit test via reflection
+            public static PluginCache ReadFromFile(string path)
             {
-                if (File.Exists(CacheFile))
+                if (File.Exists(path))
                 {
                     try
                     {
-                        using var stream = new FileStream(CacheFile, FileMode.Open);
+                        // Shared with writers: a writer replaces the file by a rename, which this read must not block.
+                        using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
                         var result = Deserialize(stream);
-                        Report.Line(3, $"Loaded plugins cache file: {CacheFile}");
+                        Report.Line(3, $"Loaded plugins cache file: {path}");
                         return result;
                     }
                     catch (Exception e)
                     {
-                        Report.Line(3, $"Could not load plugins cache file '{CacheFile}': {e.Message}");
+                        Report.Line(3, $"Could not load plugins cache file '{path}': {e.Message}");
                         return new PluginCache();
                     }
                 }
 
-                Report.Line(3, $"Using new plugins cache file: {CacheFile}");
+                Report.Line(3, $"Using new plugins cache file: {path}");
                 return new PluginCache();
             }
 
-            public void WriteToFile()
+            // Note: Used in unit test via reflection
+            public bool WriteToFile(string path)
             {
-                if (string.IsNullOrEmpty(CacheFile))
+                if (string.IsNullOrEmpty(path))
                 {
                     Report.Warn("Could not write plugins cache file since Aardvark.Plugins.CacheFile is null or empty");
+                    return false;
                 }
-                else
-                {
-                    try
-                    {
-                        if (File.Exists(CacheFile)) File.Delete(CacheFile);
 
-                        using var stream = new FileStream(CacheFile, FileMode.CreateNew);
+                // Written to a file of its own and renamed over the cache file, so a reader sees the old file or the new
+                // one, never a partial one, and processes started together do not delete each other's file.
+                var temp = $"{path}.{Guid.NewGuid():N}.tmp";
+                try
+                {
+                    using (var stream = new FileStream(temp, FileMode.CreateNew))
                         Serialize(stream);
-                    }
-                    catch(Exception e)
+
+                    // Windows refuses a rename over a file that another rename or an open handle holds at that moment;
+                    // those last milliseconds, so the rename is retried briefly.
+                    for (var attempt = 1; ; attempt++)
                     {
-                        Report.Warn($"Could not write plugins cache file '{CacheFile}': {e.Message}");
+                        try
+                        {
+#if NETSTANDARD2_0
+                            if (File.Exists(path)) File.Replace(temp, path, null);
+                            else File.Move(temp, path);
+#else
+                            File.Move(temp, path, overwrite: true);
+#endif
+                            return true;
+                        }
+                        catch (Exception e) when ((e is IOException || e is UnauthorizedAccessException) && attempt < 10)
+                        {
+                            System.Threading.Thread.Sleep(10);
+                        }
                     }
+                }
+                catch(Exception e)
+                {
+                    Report.Warn($"Could not write plugins cache file '{path}': {e.Message}");
+                    try { File.Delete(temp); }
+                    catch (Exception cleanup) { Report.Line(3, $"Could not delete '{temp}': {cleanup.Message}"); }
+                    return false;
                 }
             }
+
+            /// <summary>
+            /// Whether the other cache holds the same assemblies with the same data.
+            /// </summary>
+            public bool SameAs(PluginCache other)
+                => Count == other.Count && this.All(entry => other.TryGetValue(entry.Key, out var data) && data.Equals(entry.Value));
         }
 
         #endregion
@@ -420,7 +452,7 @@ public partial class Aardvark
 
         internal static List<Assembly> Find()
         {
-            var oldCache = PluginCache.ReadFromFile();
+            var oldCache = PluginCache.ReadFromFile(CacheFile);
             var newCache = new PluginCache();
 
             using var sources = FindAssemblySources();
@@ -446,7 +478,8 @@ public partial class Aardvark
             }
             finally
             {
-                newCache.WriteToFile();
+                // An unchanged installation does not rewrite the file on every start.
+                if (!newCache.SameAs(oldCache)) newCache.WriteToFile(CacheFile);
             }
 
             return assemblies;

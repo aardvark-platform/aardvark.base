@@ -244,3 +244,36 @@ module Caches =
         for path in cache.Keys do
             Expect.isTrue (result.Contains path) "Result did not contain path"
             Expect.equal result.[path] cache.[path] "Cache entry mismatch"
+
+    // Processes of the same application started together share one cache file: each writes it at the end of
+    // Plugins.Find while the other may be reading or writing it. Writers alone never fail; with readers holding the
+    // file a write may fail (Windows refuses to rename over an open file), but it leaves the complete previous file,
+    // and a read never sees a partial one.
+    [<Test>]
+    let ``[Caches] Introspection plugin cache file is written and read concurrently without partial files``() =
+        let plugins = typeof<Aardvark>.GetNestedType("Plugins", BindingFlags.NonPublic ||| BindingFlags.Public)
+        let cacheType = plugins.GetNestedType("PluginCache", BindingFlags.NonPublic ||| BindingFlags.Public)
+        let dataType = cacheType.GetNestedType("Data")
+        let dataCtor = dataType.GetConstructor([| typeof<DateTime>; typeof<bool> |])
+        let add = cacheType.GetMethod("Add", [| typeof<string>; dataType |])
+        let write = cacheType.GetMethod("WriteToFile", BindingFlags.Public ||| BindingFlags.Instance, [| typeof<string> |])
+        let read = cacheType.GetMethod("ReadFromFile", BindingFlags.Public ||| BindingFlags.Static, [| typeof<string> |])
+
+        let cache = unbox<IDictionary> <| cacheType.GetConstructor([||]).Invoke([||])
+        for i in 0 .. 49 do add.Invoke(cache, [| sprintf "assembly%d.dll" i; dataCtor.Invoke([| DateTime(2026, 1, 1); i % 2 = 0 |]) |]) |> ignore
+
+        let folder = Directory.CreateTempSubdirectory("aardvark-plugins-cache-").FullName
+        let file = Path.Combine(folder, "plugins.bin")
+        try
+            Expect.isTrue (unbox<bool> (write.Invoke(cache, [| file |]))) "The first write failed"
+            let iterations = 200
+            let writer () = [ for _ in 1 .. iterations -> unbox<bool> (write.Invoke(cache, [| file |])) ] |> List.filter not |> List.length
+            let reader () = [ for _ in 1 .. iterations -> (unbox<IDictionary> (read.Invoke(null, [| file |]))).Count ] |> List.filter ((<>) cache.Count) |> List.length
+            let run (work : (unit -> int)[]) = work |> Array.map (fun f -> System.Threading.Tasks.Task.Run(f)) |> Array.map _.Result
+            Expect.equal (run [| writer; writer |]) [| 0; 0 |] "Failed writes of two writers"
+            let together = run [| writer; writer; reader; reader |]
+            Expect.equal together.[2..] [| 0; 0 |] (sprintf "Incomplete reads of two readers (failed writes beside them: %A)" together.[..1])
+            Expect.equal ((unbox<IDictionary> (read.Invoke(null, [| file |]))).Count) cache.Count "The file is incomplete afterwards"
+            Expect.equal (Directory.GetFiles(folder)) [| file |] "Files left beside the cache file"
+        finally
+            Directory.Delete(folder, true)

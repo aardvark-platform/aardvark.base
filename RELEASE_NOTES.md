@@ -1,4 +1,5 @@
 - Update to .NET 10
+- [Base] The plugins cache file is written to a temporary file and renamed into place, read shared, and rewritten only when it changed, so processes started together no longer fail to write it or read a partial file
 
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face
