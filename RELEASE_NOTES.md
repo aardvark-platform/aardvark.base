@@ -1,4 +1,5 @@
 - Update to .NET 10
+- [Geometry] Fixed zero-tolerance 2D plane/segment intersection points for endpoint contact and coincident segments, including point segments; positive-tolerance and Boolean-only behavior is unchanged
 
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face

@@ -949,9 +949,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the Plane2f and the Line2f intersect
-        /// point holds the Intersection-Point. If no Intersection is found point is V2f.NaN
-        /// ATTENTION: Works only with Normalized Plane2ds
+        /// Intersects the closed segment with a normalized plane at zero tolerance.
+        /// Exact zero endpoint heights, including signed zero, count as contact.
+        /// Returns the contacting endpoint, or the midpoint when both endpoints
+        /// lie on the plane. On a miss point is V2f.NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -964,11 +965,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the Plane2f and the Line2f intersect or the Line2f
-        /// lies completely in the Plane's Epsilon-Range
-        /// point holds the Intersection-Point. If the Line2f is inside Epsilon point holds the centroid of the Line2f
-        /// If no Intersection is found point is V2f.NaN
-        /// ATTENTION: Works only with Normalized Plane2ds
+        /// Intersects a segment with a normalized plane using an absolute tolerance.
+        /// Exact zero endpoint heights, including signed zero, count as on-plane
+        /// when absoluteEpsilon is zero. Positive tolerances retain strict bounds.
+        /// Returns the endpoint classified as on-plane, or the midpoint when both
+        /// endpoints are classified as on-plane. On a miss point is V2f.NaN.
         /// </summary>
         public static bool Intersects(
             this Plane2f plane,
@@ -980,8 +981,8 @@ namespace Aardvark.Base
             float h0 = plane.Height(line.P0);
             float h1 = plane.Height(line.P1);
 
-            int s0 = (h0 > -absoluteEpsilon ? (h0 < absoluteEpsilon ? 0 : 1) : -1);
-            int s1 = (h1 > -absoluteEpsilon ? (h1 < absoluteEpsilon ? 0 : 1) : -1);
+            int s0 = h0 == 0 && absoluteEpsilon == 0 ? 0 : (h0 > -absoluteEpsilon ? (h0 < absoluteEpsilon ? 0 : 1) : -1);
+            int s1 = h1 == 0 && absoluteEpsilon == 0 ? 0 : (h1 > -absoluteEpsilon ? (h1 < absoluteEpsilon ? 0 : 1) : -1);
 
             if (s0 == s1)
             {
@@ -5263,9 +5264,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the Plane2d and the Line2d intersect
-        /// point holds the Intersection-Point. If no Intersection is found point is V2d.NaN
-        /// ATTENTION: Works only with Normalized Plane2ds
+        /// Intersects the closed segment with a normalized plane at zero tolerance.
+        /// Exact zero endpoint heights, including signed zero, count as contact.
+        /// Returns the contacting endpoint, or the midpoint when both endpoints
+        /// lie on the plane. On a miss point is V2d.NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -5278,11 +5280,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the Plane2d and the Line2d intersect or the Line2d
-        /// lies completely in the Plane's Epsilon-Range
-        /// point holds the Intersection-Point. If the Line2d is inside Epsilon point holds the centroid of the Line2d
-        /// If no Intersection is found point is V2d.NaN
-        /// ATTENTION: Works only with Normalized Plane2ds
+        /// Intersects a segment with a normalized plane using an absolute tolerance.
+        /// Exact zero endpoint heights, including signed zero, count as on-plane
+        /// when absoluteEpsilon is zero. Positive tolerances retain strict bounds.
+        /// Returns the endpoint classified as on-plane, or the midpoint when both
+        /// endpoints are classified as on-plane. On a miss point is V2d.NaN.
         /// </summary>
         public static bool Intersects(
             this Plane2d plane,
@@ -5294,8 +5296,8 @@ namespace Aardvark.Base
             double h0 = plane.Height(line.P0);
             double h1 = plane.Height(line.P1);
 
-            int s0 = (h0 > -absoluteEpsilon ? (h0 < absoluteEpsilon ? 0 : 1) : -1);
-            int s1 = (h1 > -absoluteEpsilon ? (h1 < absoluteEpsilon ? 0 : 1) : -1);
+            int s0 = h0 == 0 && absoluteEpsilon == 0 ? 0 : (h0 > -absoluteEpsilon ? (h0 < absoluteEpsilon ? 0 : 1) : -1);
+            int s1 = h1 == 0 && absoluteEpsilon == 0 ? 0 : (h1 > -absoluteEpsilon ? (h1 < absoluteEpsilon ? 0 : 1) : -1);
 
             if (s0 == s1)
             {
