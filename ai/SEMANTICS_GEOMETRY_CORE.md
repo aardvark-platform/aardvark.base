@@ -166,6 +166,20 @@ cell, but not `Unit`. Other pairs involving `Invalid` use `BoundingBox.Intersect
 - On a miss, the segment-producing overload returns `false` and leaves its output at `default`. Ordinary crossing segments retain the established order from lower to higher Y, or lower to higher X for horizontal results.
 - The boolean overload is allocation-free.
 
+## Plane2/Segment Intersection Points
+
+The point-returning `Plane2f`/`Line2f` and `Plane2d`/`Line2d` `Intersects`
+overloads require normalized planes. The default overload uses zero tolerance:
+exact zero endpoint heights, including signed zero, count as on-plane. A single
+on-plane endpoint is returned unchanged; when both endpoints are on-plane, the
+existing midpoint representative is returned, including for point segments.
+
+Positive tolerances retain the strict interior test `-absoluteEpsilon < height <
+absoluteEpsilon`; equality to a nonzero tolerance bound is not classified as
+on-plane. Strict crossings retain their interpolation, and misses return `false`
+with both output coordinates NaN. The Boolean-only overloads keep their separate
+contracts; this correction does not make those overloads interchangeable.
+
 ## Polygon Centroids
 
 `Polygon2f`/`Polygon2d` and `Polygon3f`/`Polygon3d` centroids are independent of

@@ -982,9 +982,10 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the __plane2t__ and the __line2t__ intersect
-        /// point holds the Intersection-Point. If no Intersection is found point is __v2t__.NaN
-        /// ATTENTION: Works only with Normalized Plane2ds
+        /// Intersects the closed segment with a normalized plane at zero tolerance.
+        /// Exact zero endpoint heights, including signed zero, count as contact.
+        /// Returns the contacting endpoint, or the midpoint when both endpoints
+        /// lie on the plane. On a miss point is __v2t__.NaN.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Intersects(
@@ -997,11 +998,11 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns true if the __plane2t__ and the __line2t__ intersect or the __line2t__
-        /// lies completely in the Plane's Epsilon-Range
-        /// point holds the Intersection-Point. If the __line2t__ is inside Epsilon point holds the centroid of the __line2t__
-        /// If no Intersection is found point is __v2t__.NaN
-        /// ATTENTION: Works only with Normalized Plane2ds
+        /// Intersects a segment with a normalized plane using an absolute tolerance.
+        /// Exact zero endpoint heights, including signed zero, count as on-plane
+        /// when absoluteEpsilon is zero. Positive tolerances retain strict bounds.
+        /// Returns the endpoint classified as on-plane, or the midpoint when both
+        /// endpoints are classified as on-plane. On a miss point is __v2t__.NaN.
         /// </summary>
         public static bool Intersects(
             this __plane2t__ plane,
@@ -1013,8 +1014,8 @@ namespace Aardvark.Base
             __rtype__ h0 = plane.Height(line.P0);
             __rtype__ h1 = plane.Height(line.P1);
 
-            int s0 = (h0 > -absoluteEpsilon ? (h0 < absoluteEpsilon ? 0 : 1) : -1);
-            int s1 = (h1 > -absoluteEpsilon ? (h1 < absoluteEpsilon ? 0 : 1) : -1);
+            int s0 = h0 == 0 && absoluteEpsilon == 0 ? 0 : (h0 > -absoluteEpsilon ? (h0 < absoluteEpsilon ? 0 : 1) : -1);
+            int s1 = h1 == 0 && absoluteEpsilon == 0 ? 0 : (h1 > -absoluteEpsilon ? (h1 < absoluteEpsilon ? 0 : 1) : -1);
 
             if (s0 == s1)
             {
