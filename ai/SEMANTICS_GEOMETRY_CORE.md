@@ -42,6 +42,17 @@ The radius accounts for the returned center's rounding so translated bounds
 still enclose their vertices. These properties are allocation-free and do not
 change the separate `CircumCircle` APIs.
 
+`Triangle2f`/`Triangle2d` `CircumCircle`, `CircumCircleSquared` and
+`ComputeCircumCircleSquared` compute the circle through all three vertices, not
+an enclosing-circle minimum. Horizontal-edge decisions use exact zero vertical
+spans, and equal-bisector rejection uses a computed zero slope difference;
+small nonzero values alone do not imply degeneracy. The existing circumcenter
+arithmetic still has overflow, underflow, rounding and conditioning limitations.
+`CircumCircleSquared` stores the squared radius in the returned circle's `Radius`
+field. Explicit rejection returns a NaN center and squared radius -1, which
+becomes a NaN radius for `CircumCircle`. Minimum bounding circles, `Triangle3`
+circumcircles and `IsDegenerated` keep their separate behavior.
+
 ## Circle3 Frame And Bounds
 
 `Circle3f` and `Circle3d` represent a circle by `Center`, a normalized `Normal`,

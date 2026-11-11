@@ -65,6 +65,10 @@ namespace Aardvark.Base
 
         #region CircumCircle
 
+        /// <summary>
+        /// Returns the circle through the three vertices. An explicitly rejected
+        /// construction returns a NaN center and radius; numerical limits remain.
+        /// </summary>
         public readonly __circle2t__ CircumCircle
         {
             get
@@ -74,6 +78,10 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Returns the circumcenter with the squared radius stored in Radius.
+        /// An explicitly rejected construction has a NaN center and Radius -1.
+        /// </summary>
         public readonly __circle2t__ CircumCircleSquared
         {
             get
@@ -83,22 +91,28 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Computes the circumcenter and squared radius without treating nonzero
+        /// edge heights or bisector-slope differences as zero merely for being small.
+        /// Explicit rejection writes a NaN center and radiusSquared equal to -1.
+        /// The existing arithmetic remains subject to overflow, underflow and
+        /// conditioning limits; this is not a full-range circumcircle solver.
+        /// </summary>
         public static void ComputeCircumCircleSquared(
             __v2t__ p0, __v2t__ p1, __v2t__ p2,
             out __v2t__ center, out __ftype__ radiusSquared)
         {
-            __ftype__ y01abs = Fun.Abs(p0.Y - p1.Y);
-            __ftype__ y12abs = Fun.Abs(p1.Y - p2.Y);
+            __ftype__ y01 = p0.Y - p1.Y;
+            __ftype__ y12 = p1.Y - p2.Y;
 
-            if (y01abs < Constant<__ftype__>.PositiveTinyValue
-                && y12abs < Constant<__ftype__>.PositiveTinyValue)
+            if (y01 == 0 && y12 == 0)
             {
                 center = __v2t__.NaN; radiusSquared = -1; return;
             }
 
             __ftype__ xc, yc;
 
-            if (y01abs < Constant<__ftype__>.PositiveTinyValue)
+            if (y01 == 0)
             {
                 __ftype__ m2 = (p1.X - p2.X) / (p2.Y - p1.Y);
                 __ftype__ m12x = __half__ * (p1.X + p2.X);
@@ -106,7 +120,7 @@ namespace Aardvark.Base
                 xc = __half__ * (p1.X + p0.X);
                 yc = m2 * (xc - m12x) + m12y;
             }
-            else if (y12abs < Constant<__ftype__>.PositiveTinyValue)
+            else if (y12 == 0)
             {
                 __ftype__ m1 = (p0.X - p1.X) / (p1.Y - p0.Y);
                 __ftype__ m01x = __half__ * (p0.X + p1.X);
@@ -123,12 +137,12 @@ namespace Aardvark.Base
                 __ftype__ m12x = __half__ * (p1.X + p2.X);
                 __ftype__ m12y = __half__ * (p1.Y + p2.Y);
                 __ftype__ m12 = m1 - m2;
-                if (Fun.Abs(m12) < Constant<__ftype__>.PositiveTinyValue)
+                if (m12 == 0)
                 {
                     center = __v2t__.NaN; radiusSquared = -1; return;
                 }
                 xc = (m1 * m01x - m2 * m12x + m12y - m01y) / m12;
-                if (y01abs > y12abs)
+                if (Fun.Abs(y01) > Fun.Abs(y12))
                 {
                     yc = m1 * (xc - m01x) + m01y;
                 }

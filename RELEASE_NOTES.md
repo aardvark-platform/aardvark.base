@@ -1,4 +1,5 @@
 - Update to .NET 10
+- [Geometry] Corrected 2D triangle circumcircles rejected or distorted solely by small nonzero edge heights or bisector-slope differences; squared-radius and failure conventions are unchanged
 
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face
