@@ -46,6 +46,10 @@ namespace Aardvark.Base
 
         #region CircumCircle
 
+        /// <summary>
+        /// Returns the circle through the three vertices. An explicitly rejected
+        /// construction returns a NaN center and radius; numerical limits remain.
+        /// </summary>
         public readonly Circle2f CircumCircle
         {
             get
@@ -55,6 +59,10 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Returns the circumcenter with the squared radius stored in Radius.
+        /// An explicitly rejected construction has a NaN center and Radius -1.
+        /// </summary>
         public readonly Circle2f CircumCircleSquared
         {
             get
@@ -64,22 +72,28 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Computes the circumcenter and squared radius without treating nonzero
+        /// edge heights or bisector-slope differences as zero merely for being small.
+        /// Explicit rejection writes a NaN center and radiusSquared equal to -1.
+        /// The existing arithmetic remains subject to overflow, underflow and
+        /// conditioning limits; this is not a full-range circumcircle solver.
+        /// </summary>
         public static void ComputeCircumCircleSquared(
             V2f p0, V2f p1, V2f p2,
             out V2f center, out float radiusSquared)
         {
-            float y01abs = Fun.Abs(p0.Y - p1.Y);
-            float y12abs = Fun.Abs(p1.Y - p2.Y);
+            float y01 = p0.Y - p1.Y;
+            float y12 = p1.Y - p2.Y;
 
-            if (y01abs < Constant<float>.PositiveTinyValue
-                && y12abs < Constant<float>.PositiveTinyValue)
+            if (y01 == 0 && y12 == 0)
             {
                 center = V2f.NaN; radiusSquared = -1; return;
             }
 
             float xc, yc;
 
-            if (y01abs < Constant<float>.PositiveTinyValue)
+            if (y01 == 0)
             {
                 float m2 = (p1.X - p2.X) / (p2.Y - p1.Y);
                 float m12x = 0.5f * (p1.X + p2.X);
@@ -87,7 +101,7 @@ namespace Aardvark.Base
                 xc = 0.5f * (p1.X + p0.X);
                 yc = m2 * (xc - m12x) + m12y;
             }
-            else if (y12abs < Constant<float>.PositiveTinyValue)
+            else if (y12 == 0)
             {
                 float m1 = (p0.X - p1.X) / (p1.Y - p0.Y);
                 float m01x = 0.5f * (p0.X + p1.X);
@@ -104,12 +118,12 @@ namespace Aardvark.Base
                 float m12x = 0.5f * (p1.X + p2.X);
                 float m12y = 0.5f * (p1.Y + p2.Y);
                 float m12 = m1 - m2;
-                if (Fun.Abs(m12) < Constant<float>.PositiveTinyValue)
+                if (m12 == 0)
                 {
                     center = V2f.NaN; radiusSquared = -1; return;
                 }
                 xc = (m1 * m01x - m2 * m12x + m12y - m01y) / m12;
-                if (y01abs > y12abs)
+                if (Fun.Abs(y01) > Fun.Abs(y12))
                 {
                     yc = m1 * (xc - m01x) + m01y;
                 }
@@ -364,6 +378,10 @@ namespace Aardvark.Base
 
         #region CircumCircle
 
+        /// <summary>
+        /// Returns the circle through the three vertices. An explicitly rejected
+        /// construction returns a NaN center and radius; numerical limits remain.
+        /// </summary>
         public readonly Circle2d CircumCircle
         {
             get
@@ -373,6 +391,10 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Returns the circumcenter with the squared radius stored in Radius.
+        /// An explicitly rejected construction has a NaN center and Radius -1.
+        /// </summary>
         public readonly Circle2d CircumCircleSquared
         {
             get
@@ -382,22 +404,28 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Computes the circumcenter and squared radius without treating nonzero
+        /// edge heights or bisector-slope differences as zero merely for being small.
+        /// Explicit rejection writes a NaN center and radiusSquared equal to -1.
+        /// The existing arithmetic remains subject to overflow, underflow and
+        /// conditioning limits; this is not a full-range circumcircle solver.
+        /// </summary>
         public static void ComputeCircumCircleSquared(
             V2d p0, V2d p1, V2d p2,
             out V2d center, out double radiusSquared)
         {
-            double y01abs = Fun.Abs(p0.Y - p1.Y);
-            double y12abs = Fun.Abs(p1.Y - p2.Y);
+            double y01 = p0.Y - p1.Y;
+            double y12 = p1.Y - p2.Y;
 
-            if (y01abs < Constant<double>.PositiveTinyValue
-                && y12abs < Constant<double>.PositiveTinyValue)
+            if (y01 == 0 && y12 == 0)
             {
                 center = V2d.NaN; radiusSquared = -1; return;
             }
 
             double xc, yc;
 
-            if (y01abs < Constant<double>.PositiveTinyValue)
+            if (y01 == 0)
             {
                 double m2 = (p1.X - p2.X) / (p2.Y - p1.Y);
                 double m12x = 0.5 * (p1.X + p2.X);
@@ -405,7 +433,7 @@ namespace Aardvark.Base
                 xc = 0.5 * (p1.X + p0.X);
                 yc = m2 * (xc - m12x) + m12y;
             }
-            else if (y12abs < Constant<double>.PositiveTinyValue)
+            else if (y12 == 0)
             {
                 double m1 = (p0.X - p1.X) / (p1.Y - p0.Y);
                 double m01x = 0.5 * (p0.X + p1.X);
@@ -422,12 +450,12 @@ namespace Aardvark.Base
                 double m12x = 0.5 * (p1.X + p2.X);
                 double m12y = 0.5 * (p1.Y + p2.Y);
                 double m12 = m1 - m2;
-                if (Fun.Abs(m12) < Constant<double>.PositiveTinyValue)
+                if (m12 == 0)
                 {
                     center = V2d.NaN; radiusSquared = -1; return;
                 }
                 xc = (m1 * m01x - m2 * m12x + m12y - m01y) / m12;
-                if (y01abs > y12abs)
+                if (Fun.Abs(y01) > Fun.Abs(y12))
                 {
                     yc = m1 * (xc - m01x) + m01y;
                 }
