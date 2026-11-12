@@ -285,14 +285,20 @@ namespace Aardvark.Base
 
     public static class ImprovedNoise
     {
+        /// <summary>
+        /// Returns improved Perlin noise with a 256-unit lattice period on each axis.
+        /// Nonfinite coordinates produce NaN.
+        /// </summary>
         public static double Noise(double x, double y, double z)
         {
-            int xc = (int)Fun.Floor(x) & 0xff,          // Find unit cube that
-                yc = (int)Fun.Floor(y) & 0xff,          // contains point.
-                zc = (int)Fun.Floor(z) & 0xff;
-            x -= Fun.Floor(x);                          // Find relative x,y,z
-            y -= Fun.Floor(y);                          // of point in cube.
-            z -= Fun.Floor(z);
+            double floorX = Fun.Floor(x), floorY = Fun.Floor(y), floorZ = Fun.Floor(z);
+            // Reduce out-of-range floors before narrowing to retain their low bits.
+            int xc = (int)(floorX < int.MinValue || floorX > int.MaxValue ? floorX % 256 : floorX) & 0xff,
+                yc = (int)(floorY < int.MinValue || floorY > int.MaxValue ? floorY % 256 : floorY) & 0xff,
+                zc = (int)(floorZ < int.MinValue || floorZ > int.MaxValue ? floorZ % 256 : floorZ) & 0xff;
+            x -= floorX;                               // Find relative x,y,z
+            y -= floorY;                               // of point in cube.
+            z -= floorZ;
             double u = Fade(x), v = Fade(y), w = Fade(z);
                     
             int a = p[xc  ]+yc, aa = p[a]+zc, ab = p[a+1]+zc, // hash of cube 
