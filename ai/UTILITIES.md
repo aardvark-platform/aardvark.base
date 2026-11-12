@@ -119,6 +119,11 @@ library versions.
 three dimensions and is continuous across integer lattice boundaries.
 Interpolation is allocation-free.
 
+`ImprovedNoise.Noise(x, y, z)` uses a 256-unit lattice period on each axis,
+including finite coordinates whose floors exceed `Int32` range. Represented
+fractional coordinates and ordinary in-range results are preserved. Nonfinite
+coordinates produce NaN; this is separate from `PerlinNoise`.
+
 Geometric sampling takes an `IRandomSeries` (e.g. `HaltonRandomSeries`), not an `IRandomUniform`:
 
 ```csharp

@@ -1,4 +1,5 @@
 - Update to .NET 10
+- [Base] Fixed `ImprovedNoise.Noise` periodicity and discontinuities at large coordinates beyond the signed 32-bit lattice range
 
 ### 5.3.28
 - [Base] Fixed `Cell(Box3d)` and `Cell2d(Box2d)` for origin-straddling boxes whose maximum lies on the centred cell's exclusive upper face
