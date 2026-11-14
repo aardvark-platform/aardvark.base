@@ -21,6 +21,8 @@ namespace Aardvark.Base
                 double inverse_base, double value)
         {
             double r = 1.0 - value - 1e-10;
+            bool unadjustedGap = r <= 0.0 && value < 1.0;
+            if (unadjustedGap) r = 1.0 - value;
             if (inverse_base < r)
             {
                 value += inverse_base;
@@ -34,7 +36,8 @@ namespace Aardvark.Base
                     hh = h;
                     h *= inverse_base;
                 }
-                value += hh + h - 1.0;
+                if (unadjustedGap) value = (value - 1.0) + hh + h;
+                else value += hh + h - 1.0;
             }
             return value;
         }
