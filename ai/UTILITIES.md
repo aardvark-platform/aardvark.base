@@ -137,6 +137,13 @@ Low-discrepancy:
 double q = Quasi.QuasiHaltonWithIndex(2, 0.123);
 ```
 
+For a valid previous state below one and a reciprocal integer base of at least
+two, `Quasi.QuasiHalton` terminates even when its tolerance-adjusted gap is
+nonpositive: it uses the positive unadjusted gap for that near-one carry and
+preserves small successors. Positive adjusted gaps keep their existing tolerance
+and arithmetic, including numerical limitations. Indexed advancement and
+`HaltonRandomSeries` use the same behavior; random draw consumption is unchanged.
+
 ## INode Traversal
 
 `INode` extensions:
