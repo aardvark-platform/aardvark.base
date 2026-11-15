@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 
 using Num = System.Numerics;
 
@@ -369,6 +370,186 @@ namespace Aardvark.Tests
                 var x = Fun.Cosh(Fun.Acosh(c));
                 AreEqual(c, x);
             });
+
+        private sealed class AcoshApi
+        {
+            internal readonly string Name;
+            internal readonly double Eps;
+            private readonly System.Reflection.ConstructorInfo constructor;
+            private readonly System.Reflection.FieldInfo real, imag;
+            private readonly System.Reflection.MethodInfo acosh, cosh, sqrt, log, multiply, subtract, add;
+            private readonly bool single;
+
+            internal AcoshApi(System.Reflection.Assembly assembly, bool single, string target)
+            {
+                this.single = single;
+                Name = target + (single ? "/ComplexF" : "/ComplexD");
+                Eps = single ? Math.Pow(2, -23) : Math.Pow(2, -52);
+                var type = assembly.GetType("Aardvark.Base.Complex" + (single ? "F" : "D"), true);
+                var scalar = single ? typeof(float) : typeof(double);
+                constructor = type.GetConstructor(new[] { scalar, scalar });
+                real = type.GetField("Real");
+                imag = type.GetField("Imag");
+                var fun = assembly.GetType("Aardvark.Base.Fun", true);
+                acosh = fun.GetMethod("Acosh", new[] { type });
+                cosh = fun.GetMethod("Cosh", new[] { type });
+                sqrt = fun.GetMethod("Sqrt", new[] { type });
+                log = fun.GetMethod("Log", new[] { type });
+                multiply = type.GetMethod("op_Multiply", new[] { type, type });
+                subtract = type.GetMethod("op_Subtraction", new[] { type, scalar });
+                add = type.GetMethod("op_Addition", new[] { type, type });
+                Assert.That(constructor, Is.Not.Null, Name);
+                Assert.That(real.FieldType, Is.EqualTo(scalar), Name);
+                Assert.That(imag.FieldType, Is.EqualTo(scalar), Name);
+                foreach (var method in new[] { acosh, cosh, sqrt, log, multiply, subtract, add })
+                {
+                    Assert.That(method, Is.Not.Null, Name);
+                    Assert.That(method.ReturnType, Is.EqualTo(type), Name);
+                    Assert.That(method.DeclaringType.Assembly, Is.SameAs(assembly), Name);
+                }
+            }
+
+            private object Scalar(double x) => single ? (object)(float)x : x;
+            private object Box(Num.Complex x) => constructor.Invoke(new[] { Scalar(x.Real), Scalar(x.Imaginary) });
+            private Num.Complex Unbox(object x) => new Num.Complex(Convert.ToDouble(real.GetValue(x)), Convert.ToDouble(imag.GetValue(x)));
+            internal Num.Complex Input(double a, double b) => Unbox(Box(new Num.Complex(a, b)));
+            internal Num.Complex Apply(Num.Complex x) => Unbox(acosh.Invoke(null, new[] { Box(x) }));
+            internal Num.Complex RoundTrip(Num.Complex x) => Unbox(cosh.Invoke(null, new[] { acosh.Invoke(null, new[] { Box(x) }) }));
+            internal Num.Complex Legacy(Num.Complex x)
+            {
+                var z = Box(x);
+                var square = multiply.Invoke(null, new[] { z, z });
+                var root = sqrt.Invoke(null, new[] { subtract.Invoke(null, new[] { square, Scalar(1) }) });
+                return Unbox(log.Invoke(null, new[] { add.Invoke(null, new[] { z, root }) }));
+            }
+        }
+
+        private static IEnumerable<AcoshApi> AcoshImplementations()
+        {
+            foreach (string target in new[] { "net10.0", "netstandard2.0" })
+            {
+                string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(
+                    TestContext.CurrentContext.TestDirectory, "..", target, "Aardvark.Base.dll"));
+                Assert.That(System.IO.File.Exists(path), Is.True, "Required actual core: " + path);
+                var assembly = System.Reflection.Assembly.LoadFile(path);
+                Assert.That(assembly.Location, Is.EqualTo(path));
+                var framework = assembly.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>();
+                Assert.That(framework.FrameworkName, Is.EqualTo(target == "net10.0"
+                    ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0"));
+                yield return new AcoshApi(assembly, false, target);
+                yield return new AcoshApi(assembly, true, target);
+            }
+        }
+
+        private static void AssertAcoshPrincipal(AcoshApi api, Num.Complex input, Num.Complex expected, double tolerance)
+        {
+            var actual = api.Apply(input);
+            string context = $"{api.Name}: Acosh({input}) = {actual}, expected {expected}";
+            Assert.That(actual.Real, Is.EqualTo(expected.Real).Within(tolerance), context);
+            Assert.That(actual.Imaginary, Is.EqualTo(expected.Imaginary).Within(tolerance), context);
+            Assert.That(actual.Real, Is.GreaterThanOrEqualTo(-tolerance), context);
+            Assert.That(Math.Abs(actual.Imaginary), Is.LessThanOrEqualTo(Math.PI + tolerance), context);
+            var recovered = api.RoundTrip(input);
+            double inverseTolerance = 64 * api.Eps * Math.Max(1, input.Magnitude);
+            Assert.That(recovered.Real, Is.EqualTo(input.Real).Within(inverseTolerance), context + " inverse real");
+            Assert.That(recovered.Imaginary, Is.EqualTo(input.Imaginary).Within(inverseTolerance), context + " inverse imaginary");
+            if (input.Imaginary != 0)
+            {
+                var conjugate = api.Apply(Num.Complex.Conjugate(input));
+                Assert.That(conjugate.Real, Is.EqualTo(actual.Real), context + " conjugate real");
+                Assert.That(conjugate.Imaginary, Is.EqualTo(-actual.Imaginary), context + " conjugate imaginary");
+            }
+        }
+
+        [Test]
+        public static void AcoshSelectsPrincipalValuesOnAxesAndCuts()
+        {
+            foreach (var api in AcoshImplementations())
+            {
+                // Include both immediate representable neighbors of both branch points.
+                foreach (double a in new[] { -16.0, -4, -2, -1 - api.Eps, -1, -1 + api.Eps / 2,
+                                             -0.75, -0.25, -0.0, 0.0, 0.25, 0.75,
+                                             1 - api.Eps / 2, 1, 1 + api.Eps, 2, 4, 16 })
+                foreach (double zero in new[] { 0.0, -0.0 })
+                {
+                    var input = api.Input(a, zero);
+                    double magnitude = Math.Abs(input.Real);
+                    var expected = magnitude <= 1
+                        ? new Num.Complex(0, Math.Acos(input.Real))
+                        : new Num.Complex(Math.Log(magnitude + Math.Sqrt((magnitude - 1) * (magnitude + 1))), a < 0 ? Math.PI : 0);
+                    AssertAcoshPrincipal(api, input, expected, 16 * api.Eps * Math.Max(1, expected.Magnitude));
+                }
+                foreach (double b in new[] { -16.0, -4, -1, -0.25, 0.25, 1, 4, 16 })
+                foreach (double zero in new[] { 0.0, -0.0 })
+                {
+                    var input = api.Input(zero, b);
+                    var expected = new Num.Complex(Math.Log(Math.Abs(b) + Math.Sqrt(b * b + 1)), Math.Sign(b) * Math.PI / 2);
+                    AssertAcoshPrincipal(api, input, expected, 16 * api.Eps * Math.Max(1, expected.Magnitude));
+                }
+                double tiny = api.Eps > 1e-10 ? float.Epsilon : double.Epsilon;
+                double normal = Math.Pow(2, api.Eps > 1e-10 ? -126 : -1022);
+                // A lost cross-product sign must not flip an already-correct upper-axis value.
+                foreach (double a in new[] { -tiny, tiny, -normal, normal })
+                foreach (double b in new[] { -0.25, -0.125, 0.125, 0.25 })
+                {
+                    var expected = new Num.Complex(Math.Log(Math.Abs(b) + Math.Sqrt(b * b + 1)), Math.Sign(b) * Math.PI / 2);
+                    AssertAcoshPrincipal(api, api.Input(a, b), expected, 16 * api.Eps * Math.Max(1, expected.Magnitude));
+                }
+                foreach (double a in new[] { -4.0, -2, 2, 4 })
+                foreach (double b in new[] { -tiny, tiny, -normal, normal })
+                {
+                    double magnitude = Math.Abs(a);
+                    var expected = new Num.Complex(Math.Log(magnitude + Math.Sqrt((magnitude - 1) * (magnitude + 1))), a < 0 ? Math.Sign(b) * Math.PI : 0);
+                    AssertAcoshPrincipal(api, api.Input(a, b), expected, 16 * api.Eps * Math.Max(1, expected.Magnitude));
+                }
+            }
+        }
+
+        [Test]
+        public static void AcoshSelectsPrincipalValuesAcrossQuadrantsAndBranchPoints()
+        {
+            foreach (var api in AcoshImplementations())
+            foreach (double u in new[] { 0.03125, 0.0625, 0.125, 0.5, 1.0, 2.0, 3.0 })
+            foreach (double v in new[] { -Math.PI + 0.03125, -3.0, -2.5, -2.0, -Math.PI / 2,
+                                         -1.0, -0.125, -0.03125, 0.03125, 0.125, 1.0,
+                                         Math.PI / 2, 2.0, 2.5, 3.0, Math.PI - 0.03125 })
+            {
+                // Invert elliptic coordinates analytically, independently of complex Sqrt/Log.
+                var input = api.Input(Math.Cosh(u) * Math.Cos(v), Math.Sinh(u) * Math.Sin(v));
+                var expected = new Num.Complex(u, v);
+                double derivative = 1 / Math.Sqrt((input - Num.Complex.One).Magnitude * (input + Num.Complex.One).Magnitude);
+                double tolerance = 16 * api.Eps * (Math.Max(1, expected.Magnitude) + Math.Max(1, input.Magnitude) * derivative);
+                AssertAcoshPrincipal(api, input, expected, tolerance);
+            }
+        }
+
+        [Test]
+        public static void AcoshKeepsRightHalfPlaneAndExceptionalContracts()
+        {
+            foreach (var api in AcoshImplementations())
+            {
+                void Check(Num.Complex input)
+                {
+                    var actual = api.Apply(input);
+                    var expected = api.Legacy(input);
+                    foreach (var pair in new[] { (expected.Real, actual.Real), (expected.Imaginary, actual.Imaginary) })
+                        Assert.That(double.IsNaN(pair.Item1) ? double.IsNaN(pair.Item2)
+                            : BitConverter.DoubleToInt64Bits(pair.Item2) == BitConverter.DoubleToInt64Bits(pair.Item1),
+                            Is.True, $"{api.Name}: compatibility at {input}, expected {expected}, actual {actual}");
+                }
+                double tiny = api.Eps > 1e-10 ? float.Epsilon : double.Epsilon;
+                foreach (double a in new[] { -tiny, tiny })
+                foreach (double b in new[] { 0.125, 0.25 }) Check(api.Input(a, b));
+                var random = new Random(197153);
+                for (int i = 0; i < 4096; i++)
+                    Check(api.Input(0.125 + random.NextDouble() * 16, (random.NextDouble() - 0.5) * 32));
+                foreach (double a in new[] { -0.0, 0.0, -1.0, -0.75, 0.75, 1.0, 2.0 })
+                foreach (double b in new[] { 0.0, -0.0 }) Check(api.Input(a, b));
+                foreach (double a in new[] { double.NegativeInfinity, -2, -0.0, 0.0, 2, double.PositiveInfinity, double.NaN })
+                foreach (double b in new[] { double.NegativeInfinity, -2, -0.0, 0.0, 2, double.PositiveInfinity, double.NaN })
+                    if (!double.IsFinite(a) || !double.IsFinite(b)) Check(api.Input(a, b));
+            }
+        }
 
         [Test]
         public static void Cosh()

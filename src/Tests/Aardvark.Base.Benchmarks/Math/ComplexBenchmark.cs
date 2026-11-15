@@ -101,6 +101,22 @@ namespace Aardvark.Base.Benchmarks
         }
 
         [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD AcoshDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Acosh();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF AcoshFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Acosh();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
         public ComplexD SquareRootDouble()
         {
             ComplexD sum = ComplexD.Zero;

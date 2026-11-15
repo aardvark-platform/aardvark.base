@@ -1,3 +1,4 @@
+- Correct the principal branch of complex `Acosh` for negative real inputs, left-half-plane inputs, and the negative imaginary axis; already-correct branches remain unchanged.
 - Update to .NET 10
 
 ### 5.3.28

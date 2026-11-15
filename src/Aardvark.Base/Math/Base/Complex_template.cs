@@ -873,11 +873,20 @@ namespace Aardvark.Base
         }
 
         /// <summary>
-        /// Returns the angle that is the hyperbolic arc cosine of the complex number <paramref name="x"/>.
+        /// Returns the principal hyperbolic arc cosine of the complex number <paramref name="x"/>.
+        /// The real part is nonnegative and the imaginary part lies in [-Pi, Pi], up to roundoff.
+        /// Real inputs on the branch cut use its positive-imaginary side for either sign of zero.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Acosh(this __ct__ x)
-            => Log(x + Sqrt(x * x - 1));
+        {
+            var root = Sqrt(x * x - 1);
+            // Select Sqrt(x - 1) * Sqrt(x + 1) without changing the other branch's arithmetic.
+            if ((x.Imag < 0 && root.Imag > 0 || x.Imag > 0 && root.Imag < 0 ||
+                 root.Imag == 0 && x.Real < -1) && x.IsFinite)
+                root = new __ct__(-root.Real, x.Imag == 0 ? 0 : -root.Imag);
+            return Log(x + root);
+        }
 
         /// <summary>
         /// Returns the cosine of the complex number <paramref name="x"/>.
