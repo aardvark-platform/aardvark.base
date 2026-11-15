@@ -36,6 +36,7 @@ Examples:
 
 - `Norm` is the magnitude. `NormSquared` is `Real * Real + Imag * Imag` and may be zero or infinite for nonzero finite values.
 - `Sqrt` returns the principal square root. A negative real value with either sign of zero in `Imag` produces the positive-imaginary root.
+- `Fun.Acosh` selects the principal hyperbolic arc cosine for ordinary finite inputs: nonnegative real part and imaginary part in `[-Pi, Pi]`, up to roundoff. Away from the real branch cut `(-Infinity, 1)`, conjugating the input conjugates the result. Real inputs on the cut use the positive-imaginary side for either sign of zero; zero maps to `0 + Pi/2 i`. In particular, `Acosh(-2)` is `Log(2 + Sqrt(3)) + Pi i`, not its negative-real alternative. Already-correct branch arithmetic and nonfinite classifications are retained. This is a branch-selection correction, not a full-range reformulation: intermediate overflow, underflow, and cancellation limitations of the existing square-root/logarithm expression remain.
 
 `Norm`, `Reciprocal`, division, and `Sqrt` allocate no managed memory.
 Results outside the selected precision follow IEEE overflow and underflow behavior.
