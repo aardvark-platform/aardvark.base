@@ -1,3 +1,4 @@
+- [Base] Reject overflowing float and double text tokens instead of accepting infinity; failed parser reads preserve their cursor position.
 - Update to .NET 10
 
 ### 5.3.28

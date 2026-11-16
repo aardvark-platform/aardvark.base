@@ -963,6 +963,11 @@ namespace Aardvark.Base
             return new ParsedValue<ulong>(ParseError.IllegalCharacter, pos - start);
         }
 
+        /// <summary>
+        /// Parses a finite float at the relative <paramref name="start"/>.
+        /// Overflow reports <see cref="ParseError.OutOfRange"/> with the complete scanned token length.
+        /// Underflow to signed zero remains valid.
+        /// </summary>
         public readonly ParsedValue<float> ParsedValueOfFloatAt(int start)
         {
             start += Start;
@@ -1000,7 +1005,9 @@ namespace Aardvark.Base
             int len = pos - start;
             try
             {
-                return new ParsedValue<float>(float.Parse(String.Substring(start, len), CultureInfo.InvariantCulture), len);
+                var value = float.Parse(String.Substring(start, len), CultureInfo.InvariantCulture);
+                if (float.IsInfinity(value)) return new ParsedValue<float>(ParseError.OutOfRange, len);
+                return new ParsedValue<float>(value, len);
             }
             catch
             {
@@ -1008,6 +1015,11 @@ namespace Aardvark.Base
             }
         }
 
+        /// <summary>
+        /// Parses a finite double at the relative <paramref name="start"/>.
+        /// Overflow reports <see cref="ParseError.OutOfRange"/> with the complete scanned token length.
+        /// Underflow to signed zero remains valid.
+        /// </summary>
         public readonly ParsedValue<double> ParsedValueOfDoubleAt(int start)
         {
             start += Start;
@@ -1045,7 +1057,9 @@ namespace Aardvark.Base
             int len = pos - start;
             try
             {
-                return new ParsedValue<double>(double.Parse(String.Substring(start, len), CultureInfo.InvariantCulture), len);
+                var value = double.Parse(String.Substring(start, len), CultureInfo.InvariantCulture);
+                if (double.IsInfinity(value)) return new ParsedValue<double>(ParseError.OutOfRange, len);
+                return new ParsedValue<double>(value, len);
             }
             catch
             {
