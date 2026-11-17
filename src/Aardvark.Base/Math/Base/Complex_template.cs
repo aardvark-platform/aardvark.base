@@ -22,6 +22,7 @@ namespace Aardvark.Base
     //#   var constant = isDouble ? "Constant" : "ConstantF";
     //#   var half = isDouble ? "0.5" : "0.5f";
     //#   var minNormal = isDouble ? "2.2250738585072014e-308" : "1.17549435e-38f";
+    //#   var tanLimit = isDouble ? "709" : "88";
     [DataContract]
     [StructLayout(LayoutKind.Sequential)]
     public struct __ct__ : IEquatable<__ct__>
@@ -971,10 +972,19 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
+        /// Finite inputs with very large imaginary parts use rounded limiting components
+        /// instead of overflowing exponential factors. The ordinary quotient and nonfinite handling are unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Tan(this __ct__ x)
         {
+            if (Abs(x.Imag) > __tanLimit__ && x.IsFinite)
+            {
+                // Here 4*exp(-2*abs(Im)) is below half the minimum subnormal:
+                // the real component rounds to signed zero and the imaginary component to +/-1.
+                // Sin(Re)*Cos(Re) preserves the sign without overflowing a doubled phase.
+                return new __ct__(CopySign(0, Sin(x.Real) * Cos(x.Real)), CopySign(1, x.Imag));
+            }
             if (x == __ct__.PositiveInfinityI)
                 return __ct__.I;
             else if (x == __ct__.NegativeInfinityI)

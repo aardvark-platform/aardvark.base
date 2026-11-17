@@ -948,10 +948,19 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
+        /// Finite inputs with very large imaginary parts use rounded limiting components
+        /// instead of overflowing exponential factors. The ordinary quotient and nonfinite handling are unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Tan(this ComplexF x)
         {
+            if (Abs(x.Imag) > 88 && x.IsFinite)
+            {
+                // Here 4*exp(-2*abs(Im)) is below half the minimum subnormal:
+                // the real component rounds to signed zero and the imaginary component to +/-1.
+                // Sin(Re)*Cos(Re) preserves the sign without overflowing a doubled phase.
+                return new ComplexF(CopySign(0, Sin(x.Real) * Cos(x.Real)), CopySign(1, x.Imag));
+            }
             if (x == ComplexF.PositiveInfinityI)
                 return ComplexF.I;
             else if (x == ComplexF.NegativeInfinityI)
@@ -2103,10 +2112,19 @@ namespace Aardvark.Base
 
         /// <summary>
         /// Returns the tangent of the complex number <paramref name="x"/>.
+        /// Finite inputs with very large imaginary parts use rounded limiting components
+        /// instead of overflowing exponential factors. The ordinary quotient and nonfinite handling are unchanged.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Tan(this ComplexD x)
         {
+            if (Abs(x.Imag) > 709 && x.IsFinite)
+            {
+                // Here 4*exp(-2*abs(Im)) is below half the minimum subnormal:
+                // the real component rounds to signed zero and the imaginary component to +/-1.
+                // Sin(Re)*Cos(Re) preserves the sign without overflowing a doubled phase.
+                return new ComplexD(CopySign(0, Sin(x.Real) * Cos(x.Real)), CopySign(1, x.Imag));
+            }
             if (x == ComplexD.PositiveInfinityI)
                 return ComplexD.I;
             else if (x == ComplexD.NegativeInfinityI)

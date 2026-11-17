@@ -1,3 +1,4 @@
+- [Base] Keep complex `Tan` and `Tanh` finite for large finite imaginary and real arguments, respectively, instead of overflowing to NaNs.
 - Update to .NET 10
 
 ### 5.3.28
