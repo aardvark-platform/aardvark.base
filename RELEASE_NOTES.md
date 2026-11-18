@@ -1,3 +1,4 @@
+- [Base] Correct histogram binning for tiny finite ranges whose bin scale overflows.
 - Update to .NET 10
 
 ### 5.3.28
