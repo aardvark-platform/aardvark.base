@@ -209,6 +209,10 @@ in left-to-right order. Minimum and maximum values are merged independently; whe
 an extremum is tied, its associated data comes from the left aggregate, matching
 sequential accumulation.
 
+`Histogram.Add(double)` bins the half-open interval `[Min, Max)` and counts values
+outside it separately. Tiny finite positive-width ranges whose cached scale overflows
+are normalized by division before multiplication by the slot count.
+
 `Histogram.Add(Histogram)` and `operator +` require identical `SlotRange` values and
 slot counts. They sum bins plus underflow/overflow counts and union the observed
 `DataRange`; observed ranges do not need to match.

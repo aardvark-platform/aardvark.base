@@ -326,7 +326,9 @@ namespace Aardvark.Base
             if (value >= m_slotRange.Max) { ++m_large; return; }
             value -= m_slotRange.Min;
             if (value < 0.0) { ++m_small; return; }
-            int slot = (int)(value * m_scale);
+            int slot = (int)(double.IsPositiveInfinity(m_scale) && m_slotRange.Min < m_slotRange.Max
+                ? (value / (m_slotRange.Max - m_slotRange.Min)) * m_histo.Length
+                : value * m_scale);
             if (slot >= m_histo.Length) slot = m_histo.Length - 1;
             m_histo[slot] += 1;
         }
