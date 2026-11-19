@@ -1,3 +1,4 @@
+- [IO] Reject oversized chunked-memory-stream positions and lengths instead of wrapping chunk addresses or counts.
 - Update to .NET 10
 
 ### 5.3.28

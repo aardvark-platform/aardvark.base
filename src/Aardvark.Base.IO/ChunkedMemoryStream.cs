@@ -227,8 +227,12 @@ namespace Aardvark.Base.Coder
 
         private void SetPosition(long value)
         {
+            var chunkIndex = value / m_chunkSize;
+            if (chunkIndex > int.MaxValue)
+                throw new IOException("Cannot seek to the requested position.");
+
             m_position = value;
-            m_posChunk = (int)(value / m_chunkSize);
+            m_posChunk = (int)chunkIndex;
             m_posOffset = m_position % m_chunkSize;
         }
 
@@ -237,7 +241,11 @@ namespace Aardvark.Base.Coder
             if (length == 0)
                 return 1;
 
-            return (int)((length - 1) / m_chunkSize) + 1;
+            var lastChunk = (length - 1) / m_chunkSize;
+            if (lastChunk >= int.MaxValue)
+                throw new IOException("The requested length exceeds the supported chunk count.");
+
+            return (int)lastChunk + 1;
         }
 
         private void EnsureChunksForLength(long length)
