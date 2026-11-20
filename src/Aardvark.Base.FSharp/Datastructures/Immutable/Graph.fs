@@ -205,22 +205,29 @@ module UndirectedGraph =
                 | None -> 
                     Tree.Empty
 
+    /// Builds a minimum-weight spanning tree. Empty graphs yield Tree.Empty;
+    /// singleton graphs retain their vertex with no children.
     let minimumSpanningTree (cmp : 'e -> 'e -> int) (g : UndirectedGraph<'e>) =
-        let edges = g |> toEdges |> List.toArray
-        edges.TimSort(fun (_,_,l) (_,_,r) -> cmp l r)
+        if Set.count g.nodes < 2 then
+            spanningTree g
+        else
+            let edges = g |> toEdges |> List.toArray
+            edges.TimSort(fun (_,_,l) (_,_,r) -> cmp l r)
 
-        let uf = UnionFind()
-        let finalEdges = List<int * int * 'e>()
+            let uf = UnionFind()
+            let finalEdges = List<int * int * 'e>()
 
-        for (li, ri, e) in edges do
-            if uf.Add(li, ri) then
-                finalEdges.Add(li, ri, e)
+            for (li, ri, e) in edges do
+                if uf.Add(li, ri) then
+                    finalEdges.Add(li, ri, e)
 
 
-        finalEdges
-            |> ofEdges
-            |> spanningTree
+            finalEdges
+                |> ofEdges
+                |> spanningTree
 
+    /// Builds a maximum-weight spanning tree. Empty graphs yield Tree.Empty;
+    /// singleton graphs retain their vertex with no children.
     let maximumSpanningTree (cmp : 'e -> 'e -> int) (g : UndirectedGraph<'e>) =
         minimumSpanningTree (fun l r -> cmp r l) g
 

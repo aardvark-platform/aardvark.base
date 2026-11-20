@@ -1,3 +1,4 @@
+- [FSharp] Preserve singleton vertices in minimum and maximum weighted spanning trees, including graphs constructed from self-loops.
 - Update to .NET 10
 
 ### 5.3.28
