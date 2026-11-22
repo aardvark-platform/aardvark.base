@@ -42,6 +42,16 @@ The radius accounts for the returned center's rounding so translated bounds
 still enclose their vertices. These properties are allocation-free and do not
 change the separate `CircumCircle` APIs.
 
+## Triangle Solid Angles
+
+`Triangle.SolidAngle` returns an unsigned solid angle in steradians, independent
+of vertex order and positive rescaling of each observer-relative ray. Finite
+nonzero rays at numerical-range risk are independently rescaled before the
+homogeneous formula is evaluated; ordinary arithmetic is retained. Zero rays and
+nonfinite inputs retain their historical behavior. Observer subtraction is
+unchanged: overflowing differences or directions lost to input rounding are not
+recovered by this scaling fallback.
+
 ## Circle3 Frame And Bounds
 
 `Circle3f` and `Circle3d` represent a circle by `Center`, a normalized `Normal`,

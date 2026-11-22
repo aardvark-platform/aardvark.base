@@ -2,18 +2,6 @@
 
 namespace Aardvark.Base.Benchmarks.Geometry
 {
-    //BenchmarkDotNet v0.13.12, Windows 10 (10.0.19045.5737/22H2/2022Update)
-    //AMD Ryzen 9 7900, 1 CPU, 24 logical and 12 physical cores
-    //.NET SDK 8.0.408
-    //  [Host] : .NET 8.0.15 (8.0.1525.16413), X64 RyuJIT AVX-512F+CD+BW+DQ+VL+VBMI
-
-    //Job = InProcess  Toolchain=InProcessEmitToolchain
-
-    //| Method                      | Mean      | Error     | StdDev    |
-    //|---------------------------- |----------:|----------:|----------:|
-    //| Triangle_SolidAngle         |  6.148 ms | 0.0372 ms | 0.0329 ms |
-    //| Triangle_SolidAngle_Method2 | 10.277 ms | 0.0184 ms | 0.0163 ms |
-
     [InProcess]
     public class SolidAngle
     {
@@ -21,17 +9,33 @@ namespace Aardvark.Base.Benchmarks.Geometry
 
         public int Count { get; set; } = 100000;
 
+        private V3d[] a, b, c, large, small;
+        private V3f[] af, bf, cf, largef, smallf;
+
+        [GlobalSetup]
+        public void Setup()
+        {
+            a = new V3d[Count]; b = new V3d[Count]; c = new V3d[Count];
+            large = new V3d[Count]; small = new V3d[Count];
+            af = new V3f[Count]; bf = new V3f[Count]; cf = new V3f[Count];
+            largef = new V3f[Count]; smallf = new V3f[Count];
+            _rnd.ReSeed(123);
+            for (int j = 0; j < Count; j++)
+            {
+                a[j] = _rnd.UniformV3d(); b[j] = _rnd.UniformV3d(); c[j] = _rnd.UniformV3d();
+                af[j] = (V3f)a[j]; bf[j] = (V3f)b[j]; cf[j] = (V3f)c[j];
+                large[j] = a[j] * 1e200; small[j] = b[j] * 1e-200;
+                largef[j] = af[j] * 1e20f; smallf[j] = bf[j] * 1e-20f;
+            }
+        }
+
         [Benchmark]
         public double Triangle_SolidAngle()
         {
             var sum = 0.0;
-            _rnd.ReSeed(123);
             for (int j = 0; j < Count; j++)
             {
-                var va = _rnd.UniformV3d();
-                var vb = _rnd.UniformV3d();
-                var vc = _rnd.UniformV3d();
-                sum += Triangle.SolidAngle(va, vb, vc);
+                sum += Triangle.SolidAngle(a[j], b[j], c[j]);
             }
             return sum;
 
@@ -41,14 +45,34 @@ namespace Aardvark.Base.Benchmarks.Geometry
         public double Triangle_SolidAngle_Method2()
         {
             var sum = 0.0;
-            _rnd.ReSeed(123);
             for (int j = 0; j < Count; j++)
             {
-                var va = _rnd.UniformV3d();
-                var vb = _rnd.UniformV3d();
-                var vc = _rnd.UniformV3d();
-                sum += CalcSolidAngle(va, vb, vc);
+                sum += CalcSolidAngle(a[j], b[j], c[j]);
             }
+            return sum;
+        }
+
+        [Benchmark]
+        public double Triangle_SolidAngle_Float()
+        {
+            double sum = 0;
+            for (int j = 0; j < Count; j++) sum += Triangle.SolidAngle(af[j], bf[j], cf[j]);
+            return sum;
+        }
+
+        [Benchmark]
+        public double Triangle_SolidAngle_Extreme()
+        {
+            double sum = 0;
+            for (int j = 0; j < Count; j++) sum += Triangle.SolidAngle(large[j], small[j], c[j]);
+            return sum;
+        }
+
+        [Benchmark]
+        public double Triangle_SolidAngle_Float_Extreme()
+        {
+            double sum = 0;
+            for (int j = 0; j < Count; j++) sum += Triangle.SolidAngle(largef[j], smallf[j], cf[j]);
             return sum;
         }
 

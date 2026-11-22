@@ -283,6 +283,26 @@ namespace Aardvark.Base
             var mb = vb.Length;
             var mc = vc.Length;
 
+            // Keep the ordinary arithmetic; outside this range even cubic products
+            // of the lengths can overflow or underflow. Positive ray scales cancel.
+            if (ma < 1e-10f || mb < 1e-10f || mc < 1e-10f ||
+                ma > 1e10f || mb > 1e10f || mc > 1e10f)
+            {
+                var sa = va.Abs().MaxElement;
+                var sb = vb.Abs().MaxElement;
+                var sc = vc.Abs().MaxElement;
+                if (sa > 0 && sb > 0 && sc > 0 && va.IsFinite && vb.IsFinite && vc.IsFinite)
+                {
+                    // Divide components directly: a subnormal scale has no finite reciprocal.
+                    va /= sa;
+                    vb /= sb;
+                    vc /= sc;
+                    ma = va.Length;
+                    mb = vb.Length;
+                    mc = vc.Length;
+                }
+            }
+
             var numerator = Fun.Abs(Vec.Dot(va, (Vec.Cross(vb, vc))));
 
             var denom = ma * mb * mc + Vec.Dot(va, vb) * mc + Vec.Dot(va, vc) * mb + Vec.Dot(vb, vc) * ma;
@@ -603,6 +623,26 @@ namespace Aardvark.Base
             var ma = va.Length;
             var mb = vb.Length;
             var mc = vc.Length;
+
+            // Keep the ordinary arithmetic; outside this range even cubic products
+            // of the lengths can overflow or underflow. Positive ray scales cancel.
+            if (ma < 1e-100 || mb < 1e-100 || mc < 1e-100 ||
+                ma > 1e100 || mb > 1e100 || mc > 1e100)
+            {
+                var sa = va.Abs().MaxElement;
+                var sb = vb.Abs().MaxElement;
+                var sc = vc.Abs().MaxElement;
+                if (sa > 0 && sb > 0 && sc > 0 && va.IsFinite && vb.IsFinite && vc.IsFinite)
+                {
+                    // Divide components directly: a subnormal scale has no finite reciprocal.
+                    va /= sa;
+                    vb /= sb;
+                    vc /= sc;
+                    ma = va.Length;
+                    mb = vb.Length;
+                    mc = vc.Length;
+                }
+            }
 
             var numerator = Fun.Abs(Vec.Dot(va, (Vec.Cross(vb, vc))));
 
