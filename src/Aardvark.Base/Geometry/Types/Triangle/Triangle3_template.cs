@@ -23,6 +23,8 @@ namespace Aardvark.Base
     //#   var boundsCondition = isDouble ? "0.1" : "0.1f";
     //#   var boundsRadiusFactor = isDouble ? "1.0000000000000142" : "1.0000076f";
     //#   var boundsAngleTolerance = isDouble ? "4e-15" : "2e-6f";
+    //#   var solidAngleLow = isDouble ? "1e-100" : "1e-10f";
+    //#   var solidAngleHigh = isDouble ? "1e100" : "1e10f";
     #region __type__
 
     /// <summary>
@@ -301,6 +303,26 @@ namespace Aardvark.Base
             var ma = va.Length;
             var mb = vb.Length;
             var mc = vc.Length;
+
+            // Keep the ordinary arithmetic; outside this range even cubic products
+            // of the lengths can overflow or underflow. Positive ray scales cancel.
+            if (ma < __solidAngleLow__ || mb < __solidAngleLow__ || mc < __solidAngleLow__ ||
+                ma > __solidAngleHigh__ || mb > __solidAngleHigh__ || mc > __solidAngleHigh__)
+            {
+                var sa = va.Abs().MaxElement;
+                var sb = vb.Abs().MaxElement;
+                var sc = vc.Abs().MaxElement;
+                if (sa > 0 && sb > 0 && sc > 0 && va.IsFinite && vb.IsFinite && vc.IsFinite)
+                {
+                    // Divide components directly: a subnormal scale has no finite reciprocal.
+                    va /= sa;
+                    vb /= sb;
+                    vc /= sc;
+                    ma = va.Length;
+                    mb = vb.Length;
+                    mc = vc.Length;
+                }
+            }
 
             var numerator = Fun.Abs(Vec.Dot(va, (Vec.Cross(vb, vc))));
 

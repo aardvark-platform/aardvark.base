@@ -1,3 +1,4 @@
+- Fix triangle solid angles collapsing to zero or NaN for very large, small, or independently scaled finite nonzero rays.
 - Update to .NET 10
 
 ### 5.3.28
