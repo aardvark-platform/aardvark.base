@@ -33,7 +33,7 @@
         {
             m_dx = dx;
             m_dy = dy;
-            m_dz = dy;
+            m_dz = dz;
             m_rx = rx;
             m_ry = ry;
             m_rz = rz;
