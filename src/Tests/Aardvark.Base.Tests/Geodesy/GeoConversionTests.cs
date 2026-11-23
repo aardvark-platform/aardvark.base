@@ -1,4 +1,7 @@
 using System;
+using System.IO;
+using System.Reflection;
+using System.Runtime.Versioning;
 using Aardvark.Base;
 using NUnit.Framework;
 
@@ -34,6 +37,106 @@ namespace Aardvark.Tests
             Assert.That(actual.X, Is.EqualTo(expected.X).Within(tolerance.X), $"{context} X");
             Assert.That(actual.Y, Is.EqualTo(expected.Y).Within(tolerance.Y), $"{context} Y");
             Assert.That(actual.Z, Is.EqualTo(expected.Z).Within(tolerance.Z), $"{context} Z");
+        }
+
+        private sealed class DatumApi
+        {
+            public readonly string Target;
+            private readonly Type datumType;
+            private readonly ConstructorInfo constructor, vector;
+            private readonly MethodInfo transform;
+            private readonly FieldInfo x, y, z;
+            public DatumApi(string target)
+            {
+                Target = target;
+                var path = Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, "..", target, "Aardvark.Base.dll"));
+                Assert.That(File.Exists(path), Is.True, path);
+                var assembly = Assembly.LoadFile(path);
+                Assert.That(assembly.Location, Is.EqualTo(path));
+                Assert.That(assembly.GetCustomAttribute<TargetFrameworkAttribute>().FrameworkName,
+                    Is.EqualTo(target == "net10.0" ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0"));
+                datumType = assembly.GetType("Aardvark.Base.GeoDatum", true);
+                var v = assembly.GetType("Aardvark.Base.V3d", true);
+                constructor = datumType.GetConstructor(new[] { typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double), typeof(double) });
+                vector = v.GetConstructor(new[] { typeof(double), typeof(double), typeof(double) });
+                transform = assembly.GetType("Aardvark.Base.Geo", true).GetMethod("HelmertsTransformXyzToXyz", new[] { v, datumType });
+                Assert.That(constructor.DeclaringType.Assembly, Is.SameAs(assembly));
+                Assert.That(transform.DeclaringType.Assembly, Is.SameAs(assembly));
+                Assert.That(transform.ReturnType, Is.EqualTo(v));
+                x = v.GetField("X"); y = v.GetField("Y"); z = v.GetField("Z");
+            }
+            public object Create(double[] parameters) => constructor.Invoke(Array.ConvertAll(parameters, p => (object)p));
+            public double Get(object datum, string name) => (double)datumType.GetProperty(name).GetValue(datum);
+            public object Preset(string name) => datumType.GetField(name).GetValue(null);
+            public V3d Transform(V3d point, object datum)
+            {
+                var result = transform.Invoke(null, new[] { vector.Invoke(new object[] { point.X, point.Y, point.Z }), datum });
+                return new V3d((double)x.GetValue(result), (double)y.GetValue(result), (double)z.GetValue(result));
+            }
+        }
+
+        private static DatumApi[] DatumImplementations() => new[] { new DatumApi("net10.0"), new DatumApi("netstandard2.0") };
+
+        [Test]
+        public void DatumConstructorRetainsAllSevenIndependentParameters()
+        {
+            var names = new[] { "dX", "dY", "dZ", "rXsec", "rYsec", "rZsec", "dS" };
+            foreach (var api in DatumImplementations())
+                for (int parameter = 0; parameter < 7; parameter++)
+                    foreach (double value in new[] { -17.25, -0.0, 0.0, double.Epsilon, -double.Epsilon, double.MinValue, double.MaxValue, double.NegativeInfinity, double.PositiveInfinity, double.NaN })
+                    {
+                        var supplied = new[] { 101.25, -202.5, 303.75, -.125, .25, -.5, 1.75 };
+                        supplied[parameter] = value;
+                        var datum = api.Create(supplied);
+                        void Check(double actual, double expected, string name)
+                        {
+                            var context = $"{api.Target} varied={names[parameter]} value={value:R} getter={name}";
+                            if (double.IsNaN(expected)) Assert.That(double.IsNaN(actual), Is.True, context);
+                            else Assert.That(BitConverter.DoubleToInt64Bits(actual), Is.EqualTo(BitConverter.DoubleToInt64Bits(expected)), context);
+                        }
+                        for (int i = 0; i < names.Length; i++) Check(api.Get(datum, names[i]), supplied[i], names[i]);
+                        for (int i = 0; i < 3; i++)
+                            Check(api.Get(datum, new[] { "rXrad", "rYrad", "rZrad" }[i]), supplied[3 + i] * (Math.PI / (180 * 60 * 60)), "radians " + i);
+                    }
+        }
+
+        [Test]
+        public void HelmertPureTranslationsKeepIndependentSignedOffsets()
+        {
+            var offsets = new[] { new V3d(1, 2, 3), new V3d(-4, 5, -6), new V3d(7, -8, 9),
+                new V3d(0, 0, 17), new V3d(0, -17, 0), new V3d(32, -.5, -.25), new V3d(3, -4, -4), V3d.Zero };
+            var points = new[] { V3d.Zero, new V3d(8, -16, 32), new V3d(-100, 200, -300), new V3d(4e6, -1e6, 5e6) };
+            foreach (var api in DatumImplementations())
+                foreach (var offset in offsets)
+                {
+                    var datum = api.Create(new[] { offset.X, offset.Y, offset.Z, 0.0, 0.0, 0.0, 0.0 });
+                    foreach (var point in points)
+                        AssertClose(api.Transform(point, datum), point + offset, V3d.Zero, $"{api.Target} offset={offset} point={point}");
+                }
+        }
+
+        [Test]
+        public void AustriaDatumsUseTheirSuppliedTranslations()
+        {
+            var presets = new[] {
+                ("Wgs84toAustriaNs1", new[] { -575.0, -93.0, -466.0, 5.1, 1.6, 5.2, -2.5 }),
+                ("Wgs84toAustriaNs2", new[] { -577.326, -90.129, -463.919, 5.14, 1.47, 5.30, -2.4232 }),
+                ("AustriaNs1toWgs84", new[] { 575.0, 93.0, 466.0, -5.1, -1.6, -5.2, 2.5 }),
+                ("AustriaNs2toWgs84", new[] { 577.326, 90.129, 463.919, -5.14, -1.47, -5.30, 2.4232 }) };
+            foreach (var api in DatumImplementations())
+                foreach (var (name, supplied) in presets)
+                {
+                    var datum = api.Preset(name);
+                    Assert.That(api.Get(datum, "dZ"), Is.EqualTo(supplied[2]), api.Target + " " + name + " Z offset");
+                    AssertClose(api.Transform(V3d.Zero, datum), new V3d(supplied[0], supplied[1], supplied[2]), V3d.Zero, api.Target + " " + name + " origin");
+                    var point = new V3d(4e6, -1e6, 5e6);
+                    double rx = supplied[3] * (Math.PI / 648000), ry = supplied[4] * (Math.PI / 648000), rz = supplied[5] * (Math.PI / 648000);
+                    double scale = 1 + supplied[6] * 1e-6;
+                    var expected = new V3d(supplied[0] + scale * point.X + scale * rz * point.Y - scale * ry * point.Z,
+                        supplied[1] - scale * rz * point.X + scale * point.Y + scale * rx * point.Z,
+                        supplied[2] + scale * ry * point.X - scale * rx * point.Y + scale * point.Z);
+                    AssertClose(api.Transform(point, datum), expected, new V3d(2e-9), api.Target + " " + name + " nonzero point");
+                }
         }
 
         [Test]

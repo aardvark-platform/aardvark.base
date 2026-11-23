@@ -1,3 +1,4 @@
+- Fix ignored datum Z offsets in Helmert transforms, including the predefined WGS84/Austria datums.
 - Update to .NET 10
 
 ### 5.3.28
