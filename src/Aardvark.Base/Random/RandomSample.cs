@@ -17,7 +17,7 @@ namespace Aardvark.Base
         {
             var phi = Constant.PiTimesTwo * x1;
             var z = 1 - 2 * x2;
-            var r = Fun.Max(1 - z * z, 0).Sqrt();
+            var r = Fun.Max(4 * x2 * (1 - x2), 0).Sqrt();
             return new V3d(r * phi.Cos(), r * phi.Sin(), z);
         }
 
@@ -28,7 +28,7 @@ namespace Aardvark.Base
         {
             var phi = ConstantF.PiTimesTwo * x1;
             var z = 1 - 2 * x2;
-            var r = Fun.Max(1 - z * z, 0).Sqrt();
+            var r = Fun.Max(4f * x2 * (1f - x2), 0f).Sqrt();
             return new V3f(r * phi.Cos(), r * phi.Sin(), z);
         }
 
