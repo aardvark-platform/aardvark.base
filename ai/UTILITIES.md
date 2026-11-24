@@ -131,6 +131,13 @@ var disk = RandomSample.Disk(series, 0);
 
 Alternatively, use the `(double x1, double x2)` overloads with raw uniform samples.
 
+`RandomSample.Spherical` computes the transverse radius directly from the second
+draw, avoiding cancellation from the rounded Z coordinate near a pole. Positive
+near-zero draws down to minimum subnormals retain their transverse components.
+X/Y sampling outputs can therefore change, including for fixed seeds; azimuth,
+Z, the two poles and series draw order are unchanged. Other samplers, including
+Lambertian sampling, are unaffected.
+
 Low-discrepancy:
 
 ```csharp

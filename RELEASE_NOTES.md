@@ -1,3 +1,4 @@
+- Improve spherical sampling accuracy near the poles; transverse X/Y outputs may change for the same draws or seed, while Z and draw order remain unchanged.
 - Update to .NET 10
 
 ### 5.3.28
