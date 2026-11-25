@@ -333,6 +333,19 @@ namespace Aardvark.Base
         {
             var ray = new __ray3t__(Origin, Direction);
             var cp = point.GetClosestPointOn(ray);
+            if (point == cp && Angle > 0 && Angle < __pi__ / 2 &&
+                Origin.IsFinite && point.IsFinite && Direction.IsFinite && IsValid)
+            {
+                var axis = (Direction / Direction.Abs().MaxElement).Normalized;
+                var height = (point - Origin).Dot(axis);
+                if (height > 0 && Fun.IsFinite(height))
+                {
+                    var cos = Angle.Cos();
+                    var center = Origin + axis * (height * cos * cos);
+                    // All points on this circle tie; reuse its deterministic tangent frame.
+                    return new __circle3t__(center, axis, height * Angle.Sin() * cos).Point;
+                }
+            }
             var radius = GetRadius(GetHeight(point));
             var dir = (point - cp).Normalized * radius;
 

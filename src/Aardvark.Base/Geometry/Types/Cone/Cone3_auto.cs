@@ -316,6 +316,19 @@ namespace Aardvark.Base
         {
             var ray = new Ray3f(Origin, Direction);
             var cp = point.GetClosestPointOn(ray);
+            if (point == cp && Angle > 0 && Angle < ConstantF.Pi / 2 &&
+                Origin.IsFinite && point.IsFinite && Direction.IsFinite && IsValid)
+            {
+                var axis = (Direction / Direction.Abs().MaxElement).Normalized;
+                var height = (point - Origin).Dot(axis);
+                if (height > 0 && Fun.IsFinite(height))
+                {
+                    var cos = Angle.Cos();
+                    var center = Origin + axis * (height * cos * cos);
+                    // All points on this circle tie; reuse its deterministic tangent frame.
+                    return new Circle3f(center, axis, height * Angle.Sin() * cos).Point;
+                }
+            }
             var radius = GetRadius(GetHeight(point));
             var dir = (point - cp).Normalized * radius;
 
@@ -657,6 +670,19 @@ namespace Aardvark.Base
         {
             var ray = new Ray3d(Origin, Direction);
             var cp = point.GetClosestPointOn(ray);
+            if (point == cp && Angle > 0 && Angle < Constant.Pi / 2 &&
+                Origin.IsFinite && point.IsFinite && Direction.IsFinite && IsValid)
+            {
+                var axis = (Direction / Direction.Abs().MaxElement).Normalized;
+                var height = (point - Origin).Dot(axis);
+                if (height > 0 && Fun.IsFinite(height))
+                {
+                    var cos = Angle.Cos();
+                    var center = Origin + axis * (height * cos * cos);
+                    // All points on this circle tie; reuse its deterministic tangent frame.
+                    return new Circle3d(center, axis, height * Angle.Sin() * cos).Point;
+                }
+            }
             var radius = GetRadius(GetHeight(point));
             var dir = (point - cp).Normalized * radius;
 
