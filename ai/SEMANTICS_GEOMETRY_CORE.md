@@ -58,6 +58,18 @@ For a normalized normal `n`, the axis-aligned bound extent in component `i`
 is `Radius * sqrt(max(0, 1 - n[i] * n[i]))`. `BoundingBox3f` and `BoundingBox3d`
 use these extents and are allocation-free.
 
+## Cone Axial Closest Points
+
+For a finite `Cone3f`/`Cone3d` with angle strictly between zero and Pi/2,
+`GetClosestPoint` handles a forward query that exactly equals its axial
+projection. At physical axial height `h`, the nearest surface points form a
+circle with axial displacement `h*cos(angle)^2` and radius
+`h*sin(angle)*cos(angle)`. The returned representative uses the deterministic
+`Circle3` tangent frame described above; `GetDistance` is `h*sin(angle)` up to
+rounding. This choice is independent of axis-direction magnitude and does not
+change `GetHeight`. Apex, non-axial (including arbitrarily near-axis) and other
+legacy paths retain their existing behavior; no epsilon coincidence test is used.
+
 ## Sphere Ray Intersections
 
 `Ray3f.HitsSphere` and `Ray3d.HitsSphere` intersect finite rays with finite

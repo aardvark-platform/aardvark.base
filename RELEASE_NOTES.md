@@ -1,3 +1,4 @@
+- Fix closest surface points and distances for forward exact-axis cone queries, choosing a deterministic nearest point for non-unit axes as well.
 - Update to .NET 10
 
 ### 5.3.28
