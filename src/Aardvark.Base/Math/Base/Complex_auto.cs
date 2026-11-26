@@ -765,9 +765,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Pow(this ComplexF number, ComplexF exponent)
         {
-            if (number.IsZero)
+            if (number.Real == 0 && number.Imag == 0)
                 return ComplexF.Zero;
-            else if (exponent.IsZero)
+            else if (exponent.Real == 0 && exponent.Imag == 0)
                 return ComplexF.One;
             else
             {
@@ -787,7 +787,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Pow(this ComplexF number, float exponent)
         {
-            if (number.IsZero)
+            if (number.Real == 0 && number.Imag == 0)
                 return ComplexF.Zero;
             else
             {
@@ -1920,9 +1920,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Pow(this ComplexD number, ComplexD exponent)
         {
-            if (number.IsZero)
+            if (number.Real == 0 && number.Imag == 0)
                 return ComplexD.Zero;
-            else if (exponent.IsZero)
+            else if (exponent.Real == 0 && exponent.Imag == 0)
                 return ComplexD.One;
             else
             {
@@ -1942,7 +1942,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Pow(this ComplexD number, double exponent)
         {
-            if (number.IsZero)
+            if (number.Real == 0 && number.Imag == 0)
                 return ComplexD.Zero;
             else
             {

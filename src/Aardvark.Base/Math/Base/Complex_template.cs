@@ -788,9 +788,9 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Pow(this __ct__ number, __ct__ exponent)
         {
-            if (number.IsZero)
+            if (number.Real == 0 && number.Imag == 0)
                 return __ct__.Zero;
-            else if (exponent.IsZero)
+            else if (exponent.Real == 0 && exponent.Imag == 0)
                 return __ct__.One;
             else
             {
@@ -810,7 +810,7 @@ namespace Aardvark.Base
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Pow(this __ct__ number, __ft__ exponent)
         {
-            if (number.IsZero)
+            if (number.Real == 0 && number.Imag == 0)
                 return __ct__.Zero;
             else
             {
