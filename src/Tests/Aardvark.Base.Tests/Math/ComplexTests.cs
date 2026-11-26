@@ -201,6 +201,183 @@ namespace Aardvark.Tests
                     AreEqual(x / y, ComplexD.One);
             });
 
+        private sealed class PowerApi
+        {
+            public readonly bool Single;
+            public readonly string Name;
+            public readonly double Tiny;
+            private readonly System.Reflection.ConstructorInfo constructor;
+            private readonly System.Reflection.MethodInfo cc, cr, rc, forwardCC, forwardCR, forwardRC, radial, exp, log, pow;
+            private readonly System.Reflection.PropertyInfo norm, argument, zero;
+            private readonly System.Reflection.FieldInfo real, imag;
+            public PowerApi(string target, bool single)
+            {
+                Single = single; Name = target + (single ? "/float" : "/double");
+                string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(TestContext.CurrentContext.TestDirectory, "..", target, "Aardvark.Base.dll"));
+                Assert.That(System.IO.File.Exists(path), Is.True, path);
+                var assembly = System.Reflection.Assembly.LoadFile(path);
+                Assert.That(assembly.Location, Is.EqualTo(path));
+                Assert.That(System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>(assembly).FrameworkName,
+                    Is.EqualTo(target == "net10.0" ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0"));
+                var scalar = single ? typeof(float) : typeof(double);
+                var type = assembly.GetType("Aardvark.Base.Complex" + (single ? "F" : "D"), true);
+                var fun = assembly.GetType("Aardvark.Base.Fun", true);
+                constructor = type.GetConstructor(new[] { scalar, scalar });
+                cc = fun.GetMethod("Pow", new[] { type, type }); cr = fun.GetMethod("Pow", new[] { type, scalar }); rc = fun.GetMethod("Pow", new[] { scalar, type });
+                forwardCC = fun.GetMethod("Power", new[] { type, type }); forwardCR = fun.GetMethod("Power", new[] { type, scalar }); forwardRC = fun.GetMethod("Power", new[] { scalar, type });
+                radial = type.GetMethod("CreateRadial", new[] { scalar, scalar });
+                exp = fun.GetMethod("Exp", new[] { scalar }); log = fun.GetMethod("Log", new[] { scalar }); pow = fun.GetMethod("Pow", new[] { scalar, scalar });
+                foreach (var method in new[] { cc, cr, rc, forwardCC, forwardCR, forwardRC, radial, exp, log, pow }) Assert.That(method.DeclaringType.Assembly, Is.SameAs(assembly), Name);
+                foreach (var method in new[] { cc, cr, rc, forwardCC, forwardCR, forwardRC, radial }) Assert.That(method.ReturnType, Is.EqualTo(type), Name);
+                norm = type.GetProperty("Norm"); argument = type.GetProperty("Argument"); zero = type.GetProperty("IsZero");
+                real = type.GetField("Real"); imag = type.GetField("Imag");
+                Tiny = Convert.ToDouble(assembly.GetType("Aardvark.Base.Constant`1", true).MakeGenericType(scalar).GetField("PositiveTinyValue").GetValue(null));
+            }
+            public double Round(double x) => Single ? (float)x : x;
+            public Num.Complex Round(Num.Complex x) => new Num.Complex(Round(x.Real), Round(x.Imaginary));
+            private object Number(double x) => Single ? (object)(float)x : x;
+            private object Value(Num.Complex x) => constructor.Invoke(new[] { Number(x.Real), Number(x.Imaginary) });
+            private Num.Complex Read(object x) => new Num.Complex(Convert.ToDouble(real.GetValue(x)), Convert.ToDouble(imag.GetValue(x)));
+            public bool IsZero(Num.Complex x) => (bool)zero.GetValue(Value(x));
+            public Num.Complex Call(Num.Complex x, Num.Complex y, int form, bool forward = false)
+                => Read((form == 0 ? (forward ? forwardCC : cc) : form == 1 ? (forward ? forwardCR : cr) : (forward ? forwardRC : rc))
+                    .Invoke(null, form == 0 ? new[] { Value(x), Value(y) } : form == 1 ? new[] { Value(x), Number(y.Real) } : new[] { Number(x.Real), Value(y) }));
+            public Num.Complex Legacy(Num.Complex x, Num.Complex y, int form)
+            {
+                // Literal old shortcuts/formulas, with the actual target's unchanged scalar kernels.
+                if (form == 2 ? x.Real == 0 : IsZero(x)) return Num.Complex.Zero;
+                if (form == 0 && IsZero(y)) return Num.Complex.One;
+                double Apply(System.Reflection.MethodInfo m, double a) => Convert.ToDouble(m.Invoke(null, new[] { Number(a) }));
+                double r = form == 2 ? Math.Abs(x.Real) : Convert.ToDouble(norm.GetValue(Value(x)));
+                double phi = form == 2 ? (x.Real < 0 ? Round(Math.PI) : 0) : Convert.ToDouble(argument.GetValue(Value(x)));
+                double magnitude, phase;
+                if (form == 1 || (form == 2 && !(x.Real < 0)))
+                {
+                    magnitude = Convert.ToDouble(pow.Invoke(null, new[] { Number(r), Number(y.Real) }));
+                    phase = Round((form == 1 ? y.Real : y.Imaginary) * (form == 1 ? phi : Apply(log, r)));
+                }
+                else
+                {
+                    double l = Apply(log, r);
+                    magnitude = Apply(exp, Round(Round(l * y.Real) - Round(y.Imaginary * phi)));
+                    phase = Round(Round(y.Real * phi) + Round(y.Imaginary * l));
+                }
+                return Read(radial.Invoke(null, new[] { Number(magnitude), Number(phase) }));
+            }
+        }
+        private static PowerApi[] PowerImplementations() => new[] { new PowerApi("net10.0", false), new PowerApi("netstandard2.0", false), new PowerApi("net10.0", true), new PowerApi("netstandard2.0", true) };
+        private static IEnumerable<double> SmallPowerValues(PowerApi api)
+        {
+            foreach (int power in api.Single ? new[] { -140, -80, -35, -25 } : new[] { -900, -500, -100, -55 }) yield return Math.Pow(2, power);
+            yield return api.Single ? float.Epsilon : double.Epsilon;
+            for (int i = -3; i <= 3; i++)
+            {
+                double t = api.Tiny;
+                for (int j = 0; j < Math.Abs(i); j++) t = api.Single ? (i < 0 ? MathF.BitDecrement((float)t) : MathF.BitIncrement((float)t)) : (i < 0 ? Math.BitDecrement(t) : Math.BitIncrement(t));
+                yield return t;
+            }
+            yield return api.Tiny / 2; yield return api.Tiny * 2;
+        }
+        private static void PowerBits(Num.Complex actual, Num.Complex expected, string context)
+        {
+            void Component(double a, double e, string part)
+            {
+                if (double.IsNaN(e)) Assert.That(double.IsNaN(a), Is.True, context + part);
+                else Assert.That(BitConverter.DoubleToInt64Bits(a), Is.EqualTo(BitConverter.DoubleToInt64Bits(e)), context + part);
+            }
+            Component(actual.Real, expected.Real, " real"); Component(actual.Imaginary, expected.Imaginary, " imaginary");
+        }
+        private static Num.Complex PowerRoot(Num.Complex x)
+        {
+            // System.Numerics.Sqrt can divide by zero for a minimum-subnormal imaginary input.
+            if (x.Real == 0)
+            {
+                double component = Math.Sqrt(Math.Abs(x.Imaginary)) / Math.Sqrt(2);
+                return new Num.Complex(component, Math.CopySign(component, x.Imaginary));
+            }
+            if (x.Imaginary == 0) return x.Real < 0 ? new Num.Complex(0, Math.Sqrt(-x.Real)) : new Num.Complex(Math.Sqrt(x.Real), 0);
+            return Num.Complex.Sqrt(x);
+        }
+        private static void PowerOracle(PowerApi api, Num.Complex actual, Num.Complex expected, string context, bool strictReal = false)
+        {
+            expected = api.Round(expected);
+            void Component(double a, double e, bool realPart)
+            {
+                string message = context + (realPart ? " real" : " imaginary");
+                Assert.That(double.IsFinite(e), Is.True, message + " finite oracle");
+                Assert.That(double.IsFinite(a), Is.True, message);
+                if (e != 0) Assert.That(a != 0 && Math.Sign(a) == Math.Sign(e), Is.True, message + " nonzero component retained");
+                double ulp = api.Single ? Math.Abs((double)MathF.BitIncrement((float)Math.Abs(e)) - Math.Abs(e)) : Math.Abs(Math.BitIncrement(Math.Abs(e)) - Math.Abs(e));
+                double tolerance = strictReal && realPart ? ulp : Math.Max(2 * ulp, (api.Single ? 2e-4 : 4e-12) * Math.Abs(e));
+                // Analytically zero axial components may contain polar sin/cos roundoff.
+                if (e == 0) tolerance = 8 * (api.Single ? Math.Pow(2, -23) : Math.Pow(2, -52)) * Math.Max(Math.Abs(expected.Real), Math.Abs(expected.Imaginary));
+                Assert.That(a, Is.EqualTo(e).Within(tolerance), message);
+            }
+            Component(actual.Real, expected.Real, true); Component(actual.Imaginary, expected.Imaginary, false);
+        }
+
+        [Test]
+        public static void TinyNonzeroBasesKeepTheirPowers()
+        {
+            foreach (var api in PowerImplementations())
+                foreach (double t in SmallPowerValues(api))
+                    foreach (var input in new[] { new Num.Complex(t, 0), new Num.Complex(-t, 0), new Num.Complex(0, t), new Num.Complex(0, -t), new Num.Complex(t, 2 * t), new Num.Complex(-t, -2 * t) })
+                    {
+                        var x = api.Round(input);
+                        PowerBits(api.Call(x, Num.Complex.Zero, 0), Num.Complex.One, api.Name + " exact zero exponent " + x);
+                        if (t == (api.Single ? float.Epsilon : double.Epsilon) && x.Real != 0 && x.Imaginary != 0) continue; // unchanged rounded subnormal norm is not a full-range power repair
+                        foreach (var y in new[] { Num.Complex.One, new Num.Complex(.5, 0), new Num.Complex(-1, 0), new Num.Complex(.5, .25) })
+                        {
+                            if (y.Real == -1 && t < (api.Single ? Math.Pow(2, -120) : Math.Pow(2, -1000))) continue; // reciprocal is outside this precision
+                            var expected = y == Num.Complex.One ? x : y == new Num.Complex(.5, 0) ? PowerRoot(x) : y == new Num.Complex(-1, 0) ? Num.Complex.One / x : Num.Complex.Pow(x, y);
+                            if (api.Single && t < Math.Pow(2, -126) && x.Real != 0 && x.Imaginary != 0 && y.Imaginary != 0)
+                            {
+                                // Preserve the formula's subnormal magnitude quantization, not a new full-range accuracy promise.
+                                double r = api.Round(Num.Complex.Abs(x)), phi = Math.Atan2(x.Imaginary, x.Real);
+                                expected = Num.Complex.FromPolarCoordinates(Math.Pow(r, y.Real) * Math.Exp(-y.Imaginary * phi), y.Real * phi + y.Imaginary * Math.Log(r));
+                            }
+                            foreach (int form in y.Imaginary == 0 ? new[] { 0, 1 } : new[] { 0 })
+                            {
+                                string context = $"{api.Name} base={x} exponent={y} form={form}";
+                                var actual = api.Call(x, y, form); PowerOracle(api, actual, expected, context); PowerBits(api.Call(x, y, form, true), actual, context + " Power");
+                            }
+                        }
+                    }
+        }
+
+        [Test]
+        public static void TinyNonzeroExponentsKeepTheirImaginaryContribution()
+        {
+            foreach (var api in PowerImplementations())
+                foreach (double t in SmallPowerValues(api))
+                    foreach (var x in new[] { new Num.Complex(2, 0), new Num.Complex(.5, 0), new Num.Complex(1, 2), new Num.Complex(-2, 3) })
+                        foreach (var y in new[] { new Num.Complex(0, t), new Num.Complex(0, -t), new Num.Complex(t, 0), new Num.Complex(t, -t) })
+                        {
+                            string context = $"{api.Name} base={x} exponent={y}";
+                            var actual = api.Call(x, y, 0); PowerOracle(api, actual, Num.Complex.Pow(x, y), context, true); PowerBits(api.Call(x, y, 0, true), actual, context + " Power");
+                        }
+        }
+
+        [Test]
+        public static void ExactZerosAndOrdinaryOrExceptionalPowersKeepTheirContracts()
+        {
+            foreach (var api in PowerImplementations())
+            {
+                var values = new[] { Num.Complex.Zero, new Num.Complex(-0.0, 0), new Num.Complex(0, -0.0), new Num.Complex(-0.0, -0.0), Num.Complex.One, new Num.Complex(-2, 3), new Num.Complex(.25, -.5), new Num.Complex(double.NaN, 0), new Num.Complex(0, double.NaN), new Num.Complex(double.PositiveInfinity, 0), new Num.Complex(0, double.NegativeInfinity) };
+                foreach (var x in values) foreach (var y in values) foreach (int form in new[] { 0, 1, 2 })
+                {
+                    string context = $"{api.Name} base={x} exponent={y} form={form}";
+                    var actual = api.Call(x, y, form); PowerBits(actual, api.Legacy(x, y, form), context); PowerBits(api.Call(x, y, form, true), actual, context + " Power");
+                }
+                foreach (double t in SmallPowerValues(api)) foreach (var x in new[] { new Num.Complex(t, 0), new Num.Complex(0, -t), new Num.Complex(t, -t) })
+                {
+                    Assert.That(api.IsZero(x), Is.EqualTo(Math.Abs(x.Real) < api.Tiny && Math.Abs(x.Imaginary) < api.Tiny), api.Name + " unchanged IsZero " + x);
+                    // The scalar-base path has no approximate shortcuts and stays literal even for tiny inputs.
+                    PowerBits(api.Call(x, x, 2), api.Legacy(x, x, 2), api.Name + " scalar base " + x);
+                }
+            }
+        }
+
         #region ToString and Parse
 
         [Test]

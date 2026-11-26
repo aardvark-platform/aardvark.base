@@ -36,6 +36,7 @@ Examples:
 
 - `Norm` is the magnitude. `NormSquared` is `Real * Real + Imag * Imag` and may be zero or infinite for nonzero finite values.
 - `Sqrt` returns the principal square root. A negative real value with either sign of zero in `Imag` produces the positive-imaginary root.
+- Complex-base `Pow`/`Power` shortcuts require both components to be exactly zero; tiny nonzero bases and exponents use the existing power formulas. The base-zero shortcut comes first, so `0^0` remains zero. The public `IsZero` property remains approximate.
 
 `Norm`, `Reciprocal`, division, and `Sqrt` allocate no managed memory.
 Results outside the selected precision follow IEEE overflow and underflow behavior.

@@ -1,3 +1,4 @@
+- Preserve tiny nonzero complex bases and exponents in `Pow` and `Power` instead of treating them as zero; exactly-zero behavior, including zero to the zero power, is unchanged.
 - Update to .NET 10
 
 ### 5.3.28
