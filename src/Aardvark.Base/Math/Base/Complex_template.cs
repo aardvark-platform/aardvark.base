@@ -1071,7 +1071,22 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static __ct__ Cbrt(this __ct__ x)
-            => __ct__.CreateRadial(Cbrt(x.Norm), x.Argument / 3);
+        {
+            var norm = x.Norm;
+            __ft__ radius;
+            if ((norm < __minNormal__ || norm == __ft__.PositiveInfinity) &&
+                IsFinite(x.Real) && IsFinite(x.Imag) && (x.Real != 0 || x.Imag != 0))
+            {
+                var scale = Max(Abs(x.Real), Abs(x.Imag));
+                // Direct division also works when scale is a minimum subnormal.
+                var real = x.Real / scale;
+                var imag = x.Imag / scale;
+                radius = Cbrt(scale) * Cbrt(Sqrt(real * real + imag * imag));
+            }
+            else
+                radius = Cbrt(norm);
+            return __ct__.CreateRadial(radius, x.Argument / 3);
+        }
 
         //# signedtypes.ForEach(t => { if (t != Meta.DecimalType) {
         //# if (ftype == Meta.DoubleType ^ t == Meta.FloatType) {

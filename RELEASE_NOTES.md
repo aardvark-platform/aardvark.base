@@ -1,3 +1,4 @@
+- Correct complex cube roots for extreme finite inputs whose magnitudes overflow or are subnormal, retaining finite principal roots and accurate tiny-input magnitudes.
 - Update to .NET 10
 
 ### 5.3.28

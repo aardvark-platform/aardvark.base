@@ -201,6 +201,155 @@ namespace Aardvark.Tests
                     AreEqual(x / y, ComplexD.One);
             });
 
+        private sealed class CubeRootApi
+        {
+            public readonly bool Single;
+            public readonly string Name;
+            private readonly System.Reflection.ConstructorInfo constructor;
+            private readonly System.Reflection.MethodInfo root, forward, scalarRoot, radial;
+            private readonly System.Reflection.PropertyInfo norm, argument;
+            private readonly System.Reflection.FieldInfo real, imag;
+            public CubeRootApi(string target, bool single)
+            {
+                Single = single; Name = target + (single ? "/float" : "/double");
+                string path = System.IO.Path.GetFullPath(System.IO.Path.Combine(TestContext.CurrentContext.TestDirectory, "..", target, "Aardvark.Base.dll"));
+                Assert.That(System.IO.File.Exists(path), Is.True, path);
+                var assembly = System.Reflection.Assembly.LoadFile(path);
+                Assert.That(assembly.Location, Is.EqualTo(path));
+                Assert.That(System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>(assembly).FrameworkName,
+                    Is.EqualTo(target == "net10.0" ? ".NETCoreApp,Version=v10.0" : ".NETStandard,Version=v2.0"));
+                var scalar = single ? typeof(float) : typeof(double);
+                var type = assembly.GetType("Aardvark.Base.Complex" + (single ? "F" : "D"), true);
+                var fun = assembly.GetType("Aardvark.Base.Fun", true);
+                constructor = type.GetConstructor(new[] { scalar, scalar });
+                root = fun.GetMethod("Cbrt", new[] { type }); forward = type.GetMethod("CubeRoot", new[] { type });
+                scalarRoot = fun.GetMethod("Cbrt", new[] { scalar }); radial = type.GetMethod("CreateRadial", new[] { scalar, scalar });
+                foreach (var m in new[] { root, forward, scalarRoot, radial }) Assert.That(m.DeclaringType.Assembly, Is.SameAs(assembly), Name);
+                Assert.That(root.ReturnType, Is.EqualTo(type)); Assert.That(forward.ReturnType, Is.EqualTo(type));
+                norm = type.GetProperty("Norm"); argument = type.GetProperty("Argument"); real = type.GetField("Real"); imag = type.GetField("Imag");
+            }
+            private object Number(double x) => Single ? (object)(float)x : x;
+            public Num.Complex Round(Num.Complex x) => Single ? new Num.Complex((float)x.Real, (float)x.Imaginary) : x;
+            private object Value(Num.Complex x) => constructor.Invoke(new[] { Number(x.Real), Number(x.Imaginary) });
+            private Num.Complex Read(object x) => new Num.Complex(Convert.ToDouble(real.GetValue(x)), Convert.ToDouble(imag.GetValue(x)));
+            public Num.Complex Root(Num.Complex x, bool alias = false) => Read((alias ? forward : root).Invoke(null, new[] { Value(x) }));
+            public double Norm(Num.Complex x) => Convert.ToDouble(norm.GetValue(Value(x)));
+            public Num.Complex Legacy(Num.Complex x)
+            {
+                double r = Convert.ToDouble(scalarRoot.Invoke(null, new[] { Number(Norm(x)) }));
+                double phi = Convert.ToDouble(argument.GetValue(Value(x))) / 3;
+                return Read(radial.Invoke(null, new[] { Number(r), Number(phi) }));
+            }
+        }
+        private static CubeRootApi[] CubeRootImplementations() => new[] { new CubeRootApi("net10.0", false), new CubeRootApi("netstandard2.0", false), new CubeRootApi("net10.0", true), new CubeRootApi("netstandard2.0", true) };
+        private static void CubeRootBits(Num.Complex actual, Num.Complex expected, string context)
+        {
+            void Component(double a, double e, string part)
+            {
+                if (double.IsNaN(e)) Assert.That(double.IsNaN(a), Is.True, context + part);
+                else Assert.That(BitConverter.DoubleToInt64Bits(a), Is.EqualTo(BitConverter.DoubleToInt64Bits(e)), context + part);
+            }
+            Component(actual.Real, expected.Real, " real"); Component(actual.Imaginary, expected.Imaginary, " imaginary");
+        }
+        private static void CheckCubeRoot(CubeRootApi api, Num.Complex input)
+        {
+            input = api.Round(input);
+            string context = $"{api.Name} input=({input.Real:R},{input.Imaginary:R})";
+            double scale = Math.Max(Math.Abs(input.Real), Math.Abs(input.Imaginary));
+            int exponent = Math.ILogB(scale), q = exponent >= 0 ? exponent / 3 : (exponent - 2) / 3;
+            // Independent power-of-two exponent decomposition: no overflowing/subnormal magnitude or Root(3).
+            var normalizedInput = new Num.Complex(Math.ScaleB(input.Real, -3 * q), Math.ScaleB(input.Imaginary, -3 * q));
+            double radius = Math.Pow(Math.Sqrt(normalizedInput.Real * normalizedInput.Real + normalizedInput.Imaginary * normalizedInput.Imaginary), 1.0 / 3);
+            double phase = Math.Atan2(input.Imaginary, input.Real) / 3;
+            var expected = new Num.Complex(Math.ScaleB(radius * Math.Cos(phase), q), Math.ScaleB(radius * Math.Sin(phase), q));
+            var actual = api.Root(input);
+            double relative = api.Single ? 1e-6 : 2e-13;
+            void Component(double a, double e, string part)
+            {
+                Assert.That(double.IsFinite(a), Is.True, context + part);
+                if (e != 0) Assert.That(a != 0 && Math.Sign(a) == Math.Sign(e), Is.True, context + part + " nonzero sign");
+                double tolerance = relative * (e == 0 ? Math.Max(Math.Abs(expected.Real), Math.Abs(expected.Imaginary)) : Math.Abs(e));
+                Assert.That(a, Is.EqualTo(e).Within(tolerance), context + part);
+            }
+            Component(actual.Real, expected.Real, " real"); Component(actual.Imaginary, expected.Imaginary, " imaginary");
+            var normalizedRoot = new Num.Complex(Math.ScaleB(actual.Real, -q), Math.ScaleB(actual.Imaginary, -q));
+            var cube = normalizedRoot * normalizedRoot * normalizedRoot;
+            Assert.That(Num.Complex.Abs(cube - normalizedInput) / Num.Complex.Abs(normalizedInput), Is.LessThanOrEqualTo(api.Single ? 6e-6 : 1e-12), context + " normalized reconstruction");
+            Assert.That(Math.Abs(Math.Atan2(actual.Imaginary, actual.Real)), Is.LessThanOrEqualTo(Math.PI / 3 + relative), context + " principal sector");
+            CubeRootBits(api.Root(input, true), actual, context + " CubeRoot");
+        }
+
+        [Test]
+        public static void ExtremeFiniteCubeRootsRetainTheirPrincipalMagnitude()
+        {
+            foreach (var api in CubeRootImplementations())
+            {
+                double maximum = api.Single ? float.MaxValue : double.MaxValue;
+                foreach (double scale in new[] { maximum, api.Single ? MathF.BitDecrement(float.MaxValue) : Math.BitDecrement(double.MaxValue), maximum * .875, Math.ScaleB(1, api.Single ? 127 : 1023) })
+                    foreach (double ratio in new[] { 1, .5, .75 })
+                        foreach (int sr in new[] { -1, 1 }) foreach (int si in new[] { -1, 1 })
+                        {
+                            CheckCubeRoot(api, new Num.Complex(sr * scale, si * scale * ratio));
+                            CheckCubeRoot(api, new Num.Complex(sr * scale * ratio, si * scale));
+                        }
+                double unit = api.Single ? float.Epsilon : double.Epsilon;
+                foreach (int r in new[] { 1, 2, 3, 7, 31, 127, 1023 }) foreach (int i in new[] { 1, 2, 3, 7, 31, 127, 1023 })
+                    foreach (int sr in new[] { -1, 1 }) foreach (int si in new[] { -1, 1 })
+                        CheckCubeRoot(api, new Num.Complex(sr * r * unit, si * i * unit));
+            }
+        }
+
+        [Test]
+        public static void CubeRootsCrossMagnitudeTransitionsWithoutLosingAccuracy()
+        {
+            foreach (var api in CubeRootImplementations())
+            {
+                double minimumNormal = Math.ScaleB(1, api.Single ? -126 : -1022);
+                double maximum = api.Single ? float.MaxValue : double.MaxValue;
+                bool subnormal = false, overflow = false, normal = false;
+                foreach (double boundary in new[] { minimumNormal, maximum / Math.Sqrt(2) })
+                    for (int neighbor = -3; neighbor <= 3; neighbor++)
+                    {
+                        double value = api.Round(new Num.Complex(boundary, 0)).Real;
+                        for (int j = 0; j < Math.Abs(neighbor); j++) value = api.Single ? (neighbor < 0 ? MathF.BitDecrement((float)value) : MathF.BitIncrement((float)value)) : (neighbor < 0 ? Math.BitDecrement(value) : Math.BitIncrement(value));
+                        foreach (var shape in new[] { new Num.Complex(1, 0), new Num.Complex(0, 1), new Num.Complex(1, 1), new Num.Complex(.6, .8), new Num.Complex(.8, .6) })
+                            foreach (int sr in new[] { -1, 1 }) foreach (int si in new[] { -1, 1 })
+                            {
+                                var x = api.Round(new Num.Complex(sr * value * shape.Real, si * value * shape.Imaginary));
+                                double norm = api.Norm(x); subnormal |= norm < minimumNormal; overflow |= double.IsPositiveInfinity(norm); normal |= norm >= minimumNormal && double.IsFinite(norm);
+                                CheckCubeRoot(api, x);
+                                if (norm >= minimumNormal && double.IsFinite(norm)) CubeRootBits(api.Root(x), api.Legacy(x), api.Name + " unchanged normal path " + x);
+                            }
+                    }
+                Assert.That(subnormal && overflow && normal, Is.True, api.Name + " both transition boundaries covered");
+            }
+        }
+
+        [Test]
+        public static void CubeRootsKeepOrdinaryZeroAndExceptionalArithmetic()
+        {
+            foreach (var api in CubeRootImplementations())
+            {
+                var random = new Random(257109);
+                for (int i = 0; i < 10000; i++)
+                {
+                    int power = random.Next(api.Single ? -20 : -200, api.Single ? 21 : 201);
+                    var x = api.Round(new Num.Complex(Math.ScaleB(.25 + random.NextDouble(), power), Math.ScaleB(2 * random.NextDouble() - 1, power)));
+                    if (i % 2 == 0) x = -x;
+                    CheckCubeRoot(api, x);
+                    CubeRootBits(api.Root(x), api.Legacy(x), api.Name + " ordinary " + x);
+                }
+                foreach (double r in new[] { 0.0, -0.0, 1.0, -1.0, double.NaN, double.PositiveInfinity, double.NegativeInfinity })
+                    foreach (double i in new[] { 0.0, -0.0, 1.0, -1.0, double.NaN, double.PositiveInfinity, double.NegativeInfinity })
+                        if (!double.IsFinite(r) || !double.IsFinite(i) || (r == 0 && i == 0))
+                        {
+                            var x = new Num.Complex(r, i); var actual = api.Root(x);
+                            CubeRootBits(actual, api.Legacy(x), api.Name + " exceptional " + x);
+                            CubeRootBits(api.Root(x, true), actual, api.Name + " exceptional CubeRoot " + x);
+                        }
+            }
+        }
+
         #region ToString and Parse
 
         [Test]

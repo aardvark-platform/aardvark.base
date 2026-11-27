@@ -101,6 +101,22 @@ namespace Aardvark.Base.Benchmarks
         }
 
         [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexD CubeRootDouble()
+        {
+            ComplexD sum = ComplexD.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftD[i].Cbrt();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
+        public ComplexF CubeRootFloat()
+        {
+            ComplexF sum = ComplexF.Zero;
+            for (int i = 0; i < Count; i++) sum += m_leftF[i].Cbrt();
+            return sum;
+        }
+
+        [Benchmark(OperationsPerInvoke = Count)]
         public ComplexD SquareRootDouble()
         {
             ComplexD sum = ComplexD.Zero;

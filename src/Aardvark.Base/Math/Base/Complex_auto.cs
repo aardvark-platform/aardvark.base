@@ -1048,7 +1048,22 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexF Cbrt(this ComplexF x)
-            => ComplexF.CreateRadial(Cbrt(x.Norm), x.Argument / 3);
+        {
+            var norm = x.Norm;
+            float radius;
+            if ((norm < 1.17549435e-38f || norm == float.PositiveInfinity) &&
+                IsFinite(x.Real) && IsFinite(x.Imag) && (x.Real != 0 || x.Imag != 0))
+            {
+                var scale = Max(Abs(x.Real), Abs(x.Imag));
+                // Direct division also works when scale is a minimum subnormal.
+                var real = x.Real / scale;
+                var imag = x.Imag / scale;
+                radius = Cbrt(scale) * Cbrt(Sqrt(real * real + imag * imag));
+            }
+            else
+                radius = Cbrt(norm);
+            return ComplexF.CreateRadial(radius, x.Argument / 3);
+        }
 
         /// <summary>
         /// Returns the square root of the given real number and returns a complex number.
@@ -2203,7 +2218,22 @@ namespace Aardvark.Base
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ComplexD Cbrt(this ComplexD x)
-            => ComplexD.CreateRadial(Cbrt(x.Norm), x.Argument / 3);
+        {
+            var norm = x.Norm;
+            double radius;
+            if ((norm < 2.2250738585072014e-308 || norm == double.PositiveInfinity) &&
+                IsFinite(x.Real) && IsFinite(x.Imag) && (x.Real != 0 || x.Imag != 0))
+            {
+                var scale = Max(Abs(x.Real), Abs(x.Imag));
+                // Direct division also works when scale is a minimum subnormal.
+                var real = x.Real / scale;
+                var imag = x.Imag / scale;
+                radius = Cbrt(scale) * Cbrt(Sqrt(real * real + imag * imag));
+            }
+            else
+                radius = Cbrt(norm);
+            return ComplexD.CreateRadial(radius, x.Argument / 3);
+        }
 
         /// <summary>
         /// Returns the square root of the given real number and returns a complex number.

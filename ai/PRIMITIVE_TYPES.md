@@ -36,6 +36,7 @@ Examples:
 
 - `Norm` is the magnitude. `NormSquared` is `Real * Real + Imag * Imag` and may be zero or infinite for nonzero finite values.
 - `Sqrt` returns the principal square root. A negative real value with either sign of zero in `Imag` produces the positive-imaginary root.
+- Complex `Cbrt`/`CubeRoot` returns the principal cube root, preserving the existing argument divided by three. Finite nonzero inputs with overflowing or subnormal magnitudes use scaled radius evaluation; ordinary, zero and nonfinite paths retain their existing arithmetic. `Norm`, general `Root` and scalar `Cbrt` are unchanged.
 
 `Norm`, `Reciprocal`, division, and `Sqrt` allocate no managed memory.
 Results outside the selected precision follow IEEE overflow and underflow behavior.
