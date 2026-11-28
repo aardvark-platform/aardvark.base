@@ -542,9 +542,9 @@ namespace Aardvark.Base
             var A = 1 + uSq / 16384 * (4096 + uSq * (-768 + uSq * (320 - 175 * uSq)));
             var B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)));
 
-            var sigma = s / (b * A); var sigmaP = 2 * PI;
-            double sinSigma = 0, cosSigma = 0, cos2SigmaM = 0;
-            while (Abs(sigma - sigmaP) > 1e-12)
+            var sigma = s / (b * A); double sigmaP;
+            double sinSigma, cosSigma, cos2SigmaM;
+            do
             {
                 cos2SigmaM = Cos(2 * sigma1 + sigma);
                 sinSigma = Sin(sigma);
@@ -553,7 +553,7 @@ namespace Aardvark.Base
                     B / 6 * cos2SigmaM * (-3 + 4 * sinSigma * sinSigma) * (-3 + 4 * cos2SigmaM * cos2SigmaM)));
                 sigmaP = sigma;
                 sigma = s / (b * A) + deltaSigma;
-            }
+            } while (Abs(sigma - sigmaP) > 1e-12);
 
             var tmp = sinU1 * sinSigma - cosU1 * cosSigma * cosAlpha1;
             var lat2 = Atan2(sinU1 * cosSigma + cosU1 * sinSigma * cosAlpha1,

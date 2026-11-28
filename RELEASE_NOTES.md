@@ -1,3 +1,4 @@
+- Correct Vincenty direct destinations and final bearings for full-circuit distances whose initial arc is near two pi.
 - Update to .NET 10
 
 ### 5.3.28
