@@ -168,6 +168,8 @@ path or empty fallback.
 
 Geodetic vectors use `V3d(longitude, latitude, ellipsoidalHeight)`: angles are degrees and height is meters. Geocentric ECEF vectors use XYZ meters.
 
+`Geo.DirectionVincenty` takes `V2d(longitude, latitude)` and bearings in degrees, and distance in meters. The direct solver evaluates its iterative quantities at least once, including full-circuit initial arcs near two pi; the convergence tolerance and formulas are unchanged. Final bearings are arrival headings, not reverse headings. Inverse Vincenty methods are independent and unchanged.
+
 ```csharp
 var xyz = Geo.XyzFromLonLatHeight(new V3d(lonDeg, latDeg, hMeters), GeoEllipsoid.Wgs84);
 var llh = Geo.LonLatHeightFromXyz(xyz, GeoEllipsoid.Wgs84);
